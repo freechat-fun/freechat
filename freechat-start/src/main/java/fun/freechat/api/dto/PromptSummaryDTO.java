@@ -1,0 +1,60 @@
+package fun.freechat.api.dto;
+
+import fun.freechat.api.util.AiModelUtils;
+import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.CommonUtils;
+import fun.freechat.model.PromptInfo;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import org.apache.commons.lang3.tuple.Triple;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+@Schema(description = "Prompt summary content")
+@Data
+public class PromptSummaryDTO extends TraceableDTO {
+    @Schema(description = "Prompt identifier")
+    private String promptId;
+    @Schema(description = "Creation time")
+    private Date gmtCreate;
+    @Schema(description = "Modification time")
+    private Date gmtModified;
+    @Schema(description = "Visibility: private, public, public_org, hidden")
+    private String visibility;
+    @Schema(description = "Version")
+    private Integer version;
+    @Schema(description = "Prompt name")
+    private String name;
+    @Schema(description = "Prompt type: string | chat")
+    private String type;
+    @Schema(description = "Prompt description (50 characters, the excess part is represented by ellipsis)")
+    private String description;
+    @Schema(description = "Prompt format: f_string (default) | jinja2 | mustache")
+    private String format;
+    @Schema(description = "Prompt language: en (default) | zh_CN | ...")
+    private String lang;
+    @Schema(description = "Prompt owner")
+    private String username;
+    @Schema(description = "Tag set")
+    private List<String> tags;
+    @Schema(description = "Supported model set")
+    private List<AiModelInfoDTO> aiModels;
+
+    public static PromptSummaryDTO fromPromptInfo(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
+        if (Objects.isNull(promptInfoTriple)) {
+            return null;
+        }
+        PromptSummaryDTO promptSummaryDTO =
+                CommonUtils.convert(promptInfoTriple.getLeft(), PromptSummaryDTO.class);
+        promptSummaryDTO.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
+        promptSummaryDTO.setTags(promptInfoTriple.getMiddle());
+        promptSummaryDTO.setAiModels(promptInfoTriple.getRight()
+                .stream()
+                .map(AiModelUtils::getModelInfoDTO)
+                .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
+                .toList());
+        return promptSummaryDTO;
+    }
+}

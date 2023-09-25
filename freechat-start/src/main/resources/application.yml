@@ -1,0 +1,120 @@
+app:
+  logging:
+    home: ${APP_HOME}/logs
+    level: info
+auth:
+  login:
+    uri: /login
+    oauth2:
+      failureUri: /login/oauth2/failure
+      successUri: /login/oauth2/success
+    portal:
+      failureUri: /login/portal/failure
+      successUri: /login/portal/success
+  role:
+    adminUri: /admin/**,/api/admin/**,/api/v1/admin/**
+    bizAdminUri: /api/biz/admin/**,/api/v1/biz/admin/**
+    apiUri: /api/**
+    privateUri: /private/**
+    publicUri: /public/**,/css/**,/js/**,/logo/**,/favicon.ico
+  token:
+    limits: 5
+    prefix: fc-
+  impersonate:
+    headerName: X-FC-IMPERSONATE
+    autoRegister: true
+  aiApiKey:
+    limits: 3
+cache:
+  redisson:
+    config: classpath:/cache-config.yml
+redis:
+  mode: single
+  datasource:
+    timeout: 10000
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+  security:
+    oauth2:
+      client:
+        provider:
+          aliyun:
+            authorizationUri: https://signin.aliyun.com/oauth2/v1/auth
+            issuerUri: https://oauth.aliyun.com
+            jwkSetUri: https://oauth.aliyun.com/v1/keys
+            tokenUri: https://oauth.aliyun.com/v1/token
+            userInfoUri: https://oauth.aliyun.com/v1/userinfo
+            userNameAttribute: sub
+        registration:
+          aliyun:
+            authorizationGrantType: authorization_code
+            clientAuthenticationMethod: client_secret_basic
+            clientName: Aliyun
+            redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid
+  task:
+    defaultExecution:
+      threadNamePrefix: default-task-
+      pool:
+        coreSize: 2
+        maxSize: 8
+        keepAlive: 60s
+        queueCapacity: 256
+        allowCoreThreadTimeout: true
+      shutdown:
+        awaitTermination: true
+        awaitTerminationPeriod: 60s
+    aiServiceExecution:
+      threadNamePrefix: ai-service-task-
+      pool:
+        coreSize: 4
+        maxSize: 16
+        keepAlive: 60s
+        queueCapacity: 64
+        allowCoreThreadTimeout: true
+      shutdown:
+        awaitTermination: true
+        awaitTerminationPeriod: 60s
+springdoc:
+  apiDocs:
+    path: /public/openapi/v3/api-docs
+  swaggerUi:
+    path: /public/docs/api/swagger-ui
+  paths: /api/**
+  packagesToScan: fun.freechat.api
+  defaultProducesMediaType: application/json
+  groupConfigs:
+    - group: g-all
+      displayName: All
+      pathsToMatch: /api/**
+    - group: g-admin
+      displayName: Admin
+      pathsToMatch: /api/v1/admin/**
+    - group: g-biz-admin
+      displayName: BizAdmin
+      pathsToMatch: /api/v1/biz/admin/**
+    - group: g-account
+      displayName: Account
+      pathsToMatch: /api/v1/account/**
+    - group: g-prompt
+      displayName: Prompt
+      pathsToMatch: /api/v1/prompt/**
+    - group: g-flow
+      displayName: Flow
+      pathsToMatch: /api/v1/flow/**
+    - group: g-plugin
+      displayName: Plugin
+      pathsToMatch: /api/v1/plugin/**
+    - group: g-organization
+      displayName: Organization
+      pathsToMatch: /api/v1/org/**
+    - group: g-ai
+      displayName: AI
+      pathsToMatch: /api/v1/ai/**
+    - group: g-stats
+      displayName: Stats
+      pathsToMatch: /api/v1/stats/**,/api/v1/score/**
+perf:
+  trace:
+    excludeUri: /public/check/**,/favicon.ico,/error

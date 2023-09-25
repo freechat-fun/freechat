@@ -1,0 +1,86 @@
+body {
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+input[type="submit"],
+.oauth-button {
+    background-color: #16DD00;
+    border: none;
+    color: #000F8F;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.oauth-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    height: 50px;
+}
+
+.oauth-button {
+    background-color: #FEFEFE;
+    background-position: center;
+    background-repeat:  no-repeat;
+    background-size: contain;
+    margin-bottom: 20px;
+    flex-basis: 100px;
+}
+
+.oauth-button.google {
+    background-image: url('/logo/google.png');
+}
+
+.oauth-button.github {
+    background-image: url('/logo/github.png');
+}
+
+.oauth-button.aliyun {
+    background-image: url('/logo/aliyun.png');
+}
+
+@media (max-width: 767px) {
+    .container {
+        margin: 20px auto;
+    }
+    input[type="submit"],
+    .oauth-button {
+        margin-top: 20px;
+    }
+}

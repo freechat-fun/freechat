@@ -1,0 +1,4 @@
+argparse
+jsonpath-ng
+openpyxl
+requests

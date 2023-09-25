@@ -1,0 +1,47 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+
+### Sublime ###
+*.sublime*
+
+### Charts ###
+app-meta/helm-config/**/*.tgz
+app-meta/helm-config/**/*.lock
+
+### Local files ###
+.DS_Store
+**/.DS_Store
+**/*-private.*
+*/logs/
+logs/
+*.log
+log.txt
+*/LOG_PATH_IS_UNDEFINED/
+LOG_PATH_IS_UNDEFINED/
+local-data/
+*.patch
+*.swp
+*.bak
+*.tmp
+*~

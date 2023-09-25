@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- https://github.com/spring-projects/spring-boot/blob/v1.5.13.RELEASE/spring-boot/src/main/resources/org/springframework/boot/logging/logback/defaults.xml -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <springProperty name="LOG_PATH" source="app.logging.home" defaultValue="${APP_HOME}/logs" />
+    <springProperty name="LOG_LEVEL" source="app.logging.level" defaultValue="DEBUG" />
+
+    <property name="TRACE_LOG_FILE" value="${LOG_PATH}/common-trace.log" />
+    <property name="DEBUG_LOG_FILE" value="${LOG_PATH}/common-debug.log" />
+    <property name="INFO_LOG_FILE" value="${LOG_PATH}/common-info.log" />
+    <property name="WARN_LOG_FILE" value="${LOG_PATH}/common-warn.log" />
+    <property name="ERROR_LOG_FILE" value="${LOG_PATH}/common-error.log" />
+    <property name="COMMON_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %c{36} - %m%n"/>
+    <property name="PERF_LOG_FILE" value="${LOG_PATH}/common-perf.log" />
+    <property name="PERF_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] - %m%n"/>
+    <property name="ACCESS_LOG_FILE" value="${LOG_PATH}/common-access.log" />
+    <property name="ACCESS_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] - %m%n"/>
+
+    <appender name="TRACE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${TRACE_LOG_FILE}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern><![CDATA[${COMMON_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${TRACE_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>10GB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="TRACE_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="TRACE"/>
+    </appender>
+
+    <appender name="DEBUG"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DEBUG_LOG_FILE}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern><![CDATA[${COMMON_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${DEBUG_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>3</maxHistory>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="DEBUG_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="DEBUG"/>
+    </appender>
+
+    <appender name="INFO"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${INFO_LOG_FILE}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern><![CDATA[${COMMON_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${INFO_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>10GB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="INFO_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="INFO"/>
+    </appender>
+
+    <appender name="WARN"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${WARN_LOG_FILE}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern><![CDATA[${COMMON_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${WARN_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>10GB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="WARN_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="WARN"/>
+    </appender>
+
+    <appender name="ERROR"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ERROR_LOG_FILE}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern><![CDATA[${COMMON_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ERROR_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>10GB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="ERROR_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="ERROR"/>
+    </appender>
+
+    <appender name="PERF"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${PERF_LOG_FILE}</file>
+        <encoder>
+            <pattern><![CDATA[${PERF_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${PERF_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>10GB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="PERF_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="PERF"/>
+    </appender>
+
+    <appender name="ACCESS"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ACCESS_LOG_FILE}</file>
+        <encoder>
+            <pattern><![CDATA[${ACCESS_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ACCESS_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>10GB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name ="ACCESS_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref ="ACCESS"/>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern><![CDATA[${COMMON_LOG_PATTERN}]]></pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="DEBUG_ASYNC" />
+        <appender-ref ref="INFO_ASYNC" />
+        <appender-ref ref="WARN_ASYNC" />
+        <appender-ref ref="ERROR_ASYNC" />
+    </root>
+
+    <logger name="fun.freechat.access.trace.TraceAspect" level="trace" additivity="false">
+        <appender-ref ref="PERF_ASYNC" />
+    </logger>
+
+    <logger name="fun.freechat.access.trace.TraceInterceptor" level="trace" additivity="false">
+        <appender-ref ref="ACCESS_ASYNC" />
+    </logger>
+
+    <logger name="org.redisson.cluster" level="off" additivity="false">
+        <appender-ref ref="ERROR_ASYNC" />
+    </logger>
+</configuration>

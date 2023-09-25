@@ -1,0 +1,84 @@
+global:
+  redis:
+    password: ''
+  storageClass: ''
+auth:
+  aes:
+    key: ''
+  oauth2:
+    aliyun:
+      enable: true
+      authorizationGrantType: authorization_code
+      clientAuthenticationMethod: client_secret_basic
+      clientName: Aliyun
+      scope: openid
+      clientId: ''
+      clientSecret: ''
+    github:
+      enable: true
+      scope: ''
+      clientId: ''
+      clientSecret: ''
+    google:
+      enable: true
+      scope: openid,profile,email
+      clientId: ''
+      clientSecret: ''
+autoscaling:
+  enabled: false
+bitnami:
+  mysql:
+    enabled: true
+  redis:
+    enabled: true
+cert:
+  manager:
+    namespace: cert-manager
+    version: v1.11.0
+  issuer:
+    enabled: true
+  certificate:
+    enabled: true
+  email: dev.freechat.fun@gmail.com
+debug:
+  jpda:
+    enabled: false
+    port: 5005
+image:
+  pullPolicy: Always
+  repository: freechatfun/freechat
+  tag: 'latest'
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: freechat.fun
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enabled: true
+mysql:
+  url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8
+  auth:
+    database: freechat
+    password: ''
+    rootPassword: ''
+    username: freechat
+redis:
+  url: redis://freechat-redis-cluster:6379
+replicaCount: 2
+resources:
+  limits: {}
+  requests: {}
+securityContext:
+  runAsUser: 2023
+  runAsGroup: 2023
+service:
+  ports:
+    http: 80
+  type: ClusterIP
+serviceAccount:
+  create: true
+systemAccount: admin
+spring: {}

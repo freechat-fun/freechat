@@ -1,0 +1,13 @@
+app:
+  logging:
+    home: ${TMPDIR}/logs
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/freechat?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: hello1234
+redis:
+  mode: single
+  datasource:
+    url: redis://localhost:6379
+    password: hello1234

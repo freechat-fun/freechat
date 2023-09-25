@@ -1,0 +1,30 @@
+annotations:
+  licenses: Apache-2.0
+  group: fun.freechat
+apiVersion: v1
+appVersion: '0.1.0'
+dependencies:
+- condition: bitnami.mysql.enabled
+  name: mysql
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+  - mysql
+  - sql
+  - database
+  version: 9.x.x
+- condition: bitnami.redis.enabled
+  name: redis-cluster
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+    - redis
+    - keyvalue
+    - database
+  version: 8.x.x
+description: A Helm chart for freechat
+maintainers:
+- email: dev.freechat.fun@gmail.com
+  name: dev.freechat.fun
+  url: https://github.com/freechat-fun/freechat
+name: freechat
+type: application
+version: 0.1.0

@@ -1,0 +1,23 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="edge">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>接口文档</title>
+</head>
+<body>
+    <div th:switch="${renderer}">
+        <p th:case="'redoc'">
+            <redoc th:spec-url="${docPath}"></redoc>
+            <script src="/js/redoc.standalone.js"></script>
+        </p>
+        <p th:case="*">
+            <script type="module" src="/js/openapi-explorer.min.js"></script>
+            <openapi-explorer th:spec-url="${docPath}"> </openapi-explorer>
+        </p>
+    </div>
+</body>
+</html>
