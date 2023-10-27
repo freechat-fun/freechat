@@ -10,5 +10,5 @@ public interface AiModelInfoService {
     String createOrUpdate(String name, String description, ModelProvider provider, ModelType type);
     boolean delete(String modelId);
     AiModelInfo get(String modelId);
-    List<AiModelInfo> list(int limit, int offset);
+    List<AiModelInfo> list(long limit, long offset);
 }

@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<ChatContext>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, userId, characterId, context);
+    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, userId, userNickname, characterNickname, backendId, userProfile, ext);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -41,8 +41,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="character_id", property="characterId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="context", property="context", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="user_nickname", property="userNickname", jdbcType=JdbcType.VARCHAR),
+        @Result(column="character_nickname", property="characterNickname", jdbcType=JdbcType.VARCHAR),
+        @Result(column="backend_id", property="backendId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="user_profile", property="userProfile", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<ChatContext> selectMany(SelectStatementProvider selectStatement);
 
@@ -75,8 +78,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
             .map(userId).toProperty("userId")
-            .map(characterId).toProperty("characterId")
-            .map(context).toProperty("context")
+            .map(userNickname).toProperty("userNickname")
+            .map(characterNickname).toProperty("characterNickname")
+            .map(backendId).toProperty("backendId")
+            .map(userProfile).toProperty("userProfile")
+            .map(ext).toProperty("ext")
         );
     }
 
@@ -87,8 +93,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
             .map(userId).toProperty("userId")
-            .map(characterId).toProperty("characterId")
-            .map(context).toProperty("context")
+            .map(userNickname).toProperty("userNickname")
+            .map(characterNickname).toProperty("characterNickname")
+            .map(backendId).toProperty("backendId")
+            .map(userProfile).toProperty("userProfile")
+            .map(ext).toProperty("ext")
         );
     }
 
@@ -99,8 +108,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
             .map(userId).toPropertyWhenPresent("userId", row::getUserId)
-            .map(characterId).toPropertyWhenPresent("characterId", row::getCharacterId)
-            .map(context).toPropertyWhenPresent("context", row::getContext)
+            .map(userNickname).toPropertyWhenPresent("userNickname", row::getUserNickname)
+            .map(characterNickname).toPropertyWhenPresent("characterNickname", row::getCharacterNickname)
+            .map(backendId).toPropertyWhenPresent("backendId", row::getBackendId)
+            .map(userProfile).toPropertyWhenPresent("userProfile", row::getUserProfile)
+            .map(ext).toPropertyWhenPresent("ext", row::getExt)
         );
     }
 
@@ -137,8 +149,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
-                .set(characterId).equalTo(row::getCharacterId)
-                .set(context).equalTo(row::getContext);
+                .set(userNickname).equalTo(row::getUserNickname)
+                .set(characterNickname).equalTo(row::getCharacterNickname)
+                .set(backendId).equalTo(row::getBackendId)
+                .set(userProfile).equalTo(row::getUserProfile)
+                .set(ext).equalTo(row::getExt);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -147,8 +162,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
-                .set(characterId).equalToWhenPresent(row::getCharacterId)
-                .set(context).equalToWhenPresent(row::getContext);
+                .set(userNickname).equalToWhenPresent(row::getUserNickname)
+                .set(characterNickname).equalToWhenPresent(row::getCharacterNickname)
+                .set(backendId).equalToWhenPresent(row::getBackendId)
+                .set(userProfile).equalToWhenPresent(row::getUserProfile)
+                .set(ext).equalToWhenPresent(row::getExt);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -157,8 +175,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(userId).equalTo(row::getUserId)
-            .set(characterId).equalTo(row::getCharacterId)
-            .set(context).equalTo(row::getContext)
+            .set(userNickname).equalTo(row::getUserNickname)
+            .set(characterNickname).equalTo(row::getCharacterNickname)
+            .set(backendId).equalTo(row::getBackendId)
+            .set(userProfile).equalTo(row::getUserProfile)
+            .set(ext).equalTo(row::getExt)
             .where(chatId, isEqualTo(row::getChatId))
         );
     }
@@ -169,8 +190,11 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(userId).equalToWhenPresent(row::getUserId)
-            .set(characterId).equalToWhenPresent(row::getCharacterId)
-            .set(context).equalToWhenPresent(row::getContext)
+            .set(userNickname).equalToWhenPresent(row::getUserNickname)
+            .set(characterNickname).equalToWhenPresent(row::getCharacterNickname)
+            .set(backendId).equalToWhenPresent(row::getBackendId)
+            .set(userProfile).equalToWhenPresent(row::getUserProfile)
+            .set(ext).equalToWhenPresent(row::getExt)
             .where(chatId, isEqualTo(row::getChatId))
         );
     }

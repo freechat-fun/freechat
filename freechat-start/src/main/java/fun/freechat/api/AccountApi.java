@@ -3,26 +3,40 @@ package fun.freechat.api;
 import fun.freechat.api.dto.UserBasicInfoDTO;
 import fun.freechat.api.dto.UserDetailsDTO;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysUserService;
+import fun.freechat.service.common.ConfigService;
+import fun.freechat.service.common.FileStore;
+import fun.freechat.service.util.ConfigUtils;
+import fun.freechat.service.util.StoreUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
+
+import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 
 @Controller
 @Tag(name = "Account")
@@ -31,11 +45,25 @@ import java.util.Objects;
 @Validated
 @SuppressWarnings("unused")
 public class AccountApi {
+    private static final String CONFIG_NAME = "user";
+
+    private static final String PICTURE_MAX_SIZE_KEY = "picture.maxSize";
+
+    private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
+
+    private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
+
+    private static final int DEFAULT_PICTURE_MAX_COUNT = 4;
+
     @Autowired
     private SysUserService userService;
 
     @Autowired
     private SysApiTokenService apiTokenService;
+
+    @Autowired
+    @Qualifier("mysqlConfigService")
+    private ConfigService configService;
 
     @Operation(
             operationId = "getUserBasic",
@@ -47,7 +75,7 @@ public class AccountApi {
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username) {
         User user = userService.loadByUsername(username);
-        return UserBasicInfoDTO.fromUser(user);
+        return UserBasicInfoDTO.from(user);
     }
 
     @Operation(
@@ -58,7 +86,7 @@ public class AccountApi {
     @GetMapping("/details")
     public UserDetailsDTO details() {
         User user = AccountUtils.currentUser();
-        return UserDetailsDTO.fromUser(user);
+        return UserDetailsDTO.from(user);
     }
 
     @Operation(
@@ -155,5 +183,37 @@ public class AccountApi {
     @GetMapping("/tokens")
     public List<String> listTokens() {
         return apiTokenService.list(AccountUtils.currentUser());
+    }
+
+    @Operation(
+            operationId = "uploadUserPicture",
+            summary = "Upload User Picture",
+            description = "Upload a picture of the user."
+    )
+    @PostMapping(value = "/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String uploadPicture(
+            HttpServletRequest request,
+            @Parameter(description = "User picture", style = ParameterStyle.FORM) @RequestParam("file") @NotNull
+            MultipartFile file) {
+        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
+        long maxSize = ConfigUtils.getLongOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
+        int maxCount = ConfigUtils.getIntOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
+
+        if (file.getSize() > maxSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/picture";
+            String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
+            if (StringUtils.isBlank(shareUrl)) {
+                shareUrl = FileUtils.getDefaultShareUrlForImage(request, dstPath);
+            }
+            return shareUrl;
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
     }
 }

@@ -8,5 +8,5 @@ import java.util.Set;
 public interface SysAuthorityService {
     Set<String> list(@NonNull User user);
 
-    boolean update(User user, Set<String> authorities);
+    boolean update(String userId, Set<String> authorities);
 }

@@ -14,6 +14,6 @@ public class PromptTemplateDTO {
     private ChatPromptContentDTO chatTemplate;
     @Schema(description = "Variables applied to the template, can be empty")
     private Map<String, Object> variables;
-    @Schema(description = "Prompt format: f_string (default) | jinja2 | mustache")
+    @Schema(description = "Prompt format: mustache (default) | f_string")
     private String format;
 }

@@ -66,7 +66,7 @@ public class AiApiKeyTest {
     @AfterEach
     public void cleanUp() {
         TestAiApiKeyUtils.cleanAiApiKeys(userId);
-        TestAccountUtils.deleteUserAndToken("31");
+        TestAccountUtils.deleteUserAndToken(userId);
     }
 
     @Test

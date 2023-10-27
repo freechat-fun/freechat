@@ -20,20 +20,23 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     @Schema(description = "Character identifier")
     private String characterId;
     @Schema(description = "Whether it is the default backend")
-    private Byte isDefault;
-    @Schema(description = "Prompt task identifier for chat")
-    private String chatPromptTaskId;
-    @Schema(description = "Prompt task identifier for chat example")
-    private String chatExamplePromptTaskId;
+    private Boolean isDefault;
     @Schema(description = "Prompt task identifier for greeting")
     private String greetingPromptTaskId;
     @Schema(description = "Prompt task identifier for experience")
     private String experiencePromptTaskId;
+    @Schema(description = "Max messages in the character's memory")
+    private Integer messageWindowSize;
+    @Schema(description = "Whether to forward messages to the character owner")
+    private Boolean forwardToUser;
 
-    public static CharacterBackendDetailsDTO fromCharacterBackend(CharacterBackend backend) {
+    public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (Objects.isNull(backend)) {
             return null;
         }
-        return CommonUtils.convert(backend, CharacterBackendDetailsDTO.class);
+        CharacterBackendDetailsDTO dto = CommonUtils.convert(backend, CharacterBackendDetailsDTO.class);
+        dto.setIsDefault(backend.getIsDefault() == (byte) 1);
+        dto.setForwardToUser(backend.getForwardToUser() == (byte) 1);
+        return dto;
     }
 }

@@ -63,12 +63,10 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
     }
 
     @Override
-    public List<String> delete(User user) {
-        return apiTokenMapper.select(c -> c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(user.getUserId())))
-                .stream()
-                .map(ApiToken::getToken)
-                .filter(this::delete)
-                .toList();
+    public boolean deleteByUserId(String userId) {
+        int rows = apiTokenMapper.delete(c ->
+                c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(userId)));
+        return rows > 0;
     }
 
     @Override

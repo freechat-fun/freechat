@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @Tag(name = "AI Service")
@@ -30,39 +33,19 @@ public class AiModelInfoApi {
     @Operation(
             operationId = "listAiModelInfo",
             summary = "List Models",
-            description = "Return all model information."
-    )
-    @GetMapping("/models")
-    public List<AiModelInfoDTO> list() {
-        return list(10, 0);
-    }
-
-    @Operation(
-            operationId = "listAiModelInfoBySize",
-            summary = "List Models by Limits",
-            description = "Return model information, return up to pageSize model information."
-    )
-    @GetMapping("/models/{pageSize}")
-    public List<AiModelInfoDTO> list(
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Integer pageSize) {
-        return list(pageSize, 0);
-    }
-
-    @Operation(
-            operationId = "listAiModelInfoByPage",
-            summary = "List Models by Page",
             description = "Return model information by page, return the pageNum page, up to pageSize model information."
     )
-    @GetMapping("/models/{pageSize}/{pageNum}")
+    @GetMapping(value = {
+            "/models/{pageSize}/{pageNum}",
+            "/models/{pageSize}",
+            "/models"})
     public List<AiModelInfoDTO> list(
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Integer pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") Integer pageNum) {
-        int limit = Objects.nonNull(pageSize) && pageSize > 0 ? pageSize : 0;
-        int offset = Objects.nonNull(pageSize) && Objects.nonNull(pageNum) && pageSize * pageNum > 0
-                ? pageSize * pageNum
-                : 0;
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum) {
+        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         return aiModelInfoService.list(limit, offset).stream()
-                .map(AiModelInfoDTO::fromAiModelInfo)
+                .map(AiModelInfoDTO::from)
                 .filter(Objects::nonNull)
                 .peek(modelInfo -> modelInfo.setRequestId(null))
                 .toList();
@@ -77,6 +60,6 @@ public class AiModelInfoApi {
     public AiModelInfoDTO info(
             @Parameter(description = "Model identifier") @PathVariable("modelId") @NotBlank
             String modelId) {
-        return AiModelInfoDTO.fromAiModelInfo(aiModelInfoService.get(modelId));
+        return AiModelInfoDTO.from(aiModelInfoService.get(modelId));
     }
 }

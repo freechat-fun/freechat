@@ -74,7 +74,7 @@ public class AiModelInfoServiceImpl implements AiModelInfoService {
     }
 
     @Override
-    public List<AiModelInfo> list(int limit, int offset) {
+    public List<AiModelInfo> list(long limit, long offset) {
         return aiModelInfoMapper.select(c -> {
             c.orderBy(AiApiKeyDynamicSqlSupport.name);
             if (limit > 0) {

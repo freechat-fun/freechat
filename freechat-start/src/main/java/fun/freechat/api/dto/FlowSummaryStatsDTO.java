@@ -26,25 +26,25 @@ public class FlowSummaryStatsDTO extends FlowSummaryDTO {
     @Schema(description = "Average score")
     private Long score;
 
-    public static FlowSummaryStatsDTO fromFlowInfoAndStats(
+    public static FlowSummaryStatsDTO from(
             Triple<FlowInfo, List<String>, List<String>> flowInfoTriple, InteractiveStats stats) {
         if (Objects.isNull(flowInfoTriple) || Objects.isNull(stats)) {
             return null;
         }
-        FlowSummaryStatsDTO flowSummaryStatsDTO =
+        FlowSummaryStatsDTO dto =
                 CommonUtils.convert(flowInfoTriple.getLeft(), FlowSummaryStatsDTO.class);
-        flowSummaryStatsDTO.setUsername(AccountUtils.userIdToName(flowInfoTriple.getLeft().getUserId()));
-        flowSummaryStatsDTO.setTags(flowInfoTriple.getMiddle());
-        flowSummaryStatsDTO.setAiModels(flowInfoTriple.getRight()
+        dto.setUsername(AccountUtils.userIdToName(flowInfoTriple.getLeft().getUserId()));
+        dto.setTags(flowInfoTriple.getMiddle());
+        dto.setAiModels(flowInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        flowSummaryStatsDTO.setViewCount(stats.getViewCount());
-        flowSummaryStatsDTO.setReferCount(stats.getReferCount());
-        flowSummaryStatsDTO.setRecommendCount(stats.getRecommendCount());
-        flowSummaryStatsDTO.setScoreCount(stats.getScoreCount());
-        flowSummaryStatsDTO.setScore(stats.getScore());
-        return flowSummaryStatsDTO;
+        dto.setViewCount(stats.getViewCount());
+        dto.setReferCount(stats.getReferCount());
+        dto.setRecommendCount(stats.getRecommendCount());
+        dto.setScoreCount(stats.getScoreCount());
+        dto.setScore(stats.getScore());
+        return dto;
     }
 }

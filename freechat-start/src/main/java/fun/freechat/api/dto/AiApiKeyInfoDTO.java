@@ -31,13 +31,13 @@ public class AiApiKeyInfoDTO extends TraceableDTO {
     @Schema(description = "Credential owner")
     private String username;
 
-    public static AiApiKeyInfoDTO fromAiApiKey(MaskedAiApiKey apiKey) {
+    public static AiApiKeyInfoDTO from(MaskedAiApiKey apiKey) {
         if (Objects.isNull(apiKey)) {
             return null;
         }
-        AiApiKeyInfoDTO apiKeyInfoDTO = CommonUtils.convert(apiKey, AiApiKeyInfoDTO.class);
-        apiKeyInfoDTO.setEnabled(apiKey.getEnabled() != (byte)0);
-        apiKeyInfoDTO.setUsername(AccountUtils.userIdToName(apiKey.getUserId()));
-        return apiKeyInfoDTO;
+        AiApiKeyInfoDTO dto = CommonUtils.convert(apiKey, AiApiKeyInfoDTO.class);
+        dto.setEnabled(apiKey.getEnabled() != (byte)0);
+        dto.setUsername(AccountUtils.userIdToName(apiKey.getUserId()));
+        return dto;
     }
 }

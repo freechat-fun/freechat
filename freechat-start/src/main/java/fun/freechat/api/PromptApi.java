@@ -115,7 +115,7 @@ public class PromptApi {
             PromptQueryDTO query) {
         return promptService.search(query.toPromptInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(PromptSummaryDTO::fromPromptInfo)
+                .map(PromptSummaryDTO::from)
                 .toList();
     }
 
@@ -152,7 +152,7 @@ public class PromptApi {
             PromptQueryDTO query) {
         return promptService.searchDetails(query.toPromptInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(PromptDetailsDTO::fromPromptInfo)
+                .map(PromptDetailsDTO::from)
                 .toList();
     }
 
@@ -515,7 +515,7 @@ public class PromptApi {
             @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @NotBlank
             String promptId) {
         var promptInfo = promptService.summary(promptId, AccountUtils.currentUser());
-        return PromptSummaryDTO.fromPromptInfo(promptInfo);
+        return PromptSummaryDTO.from(promptInfo);
     }
 
     @Operation(
@@ -528,7 +528,7 @@ public class PromptApi {
             @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @NotBlank
             String promptId) {
         var promptInfo = promptService.details(promptId, AccountUtils.currentUser());
-        return PromptDetailsDTO.fromPromptInfo(promptInfo);
+        return PromptDetailsDTO.from(promptInfo);
     }
 
     @Operation(
@@ -560,7 +560,7 @@ public class PromptApi {
             String name) {
         return promptService.listVersionsByName(name, AccountUtils.currentUser())
                 .stream()
-                .map(PromptItemForNameDTO::fromInfoItem)
+                .map(PromptItemForNameDTO::from)
                 .toList();
     }
 

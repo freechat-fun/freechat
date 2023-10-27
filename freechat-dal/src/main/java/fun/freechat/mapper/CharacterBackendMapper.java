@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterId, isDefault, chatPromptTaskId, chatExamplePromptTaskId, greetingPromptTaskId, experiencePromptTaskId);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterId, isDefault, chatPromptTaskId, greetingPromptTaskId, experiencePromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -43,9 +43,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="character_id", property="characterId", jdbcType=JdbcType.VARCHAR),
         @Result(column="is_default", property="isDefault", jdbcType=JdbcType.TINYINT),
         @Result(column="chat_prompt_task_id", property="chatPromptTaskId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="chat_example_prompt_task_id", property="chatExamplePromptTaskId", jdbcType=JdbcType.VARCHAR),
         @Result(column="greeting_prompt_task_id", property="greetingPromptTaskId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="experience_prompt_task_id", property="experiencePromptTaskId", jdbcType=JdbcType.VARCHAR)
+        @Result(column="experience_prompt_task_id", property="experiencePromptTaskId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="moderation_model_id", property="moderationModelId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="moderation_api_key_name", property="moderationApiKeyName", jdbcType=JdbcType.VARCHAR),
+        @Result(column="forward_to_user", property="forwardToUser", jdbcType=JdbcType.TINYINT),
+        @Result(column="message_window_size", property="messageWindowSize", jdbcType=JdbcType.INTEGER),
+        @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<CharacterBackend> selectMany(SelectStatementProvider selectStatement);
 
@@ -80,9 +84,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(characterId).toProperty("characterId")
             .map(isDefault).toProperty("isDefault")
             .map(chatPromptTaskId).toProperty("chatPromptTaskId")
-            .map(chatExamplePromptTaskId).toProperty("chatExamplePromptTaskId")
             .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
             .map(experiencePromptTaskId).toProperty("experiencePromptTaskId")
+            .map(moderationModelId).toProperty("moderationModelId")
+            .map(moderationApiKeyName).toProperty("moderationApiKeyName")
+            .map(forwardToUser).toProperty("forwardToUser")
+            .map(messageWindowSize).toProperty("messageWindowSize")
+            .map(moderationParams).toProperty("moderationParams")
         );
     }
 
@@ -95,9 +103,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(characterId).toProperty("characterId")
             .map(isDefault).toProperty("isDefault")
             .map(chatPromptTaskId).toProperty("chatPromptTaskId")
-            .map(chatExamplePromptTaskId).toProperty("chatExamplePromptTaskId")
             .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
             .map(experiencePromptTaskId).toProperty("experiencePromptTaskId")
+            .map(moderationModelId).toProperty("moderationModelId")
+            .map(moderationApiKeyName).toProperty("moderationApiKeyName")
+            .map(forwardToUser).toProperty("forwardToUser")
+            .map(messageWindowSize).toProperty("messageWindowSize")
+            .map(moderationParams).toProperty("moderationParams")
         );
     }
 
@@ -110,9 +122,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(characterId).toPropertyWhenPresent("characterId", row::getCharacterId)
             .map(isDefault).toPropertyWhenPresent("isDefault", row::getIsDefault)
             .map(chatPromptTaskId).toPropertyWhenPresent("chatPromptTaskId", row::getChatPromptTaskId)
-            .map(chatExamplePromptTaskId).toPropertyWhenPresent("chatExamplePromptTaskId", row::getChatExamplePromptTaskId)
             .map(greetingPromptTaskId).toPropertyWhenPresent("greetingPromptTaskId", row::getGreetingPromptTaskId)
             .map(experiencePromptTaskId).toPropertyWhenPresent("experiencePromptTaskId", row::getExperiencePromptTaskId)
+            .map(moderationModelId).toPropertyWhenPresent("moderationModelId", row::getModerationModelId)
+            .map(moderationApiKeyName).toPropertyWhenPresent("moderationApiKeyName", row::getModerationApiKeyName)
+            .map(forwardToUser).toPropertyWhenPresent("forwardToUser", row::getForwardToUser)
+            .map(messageWindowSize).toPropertyWhenPresent("messageWindowSize", row::getMessageWindowSize)
+            .map(moderationParams).toPropertyWhenPresent("moderationParams", row::getModerationParams)
         );
     }
 
@@ -151,9 +167,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(characterId).equalTo(row::getCharacterId)
                 .set(isDefault).equalTo(row::getIsDefault)
                 .set(chatPromptTaskId).equalTo(row::getChatPromptTaskId)
-                .set(chatExamplePromptTaskId).equalTo(row::getChatExamplePromptTaskId)
                 .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
-                .set(experiencePromptTaskId).equalTo(row::getExperiencePromptTaskId);
+                .set(experiencePromptTaskId).equalTo(row::getExperiencePromptTaskId)
+                .set(moderationModelId).equalTo(row::getModerationModelId)
+                .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
+                .set(forwardToUser).equalTo(row::getForwardToUser)
+                .set(messageWindowSize).equalTo(row::getMessageWindowSize)
+                .set(moderationParams).equalTo(row::getModerationParams);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -164,9 +184,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(characterId).equalToWhenPresent(row::getCharacterId)
                 .set(isDefault).equalToWhenPresent(row::getIsDefault)
                 .set(chatPromptTaskId).equalToWhenPresent(row::getChatPromptTaskId)
-                .set(chatExamplePromptTaskId).equalToWhenPresent(row::getChatExamplePromptTaskId)
                 .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
-                .set(experiencePromptTaskId).equalToWhenPresent(row::getExperiencePromptTaskId);
+                .set(experiencePromptTaskId).equalToWhenPresent(row::getExperiencePromptTaskId)
+                .set(moderationModelId).equalToWhenPresent(row::getModerationModelId)
+                .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
+                .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
+                .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
+                .set(moderationParams).equalToWhenPresent(row::getModerationParams);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -177,9 +201,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(characterId).equalTo(row::getCharacterId)
             .set(isDefault).equalTo(row::getIsDefault)
             .set(chatPromptTaskId).equalTo(row::getChatPromptTaskId)
-            .set(chatExamplePromptTaskId).equalTo(row::getChatExamplePromptTaskId)
             .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
             .set(experiencePromptTaskId).equalTo(row::getExperiencePromptTaskId)
+            .set(moderationModelId).equalTo(row::getModerationModelId)
+            .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
+            .set(forwardToUser).equalTo(row::getForwardToUser)
+            .set(messageWindowSize).equalTo(row::getMessageWindowSize)
+            .set(moderationParams).equalTo(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
     }
@@ -192,9 +220,13 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(characterId).equalToWhenPresent(row::getCharacterId)
             .set(isDefault).equalToWhenPresent(row::getIsDefault)
             .set(chatPromptTaskId).equalToWhenPresent(row::getChatPromptTaskId)
-            .set(chatExamplePromptTaskId).equalToWhenPresent(row::getChatExamplePromptTaskId)
             .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
             .set(experiencePromptTaskId).equalToWhenPresent(row::getExperiencePromptTaskId)
+            .set(moderationModelId).equalToWhenPresent(row::getModerationModelId)
+            .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
+            .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
+            .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
+            .set(moderationParams).equalToWhenPresent(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
     }

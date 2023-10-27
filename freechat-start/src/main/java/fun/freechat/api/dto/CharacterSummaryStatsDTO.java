@@ -25,20 +25,20 @@ public class CharacterSummaryStatsDTO extends CharacterSummaryDTO {
     @Schema(description = "Average score")
     private Long score;
 
-    public static CharacterSummaryStatsDTO fromCharacterInfoAndStats(
+    public static CharacterSummaryStatsDTO from(
             Pair<CharacterInfo, List<String>> characterInfoPair, InteractiveStats stats) {
         if (Objects.isNull(characterInfoPair) || Objects.isNull(stats)) {
             return null;
         }
-        CharacterSummaryStatsDTO characterSummaryStatsDTO =
+        CharacterSummaryStatsDTO dto =
                 CommonUtils.convert(characterInfoPair.getLeft(), CharacterSummaryStatsDTO.class);
-        characterSummaryStatsDTO.setUsername(AccountUtils.userIdToName(characterInfoPair.getLeft().getUserId()));
-        characterSummaryStatsDTO.setTags(characterInfoPair.getRight());
-        characterSummaryStatsDTO.setViewCount(stats.getViewCount());
-        characterSummaryStatsDTO.setReferCount(stats.getReferCount());
-        characterSummaryStatsDTO.setRecommendCount(stats.getRecommendCount());
-        characterSummaryStatsDTO.setScoreCount(stats.getScoreCount());
-        characterSummaryStatsDTO.setScore(stats.getScore());
-        return characterSummaryStatsDTO;
+        dto.setUsername(AccountUtils.userIdToName(characterInfoPair.getLeft().getUserId()));
+        dto.setTags(characterInfoPair.getRight());
+        dto.setViewCount(stats.getViewCount());
+        dto.setReferCount(stats.getReferCount());
+        dto.setRecommendCount(stats.getRecommendCount());
+        dto.setScoreCount(stats.getScoreCount());
+        dto.setScore(stats.getScore());
+        return dto;
     }
 }

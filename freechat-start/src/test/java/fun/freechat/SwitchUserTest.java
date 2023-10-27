@@ -57,10 +57,10 @@ public class SwitchUserTest {
     @AfterEach
     public void cleanUp() {
         TestOrgUtils.cleanTestTree();
-        TestAccountUtils.deleteUserAndToken("51");
-        TestAccountUtils.deleteUserAndToken("31");
-        TestAccountUtils.deleteUserAndToken("21");
-        TestAccountUtils.deleteUserAndToken("11");
+        TestAccountUtils.deleteUserAndTokenByUsername("51");
+        TestAccountUtils.deleteUserAndTokenByUsername("31");
+        TestAccountUtils.deleteUserAndTokenByUsername("21");
+        TestAccountUtils.deleteUserAndTokenByUsername("11");
     }
 
     @Test

@@ -1,7 +1,6 @@
 package fun.freechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.output.Response;
 import fun.freechat.api.dto.LlmResultDTO;
 import fun.freechat.api.dto.PromptAiParamDTO;
@@ -12,6 +11,7 @@ import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
+import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
@@ -69,7 +69,7 @@ public class PromptAiApi {
             summary = "Send Prompt",
             description = "Send the prompt to the AI service. Note that if the embedding model is called, the return is an embedding array, placed in the details field of the result; the original text is in the text field of the result."
     )
-    @PostMapping(value = "/send", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_EVENT_STREAM_VALUE})
+    @PostMapping("/send")
     @PreAuthorize("hasPermission(#p0, 'aiForPromptOp')")
     public LlmResultDTO send(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -99,12 +99,12 @@ public class PromptAiApi {
         AiModelInfo modelInfo = promptAiParam.getModelInfo();
         Map<String, Object> parameters = promptAiParam.getParameters();
 
-        Response<AiMessage> response =
+        Response<ChatMessage> response =
                 promptAiService.send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
         if (Objects.isNull(response)) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, prompt);
         }
-        return LlmResultDTO.fromResponse(response);
+        return LlmResultDTO.from(response);
     }
 
     @Operation(

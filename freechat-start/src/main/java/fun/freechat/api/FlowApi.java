@@ -113,7 +113,7 @@ public class FlowApi {
             FlowQueryDTO query) {
         return flowService.search(query.toFlowInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(FlowSummaryDTO::fromFlowInfo)
+                .map(FlowSummaryDTO::from)
                 .toList();
     }
 
@@ -151,7 +151,7 @@ public class FlowApi {
             FlowQueryDTO query) {
         return flowService.searchDetails(query.toFlowInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(FlowDetailsDTO::fromFlowInfo)
+                .map(FlowDetailsDTO::from)
                 .toList();
     }
 
@@ -518,7 +518,7 @@ public class FlowApi {
             @Parameter(description = "flowId to be obtained") @PathVariable("flowId") @NotBlank
             String flowId) {
         var flowInfo = flowService.summary(flowId, AccountUtils.currentUser());
-        return FlowSummaryDTO.fromFlowInfo(flowInfo);
+        return FlowSummaryDTO.from(flowInfo);
     }
 
     @Operation(
@@ -531,7 +531,7 @@ public class FlowApi {
             @Parameter(description = "FlowId to be obtained") @PathVariable("flowId") @NotBlank
             String flowId) {
         var flowInfo = flowService.details(flowId, AccountUtils.currentUser());
-        return FlowDetailsDTO.fromFlowInfo(flowInfo);
+        return FlowDetailsDTO.from(flowInfo);
     }
 
     @Operation(
@@ -563,7 +563,7 @@ public class FlowApi {
             String name) {
         return flowService.listVersionsByName(name, AccountUtils.currentUser())
                 .stream()
-                .map(FlowItemForNameDTO::fromInfoItem)
+                .map(FlowItemForNameDTO::from)
                 .toList();
     }
 

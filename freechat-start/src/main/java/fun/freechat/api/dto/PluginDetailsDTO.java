@@ -27,23 +27,23 @@ public class PluginDetailsDTO extends PluginSummaryDTO {
     @Schema(description = "Additional information, JSON format")
     private String ext;
 
-    public static PluginDetailsDTO fromPluginInfo(
+    public static PluginDetailsDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple) {
         if (Objects.isNull(pluginInfoTriple)) {
             return null;
         }
         PluginInfo pluginInfo = pluginInfoTriple.getLeft();
         Pair<String, String> functionInfo = FunctionFormatUtils.convert(pluginInfo);
-        PluginDetailsDTO pluginDetailsDTO = CommonUtils.convert(pluginInfo, PluginDetailsDTO.class);
-        pluginDetailsDTO.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
-        pluginDetailsDTO.setFunctionFormat(functionInfo.getLeft());
-        pluginDetailsDTO.setFunctionInfo(functionInfo.getRight());
-        pluginDetailsDTO.setTags(pluginInfoTriple.getMiddle());
-        pluginDetailsDTO.setAiModels(pluginInfoTriple.getRight()
+        PluginDetailsDTO dto = CommonUtils.convert(pluginInfo, PluginDetailsDTO.class);
+        dto.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
+        dto.setFunctionFormat(functionInfo.getLeft());
+        dto.setFunctionInfo(functionInfo.getRight());
+        dto.setTags(pluginInfoTriple.getMiddle());
+        dto.setAiModels(pluginInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        return pluginDetailsDTO;
+        return dto;
     }
 }

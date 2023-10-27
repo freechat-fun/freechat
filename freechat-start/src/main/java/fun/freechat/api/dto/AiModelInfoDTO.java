@@ -21,14 +21,14 @@ public class AiModelInfoDTO extends TraceableDTO {
     @Schema(description = "Model type: text2text | text2chat | text2image | embedding | moderation")
     private String type;
 
-    public static AiModelInfoDTO fromAiModelInfo(AiModelInfo aiModelInfo) {
+    public static AiModelInfoDTO from(AiModelInfo aiModelInfo) {
         if (Objects.isNull(aiModelInfo)) {
             return null;
         }
         return CommonUtils.convert(aiModelInfo, AiModelInfoDTO.class);
     }
 
-    public static AiModelInfoDTO fromModelId(String modelId) {
+    public static AiModelInfoDTO from(String modelId) {
         AiModelInfoDTO dto =  new AiModelInfoDTO();
         dto.setModelId(modelId);
         dto.setDescription("Not yet supported.");

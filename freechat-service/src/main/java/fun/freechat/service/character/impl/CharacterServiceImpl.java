@@ -4,12 +4,13 @@ import fun.freechat.mapper.*;
 import fun.freechat.model.*;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
-import fun.freechat.service.character.CharacterChatService;
+import fun.freechat.service.character.CharacterBackendEvent;
 import fun.freechat.service.character.CharacterInfoDraft;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
+import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
@@ -33,6 +34,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -53,6 +55,13 @@ public class CharacterServiceImpl implements CharacterService {
 
     final static String DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_default_backend_' + ";
 
+    final static String BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX = CACHE_KEY_PREFIX + "_backend_character_id_";
+
+    final static String BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX = "'" + BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + "' + ";
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
@@ -61,9 +70,6 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Autowired
     private CharacterBackendMapper characterBackendMapper;
-
-    @Autowired
-    private CharacterChatService characterChatService;
 
     @Autowired
     private TagMapper tagMapper;
@@ -442,6 +448,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
         int rows = characterInfoMapper.delete(c -> c.where(Info.characterId, isEqualTo(characterId))
                 .and(Info.userId, isEqualTo(user.getUserId())));
         if (rows > 0) {
+            characterBackendMapper.delete(c ->
+                    c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId)));
             tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(characterId))
                     .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text())));
             interactiveStatsMapper.delete(c ->
@@ -452,6 +460,50 @@ select distinct c.user_id, c.character_id, c.visibility... \
                             .and(InteractiveStatsScoreDetailsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text())));
         }
         return rows > 0;
+    }
+
+    @Override
+    public List<String> delete(User user) {
+        var statement = select(Info.characterId)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<String> ids = characterInfoMapper.selectMany(statement)
+                .stream()
+                .map(CharacterInfo::getCharacterId)
+                .toList();
+
+        LinkedList<String> deletedIds = new LinkedList<>();
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            for (String id : ids) {
+                if (delete(id, user)) {
+                    deletedIds.add(id);
+                }
+            }
+            session.commit();
+            CacheUtils.longPeriodCacheEvict(deletedIds.stream().map(id -> CACHE_KEY_PREFIX + id).toList());
+        } catch (Exception e) {
+            log.error("Failed to delete characters", e);
+            deletedIds.clear();
+            session.rollback();
+        } finally {
+            session.close();
+        }
+
+        return deletedIds;
+    }
+
+    @Override
+    @LongPeriodCache
+    public CharacterInfo summary(String characterId) {
+        var statement = select(Info.summaryColumns())
+                .from(Info.table)
+                .where(Info.characterId, isEqualTo(characterId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return characterInfoMapper.selectOne(statement).orElse(null);
     }
 
     @Override
@@ -575,21 +627,20 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
             if (CollectionUtils.isNotEmpty(infoTriple.getRight())) {
                 Set<CharacterBackend> backendSet = new HashSet<>(infoTriple.getRight());
+                List<String> cacheKeys = new ArrayList<>(backendSet.size());
                 for (CharacterBackend backend : backendSet) {
-                    int rows = characterBackendMapper.insert(new CharacterBackend()
+                    int rows = characterBackendMapper.updateByPrimaryKeySelective(backend
                             .withCharacterId(publishedInfoId)
-                            .withGmtCreate(info.getGmtCreate())
-                            .withGmtModified(info.getGmtModified())
-                            .withIsDefault(backend.getIsDefault())
-                            .withChatPromptTaskId(backend.getChatPromptTaskId())
-                            .withChatExamplePromptTaskId(backend.getChatExamplePromptTaskId())
-                            .withGreetingPromptTaskId(backend.getGreetingPromptTaskId())
-                            .withExperiencePromptTaskId(backend.getExperiencePromptTaskId()));
+                            .withGmtModified(info.getGmtModified()));
+                    cacheKeys.add(BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + backend.getBackendId());
                     if (rows <= 0) {
                         info.setCharacterId(null);
                         throw new RuntimeException("Publish backend from " + backend.getBackendId() + " failed!");
                     }
+                    eventPublisher.publishEvent(
+                            new CharacterBackendEvent(user.getUserId(), backend.getBackendId()));
                 }
+                CacheUtils.longPeriodCacheEvict(cacheKeys);
             }
 
             info = new CharacterInfo()
@@ -610,7 +661,6 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 );
             }
 
-            characterChatService.replaceCharacter(characterId, publishedInfoId);
             session.commit();
         } catch (Exception e) {
             log.error("Failed to publish character", e);
@@ -775,6 +825,19 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
+    public List<String> listBackendIds(String characterId) {
+        var statement = select(CharacterBackendDynamicSqlSupport.backendId)
+                .from(CharacterBackendDynamicSqlSupport.characterBackend)
+                .where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return characterBackendMapper.selectMany(statement)
+                .stream()
+                .map(CharacterBackend::getBackendId)
+                .toList();
+    }
+
+    @Override
     @LongPeriodCache
     public String getBackendOwner(String characterBackendId) {
         String characterId = getBackendCharacterId(characterBackendId);
@@ -785,7 +848,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    @LongPeriodCache
+    @LongPeriodCache(keyBy = BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX + "#p0")
     public String getBackendCharacterId(String characterBackendId) {
         var statement = select(CharacterBackendDynamicSqlSupport.characterId)
                 .from(CharacterBackendDynamicSqlSupport.characterBackend)
@@ -810,6 +873,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
         public static final SqlColumn<String> lang = CharacterInfoDynamicSqlSupport.lang;
         public static final SqlColumn<Integer> version = CharacterInfoDynamicSqlSupport.version;
         public static final SqlColumn<String> description = CharacterInfoDynamicSqlSupport.description;
+        public static final SqlColumn<String> gender = CharacterInfoDynamicSqlSupport.gender;
         public static final SqlColumn<String> profile = CharacterInfoDynamicSqlSupport.profile;
         public static final SqlColumn<String> greeting = CharacterInfoDynamicSqlSupport.greeting;
         public static final SqlColumn<String> chatStyle = CharacterInfoDynamicSqlSupport.chatStyle;
@@ -829,6 +893,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.name,
                     Info.avatar,
                     Info.picture,
+                    Info.gender,
                     Info.description,
                     Info.lang
             );

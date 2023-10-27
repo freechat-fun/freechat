@@ -85,6 +85,6 @@ public class PromptTaskApi {
     public PromptTaskDetailsDTO get(
             @Parameter(description = "The promptTaskId to be queried") @PathVariable("promptTaskId") @NotBlank
             String promptTaskId) {
-        return PromptTaskDetailsDTO.fromPromptTask(promptTaskService.get(promptTaskId));
+        return PromptTaskDetailsDTO.from(promptTaskService.get(promptTaskId));
     }
 }

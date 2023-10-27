@@ -5,6 +5,7 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Date;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class UserDetailsDTO extends TraceableDTO {
     private Date passwordExpiresAt;
     private String address;
 
-    public static UserDetailsDTO fromUser(User user) {
+    public static UserDetailsDTO from(User user) {
         if (Objects.isNull(user)) {
             return null;
         }
@@ -48,8 +49,8 @@ public class UserDetailsDTO extends TraceableDTO {
     public User toUser() {
         User user = CommonUtils.convert(this, User.class);
         user.setUserId(AccountUtils.userNameToId(getUsername()));
-        user.setLocked(getLocked() ? (byte)1 : (byte)0);
-        user.setEnabled(getEnabled() ? (byte)1 : (byte)0);
+        user.setLocked(BooleanUtils.isTrue(getLocked()) ? (byte)1 : (byte)0);
+        user.setEnabled(BooleanUtils.isNotFalse(getEnabled()) ? (byte)1 : (byte)0);
         return user;
     }
 }

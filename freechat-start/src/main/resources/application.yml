@@ -25,9 +25,16 @@ auth:
     autoRegister: true
   aiApiKey:
     limits: 3
-cache:
-  redisson:
-    config: classpath:/cache-config.yml
+chat:
+  memory:
+    storeType: mysql
+    maxMessageSize: 10000
+    defaultWindowSize: 100
+    minWindowSize: 50
+    maxWindowSize: 1000
+file:
+  storeType: local
+  basePath: ${APP_HOME}/data
 redis:
   mode: single
   datasource:
@@ -58,20 +65,20 @@ spring:
       threadNamePrefix: default-task-
       pool:
         coreSize: 2
-        maxSize: 8
+        maxSize: 16
         keepAlive: 60s
-        queueCapacity: 256
+        queueCapacity: 64
         allowCoreThreadTimeout: true
       shutdown:
         awaitTermination: true
         awaitTerminationPeriod: 60s
-    aiServiceExecution:
-      threadNamePrefix: ai-service-task-
+    eventExecution:
+      threadNamePrefix: event-task-
       pool:
-        coreSize: 4
-        maxSize: 16
+        coreSize: 1
+        maxSize: 4
         keepAlive: 60s
-        queueCapacity: 64
+        queueCapacity: 1024
         allowCoreThreadTimeout: true
       shutdown:
         awaitTermination: true

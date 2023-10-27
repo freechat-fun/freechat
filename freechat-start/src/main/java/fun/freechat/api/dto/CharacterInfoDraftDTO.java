@@ -21,7 +21,7 @@ public class CharacterInfoDraftDTO {
     @Schema(description = "Character experience")
     private String experience;
 
-    public static CharacterInfoDraftDTO fromCharacterInfoDraft(CharacterInfoDraft draft) {
+    public static CharacterInfoDraftDTO from(CharacterInfoDraft draft) {
         if (Objects.isNull(draft)) {
             return null;
         }

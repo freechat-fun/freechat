@@ -53,7 +53,7 @@ public class CommonUtils {
                     return;
                 }
                 try {
-                    LlmResultDTO result = LlmResultDTO.fromResponse(response);
+                    LlmResultDTO result = LlmResultDTO.from(response);
                     result.setText(null);
                     result.setRequestId(null);
                     sseEmitter.send(result);

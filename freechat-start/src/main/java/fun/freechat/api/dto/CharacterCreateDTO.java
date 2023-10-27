@@ -5,6 +5,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.character.CharacterInfoDraft;
+import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,6 +34,8 @@ public class CharacterCreateDTO {
     private String avatar;
     @Schema(description = "Character picture url")
     private String picture;
+    @Schema(description = "Character gender: male | female | non_human | unknown")
+    private String gender;
     @Schema(description = "Character profile")
     private String profile;
     @Schema(description = "Character greeting")
@@ -43,7 +46,7 @@ public class CharacterCreateDTO {
     private String chatExample;
     @Schema(description = "Character experience")
     private String experience;
-    @Schema(description = "Character language: en (default) | zh_CN | ...")
+    @Schema(description = "Character language: English | Chinese (Simplified) | ...")
     private String lang;
     @Schema(description = "Additional information, JSON format")
     private String ext;
@@ -58,6 +61,7 @@ public class CharacterCreateDTO {
         characterInfo.setVersion(0);
         characterInfo.setUserId(
                 Objects.requireNonNull(AccountUtils.currentUser()).getUserId());
+        characterInfo.setGender(GenderType.of(getGender()).text());
         characterInfo.setVisibility(Visibility.of(getVisibility()).text());
         if (Objects.nonNull(getDraft())) {
             CharacterInfoDraft draft = getDraft().toCharacterInfoDraft();

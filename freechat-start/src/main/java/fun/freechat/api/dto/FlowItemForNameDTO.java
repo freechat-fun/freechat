@@ -17,11 +17,11 @@ public class FlowItemForNameDTO {
     @Schema(description = "Interactive statistics information")
     InteractiveStatsDTO stats;
 
-    public static FlowItemForNameDTO fromInfoItem(Triple<String, Integer, InteractiveStats> infoItem) {
+    public static FlowItemForNameDTO from(Triple<String, Integer, InteractiveStats> infoItem) {
         FlowItemForNameDTO dto = new FlowItemForNameDTO();
         dto.setFlowId(infoItem.getLeft());
         dto.setVersion(infoItem.getMiddle());
-        InteractiveStatsDTO stats = InteractiveStatsDTO.fromInteractiveStats(infoItem.getRight());
+        InteractiveStatsDTO stats = InteractiveStatsDTO.from(infoItem.getRight());
         if (Objects.nonNull(stats)) {
             stats.setRequestId(null);
             stats.setGmtCreate(null);

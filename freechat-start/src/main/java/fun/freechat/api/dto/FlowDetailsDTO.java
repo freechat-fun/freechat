@@ -25,20 +25,20 @@ public class FlowDetailsDTO extends FlowSummaryDTO {
     @Schema(description = "Draft content")
     private String draft;
 
-    public static FlowDetailsDTO fromFlowInfo(
+    public static FlowDetailsDTO from(
             Triple<FlowInfo, List<String>, List<String>> flowInfoTriple) {
         if (Objects.isNull(flowInfoTriple)) {
             return null;
         }
-        FlowDetailsDTO flowDetailsDTO =
+        FlowDetailsDTO dto =
                 CommonUtils.convert(flowInfoTriple.getLeft(), FlowDetailsDTO.class);
-        flowDetailsDTO.setUsername(AccountUtils.userIdToName(flowInfoTriple.getLeft().getUserId()));
-        flowDetailsDTO.setTags(flowInfoTriple.getMiddle());
-        flowDetailsDTO.setAiModels(flowInfoTriple.getRight()
+        dto.setUsername(AccountUtils.userIdToName(flowInfoTriple.getLeft().getUserId()));
+        dto.setTags(flowInfoTriple.getMiddle());
+        dto.setAiModels(flowInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        return flowDetailsDTO;
+        return dto;
     }
 }

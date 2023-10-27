@@ -32,32 +32,32 @@ public class PromptDetailsDTO extends PromptSummaryDTO {
     @Schema(description = "Draft content")
     private String draft;
 
-    public static PromptDetailsDTO fromPromptInfo(
+    public static PromptDetailsDTO from(
             Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
         if (Objects.isNull(promptInfoTriple)) {
             return null;
         }
         PromptInfo info = promptInfoTriple.getLeft();
-        PromptDetailsDTO promptDetailsDTO =
+        PromptDetailsDTO dto =
                 CommonUtils.convert(info, PromptDetailsDTO.class);
-        promptDetailsDTO.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
+        dto.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
         if (PromptType.of(info.getType()) == PromptType.CHAT) {
             try {
                 ChatPromptContentDTO chatPrompt =
                         InfoUtils.defaultMapper().readValue(info.getTemplate(), ChatPromptContentDTO.class);
-                promptDetailsDTO.setChatTemplate(chatPrompt);
-                promptDetailsDTO.setTemplate(null);
+                dto.setChatTemplate(chatPrompt);
+                dto.setTemplate(null);
             } catch (JsonProcessingException e) {
                 log.error("Failed to parse chat prompt: {}", info.getTemplate(), e);
-                promptDetailsDTO.setType(PromptType.STRING.text());
+                dto.setType(PromptType.STRING.text());
             }
         }
-        promptDetailsDTO.setTags(promptInfoTriple.getMiddle());
-        promptDetailsDTO.setAiModels(promptInfoTriple.getRight()
+        dto.setTags(promptInfoTriple.getMiddle());
+        dto.setAiModels(promptInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        return promptDetailsDTO;
+        return dto;
     }
 }

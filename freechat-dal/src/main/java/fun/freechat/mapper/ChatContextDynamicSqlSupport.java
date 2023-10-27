@@ -23,10 +23,19 @@ public final class ChatContextDynamicSqlSupport {
     public static final SqlColumn<String> userId = chatContext.userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> characterId = chatContext.characterId;
+    public static final SqlColumn<String> userNickname = chatContext.userNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> context = chatContext.context;
+    public static final SqlColumn<String> characterNickname = chatContext.characterNickname;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> backendId = chatContext.backendId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> userProfile = chatContext.userProfile;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> ext = chatContext.ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class ChatContext extends AliasableSqlTable<ChatContext> {
@@ -38,9 +47,15 @@ public final class ChatContextDynamicSqlSupport {
 
         public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> characterId = column("character_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> userNickname = column("user_nickname", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> context = column("context", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> characterNickname = column("character_nickname", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> backendId = column("backend_id", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> userProfile = column("user_profile", JDBCType.LONGVARCHAR);
+
+        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
 
         public ChatContext() {
             super("chat_context", ChatContext::new);

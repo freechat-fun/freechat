@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class ChatPromptContent {
     private String system;
-    private ChatMessage messageToBeSent;
+    private ChatMessage messagesToSend;
     private List<ChatMessage> messages;
     private String format;
 }

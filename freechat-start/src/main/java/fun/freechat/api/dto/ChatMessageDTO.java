@@ -1,10 +1,12 @@
 package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fun.freechat.service.ai.message.ChatMessage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -22,4 +24,18 @@ public class ChatMessageDTO {
     private ChatFunctionCallDTO functionCall;
     @Schema(description = "Creation time")
     private Date gmtCreate;
+
+    public static ChatMessageDTO from(ChatMessage message) {
+        if (Objects.isNull(message)) {
+            return null;
+        }
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setRole(message.getRole().text());
+        dto.setName(message.getName());
+        dto.setContent(message.getContent());
+        dto.setGmtCreate(message.getGmtCreate());
+        dto.setFunctionCall(ChatFunctionCallDTO.from(message.getFunctionCall()));
+        return dto;
+    }
 }

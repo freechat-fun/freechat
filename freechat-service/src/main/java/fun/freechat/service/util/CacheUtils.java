@@ -4,13 +4,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
 
+@Component
 @SuppressWarnings("unused")
 public class CacheUtils implements ApplicationContextAware {
+    public static final String IN_PROCESS_CACHE_MANAGER = "inProcessCacheManager";
+
     public static final String LONG_PERIOD_CACHE_NAME = "freechatLongPeriodCache";
 
     public static final String MIDDLE_PERIOD_CACHE_NAME = "freechatMiddlePeriodCache";

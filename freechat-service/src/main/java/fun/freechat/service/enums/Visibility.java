@@ -12,12 +12,12 @@ public enum Visibility {
 
     public static Visibility of(String text) {
         if (StringUtils.isBlank(text)) {
-            return PRIVATE;
+            return PUBLIC;
         }
         try {
             return Visibility.valueOf(text.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return PRIVATE;
+            return PUBLIC;
         }
     }
 

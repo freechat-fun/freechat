@@ -4,6 +4,7 @@ import fun.freechat.model.PromptInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.prompt.PromptService;
+import fun.freechat.service.prompt.PromptTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -12,7 +13,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 public class TestPromptUtils implements ApplicationContextAware {
     private static PromptService promptService;
+
+    private static PromptTaskService promptTaskService;
 
     public static String createPrompt(String userId, String template, String draft) {
         Date now = new Date();
@@ -48,8 +54,20 @@ public class TestPromptUtils implements ApplicationContextAware {
         promptService.delete(promptId, user);
     }
 
+    public static void deletePrompts(String userId) {
+        if (StringUtils.isBlank(userId)) {
+            return;
+        }
+        User user = new User().withUserId(userId);
+        List<String> promptIds = promptService.delete(user);
+        Optional.ofNullable(promptIds)
+                .orElse(Collections.emptyList())
+                .forEach(promptTaskService::deleteByPromptId);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         promptService = applicationContext.getBean(PromptService.class);
+        promptTaskService = applicationContext.getBean(PromptTaskService.class);
     }
 }

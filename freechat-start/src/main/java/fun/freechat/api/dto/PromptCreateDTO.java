@@ -35,7 +35,7 @@ public class PromptCreateDTO {
     private String template;
     @Schema(description = "Prompt chat template content")
     private ChatPromptContentDTO chatTemplate;
-    @Schema(description = "Prompt format: f_string (default) | jinja2 | mustache")
+    @Schema(description = "Prompt format: mustache (default) | f_string")
     private String format;
     @Schema(description = "Prompt language: en (default) | zh_CN | ...")
     private String lang;

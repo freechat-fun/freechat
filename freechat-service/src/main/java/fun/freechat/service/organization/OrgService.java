@@ -5,6 +5,9 @@ import fun.freechat.util.graph.Graph;
 import java.util.Collection;
 
 public interface OrgService {
+    default Graph<String> getOwners(String userId) {
+        return getOwners(userId, false);
+    }
     default Graph<String> getSubordinates(String userId) {
         return getSubordinates(userId, false);
     }

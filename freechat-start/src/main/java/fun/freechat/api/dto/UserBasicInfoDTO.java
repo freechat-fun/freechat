@@ -17,7 +17,7 @@ public class UserBasicInfoDTO extends TraceableDTO{
     @Schema(description = "Avatar")
     private String picture;
 
-    public static UserBasicInfoDTO fromUser(User user) {
+    public static UserBasicInfoDTO from(User user) {
         if (Objects.isNull(user)) {
             return null;
         }

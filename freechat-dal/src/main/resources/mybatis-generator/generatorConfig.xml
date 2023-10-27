@@ -57,6 +57,10 @@
 
         <table tableName="chat_context" />
 
+        <table tableName="chat_history">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+
         <table tableName="tag">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

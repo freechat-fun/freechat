@@ -1,12 +1,10 @@
 package fun.freechat.api;
 
-import fun.freechat.api.dto.FlowSummaryStatsDTO;
-import fun.freechat.api.dto.InteractiveStatsDTO;
-import fun.freechat.api.dto.PluginSummaryStatsDTO;
-import fun.freechat.api.dto.PromptSummaryStatsDTO;
+import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.InteractiveStatsScoreDetails;
+import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.flow.FlowService;
@@ -18,7 +16,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import org.apache.commons.lang3.tuple.Pair;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
@@ -46,17 +45,8 @@ public class InteractiveStatsApi {
     @Autowired
     private PluginService pluginService;
 
-    private Pair<Long, Long> pageToLimitAndOffset(Long pageSize, Long pageNum) {
-        if (Objects.isNull(pageSize) || pageSize <= 0L) {
-            pageSize = 10L;
-        } else if (pageSize > 100L) {
-            pageSize = 100L;
-        }
-        if (Objects.isNull(pageNum) || pageNum < 0L) {
-            pageNum = 0L;
-        }
-        return Pair.of(pageSize, pageSize * pageNum);
-    }
+    @Autowired
+    private CharacterService characterService;
 
     @Operation(
             operationId = "addStatistic",
@@ -114,7 +104,7 @@ public class InteractiveStatsApi {
     public InteractiveStatsDTO get(
             @Parameter(description = "Resource type: prompt | flow | plugin") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
-        return InteractiveStatsDTO.fromInteractiveStats(
+        return InteractiveStatsDTO.from(
                 interactiveStatsService.get(InfoType.of(infoType), infoId));
     }
 
@@ -138,18 +128,20 @@ public class InteractiveStatsApi {
             summary = "List Prompts by Statistics",
             description = "List prompts based on statistics, including interactive statistical data."
     )
-    @GetMapping("/stats/prompts/by/{statsType}/{pageSize}/{pageNum}")
+    @GetMapping(value = {
+            "/stats/prompts/by/{statsType}/{pageSize}/{pageNum}",
+            "/stats/prompts/by/{statsType}/{pageSize}",
+            "/stats/prompts/by/{statsType}"})
     public List<PromptSummaryStatsDTO> listPrompts(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Long pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") Long pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
-        Pair<Long, Long> limitAndOffset = pageToLimitAndOffset(pageSize, pageNum);
+        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
-                InfoType.PROMPT, StatsType.of(statsType),
-                limitAndOffset.getLeft(), limitAndOffset.getRight(),
-                desc);
+                InfoType.PROMPT, StatsType.of(statsType), limit, offset, desc);
         HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
         for (InteractiveStats stats : statsList) {
             statsMap.put(stats.getReferId(), stats);
@@ -158,7 +150,7 @@ public class InteractiveStatsApi {
         List<PromptSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getPromptId());
-            PromptSummaryStatsDTO dto = PromptSummaryStatsDTO.fromPromptInfoAndStats(summary, stats);
+            PromptSummaryStatsDTO dto = PromptSummaryStatsDTO.from(summary, stats);
             if (Objects.nonNull(dto)) {
                 dtoList.add(dto);
             }
@@ -171,18 +163,20 @@ public class InteractiveStatsApi {
             summary = "List Flows by Statistics",
             description = "List flows based on statistics, including interactive statistical data."
     )
-    @GetMapping("/stats/flows/by/{statsType}/{pageSize}/{pageNum}")
+    @GetMapping(value = {
+            "/stats/flows/by/{statsType}/{pageSize}/{pageNum}",
+            "/stats/flows/by/{statsType}/{pageSize}",
+            "/stats/flows/by/{statsType}"})
     public List<FlowSummaryStatsDTO> listFlows(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Long pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") Long pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
-        Pair<Long, Long> limitAndOffset = pageToLimitAndOffset(pageSize, pageNum);
+        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
-                InfoType.FLOW, StatsType.of(statsType),
-                limitAndOffset.getLeft(), limitAndOffset.getRight(),
-                desc);
+                InfoType.FLOW, StatsType.of(statsType), limit, offset, desc);
         HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
         for (InteractiveStats stats : statsList) {
             statsMap.put(stats.getReferId(), stats);
@@ -191,7 +185,7 @@ public class InteractiveStatsApi {
         List<FlowSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getFlowId());
-            FlowSummaryStatsDTO dto = FlowSummaryStatsDTO.fromFlowInfoAndStats(summary, stats);
+            FlowSummaryStatsDTO dto = FlowSummaryStatsDTO.from(summary, stats);
             if (Objects.nonNull(dto)) {
                 dtoList.add(dto);
             }
@@ -204,18 +198,20 @@ public class InteractiveStatsApi {
             summary = "List Plugins by Statistics",
             description = "List plugins based on statistics, including interactive statistical data."
     )
-    @GetMapping("/stats/plugins/by/{statsType}/{pageSize}/{pageNum}")
+    @GetMapping(value = {
+            "/stats/plugins/by/{statsType}/{pageSize}/{pageNum}",
+            "/stats/plugins/by/{statsType}/{pageSize}",
+            "/stats/plugins/by/{statsType}"})
     public List<PluginSummaryStatsDTO> listPlugins(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Long pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") Long pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
-        Pair<Long, Long> limitAndOffset = pageToLimitAndOffset(pageSize, pageNum);
+        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
-                InfoType.PLUGIN, StatsType.of(statsType),
-                limitAndOffset.getLeft(), limitAndOffset.getRight(),
-                desc);
+                InfoType.PLUGIN, StatsType.of(statsType), limit, offset, desc);
         HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
         for (InteractiveStats stats : statsList) {
             statsMap.put(stats.getReferId(), stats);
@@ -224,7 +220,42 @@ public class InteractiveStatsApi {
         List<PluginSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getPluginId());
-            PluginSummaryStatsDTO dto = PluginSummaryStatsDTO.fromPluginInfoAndStats(summary, stats);
+            PluginSummaryStatsDTO dto = PluginSummaryStatsDTO.from(summary, stats);
+            if (Objects.nonNull(dto)) {
+                dtoList.add(dto);
+            }
+        }
+        return dtoList;
+    }
+
+    @Operation(
+            operationId = "listCharactersByStatistic",
+            summary = "List Characters by Statistics",
+            description = "List characters based on statistics, including interactive statistical data."
+    )
+    @GetMapping(value = {
+            "/stats/characters/by/{statsType}/{pageSize}/{pageNum}",
+            "/stats/characters/by/{statsType}/{pageSize}",
+            "/stats/characters/by/{statsType}"})
+    public List<CharacterSummaryStatsDTO> listCharacters(
+            @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
+            @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
+        boolean desc = !"1".equals(asc);
+        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
+        List<InteractiveStats> statsList = interactiveStatsService.list(
+                InfoType.CHARACTER, StatsType.of(statsType), limit, offset, desc);
+        HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        for (InteractiveStats stats : statsList) {
+            statsMap.put(stats.getReferId(), stats);
+        }
+        var summaries = characterService.summary(statsMap.keySet(), AccountUtils.currentUser());
+        List<CharacterSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
+        for (var summary : summaries) {
+            InteractiveStats stats = statsMap.get(summary.getLeft().getCharacterId());
+            CharacterSummaryStatsDTO dto = CharacterSummaryStatsDTO.from(summary, stats);
             if (Objects.nonNull(dto)) {
                 dtoList.add(dto);
             }

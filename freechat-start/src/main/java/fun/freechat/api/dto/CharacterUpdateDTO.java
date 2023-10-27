@@ -5,6 +5,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.character.CharacterInfoDraft;
+import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -23,6 +24,9 @@ public class CharacterUpdateDTO extends CharacterCreateDTO {
         characterInfo.setCharacterId(characterId);
         characterInfo.setUserId(
                 Objects.requireNonNull(AccountUtils.currentUser()).getUserId());
+        if (Objects.nonNull(getGender())) {
+            characterInfo.setGender(GenderType.of(getGender()).text());
+        }
         if (Objects.nonNull(getDraft())) {
             CharacterInfoDraft draft = getDraft().toCharacterInfoDraft();
             try {

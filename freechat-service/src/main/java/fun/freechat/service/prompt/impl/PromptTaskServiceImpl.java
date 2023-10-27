@@ -1,5 +1,6 @@
 package fun.freechat.service.prompt.impl;
 
+import fun.freechat.mapper.PromptTaskDynamicSqlSupport;
 import fun.freechat.mapper.PromptTaskMapper;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.cache.LongPeriodCache;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
+
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 @Service
 @SuppressWarnings("unused")
@@ -54,6 +57,13 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_PREFIX + "#p0")
     public boolean delete(String taskId) {
         int rows = promptTaskMapper.deleteByPrimaryKey(taskId);
+        return rows > 0;
+    }
+
+    @Override
+    public boolean deleteByPromptId(String promptId) {
+        int rows = promptTaskMapper.delete(c ->
+                c.where(PromptTaskDynamicSqlSupport.promptId, isEqualTo(promptId)));
         return rows > 0;
     }
 

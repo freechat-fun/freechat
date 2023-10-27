@@ -3,11 +3,14 @@ package fun.freechat.api.access;
 import fun.freechat.api.dto.PromptAiParamDTO;
 import fun.freechat.api.dto.PromptRefDTO;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.character.ChatContextService;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.flow.FlowService;
+import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
@@ -41,7 +44,11 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
 
     private CharacterService characterService;
 
+    private ChatContextService chatContextService;
+
     private AiApiKeyService aiApiKeyService;
+
+    private OrgService orgService;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetObject, Object permission) {
@@ -67,6 +74,25 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         currentUser.getUserId().equals(getCharacterService().getOwner(infoId));
                 case "characterBackendDefaultOp" -> allow = targetObject instanceof String backendId &&
                         currentUser.getUserId().equals(getCharacterService().getBackendOwner(backendId));
+                case "chatDefaultOp" -> allow = targetObject instanceof String chatId &&
+                        currentUser.getUserId().equals(getChatContextService().getOwner(chatId));
+                case "chatCreateOp" -> {
+                    String characterId  = getCharacterService().getBackendCharacterId((String) targetObject);
+                    if (StringUtils.isBlank(characterId)) {
+                        allow = false;
+                    } else {
+                        String chatUserId = currentUser.getUserId();
+                        CharacterInfo summary = getCharacterService().summary(characterId);
+                        String characterOwnerId = summary.getUserId();
+                        Visibility visibility = Visibility.of(summary.getVisibility());
+                        allow = chatUserId.equals(characterOwnerId) ||
+                                visibility == Visibility.PUBLIC;
+                        if (!allow && visibility == Visibility.PUBLIC_ORG) {
+                                allow = getOrgService().getOwners(characterOwnerId).contains(chatUserId) ||
+                                        getOrgService().getSubordinates(characterOwnerId).contains(chatUserId);
+                        }
+                    }
+                }
                 case "characterBackendCreateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
@@ -75,7 +101,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     ownerId = getCharacterService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
                     if (StringUtils.isNotBlank(targets[1])) {
-                        allow = allow && currentUser.getUserId().equals(getPromptService().getOwner(targets[1]));
+                        allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
                 case "characterBackendUpdateOp" -> {
@@ -86,7 +112,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     ownerId = getCharacterService().getBackendOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
                     if (StringUtils.isNotBlank(targets[1])) {
-                        allow = allow && currentUser.getUserId().equals(getPromptService().getOwner(targets[1]));
+                        allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
                 case "promptCreateOp", "flowCreateOp", "pluginCreateOp", "characterCreateOp" ->
@@ -250,11 +276,25 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
         return characterService;
     }
 
+    private ChatContextService getChatContextService() {
+        if (Objects.isNull(chatContextService)) {
+            chatContextService = applicationContext.getBean(ChatContextService.class);
+        }
+        return chatContextService;
+    }
+
     private AiApiKeyService getAiApiKeyService() {
         if (Objects.isNull(aiApiKeyService)) {
             aiApiKeyService = applicationContext.getBean(AiApiKeyService.class);
         }
         return aiApiKeyService;
+    }
+
+    private OrgService getOrgService() {
+        if (Objects.isNull(orgService)) {
+            orgService = applicationContext.getBean(OrgService.class);
+        }
+        return orgService;
     }
 
     @Override

@@ -26,25 +26,25 @@ public class PromptSummaryStatsDTO extends PromptSummaryDTO {
     @Schema(description = "Average score")
     private Long score;
 
-    public static PromptSummaryStatsDTO fromPromptInfoAndStats(
+    public static PromptSummaryStatsDTO from(
             Triple<PromptInfo, List<String>, List<String>> promptInfoTriple, InteractiveStats stats) {
         if (Objects.isNull(promptInfoTriple) || Objects.isNull(stats)) {
             return null;
         }
-        PromptSummaryStatsDTO promptSummaryStatsDTO =
+        PromptSummaryStatsDTO dto =
                 CommonUtils.convert(promptInfoTriple.getLeft(), PromptSummaryStatsDTO.class);
-        promptSummaryStatsDTO.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
-        promptSummaryStatsDTO.setTags(promptInfoTriple.getMiddle());
-        promptSummaryStatsDTO.setAiModels(promptInfoTriple.getRight()
+        dto.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
+        dto.setTags(promptInfoTriple.getMiddle());
+        dto.setAiModels(promptInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        promptSummaryStatsDTO.setViewCount(stats.getViewCount());
-        promptSummaryStatsDTO.setReferCount(stats.getReferCount());
-        promptSummaryStatsDTO.setRecommendCount(stats.getRecommendCount());
-        promptSummaryStatsDTO.setScoreCount(stats.getScoreCount());
-        promptSummaryStatsDTO.setScore(stats.getScore());
-        return promptSummaryStatsDTO;
+        dto.setViewCount(stats.getViewCount());
+        dto.setReferCount(stats.getReferCount());
+        dto.setRecommendCount(stats.getRecommendCount());
+        dto.setScoreCount(stats.getScoreCount());
+        dto.setScore(stats.getScore());
+        return dto;
     }
 }

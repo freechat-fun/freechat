@@ -30,7 +30,7 @@ public class InteractiveStatsDTO extends TraceableDTO {
     @Schema(description = "Average score")
     private Long score;
 
-    public static InteractiveStatsDTO fromInteractiveStats(InteractiveStats stats) {
+    public static InteractiveStatsDTO from(InteractiveStats stats) {
         if (Objects.isNull(stats)) {
             return null;
         }

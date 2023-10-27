@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -45,40 +47,20 @@ public class AccountManagerApi {
     @Operation(
             operationId = "listUsers",
             summary = "List User Information",
-            description = "Return all user information."
-    )
-    @GetMapping("/users")
-    public List<UserBasicInfoDTO> listUsers() {
-        return listUsers(0, 0);
-    }
-
-    @Operation(
-            operationId = "listUsersBySize",
-            summary = "List User Information by Limits",
-            description = "Return user information, return up to pageSize user information."
-    )
-    @GetMapping("/users/{pageSize}")
-    public List<UserBasicInfoDTO> listUsers(
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Integer pageSize) {
-        return listUsers(pageSize, 0);
-    }
-
-    @Operation(
-            operationId = "listUsersByPage",
-            summary = "List User Information by Page",
             description = "Return user information by page, return the pageNum page, up to pageSize user information."
     )
-    @GetMapping("/users/{pageSize}/{pageNum}")
+    @GetMapping(value = {
+            "/users/{pageSize}/{pageNum}",
+            "/users/{pageSize}",
+            "/users"})
     public List<UserBasicInfoDTO> listUsers(
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Integer pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") Integer pageNum) {
-        int limit = Objects.nonNull(pageSize) && pageSize > 0 ? pageSize : 0;
-        int offset = Objects.nonNull(pageSize) && Objects.nonNull(pageNum) && pageSize * pageNum > 0
-                ? pageSize * pageNum
-                : 0;
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum) {
+        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         return userService.list(limit, offset)
                 .stream()
-                .map(UserBasicInfoDTO::fromUser)
+                .map(UserBasicInfoDTO::from)
                 .toList();
     }
 
@@ -92,7 +74,7 @@ public class AccountManagerApi {
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username) {
         User user = userService.loadByUsername(username);
-        return UserDetailsDTO.fromUser(user);
+        return UserDetailsDTO.from(user);
     }
 
     @Operation(
@@ -178,7 +160,7 @@ public class AccountManagerApi {
         if (Objects.isNull(user)) {
             return null;
         }
-        return authorityService.update(user, authorities);
+        return authorityService.update(user.getUserId(), authorities);
     }
 
     @Operation(
@@ -248,6 +230,6 @@ public class AccountManagerApi {
     public UserDetailsDTO tokenBy(
             @Parameter(description = "API Token") @PathVariable("token") @NotBlank
             String token) {
-        return UserDetailsDTO.fromUser(apiTokenService.getUser(token));
+        return UserDetailsDTO.from(apiTokenService.getUser(token));
     }
 }

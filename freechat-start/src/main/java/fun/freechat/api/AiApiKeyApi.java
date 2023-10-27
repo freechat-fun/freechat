@@ -98,7 +98,7 @@ public class AiApiKeyApi {
     @PreAuthorize("hasPermission(#p0, 'aiApiKeyOp')")
     AiApiKeyInfoDTO get(
             @Parameter(description = "Credential identifier") @PathVariable("id") @Positive Long id) {
-        return AiApiKeyInfoDTO.fromAiApiKey(aiApiKeyService.get(id));
+        return AiApiKeyInfoDTO.from(aiApiKeyService.get(id));
     }
 
 
@@ -112,7 +112,7 @@ public class AiApiKeyApi {
             @Parameter(description = "Model provider") @PathVariable("provider") @Positive String provider) {
         return aiApiKeyService.list(AccountUtils.currentUser(), ModelProvider.of(provider))
                 .stream()
-                .map(AiApiKeyInfoDTO::fromAiApiKey)
+                .map(AiApiKeyInfoDTO::from)
                 .toList();
     }
 }

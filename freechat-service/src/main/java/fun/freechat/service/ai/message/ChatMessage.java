@@ -12,4 +12,17 @@ public class ChatMessage {
     private String content;
     private ChatFunctionCall functionCall;
     private Date gmtCreate;
+
+    public static ChatMessage from(PromptRole role, String text) {
+        ChatMessage message = new ChatMessage();
+        message.setRole(role);
+        message.setContent(text);
+        message.setGmtCreate(new Date());
+        return message;
+    }
+
+    public ChatMessage withName(String name) {
+        setName(name);
+        return this;
+    }
 }

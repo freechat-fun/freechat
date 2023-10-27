@@ -18,10 +18,19 @@ public class ChatContext implements Serializable {
     private String userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String characterId;
+    private String userNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String context;
+    private String characterNickname;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String backendId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String userProfile;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
@@ -91,35 +100,83 @@ public class ChatContext implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getCharacterId() {
-        return characterId;
+    public String getUserNickname() {
+        return userNickname;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ChatContext withCharacterId(String characterId) {
-        this.setCharacterId(characterId);
+    public ChatContext withUserNickname(String userNickname) {
+        this.setUserNickname(userNickname);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCharacterId(String characterId) {
-        this.characterId = characterId == null ? null : characterId.trim();
+    public void setUserNickname(String userNickname) {
+        this.userNickname = userNickname == null ? null : userNickname.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getContext() {
-        return context;
+    public String getCharacterNickname() {
+        return characterNickname;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ChatContext withContext(String context) {
-        this.setContext(context);
+    public ChatContext withCharacterNickname(String characterNickname) {
+        this.setCharacterNickname(characterNickname);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setContext(String context) {
-        this.context = context == null ? null : context.trim();
+    public void setCharacterNickname(String characterNickname) {
+        this.characterNickname = characterNickname == null ? null : characterNickname.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getBackendId() {
+        return backendId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withBackendId(String backendId) {
+        this.setBackendId(backendId);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setBackendId(String backendId) {
+        this.backendId = backendId == null ? null : backendId.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getUserProfile() {
+        return userProfile;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withUserProfile(String userProfile) {
+        this.setUserProfile(userProfile);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setUserProfile(String userProfile) {
+        this.userProfile = userProfile == null ? null : userProfile.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getExt() {
+        return ext;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withExt(String ext) {
+        this.setExt(ext);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setExt(String ext) {
+        this.ext = ext == null ? null : ext.trim();
     }
 
     @Override
@@ -139,8 +196,9 @@ public class ChatContext implements Serializable {
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getCharacterId() == null ? other.getCharacterId() == null : this.getCharacterId().equals(other.getCharacterId()))
-            && (this.getContext() == null ? other.getContext() == null : this.getContext().equals(other.getContext()));
+            && (this.getUserNickname() == null ? other.getUserNickname() == null : this.getUserNickname().equals(other.getUserNickname()))
+            && (this.getCharacterNickname() == null ? other.getCharacterNickname() == null : this.getCharacterNickname().equals(other.getCharacterNickname()))
+            && (this.getBackendId() == null ? other.getBackendId() == null : this.getBackendId().equals(other.getBackendId()));
     }
 
     @Override
@@ -152,8 +210,9 @@ public class ChatContext implements Serializable {
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getCharacterId() == null) ? 0 : getCharacterId().hashCode());
-        result = prime * result + ((getContext() == null) ? 0 : getContext().hashCode());
+        result = prime * result + ((getUserNickname() == null) ? 0 : getUserNickname().hashCode());
+        result = prime * result + ((getCharacterNickname() == null) ? 0 : getCharacterNickname().hashCode());
+        result = prime * result + ((getBackendId() == null) ? 0 : getBackendId().hashCode());
         return result;
     }
 
@@ -168,8 +227,11 @@ public class ChatContext implements Serializable {
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", userId=").append(userId);
-        sb.append(", characterId=").append(characterId);
-        sb.append(", context=").append(context);
+        sb.append(", userNickname=").append(userNickname);
+        sb.append(", characterNickname=").append(characterNickname);
+        sb.append(", backendId=").append(backendId);
+        sb.append(", userProfile=").append(userProfile);
+        sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

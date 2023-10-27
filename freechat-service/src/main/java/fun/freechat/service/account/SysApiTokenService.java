@@ -18,7 +18,7 @@ public interface SysApiTokenService {
     }
 
     List<String> list(User user);
-    List<String> delete(User user);
+    boolean deleteByUserId(String userId);
 
     boolean delete(String token);
 

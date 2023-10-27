@@ -70,6 +70,16 @@ public class LanguageModelFactory {
                 .build();
     }
 
+    public static OpenAiModerationModel createOpenAiModerationModel(
+            String apiKey, String modelName, Map<String, Object> parameters) {
+        return OpenAiModerationModel.builder()
+                .apiKey(apiKey)
+                .modelName(modelName)
+                .timeout(DEFAULT_TIMEOUT)
+                .baseUrl((String) parameters.get("baseUrl"))
+                .build();
+    }
+
     public static QwenLanguageModel createQwenLanguageModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenLanguageModel.builder()

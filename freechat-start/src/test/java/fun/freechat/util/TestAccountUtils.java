@@ -31,20 +31,21 @@ public class TestAccountUtils implements ApplicationContextAware {
         User user = new User().withUsername(username).withPassword("test-" + randomInfo);
         userService.create(user);
         if (CollectionUtils.isNotEmpty(roles)) {
-            authorityService.update(user,
+            authorityService.update(user.getUserId(),
                     roles.stream().map(AuthorityUtils::fromRole).collect(Collectors.toSet()));
         }
         return Pair.of(user.getUserId(), apiTokenService.create(user));
     }
 
-    public static void deleteUserAndToken(String username) {
-        User user = userService.loadByUsername(username);
-        if (Objects.isNull(user)) {
-            return;
-        }
-        apiTokenService.delete(user);
-        authorityService.update(user, Collections.emptySet());
-        userService.delete(username);
+    public static void deleteUserAndToken(String userId) {
+        apiTokenService.deleteByUserId(userId);
+        authorityService.update(userId, Collections.emptySet());
+        TestCommonUtils.waitAWhile();
+        userService.deleteByUserId(userId);
+    }
+
+    public static void deleteUserAndTokenByUsername(String username) {
+        deleteUserAndToken(userService.loadByUsername(username).getUserId());
     }
 
     @Override

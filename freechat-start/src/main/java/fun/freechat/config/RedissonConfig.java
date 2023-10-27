@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @SuppressWarnings("unused")
-public class RedissonClientConfig {
+public class RedissonConfig {
     @Value("${redis.mode:cluster}")
     private String mode;
     @Value("${redis.datasource.url}")

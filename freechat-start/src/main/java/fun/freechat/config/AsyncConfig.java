@@ -17,7 +17,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class AsyncConfig {
     public static final String DEFAULT_EXECUTOR = "defaultExecutor";
-    public static final String AI_SERVICE_EXECUTOR = "aiServiceExecutor";
+    public static final String EVENT_EXECUTOR = "eventExecutor";
 
     @Configuration
     public static class DefaultExecutorConfiguration {
@@ -36,14 +36,14 @@ public class AsyncConfig {
     }
 
     @Configuration
-    public static class AiServiceExecutorConfiguration {
-        @Bean(name = AI_SERVICE_EXECUTOR + "Properties")
-        @ConfigurationProperties(prefix = "spring.task.ai-service-execution")
+    public static class EventExecutorConfiguration {
+        @Bean(name = EVENT_EXECUTOR + "Properties")
+        @ConfigurationProperties(prefix = "spring.task.event-execution")
         public TaskExecutionProperties taskExecutionProperties() {
             return new TaskExecutionProperties();
         }
 
-        @Bean(name = AI_SERVICE_EXECUTOR)
+        @Bean(name = EVENT_EXECUTOR)
         public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
             return builderFor(taskExecutionProperties())
                     .build(TraceThreadPoolTaskExecutor.class);

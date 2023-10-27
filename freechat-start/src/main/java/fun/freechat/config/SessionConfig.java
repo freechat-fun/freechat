@@ -8,7 +8,7 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 
 @Configuration
 @SuppressWarnings("unused")
-public class RedissonSessionConfig extends AbstractHttpSessionApplicationInitializer {
+public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     @Bean
     public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redisson) {
         return new RedissonConnectionFactory(redisson);

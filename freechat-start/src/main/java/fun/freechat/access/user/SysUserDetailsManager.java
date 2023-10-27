@@ -335,7 +335,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
         }
 
         if (CollectionUtils.isNotEmpty(authorities)) {
-            authorityService.update(user, authorities);
+            authorityService.update(user.getUserId(), authorities);
         }
 
         return SysUserDetails.builder()

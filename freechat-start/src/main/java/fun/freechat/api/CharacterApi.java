@@ -2,34 +2,44 @@ package fun.freechat.api;
 
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.common.ConfigService;
+import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.stats.InteractiveStatsService;
+import fun.freechat.service.util.ConfigUtils;
+import fun.freechat.service.util.StoreUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
+
+import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 
 @Controller
 @Tag(name = "Character")
@@ -38,11 +48,42 @@ import java.util.Objects;
 @Validated
 @SuppressWarnings("unused")
 public class CharacterApi {
+    private static final String CONFIG_NAME = "character";
+
+    private static final String PICTURE_MAX_SIZE_KEY = "picture.maxSize";
+
+    private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
+
+    private static final String AVATAR_MAX_SIZE_KEY = "avatar.maxSize";
+
+    private static final String AVATAR_MAX_COUNT_KEY = "avatar.maxCount";
+
+    private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
+
+    private static final int DEFAULT_PICTURE_MAX_COUNT = 4;
+
+    private static final long DEFAULT_AVATAR_MAX_SIZE = 64 * 1024;
+
+    private static final int DEFAULT_AVATAR_MAX_COUNT = 4;
+
+    @Value("${chat.memory.minWindowSize:50}")
+    private Integer minWindowSize;
+
+    @Value("${chat.memory.maxWindowSize:1000}")
+    private Integer maxWindowSize;
+
+    @Value("${chat.memory.defaultWindowSize:100}")
+    private Integer defaultWindowSize;
+
     @Autowired
     private CharacterService characterService;
 
     @Autowired
     private InteractiveStatsService interactiveStatsService;
+
+    @Autowired
+    @Qualifier("mysqlConfigService")
+    private ConfigService configService;
 
     private void resetCharacterInfo(CharacterInfo info, String parentId) {
         if (StringUtils.isNotBlank(parentId)) {
@@ -108,7 +149,7 @@ public class CharacterApi {
             CharacterQueryDTO query) {
         return characterService.search(query.toCharacterInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(CharacterSummaryDTO::fromCharacterInfo)
+                .map(CharacterSummaryDTO::from)
                 .toList();
     }
 
@@ -144,7 +185,7 @@ public class CharacterApi {
             CharacterQueryDTO query) {
         return characterService.searchDetails(query.toCharacterInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(CharacterDetailsDTO::fromCharacterInfo)
+                .map(CharacterDetailsDTO::from)
                 .toList();
     }
 
@@ -390,7 +431,7 @@ public class CharacterApi {
             @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @NotBlank
             String characterId) {
         var characterInfo = characterService.summary(characterId, AccountUtils.currentUser());
-        return CharacterSummaryDTO.fromCharacterInfo(characterInfo);
+        return CharacterSummaryDTO.from(characterInfo);
     }
 
     @Operation(
@@ -403,7 +444,7 @@ public class CharacterApi {
             @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @NotBlank
             String characterId) {
         var characterInfo = characterService.details(characterId, AccountUtils.currentUser());
-        return CharacterDetailsDTO.fromCharacterInfo(characterInfo);
+        return CharacterDetailsDTO.from(characterInfo);
     }
 
     @Operation(
@@ -435,8 +476,20 @@ public class CharacterApi {
             String name) {
         return characterService.listVersionsByName(name, AccountUtils.currentUser())
                 .stream()
-                .map(CharacterItemForNameDTO::fromInfoItem)
+                .map(CharacterItemForNameDTO::from)
                 .toList();
+    }
+
+    @Operation(
+            operationId = "getCharacterLatestIdByName",
+            summary = "Get Latest Character Id by Name",
+            description = "Get latest characterId by character name."
+    )
+    @PostMapping(value = "/latest/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getLatestIdByName(
+            @Parameter(description = "Character name") @PathVariable("name") @NotBlank
+            String name) {
+        return characterService.getLatestIdByName(name, AccountUtils.currentUser());
     }
 
     @Operation(
@@ -444,14 +497,17 @@ public class CharacterApi {
             summary = "Publish Character",
             description = "Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication."
     )
-    @PostMapping(value = "/publish/{characterId}/{visibility}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(
+            value = {"/publish/{characterId}/{visibility}", "/publish/{characterId}"},
+            produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'characterUpdateOp')")
     public String publish(
             @Parameter(description = "The characterId to be published") @PathVariable("characterId") @NotBlank
             String characterId,
-            @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility") @NotBlank
-            String visibility){
-        return characterService.publish(characterId, Visibility.of(visibility), AccountUtils.currentUser());
+            @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility")
+            Optional<String> visibility){
+        Visibility publishVisibility = visibility.map(Visibility::of).orElse(Visibility.PUBLIC);
+        return characterService.publish(characterId, publishVisibility, AccountUtils.currentUser());
     }
 
     @Operation(
@@ -469,6 +525,14 @@ public class CharacterApi {
         CharacterBackend characterBackend = backend.toCharacterBackend(characterId);
         if (Objects.isNull(characterBackend)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
+        }
+        Integer messageWindowSize = characterBackend.getMessageWindowSize();
+        if (Objects.isNull(messageWindowSize)) {
+            messageWindowSize = defaultWindowSize;
+        }
+        if (messageWindowSize < minWindowSize || messageWindowSize > maxWindowSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Message window size should be between " + minWindowSize + " and " + maxWindowSize);
         }
         return characterService.addBackend(characterBackend);
     }
@@ -522,7 +586,20 @@ public class CharacterApi {
     public CharacterBackendDetailsDTO getDefaultBackend(
             @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
             String characterId) {
-        return CharacterBackendDetailsDTO.fromCharacterBackend(characterService.getDefaultBackend(characterId));
+        return CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterId));
+    }
+
+    @Operation(
+            operationId = "listCharacterBackendIds",
+            summary = "List Character Backend ids",
+            description = "List Character Backend identifiers."
+    )
+    @GetMapping("/backends/{characterId}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    public List<String> listBackendIds(
+            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
+            String characterId) {
+        return characterService.listBackendIds(characterId);
     }
 
     @Operation(
@@ -540,5 +617,69 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
         }
         return characterService.setDefaultBackend(characterId, characterBackendId);
+    }
+
+    @Operation(
+            operationId = "uploadCharacterPicture",
+            summary = "Upload Character Picture",
+            description = "Upload a picture of the character."
+    )
+    @PostMapping(value = "/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String uploadPicture(
+            HttpServletRequest request,
+            @Parameter(description = "Character picture") @RequestParam("file") @NotNull
+            MultipartFile file) {
+        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
+        long maxSize = ConfigUtils.getLongOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
+        int maxCount = ConfigUtils.getIntOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
+
+        if (file.getSize() > maxSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture";
+            String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
+            if (StringUtils.isBlank(shareUrl)) {
+                shareUrl = FileUtils.getDefaultShareUrlForImage(request, dstPath);
+            }
+            return shareUrl;
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
+
+    @Operation(
+            operationId = "uploadCharacterAvatar",
+            summary = "Upload Character Avatar",
+            description = "Upload an avatar of the character."
+    )
+    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String uploadAvatar(
+            HttpServletRequest request,
+            @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
+            MultipartFile file) {
+        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
+        long maxSize = ConfigUtils.getLongOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
+        int maxCount = ConfigUtils.getIntOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
+
+        if (file.getSize() > maxSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar";
+            String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
+            if (StringUtils.isBlank(shareUrl)) {
+                shareUrl = FileUtils.getDefaultShareUrlForImage(request, dstPath);
+            }
+            return shareUrl;
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
     }
 }

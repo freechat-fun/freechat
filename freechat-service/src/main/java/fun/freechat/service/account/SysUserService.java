@@ -9,11 +9,12 @@ public interface SysUserService {
     boolean create(User user);
     boolean update(User user);
     boolean delete(String username);
+    boolean deleteByUserId(String userId);
     boolean exists(String username);
     boolean changePassword(User user, String newPassword);
     User loadByUserId(String userId);
     User loadByUsername(String username);
     User loadByUsernameAndPassword(String username, String password);
     User loadByUsernameAndPlatform(String username, String platform);
-    List<User> list(int limit, int offset);
+    List<User> list(long limit, long offset);
 }

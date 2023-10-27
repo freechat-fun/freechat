@@ -3,6 +3,7 @@ package fun.freechat.service.prompt;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.PromptInfo;
 import fun.freechat.model.User;
+import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
@@ -58,6 +59,7 @@ public interface PromptService {
     boolean hide(String promptId, User user);
     boolean delete(String promptId, User user);
     List<String> delete(List<String> promptIds, User user);
+    List<String> delete(User user);
     Triple<PromptInfo, List<String>, List<String>> summary(String promptId, User user);
     List<Triple<PromptInfo, List<String>, List<String>>> summary(Collection<String> promptIds, User user);
     Triple<PromptInfo, List<String>, List<String>> details(String promptId, User user);
@@ -67,6 +69,7 @@ public interface PromptService {
     String publish(String promptId, Visibility visibility, User user);
     String getOwner(String promptId);
     String apply(String promptTemplate, Map<String, Object> variables, PromptFormat format);
+    ChatMessage apply(ChatMessage original, Map<String, Object> variables, PromptFormat format);
     ChatPromptContent apply(ChatPromptContent promptContent, Map<String, Object> variables, PromptFormat format);
     Pair<String, PromptType> apply(String promptId, Map<String, Object> variables, Boolean draft);
 }

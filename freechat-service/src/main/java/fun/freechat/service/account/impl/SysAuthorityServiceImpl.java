@@ -37,15 +37,15 @@ public class SysAuthorityServiceImpl implements SysAuthorityService {
 
     @Override
     @Transactional
-    public boolean update(User user, Set<String> authorities) {
+    public boolean update(String userId, Set<String> authorities) {
         Date now = new Date();
-        authorityMapper.delete(c -> c.where(AuthorityDynamicSqlSupport.userId, isEqualTo(user.getUserId())));
+        authorityMapper.delete(c -> c.where(AuthorityDynamicSqlSupport.userId, isEqualTo(userId)));
         for (String authority : authorities) {
             if (AuthorityUtils.USER.equalsIgnoreCase(authority)) {
                 continue;
             }
             Authority row = new Authority()
-                    .withUserId(user.getUserId())
+                    .withUserId(userId)
                     .withGmtCreate(now)
                     .withGmtModified(now)
                     .withScope(authority);

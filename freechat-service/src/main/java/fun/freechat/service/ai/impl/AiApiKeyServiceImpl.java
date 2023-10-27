@@ -88,8 +88,8 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
     }
 
     @Override
-    public CloseableAiApiKey use(User user, String name) {
-        return new CloseableAiApiKey(encryptionService, aiApiKeyMapper, user.getUserId(), name);
+    public CloseableAiApiKey use(String userId, String name) {
+        return new CloseableAiApiKey(encryptionService, aiApiKeyMapper, userId, name);
     }
 
     @Override

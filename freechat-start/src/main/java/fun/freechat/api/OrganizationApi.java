@@ -268,6 +268,6 @@ public class OrganizationApi {
         if (Objects.isNull(user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find user " + username);
         }
-        return authorityService.update(user, authorities);
+        return authorityService.update(user.getUserId(), authorities);
     }
 }

@@ -17,11 +17,11 @@ public class CharacterItemForNameDTO {
     @Schema(description = "Interactive statistics information")
     InteractiveStatsDTO stats;
 
-    public static CharacterItemForNameDTO fromInfoItem(Triple<String, Integer, InteractiveStats> infoItem) {
+    public static CharacterItemForNameDTO from(Triple<String, Integer, InteractiveStats> infoItem) {
         CharacterItemForNameDTO dto = new CharacterItemForNameDTO();
         dto.setCharacterId(infoItem.getLeft());
         dto.setVersion(infoItem.getMiddle());
-        InteractiveStatsDTO stats = InteractiveStatsDTO.fromInteractiveStats(infoItem.getRight());
+        InteractiveStatsDTO stats = InteractiveStatsDTO.from(infoItem.getRight());
         if (Objects.nonNull(stats)) {
             stats.setRequestId(null);
             stats.setGmtCreate(null);

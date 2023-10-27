@@ -1,6 +1,9 @@
 package fun.freechat.service.character;
 
-import fun.freechat.model.*;
+import fun.freechat.model.CharacterBackend;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.InteractiveStats;
+import fun.freechat.model.User;
 import fun.freechat.service.enums.Visibility;
 import lombok.Builder;
 import lombok.Data;
@@ -47,6 +50,8 @@ public interface CharacterService {
     boolean update(Pair<CharacterInfo, List<String>> characterInfoPair);
     boolean hide(String characterId, User user);
     boolean delete(String characterId, User user);
+    List<String> delete(User user);
+    CharacterInfo summary(String characterId);
     Pair<CharacterInfo, List<String>> summary(String characterId, User user);
     List<Pair<CharacterInfo, List<String>>> summary(Collection<String> characterIds, User user);
     Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(String characterId, User user);
@@ -62,6 +67,7 @@ public interface CharacterService {
     boolean setDefaultBackend(String characterId, String characterBackendId);
     CharacterBackend getDefaultBackend(String characterId);
     CharacterBackend getBackend(String characterBackendId);
+    List<String> listBackendIds(String characterId);
     String getBackendOwner(String characterBackendId);
     String getBackendCharacterId(String characterBackendId);
 }

@@ -5,16 +5,15 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum PromptFormat {
     F_STRING,
-    JINJA2,
     MUSTACHE;
     public static PromptFormat of(String text) {
         if (StringUtils.isBlank(text)) {
-            return F_STRING;
+            return MUSTACHE;
         }
         try {
             return PromptFormat.valueOf(text.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return F_STRING;
+            return MUSTACHE;
         }
     }
 

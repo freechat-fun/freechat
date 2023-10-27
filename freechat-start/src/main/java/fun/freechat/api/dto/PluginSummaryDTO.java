@@ -38,20 +38,20 @@ public class PluginSummaryDTO extends TraceableDTO {
     @Schema(description = "Supported model set")
     private List<AiModelInfoDTO> aiModels;
 
-    public static PluginSummaryDTO fromPluginInfo(
+    public static PluginSummaryDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple) {
         if (Objects.isNull(pluginInfoTriple)) {
             return null;
         }
         PluginInfo pluginInfo = pluginInfoTriple.getLeft();
-        PluginSummaryDTO pluginSummaryDTO = CommonUtils.convert(pluginInfo, PluginSummaryDTO.class);
-        pluginSummaryDTO.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
-        pluginSummaryDTO.setTags(pluginInfoTriple.getMiddle());
-        pluginSummaryDTO.setAiModels(pluginInfoTriple.getRight()
+        PluginSummaryDTO dto = CommonUtils.convert(pluginInfo, PluginSummaryDTO.class);
+        dto.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
+        dto.setTags(pluginInfoTriple.getMiddle());
+        dto.setAiModels(pluginInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        return pluginSummaryDTO;
+        return dto;
     }
 }

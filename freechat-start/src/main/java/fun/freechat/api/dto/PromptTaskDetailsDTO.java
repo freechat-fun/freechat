@@ -39,7 +39,7 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
     @Schema(description = "Task execution status: pending | running | succeeded | failed")
     private String status;
 
-    public static PromptTaskDetailsDTO fromPromptTask(PromptTask task) {
+    public static PromptTaskDetailsDTO from(PromptTask task) {
         if (Objects.isNull(task)) {
             return null;
         }

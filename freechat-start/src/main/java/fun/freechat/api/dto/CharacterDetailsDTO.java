@@ -36,29 +36,29 @@ public class CharacterDetailsDTO extends CharacterSummaryDTO {
     @Schema(description = "Character backends information")
     private List<CharacterBackendDetailsDTO> backends;
 
-    public static CharacterDetailsDTO fromCharacterInfo(
+    public static CharacterDetailsDTO from(
             Triple<CharacterInfo, List<String>, List<CharacterBackend>> characterInfoTriple) {
         if (Objects.isNull(characterInfoTriple)) {
             return null;
         }
         CharacterInfo info = characterInfoTriple.getLeft();
-        CharacterDetailsDTO characterDetailsDTO =
+        CharacterDetailsDTO dto =
                 CommonUtils.convert(info, CharacterDetailsDTO.class);
-        characterDetailsDTO.setUsername(AccountUtils.userIdToName(characterInfoTriple.getLeft().getUserId()));
+        dto.setUsername(AccountUtils.userIdToName(characterInfoTriple.getLeft().getUserId()));
         try {
             CharacterInfoDraft draft = InfoUtils.defaultMapper().readValue(
                     info.getDraft(), CharacterInfoDraft.class);
-            characterDetailsDTO.setDraft(CharacterInfoDraftDTO.fromCharacterInfoDraft(draft));
+            dto.setDraft(CharacterInfoDraftDTO.from(draft));
         } catch (JsonProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        characterDetailsDTO.setTags(characterInfoTriple.getMiddle());
-        characterDetailsDTO.setBackends(characterInfoTriple.getRight()
+        dto.setTags(characterInfoTriple.getMiddle());
+        dto.setBackends(characterInfoTriple.getRight()
                 .stream()
-                .map(CharacterBackendDetailsDTO::fromCharacterBackend)
+                .map(CharacterBackendDetailsDTO::from)
                 .filter(Objects::nonNull)
                 .peek(backend -> backend.setRequestId(null))
                 .toList());
-        return characterDetailsDTO;
+        return dto;
     }
 }

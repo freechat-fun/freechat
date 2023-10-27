@@ -83,6 +83,12 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public boolean deleteByUserId(String userId) {
+        int rows = userMapper.deleteByPrimaryKey(userId);
+        return rows > 0;
+    }
+
+    @Override
     public boolean exists(String username) {
         return Objects.nonNull(loadByUsername(username));
     }
@@ -136,7 +142,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public List<User> list(int limit, int offset) {
+    public List<User> list(long limit, long offset) {
         return userMapper.select(c -> {
             if (limit > 0) {
                 c.limit(limit);

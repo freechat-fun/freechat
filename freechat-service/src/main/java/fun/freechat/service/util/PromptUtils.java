@@ -1,16 +1,23 @@
 package fun.freechat.service.util;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.output.Response;
 import fun.freechat.service.ai.message.ChatFunctionCall;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static fun.freechat.service.enums.PromptRole.*;
 
 public class PromptUtils {
     private static final String SYSTEM_PREFIX = "<|system|>:";
@@ -69,22 +76,59 @@ public class PromptUtils {
         };
     }
 
-    public static List<dev.langchain4j.data.message.ChatMessage> toLangChain4jMessages(ChatPromptContent promptTemplate) {
+    public static ChatMessage convertL4jMessage(
+            dev.langchain4j.data.message.ChatMessage l4jMessage) {
+        ChatMessage message = new ChatMessage();
+        message.setGmtCreate(new Date());
+        message.setContent(l4jMessage.text());
+        switch (l4jMessage.type()) {
+            case SYSTEM -> message.setRole(SYSTEM);
+            case AI -> {
+                ToolExecutionRequest request = ((AiMessage) l4jMessage).toolExecutionRequest();
+                if (Objects.isNull(request)) {
+                    message.setRole(ASSISTANT);
+                } else {
+                    ChatFunctionCall functionCall = new ChatFunctionCall();
+                    functionCall.setName(request.name());
+                    functionCall.setArguments(request.arguments());
+
+                    message.setRole(FUNCTION_CALL);
+                    message.setFunctionCall(functionCall);
+                }
+            }
+            case USER -> {
+                message.setRole(USER);
+                message.setName(((UserMessage) l4jMessage).name());
+            }
+            case TOOL_EXECUTION_RESULT -> {
+                message.setRole(FUNCTION_RESULT);
+                message.setName(((ToolExecutionResultMessage) l4jMessage).toolName());
+            }
+        }
+        return message;
+    }
+
+    public static Response<ChatMessage> convertL4jMessageResponse(
+            Response<? extends dev.langchain4j.data.message.ChatMessage> response) {
+        return Response.from(convertL4jMessage(response.content()), response.tokenUsage(), response.finishReason());
+    }
+
+    public static List<dev.langchain4j.data.message.ChatMessage> toL4jMessages(ChatPromptContent promptTemplate) {
         List<dev.langchain4j.data.message.ChatMessage> messages = new LinkedList<>();
         if (StringUtils.isNotBlank(promptTemplate.getSystem())) {
             messages.add(dev.langchain4j.data.message.SystemMessage.from(promptTemplate.getSystem()));
         }
         if (CollectionUtils.isNotEmpty(promptTemplate.getMessages())) {
             for (var message : promptTemplate.getMessages()) {
-                dev.langchain4j.data.message.ChatMessage langchain4jChatMessage =
+                dev.langchain4j.data.message.ChatMessage l4jMessage =
                         convertChatMessage(message);
-                if (Objects.nonNull(langchain4jChatMessage)) {
-                    messages.add(langchain4jChatMessage);
+                if (Objects.nonNull(l4jMessage)) {
+                    messages.add(l4jMessage);
                 }
             }
         }
-        if (Objects.nonNull(promptTemplate.getMessageToBeSent())) {
-            messages.add(convertChatMessage(promptTemplate.getMessageToBeSent()));
+        if (Objects.nonNull(promptTemplate.getMessagesToSend())) {
+            messages.add(convertChatMessage(promptTemplate.getMessagesToSend()));
         }
         return messages;
     }

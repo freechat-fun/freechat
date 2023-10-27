@@ -1,4 +1,4 @@
-FROM openjdk:19
+FROM openjdk:21
 
 ARG APP_NAME=freechat
 ARG UNAME=admin

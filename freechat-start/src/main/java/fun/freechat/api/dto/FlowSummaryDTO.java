@@ -40,19 +40,19 @@ public class FlowSummaryDTO extends TraceableDTO {
     @Schema(description = "Supported model set")
     private List<AiModelInfoDTO> aiModels;
 
-    public static FlowSummaryDTO fromFlowInfo(Triple<FlowInfo, List<String>, List<String>> flowInfoTriple) {
+    public static FlowSummaryDTO from(Triple<FlowInfo, List<String>, List<String>> flowInfoTriple) {
         if (Objects.isNull(flowInfoTriple)) {
             return null;
         }
-        FlowSummaryDTO flowSummaryDTO =
+        FlowSummaryDTO dto =
                 CommonUtils.convert(flowInfoTriple.getLeft(), FlowSummaryDTO.class);
-        flowSummaryDTO.setUsername(AccountUtils.userIdToName(flowInfoTriple.getLeft().getUserId()));
-        flowSummaryDTO.setTags(flowInfoTriple.getMiddle());
-        flowSummaryDTO.setAiModels(flowInfoTriple.getRight()
+        dto.setUsername(AccountUtils.userIdToName(flowInfoTriple.getLeft().getUserId()));
+        dto.setTags(flowInfoTriple.getMiddle());
+        dto.setAiModels(flowInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        return flowSummaryDTO;
+        return dto;
     }
 }

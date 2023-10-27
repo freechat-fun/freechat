@@ -12,7 +12,7 @@ public interface AiApiKeyService {
     boolean enable(Long id);
     boolean delete(Long id);
     CloseableAiApiKey use(Long id);
-    CloseableAiApiKey use(User user, String name);
+    CloseableAiApiKey use(String userId, String name);
     CloseableAiApiKey use(String token);
     MaskedAiApiKey get(Long id);
     List<MaskedAiApiKey> list(User user, ModelProvider provider);

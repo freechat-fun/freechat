@@ -86,7 +86,7 @@ public class PluginApi {
             PluginQueryDTO query) {
         return pluginService.search(query.toPluginInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(PluginSummaryDTO::fromPluginInfo)
+                .map(PluginSummaryDTO::from)
                 .toList();
     }
 
@@ -122,7 +122,7 @@ public class PluginApi {
             PluginQueryDTO query) {
         return pluginService.searchDetails(query.toPluginInfoQuery(), AccountUtils.currentUser())
                 .stream()
-                .map(PluginDetailsDTO::fromPluginInfo)
+                .map(PluginDetailsDTO::from)
                 .toList();
     }
 
@@ -412,7 +412,7 @@ public class PluginApi {
             @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @NotBlank
             String pluginId) {
         var pluginInfo = pluginService.summary(pluginId, AccountUtils.currentUser());
-        return PluginSummaryDTO.fromPluginInfo(pluginInfo);
+        return PluginSummaryDTO.from(pluginInfo);
     }
 
     @Operation(
@@ -425,7 +425,7 @@ public class PluginApi {
             @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @NotBlank
             String pluginId) {
         var pluginInfo = pluginService.details(pluginId, AccountUtils.currentUser());
-        return PluginDetailsDTO.fromPluginInfo(pluginInfo);
+        return PluginDetailsDTO.from(pluginInfo);
     }
 
     @Operation(

@@ -31,7 +31,7 @@ public class PromptSummaryDTO extends TraceableDTO {
     private String type;
     @Schema(description = "Prompt description (50 characters, the excess part is represented by ellipsis)")
     private String description;
-    @Schema(description = "Prompt format: f_string (default) | jinja2 | mustache")
+    @Schema(description = "Prompt format: mustache (default) | f_string")
     private String format;
     @Schema(description = "Prompt language: en (default) | zh_CN | ...")
     private String lang;
@@ -42,19 +42,19 @@ public class PromptSummaryDTO extends TraceableDTO {
     @Schema(description = "Supported model set")
     private List<AiModelInfoDTO> aiModels;
 
-    public static PromptSummaryDTO fromPromptInfo(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
+    public static PromptSummaryDTO from(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
         if (Objects.isNull(promptInfoTriple)) {
             return null;
         }
-        PromptSummaryDTO promptSummaryDTO =
+        PromptSummaryDTO dto =
                 CommonUtils.convert(promptInfoTriple.getLeft(), PromptSummaryDTO.class);
-        promptSummaryDTO.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
-        promptSummaryDTO.setTags(promptInfoTriple.getMiddle());
-        promptSummaryDTO.setAiModels(promptInfoTriple.getRight()
+        dto.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
+        dto.setTags(promptInfoTriple.getMiddle());
+        dto.setAiModels(promptInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        return promptSummaryDTO;
+        return dto;
     }
 }

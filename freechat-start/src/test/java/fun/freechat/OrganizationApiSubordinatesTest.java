@@ -46,7 +46,7 @@ public class OrganizationApiSubordinatesTest {
     @AfterEach
     public void cleanUp() {
         TestOrgUtils.cleanTestTree();
-        TestAccountUtils.deleteUserAndToken("31");
+        TestAccountUtils.deleteUserAndToken(userId);
     }
 
     @Test

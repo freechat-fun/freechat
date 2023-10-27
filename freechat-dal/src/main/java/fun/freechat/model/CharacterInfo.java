@@ -33,6 +33,9 @@ public class CharacterInfo implements Serializable {
     private String picture;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String gender;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String lang;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -207,6 +210,22 @@ public class CharacterInfo implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPicture(String picture) {
         this.picture = picture == null ? null : picture.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getGender() {
+        return gender;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterInfo withGender(String gender) {
+        this.setGender(gender);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setGender(String gender) {
+        this.gender = gender == null ? null : gender.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -391,6 +410,7 @@ public class CharacterInfo implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getAvatar() == null ? other.getAvatar() == null : this.getAvatar().equals(other.getAvatar()))
             && (this.getPicture() == null ? other.getPicture() == null : this.getPicture().equals(other.getPicture()))
+            && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
             && (this.getLang() == null ? other.getLang() == null : this.getLang().equals(other.getLang()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()));
     }
@@ -409,6 +429,7 @@ public class CharacterInfo implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getAvatar() == null) ? 0 : getAvatar().hashCode());
         result = prime * result + ((getPicture() == null) ? 0 : getPicture().hashCode());
+        result = prime * result + ((getGender() == null) ? 0 : getGender().hashCode());
         result = prime * result + ((getLang() == null) ? 0 : getLang().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         return result;
@@ -430,6 +451,7 @@ public class CharacterInfo implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", avatar=").append(avatar);
         sb.append(", picture=").append(picture);
+        sb.append(", gender=").append(gender);
         sb.append(", lang=").append(lang);
         sb.append(", version=").append(version);
         sb.append(", description=").append(description);

@@ -1,17 +1,19 @@
 package fun.freechat.service.character;
 
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.model.StreamingResponseHandler;
 import dev.langchain4j.model.output.Response;
+import dev.langchain4j.service.ModerationException;
+import dev.langchain4j.service.TokenStream;
 import fun.freechat.model.User;
+import fun.freechat.service.ai.message.ChatMessage;
 
 public interface CharacterAiService {
-    Response<AiMessage> send(String characterId,
-                             User user,
-                             String content);
-
-    <T> void sendAsync(String characterId,
-                       User user,
-                       String content,
-                       StreamingResponseHandler<T> handler);
+    String start(User user,
+                 String userNickname,
+                 String userProfile,
+                 String characterNickname,
+                 String backendId,
+                 String ext);
+    boolean delete(String chatId);
+    Response<ChatMessage> send(String chatId, String text) throws ModerationException;
+    TokenStream streamSend(String chatId, String text);
 }

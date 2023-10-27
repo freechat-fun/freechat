@@ -34,21 +34,21 @@ public class CharacterSummaryDTO extends TraceableDTO {
     private String avatar;
     @Schema(description = "Character picture url")
     private String picture;
-    @Schema(description = "Character language: en (default) | zh_CN | ...")
+    @Schema(description = "Character language: English | Chinese (Simplified) | ...")
     private String lang;
     @Schema(description = "Character owner")
     private String username;
     @Schema(description = "Tag set")
     private List<String> tags;
 
-    public static CharacterSummaryDTO fromCharacterInfo(Pair<CharacterInfo, List<String>> characterInfoPair) {
+    public static CharacterSummaryDTO from(Pair<CharacterInfo, List<String>> characterInfoPair) {
         if (Objects.isNull(characterInfoPair)) {
             return null;
         }
-        CharacterSummaryDTO characterSummaryDTO =
+        CharacterSummaryDTO dto =
                 CommonUtils.convert(characterInfoPair.getLeft(), CharacterSummaryDTO.class);
-        characterSummaryDTO.setUsername(AccountUtils.userIdToName(characterInfoPair.getLeft().getUserId()));
-        characterSummaryDTO.setTags(characterInfoPair.getRight());
-        return characterSummaryDTO;
+        dto.setUsername(AccountUtils.userIdToName(characterInfoPair.getLeft().getUserId()));
+        dto.setTags(characterInfoPair.getRight());
+        return dto;
     }
 }

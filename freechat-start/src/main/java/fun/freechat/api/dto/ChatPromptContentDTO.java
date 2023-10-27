@@ -15,7 +15,7 @@ public class ChatPromptContentDTO {
     @Schema(description = "Prompt system template")
     private String system;
     @Schema(description = "Chat new message template (usually as user role)")
-    private ChatMessageDTO messageToBeSent;
+    private ChatMessageDTO messagesToSend;
     @Schema(description = "Pre-set chat messages in the Prompt")
     private List<ChatMessageDTO> messages;
 }

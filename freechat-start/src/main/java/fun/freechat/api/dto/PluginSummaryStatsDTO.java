@@ -26,25 +26,25 @@ public class PluginSummaryStatsDTO extends PluginSummaryDTO {
     @Schema(description = "Average score")
     private Long score;
 
-    public static PluginSummaryStatsDTO fromPluginInfoAndStats(
+    public static PluginSummaryStatsDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple, InteractiveStats stats) {
         if (Objects.isNull(pluginInfoTriple) || Objects.isNull(stats)) {
             return null;
         }
-        PluginSummaryStatsDTO pluginSummaryStatsDTO =
+        PluginSummaryStatsDTO dto =
                 CommonUtils.convert(pluginInfoTriple.getLeft(), PluginSummaryStatsDTO.class);
-        pluginSummaryStatsDTO.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
-        pluginSummaryStatsDTO.setTags(pluginInfoTriple.getMiddle());
-        pluginSummaryStatsDTO.setAiModels(pluginInfoTriple.getRight()
+        dto.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
+        dto.setTags(pluginInfoTriple.getMiddle());
+        dto.setAiModels(pluginInfoTriple.getRight()
                 .stream()
                 .map(AiModelUtils::getModelInfoDTO)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
-        pluginSummaryStatsDTO.setViewCount(stats.getViewCount());
-        pluginSummaryStatsDTO.setReferCount(stats.getReferCount());
-        pluginSummaryStatsDTO.setRecommendCount(stats.getRecommendCount());
-        pluginSummaryStatsDTO.setScoreCount(stats.getScoreCount());
-        pluginSummaryStatsDTO.setScore(stats.getScore());
-        return pluginSummaryStatsDTO;
+        dto.setViewCount(stats.getViewCount());
+        dto.setReferCount(stats.getReferCount());
+        dto.setRecommendCount(stats.getRecommendCount());
+        dto.setScoreCount(stats.getScoreCount());
+        dto.setScore(stats.getScore());
+        return dto;
     }
 }

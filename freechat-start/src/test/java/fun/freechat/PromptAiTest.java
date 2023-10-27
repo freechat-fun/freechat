@@ -44,7 +44,6 @@ public class PromptAiTest {
     private static final String PROMPT = "say 'hello'";
     private static final String PROMPT_DRAFT = "say 'goodbye'";
     private static final String PROMPT_TEMPLATE_FSTRING = "say '{greeting}'";
-    private static final String PROMPT_TEMPLATE_JINJA2 = "say '{{greeting}}'";
     private static final String PROMPT_TEMPLATE_MUSTACHE = "say '{{greeting}}'";
 
     @Autowired
@@ -75,7 +74,7 @@ public class PromptAiTest {
     public void cleanUp() {
         TestPromptUtils.deletePrompt(userId, promptId);
         TestAiApiKeyUtils.cleanAiApiKeys(userId);
-        TestAccountUtils.deleteUserAndToken("31");
+        TestAccountUtils.deleteUserAndToken(userId);
     }
 
     private PromptAiParamDTO createRequest(String modelId) {
@@ -194,7 +193,6 @@ public class PromptAiTest {
         variables.put("greeting", "goodbye");
         return Stream.of(
                 Arguments.of(PROMPT_TEMPLATE_FSTRING, PromptFormat.F_STRING.text(), variables),
-                Arguments.of(PROMPT_TEMPLATE_JINJA2, PromptFormat.JINJA2.text(), variables),
                 Arguments.of(PROMPT_TEMPLATE_MUSTACHE, PromptFormat.MUSTACHE.text(), variables)
         );
     }
@@ -306,7 +304,7 @@ public class PromptAiTest {
 
         ChatPromptContentDTO promptContent = new ChatPromptContentDTO();
         promptContent.setSystem(system);
-        promptContent.setMessageToBeSent(messageToBeSent);
+        promptContent.setMessagesToSend(messageToBeSent);
         promptContent.setMessages(messages);
 
         Map<String, Object> variables = new HashMap<>(2);

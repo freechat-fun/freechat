@@ -1,8 +1,8 @@
 package fun.freechat.api.dto;
 
-import fun.freechat.service.enums.PromptRole;
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.output.Response;
+import fun.freechat.service.ai.message.ChatMessage;
+import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -33,32 +33,52 @@ public class LlmResultDTO extends TraceableDTO {
         return dto;
     }
 
-    public static <T> LlmResultDTO fromResponse(Response<T> response) {
+    public static <T> LlmResultDTO from(Response<T> response) {
+        if (Objects.isNull(response)) {
+            return null;
+        }
+
         T content = response.content();
         String text;
         ChatMessageDTO message = new ChatMessageDTO();
-        message.setGmtCreate(new Date());
-        if (content instanceof String) {
-            text = (String) content;
-            message.setContent(text);
-            message.setRole(PromptRole.ASSISTANT.text());
-        } else if (content instanceof AiMessage aiMessage) {
-            text = aiMessage.text();
-            message.setContent(text);
-            if (Objects.nonNull(aiMessage.toolExecutionRequest())) {
-                ChatFunctionCallDTO functionCall = new ChatFunctionCallDTO();
-                functionCall.setName(aiMessage.toolExecutionRequest().name());
-                functionCall.setArguments(aiMessage.toolExecutionRequest().arguments());
 
-                message.setFunctionCall(functionCall);
-                message.setRole(PromptRole.FUNCTION_CALL.text());
-            } else {
+        switch (content) {
+            case ChatMessage origMessage -> {
+                text = origMessage.getContent();
+                message.setContent(text);
+                message.setGmtCreate(origMessage.getGmtCreate());
+                message.setName(origMessage.getName());
+                message.setRole(origMessage.getRole().text());
+                message.setFunctionCall(
+                        ChatFunctionCallDTO.from(origMessage.getFunctionCall()));
+            }
+            case String textMessage -> {
+                text = textMessage;
+                message.setContent(text);
+                message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }
-        } else {
-            text = Objects.nonNull(content) ? content.toString() : "";
-            message.setContent(text);
-            message.setRole(PromptRole.ASSISTANT.text());
+            case dev.langchain4j.data.message.AiMessage aiMessage -> {
+                text = aiMessage.text();
+                message.setContent(text);
+                message.setGmtCreate(new Date());
+                if (Objects.nonNull(aiMessage.toolExecutionRequest())) {
+                    ChatFunctionCallDTO functionCall = new ChatFunctionCallDTO();
+                    functionCall.setName(aiMessage.toolExecutionRequest().name());
+                    functionCall.setArguments(aiMessage.toolExecutionRequest().arguments());
+
+                    message.setFunctionCall(functionCall);
+                    message.setRole(PromptRole.FUNCTION_CALL.text());
+                } else {
+                    message.setRole(PromptRole.ASSISTANT.text());
+                }
+            }
+            case null, default -> {
+                text = Objects.nonNull(content) ? content.toString() : "";
+                message.setContent(text);
+                message.setGmtCreate(new Date());
+                message.setRole(PromptRole.ASSISTANT.text());
+            }
         }
 
         String finishReason = Objects.nonNull(response.finishReason()) ?

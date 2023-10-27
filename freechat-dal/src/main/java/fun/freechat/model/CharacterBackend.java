@@ -24,13 +24,25 @@ public class CharacterBackend implements Serializable {
     private String chatPromptTaskId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String chatExamplePromptTaskId;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String greetingPromptTaskId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String experiencePromptTaskId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String moderationModelId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String moderationApiKeyName;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Byte forwardToUser;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer messageWindowSize;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String moderationParams;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
@@ -132,22 +144,6 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getChatExamplePromptTaskId() {
-        return chatExamplePromptTaskId;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterBackend withChatExamplePromptTaskId(String chatExamplePromptTaskId) {
-        this.setChatExamplePromptTaskId(chatExamplePromptTaskId);
-        return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setChatExamplePromptTaskId(String chatExamplePromptTaskId) {
-        this.chatExamplePromptTaskId = chatExamplePromptTaskId == null ? null : chatExamplePromptTaskId.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getGreetingPromptTaskId() {
         return greetingPromptTaskId;
     }
@@ -179,6 +175,86 @@ public class CharacterBackend implements Serializable {
         this.experiencePromptTaskId = experiencePromptTaskId == null ? null : experiencePromptTaskId.trim();
     }
 
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getModerationModelId() {
+        return moderationModelId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withModerationModelId(String moderationModelId) {
+        this.setModerationModelId(moderationModelId);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setModerationModelId(String moderationModelId) {
+        this.moderationModelId = moderationModelId == null ? null : moderationModelId.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getModerationApiKeyName() {
+        return moderationApiKeyName;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withModerationApiKeyName(String moderationApiKeyName) {
+        this.setModerationApiKeyName(moderationApiKeyName);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setModerationApiKeyName(String moderationApiKeyName) {
+        this.moderationApiKeyName = moderationApiKeyName == null ? null : moderationApiKeyName.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Byte getForwardToUser() {
+        return forwardToUser;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withForwardToUser(Byte forwardToUser) {
+        this.setForwardToUser(forwardToUser);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setForwardToUser(Byte forwardToUser) {
+        this.forwardToUser = forwardToUser;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getMessageWindowSize() {
+        return messageWindowSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withMessageWindowSize(Integer messageWindowSize) {
+        this.setMessageWindowSize(messageWindowSize);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setMessageWindowSize(Integer messageWindowSize) {
+        this.messageWindowSize = messageWindowSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getModerationParams() {
+        return moderationParams;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withModerationParams(String moderationParams) {
+        this.setModerationParams(moderationParams);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setModerationParams(String moderationParams) {
+        this.moderationParams = moderationParams == null ? null : moderationParams.trim();
+    }
+
     @Override
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
@@ -198,9 +274,13 @@ public class CharacterBackend implements Serializable {
             && (this.getCharacterId() == null ? other.getCharacterId() == null : this.getCharacterId().equals(other.getCharacterId()))
             && (this.getIsDefault() == null ? other.getIsDefault() == null : this.getIsDefault().equals(other.getIsDefault()))
             && (this.getChatPromptTaskId() == null ? other.getChatPromptTaskId() == null : this.getChatPromptTaskId().equals(other.getChatPromptTaskId()))
-            && (this.getChatExamplePromptTaskId() == null ? other.getChatExamplePromptTaskId() == null : this.getChatExamplePromptTaskId().equals(other.getChatExamplePromptTaskId()))
             && (this.getGreetingPromptTaskId() == null ? other.getGreetingPromptTaskId() == null : this.getGreetingPromptTaskId().equals(other.getGreetingPromptTaskId()))
-            && (this.getExperiencePromptTaskId() == null ? other.getExperiencePromptTaskId() == null : this.getExperiencePromptTaskId().equals(other.getExperiencePromptTaskId()));
+            && (this.getExperiencePromptTaskId() == null ? other.getExperiencePromptTaskId() == null : this.getExperiencePromptTaskId().equals(other.getExperiencePromptTaskId()))
+            && (this.getModerationModelId() == null ? other.getModerationModelId() == null : this.getModerationModelId().equals(other.getModerationModelId()))
+            && (this.getModerationApiKeyName() == null ? other.getModerationApiKeyName() == null : this.getModerationApiKeyName().equals(other.getModerationApiKeyName()))
+            && (this.getForwardToUser() == null ? other.getForwardToUser() == null : this.getForwardToUser().equals(other.getForwardToUser()))
+            && (this.getMessageWindowSize() == null ? other.getMessageWindowSize() == null : this.getMessageWindowSize().equals(other.getMessageWindowSize()))
+            && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
     }
 
     @Override
@@ -214,9 +294,13 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getCharacterId() == null) ? 0 : getCharacterId().hashCode());
         result = prime * result + ((getIsDefault() == null) ? 0 : getIsDefault().hashCode());
         result = prime * result + ((getChatPromptTaskId() == null) ? 0 : getChatPromptTaskId().hashCode());
-        result = prime * result + ((getChatExamplePromptTaskId() == null) ? 0 : getChatExamplePromptTaskId().hashCode());
         result = prime * result + ((getGreetingPromptTaskId() == null) ? 0 : getGreetingPromptTaskId().hashCode());
         result = prime * result + ((getExperiencePromptTaskId() == null) ? 0 : getExperiencePromptTaskId().hashCode());
+        result = prime * result + ((getModerationModelId() == null) ? 0 : getModerationModelId().hashCode());
+        result = prime * result + ((getModerationApiKeyName() == null) ? 0 : getModerationApiKeyName().hashCode());
+        result = prime * result + ((getForwardToUser() == null) ? 0 : getForwardToUser().hashCode());
+        result = prime * result + ((getMessageWindowSize() == null) ? 0 : getMessageWindowSize().hashCode());
+        result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
         return result;
     }
 
@@ -233,9 +317,13 @@ public class CharacterBackend implements Serializable {
         sb.append(", characterId=").append(characterId);
         sb.append(", isDefault=").append(isDefault);
         sb.append(", chatPromptTaskId=").append(chatPromptTaskId);
-        sb.append(", chatExamplePromptTaskId=").append(chatExamplePromptTaskId);
         sb.append(", greetingPromptTaskId=").append(greetingPromptTaskId);
         sb.append(", experiencePromptTaskId=").append(experiencePromptTaskId);
+        sb.append(", moderationModelId=").append(moderationModelId);
+        sb.append(", moderationApiKeyName=").append(moderationApiKeyName);
+        sb.append(", forwardToUser=").append(forwardToUser);
+        sb.append(", messageWindowSize=").append(messageWindowSize);
+        sb.append(", moderationParams=").append(moderationParams);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

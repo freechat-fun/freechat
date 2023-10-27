@@ -529,6 +529,21 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     @Override
+    public List<String> delete(User user) {
+        var statement = select(Info.promptId)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<String> ids = promptInfoMapper.selectMany(statement)
+                .stream()
+                .map(PromptInfo::getPromptId)
+                .toList();
+
+        return delete(ids, user);
+    }
+
+    @Override
     public Triple<PromptInfo, List<String>, List<String>> summary(String promptId, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
@@ -690,12 +705,13 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         }
 
         return switch (format) {
-            case MUSTACHE, JINJA2 -> PromptTemplate.from(promptTemplate).apply(variables).text();
+            case MUSTACHE -> PromptTemplate.from(promptTemplate).apply(variables).text();
             case F_STRING -> FStringPromptTemplate.from(promptTemplate).apply(variables).text();
         };
     }
 
-    private ChatMessage apply(ChatMessage original, Map<String, Object> variables, PromptFormat format) {
+    @Override
+    public ChatMessage apply(ChatMessage original, Map<String, Object> variables, PromptFormat format) {
         ChatMessage message = new ChatMessage();
         message.setRole(original.getRole());
         message.setName(original.getName());
@@ -711,9 +727,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         applied.setFormat(format.text());
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
-        if (Objects.nonNull(promptContent.getMessageToBeSent())) {
-            ChatMessage original = promptContent.getMessageToBeSent();
-            applied.setMessageToBeSent(apply(original, variables, format));
+        if (Objects.nonNull(promptContent.getMessagesToSend())) {
+            ChatMessage original = promptContent.getMessagesToSend();
+            applied.setMessagesToSend(apply(original, variables, format));
         }
 
         if (CollectionUtils.isNotEmpty(promptContent.getMessages())) {

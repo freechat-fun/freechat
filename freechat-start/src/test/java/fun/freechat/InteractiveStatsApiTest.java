@@ -48,7 +48,7 @@ public class InteractiveStatsApiTest {
     @AfterEach
     public void cleanUp() {
         TestPromptUtils.deletePrompt(userId, promptId);
-        TestAccountUtils.deleteUserAndToken("31");
+        TestAccountUtils.deleteUserAndToken(userId);
     }
 
     @Test

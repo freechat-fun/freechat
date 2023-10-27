@@ -17,11 +17,11 @@ public class PromptItemForNameDTO {
     @Schema(description = "Interactive statistics information")
     InteractiveStatsDTO stats;
 
-    public static PromptItemForNameDTO fromInfoItem(Triple<String, Integer, InteractiveStats> infoItem) {
+    public static PromptItemForNameDTO from(Triple<String, Integer, InteractiveStats> infoItem) {
         PromptItemForNameDTO dto = new PromptItemForNameDTO();
         dto.setPromptId(infoItem.getLeft());
         dto.setVersion(infoItem.getMiddle());
-        InteractiveStatsDTO stats = InteractiveStatsDTO.fromInteractiveStats(infoItem.getRight());
+        InteractiveStatsDTO stats = InteractiveStatsDTO.from(infoItem.getRight());
         if (Objects.nonNull(stats)) {
             stats.setRequestId(null);
             stats.setGmtCreate(null);

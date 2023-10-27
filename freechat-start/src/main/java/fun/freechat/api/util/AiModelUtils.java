@@ -21,8 +21,8 @@ public class AiModelUtils implements ApplicationContextAware {
     public static AiModelInfoDTO getModelInfoDTO(String modelId) {
         AiModelInfo modelInfo = aiModelInfoService.get(modelId);
         if (Objects.isNull(modelInfo)) {
-            return AiModelInfoDTO.fromModelId(modelId);
+            return AiModelInfoDTO.from(modelId);
         }
-        return AiModelInfoDTO.fromAiModelInfo(modelInfo);
+        return AiModelInfoDTO.from(modelInfo);
     }
 }
