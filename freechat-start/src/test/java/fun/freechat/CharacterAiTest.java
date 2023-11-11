@@ -60,7 +60,7 @@ public class CharacterAiTest {
     private static final String SYSTEM_PROMPT = """
             You play as a human who can talk with other people.
             You should never answer as an AI assistant!
-            By default, you speak in {{CHARACTER_LANG}}
+            By default, you speak in {{CHARACTER_LANG}}.
             
             [[[About you]]]
             Your name: {{CHARACTER_NICKNAME}}.
