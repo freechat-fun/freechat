@@ -14,6 +14,12 @@ public interface CharacterAiService {
                  String backendId,
                  String ext);
     boolean delete(String chatId);
-    Response<ChatMessage> send(String chatId, String text) throws ModerationException;
+    default Response<ChatMessage> send(String chatId, String text) {
+        return send(chatId, text, null, null);
+    }
+    default Response<ChatMessage> send(String chatId, String text, String context) {
+        return send(chatId, text, context, null);
+    }
+    Response<ChatMessage> send(String chatId, String text, String context, String attachment) throws ModerationException;
     TokenStream streamSend(String chatId, String text);
 }

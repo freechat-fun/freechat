@@ -6,6 +6,7 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.FlowInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Objects;
 
 @Schema(description = "Flow detailed content")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class FlowDetailsDTO extends FlowSummaryDTO {
     @Schema(description = "Flow configuration")
     private String config;

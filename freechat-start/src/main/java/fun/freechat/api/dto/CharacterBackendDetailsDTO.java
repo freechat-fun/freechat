@@ -4,12 +4,14 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterBackend;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Schema(description = "Character backend detailed information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CharacterBackendDetailsDTO extends TraceableDTO {
     @Schema(description = "Character backend identifier")
     private String backendId;

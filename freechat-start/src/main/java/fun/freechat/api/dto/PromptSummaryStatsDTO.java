@@ -7,6 +7,7 @@ import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.PromptInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Objects;
 
 @Schema(description = "Prompt template summary content, including interactive statistical information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PromptSummaryStatsDTO extends PromptSummaryDTO {
     @Schema(description = "View count")
     private Long viewCount;

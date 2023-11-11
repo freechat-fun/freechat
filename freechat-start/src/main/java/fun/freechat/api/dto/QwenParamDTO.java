@@ -2,9 +2,11 @@ package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Schema(description = "Qwen series model parameters")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class QwenParamDTO extends AiModelParamDTO{
     @Schema(description = "Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation. The default value is 0.5.")
     private Double topP;

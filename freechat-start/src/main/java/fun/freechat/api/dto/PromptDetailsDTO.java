@@ -9,6 +9,7 @@ import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Schema(description = "Prompt detailed content")
 @Slf4j
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PromptDetailsDTO extends PromptSummaryDTO {
     @Schema(description = "Prompt text template content")
     private String template;

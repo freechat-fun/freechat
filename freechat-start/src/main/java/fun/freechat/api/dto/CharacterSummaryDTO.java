@@ -5,6 +5,7 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Character summary content")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CharacterSummaryDTO extends TraceableDTO {
     @Schema(description = "Character identifier")
     private String characterId;

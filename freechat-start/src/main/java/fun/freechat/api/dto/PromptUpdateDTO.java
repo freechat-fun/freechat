@@ -8,6 +8,7 @@ import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 @Schema(description = "Request data for updating prompt information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PromptUpdateDTO extends PromptCreateDTO {
     public Triple<PromptInfo, List<String>, List<String>> toPromptInfo(String promptId) {
         PromptInfo promptInfo = CommonUtils.convert(this, PromptInfo.class);

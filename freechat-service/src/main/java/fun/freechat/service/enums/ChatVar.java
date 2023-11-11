@@ -15,6 +15,7 @@ public enum ChatVar {
     USER_NICKNAME,
     USER_PROFILE,
     RELEVANT_INFORMATION,
+    CHAT_CONTEXT,
     INPUT,
     UNKNOWN;
     public static ChatVar of(String text) {

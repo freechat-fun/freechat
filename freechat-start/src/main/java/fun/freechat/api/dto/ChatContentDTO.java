@@ -12,4 +12,6 @@ public class ChatContentDTO {
     private String content;
     @Schema(description = "Chat attachment.")
     private String attachment;
+    @Schema(description = "Contextual information the character should know in this round of conversation")
+    private String context;
 }

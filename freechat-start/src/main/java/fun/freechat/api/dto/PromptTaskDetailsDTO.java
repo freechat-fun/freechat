@@ -7,6 +7,7 @@ import fun.freechat.model.PromptTask;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Schema(description = "Prompt task detailed information")
 @Slf4j
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PromptTaskDetailsDTO extends TraceableDTO {
     @Schema(description = "Prompt task identifier")
     private String taskId;

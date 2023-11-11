@@ -4,12 +4,14 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.InteractiveStats;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Schema(description = "Interactive statistics information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class InteractiveStatsDTO extends TraceableDTO {
     @Schema(description = "Creation time")
     private Date gmtCreate;

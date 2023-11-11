@@ -5,12 +5,14 @@ import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Schema(description = "Prompt service result")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class LlmResultDTO extends TraceableDTO {
     @Schema(description = "Model response content, the complete content is included in non-streaming responses; only the delta content is included in streaming responses (the complete content of streaming responses is in the content of the last frame message field)")
     private String text;

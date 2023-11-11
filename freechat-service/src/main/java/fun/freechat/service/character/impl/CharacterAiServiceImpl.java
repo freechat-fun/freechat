@@ -89,7 +89,7 @@ public class CharacterAiServiceImpl implements CharacterAiService {
     }
 
     @Override
-    public Response<ChatMessage> send(String chatId, String text) {
+    public Response<ChatMessage> send(String chatId, String text, String context, String attachment) {
         ChatSession session = chatSessionService.get(chatId);
         if (Objects.isNull(session) || StringUtils.isBlank(text)) {
             return null;
@@ -97,18 +97,20 @@ public class CharacterAiServiceImpl implements CharacterAiService {
 
         Map<String, Object> variables = session.getVariables();
         variables.put(INPUT.text(), text);
+        variables.put(CHAT_CONTEXT.text(), getOrBlank(context));
 
+        String relevantConcatenated = null;
         if (Objects.nonNull(session.getRetriever())) {
             List<TextSegment> relevant = session.getRetriever().findRelevant(text);
 
             if (CollectionUtils.isNotEmpty(relevant)) {
-                String relevantConcatenated = relevant.stream()
+                relevantConcatenated = relevant.stream()
                         .map(TextSegment::text)
                         .collect(joining("\n\n"));
                 log.debug("Retrieved relevant information:\n" + relevantConcatenated + "\n");
-                variables.put(RELEVANT_INFORMATION.text(), relevantConcatenated);
             }
         }
+        variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
         try {
 
@@ -172,14 +174,18 @@ public class CharacterAiServiceImpl implements CharacterAiService {
                     tokenUsage,
                     response.finishReason());
         } finally {
-            variables.put(INPUT.text(), "");
             variables.put(RELEVANT_INFORMATION.text(), "");
-
+            variables.put(CHAT_CONTEXT.text(), "");
+            variables.put(INPUT.text(), "");
         }
     }
 
     @Override
     public TokenStream streamSend(String chatId, String text) {
         return null;
+    }
+
+    private String getOrBlank(String content) {
+        return StringUtils.isBlank(content) ? "" : content;
     }
 }

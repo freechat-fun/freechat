@@ -2,9 +2,11 @@ package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Schema(description = "OpenAI series model parameters")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class OpenAiParamDTO extends AiModelParamDTO{
     @Schema(description = "OpenAI service provider address, default: https://api.openai.com/v1")
     private String baseUrl;

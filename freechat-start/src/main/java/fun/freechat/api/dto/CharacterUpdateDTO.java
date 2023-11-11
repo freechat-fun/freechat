@@ -9,6 +9,7 @@ import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 @Schema(description = "Request data for updating character information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CharacterUpdateDTO extends CharacterCreateDTO {
     public Pair<CharacterInfo, List<String>> toCharacterInfo(String characterId) {
         CharacterInfo characterInfo = CommonUtils.convert(this, CharacterInfo.class);

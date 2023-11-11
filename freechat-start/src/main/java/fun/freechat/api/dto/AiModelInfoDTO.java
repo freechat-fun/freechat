@@ -4,11 +4,13 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Objects;
 
 @Schema(description = "Model information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AiModelInfoDTO extends TraceableDTO {
     @Schema(description = "Model identifier: [provider]name")
     private String modelId;

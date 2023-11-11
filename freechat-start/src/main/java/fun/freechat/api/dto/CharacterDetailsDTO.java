@@ -9,6 +9,7 @@ import fun.freechat.service.character.CharacterInfoDraft;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 @Schema(description = "Character detailed content")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CharacterDetailsDTO extends CharacterSummaryDTO {
     @Schema(description = "Character profile")
     private String profile;

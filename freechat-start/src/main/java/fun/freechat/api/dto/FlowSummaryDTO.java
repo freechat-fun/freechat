@@ -6,6 +6,7 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.FlowInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Objects;
 
 @Schema(description = "Flow summary information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class FlowSummaryDTO extends TraceableDTO {
     @Schema(description = "Flow identifier")
     private String flowId;

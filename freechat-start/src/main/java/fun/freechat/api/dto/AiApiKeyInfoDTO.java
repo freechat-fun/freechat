@@ -5,12 +5,14 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.service.ai.MaskedAiApiKey;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Schema(description = "Model credential information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AiApiKeyInfoDTO extends TraceableDTO {
     @Schema(description = "Credential identifier")
     private Long id;

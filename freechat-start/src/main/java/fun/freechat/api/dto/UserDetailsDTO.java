@@ -5,6 +5,7 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 @Schema(description = "Account detailed information")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class UserDetailsDTO extends TraceableDTO {
     private String username;
     private String nickname;

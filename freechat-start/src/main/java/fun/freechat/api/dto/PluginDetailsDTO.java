@@ -7,6 +7,7 @@ import fun.freechat.api.util.FunctionFormatUtils;
 import fun.freechat.model.PluginInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @Schema(description = "Plugin detailed content")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PluginDetailsDTO extends PluginSummaryDTO {
     @Schema(description = "Manifest content, different formats may have differences")
     private String manifestInfo;
