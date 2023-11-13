@@ -1,6 +1,7 @@
 package fun.freechat.api;
 
 import dev.langchain4j.model.output.Response;
+import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.ChatContentDTO;
 import fun.freechat.api.dto.ChatCreateDTO;
 import fun.freechat.api.dto.ChatMessageDTO;
@@ -26,9 +27,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -90,8 +94,56 @@ public class CharacterAiApi {
     public LlmResultDTO send(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat content") @RequestBody @NotNull ChatContentDTO chatContent) {
-        Response<ChatMessage> response = characterAiService.send(chatId, chatContent.getContent());
+        Response<ChatMessage> response = characterAiService.send(
+                chatId, chatContent.getContent(), chatContent.getContext(), chatContent.getAttachment());
+
+        if (Objects.isNull(response)) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
+        }
+
         return LlmResultDTO.from(response);
+    }
+
+    @Operation(
+            operationId = "streamSendMessage",
+            summary = "Send Chat Message by Streaming Back",
+            description = "Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response."
+    )
+    @PostMapping(value = "/chat/send/stream/{chatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
+    public SseEmitter streamSend(
+            @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat content") @RequestBody @NotNull ChatContentDTO chatContent) {
+        SseEmitter sseEmitter = new SseEmitter();
+        TokenStream tokenStream = characterAiService.streamSend(
+                chatId, chatContent.getContent(), chatContent.getContext(), chatContent.getAttachment());
+
+        if (Objects.isNull(tokenStream)) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
+        }
+
+        tokenStream.onNext(partialResult -> {
+            try {
+                LlmResultDTO result = LlmResultDTO.from(
+                        partialResult, null, null, null);
+                result.setRequestId(null);
+                sseEmitter.send(result);
+            } catch (NullPointerException | IOException e) {
+                sseEmitter.completeWithError(e);
+            }
+        }).onComplete(response -> {
+            try {
+                LlmResultDTO result = LlmResultDTO.from(response);
+                Objects.requireNonNull(result).setText(null);
+                result.setRequestId(null);
+                sseEmitter.send(result);
+                sseEmitter.complete();
+            } catch (NullPointerException | IOException e) {
+                sseEmitter.completeWithError(e);
+            }
+        }).onError(sseEmitter::completeWithError).start();
+
+        return sseEmitter;
     }
 
     @Operation(

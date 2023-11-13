@@ -3,14 +3,13 @@ package fun.freechat.service.character.impl;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolExecutor;
 import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
+import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.User;
@@ -41,7 +40,7 @@ import static java.util.stream.Collectors.joining;
 @Slf4j
 @SuppressWarnings("unused")
 public class CharacterAiServiceImpl implements CharacterAiService {
-    private static final int MAX_TOOL_EXECUTION_TIMES = 30;
+    private static final int MAX_TOOL_EXECUTION_TIMES = 10;
 
     @Autowired
     private ChatContextService chatContextService;
@@ -94,6 +93,67 @@ public class CharacterAiServiceImpl implements CharacterAiService {
             return null;
         }
 
+        Object memoryId = asMemoryId(chatId);
+        ChatMemory chatMemory = session.getChatMemory(memoryId);
+
+        var messages = handleMessages(text, context, attachment, session, chatMemory);
+
+        Future<Moderation> moderationFuture = Objects.nonNull(session.getModerationModel()) ?
+                chatSessionService.triggerModerationIfNeeded(session, messages) : null;
+
+        ChatLanguageModel chatModel = session.getChatModel();
+        List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
+
+        Response<dev.langchain4j.data.message.AiMessage> response = Objects.nonNull(toolSpecifications) ?
+                chatModel.generate(messages, toolSpecifications) :
+                chatModel.generate(messages);
+
+        chatSessionService.verifyModerationIfNeeded(session, moderationFuture);
+
+        TokenUsage tokenUsage = new TokenUsage();
+        ToolExecutionRequest toolExecutionRequest;
+        for (int i = 0; i < MAX_TOOL_EXECUTION_TIMES; ++i) {
+            chatMemory.add(response.content());
+            tokenUsage = tokenUsage.add(response.tokenUsage());
+
+            toolExecutionRequest = response.content().toolExecutionRequest();
+            if (Objects.isNull(toolExecutionRequest)) {
+                break;
+            }
+
+            ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
+            String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
+            dev.langchain4j.data.message.ToolExecutionResultMessage toolExecutionResultMessage
+                    = toolExecutionResultMessage(toolExecutionRequest.name(), toolExecutionResult);
+
+            chatMemory.add(toolExecutionResultMessage);
+            response = chatModel.generate(chatMemory.messages(), toolSpecifications);
+        }
+
+        Object aiName = session.getVariables().get(CHARACTER_NICKNAME.text());
+        return Response.from(
+                PromptUtils.convertL4jMessage(response.content()).withName((String) aiName),
+                tokenUsage,
+                response.finishReason());
+    }
+
+    @Override
+    public TokenStream streamSend(String chatId, String text, String context, String attachment) {
+        ChatSession session = chatSessionService.get(chatId);
+        if (Objects.isNull(session) || StringUtils.isBlank(text)) {
+            return null;
+        }
+
+        Object memoryId = asMemoryId(chatId);
+        ChatMemory chatMemory = session.getChatMemory(memoryId);
+
+        var messages = handleMessages(text, context, attachment, session, chatMemory);
+        return new AiServiceTokenStream(messages, session.getAiServiceContext(), memoryId);
+    }
+
+    private List<dev.langchain4j.data.message.ChatMessage> handleMessages(
+            String text, String context, String attachment,
+            ChatSession session, ChatMemory chatMemory) {
         Map<String, Object> variables = session.getVariables();
         variables.put(INPUT.text(), text);
         variables.put(CHAT_CONTEXT.text(), getOrBlank(context));
@@ -111,74 +171,21 @@ public class CharacterAiServiceImpl implements CharacterAiService {
         }
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
-        try {
+        ChatPromptContent prompt = session.getPrompt();
+        ChatMessage systemMessage = ChatMessage.from(
+                PromptRole.SYSTEM,
+                promptService.apply(prompt.getSystem(), variables, PromptFormat.of(prompt.getFormat())));
 
-            ChatPromptContent prompt = session.getPrompt();
-            Object memoryId = asMemoryId(chatId);
-            ChatMemory chatMemory = session.getChatMemory(memoryId);
+        ChatMessage userMessage = Optional.ofNullable(prompt.getMessagesToSend())
+                .map(userPrompt ->
+                        promptService.apply(userPrompt, variables, PromptFormat.of(prompt.getFormat())))
+                .orElse(ChatMessage.from(PromptRole.USER, text));
+        userMessage.setName((String) variables.get(USER_NICKNAME.text()));
 
-            ChatMessage systemMessage = ChatMessage.from(
-                    PromptRole.SYSTEM,
-                    promptService.apply(prompt.getSystem(), variables, PromptFormat.of(prompt.getFormat())));
+        chatMemory.add(PromptUtils.convertChatMessage(systemMessage));
+        chatMemory.add(PromptUtils.convertChatMessage(userMessage));
 
-            ChatMessage userMessage = Optional.ofNullable(prompt.getMessagesToSend())
-                    .map(userPrompt ->
-                            promptService.apply(userPrompt, variables, PromptFormat.of(prompt.getFormat())))
-                    .orElse(ChatMessage.from(PromptRole.USER, text));
-            userMessage.setName((String) variables.get(USER_NICKNAME.text()));
-
-            chatMemory.add(PromptUtils.convertChatMessage(systemMessage));
-            chatMemory.add(PromptUtils.convertChatMessage(userMessage));
-
-            var messages = chatMemory.messages();
-
-            Future<Moderation> moderationFuture = Objects.nonNull(session.getModerationModel()) ?
-                    chatSessionService.triggerModerationIfNeeded(session, messages) : null;
-
-            ChatLanguageModel chatModel = session.getChatModel();
-            List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
-
-            Response<AiMessage> response = Objects.nonNull(toolSpecifications) ?
-                    chatModel.generate(messages, toolSpecifications) :
-                    chatModel.generate(messages);
-
-            chatSessionService.verifyModerationIfNeeded(session, moderationFuture);
-
-            TokenUsage tokenUsage = new TokenUsage();
-            ToolExecutionRequest toolExecutionRequest;
-            for (int i = 0; i < MAX_TOOL_EXECUTION_TIMES; ++i) { // TODO limit number of cycles
-                chatMemory.add(response.content());
-                tokenUsage.add(response.tokenUsage());
-
-                toolExecutionRequest = response.content().toolExecutionRequest();
-                if (Objects.isNull(toolExecutionRequest)) {
-                    break;
-                }
-
-                ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
-                String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
-                ToolExecutionResultMessage toolExecutionResultMessage
-                        = toolExecutionResultMessage(toolExecutionRequest.name(), toolExecutionResult);
-
-                chatMemory.add(toolExecutionResultMessage);
-                response = chatModel.generate(chatMemory.messages(), toolSpecifications);
-            }
-
-            Object aiName = variables.get(CHARACTER_NICKNAME.text());
-            return Response.from(
-                    PromptUtils.convertL4jMessage(response.content()).withName((String) aiName),
-                    tokenUsage,
-                    response.finishReason());
-        } finally {
-            variables.put(RELEVANT_INFORMATION.text(), "");
-            variables.put(CHAT_CONTEXT.text(), "");
-            variables.put(INPUT.text(), "");
-        }
-    }
-
-    @Override
-    public TokenStream streamSend(String chatId, String text) {
-        return null;
+        return chatMemory.messages();
     }
 
     private String getOrBlank(String content) {

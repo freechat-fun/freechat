@@ -20,11 +20,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -304,7 +303,8 @@ public class CharacterAiTest {
         assertNotNull(result);
         assertNotNull(result.getMessage());
         System.out.println(USER_NICKNAME + ": " + dto.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContent());
+        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContent() +
+                " (" + result.getTokenUsage() + ")");
 
         dto.setContent("How about the weather today?");
 
@@ -321,7 +321,41 @@ public class CharacterAiTest {
         assertNotNull(result);
         assertNotNull(result.getMessage());
         System.out.println(USER_NICKNAME + ": " + dto.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContent());
+        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContent() +
+                " (" + result.getTokenUsage() + ")");
+    }
+
+    private void testStreamSendMessage() throws Exception {
+        ChatContentDTO dto = new ChatContentDTO();
+        dto.setContent("OK. Nice to meet you. Bye!");
+
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        System.out.println(USER_NICKNAME + ": " + dto.getContent());
+        testClient.post().uri("/api/v1/character/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (Objects.isNull(text)) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
+
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + ": " + answer);
     }
 
     private void testListMessagesFailed() {
@@ -441,7 +475,7 @@ public class CharacterAiTest {
     }
 
     @Test
-    public void testAll() {
+    public void testAll() throws Exception {
         testCreatePrompt();
         TestCommonUtils.waitAWhile();
 
@@ -464,6 +498,9 @@ public class CharacterAiTest {
         TestCommonUtils.waitAWhile();
 
         testSendMessage();
+        TestCommonUtils.waitAWhile();
+
+        testStreamSendMessage();
         TestCommonUtils.waitAWhile();
 
         testListMessagesFailed();

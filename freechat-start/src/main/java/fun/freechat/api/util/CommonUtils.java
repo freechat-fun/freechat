@@ -54,11 +54,11 @@ public class CommonUtils {
                 }
                 try {
                     LlmResultDTO result = LlmResultDTO.from(response);
-                    result.setText(null);
+                    Objects.requireNonNull(result).setText(null);
                     result.setRequestId(null);
                     sseEmitter.send(result);
                     sseEmitter.complete();
-                } catch (IOException e) {
+                } catch (NullPointerException | IOException e) {
                     sseEmitter.completeWithError(e);
                 }
                 abort = true;

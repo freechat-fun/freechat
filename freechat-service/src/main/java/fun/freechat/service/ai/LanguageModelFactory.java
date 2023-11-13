@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LanguageModelFactory {
-    static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30L);
+    static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60L);
 
     public static OpenAiLanguageModel createOpenAiLanguageModel(
             String apiKey, String modelName, Map<String, Object> parameters) {

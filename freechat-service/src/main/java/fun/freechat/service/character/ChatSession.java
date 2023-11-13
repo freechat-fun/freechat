@@ -24,11 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static dev.langchain4j.agent.tool.ToolSpecifications.toolSpecificationFrom;
 
+@Getter
 public class ChatSession {
     private final AiServiceContext aiServiceContext;
-    @Getter
     private final ChatPromptContent prompt;
-    @Getter
     private final Map<String, Object> variables;
 
     @Builder
