@@ -4,6 +4,7 @@ import dev.langchain4j.model.dashscope.*;
 import dev.langchain4j.model.openai.*;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 public class LanguageModelFactory {
@@ -43,6 +44,7 @@ public class LanguageModelFactory {
                 .maxTokens((Integer) parameters.get("maxTokens"))
                 .presencePenalty((Double) parameters.get("presencePenalty"))
                 .frequencyPenalty((Double) parameters.get("frequencyPenalty"))
+                .stop((List<String>) parameters.get("stop"))
                 .build();
     }
 
@@ -58,6 +60,7 @@ public class LanguageModelFactory {
                 .maxTokens((Integer) parameters.get("maxTokens"))
                 .presencePenalty((Double) parameters.get("presencePenalty"))
                 .frequencyPenalty((Double) parameters.get("frequencyPenalty"))
+                .stop((List<String>) parameters.get("stop"))
                 .build();
     }
 

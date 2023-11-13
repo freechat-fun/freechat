@@ -6,7 +6,6 @@ import fun.freechat.mapper.ChatHistoryMapper;
 import fun.freechat.model.ChatHistory;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.character.ChatMemoryService;
-import fun.freechat.service.enums.PromptRole;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                     .toList();
             cache().put(CACHE_KEY_PREFIX + memoryId, messages);
         }
-        return new LinkedList<dev.langchain4j.data.message.ChatMessage>(messages);
+        return messages;
     }
 
     @Override
@@ -63,13 +62,22 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             return;
         }
 
-        var latestMessage = messages.getLast();
-        var cachedMessages = getMessages(memoryId);
+        var firstMessage = messages.getFirst();
+        var lastMessage = messages.getLast();
+        var cachedMessages = new LinkedList<>(getMessages(memoryId));
 
-        if (Objects.nonNull(latestMessage)) {
-            int rows = chatHistoryMapper.insertSelective(l4jMessageToHistory(memoryId, latestMessage));
+        if (firstMessage instanceof dev.langchain4j.data.message.SystemMessage l4jSystemMessage &&
+                Objects.nonNull(firstMessage.text())) {
+            boolean succeeded = updateSystemMessageIfNecessary(memoryId, cachedMessages, l4jSystemMessage);
+            if (lastMessage == firstMessage && succeeded) {
+                lastMessage = null;
+            }
+        }
+
+        if (Objects.nonNull(lastMessage)) {
+            int rows = chatHistoryMapper.insertSelective(l4jMessageToHistory(memoryId, lastMessage));
             if (rows > 0) {
-                cachedMessages.addLast(latestMessage);
+                cachedMessages.addLast(lastMessage);
             }
         }
 
@@ -94,18 +102,16 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .toList();
     }
 
-    @Override
-    public void updateSystemMessageIfNecessary(Object memoryId, ChatMessage systemMessage) {
-        if (systemMessage.getRole() != PromptRole.SYSTEM || Objects.isNull(systemMessage.getContent())) {
-            return;
-        }
-        var cachedMessages = getMessages(memoryId);
+    private boolean updateSystemMessageIfNecessary(
+            Object memoryId,
+            LinkedList<dev.langchain4j.data.message.ChatMessage> cachedMessages,
+            dev.langchain4j.data.message.SystemMessage l4jSystemMessage) {
+
         if (CollectionUtils.isNotEmpty(cachedMessages)) {
             var existedSystemMessage = cachedMessages.getFirst();
-            if (Objects.nonNull(existedSystemMessage) &&
-                    existedSystemMessage.type() == dev.langchain4j.data.message.ChatMessageType.SYSTEM &&
-                    !systemMessage.getContent().equals(existedSystemMessage.text())) {
+            if (Objects.nonNull(existedSystemMessage) && !l4jSystemMessage.equals(existedSystemMessage)) {
                 try {
+                    ChatMessage systemMessage = PromptUtils.convertL4jMessage(l4jSystemMessage);
                     String messageStr = InfoUtils.defaultMapper().writeValueAsString(systemMessage);
                     ChatHistory systemHistory = loadSystemHistory(memoryId);
                     if (Objects.nonNull(systemHistory)) {
@@ -116,13 +122,15 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                             cachedMessages.removeFirst();
                             cachedMessages.addFirst(PromptUtils.convertChatMessage(systemMessage));
                         }
+                        return true;
                     }
                 } catch (JsonProcessingException e) {
-                    log.warn("Message deserialize error: {}", systemMessage, e);
+                    log.warn("Message deserialize error: {}", l4jSystemMessage, e);
                 }
 
             }
         }
+        return false;
     }
 
     private List<ChatHistory> loadHistories(Object memoryId) {

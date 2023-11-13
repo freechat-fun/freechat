@@ -12,7 +12,6 @@ import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.service.TokenStream;
-import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.User;
 import fun.freechat.service.ai.message.ChatMessage;
@@ -115,15 +114,12 @@ public class CharacterAiServiceImpl implements CharacterAiService {
         try {
 
             ChatPromptContent prompt = session.getPrompt();
+            Object memoryId = asMemoryId(chatId);
+            ChatMemory chatMemory = session.getChatMemory(memoryId);
 
             ChatMessage systemMessage = ChatMessage.from(
                     PromptRole.SYSTEM,
                     promptService.apply(prompt.getSystem(), variables, PromptFormat.of(prompt.getFormat())));
-
-            ChatMemoryStore chatMemoryStore = session.getChatMemoryStore();
-            if (chatMemoryStore instanceof ChatMemoryService chatMemoryService) {
-                chatMemoryService.updateSystemMessageIfNecessary(chatId, systemMessage);
-            }
 
             ChatMessage userMessage = Optional.ofNullable(prompt.getMessagesToSend())
                     .map(userPrompt ->
@@ -131,7 +127,7 @@ public class CharacterAiServiceImpl implements CharacterAiService {
                     .orElse(ChatMessage.from(PromptRole.USER, text));
             userMessage.setName((String) variables.get(USER_NICKNAME.text()));
 
-            ChatMemory chatMemory = session.getChatMemory();
+            chatMemory.add(PromptUtils.convertChatMessage(systemMessage));
             chatMemory.add(PromptUtils.convertChatMessage(userMessage));
 
             var messages = chatMemory.messages();
@@ -160,7 +156,7 @@ public class CharacterAiServiceImpl implements CharacterAiService {
                 }
 
                 ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
-                String toolExecutionResult = toolExecutor.execute(toolExecutionRequest);
+                String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
                 ToolExecutionResultMessage toolExecutionResultMessage
                         = toolExecutionResultMessage(toolExecutionRequest.name(), toolExecutionResult);
 

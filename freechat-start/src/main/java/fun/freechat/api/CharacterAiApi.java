@@ -9,8 +9,6 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.character.CharacterAiService;
 import fun.freechat.service.character.ChatMemoryService;
-import fun.freechat.service.character.ChatSession;
-import fun.freechat.service.character.ChatSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +29,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -45,7 +42,7 @@ public class CharacterAiApi {
     private CharacterAiService characterAiService;
 
     @Autowired
-    private ChatSessionService chatSessionService;
+    private ChatMemoryService chatMemoryService;
 
     @Operation(
             operationId = "startChat",
@@ -113,12 +110,8 @@ public class CharacterAiApi {
             @Parameter(description = "Messages offset (from new to old)") @PathVariable("offset") @PositiveOrZero Optional<Integer> offset) {
         int messagesLimit = limit.orElse(Integer.MAX_VALUE);
         int messagesOffset = offset.orElse(0);
-        ChatSession session = chatSessionService.get(chatId);
-        if (Objects.isNull(session)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find chat: " + chatId);
-        }
 
-        var messages = ((ChatMemoryService)session.getChatMemoryStore()).listChatMessages(chatId);
+        var messages = chatMemoryService.listChatMessages(chatId);
         if (CollectionUtils.isEmpty(messages) || messages.size() <= messagesOffset) {
             return Collections.emptyList();
         }

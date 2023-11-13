@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.moderation.ModerationModel;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
+import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.*;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
@@ -186,10 +186,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             ChatMemoryStore chatMemoryStore = StoreUtils.defaultMemoryStore();
             Integer windowSize = backend.getMessageWindowSize();
-            ChatMemory chatMemory = MessageWindowChatMemory.builder()
+            ChatMemory chatMemory = SystemAlwaysOnTopMessageWindowChatMemory.builder()
                     .id(chatId)
-                    .chatMemoryStore(chatMemoryStore)
                     .maxMessages(windowSize)
+                    .chatMemoryStore(chatMemoryStore)
                     .build();
 
             if (CollectionUtils.isEmpty(chatMemory.messages())) {
@@ -218,7 +218,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
                     .moderationModel(moderationModel)
-                    .chatMemoryStore(chatMemoryStore)
                     .chatMemory(chatMemory)
                     .prompt(prompt)
                     .variables(variables)

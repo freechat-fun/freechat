@@ -25,7 +25,7 @@
     <redisson.version>3.23.5</redisson.version>
     <objenesis.version>3.3</objenesis.version>
     <swagger-parser.version>2.1.16</swagger-parser.version>
-    <langchain4j.version>0.23.0</langchain4j.version>
+    <langchain4j.version>0.24.0</langchain4j.version>
 
     <!--plugin versions-->
     <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>

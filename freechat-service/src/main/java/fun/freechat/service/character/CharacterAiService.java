@@ -22,4 +22,7 @@ public interface CharacterAiService {
     }
     Response<ChatMessage> send(String chatId, String text, String context, String attachment) throws ModerationException;
     TokenStream streamSend(String chatId, String text);
+    default Object asMemoryId(String chatId) {
+        return chatId;
+    }
 }

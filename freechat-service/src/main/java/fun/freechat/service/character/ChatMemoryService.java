@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface ChatMemoryService extends ChatMemoryStore {
     List<ChatMessage> listChatMessages(Object memoryId);
-    void updateSystemMessageIfNecessary(Object memoryId, ChatMessage systemMessage);
 }
