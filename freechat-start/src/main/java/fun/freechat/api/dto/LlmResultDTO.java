@@ -51,8 +51,8 @@ public class LlmResultDTO extends TraceableDTO {
                 message.setGmtCreate(origMessage.getGmtCreate());
                 message.setName(origMessage.getName());
                 message.setRole(origMessage.getRole().text());
-                message.setFunctionCall(
-                        ChatFunctionCallDTO.from(origMessage.getFunctionCall()));
+                message.setToolCall(
+                        ChatToolCallDTO.from(origMessage.getToolCall()));
             }
             case String textMessage -> {
                 text = textMessage;
@@ -65,11 +65,11 @@ public class LlmResultDTO extends TraceableDTO {
                 message.setContent(text);
                 message.setGmtCreate(new Date());
                 if (Objects.nonNull(aiMessage.toolExecutionRequest())) {
-                    ChatFunctionCallDTO functionCall = new ChatFunctionCallDTO();
-                    functionCall.setName(aiMessage.toolExecutionRequest().name());
-                    functionCall.setArguments(aiMessage.toolExecutionRequest().arguments());
+                    ChatToolCallDTO toolCall = new ChatToolCallDTO();
+                    toolCall.setName(aiMessage.toolExecutionRequest().name());
+                    toolCall.setArguments(aiMessage.toolExecutionRequest().arguments());
 
-                    message.setFunctionCall(functionCall);
+                    message.setToolCall(toolCall);
                     message.setRole(PromptRole.FUNCTION_CALL.text());
                 } else {
                     message.setRole(PromptRole.ASSISTANT.text());

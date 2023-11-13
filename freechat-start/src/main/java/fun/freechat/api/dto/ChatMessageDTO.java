@@ -20,8 +20,8 @@ public class ChatMessageDTO {
     private String name;
     @Schema(description = "default: Dialogue content; function_result: function call result, serialized as json")
     private String content;
-    @Schema(description = "Function call information during the conversation")
-    private ChatFunctionCallDTO functionCall;
+    @Schema(description = "Tool call information during the conversation")
+    private ChatToolCallDTO toolCall;
     @Schema(description = "Creation time")
     private Date gmtCreate;
 
@@ -35,7 +35,7 @@ public class ChatMessageDTO {
         dto.setName(message.getName());
         dto.setContent(message.getContent());
         dto.setGmtCreate(message.getGmtCreate());
-        dto.setFunctionCall(ChatFunctionCallDTO.from(message.getFunctionCall()));
+        dto.setToolCall(ChatToolCallDTO.from(message.getToolCall()));
         return dto;
     }
 }

@@ -715,7 +715,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         ChatMessage message = new ChatMessage();
         message.setRole(original.getRole());
         message.setName(original.getName());
-        message.setFunctionCall(original.getFunctionCall());
+        message.setToolCall(original.getToolCall());
         message.setContent(apply(original.getContent(), variables, format));
         message.setGmtCreate(original.getGmtCreate());
         return message;

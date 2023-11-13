@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FunctionProperties {
+public class ToolProperties {
     private String description;
     private String example;
     private String type;

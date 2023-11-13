@@ -3,12 +3,12 @@ package fun.freechat.service.plugin.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.freechat.model.PluginInfo;
-import fun.freechat.service.ai.tool.FunctionInfo;
-import fun.freechat.service.ai.tool.FunctionParameters;
-import fun.freechat.service.ai.tool.FunctionProperties;
+import fun.freechat.service.ai.tool.ToolSpecification;
+import fun.freechat.service.ai.tool.ToolParameters;
+import fun.freechat.service.ai.tool.ToolProperties;
 import fun.freechat.service.enums.ApiFormat;
-import fun.freechat.service.enums.FunctionFormat;
-import fun.freechat.service.plugin.PluginFormatService;
+import fun.freechat.service.enums.ToolSpecFormat;
+import fun.freechat.service.plugin.PluginToolSpecFormatService;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.media.Content;
@@ -36,19 +36,19 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Service
 @Slf4j
 @SuppressWarnings("unused")
-public class OpenAIFunctionFormatter implements PluginFormatService {
+public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
     @Override
-    public Pair<FunctionFormat, String> convert(PluginInfo pluginInfo) {
+    public Pair<ToolSpecFormat, String> convert(PluginInfo pluginInfo) {
         try {
             ApiFormat apiFormat = ApiFormat.of(pluginInfo.getApiFormat());
             if (apiFormat != ApiFormat.OPENAPI_V3) {
                 throw new NotImplementedException("Only support OpenAPI v3 api docs!");
             }
-            return Pair.of(FunctionFormat.OPEN_AI,
+            return Pair.of(ToolSpecFormat.OPEN_AI,
                     convertOpenApiV3(pluginInfo.getApiInfo(), pluginInfo.getManifestInfo()));
         } catch (Exception e) {
             log.warn("Failed to convert plugin {} (id:{})", pluginInfo.getName(), pluginInfo.getPluginId(), e);
-            return Pair.of(FunctionFormat.UNKNOWN, "");
+            return Pair.of(ToolSpecFormat.UNKNOWN, "");
         }
     }
 
@@ -70,7 +70,7 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
         return StringUtils.isNotBlank(type) ? type : "string";
     }
 
-    private FunctionParameters getParametersFromBody(OpenAPI openApi, RequestBody body) {
+    private ToolParameters getParametersFromBody(OpenAPI openApi, RequestBody body) {
         if (Objects.isNull(body)) {
             return null;
         }
@@ -93,7 +93,7 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
 
         String ref = schema.get$ref();
 
-        FunctionParameters parameters = new FunctionParameters();
+        ToolParameters parameters = new ToolParameters();
         parameters.setType("object");
         parameters.setDescription(body.getDescription());
         Object example = mediaType.getExample();
@@ -118,13 +118,13 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
                 return null;
             }
 
-            HashMap<String, FunctionProperties> properties = new HashMap<>();
+            HashMap<String, ToolProperties> properties = new HashMap<>();
             boolean required = Objects.nonNull(body.getRequired()) ? body.getRequired() : false;
             for (var entry : propertiesMap.entrySet()) {
                 String key = entry.getKey();
                 Schema<?> info = entry.getValue();
 
-                FunctionProperties infoProperties = new FunctionProperties();
+                ToolProperties infoProperties = new ToolProperties();
                 infoProperties.setType(getType(info));
                 infoProperties.setDescription(info.getDescription());
                 example = info.getExample();
@@ -141,15 +141,15 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
         return parameters;
     }
 
-    private FunctionParameters getParameters(OpenAPI openApi, List<Parameter> swaggerParameters) {
+    private ToolParameters getParameters(OpenAPI openApi, List<Parameter> swaggerParameters) {
         if (CollectionUtils.isEmpty(swaggerParameters)) {
             return null;
         }
-        FunctionParameters parameters = new FunctionParameters();
+        ToolParameters parameters = new ToolParameters();
         parameters.setType("object");
-        HashMap<String, FunctionProperties> properties = new HashMap<>();
+        HashMap<String, ToolProperties> properties = new HashMap<>();
         for (var p : swaggerParameters) {
-             FunctionProperties infoProperties = new FunctionProperties();
+             ToolProperties infoProperties = new ToolProperties();
              String type = "string";
             //noinspection rawtypes
             Schema schema = p.getSchema();
@@ -172,7 +172,7 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
         return parameters;
     }
 
-    private FunctionParameters mergeParameters(FunctionParameters... parameters) {
+    private ToolParameters mergeParameters(ToolParameters... parameters) {
         var parametersList = Arrays.stream(parameters)
                 .filter(Objects::nonNull)
                 .toList();
@@ -182,7 +182,7 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
             return parametersList.get(0);
         }
 
-        Map<String, FunctionProperties> properties = new HashMap<>();
+        Map<String, ToolProperties> properties = new HashMap<>();
         List<String> required = new LinkedList<>();
         String description = null;
         String example = null;
@@ -192,7 +192,7 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
             description = mergeStrings(description, p.getDescription());
             example = mergeStrings(example, p.getExample());
         }
-        FunctionParameters allParameters = new FunctionParameters();
+        ToolParameters allParameters = new ToolParameters();
         allParameters.setType("object");
         allParameters.setProperties(properties);
         allParameters.setRequired(required);
@@ -218,7 +218,7 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
         if (Objects.isNull(openApi)) {
             throw new RuntimeException("Failed to parse api docs: " + apiInfo);
         }
-        List<FunctionInfo> resultList = new ArrayList<>();
+        List<ToolSpecification> resultList = new ArrayList<>();
         Paths paths = openApi.getPaths();
         if (Objects.isNull(paths)) {
             return "[]";
@@ -236,14 +236,14 @@ public class OpenAIFunctionFormatter implements PluginFormatService {
                     }
                     String methodDesc = op.getDescription();
 
-                    FunctionInfo pluginFunctionInfo = new FunctionInfo();
-                    pluginFunctionInfo.setName(name);
-                    pluginFunctionInfo.setDescription(mergeStrings(openApiDesc, pathDesc, methodDesc));
+                    ToolSpecification pluginToolInfo = new ToolSpecification();
+                    pluginToolInfo.setName(name);
+                    pluginToolInfo.setDescription(mergeStrings(openApiDesc, pathDesc, methodDesc));
                     var bodyParameters = getParametersFromBody(openApi, op.getRequestBody());
                     var directParameters = getParameters(openApi, op.getParameters());
                     var allParameters = mergeParameters(bodyParameters, directParameters);
-                    pluginFunctionInfo.setParameters(mergeParameters(bodyParameters, directParameters));
-                    resultList.add(pluginFunctionInfo);
+                    pluginToolInfo.setParameters(mergeParameters(bodyParameters, directParameters));
+                    resultList.add(pluginToolInfo);
                 }
             }
         }

@@ -3,7 +3,7 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
-import fun.freechat.api.util.FunctionFormatUtils;
+import fun.freechat.api.util.ToolSpecFormatUtils;
 import fun.freechat.model.PluginInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -22,10 +22,10 @@ public class PluginDetailsDTO extends PluginSummaryDTO {
     private String manifestInfo;
     @Schema(description = "API description content, different formats may have content differences")
     private String apiInfo;
-    @Schema(description = "Function description format, currently supported: open_ai")
-    private String functionFormat;
-    @Schema(description = "Function description content")
-    private String functionInfo;
+    @Schema(description = "Tool specification format, currently supported: open_ai")
+    private String toolSpecFormat;
+    @Schema(description = "Tool specification content")
+    private String toolSpecInfo;
     @Schema(description = "Additional information, JSON format")
     private String ext;
 
@@ -35,11 +35,11 @@ public class PluginDetailsDTO extends PluginSummaryDTO {
             return null;
         }
         PluginInfo pluginInfo = pluginInfoTriple.getLeft();
-        Pair<String, String> functionInfo = FunctionFormatUtils.convert(pluginInfo);
+        Pair<String, String> toolSpecPair = ToolSpecFormatUtils.convert(pluginInfo);
         PluginDetailsDTO dto = CommonUtils.convert(pluginInfo, PluginDetailsDTO.class);
         dto.setUsername(AccountUtils.userIdToName(pluginInfoTriple.getLeft().getUserId()));
-        dto.setFunctionFormat(functionInfo.getLeft());
-        dto.setFunctionInfo(functionInfo.getRight());
+        dto.setToolSpecFormat(toolSpecPair.getLeft());
+        dto.setToolSpecInfo(toolSpecPair.getRight());
         dto.setTags(pluginInfoTriple.getMiddle());
         dto.setAiModels(pluginInfoTriple.getRight()
                 .stream()

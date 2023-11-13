@@ -10,7 +10,7 @@ public class ChatMessage {
     private PromptRole role;
     private String name;
     private String content;
-    private ChatFunctionCall functionCall;
+    private ChatToolCall toolCall;
     private Date gmtCreate;
 
     public static ChatMessage from(PromptRole role, String text) {

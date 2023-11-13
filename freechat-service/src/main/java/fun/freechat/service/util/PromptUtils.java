@@ -5,7 +5,7 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.output.Response;
-import fun.freechat.service.ai.message.ChatFunctionCall;
+import fun.freechat.service.ai.message.ChatToolCall;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import org.apache.commons.collections4.CollectionUtils;
@@ -60,12 +60,12 @@ public class PromptUtils {
             case ASSISTANT -> dev.langchain4j.data.message.AiMessage.from(message.getContent());
             case USER -> dev.langchain4j.data.message.UserMessage.from(message.getName(), message.getContent());
             case FUNCTION_CALL -> {
-                ChatFunctionCall functionCall = message.getFunctionCall();
-                if (Objects.nonNull(functionCall) && StringUtils.isNotBlank(functionCall.getName())) {
+                ChatToolCall toolCall = message.getToolCall();
+                if (Objects.nonNull(toolCall) && StringUtils.isNotBlank(toolCall.getName())) {
                     yield dev.langchain4j.data.message.AiMessage.from(
                             ToolExecutionRequest.builder()
-                                    .name(functionCall.getName())
-                                    .arguments(functionCall.getArguments())
+                                    .name(toolCall.getName())
+                                    .arguments(toolCall.getArguments())
                                     .build());
                 } else {
                     yield null;
@@ -88,12 +88,12 @@ public class PromptUtils {
                 if (Objects.isNull(request)) {
                     message.setRole(ASSISTANT);
                 } else {
-                    ChatFunctionCall functionCall = new ChatFunctionCall();
-                    functionCall.setName(request.name());
-                    functionCall.setArguments(request.arguments());
+                    ChatToolCall toolCall = new ChatToolCall();
+                    toolCall.setName(request.name());
+                    toolCall.setArguments(request.arguments());
 
                     message.setRole(FUNCTION_CALL);
-                    message.setFunctionCall(functionCall);
+                    message.setToolCall(toolCall);
                 }
             }
             case USER -> {
