@@ -107,14 +107,13 @@ public class CharacterAiServiceImpl implements CharacterAiService {
         Response<dev.langchain4j.data.message.AiMessage> response = Objects.nonNull(toolSpecifications) ?
                 chatModel.generate(messages, toolSpecifications) :
                 chatModel.generate(messages);
+        TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
         chatSessionService.verifyModerationIfNeeded(session, moderationFuture);
 
-        TokenUsage tokenUsage = new TokenUsage();
         ToolExecutionRequest toolExecutionRequest;
         for (int i = 0; i < MAX_TOOL_EXECUTION_TIMES; ++i) {
             chatMemory.add(response.content());
-            tokenUsage = tokenUsage.add(response.tokenUsage());
 
             toolExecutionRequest = response.content().toolExecutionRequest();
             if (Objects.isNull(toolExecutionRequest)) {
@@ -128,12 +127,13 @@ public class CharacterAiServiceImpl implements CharacterAiService {
 
             chatMemory.add(toolExecutionResultMessage);
             response = chatModel.generate(chatMemory.messages(), toolSpecifications);
+            tokenUsageAccumulator = tokenUsageAccumulator.add(response.tokenUsage());
         }
 
         Object aiName = session.getVariables().get(CHARACTER_NICKNAME.text());
         return Response.from(
                 PromptUtils.convertL4jMessage(response.content()).withName((String) aiName),
-                tokenUsage,
+                tokenUsageAccumulator,
                 response.finishReason());
     }
 

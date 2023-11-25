@@ -6,9 +6,9 @@ source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
 GIT_HOST=github.com
 GIT_USER_ID=freechat-fun
-GIT_REPO_ID=nlp-ai-hub-client-java
+GIT_REPO_ID=freechat-java
 GROUP_ID=$(sed -n "s#^ *<groupId>\([a-zA-Z0-9.-]\{1,\}\)</groupId> *\$#\1#p" ${PROJECT_PATH}/pom.xml | head -1)
-ARTIFACT_ID=nlp-ai-hub-client-java
+ARTIFACT_ID=freechat-java
 PACKAGE=${GROUP_ID}
 ARTIFACT_URL=https://freechat.fun/public/docs/api
 SCM_CONNECTION=scm:git:git@${GIT_HOST}:${GIT_USER_ID}/${GIT_REPO_ID}.git
@@ -129,8 +129,8 @@ function python_sdk {
   rm -rf ${output}
   mkdir -p ${output}
 
-  repo_id=nlp-ai-hub-client-python
-  artifact_id=nlp-ai-hub-client-python
+  repo_id=freechat-python
+  artifact_id=freechat-python
   package=aihub
 
   java --add-opens java.base/java.lang=ALL-UNNAMED \
@@ -161,8 +161,8 @@ function js_sdk {
   rm -rf ${output}
   mkdir -p ${output}
 
-  repo_id=nlp-ai-hub-client-js
-  artifact_id=nlp-ai-hub-client-js
+  repo_id=freechat-js
+  artifact_id=freechat-js
   package=aihub
 
   java --add-opens java.base/java.lang=ALL-UNNAMED \

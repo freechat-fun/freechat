@@ -45,3 +45,5 @@ local-data/
 *.bak
 *.tmp
 *~
+**/.env*.local
+**/.env

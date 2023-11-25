@@ -1,5 +1,6 @@
 package fun.freechat.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fun.freechat.model.InteractiveStats;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -7,8 +8,11 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Objects;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 @Schema(description = "Character identifier and version information")
 @Data
+@JsonInclude(NON_NULL)
 public class CharacterItemForNameDTO {
     @Schema(description = "characterId")
     private String characterId;
