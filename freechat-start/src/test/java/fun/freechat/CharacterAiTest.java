@@ -10,15 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -27,16 +19,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@AutoConfigureWebTestClient
-@ActiveProfiles("local")
-@TestPropertySource(properties = "APP_HOME=${TMPDIR}")
-@SuppressWarnings("unused")
-public class CharacterAiTest {
+public class CharacterAiTest extends AbstractIntegrationTest{
     private static final String MODEL_ID = "[open_ai]gpt-4";
     private static final String API_KEY_NAME = "test_api_key_open_ai";
     private static final String CHARACTER_NICKNAME = "Jack";
@@ -99,9 +84,6 @@ public class CharacterAiTest {
     private String backendId;
 
     private String chatId;
-
-    @Autowired
-    private WebTestClient testClient;
 
     @BeforeEach
     public void setUp() {

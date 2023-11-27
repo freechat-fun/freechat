@@ -61,7 +61,7 @@ mvn -f ${MODULE_PATH}/pom.xml \
   -Dmybatis.generator.jdbcUserId="${MYSQL_USERNAME}" \
   -Dmybatis.generator.jdbcPassword="${MYSQL_PASSWORD}" \
   -Dmybatis.generator.jdbcURL="${MYSQL_URL}" \
-  -Dmybatis.generator.sqlScript=classpath:sql/schema.sql \
+  -Dmybatis.generator.sqlScript=classpath:/sql/schema.sql \
   -Dmybatis.generator.configurationFile=${RESOURCE_PATH}/mybatis-generator/generatorConfig.xml \
   -Dmybatis.generator.includeAllDependencies=true \
   -Dmybatis.generator.overwrite=true \

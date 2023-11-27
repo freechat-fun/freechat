@@ -5,21 +5,9 @@ import fun.freechat.util.TestCommonUtils;
 import fun.freechat.util.TestOrgUtils;
 import fun.freechat.util.graph.Graph;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@ActiveProfiles("local")
-@TestPropertySource(properties = "APP_HOME=${TMPDIR}")
-@SuppressWarnings("unused")
-public class OrganizationServiceTest {
+public class OrganizationServiceTest extends AbstractIntegrationTest {
     @Autowired
     private OrgService orgService;
 
