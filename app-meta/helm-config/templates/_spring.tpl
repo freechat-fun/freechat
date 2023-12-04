@@ -1,7 +1,7 @@
 {{- define "application-private.yml" -}}
 auth:
   aes:
-    key: {{ .auth.aes.key | quote }}
+    key: {{ .Values.auth.aes.key | quote }}
 spring:
   datasource:
     {{- with .Values.mysql }}

@@ -44,12 +44,20 @@ debug:
   jpda:
     enabled: false
     port: 5005
+deployment:
+  backend:
+    enabled: true
+  frontend:
+    enabled: false
+  pvc:
+    enabled: false
+    accessModes: [ReadWriteMany]
+    storage: 20Gi
 image:
   pullPolicy: Always
   repository: freechatfun/freechat
   tag: 'latest'
 ingress:
-  enabled: true
   className: nginx
   hosts:
     - host: freechat.fun
