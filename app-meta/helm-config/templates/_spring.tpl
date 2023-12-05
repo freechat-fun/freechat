@@ -36,8 +36,8 @@ spring:
             clientSecret: {{ .clientSecret | quote }}
           {{- end }}
           {{- end }}
-          {{- if and .Values.auth.oauth2.google .Values.auth.oauth2.google.enabled }}
-          {{- with .Values.auth.oauth2.google }}
+          {{- if and .Values.auth.oauth2.github .Values.auth.oauth2.github.enabled }}
+          {{- with .Values.auth.oauth2.github }}
           github:
             authorizationGrantType: {{ default "authorization_code" .authorizationGrantType }}
             clientAuthenticationMethod: {{ default "client_secret_basic" .clientAuthenticationMethod }}

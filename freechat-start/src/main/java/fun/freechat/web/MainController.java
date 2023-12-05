@@ -13,10 +13,16 @@ import java.util.List;
 public class MainController {
     private static final List<String> FAVICON_STYLES = List.of("dark", "light");
 
-    @RequestMapping("/")
-    public String index(Model model) {
-        return "redirect:/public/docs/api/explorer";
+    @RequestMapping("/w/**")
+    public String index() {
+        return "index";
     }
+
+    @RequestMapping("/")
+    public String home(Model model) {
+        return "redirect:/w";
+    }
+
 
     @GetMapping({"/public/check/live", "/status.taobao", "/checkpreload.htm"})
     @ResponseBody

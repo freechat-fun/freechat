@@ -1,0 +1,1 @@
+const o="或",t="用户名",e="密码",n="狐狸猜",s={"Sign up!":"注册！","Sign in":"登录","Don't have an account?":"没有账号？","Continue with Google":"使用 Google 账号","Continue with GitHub":"使用 GitHub 账号",or:o,Username:t,Password:e,"Remember me":"记住我","Forgot your password?":"忘记密码？",FreeChat:n};export{n as FreeChat,e as Password,t as Username,s as default,o as or};

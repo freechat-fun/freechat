@@ -4,7 +4,8 @@ app:
     level: info
 auth:
   login:
-    uri: /login
+    uri: /w/login
+    processingUri: /login
     oauth2:
       failureUri: /login/oauth2/failure
       successUri: /login/oauth2/success
@@ -16,7 +17,7 @@ auth:
     bizAdminUri: /api/biz/admin/**,/api/v1/biz/admin/**
     apiUri: /api/**
     privateUri: /private/**
-    publicUri: /public/**,/css/**,/js/**,/logo/**,/favicon.ico
+    publicUri: /public/**,/assets/**,/css/**,/js/**,/logo/**,/favicon.ico
   token:
     limits: 5
     prefix: fc-

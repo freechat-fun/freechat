@@ -18,8 +18,8 @@ import java.util.Objects;
 public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI(
-            @Value("${auth.token.headerName:#{null}}}") String securityHeaderName,
-            @Value("${auth.token.parameterName:#{null}}}") String securityParameterName) {
+            @Value("${auth.token.headerName:#{null}}") String securityHeaderName,
+            @Value("${auth.token.parameterName:#{null}}") String securityParameterName) {
         OpenAPI openAPI = new OpenAPI();
         if (Objects.isNull(securityHeaderName) && Objects.isNull(securityParameterName)) {
             openAPI.components(new Components()
@@ -50,7 +50,7 @@ public class OpenApiConfig {
         }
 
         openAPI.info(new Info()
-                        .title(AppMetaUtils.getName() + " OpenAPI Definition")
+                        .title("FreeChat OpenAPI Definition")
                         .description(AppMetaUtils.getUrl())
                         .version(AppMetaUtils.getVersion()))
                 .addServersItem(new Server().url("/"));

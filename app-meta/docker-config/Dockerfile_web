@@ -1,0 +1,4 @@
+FROM nginx:alpine
+
+# Copy static files to Nginx server directory
+COPY web/ /usr/share/nginx/html

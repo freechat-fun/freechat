@@ -5,6 +5,7 @@ PROJECT_NAME=${PROJECT_PATH##*/}
 VERSION=$(sed -n "s#^ *<revision>\([a-zA-Z0-9.-]\{1,\}\)</revision> *\$#\1#p" ${PROJECT_PATH}/pom.xml)
 
 STARTER_MODULE=${PROJECT_NAME}-start
+WEB_MODULE=${PROJECT_NAME}-web
 DOCKER_CONFIG_HOME=${PROJECT_PATH}/app-meta/docker-config
 HELM_CONFIG_HOME=${PROJECT_PATH}/app-meta/helm-config
 

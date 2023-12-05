@@ -54,16 +54,27 @@ deployment:
     accessModes: [ReadWriteMany]
     storage: 20Gi
 image:
-  pullPolicy: Always
-  repository: freechatfun/freechat
-  tag: 'latest'
+  backend:
+    pullPolicy: Always
+    repository: freechatfun/freechat
+    tag: 'latest'
+  frontend:
+    pullPolicy: Always
+    repository: freechatfun/freechat-web
+    tag: 'latest'
 ingress:
+  enabled: true
   className: nginx
   hosts:
     - host: freechat.fun
-      paths:
-        - path: /
-          pathType: Prefix
+      backend:
+        paths:
+          - path: /
+            pathType: Prefix
+      frontend:
+        paths:
+          - path: /assets
+            pathType: Prefix
   tls:
     enabled: true
 mysql:

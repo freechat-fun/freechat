@@ -57,6 +57,9 @@ public class SecurityConfig {
     @Value("${auth.login.uri}")
     private String loginUri;
 
+    @Value("${auth.login.processingUri}")
+    private String loginProcessingUri;
+
     @Value("${auth.login.oauth2.successUri}")
     private String oauth2LoginSuccessUri;
 
@@ -128,6 +131,7 @@ public class SecurityConfig {
 
         http.formLogin(portal ->
                 portal.loginPage(loginUri)
+                        .loginProcessingUrl(loginProcessingUri)
                         .permitAll()
                         .defaultSuccessUrl(portalLoginSuccessUri)
                         .failureUrl(portalLoginFailureUri)

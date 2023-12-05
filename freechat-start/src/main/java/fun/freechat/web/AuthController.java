@@ -2,24 +2,23 @@ package fun.freechat.web;
 
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.LinkedList;
-import java.util.List;
 
 @Controller
 @Validated
 @SuppressWarnings("unused")
 public class AuthController {
+    @Value("${auth.login.uri}")
+    private String loginUri;
+
     @Autowired
     private InMemoryClientRegistrationRepository clientRegistrationRepository;
 
@@ -39,24 +38,14 @@ public class AuthController {
         return null;
     }
 
-    @GetMapping("/login")
-    public String login(Model model) {
-        List<String> registrations = new LinkedList<>();
-        clientRegistrationRepository.iterator().forEachRemaining(
-                r -> registrations.add(r.getRegistrationId()));
-        model.addAttribute("registrations", registrations);
-        return "login";
-    }
-
     @RequestMapping("/login/oauth2/success")
     public String oAuth2Success(HttpServletRequest request) {
-
         return "redirect:/public/docs/api/explorer";
     }
 
     @RequestMapping("/login/oauth2/failure")
     public String oAuth2Failure() {
-        return "redirect:/login";
+        return "redirect:" + loginUri;
     }
 
     @RequestMapping("/login/portal/success")
@@ -66,6 +55,6 @@ public class AuthController {
 
     @RequestMapping("/login/portal/failure")
     public String portalFailure() {
-        return "redirect:/login";
+        return "redirect:" + loginUri;
     }
 }
