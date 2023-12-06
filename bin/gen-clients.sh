@@ -6,19 +6,23 @@ source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
 GIT_HOST=github.com
 GIT_USER_ID=freechat-fun
-GIT_REPO_ID=freechat-java
+GIT_REPO_ID=freechat
 GROUP_ID=$(sed -n "s#^ *<groupId>\([a-zA-Z0-9.-]\{1,\}\)</groupId> *\$#\1#p" ${PROJECT_PATH}/pom.xml | head -1)
-ARTIFACT_ID=freechat-java
+ARTIFACT_ID=$(sed -n "s#^ *<artifactId>\([a-zA-Z0-9.-]\{1,\}\)</artifactId> *\$#\1#p" ${PROJECT_PATH}/pom.xml | head -1)-sdk
 PACKAGE=${GROUP_ID}
 ARTIFACT_URL=https://freechat.fun/public/docs/api
 SCM_CONNECTION=scm:git:git@${GIT_HOST}:${GIT_USER_ID}/${GIT_REPO_ID}.git
 SCM_URL=https://${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}
 LICENSE_NAME=Apache-2.0
 LICENSE_URL=https://www.apache.org/licenses/LICENSE-2.0
+AUTHOR_NAME=dev.freechat.fun
+AUTHOR_EMAIL=dev.freechat.fun@gmail.com
+AUTHOR_URL=https://github.com/freechat-fun
+AUTHOR_ORG=freechat.fun
 OUTPUT=${PROJECT_PATH}/local-data/sdk
 CLI=${OUTPUT}/openapi-generator-cli.jar
-CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.0.1/openapi-generator-cli-7.0.1.jar
-DOC=https://freechat.fun/public/openapi/v3/api-docs/g-all
+CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.1.0/openapi-generator-cli-7.1.0.jar
+DOC=http://127.0.0.1:8080/public/openapi/v3/api-docs/g-all
 
 while [ $# -gt 0 ]
 do
@@ -107,10 +111,10 @@ artifactId=${ARTIFACT_ID},\
 artifactUrl=${ARTIFACT_URL},\
 artifactVersion=${VERSION},\
 booleanGetterPrefix=is,\
-developerEmail=dev.freechat.fun@gmail.com,\
-developerName=dev.freechat.fun,\
-developerOrganization=freechat.fun,\
-developerOrganizationUrl=https://github.com/freechat-fun,\
+developerEmail=${AUTHOR_EMAIL},\
+developerName=${AUTHOR_NAME},\
+developerOrganization=${AUTHOR_ORG},\
+developerOrganizationUrl=${AUTHOR_URL},\
 disallowAdditionalPropertiesIfNotPresent=false,\
 enumUnknownDefaultCase=true,\
 groupId=${GROUP_ID},\
@@ -129,41 +133,33 @@ function python_sdk {
   rm -rf ${output}
   mkdir -p ${output}
 
-  repo_id=freechat-python
-  artifact_id=freechat-python
-  package=aihub
-
   java --add-opens java.base/java.lang=ALL-UNNAMED \
     --add-opens java.base/java.util=ALL-UNNAMED \
     -jar ${CLI} generate \
     -i ${DOC} \
     -g python \
     -o ${output} \
-    --artifact-id ${artifact_id} \
+    --artifact-id ${ARTIFACT_ID} \
     --artifact-version ${VERSION} \
     --git-host ${GIT_HOST} \
-    --git-repo-id ${repo_id} \
+    --git-repo-id ${GIT_REPO_ID} \
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
-    --package-name ${package} \
+    --package-name ${ARTIFACT_ID} \
     --http-user-agent ${artifact_id}/${VERSION}/python \
     --additional-properties \
 disallowAdditionalPropertiesIfNotPresent=false,\
 enumUnknownDefaultCase=true,\
 hideGenerationTimestamp=true,\
-packageName=${package},\
+packageName=${ARTIFACT_ID},\
 packageVersion=${VERSION},\
-projectName=${artifact_id}
+projectName=${ARTIFACT_ID}
 }
 
-function js_sdk {
-  local output=${OUTPUT}/js
+function javascript_sdk {
+  local output=${OUTPUT}/javascript
   rm -rf ${output}
   mkdir -p ${output}
-
-  repo_id=freechat-js
-  artifact_id=freechat-js
-  package=aihub
 
   java --add-opens java.base/java.lang=ALL-UNNAMED \
     --add-opens java.base/java.util=ALL-UNNAMED \
@@ -171,13 +167,13 @@ function js_sdk {
     -i ${DOC} \
     -g javascript \
     -o ${output} \
-    --artifact-id ${artifact_id} \
+    --artifact-id ${ARTIFACT_ID} \
     --artifact-version ${VERSION} \
     --git-host ${GIT_HOST} \
-    --git-repo-id ${repo_id} \
+    --git-repo-id ${GIT_REPO_ID} \
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
-    --package-name ${package} \
+    --package-name ${ARTIFACT_ID} \
     --http-user-agent ${artifact_id}/${VERSION}/python \
     --additional-properties \
 disallowAdditionalPropertiesIfNotPresent=false,\
@@ -185,10 +181,10 @@ enumUnknownDefaultCase=true,\
 hideGenerationTimestamp=true,\
 licenseName="${LICENSE_NAME}",\
 licenseUrl=${LICENSE_URL},\
-moduleName=${package},\
-packageName=${package},\
+moduleName=${ARTIFACT_ID},\
+packageName=${ARTIFACT_ID},\
 packageVersion=${VERSION},\
-projectName=${artifact_id},\
+projectName=${ARTIFACT_ID},\
 usePromises=true
 }
 
@@ -196,10 +192,10 @@ if [[ " ${ARGS[*]} " =~ " --java " ]]; then
   java_sdk
 elif [[ " ${ARGS[*]} " =~ " --python " ]]; then
   python_sdk
-elif [[ " ${ARGS[*]} " =~ " --js " ]]; then
-  js_sdk
+elif [[ " ${ARGS[*]} " =~ " --javascript " ]]; then
+  javascript_sdk
 else
   java_sdk
   python_sdk
-  js_sdk
+  javascript_sdk
 fi

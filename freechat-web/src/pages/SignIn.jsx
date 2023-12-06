@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { GitHub, Google } from "@mui/icons-material";
-import { Box, Button, Stack, FormControl, FormLabel, Input, Checkbox, Link, Typography, Divider } from "@mui/joy";
+import { Box, Button, Stack, Typography } from "@mui/joy";
+import { AliyunIcon  }from '../components';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
   const protocol = window.location.protocol;
   const host = window.location.hostname;
   const port = window.location.port;
-  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  // const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
 
   function toUrl(path) {
     return `${protocol}//${host}${port ? `:${port}` : ''}${path}`;
@@ -71,22 +72,14 @@ export default function SignIn() {
             <Stack gap={4} sx={{ mb: 2 }}>
               <Stack gap={1}>
                 <Typography level="h3">{t('Sign in')}</Typography>
-                <Typography level="body-sm">
+                {/* <Typography level="body-sm">
                   {t('Don\'t have an account?')}
                   <Link href="#replace-with-a-link" level="title-sm">
                     {t('Sign up!')}
                   </Link>
-                </Typography>
+                </Typography> */}
               </Stack>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<Google />}
-                onClick={() => handleClick('/oauth2/authorization/google')}
-              >
-                {t('Continue with Google')}
-              </Button>
+              
               <Button
                 variant="soft"
                 color="neutral"
@@ -96,8 +89,27 @@ export default function SignIn() {
               >
                 {t('Continue with GitHub')}
               </Button>
+              <Button
+                variant="soft"
+                color="neutral"
+                fullWidth
+                startDecorator={<AliyunIcon />}
+                onClick={() => handleClick('/oauth2/authorization/aliyun')}
+              >
+                {t('Continue with Aliyun')}
+              </Button>
+              <Button
+                disabled
+                variant="soft"
+                color="neutral"
+                fullWidth
+                startDecorator={<Google />}
+                onClick={() => handleClick('/oauth2/authorization/google')}
+              >
+                {t('Continue with Google')}
+              </Button>
             </Stack>
-            <Divider
+            {/* <Divider
               sx={(theme) => ({
                 [theme.getColorSchemeSelector('light')]: {
                   color: { xs: '#FFF', md: 'text.tertiary' },
@@ -139,7 +151,7 @@ export default function SignIn() {
                 </Stack>
                 <input type="hidden" name="_csrf" value={csrfToken} />
               </form>
-            </Stack>
+            </Stack> */}
           </Box>
         </Box>
       </Box>

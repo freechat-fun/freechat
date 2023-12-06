@@ -1,0 +1,38 @@
+# CharacterBackendDetailsDTO
+
+Character backend detailed information
+
+## Properties
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**request_id** | **str** | Request identifier | [optional] 
+**backend_id** | **str** | Character backend identifier | [optional] 
+**gmt_create** | **datetime** | Creation time | [optional] 
+**gmt_modified** | **datetime** | Modification time | [optional] 
+**character_id** | **str** | Character identifier | [optional] 
+**is_default** | **bool** | Whether it is the default backend | [optional] 
+**greeting_prompt_task_id** | **str** | Prompt task identifier for greeting | [optional] 
+**experience_prompt_task_id** | **str** | Prompt task identifier for experience | [optional] 
+**message_window_size** | **int** | Max messages in the character&#39;s memory | [optional] 
+**forward_to_user** | **bool** | Whether to forward messages to the character owner | [optional] 
+
+## Example
+
+```python
+from freechat-sdk.models.character_backend_details_dto import CharacterBackendDetailsDTO
+
+# TODO update the JSON string below
+json = "{}"
+# create an instance of CharacterBackendDetailsDTO from a JSON string
+character_backend_details_dto_instance = CharacterBackendDetailsDTO.from_json(json)
+# print the JSON string representation of the object
+print CharacterBackendDetailsDTO.to_json()
+
+# convert the object into a dict
+character_backend_details_dto_dict = character_backend_details_dto_instance.to_dict()
+# create an instance of CharacterBackendDetailsDTO from a dict
+character_backend_details_dto_form_dict = character_backend_details_dto.from_dict(character_backend_details_dto_dict)
+```
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

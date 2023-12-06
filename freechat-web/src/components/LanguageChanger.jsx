@@ -13,6 +13,7 @@ export default function LanguageChanger() {
 
   return (
     <Select
+      variant='plain'
       onChange={handleChange}
       value={i18n.language}
       startDecorator={<Language />}
