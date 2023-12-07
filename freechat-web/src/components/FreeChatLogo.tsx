@@ -8,7 +8,7 @@ export default function FreeChatLogo() {
   return (
     <Box sx={{ gap: 1, display: 'flex', alignItems: "center" }}>
       <img alt="FreeChat" src={logoUrl} height="70%" />
-      <Typography level="title-lg" color="secondary" sx={{
+      <Typography level="title-lg" color="neutral" sx={{
         fontStyle: 'italic',
         mt: 1,
       }}>

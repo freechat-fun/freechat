@@ -10,11 +10,11 @@ export default function SignIn() {
   const port = window.location.port;
   // const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
 
-  function toUrl(path) {
+  function toUrl(path: string) {
     return `${protocol}//${host}${port ? `:${port}` : ''}${path}`;
   }
 
-  function handleClick(path) {
+  function handleClick(path: string) {
     return window.location.href = toUrl(path);
   }
 

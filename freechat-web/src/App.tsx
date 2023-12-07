@@ -1,7 +1,7 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './router';
 import { CssVarsProvider, GlobalStyles, CssBaseline, Stack } from '@mui/joy';
-import { ModeToggle, LanguageChanger, FreeChatLogo, AccountMenu } from './components';
+import { ModeToggle, LanguageSelect, FreeChatLogo, AccountMenu } from './components';
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
           <FreeChatLogo />
         </Stack>
         <Stack direction="row" justifyContent="flex-end" spacing={2}>
-          <LanguageChanger />
+          <LanguageSelect />
           <ModeToggle />
           <AccountMenu />
         </Stack>

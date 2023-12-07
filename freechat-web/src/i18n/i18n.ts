@@ -7,7 +7,7 @@ import { i18nConfig } from './i18n-config';
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
-  .use(resourcesToBackend((language, namespace) => import(`./locales/${language}/${namespace}.json`)))
+  .use(resourcesToBackend((language: string, namespace: string) => import(`./locales/${language}/${namespace}.json`)))
   .init({
     fallbackLng: i18nConfig.defaultLocale,
     supportedLngs: i18nConfig.locales,
