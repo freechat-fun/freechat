@@ -1,10 +1,12 @@
 import { RouterProvider } from 'react-router-dom';
 import router from './router';
+import { FreeChatClientProvider } from './context';
 import { CssVarsProvider, GlobalStyles, CssBaseline, Stack } from '@mui/joy';
 import { ModeToggle, LanguageSelect, FreeChatLogo, AccountMenu } from './components';
 
 function App() {
   return (
+    <FreeChatClientProvider baseUrl='https://freechat.fun'>
     <CssVarsProvider>
       <CssBaseline />
       <GlobalStyles
@@ -29,6 +31,7 @@ function App() {
       </Stack>
       <RouterProvider router={router} />
     </CssVarsProvider>
+    </FreeChatClientProvider>
   )
 }
 

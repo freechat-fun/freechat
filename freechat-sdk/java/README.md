@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.1.0
+- API version: 0.1.1
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.1.0"
+     implementation "fun.freechat:freechat-sdk:0.1.1"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.1.0.jar`
+* `target/freechat-sdk-0.1.1.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -89,7 +89,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
+    defaultClient.setBasePath("https://freechat.fun");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -113,7 +113,7 @@ public class Example {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://127.0.0.1:8080*
+All URIs are relative to *https://freechat.fun*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

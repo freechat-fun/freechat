@@ -22,7 +22,7 @@ AUTHOR_ORG=freechat.fun
 OUTPUT=${PROJECT_PATH}/local-data/sdk
 CLI=${OUTPUT}/openapi-generator-cli.jar
 CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.1.0/openapi-generator-cli-7.1.0.jar
-DOC=http://127.0.0.1:8080/public/openapi/v3/api-docs/g-all
+DOC=https://freechat.fun/public/openapi/v3/api-docs/g-all
 
 while [ $# -gt 0 ]
 do
@@ -156,8 +156,8 @@ packageVersion=${VERSION},\
 projectName=${ARTIFACT_ID}
 }
 
-function javascript_sdk {
-  local output=${OUTPUT}/javascript
+function typescript_sdk {
+  local output=${OUTPUT}/typescript
   rm -rf ${output}
   mkdir -p ${output}
 
@@ -165,7 +165,7 @@ function javascript_sdk {
     --add-opens java.base/java.util=ALL-UNNAMED \
     -jar ${CLI} generate \
     -i ${DOC} \
-    -g javascript \
+    -g typescript \
     -o ${output} \
     --artifact-id ${ARTIFACT_ID} \
     --artifact-version ${VERSION} \
@@ -174,28 +174,24 @@ function javascript_sdk {
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
     --package-name ${ARTIFACT_ID} \
-    --http-user-agent ${artifact_id}/${VERSION}/python \
+    --http-user-agent ${artifact_id}/${VERSION}/typescript \
     --additional-properties \
 disallowAdditionalPropertiesIfNotPresent=false,\
 enumUnknownDefaultCase=true,\
-hideGenerationTimestamp=true,\
+npmName=${ARTIFACT_ID},\
+platform=browser,\
 licenseName="${LICENSE_NAME}",\
-licenseUrl=${LICENSE_URL},\
-moduleName=${ARTIFACT_ID},\
-packageName=${ARTIFACT_ID},\
-packageVersion=${VERSION},\
-projectName=${ARTIFACT_ID},\
-usePromises=true
+licenseUrl=${LICENSE_URL}
 }
 
 if [[ " ${ARGS[*]} " =~ " --java " ]]; then
   java_sdk
 elif [[ " ${ARGS[*]} " =~ " --python " ]]; then
   python_sdk
-elif [[ " ${ARGS[*]} " =~ " --javascript " ]]; then
-  javascript_sdk
+elif [[ " ${ARGS[*]} " =~ " --typescript " ]]; then
+  typescript_sdk
 else
   java_sdk
   python_sdk
-  javascript_sdk
+  typescript_sdk
 fi
