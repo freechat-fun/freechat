@@ -1,2 +1,2 @@
-export { default as FreeChatClientProvider } from './FreeChatClientProvider';
-export * from './FreeChatClientProvider';
+export { default as FreeChatApiProvider } from './FreeChatApiProvider';
+export * from './FreeChatApiProvider';
