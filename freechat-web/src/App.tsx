@@ -6,7 +6,7 @@ import router from './router';
 
 function App() {
   return (
-    <FreeChatApiProvider server='https://freechat.fun'>
+    <FreeChatApiProvider server={import.meta.env.VITE_API_SERVER}>
       <CssVarsProvider>
         <CssBaseline />
         <GlobalStyles
