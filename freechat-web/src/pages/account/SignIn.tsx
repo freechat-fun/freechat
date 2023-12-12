@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { GitHub, Google } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/joy";
-import { AliyunIcon  }from '../components';
+import { AliyunIcon  }from '../../components';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');

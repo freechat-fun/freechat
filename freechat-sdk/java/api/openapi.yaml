@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.1.1
+  version: 0.2.0
 servers:
-- url: https://freechat.fun/
+- url: http://127.0.0.1:8080/
 security:
 - bearerAuth: []
 tags:

@@ -1,24 +1,24 @@
 // TODO: better import syntax?
-import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi';
-import {Configuration} from '../configuration';
-import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http';
-import {ObjectSerializer} from '../models/ObjectSerializer';
-import {ApiException} from './exception';
-import {canConsumeForm, isCodeInRange} from '../util';
-import {SecurityAuthentication} from '../auth/auth';
+import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi.js';
+import {Configuration} from '../configuration.js';
+import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http.js';
+import {ObjectSerializer} from '../models/ObjectSerializer.js';
+import {ApiException} from './exception.js';
+import {canConsumeForm, isCodeInRange} from '../util.js';
+import {SecurityAuthentication} from '../auth/auth.js';
 
 
-import { LlmResultDTO } from '../models/LlmResultDTO';
-import { PromptAiParamDTO } from '../models/PromptAiParamDTO';
-import { PromptCreateDTO } from '../models/PromptCreateDTO';
-import { PromptDetailsDTO } from '../models/PromptDetailsDTO';
-import { PromptItemForNameDTO } from '../models/PromptItemForNameDTO';
-import { PromptQueryDTO } from '../models/PromptQueryDTO';
-import { PromptRefDTO } from '../models/PromptRefDTO';
-import { PromptSummaryDTO } from '../models/PromptSummaryDTO';
-import { PromptTemplateDTO } from '../models/PromptTemplateDTO';
-import { PromptUpdateDTO } from '../models/PromptUpdateDTO';
-import { SseEmitter } from '../models/SseEmitter';
+import { LlmResultDTO } from '../models/LlmResultDTO.js';
+import { PromptAiParamDTO } from '../models/PromptAiParamDTO.js';
+import { PromptCreateDTO } from '../models/PromptCreateDTO.js';
+import { PromptDetailsDTO } from '../models/PromptDetailsDTO.js';
+import { PromptItemForNameDTO } from '../models/PromptItemForNameDTO.js';
+import { PromptQueryDTO } from '../models/PromptQueryDTO.js';
+import { PromptRefDTO } from '../models/PromptRefDTO.js';
+import { PromptSummaryDTO } from '../models/PromptSummaryDTO.js';
+import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
+import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
+import { SseEmitter } from '../models/SseEmitter.js';
 
 /**
  * no description

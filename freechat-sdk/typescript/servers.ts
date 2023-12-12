@@ -1,4 +1,4 @@
-import { RequestContext, HttpMethod } from "./http/http";
+import { RequestContext, HttpMethod } from "./http/http.js";
 
 export interface BaseServerConfiguration {
     makeRequestContext(endpoint: string, httpMethod: HttpMethod): RequestContext;
@@ -50,6 +50,6 @@ export class ServerConfiguration<T extends { [key: string]: string }> implements
     }
 }
 
-export const server1 = new ServerConfiguration<{  }>("https://freechat.fun", {  })
+export const server1 = new ServerConfiguration<{  }>("http://127.0.0.1:8080", {  })
 
 export const servers = [server1];

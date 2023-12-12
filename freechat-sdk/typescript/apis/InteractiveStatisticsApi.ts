@@ -1,18 +1,18 @@
 // TODO: better import syntax?
-import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi';
-import {Configuration} from '../configuration';
-import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http';
-import {ObjectSerializer} from '../models/ObjectSerializer';
-import {ApiException} from './exception';
-import {canConsumeForm, isCodeInRange} from '../util';
-import {SecurityAuthentication} from '../auth/auth';
+import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi.js';
+import {Configuration} from '../configuration.js';
+import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http.js';
+import {ObjectSerializer} from '../models/ObjectSerializer.js';
+import {ApiException} from './exception.js';
+import {canConsumeForm, isCodeInRange} from '../util.js';
+import {SecurityAuthentication} from '../auth/auth.js';
 
 
-import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO';
-import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO';
-import { PluginSummaryStatsDTO } from '../models/PluginSummaryStatsDTO';
-import { PromptSummaryStatsDTO } from '../models/PromptSummaryStatsDTO';
+import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
+import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
+import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
+import { PluginSummaryStatsDTO } from '../models/PluginSummaryStatsDTO.js';
+import { PromptSummaryStatsDTO } from '../models/PromptSummaryStatsDTO.js';
 
 /**
  * no description

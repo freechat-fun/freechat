@@ -1,6 +1,6 @@
 # AccountApi
 
-All URIs are relative to *https://freechat.fun*
+All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
@@ -36,7 +36,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -99,7 +99,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -166,7 +166,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -233,7 +233,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -300,7 +300,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -367,7 +367,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -430,7 +430,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -493,7 +493,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -560,7 +560,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://freechat.fun");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");

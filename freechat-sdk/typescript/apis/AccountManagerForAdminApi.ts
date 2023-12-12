@@ -1,16 +1,16 @@
 // TODO: better import syntax?
-import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi';
-import {Configuration} from '../configuration';
-import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http';
-import {ObjectSerializer} from '../models/ObjectSerializer';
-import {ApiException} from './exception';
-import {canConsumeForm, isCodeInRange} from '../util';
-import {SecurityAuthentication} from '../auth/auth';
+import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi.js';
+import {Configuration} from '../configuration.js';
+import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http.js';
+import {ObjectSerializer} from '../models/ObjectSerializer.js';
+import {ApiException} from './exception.js';
+import {canConsumeForm, isCodeInRange} from '../util.js';
+import {SecurityAuthentication} from '../auth/auth.js';
 
 
-import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO';
-import { UserDetailsDTO } from '../models/UserDetailsDTO';
-import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO';
+import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
+import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
+import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
 
 /**
  * no description

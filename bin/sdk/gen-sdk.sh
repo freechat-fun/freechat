@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname ${BASH_SOURCE[0]})/setenv.sh
+source $(dirname ${BASH_SOURCE[0]})/../setenv.sh
 
 # Usage: https://openapi-generator.tech/docs/usage
 
@@ -22,7 +22,10 @@ AUTHOR_ORG=freechat.fun
 OUTPUT=${PROJECT_PATH}/local-data/sdk
 CLI=${OUTPUT}/openapi-generator-cli.jar
 CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.1.0/openapi-generator-cli-7.1.0.jar
-DOC=https://freechat.fun/public/openapi/v3/api-docs/g-all
+# DOC=https://freechat.fun/public/openapi/v3/api-docs/g-all
+DOC=http://127.0.0.1:8080/public/openapi/v3/api-docs/g-all
+
+SDK_PATH=${PROJECT_PATH}/${PROJECT_NAME}-sdk
 
 while [ $# -gt 0 ]
 do
@@ -83,6 +86,17 @@ if [[ ! -f "${CLI}" ]]; then
   curl -L -o ${CLI} ${CLI_URL}
 fi
 
+function clean_tmp {
+    sdk_output=$1
+    rm -rf ${sdk_output}/.github \
+        ${sdk_output}/.openapi-generator \
+        ${sdk_output}/.gitignore \
+        ${sdk_output}/.gitlab-ci.yml \
+        ${sdk_output}/.openapi-generator-ignore \
+        ${sdk_output}/.travis.yml \
+        ${sdk_output}/git_push.sh
+}
+
 function java_sdk {
   local output=${OUTPUT}/java
   rm -rf ${output}
@@ -126,6 +140,12 @@ modelPackage=${PACKAGE}.client.model,\
 scmConnection=${SCM_CONNECTION},\
 scmDeveloperConnection=${SCM_CONNECTION},\
 scmUrl=${SCM_URL}
+
+  sdk_output=${SDK_PATH}/java
+
+  rm -rf ${sdk_output}
+  cp -rf ${output} ${SDK_PATH}
+  clean_tmp ${sdk_output}
 }
 
 function python_sdk {
@@ -146,7 +166,7 @@ function python_sdk {
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
     --package-name ${ARTIFACT_ID} \
-    --http-user-agent ${artifact_id}/${VERSION}/python \
+    --http-user-agent ${ARTIFACT_ID}/${VERSION}/python \
     --additional-properties \
 disallowAdditionalPropertiesIfNotPresent=false,\
 enumUnknownDefaultCase=true,\
@@ -154,6 +174,13 @@ hideGenerationTimestamp=true,\
 packageName=${ARTIFACT_ID},\
 packageVersion=${VERSION},\
 projectName=${ARTIFACT_ID}
+
+  sdk_output=${SDK_PATH}/python
+
+  rm -rf ${sdk_output}
+  cp -rf ${output} ${SDK_PATH}
+  cp -f typescript/publish.sh ${sdk_output}/publish.sh
+  clean_tmp ${sdk_output}
 }
 
 function typescript_sdk {
@@ -174,14 +201,27 @@ function typescript_sdk {
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
     --package-name ${ARTIFACT_ID} \
-    --http-user-agent ${artifact_id}/${VERSION}/typescript \
+    --http-user-agent ${ARTIFACT_ID}/${VERSION}/typescript \
     --additional-properties \
 disallowAdditionalPropertiesIfNotPresent=false,\
 enumUnknownDefaultCase=true,\
+fileContentDataType=Blob,\
+importFileExtension=".js",\
 npmName=${ARTIFACT_ID},\
 platform=browser,\
 licenseName="${LICENSE_NAME}",\
 licenseUrl=${LICENSE_URL}
+
+  sdk_output=${SDK_PATH}/typescript
+
+  rm -rf ${sdk_output}
+  cp -rf ${output} ${SDK_PATH}
+  cp -f typescript/tsconfig.json ${sdk_output}/tsconfig.json
+  cp -f typescript/rollup.config.ts ${sdk_output}/rollup.config.ts
+  cp -f typescript/publish.sh ${sdk_output}/publish.sh
+  python3 -m pip install -r requirements.txt
+  python3 merge-json.py -i ${output}/package.json typescript/package.json -o ${sdk_output}/package.json
+  clean_tmp ${sdk_output}
 }
 
 if [[ " ${ARGS[*]} " =~ " --java " ]]; then

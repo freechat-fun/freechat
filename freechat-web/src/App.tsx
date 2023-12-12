@@ -1,12 +1,12 @@
 import { RouterProvider } from 'react-router-dom';
-import { FreeChatApiProvider } from './context';
+import { ContextsProvider } from './context';
 import { CssVarsProvider, GlobalStyles, CssBaseline, Stack } from '@mui/joy';
-import { ModeToggle, LanguageSelect, FreeChatLogo, AccountMenu } from './components';
+import { ModeToggle, LanguageSelect, FreeChatLogo, AccountMenu, UnauthorizedDialog, ErrorMessageSnackbar } from './components';
 import router from './router';
 
 function App() {
   return (
-    <FreeChatApiProvider server={import.meta.env.VITE_API_SERVER}>
+    <ContextsProvider>
       <CssVarsProvider>
         <CssBaseline />
         <GlobalStyles
@@ -29,9 +29,11 @@ function App() {
             <AccountMenu />
           </Stack>
         </Stack>
+        <UnauthorizedDialog />
+        <ErrorMessageSnackbar />
         <RouterProvider router={router} />
       </CssVarsProvider>
-    </FreeChatApiProvider>
+    </ContextsProvider>
   )
 }
 

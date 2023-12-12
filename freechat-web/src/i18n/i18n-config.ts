@@ -6,7 +6,7 @@ const locales: Readonly<{ [key: string]: string }> = {
 const i18nConfig = {
   locales: Object.keys(locales),
   defaultLocale: Object.keys(locales)[0],
-  namespaces: ['translation', 'button', 'sign-in'],
+  namespaces: ['translation', 'button', 'sign-in', 'account'],
   defaultNamespace: 'translation',
 } as const;
 

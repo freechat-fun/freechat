@@ -1,6 +1,6 @@
 # freechat-sdk.PromptTaskApi
 
-All URIs are relative to *https://freechat.fun*
+All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -28,10 +28,10 @@ from freechat-sdk.models.prompt_task_dto import PromptTaskDTO
 from freechat-sdk.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://freechat.fun
+# Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
 configuration = freechat-sdk.Configuration(
-    host = "https://freechat.fun"
+    host = "http://127.0.0.1:8080"
 )
 
 # The client must configure the authentication and authorization parameters
@@ -104,10 +104,10 @@ import freechat-sdk
 from freechat-sdk.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://freechat.fun
+# Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
 configuration = freechat-sdk.Configuration(
-    host = "https://freechat.fun"
+    host = "http://127.0.0.1:8080"
 )
 
 # The client must configure the authentication and authorization parameters
@@ -181,10 +181,10 @@ from freechat-sdk.models.prompt_task_details_dto import PromptTaskDetailsDTO
 from freechat-sdk.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://freechat.fun
+# Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
 configuration = freechat-sdk.Configuration(
-    host = "https://freechat.fun"
+    host = "http://127.0.0.1:8080"
 )
 
 # The client must configure the authentication and authorization parameters
@@ -258,10 +258,10 @@ from freechat-sdk.models.prompt_task_dto import PromptTaskDTO
 from freechat-sdk.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to https://freechat.fun
+# Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
 configuration = freechat-sdk.Configuration(
-    host = "https://freechat.fun"
+    host = "http://127.0.0.1:8080"
 )
 
 # The client must configure the authentication and authorization parameters

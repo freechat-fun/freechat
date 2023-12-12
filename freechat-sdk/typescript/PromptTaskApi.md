@@ -1,6 +1,6 @@
 # .PromptTaskApi
 
-All URIs are relative to *https://freechat.fun*
+All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

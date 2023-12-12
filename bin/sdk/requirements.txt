@@ -1,0 +1,2 @@
+jsonpath-ng
+argparse

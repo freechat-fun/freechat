@@ -1,0 +1,30 @@
+{
+  "author": "dev.freechat.fun",
+  "keywords": [
+    "freechat",
+    "freechat-sdk"
+  ],
+  "license": "Apache-2.0",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.esm.js",
+      "types": "./dist/index.d.js"
+    }
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-commonjs": "latest",
+    "rollup-plugin-typescript2": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-sourcemaps": "latest"
+  }
+}

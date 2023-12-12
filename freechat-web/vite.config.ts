@@ -8,6 +8,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         entryFileNames: `assets/[name].js`,
+        manualChunks(id) {
+          if (id.indexOf('node_modules') !== -1) {
+            if (id.indexOf('@mui') !== -1) {
+              return 'mui';
+            } else {
+              return 'modules';
+            }
+          }
+        }
       },
     },
   },

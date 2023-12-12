@@ -1,65 +1,65 @@
-import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http';
-import { Configuration} from '../configuration'
+import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http.js';
+import { Configuration} from '../configuration.js'
 
-import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO';
-import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO';
-import { AiModelInfoDTO } from '../models/AiModelInfoDTO';
-import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO';
-import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO';
-import { AppMetaDTO } from '../models/AppMetaDTO';
-import { CharacterBackendDTO } from '../models/CharacterBackendDTO';
-import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO';
-import { CharacterCreateDTO } from '../models/CharacterCreateDTO';
-import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO';
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO';
-import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO';
-import { CharacterQueryDTO } from '../models/CharacterQueryDTO';
-import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO';
-import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO';
-import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO';
-import { ChatContentDTO } from '../models/ChatContentDTO';
-import { ChatCreateDTO } from '../models/ChatCreateDTO';
-import { ChatMessageDTO } from '../models/ChatMessageDTO';
-import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO';
-import { ChatToolCallDTO } from '../models/ChatToolCallDTO';
-import { FlowCreateDTO } from '../models/FlowCreateDTO';
-import { FlowDetailsDTO } from '../models/FlowDetailsDTO';
-import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO';
-import { FlowQueryDTO } from '../models/FlowQueryDTO';
-import { FlowSummaryDTO } from '../models/FlowSummaryDTO';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO';
-import { FlowUpdateDTO } from '../models/FlowUpdateDTO';
-import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO';
-import { LlmResultDTO } from '../models/LlmResultDTO';
-import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO';
-import { OpenAiParamDTO } from '../models/OpenAiParamDTO';
-import { PluginCreateDTO } from '../models/PluginCreateDTO';
-import { PluginDetailsDTO } from '../models/PluginDetailsDTO';
-import { PluginQueryDTO } from '../models/PluginQueryDTO';
-import { PluginSummaryDTO } from '../models/PluginSummaryDTO';
-import { PluginSummaryStatsDTO } from '../models/PluginSummaryStatsDTO';
-import { PluginUpdateDTO } from '../models/PluginUpdateDTO';
-import { PromptAiParamDTO } from '../models/PromptAiParamDTO';
-import { PromptCreateDTO } from '../models/PromptCreateDTO';
-import { PromptDetailsDTO } from '../models/PromptDetailsDTO';
-import { PromptItemForNameDTO } from '../models/PromptItemForNameDTO';
-import { PromptQueryDTO } from '../models/PromptQueryDTO';
-import { PromptRefDTO } from '../models/PromptRefDTO';
-import { PromptSummaryDTO } from '../models/PromptSummaryDTO';
-import { PromptSummaryStatsDTO } from '../models/PromptSummaryStatsDTO';
-import { PromptTaskDTO } from '../models/PromptTaskDTO';
-import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO';
-import { PromptTemplateDTO } from '../models/PromptTemplateDTO';
-import { PromptUpdateDTO } from '../models/PromptUpdateDTO';
-import { QwenParamDTO } from '../models/QwenParamDTO';
-import { SseEmitter } from '../models/SseEmitter';
-import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO';
-import { UserDetailsDTO } from '../models/UserDetailsDTO';
-import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO';
-import { Where } from '../models/Where';
-import { ObservableAIServiceApi } from './ObservableAPI';
+import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
+import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
+import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
+import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
+import { AppMetaDTO } from '../models/AppMetaDTO.js';
+import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
+import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
+import { CharacterCreateDTO } from '../models/CharacterCreateDTO.js';
+import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
+import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
+import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
+import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
+import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
+import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
+import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
+import { ChatContentDTO } from '../models/ChatContentDTO.js';
+import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
+import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
+import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
+import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
+import { FlowCreateDTO } from '../models/FlowCreateDTO.js';
+import { FlowDetailsDTO } from '../models/FlowDetailsDTO.js';
+import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO.js';
+import { FlowQueryDTO } from '../models/FlowQueryDTO.js';
+import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
+import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
+import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
+import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
+import { LlmResultDTO } from '../models/LlmResultDTO.js';
+import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
+import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
+import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
+import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
+import { PluginQueryDTO } from '../models/PluginQueryDTO.js';
+import { PluginSummaryDTO } from '../models/PluginSummaryDTO.js';
+import { PluginSummaryStatsDTO } from '../models/PluginSummaryStatsDTO.js';
+import { PluginUpdateDTO } from '../models/PluginUpdateDTO.js';
+import { PromptAiParamDTO } from '../models/PromptAiParamDTO.js';
+import { PromptCreateDTO } from '../models/PromptCreateDTO.js';
+import { PromptDetailsDTO } from '../models/PromptDetailsDTO.js';
+import { PromptItemForNameDTO } from '../models/PromptItemForNameDTO.js';
+import { PromptQueryDTO } from '../models/PromptQueryDTO.js';
+import { PromptRefDTO } from '../models/PromptRefDTO.js';
+import { PromptSummaryDTO } from '../models/PromptSummaryDTO.js';
+import { PromptSummaryStatsDTO } from '../models/PromptSummaryStatsDTO.js';
+import { PromptTaskDTO } from '../models/PromptTaskDTO.js';
+import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
+import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
+import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
+import { QwenParamDTO } from '../models/QwenParamDTO.js';
+import { SseEmitter } from '../models/SseEmitter.js';
+import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
+import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
+import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
+import { Where } from '../models/Where.js';
+import { ObservableAIServiceApi } from './ObservableAPI.js';
 
-import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi";
+import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
 export class PromiseAIServiceApi {
     private api: ObservableAIServiceApi
 
@@ -276,9 +276,9 @@ export class PromiseAIServiceApi {
 
 
 
-import { ObservableAccountApi } from './ObservableAPI';
+import { ObservableAccountApi } from './ObservableAPI.js';
 
-import { AccountApiRequestFactory, AccountApiResponseProcessor} from "../apis/AccountApi";
+import { AccountApiRequestFactory, AccountApiResponseProcessor} from "../apis/AccountApi.js";
 export class PromiseAccountApi {
     private api: ObservableAccountApi
 
@@ -469,9 +469,9 @@ export class PromiseAccountApi {
 
 
 
-import { ObservableAccountManagerForAdminApi } from './ObservableAPI';
+import { ObservableAccountManagerForAdminApi } from './ObservableAPI.js';
 
-import { AccountManagerForAdminApiRequestFactory, AccountManagerForAdminApiResponseProcessor} from "../apis/AccountManagerForAdminApi";
+import { AccountManagerForAdminApiRequestFactory, AccountManagerForAdminApiResponseProcessor} from "../apis/AccountManagerForAdminApi.js";
 export class PromiseAccountManagerForAdminApi {
     private api: ObservableAccountManagerForAdminApi
 
@@ -772,9 +772,9 @@ export class PromiseAccountManagerForAdminApi {
 
 
 
-import { ObservableAppConfigForAdminApi } from './ObservableAPI';
+import { ObservableAppConfigForAdminApi } from './ObservableAPI.js';
 
-import { AppConfigForAdminApiRequestFactory, AppConfigForAdminApiResponseProcessor} from "../apis/AppConfigForAdminApi";
+import { AppConfigForAdminApiRequestFactory, AppConfigForAdminApiResponseProcessor} from "../apis/AppConfigForAdminApi.js";
 export class PromiseAppConfigForAdminApi {
     private api: ObservableAppConfigForAdminApi
 
@@ -871,9 +871,9 @@ export class PromiseAppConfigForAdminApi {
 
 
 
-import { ObservableAppMetaForAdminApi } from './ObservableAPI';
+import { ObservableAppMetaForAdminApi } from './ObservableAPI.js';
 
-import { AppMetaForAdminApiRequestFactory, AppMetaForAdminApiResponseProcessor} from "../apis/AppMetaForAdminApi";
+import { AppMetaForAdminApiRequestFactory, AppMetaForAdminApiResponseProcessor} from "../apis/AppMetaForAdminApi.js";
 export class PromiseAppMetaForAdminApi {
     private api: ObservableAppMetaForAdminApi
 
@@ -932,9 +932,9 @@ export class PromiseAppMetaForAdminApi {
 
 
 
-import { ObservableCharacterApi } from './ObservableAPI';
+import { ObservableCharacterApi } from './ObservableAPI.js';
 
-import { CharacterApiRequestFactory, CharacterApiResponseProcessor} from "../apis/CharacterApi";
+import { CharacterApiRequestFactory, CharacterApiResponseProcessor} from "../apis/CharacterApi.js";
 export class PromiseCharacterApi {
     private api: ObservableCharacterApi
 
@@ -1569,9 +1569,9 @@ export class PromiseCharacterApi {
 
 
 
-import { ObservableEncryptionManagerForAdminApi } from './ObservableAPI';
+import { ObservableEncryptionManagerForAdminApi } from './ObservableAPI.js';
 
-import { EncryptionManagerForAdminApiRequestFactory, EncryptionManagerForAdminApiResponseProcessor} from "../apis/EncryptionManagerForAdminApi";
+import { EncryptionManagerForAdminApiRequestFactory, EncryptionManagerForAdminApiResponseProcessor} from "../apis/EncryptionManagerForAdminApi.js";
 export class PromiseEncryptionManagerForAdminApi {
     private api: ObservableEncryptionManagerForAdminApi
 
@@ -1608,9 +1608,9 @@ export class PromiseEncryptionManagerForAdminApi {
 
 
 
-import { ObservableFlowApi } from './ObservableAPI';
+import { ObservableFlowApi } from './ObservableAPI.js';
 
-import { FlowApiRequestFactory, FlowApiResponseProcessor} from "../apis/FlowApi";
+import { FlowApiRequestFactory, FlowApiResponseProcessor} from "../apis/FlowApi.js";
 export class PromiseFlowApi {
     private api: ObservableFlowApi
 
@@ -1951,9 +1951,9 @@ export class PromiseFlowApi {
 
 
 
-import { ObservableInteractiveStatisticsApi } from './ObservableAPI';
+import { ObservableInteractiveStatisticsApi } from './ObservableAPI.js';
 
-import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiResponseProcessor} from "../apis/InteractiveStatisticsApi";
+import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiResponseProcessor} from "../apis/InteractiveStatisticsApi.js";
 export class PromiseInteractiveStatisticsApi {
     private api: ObservableInteractiveStatisticsApi
 
@@ -2376,9 +2376,9 @@ export class PromiseInteractiveStatisticsApi {
 
 
 
-import { ObservableOrganizationApi } from './ObservableAPI';
+import { ObservableOrganizationApi } from './ObservableAPI.js';
 
-import { OrganizationApiRequestFactory, OrganizationApiResponseProcessor} from "../apis/OrganizationApi";
+import { OrganizationApiRequestFactory, OrganizationApiResponseProcessor} from "../apis/OrganizationApi.js";
 export class PromiseOrganizationApi {
     private api: ObservableOrganizationApi
 
@@ -2625,9 +2625,9 @@ export class PromiseOrganizationApi {
 
 
 
-import { ObservablePluginApi } from './ObservableAPI';
+import { ObservablePluginApi } from './ObservableAPI.js';
 
-import { PluginApiRequestFactory, PluginApiResponseProcessor} from "../apis/PluginApi";
+import { PluginApiRequestFactory, PluginApiResponseProcessor} from "../apis/PluginApi.js";
 export class PromisePluginApi {
     private api: ObservablePluginApi
 
@@ -2906,9 +2906,9 @@ export class PromisePluginApi {
 
 
 
-import { ObservablePromptApi } from './ObservableAPI';
+import { ObservablePromptApi } from './ObservableAPI.js';
 
-import { PromptApiRequestFactory, PromptApiResponseProcessor} from "../apis/PromptApi";
+import { PromptApiRequestFactory, PromptApiResponseProcessor} from "../apis/PromptApi.js";
 export class PromisePromptApi {
     private api: ObservablePromptApi
 
@@ -3329,9 +3329,9 @@ export class PromisePromptApi {
 
 
 
-import { ObservablePromptTaskApi } from './ObservableAPI';
+import { ObservablePromptTaskApi } from './ObservableAPI.js';
 
-import { PromptTaskApiRequestFactory, PromptTaskApiResponseProcessor} from "../apis/PromptTaskApi";
+import { PromptTaskApiRequestFactory, PromptTaskApiResponseProcessor} from "../apis/PromptTaskApi.js";
 export class PromisePromptTaskApi {
     private api: ObservablePromptTaskApi
 

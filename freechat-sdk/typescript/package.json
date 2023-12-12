@@ -1,8 +1,8 @@
 {
   "name": "freechat-sdk",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "OpenAPI client for freechat-sdk",
-  "author": "OpenAPI-Generator Contributors",
+  "author": "dev.freechat.fun",
   "repository": {
     "type": "git",
     "url": "https://github.com/freechat-fun/freechat.git"
@@ -10,20 +10,22 @@
   "keywords": [
     "freechat",
     "freechat-sdk",
-    "typescript"
+    "openapi-client",
+    "openapi-generator"
   ],
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "type": "commonjs",
+  "main": "dist/index.cjs.js",
+  "type": "module",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.js"
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.js",
+      "import": "./dist/index.esm.js"
     }
   },
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "prepare": "npm run build"
   },
   "dependencies": {
@@ -33,6 +35,13 @@
   },
   "devDependencies": {
     "typescript": "^4.0",
-    "@types/url-parse": "1.4.4"
-  }
+    "@types/url-parse": "1.4.4",
+    "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-commonjs": "latest",
+    "rollup-plugin-typescript2": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-sourcemaps": "latest"
+  },
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js"
 }

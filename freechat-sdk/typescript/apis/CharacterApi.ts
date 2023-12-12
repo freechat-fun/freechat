@@ -1,26 +1,26 @@
 // TODO: better import syntax?
-import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi';
-import {Configuration} from '../configuration';
-import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http';
-import {ObjectSerializer} from '../models/ObjectSerializer';
-import {ApiException} from './exception';
-import {canConsumeForm, isCodeInRange} from '../util';
-import {SecurityAuthentication} from '../auth/auth';
+import {BaseAPIRequestFactory, RequiredError, COLLECTION_FORMATS} from './baseapi.js';
+import {Configuration} from '../configuration.js';
+import {RequestContext, HttpMethod, ResponseContext, HttpFile, HttpInfo} from '../http/http.js';
+import {ObjectSerializer} from '../models/ObjectSerializer.js';
+import {ApiException} from './exception.js';
+import {canConsumeForm, isCodeInRange} from '../util.js';
+import {SecurityAuthentication} from '../auth/auth.js';
 
 
-import { CharacterBackendDTO } from '../models/CharacterBackendDTO';
-import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO';
-import { CharacterCreateDTO } from '../models/CharacterCreateDTO';
-import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO';
-import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO';
-import { CharacterQueryDTO } from '../models/CharacterQueryDTO';
-import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO';
-import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO';
-import { ChatContentDTO } from '../models/ChatContentDTO';
-import { ChatCreateDTO } from '../models/ChatCreateDTO';
-import { ChatMessageDTO } from '../models/ChatMessageDTO';
-import { LlmResultDTO } from '../models/LlmResultDTO';
-import { SseEmitter } from '../models/SseEmitter';
+import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
+import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
+import { CharacterCreateDTO } from '../models/CharacterCreateDTO.js';
+import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
+import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
+import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
+import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
+import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
+import { ChatContentDTO } from '../models/ChatContentDTO.js';
+import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
+import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
+import { LlmResultDTO } from '../models/LlmResultDTO.js';
+import { SseEmitter } from '../models/SseEmitter.js';
 
 /**
  * no description
