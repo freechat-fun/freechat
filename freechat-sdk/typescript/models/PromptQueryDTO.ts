@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { Where } from '../models/Where.js';
+import { PromptQueryWhere } from '../models/PromptQueryWhere.js';
 import { HttpFile } from '../http/http.js';
 
 /**
 * Prompt template query request
 */
 export class PromptQueryDTO {
-    'where'?: Where;
+    'where'?: PromptQueryWhere;
     /**
     * Sorting condition, supported sorting fields are: - version - modifyTime - createTime  Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\\\"score\\\", \\\"scoreCount asc\\\"] (scoreCount in ascending order) 
     */
@@ -37,7 +37,7 @@ export class PromptQueryDTO {
         {
             "name": "where",
             "baseName": "where",
-            "type": "Where",
+            "type": "PromptQueryWhere",
             "format": ""
         },
         {

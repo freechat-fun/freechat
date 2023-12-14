@@ -52,7 +52,7 @@ import fun.freechat.client.JSON;
  * Query condition
  */
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
-public class Where {
+public class CharacterQueryWhere {
   public static final String SERIALIZED_NAME_VISIBILITY = "visibility";
   @SerializedName(SERIALIZED_NAME_VISIBILITY)
   private String visibility;
@@ -69,21 +69,9 @@ public class Where {
   @SerializedName(SERIALIZED_NAME_TAGS_OP)
   private String tagsOp;
 
-  public static final String SERIALIZED_NAME_AI_MODELS = "aiModels";
-  @SerializedName(SERIALIZED_NAME_AI_MODELS)
-  private List<String> aiModels;
-
-  public static final String SERIALIZED_NAME_AI_MODELS_OP = "aiModelsOp";
-  @SerializedName(SERIALIZED_NAME_AI_MODELS_OP)
-  private String aiModelsOp;
-
   public static final String SERIALIZED_NAME_NAME = "name";
   @SerializedName(SERIALIZED_NAME_NAME)
   private String name;
-
-  public static final String SERIALIZED_NAME_TYPE = "type";
-  @SerializedName(SERIALIZED_NAME_TYPE)
-  private String type;
 
   public static final String SERIALIZED_NAME_LANG = "lang";
   @SerializedName(SERIALIZED_NAME_LANG)
@@ -93,10 +81,10 @@ public class Where {
   @SerializedName(SERIALIZED_NAME_TEXT)
   private String text;
 
-  public Where() {
+  public CharacterQueryWhere() {
   }
 
-  public Where visibility(String visibility) {
+  public CharacterQueryWhere visibility(String visibility) {
     
     this.visibility = visibility;
     return this;
@@ -117,14 +105,14 @@ public class Where {
   }
 
 
-  public Where username(String username) {
+  public CharacterQueryWhere username(String username) {
     
     this.username = username;
     return this;
   }
 
    /**
-   * Effective when searching public, public_org prompts, if not specified, search all users
+   * Effective when searching public, public_org characters, if not specified, search all users
    * @return username
   **/
   @javax.annotation.Nullable
@@ -138,13 +126,13 @@ public class Where {
   }
 
 
-  public Where tags(List<String> tags) {
+  public CharacterQueryWhere tags(List<String> tags) {
     
     this.tags = tags;
     return this;
   }
 
-  public Where addTagsItem(String tagsItem) {
+  public CharacterQueryWhere addTagsItem(String tagsItem) {
     if (this.tags == null) {
       this.tags = new ArrayList<>();
     }
@@ -167,7 +155,7 @@ public class Where {
   }
 
 
-  public Where tagsOp(String tagsOp) {
+  public CharacterQueryWhere tagsOp(String tagsOp) {
     
     this.tagsOp = tagsOp;
     return this;
@@ -188,57 +176,7 @@ public class Where {
   }
 
 
-  public Where aiModels(List<String> aiModels) {
-    
-    this.aiModels = aiModels;
-    return this;
-  }
-
-  public Where addAiModelsItem(String aiModelsItem) {
-    if (this.aiModels == null) {
-      this.aiModels = new ArrayList<>();
-    }
-    this.aiModels.add(aiModelsItem);
-    return this;
-  }
-
-   /**
-   * Model set
-   * @return aiModels
-  **/
-  @javax.annotation.Nullable
-  public List<String> getAiModels() {
-    return aiModels;
-  }
-
-
-  public void setAiModels(List<String> aiModels) {
-    this.aiModels = aiModels;
-  }
-
-
-  public Where aiModelsOp(String aiModelsOp) {
-    
-    this.aiModelsOp = aiModelsOp;
-    return this;
-  }
-
-   /**
-   * Relationship between model sets: and | or (default)
-   * @return aiModelsOp
-  **/
-  @javax.annotation.Nullable
-  public String getAiModelsOp() {
-    return aiModelsOp;
-  }
-
-
-  public void setAiModelsOp(String aiModelsOp) {
-    this.aiModelsOp = aiModelsOp;
-  }
-
-
-  public Where name(String name) {
+  public CharacterQueryWhere name(String name) {
     
     this.name = name;
     return this;
@@ -259,28 +197,7 @@ public class Where {
   }
 
 
-  public Where type(String type) {
-    
-    this.type = type;
-    return this;
-  }
-
-   /**
-   * Type, exact match: string (default) | chat
-   * @return type
-  **/
-  @javax.annotation.Nullable
-  public String getType() {
-    return type;
-  }
-
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-
-  public Where lang(String lang) {
+  public CharacterQueryWhere lang(String lang) {
     
     this.lang = lang;
     return this;
@@ -301,14 +218,14 @@ public class Where {
   }
 
 
-  public Where text(String text) {
+  public CharacterQueryWhere text(String text) {
     
     this.text = text;
     return this;
   }
 
    /**
-   * Name, description, template, example, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.
+   * Name, description, profile, chat style, experience, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.
    * @return text
   **/
   @javax.annotation.Nullable
@@ -334,9 +251,9 @@ public class Where {
    *
    * @param key name of the property
    * @param value value of the property
-   * @return the Where instance itself
+   * @return the CharacterQueryWhere instance itself
    */
-  public Where putAdditionalProperty(String key, Object value) {
+  public CharacterQueryWhere putAdditionalProperty(String key, Object value) {
     if (this.additionalProperties == null) {
         this.additionalProperties = new HashMap<String, Object>();
     }
@@ -375,37 +292,31 @@ public class Where {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Where where = (Where) o;
-    return Objects.equals(this.visibility, where.visibility) &&
-        Objects.equals(this.username, where.username) &&
-        Objects.equals(this.tags, where.tags) &&
-        Objects.equals(this.tagsOp, where.tagsOp) &&
-        Objects.equals(this.aiModels, where.aiModels) &&
-        Objects.equals(this.aiModelsOp, where.aiModelsOp) &&
-        Objects.equals(this.name, where.name) &&
-        Objects.equals(this.type, where.type) &&
-        Objects.equals(this.lang, where.lang) &&
-        Objects.equals(this.text, where.text)&&
-        Objects.equals(this.additionalProperties, where.additionalProperties);
+    CharacterQueryWhere characterQueryWhere = (CharacterQueryWhere) o;
+    return Objects.equals(this.visibility, characterQueryWhere.visibility) &&
+        Objects.equals(this.username, characterQueryWhere.username) &&
+        Objects.equals(this.tags, characterQueryWhere.tags) &&
+        Objects.equals(this.tagsOp, characterQueryWhere.tagsOp) &&
+        Objects.equals(this.name, characterQueryWhere.name) &&
+        Objects.equals(this.lang, characterQueryWhere.lang) &&
+        Objects.equals(this.text, characterQueryWhere.text)&&
+        Objects.equals(this.additionalProperties, characterQueryWhere.additionalProperties);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(visibility, username, tags, tagsOp, aiModels, aiModelsOp, name, type, lang, text, additionalProperties);
+    return Objects.hash(visibility, username, tags, tagsOp, name, lang, text, additionalProperties);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Where {\n");
+    sb.append("class CharacterQueryWhere {\n");
     sb.append("    visibility: ").append(toIndentedString(visibility)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    tagsOp: ").append(toIndentedString(tagsOp)).append("\n");
-    sb.append("    aiModels: ").append(toIndentedString(aiModels)).append("\n");
-    sb.append("    aiModelsOp: ").append(toIndentedString(aiModelsOp)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    lang: ").append(toIndentedString(lang)).append("\n");
     sb.append("    text: ").append(toIndentedString(text)).append("\n");
     sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
@@ -435,10 +346,7 @@ public class Where {
     openapiFields.add("username");
     openapiFields.add("tags");
     openapiFields.add("tagsOp");
-    openapiFields.add("aiModels");
-    openapiFields.add("aiModelsOp");
     openapiFields.add("name");
-    openapiFields.add("type");
     openapiFields.add("lang");
     openapiFields.add("text");
 
@@ -450,12 +358,12 @@ public class Where {
   * Validates the JSON Element and throws an exception if issues found
   *
   * @param jsonElement JSON Element
-  * @throws IOException if the JSON Element is invalid with respect to Where
+  * @throws IOException if the JSON Element is invalid with respect to CharacterQueryWhere
   */
   public static void validateJsonElement(JsonElement jsonElement) throws IOException {
       if (jsonElement == null) {
-        if (!Where.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
-          throw new IllegalArgumentException(String.format("The required field(s) %s in Where is not found in the empty JSON string", Where.openapiRequiredFields.toString()));
+        if (!CharacterQueryWhere.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
+          throw new IllegalArgumentException(String.format("The required field(s) %s in CharacterQueryWhere is not found in the empty JSON string", CharacterQueryWhere.openapiRequiredFields.toString()));
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
@@ -472,18 +380,8 @@ public class Where {
       if ((jsonObj.get("tagsOp") != null && !jsonObj.get("tagsOp").isJsonNull()) && !jsonObj.get("tagsOp").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `tagsOp` to be a primitive type in the JSON string but got `%s`", jsonObj.get("tagsOp").toString()));
       }
-      // ensure the optional json data is an array if present
-      if (jsonObj.get("aiModels") != null && !jsonObj.get("aiModels").isJsonNull() && !jsonObj.get("aiModels").isJsonArray()) {
-        throw new IllegalArgumentException(String.format("Expected the field `aiModels` to be an array in the JSON string but got `%s`", jsonObj.get("aiModels").toString()));
-      }
-      if ((jsonObj.get("aiModelsOp") != null && !jsonObj.get("aiModelsOp").isJsonNull()) && !jsonObj.get("aiModelsOp").isJsonPrimitive()) {
-        throw new IllegalArgumentException(String.format("Expected the field `aiModelsOp` to be a primitive type in the JSON string but got `%s`", jsonObj.get("aiModelsOp").toString()));
-      }
       if ((jsonObj.get("name") != null && !jsonObj.get("name").isJsonNull()) && !jsonObj.get("name").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `name` to be a primitive type in the JSON string but got `%s`", jsonObj.get("name").toString()));
-      }
-      if ((jsonObj.get("type") != null && !jsonObj.get("type").isJsonNull()) && !jsonObj.get("type").isJsonPrimitive()) {
-        throw new IllegalArgumentException(String.format("Expected the field `type` to be a primitive type in the JSON string but got `%s`", jsonObj.get("type").toString()));
       }
       if ((jsonObj.get("lang") != null && !jsonObj.get("lang").isJsonNull()) && !jsonObj.get("lang").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `lang` to be a primitive type in the JSON string but got `%s`", jsonObj.get("lang").toString()));
@@ -497,16 +395,16 @@ public class Where {
     @SuppressWarnings("unchecked")
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-       if (!Where.class.isAssignableFrom(type.getRawType())) {
-         return null; // this class only serializes 'Where' and its subtypes
+       if (!CharacterQueryWhere.class.isAssignableFrom(type.getRawType())) {
+         return null; // this class only serializes 'CharacterQueryWhere' and its subtypes
        }
        final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
-       final TypeAdapter<Where> thisAdapter
-                        = gson.getDelegateAdapter(this, TypeToken.get(Where.class));
+       final TypeAdapter<CharacterQueryWhere> thisAdapter
+                        = gson.getDelegateAdapter(this, TypeToken.get(CharacterQueryWhere.class));
 
-       return (TypeAdapter<T>) new TypeAdapter<Where>() {
+       return (TypeAdapter<T>) new TypeAdapter<CharacterQueryWhere>() {
            @Override
-           public void write(JsonWriter out, Where value) throws IOException {
+           public void write(JsonWriter out, CharacterQueryWhere value) throws IOException {
              JsonObject obj = thisAdapter.toJsonTree(value).getAsJsonObject();
              obj.remove("additionalProperties");
              // serialize additional properties
@@ -529,12 +427,12 @@ public class Where {
            }
 
            @Override
-           public Where read(JsonReader in) throws IOException {
+           public CharacterQueryWhere read(JsonReader in) throws IOException {
              JsonElement jsonElement = elementAdapter.read(in);
              validateJsonElement(jsonElement);
              JsonObject jsonObj = jsonElement.getAsJsonObject();
              // store additional fields in the deserialized instance
-             Where instance = thisAdapter.fromJsonTree(jsonObj);
+             CharacterQueryWhere instance = thisAdapter.fromJsonTree(jsonObj);
              for (Map.Entry<String, JsonElement> entry : jsonObj.entrySet()) {
                if (!openapiFields.contains(entry.getKey())) {
                  if (entry.getValue().isJsonPrimitive()) { // primitive type
@@ -561,18 +459,18 @@ public class Where {
   }
 
  /**
-  * Create an instance of Where given an JSON string
+  * Create an instance of CharacterQueryWhere given an JSON string
   *
   * @param jsonString JSON string
-  * @return An instance of Where
-  * @throws IOException if the JSON string is invalid with respect to Where
+  * @return An instance of CharacterQueryWhere
+  * @throws IOException if the JSON string is invalid with respect to CharacterQueryWhere
   */
-  public static Where fromJson(String jsonString) throws IOException {
-    return JSON.getGson().fromJson(jsonString, Where.class);
+  public static CharacterQueryWhere fromJson(String jsonString) throws IOException {
+    return JSON.getGson().fromJson(jsonString, CharacterQueryWhere.class);
   }
 
  /**
-  * Convert an instance of Where to an JSON string
+  * Convert an instance of CharacterQueryWhere to an JSON string
   *
   * @return JSON string
   */

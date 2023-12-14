@@ -5,7 +5,7 @@ Plugin information query request
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**where** | [**Where**](Where.md) |  | [optional] 
+**where** | [**PluginQueryWhere**](PluginQueryWhere.md) |  | [optional] 
 **order_by** | **List[str]** | Ordering condition, supported sorting fields are: - modifyTime - createTime  Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\\\&quot;score\\\&quot;, \\\&quot;scoreCount asc\\\&quot;] (scoreCount in ascending order)  | [optional] 
 **page_num** | **int** | Page number, default is 0 | [optional] 
 **page_size** | **int** | Page item count, 1～50, default is 10 | [optional] 

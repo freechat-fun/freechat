@@ -11,7 +11,7 @@ import java.util.Objects;
 @Schema(description = "Plugin information query request")
 @Data
 public class PluginQueryDTO {
-    @Schema(description = "Query condition")
+    @Schema(name = "PluginQuery.Where", description = "Query condition")
     @Data
     public static class Where {
         @Schema(description = "Visibility: public, public_org (search this organization), private (default)")

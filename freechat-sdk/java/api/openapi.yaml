@@ -5964,60 +5964,7 @@ components:
           format: int64
           type: integer
       type: object
-    PromptQueryDTO:
-      description: Prompt template query request
-      example:
-        orderBy:
-        - orderBy
-        - orderBy
-        pageSize: 6
-        where:
-          aiModels:
-          - aiModels
-          - aiModels
-          tagsOp: tagsOp
-          visibility: visibility
-          name: name
-          aiModelsOp: aiModelsOp
-          text: text
-          type: type
-          lang: lang
-          username: username
-          tags:
-          - tags
-          - tags
-        pageNum: 0
-      properties:
-        where:
-          $ref: '#/components/schemas/Where'
-        orderBy:
-          description: |
-            Sorting condition, supported sorting fields are:
-            - version
-            - modifyTime
-            - createTime
-
-            Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-          items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-
-              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-            type: string
-          type: array
-        pageNum:
-          description: "Page number, default is 0"
-          format: int64
-          type: integer
-        pageSize:
-          description: "Number of items per page, 1～50, default is 10"
-          format: int64
-          type: integer
-      type: object
-    Where:
+    PromptQuery.Where:
       description: Query condition
       example:
         aiModels:
@@ -6075,6 +6022,59 @@ components:
             \ match is sufficient; public scope + general search for all users does\
             \ not guarantee real-time."
           type: string
+      type: object
+    PromptQueryDTO:
+      description: Prompt template query request
+      example:
+        orderBy:
+        - orderBy
+        - orderBy
+        pageSize: 6
+        where:
+          aiModels:
+          - aiModels
+          - aiModels
+          tagsOp: tagsOp
+          visibility: visibility
+          name: name
+          aiModelsOp: aiModelsOp
+          text: text
+          type: type
+          lang: lang
+          username: username
+          tags:
+          - tags
+          - tags
+        pageNum: 0
+      properties:
+        where:
+          $ref: '#/components/schemas/PromptQuery.Where'
+        orderBy:
+          description: |
+            Sorting condition, supported sorting fields are:
+            - version
+            - modifyTime
+            - createTime
+
+            Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+          items:
+            description: |
+              Sorting condition, supported sorting fields are:
+              - version
+              - modifyTime
+              - createTime
+
+              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+            type: string
+          type: array
+        pageNum:
+          description: "Page number, default is 0"
+          format: int64
+          type: integer
+        pageSize:
+          description: "Number of items per page, 1～50, default is 10"
+          format: int64
+          type: integer
       type: object
     AiModelInfoDTO:
       description: Model information
@@ -6380,6 +6380,70 @@ components:
       required:
       - name
       type: object
+    PluginQuery.Where:
+      description: Query condition
+      example:
+        aiModels:
+        - aiModels
+        - aiModels
+        tagsOp: tagsOp
+        visibility: visibility
+        apiFormat: apiFormat
+        provider: provider
+        name: name
+        aiModelsOp: aiModelsOp
+        text: text
+        manifestFormat: manifestFormat
+        username: username
+        tags:
+        - tags
+        - tags
+      properties:
+        visibility:
+          description: "Visibility: public, public_org (search this organization),\
+            \ private (default)"
+          type: string
+        username:
+          description: "Effective when searching public, public_org prompts, if not\
+            \ specified, search all users"
+          type: string
+        manifestFormat:
+          description: "Manifest configuration format, currently supported: dash_scope,\
+            \ open_ai."
+          type: string
+        apiFormat:
+          description: "API description format, currently supported: openapi_v3."
+          type: string
+        tags:
+          description: Tags
+          items:
+            description: Tags
+            type: string
+          type: array
+        tagsOp:
+          description: "Relationship between tags: and | or (default)"
+          type: string
+        aiModels:
+          description: Model set
+          items:
+            description: Model set
+            type: string
+          type: array
+        aiModelsOp:
+          description: "Relationship between model sets: and | or (default)"
+          type: string
+        name:
+          description: "Name, left match"
+          type: string
+        provider:
+          description: "Provider, left match"
+          type: string
+        text:
+          description: "Name, provider Information, manifest (real-time pulling is\
+            \ not supported at the moment), fuzzy matching, any one match is sufficient;\
+            \ public scope + general search for all users does not guarantee real-time."
+          type: string
+      type: object
     PluginQueryDTO:
       description: Plugin information query request
       example:
@@ -6393,11 +6457,12 @@ components:
           - aiModels
           tagsOp: tagsOp
           visibility: visibility
+          apiFormat: apiFormat
+          provider: provider
           name: name
           aiModelsOp: aiModelsOp
           text: text
-          type: type
-          lang: lang
+          manifestFormat: manifestFormat
           username: username
           tags:
           - tags
@@ -6405,7 +6470,7 @@ components:
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/Where'
+          $ref: '#/components/schemas/PluginQuery.Where'
         orderBy:
           description: |
             Ordering condition, supported sorting fields are:
@@ -6692,6 +6757,61 @@ components:
         stats:
           $ref: '#/components/schemas/InteractiveStatsDTO'
       type: object
+    FlowQuery.Where:
+      description: Query condition
+      example:
+        aiModels:
+        - aiModels
+        - aiModels
+        tagsOp: tagsOp
+        visibility: visibility
+        format: format
+        name: name
+        aiModelsOp: aiModelsOp
+        text: text
+        username: username
+        tags:
+        - tags
+        - tags
+      properties:
+        visibility:
+          description: "Visibility: public, public_org (search this organization),\
+            \ private (default)"
+          type: string
+        username:
+          description: "Effective when searching public, public_org prompts, if not\
+            \ specified, search all users"
+          type: string
+        format:
+          description: "Flow configuration format, currently supported: langflow."
+          type: string
+        tags:
+          description: Tags
+          items:
+            description: Tags
+            type: string
+          type: array
+        tagsOp:
+          description: "Relationship between tags: and | or (default)"
+          type: string
+        aiModels:
+          description: Model set
+          items:
+            description: Model set
+            type: string
+          type: array
+        aiModelsOp:
+          description: "Relationship between model sets: and | or (default)"
+          type: string
+        name:
+          description: "Name, left match"
+          type: string
+        text:
+          description: "Name, description, example, fuzzy matching, any one match\
+            \ is sufficient; public scope + general search for all users does not\
+            \ guarantee real-time."
+          type: string
+      type: object
     FlowQueryDTO:
       description: Flow information query request
       example:
@@ -6705,11 +6825,10 @@ components:
           - aiModels
           tagsOp: tagsOp
           visibility: visibility
+          format: format
           name: name
           aiModelsOp: aiModelsOp
           text: text
-          type: type
-          lang: lang
           username: username
           tags:
           - tags
@@ -6717,7 +6836,7 @@ components:
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/Where'
+          $ref: '#/components/schemas/FlowQuery.Where'
         orderBy:
           description: |
             Sorting condition, supported sorting fields are:
@@ -7030,6 +7149,48 @@ components:
         stats:
           $ref: '#/components/schemas/InteractiveStatsDTO'
       type: object
+    CharacterQuery.Where:
+      description: Query condition
+      example:
+        tagsOp: tagsOp
+        visibility: visibility
+        name: name
+        text: text
+        lang: lang
+        username: username
+        tags:
+        - tags
+        - tags
+      properties:
+        visibility:
+          description: "Visibility: public, public_org (search this organization),\
+            \ private (default)"
+          type: string
+        username:
+          description: "Effective when searching public, public_org characters, if\
+            \ not specified, search all users"
+          type: string
+        tags:
+          description: Tags
+          items:
+            description: Tags
+            type: string
+          type: array
+        tagsOp:
+          description: "Relationship between tags: and | or (default)"
+          type: string
+        name:
+          description: "Name, left match"
+          type: string
+        lang:
+          description: "Language, exact match"
+          type: string
+        text:
+          description: "Name, description, profile, chat style, experience, fuzzy\
+            \ match, any one match is sufficient; public scope + general search for\
+            \ all users does not guarantee real-time."
+          type: string
+      type: object
     CharacterQueryDTO:
       description: Character query request
       example:
@@ -7038,15 +7199,10 @@ components:
         - orderBy
         pageSize: 6
         where:
-          aiModels:
-          - aiModels
-          - aiModels
           tagsOp: tagsOp
           visibility: visibility
           name: name
-          aiModelsOp: aiModelsOp
           text: text
-          type: type
           lang: lang
           username: username
           tags:
@@ -7055,7 +7211,7 @@ components:
         pageNum: 0
       properties:
         where:
-          $ref: '#/components/schemas/Where'
+          $ref: '#/components/schemas/CharacterQuery.Where'
         orderBy:
           description: |
             Sorting condition, supported sorting fields are:

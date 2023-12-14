@@ -36,7 +36,7 @@ class TestPromptQueryDTO(unittest.TestCase):
         model = PromptQueryDTO()
         if include_optional:
             return PromptQueryDTO(
-                where = freechat-sdk.models.where.Where(
+                where = freechat-sdk.models.prompt_query/where.PromptQuery.Where(
                     visibility = '', 
                     username = '', 
                     tags = [

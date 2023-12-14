@@ -36,19 +36,14 @@ class TestCharacterQueryDTO(unittest.TestCase):
         model = CharacterQueryDTO()
         if include_optional:
             return CharacterQueryDTO(
-                where = freechat-sdk.models.where.Where(
+                where = freechat-sdk.models.character_query/where.CharacterQuery.Where(
                     visibility = '', 
                     username = '', 
                     tags = [
                         ''
                         ], 
                     tags_op = '', 
-                    ai_models = [
-                        ''
-                        ], 
-                    ai_models_op = '', 
                     name = '', 
-                    type = '', 
                     lang = '', 
                     text = '', ),
                 order_by = [

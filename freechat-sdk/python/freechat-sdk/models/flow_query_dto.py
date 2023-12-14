@@ -21,7 +21,7 @@ import json
 from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, StrictInt, StrictStr
 from pydantic import Field
-from freechat-sdk.models.where import Where
+from freechat-sdk.models.flow_query_where import FlowQueryWhere
 try:
     from typing import Self
 except ImportError:
@@ -31,7 +31,7 @@ class FlowQueryDTO(BaseModel):
     """
     Flow information query request
     """ # noqa: E501
-    where: Optional[Where] = None
+    where: Optional[FlowQueryWhere] = None
     order_by: Optional[List[StrictStr]] = Field(default=None, description="Sorting condition, supported sorting fields are: - version - modifyTime - createTime  Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\\\"score\\\", \\\"scoreCount asc\\\"] (scoreCount in ascending order) ", alias="orderBy")
     page_num: Optional[StrictInt] = Field(default=None, description="Page number, default is 0", alias="pageNum")
     page_size: Optional[StrictInt] = Field(default=None, description="Number of items per page, 1~50, default is 10", alias="pageSize")
@@ -96,7 +96,7 @@ class FlowQueryDTO(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "where": Where.from_dict(obj.get("where")) if obj.get("where") is not None else None,
+            "where": FlowQueryWhere.from_dict(obj.get("where")) if obj.get("where") is not None else None,
             "orderBy": obj.get("orderBy"),
             "pageNum": obj.get("pageNum"),
             "pageSize": obj.get("pageSize")

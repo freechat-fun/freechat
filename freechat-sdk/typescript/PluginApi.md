@@ -41,6 +41,8 @@ let body:.PluginApiBatchSearchPluginDetailsRequest = {
       where: {
         visibility: "visibility_example",
         username: "username_example",
+        manifestFormat: "manifestFormat_example",
+        apiFormat: "apiFormat_example",
         tags: [
           "tags_example",
         ],
@@ -50,8 +52,7 @@ let body:.PluginApiBatchSearchPluginDetailsRequest = {
         ],
         aiModelsOp: "aiModelsOp_example",
         name: "name_example",
-        type: "type_example",
-        lang: "lang_example",
+        provider: "provider_example",
         text: "text_example",
       },
       orderBy: [
@@ -119,6 +120,8 @@ let body:.PluginApiBatchSearchPluginSummaryRequest = {
       where: {
         visibility: "visibility_example",
         username: "username_example",
+        manifestFormat: "manifestFormat_example",
+        apiFormat: "apiFormat_example",
         tags: [
           "tags_example",
         ],
@@ -128,8 +131,7 @@ let body:.PluginApiBatchSearchPluginSummaryRequest = {
         ],
         aiModelsOp: "aiModelsOp_example",
         name: "name_example",
-        type: "type_example",
-        lang: "lang_example",
+        provider: "provider_example",
         text: "text_example",
       },
       orderBy: [
@@ -196,6 +198,8 @@ let body:.PluginApiCountPluginsRequest = {
     where: {
       visibility: "visibility_example",
       username: "username_example",
+      manifestFormat: "manifestFormat_example",
+      apiFormat: "apiFormat_example",
       tags: [
         "tags_example",
       ],
@@ -205,8 +209,7 @@ let body:.PluginApiCountPluginsRequest = {
       ],
       aiModelsOp: "aiModelsOp_example",
       name: "name_example",
-      type: "type_example",
-      lang: "lang_example",
+      provider: "provider_example",
       text: "text_example",
     },
     orderBy: [
@@ -684,6 +687,8 @@ let body:.PluginApiSearchPluginDetailsRequest = {
     where: {
       visibility: "visibility_example",
       username: "username_example",
+      manifestFormat: "manifestFormat_example",
+      apiFormat: "apiFormat_example",
       tags: [
         "tags_example",
       ],
@@ -693,8 +698,7 @@ let body:.PluginApiSearchPluginDetailsRequest = {
       ],
       aiModelsOp: "aiModelsOp_example",
       name: "name_example",
-      type: "type_example",
-      lang: "lang_example",
+      provider: "provider_example",
       text: "text_example",
     },
     orderBy: [
@@ -760,6 +764,8 @@ let body:.PluginApiSearchPluginSummaryRequest = {
     where: {
       visibility: "visibility_example",
       username: "username_example",
+      manifestFormat: "manifestFormat_example",
+      apiFormat: "apiFormat_example",
       tags: [
         "tags_example",
       ],
@@ -769,8 +775,7 @@ let body:.PluginApiSearchPluginSummaryRequest = {
       ],
       aiModelsOp: "aiModelsOp_example",
       name: "name_example",
-      type: "type_example",
-      lang: "lang_example",
+      provider: "provider_example",
       text: "text_example",
     },
     orderBy: [

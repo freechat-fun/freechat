@@ -26,22 +26,21 @@ try:
 except ImportError:
     from typing_extensions import Self
 
-class Where(BaseModel):
+class FlowQueryWhere(BaseModel):
     """
     Query condition
     """ # noqa: E501
     visibility: Optional[StrictStr] = Field(default=None, description="Visibility: public, public_org (search this organization), private (default)")
     username: Optional[StrictStr] = Field(default=None, description="Effective when searching public, public_org prompts, if not specified, search all users")
+    format: Optional[StrictStr] = Field(default=None, description="Flow configuration format, currently supported: langflow.")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tags")
     tags_op: Optional[StrictStr] = Field(default=None, description="Relationship between tags: and | or (default)", alias="tagsOp")
     ai_models: Optional[List[StrictStr]] = Field(default=None, description="Model set", alias="aiModels")
     ai_models_op: Optional[StrictStr] = Field(default=None, description="Relationship between model sets: and | or (default)", alias="aiModelsOp")
     name: Optional[StrictStr] = Field(default=None, description="Name, left match")
-    type: Optional[StrictStr] = Field(default=None, description="Type, exact match: string (default) | chat")
-    lang: Optional[StrictStr] = Field(default=None, description="Language, exact match")
-    text: Optional[StrictStr] = Field(default=None, description="Name, description, template, example, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.")
+    text: Optional[StrictStr] = Field(default=None, description="Name, description, example, fuzzy matching, any one match is sufficient; public scope + general search for all users does not guarantee real-time.")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["visibility", "username", "tags", "tagsOp", "aiModels", "aiModelsOp", "name", "type", "lang", "text"]
+    __properties: ClassVar[List[str]] = ["visibility", "username", "format", "tags", "tagsOp", "aiModels", "aiModelsOp", "name", "text"]
 
     model_config = {
         "populate_by_name": True,
@@ -60,7 +59,7 @@ class Where(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of Where from a JSON string"""
+        """Create an instance of FlowQueryWhere from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -90,7 +89,7 @@ class Where(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Dict) -> Self:
-        """Create an instance of Where from a dict"""
+        """Create an instance of FlowQueryWhere from a dict"""
         if obj is None:
             return None
 
@@ -100,13 +99,12 @@ class Where(BaseModel):
         _obj = cls.model_validate({
             "visibility": obj.get("visibility"),
             "username": obj.get("username"),
+            "format": obj.get("format"),
             "tags": obj.get("tags"),
             "tagsOp": obj.get("tagsOp"),
             "aiModels": obj.get("aiModels"),
             "aiModelsOp": obj.get("aiModelsOp"),
             "name": obj.get("name"),
-            "type": obj.get("type"),
-            "lang": obj.get("lang"),
             "text": obj.get("text")
         })
         # store additional fields in additional_properties

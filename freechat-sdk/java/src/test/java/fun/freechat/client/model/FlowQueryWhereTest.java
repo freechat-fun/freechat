@@ -26,17 +26,17 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Model tests for Where
+ * Model tests for FlowQueryWhere
  */
-public class WhereTest {
-    private final Where model = new Where();
+public class FlowQueryWhereTest {
+    private final FlowQueryWhere model = new FlowQueryWhere();
 
     /**
-     * Model tests for Where
+     * Model tests for FlowQueryWhere
      */
     @Test
-    public void testWhere() {
-        // TODO: test Where
+    public void testFlowQueryWhere() {
+        // TODO: test FlowQueryWhere
     }
 
     /**
@@ -53,6 +53,14 @@ public class WhereTest {
     @Test
     public void usernameTest() {
         // TODO: test username
+    }
+
+    /**
+     * Test the property 'format'
+     */
+    @Test
+    public void formatTest() {
+        // TODO: test format
     }
 
     /**
@@ -93,22 +101,6 @@ public class WhereTest {
     @Test
     public void nameTest() {
         // TODO: test name
-    }
-
-    /**
-     * Test the property 'type'
-     */
-    @Test
-    public void typeTest() {
-        // TODO: test type
-    }
-
-    /**
-     * Test the property 'lang'
-     */
-    @Test
-    public void langTest() {
-        // TODO: test lang
     }
 
     /**

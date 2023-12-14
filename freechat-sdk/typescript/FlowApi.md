@@ -44,6 +44,7 @@ let body:.FlowApiBatchSearchFlowDetailsRequest = {
       where: {
         visibility: "visibility_example",
         username: "username_example",
+        format: "format_example",
         tags: [
           "tags_example",
         ],
@@ -53,8 +54,6 @@ let body:.FlowApiBatchSearchFlowDetailsRequest = {
         ],
         aiModelsOp: "aiModelsOp_example",
         name: "name_example",
-        type: "type_example",
-        lang: "lang_example",
         text: "text_example",
       },
       orderBy: [
@@ -122,6 +121,7 @@ let body:.FlowApiBatchSearchFlowSummaryRequest = {
       where: {
         visibility: "visibility_example",
         username: "username_example",
+        format: "format_example",
         tags: [
           "tags_example",
         ],
@@ -131,8 +131,6 @@ let body:.FlowApiBatchSearchFlowSummaryRequest = {
         ],
         aiModelsOp: "aiModelsOp_example",
         name: "name_example",
-        type: "type_example",
-        lang: "lang_example",
         text: "text_example",
       },
       orderBy: [
@@ -309,6 +307,7 @@ let body:.FlowApiCountFlowsRequest = {
     where: {
       visibility: "visibility_example",
       username: "username_example",
+      format: "format_example",
       tags: [
         "tags_example",
       ],
@@ -318,8 +317,6 @@ let body:.FlowApiCountFlowsRequest = {
       ],
       aiModelsOp: "aiModelsOp_example",
       name: "name_example",
-      type: "type_example",
-      lang: "lang_example",
       text: "text_example",
     },
     orderBy: [
@@ -858,6 +855,7 @@ let body:.FlowApiSearchFlowDetailsRequest = {
     where: {
       visibility: "visibility_example",
       username: "username_example",
+      format: "format_example",
       tags: [
         "tags_example",
       ],
@@ -867,8 +865,6 @@ let body:.FlowApiSearchFlowDetailsRequest = {
       ],
       aiModelsOp: "aiModelsOp_example",
       name: "name_example",
-      type: "type_example",
-      lang: "lang_example",
       text: "text_example",
     },
     orderBy: [
@@ -934,6 +930,7 @@ let body:.FlowApiSearchFlowSummaryRequest = {
     where: {
       visibility: "visibility_example",
       username: "username_example",
+      format: "format_example",
       tags: [
         "tags_example",
       ],
@@ -943,8 +940,6 @@ let body:.FlowApiSearchFlowSummaryRequest = {
       ],
       aiModelsOp: "aiModelsOp_example",
       name: "name_example",
-      type: "type_example",
-      lang: "lang_example",
       text: "text_example",
     },
     orderBy: [

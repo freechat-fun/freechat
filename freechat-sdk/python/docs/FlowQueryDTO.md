@@ -5,7 +5,7 @@ Flow information query request
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**where** | [**Where**](Where.md) |  | [optional] 
+**where** | [**FlowQueryWhere**](FlowQueryWhere.md) |  | [optional] 
 **order_by** | **List[str]** | Sorting condition, supported sorting fields are: - version - modifyTime - createTime  Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\\\&quot;score\\\&quot;, \\\&quot;scoreCount asc\\\&quot;] (scoreCount in ascending order)  | [optional] 
 **page_num** | **int** | Page number, default is 0 | [optional] 
 **page_size** | **int** | Number of items per page, 1~50, default is 10 | [optional] 

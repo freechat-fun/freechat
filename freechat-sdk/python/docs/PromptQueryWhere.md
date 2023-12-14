@@ -1,4 +1,4 @@
-# Where
+# PromptQueryWhere
 
 Query condition
 
@@ -19,19 +19,19 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.where import Where
+from freechat-sdk.models.prompt_query_where import PromptQueryWhere
 
 # TODO update the JSON string below
 json = "{}"
-# create an instance of Where from a JSON string
-where_instance = Where.from_json(json)
+# create an instance of PromptQueryWhere from a JSON string
+prompt_query_where_instance = PromptQueryWhere.from_json(json)
 # print the JSON string representation of the object
-print Where.to_json()
+print PromptQueryWhere.to_json()
 
 # convert the object into a dict
-where_dict = where_instance.to_dict()
-# create an instance of Where from a dict
-where_form_dict = where.from_dict(where_dict)
+prompt_query_where_dict = prompt_query_where_instance.to_dict()
+# create an instance of PromptQueryWhere from a dict
+prompt_query_where_form_dict = prompt_query_where.from_dict(prompt_query_where_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

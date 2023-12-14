@@ -15,13 +15,13 @@ import { HttpFile } from '../http/http.js';
 /**
 * Query condition
 */
-export class Where {
+export class CharacterQueryWhere {
     /**
     * Visibility: public, public_org (search this organization), private (default)
     */
     'visibility'?: string;
     /**
-    * Effective when searching public, public_org prompts, if not specified, search all users
+    * Effective when searching public, public_org characters, if not specified, search all users
     */
     'username'?: string;
     /**
@@ -33,27 +33,15 @@ export class Where {
     */
     'tagsOp'?: string;
     /**
-    * Model set
-    */
-    'aiModels'?: Array<string>;
-    /**
-    * Relationship between model sets: and | or (default)
-    */
-    'aiModelsOp'?: string;
-    /**
     * Name, left match
     */
     'name'?: string;
-    /**
-    * Type, exact match: string (default) | chat
-    */
-    'type'?: string;
     /**
     * Language, exact match
     */
     'lang'?: string;
     /**
-    * Name, description, template, example, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.
+    * Name, description, profile, chat style, experience, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.
     */
     'text'?: string;
 
@@ -85,26 +73,8 @@ export class Where {
             "format": ""
         },
         {
-            "name": "aiModels",
-            "baseName": "aiModels",
-            "type": "Array<string>",
-            "format": ""
-        },
-        {
-            "name": "aiModelsOp",
-            "baseName": "aiModelsOp",
-            "type": "string",
-            "format": ""
-        },
-        {
             "name": "name",
             "baseName": "name",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "type",
-            "baseName": "type",
             "type": "string",
             "format": ""
         },
@@ -122,7 +92,7 @@ export class Where {
         }    ];
 
     static getAttributeTypeMap() {
-        return Where.attributeTypeMap;
+        return CharacterQueryWhere.attributeTypeMap;
     }
 
     public constructor() {

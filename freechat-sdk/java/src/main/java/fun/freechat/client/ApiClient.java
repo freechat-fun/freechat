@@ -140,7 +140,7 @@ public class ApiClient {
         json = new JSON();
 
         // Set default User-Agent.
-        setUserAgent("freechat-sdk/0.2.0/java");
+        setUserAgent("freechat-sdk/0.2.1/java");
 
         authentications = new HashMap<String, Authentication>();
     }

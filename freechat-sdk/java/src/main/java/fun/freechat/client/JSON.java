@@ -106,6 +106,7 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterInfoDraftDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterItemForNameDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterQueryDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterQueryWhere.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterSummaryDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterSummaryStatsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterUpdateDTO.CustomTypeAdapterFactory());
@@ -118,6 +119,7 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowDetailsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowItemForNameDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowQueryDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowQueryWhere.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowSummaryDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowSummaryStatsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.FlowUpdateDTO.CustomTypeAdapterFactory());
@@ -128,6 +130,7 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginCreateDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginDetailsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginQueryDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginQueryWhere.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginSummaryDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginSummaryStatsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PluginUpdateDTO.CustomTypeAdapterFactory());
@@ -136,6 +139,7 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptDetailsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptItemForNameDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptQueryDTO.CustomTypeAdapterFactory());
+        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptQueryWhere.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptRefDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptSummaryDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.PromptSummaryStatsDTO.CustomTypeAdapterFactory());
@@ -148,7 +152,6 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.UserBasicInfoDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.UserDetailsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.UserFullDetailsDTO.CustomTypeAdapterFactory());
-        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.Where.CustomTypeAdapterFactory());
         gson = gsonBuilder.create();
     }
 

@@ -11,7 +11,7 @@ import java.util.Objects;
 @Schema(description = "Prompt template query request")
 @Data
 public class PromptQueryDTO {
-    @Schema(description = "Query condition")
+    @Schema(name = "PromptQuery.Where", description = "Query condition")
     @Data
     public static class Where {
         @Schema(description = "Visibility: public, public_org (search this organization), private (default)")

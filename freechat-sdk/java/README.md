@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.0"
+     implementation "fun.freechat:freechat-sdk:0.2.1"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.0.jar`
+* `target/freechat-sdk-0.2.1.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -285,6 +285,7 @@ Class | Method | HTTP request | Description
  - [CharacterInfoDraftDTO](docs/CharacterInfoDraftDTO.md)
  - [CharacterItemForNameDTO](docs/CharacterItemForNameDTO.md)
  - [CharacterQueryDTO](docs/CharacterQueryDTO.md)
+ - [CharacterQueryWhere](docs/CharacterQueryWhere.md)
  - [CharacterSummaryDTO](docs/CharacterSummaryDTO.md)
  - [CharacterSummaryStatsDTO](docs/CharacterSummaryStatsDTO.md)
  - [CharacterUpdateDTO](docs/CharacterUpdateDTO.md)
@@ -297,6 +298,7 @@ Class | Method | HTTP request | Description
  - [FlowDetailsDTO](docs/FlowDetailsDTO.md)
  - [FlowItemForNameDTO](docs/FlowItemForNameDTO.md)
  - [FlowQueryDTO](docs/FlowQueryDTO.md)
+ - [FlowQueryWhere](docs/FlowQueryWhere.md)
  - [FlowSummaryDTO](docs/FlowSummaryDTO.md)
  - [FlowSummaryStatsDTO](docs/FlowSummaryStatsDTO.md)
  - [FlowUpdateDTO](docs/FlowUpdateDTO.md)
@@ -307,6 +309,7 @@ Class | Method | HTTP request | Description
  - [PluginCreateDTO](docs/PluginCreateDTO.md)
  - [PluginDetailsDTO](docs/PluginDetailsDTO.md)
  - [PluginQueryDTO](docs/PluginQueryDTO.md)
+ - [PluginQueryWhere](docs/PluginQueryWhere.md)
  - [PluginSummaryDTO](docs/PluginSummaryDTO.md)
  - [PluginSummaryStatsDTO](docs/PluginSummaryStatsDTO.md)
  - [PluginUpdateDTO](docs/PluginUpdateDTO.md)
@@ -315,6 +318,7 @@ Class | Method | HTTP request | Description
  - [PromptDetailsDTO](docs/PromptDetailsDTO.md)
  - [PromptItemForNameDTO](docs/PromptItemForNameDTO.md)
  - [PromptQueryDTO](docs/PromptQueryDTO.md)
+ - [PromptQueryWhere](docs/PromptQueryWhere.md)
  - [PromptRefDTO](docs/PromptRefDTO.md)
  - [PromptSummaryDTO](docs/PromptSummaryDTO.md)
  - [PromptSummaryStatsDTO](docs/PromptSummaryStatsDTO.md)
@@ -327,7 +331,6 @@ Class | Method | HTTP request | Description
  - [UserBasicInfoDTO](docs/UserBasicInfoDTO.md)
  - [UserDetailsDTO](docs/UserDetailsDTO.md)
  - [UserFullDetailsDTO](docs/UserFullDetailsDTO.md)
- - [Where](docs/Where.md)
 
 
 <a id="documentation-for-authorization"></a>

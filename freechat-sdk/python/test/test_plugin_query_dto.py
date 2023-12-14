@@ -36,9 +36,11 @@ class TestPluginQueryDTO(unittest.TestCase):
         model = PluginQueryDTO()
         if include_optional:
             return PluginQueryDTO(
-                where = freechat-sdk.models.where.Where(
+                where = freechat-sdk.models.plugin_query/where.PluginQuery.Where(
                     visibility = '', 
                     username = '', 
+                    manifest_format = '', 
+                    api_format = '', 
                     tags = [
                         ''
                         ], 
@@ -48,8 +50,7 @@ class TestPluginQueryDTO(unittest.TestCase):
                         ], 
                     ai_models_op = '', 
                     name = '', 
-                    type = '', 
-                    lang = '', 
+                    provider = '', 
                     text = '', ),
                 order_by = [
                     ''

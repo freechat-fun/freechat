@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { Where } from '../models/Where.js';
+import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
 import { HttpFile } from '../http/http.js';
 
 /**
 * Flow information query request
 */
 export class FlowQueryDTO {
-    'where'?: Where;
+    'where'?: FlowQueryWhere;
     /**
     * Sorting condition, supported sorting fields are: - version - modifyTime - createTime  Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\\\"score\\\", \\\"scoreCount asc\\\"] (scoreCount in ascending order) 
     */
@@ -37,7 +37,7 @@ export class FlowQueryDTO {
         {
             "name": "where",
             "baseName": "where",
-            "type": "Where",
+            "type": "FlowQueryWhere",
             "format": ""
         },
         {

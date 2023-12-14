@@ -11,6 +11,7 @@ export * from '../models/CharacterDetailsDTO.js';
 export * from '../models/CharacterInfoDraftDTO.js';
 export * from '../models/CharacterItemForNameDTO.js';
 export * from '../models/CharacterQueryDTO.js';
+export * from '../models/CharacterQueryWhere.js';
 export * from '../models/CharacterSummaryDTO.js';
 export * from '../models/CharacterSummaryStatsDTO.js';
 export * from '../models/CharacterUpdateDTO.js';
@@ -23,6 +24,7 @@ export * from '../models/FlowCreateDTO.js';
 export * from '../models/FlowDetailsDTO.js';
 export * from '../models/FlowItemForNameDTO.js';
 export * from '../models/FlowQueryDTO.js';
+export * from '../models/FlowQueryWhere.js';
 export * from '../models/FlowSummaryDTO.js';
 export * from '../models/FlowSummaryStatsDTO.js';
 export * from '../models/FlowUpdateDTO.js';
@@ -33,6 +35,7 @@ export * from '../models/OpenAiParamDTO.js';
 export * from '../models/PluginCreateDTO.js';
 export * from '../models/PluginDetailsDTO.js';
 export * from '../models/PluginQueryDTO.js';
+export * from '../models/PluginQueryWhere.js';
 export * from '../models/PluginSummaryDTO.js';
 export * from '../models/PluginSummaryStatsDTO.js';
 export * from '../models/PluginUpdateDTO.js';
@@ -41,6 +44,7 @@ export * from '../models/PromptCreateDTO.js';
 export * from '../models/PromptDetailsDTO.js';
 export * from '../models/PromptItemForNameDTO.js';
 export * from '../models/PromptQueryDTO.js';
+export * from '../models/PromptQueryWhere.js';
 export * from '../models/PromptRefDTO.js';
 export * from '../models/PromptSummaryDTO.js';
 export * from '../models/PromptSummaryStatsDTO.js';
@@ -53,7 +57,6 @@ export * from '../models/SseEmitter.js';
 export * from '../models/UserBasicInfoDTO.js';
 export * from '../models/UserDetailsDTO.js';
 export * from '../models/UserFullDetailsDTO.js';
-export * from '../models/Where.js';
 
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
@@ -68,6 +71,7 @@ import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
 import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
+import { CharacterQueryWhere } from '../models/CharacterQueryWhere.js';
 import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
 import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
 import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
@@ -80,6 +84,7 @@ import { FlowCreateDTO } from '../models/FlowCreateDTO.js';
 import { FlowDetailsDTO } from '../models/FlowDetailsDTO.js';
 import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO.js';
 import { FlowQueryDTO } from '../models/FlowQueryDTO.js';
+import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
 import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
 import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
 import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
@@ -90,6 +95,7 @@ import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
 import { PluginQueryDTO } from '../models/PluginQueryDTO.js';
+import { PluginQueryWhere } from '../models/PluginQueryWhere.js';
 import { PluginSummaryDTO } from '../models/PluginSummaryDTO.js';
 import { PluginSummaryStatsDTO } from '../models/PluginSummaryStatsDTO.js';
 import { PluginUpdateDTO } from '../models/PluginUpdateDTO.js';
@@ -98,6 +104,7 @@ import { PromptCreateDTO } from '../models/PromptCreateDTO.js';
 import { PromptDetailsDTO } from '../models/PromptDetailsDTO.js';
 import { PromptItemForNameDTO } from '../models/PromptItemForNameDTO.js';
 import { PromptQueryDTO } from '../models/PromptQueryDTO.js';
+import { PromptQueryWhere } from '../models/PromptQueryWhere.js';
 import { PromptRefDTO } from '../models/PromptRefDTO.js';
 import { PromptSummaryDTO } from '../models/PromptSummaryDTO.js';
 import { PromptSummaryStatsDTO } from '../models/PromptSummaryStatsDTO.js';
@@ -110,7 +117,6 @@ import { SseEmitter } from '../models/SseEmitter.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
-import { Where } from '../models/Where.js';
 
 /* tslint:disable:no-unused-variable */
 let primitives = [
@@ -151,6 +157,7 @@ let typeMap: {[index: string]: any} = {
     "CharacterInfoDraftDTO": CharacterInfoDraftDTO,
     "CharacterItemForNameDTO": CharacterItemForNameDTO,
     "CharacterQueryDTO": CharacterQueryDTO,
+    "CharacterQueryWhere": CharacterQueryWhere,
     "CharacterSummaryDTO": CharacterSummaryDTO,
     "CharacterSummaryStatsDTO": CharacterSummaryStatsDTO,
     "CharacterUpdateDTO": CharacterUpdateDTO,
@@ -163,6 +170,7 @@ let typeMap: {[index: string]: any} = {
     "FlowDetailsDTO": FlowDetailsDTO,
     "FlowItemForNameDTO": FlowItemForNameDTO,
     "FlowQueryDTO": FlowQueryDTO,
+    "FlowQueryWhere": FlowQueryWhere,
     "FlowSummaryDTO": FlowSummaryDTO,
     "FlowSummaryStatsDTO": FlowSummaryStatsDTO,
     "FlowUpdateDTO": FlowUpdateDTO,
@@ -173,6 +181,7 @@ let typeMap: {[index: string]: any} = {
     "PluginCreateDTO": PluginCreateDTO,
     "PluginDetailsDTO": PluginDetailsDTO,
     "PluginQueryDTO": PluginQueryDTO,
+    "PluginQueryWhere": PluginQueryWhere,
     "PluginSummaryDTO": PluginSummaryDTO,
     "PluginSummaryStatsDTO": PluginSummaryStatsDTO,
     "PluginUpdateDTO": PluginUpdateDTO,
@@ -181,6 +190,7 @@ let typeMap: {[index: string]: any} = {
     "PromptDetailsDTO": PromptDetailsDTO,
     "PromptItemForNameDTO": PromptItemForNameDTO,
     "PromptQueryDTO": PromptQueryDTO,
+    "PromptQueryWhere": PromptQueryWhere,
     "PromptRefDTO": PromptRefDTO,
     "PromptSummaryDTO": PromptSummaryDTO,
     "PromptSummaryStatsDTO": PromptSummaryStatsDTO,
@@ -193,7 +203,6 @@ let typeMap: {[index: string]: any} = {
     "UserBasicInfoDTO": UserBasicInfoDTO,
     "UserDetailsDTO": UserDetailsDTO,
     "UserFullDetailsDTO": UserFullDetailsDTO,
-    "Where": Where,
 }
 
 export class ObjectSerializer {

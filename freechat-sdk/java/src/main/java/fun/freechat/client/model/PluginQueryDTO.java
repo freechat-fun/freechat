@@ -19,7 +19,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import fun.freechat.client.model.Where;
+import fun.freechat.client.model.PluginQueryWhere;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ import fun.freechat.client.JSON;
 public class PluginQueryDTO {
   public static final String SERIALIZED_NAME_WHERE = "where";
   @SerializedName(SERIALIZED_NAME_WHERE)
-  private Where where;
+  private PluginQueryWhere where;
 
   public static final String SERIALIZED_NAME_ORDER_BY = "orderBy";
   @SerializedName(SERIALIZED_NAME_ORDER_BY)
@@ -73,7 +73,7 @@ public class PluginQueryDTO {
   public PluginQueryDTO() {
   }
 
-  public PluginQueryDTO where(Where where) {
+  public PluginQueryDTO where(PluginQueryWhere where) {
     
     this.where = where;
     return this;
@@ -84,12 +84,12 @@ public class PluginQueryDTO {
    * @return where
   **/
   @javax.annotation.Nullable
-  public Where getWhere() {
+  public PluginQueryWhere getWhere() {
     return where;
   }
 
 
-  public void setWhere(Where where) {
+  public void setWhere(PluginQueryWhere where) {
     this.where = where;
   }
 
@@ -286,7 +286,7 @@ public class PluginQueryDTO {
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       // validate the optional field `where`
       if (jsonObj.get("where") != null && !jsonObj.get("where").isJsonNull()) {
-        Where.validateJsonElement(jsonObj.get("where"));
+        PluginQueryWhere.validateJsonElement(jsonObj.get("where"));
       }
       // ensure the optional json data is an array if present
       if (jsonObj.get("orderBy") != null && !jsonObj.get("orderBy").isJsonNull() && !jsonObj.get("orderBy").isJsonArray()) {

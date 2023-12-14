@@ -36,9 +36,10 @@ class TestFlowQueryDTO(unittest.TestCase):
         model = FlowQueryDTO()
         if include_optional:
             return FlowQueryDTO(
-                where = freechat-sdk.models.where.Where(
+                where = freechat-sdk.models.flow_query/where.FlowQuery.Where(
                     visibility = '', 
                     username = '', 
+                    format = '', 
                     tags = [
                         ''
                         ], 
@@ -48,8 +49,6 @@ class TestFlowQueryDTO(unittest.TestCase):
                         ], 
                     ai_models_op = '', 
                     name = '', 
-                    type = '', 
-                    lang = '', 
                     text = '', ),
                 order_by = [
                     ''

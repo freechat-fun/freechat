@@ -11,7 +11,7 @@ import java.util.Objects;
 @Schema(description = "Character query request")
 @Data
 public class CharacterQueryDTO {
-    @Schema(description = "Query condition")
+    @Schema(name = "CharacterQuery.Where", description = "Query condition")
     @Data
     public static class Where {
         @Schema(description = "Visibility: public, public_org (search this organization), private (default)")

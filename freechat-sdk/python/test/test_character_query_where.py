@@ -15,10 +15,10 @@
 import unittest
 import datetime
 
-from freechat-sdk.models.where import Where
+from freechat-sdk.models.character_query_where import CharacterQueryWhere
 
-class TestWhere(unittest.TestCase):
-    """Where unit test stubs"""
+class TestCharacterQueryWhere(unittest.TestCase):
+    """CharacterQueryWhere unit test stubs"""
 
     def setUp(self):
         pass
@@ -26,38 +26,33 @@ class TestWhere(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def make_instance(self, include_optional) -> Where:
-        """Test Where
+    def make_instance(self, include_optional) -> CharacterQueryWhere:
+        """Test CharacterQueryWhere
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # uncomment below to create an instance of `Where`
+        # uncomment below to create an instance of `CharacterQueryWhere`
         """
-        model = Where()
+        model = CharacterQueryWhere()
         if include_optional:
-            return Where(
+            return CharacterQueryWhere(
                 visibility = '',
                 username = '',
                 tags = [
                     ''
                     ],
                 tags_op = '',
-                ai_models = [
-                    ''
-                    ],
-                ai_models_op = '',
                 name = '',
-                type = '',
                 lang = '',
                 text = ''
             )
         else:
-            return Where(
+            return CharacterQueryWhere(
         )
         """
 
-    def testWhere(self):
-        """Test Where"""
+    def testCharacterQueryWhere(self):
+        """Test CharacterQueryWhere"""
         # inst_req_only = self.make_instance(include_optional=False)
         # inst_req_and_optional = self.make_instance(include_optional=True)
 
