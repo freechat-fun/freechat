@@ -26,7 +26,9 @@ export default function ErrorMessageSnackbar() {
               <Typography level="title-md">
                 {`${t('Exception')}: ${message.code}`}
               </Typography>
-              <Typography>
+              <Typography sx={{
+                whiteSpace: 'pre-wrap',
+              }}>
                 {message.message}
               </Typography>
             </Stack>

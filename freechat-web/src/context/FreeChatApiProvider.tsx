@@ -21,7 +21,7 @@ import {
 } from 'freechat-sdk';
 
 interface FreeChatApiProps {
-  server?: string
+  server?: string;
 }
 
 interface FreeChatApiContextValue {
@@ -84,7 +84,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
       {children}
     </FreeChatApiContext.Provider>
   );
-}
+};
 
 export default FreeChatApiProvider;
 export const useFreeChatApiContext = () => useContext(FreeChatApiContext);

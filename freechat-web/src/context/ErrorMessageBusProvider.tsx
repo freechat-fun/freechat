@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useReducer } from "react";
@@ -19,12 +20,14 @@ interface ErrorMessageBusContextValue {
   messages: ErrorMessage[];
   putMessage: (message: ErrorMessage) => void;
   removeMessage: (message: ErrorMessage) => void;
+  handleError: (reason: any) => void;
 }
 
 const emptyMessageList = {
   messages: [],
   putMessage: () => {},
   removeMessage: () => {},
+  handleError: () => {},
 };
 
 const ErrorMessageBusContext = createContext<ErrorMessageBusContextValue>(emptyMessageList);
@@ -40,16 +43,23 @@ const ErrorMessageBusProvider: React.FC<PropsWithChildren> = ({ children }) => {
       dispatch({ type: 'remove', message: message });
   }
 
+  const handleError = (reason: any) => {
+    const code = reason?.code || -1;
+    const message = reason?.message || 'Unknown Error';
+    putMessage({code: code, message: message});
+  }
+
   return (
     <ErrorMessageBusContext.Provider value={{
       messages,
       putMessage,
       removeMessage,
+      handleError,
     }}>
       {children}
     </ErrorMessageBusContext.Provider>
   );
-}
+};
 
 function messagesReducer(messages: ErrorMessage[], action: ErrorMessageAction) {
   switch(action.type) {

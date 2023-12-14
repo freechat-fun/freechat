@@ -358,7 +358,9 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     public long count(Query query, User user) {
-        var fields = selectDistinct(SqlBuilder.count());
+        query.setLimit(null);
+        query.setOffset(null);
+        var fields = select(SqlBuilder.countDistinct(Info.characterId));
         var statement = getSelectStatement(query, user, fields);
         return characterInfoMapper.count(statement.getLeft());
     }
@@ -699,7 +701,6 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 c.where(CharacterBackendDynamicSqlSupport.backendId, isNotEqualTo(characterBackend.getBackendId()))
                         .and(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)));
-                        ;
 
         for (CharacterBackend defaultBackend : defaultBackends) {
             characterBackendMapper.updateByPrimaryKeySelective(new CharacterBackend()

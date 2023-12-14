@@ -1,12 +1,12 @@
 package fun.freechat.config;
 
-import fun.freechat.api.access.RoleBasedPermissionEvaluator;
+import fun.freechat.access.auth.ApiTokenAuthenticationProvider;
 import fun.freechat.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
-import fun.freechat.access.filter.ApiSwitchUserFilter;
 import fun.freechat.access.auth.handler.OAuth2AuthenticationFailureHandler;
 import fun.freechat.access.auth.handler.OAuth2AuthenticationSuccessHandler;
-import fun.freechat.access.auth.ApiTokenAuthenticationProvider;
+import fun.freechat.access.filter.ApiSwitchUserFilter;
 import fun.freechat.access.user.SysUserDetailsManager;
+import fun.freechat.api.access.RoleBasedPermissionEvaluator;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysBindService;
 import fun.freechat.service.account.SysUserService;
@@ -33,6 +33,9 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
@@ -107,9 +110,11 @@ public class SecurityConfig {
     }
 
     private void configApiPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+        /*
         if (ArrayUtils.isNotEmpty(apiUri)) {
-             // registry.antMatchers(apiUri).hasRole(AuthorityUtils.clientRole());
+            registry.antMatchers(apiUri).hasRole(AuthorityUtils.clientRole());
         }
+        */
     }
 
     @Bean
@@ -164,6 +169,7 @@ public class SecurityConfig {
             http.addFilterAfter(
                     apiAuthenticationFilter(apiTokenAuthenticationProvider), UsernamePasswordAuthenticationFilter.class);
             http.addFilter(apiSwitchUserFilter(sysUserDetailsManager, orgService));
+            http.cors(corsConf -> corsConf.configurationSource(corsConfigurationSource()));
             http.csrf(csrfConf -> csrfConf.ignoringRequestMatchers(apiUri));
         }
 
@@ -219,5 +225,14 @@ public class SecurityConfig {
         filter.setSuccessHandler((request, response, authentication) -> {});
         filter.setFailureHandler((request, response, exception) -> {});
         return filter;
+    }
+
+    private CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration =new CorsConfiguration().applyPermitDefaultValues();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        for (String uri : apiUri) {
+            source.registerCorsConfiguration(uri, configuration);
+        }
+        return source;
     }
 }

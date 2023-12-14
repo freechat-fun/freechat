@@ -23,7 +23,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.poi.util.StringUtil;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
@@ -355,7 +354,9 @@ select distinct f.user_id, f.flow_id, f.visibility... \
 
     @Override
     public long count(Query query, User user) {
-        var fields = selectDistinct(SqlBuilder.count());
+        query.setLimit(null);
+        query.setOffset(null);
+        var fields = select(countDistinct(Info.flowId));
         var statement = getSelectStatement(query, user, fields);
         return flowInfoMapper.count(statement.getLeft());
     }

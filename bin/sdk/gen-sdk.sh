@@ -25,7 +25,7 @@ CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.
 # DOC=https://freechat.fun/public/openapi/v3/api-docs/g-all
 DOC=http://127.0.0.1:8080/public/openapi/v3/api-docs/g-all
 
-SDK_PATH=${PROJECT_PATH}/${PROJECT_NAME}-sdk
+SDK_PATH=${PROJECT_PATH}/${SDK_MODULE}
 
 while [ $# -gt 0 ]
 do

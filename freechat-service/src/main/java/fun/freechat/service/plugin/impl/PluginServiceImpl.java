@@ -27,7 +27,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
@@ -349,8 +348,10 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     public long count(Query query, User user) {
-        var field = selectDistinct(SqlBuilder.count());
-        var statement = getSelectStatement(query, user, field);
+        query.setLimit(null);
+        query.setOffset(null);
+        var fields = select(countDistinct(Info.pluginId));
+        var statement = getSelectStatement(query, user, fields);
         return pluginInfoMapper.count(statement);
     }
 
