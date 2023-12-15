@@ -1,32 +1,56 @@
 import { useState, useEffect } from "react";
-import { IconButton, useColorScheme } from "@mui/joy";
+import { IconButton, IconButtonProps, useColorScheme } from "@mui/joy";
 import { LightMode, DarkMode } from "@mui/icons-material";
-import { Stack } from "@mui/system";
 
-export default function ModeToggle() {
+export default function ModeToggle(props: IconButtonProps) {
+  const { onClick, sx, ...other } = props;
   const { mode, setMode } = useColorScheme();
   const [mounted, setMounted] = useState(false);
 
-  // necessary for server-side rendering
-  // because mode is undefined on the server
   useEffect(() => {
     setMounted(true);
   }, []);
-
   if (!mounted) {
-    return null;
-  }
-
-  return (
-    <Stack direction='row' justifyContent='flex-end'>
+    return (
       <IconButton
+        size="sm"
         variant="plain"
-        onClick={() => {
-          setMode(mode === 'light' ? 'dark' : 'light')
-        }}
-      >
-        { mode === 'light' ? <LightMode /> : <DarkMode /> }
-      </IconButton>
-    </Stack>
+        color="neutral"
+        {...other}
+        sx={sx}
+        disabled
+      />
+    );
+  }
+  return (
+    <IconButton
+      id="toggle-mode"
+      size="sm"
+      variant="plain"
+      color="neutral"
+      {...props}
+      onClick={(event) => {
+        if (mode === 'light') {
+          setMode('dark');
+        } else {
+          setMode('light');
+        }
+        onClick?.(event);
+      }}
+      sx={[
+        {
+          '& > *:first-of-type': {
+            display: mode === 'dark' ? 'none' : 'initial',
+          },
+          '& > *:last-of-type': {
+            display: mode === 'light' ? 'none' : 'initial',
+          },
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+    >
+      <DarkMode />
+      <LightMode />
+    </IconButton>
   );
 }

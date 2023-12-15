@@ -2,6 +2,18 @@ import { createBrowserRouter } from 'react-router-dom';
 import Portal from './pages/Portal';
 import SignIn from './pages/account/SignIn';
 import MyAccount from './pages/account/MyAccount';
+import Console from './pages/Console';
+
+const consoleRoutes = [
+  {
+    index: true,
+    element: <MyAccount />,
+  },
+  {
+    path: 'account',
+    element: <MyAccount />,
+  },
+];
 
 const routes = [
   {
@@ -13,8 +25,9 @@ const routes = [
     element: <SignIn />,
   },
   {
-    path: '/w/account/my',
-    element: <MyAccount />,
+    path: '/w/console/*',
+    element: <Console />,
+    children: consoleRoutes,
   },
 ];
 

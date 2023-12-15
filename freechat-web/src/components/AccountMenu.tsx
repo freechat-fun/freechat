@@ -1,5 +1,5 @@
 import { Dropdown, MenuButton, Menu, MenuItem, IconButton, ListItemDecorator, Tooltip } from '@mui/joy';
-import { Login, Logout, ManageAccounts, PermIdentity } from '@mui/icons-material';
+import { LoginRounded, LogoutRounded, ManageAccountsRounded, PermIdentityRounded } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useUserInfoContext } from '../context';
 
@@ -12,7 +12,7 @@ export default function AccountMenu() {
       slots={{ root: IconButton }}
       slotProps={{ root: { variant: 'plain', color: 'neutral' } }}
     >
-      <ManageAccounts />
+      <ManageAccountsRounded />
     </MenuButton>
   );
 
@@ -26,13 +26,13 @@ export default function AccountMenu() {
           <Menu>
             <MenuItem>
               <ListItemDecorator>
-                <PermIdentity />
+                <PermIdentityRounded />
               </ListItemDecorator>
               {t('My account')}
             </MenuItem>
             <MenuItem>
               <ListItemDecorator>
-                <Logout />
+                <LogoutRounded />
               </ListItemDecorator>
               {t('Sign out')}
             </MenuItem>
@@ -44,7 +44,7 @@ export default function AccountMenu() {
           <Menu>
             <MenuItem onClick={() => window.location.href = '/w/login'}>
               <ListItemDecorator>
-                <Login />
+                <LoginRounded />
               </ListItemDecorator>
               {t('Sign in')}
             </MenuItem>
