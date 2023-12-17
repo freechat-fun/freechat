@@ -1,7 +1,8 @@
 {
-  "new": "新建",
-  "edit": "编辑",
-  "delete": "删除",
-  "cancel": "取消",
-  "submit": "提交"
+  "New": "新建",
+  "Edit": "编辑",
+  "Delete": "删除",
+  "Cancel": "取消",
+  "Submit": "提交",
+  "Save": "保存"
 }

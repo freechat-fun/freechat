@@ -1,12 +1,12 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { Box, List, ListItem, ListItemButton, ListItemContent, Sheet, Typography, listItemButtonClasses } from "@mui/joy";
-import { closeSidebar } from "../libs/sidebar_utils";
 import { AccountTreeRounded, ArticleRounded, ExtensionRounded, KeyboardArrowDownRounded, SettingsRounded } from "@mui/icons-material";
-import  { FoxIcon } from ".";
+import { FoxIcon, RouterLink } from ".";
+import { closeSidebar } from "../libs/sidebar_utils";
 
-interface MenuToggleProps {
+interface NestedListToggleProps {
   defaultExpanded?: boolean;
   children: React.ReactNode;
   renderToggle: (params: {
@@ -15,11 +15,11 @@ interface MenuToggleProps {
   }) => React.ReactNode;
 }
 
-function MenuToggler({
+function NestedListToggle({
   defaultExpanded = false,
   renderToggle,
   children,
-}: MenuToggleProps) {
+}: NestedListToggleProps) {
   const [open, setOpen] = useState(defaultExpanded);
   return (
     <React.Fragment>
@@ -42,6 +42,18 @@ function MenuToggler({
 
 export default function Sidebar() {
   const { t } = useTranslation('sidebar');
+  const { pathname } = useLocation();
+  
+  const normalizePathname = pathname.replace(/\/+$/, "");
+  const relativePathname = normalizePathname.slice('/w/console/'.length);
+
+  const isSelected = (path: string): boolean => {
+    return relativePathname === path;
+  };
+
+  const shouldExpand = (subPaths: string[]): boolean => {
+    return subPaths.includes(relativePathname);
+  };
 
   return (
     <Sheet
@@ -106,7 +118,12 @@ export default function Sidebar() {
           }}
         >
           <ListItem>
-            <ListItemButton>
+            <ListItemButton
+              component={RouterLink}
+              href="/w/console/characters"
+              underline="none"
+              selected={isSelected('characters')}
+            >
               <FoxIcon />
               <ListItemContent>
                 <Typography level="title-md">{t('Characters')}</Typography>
@@ -115,7 +132,12 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem>
-            <ListItemButton>
+            <ListItemButton
+              component={RouterLink}
+              href="/w/console/prompts"
+              underline="none"
+              selected={isSelected('prompts')}
+            >
               <ArticleRounded />
               <ListItemContent>
                 <Typography level="title-md">{t('Prompts')}</Typography>
@@ -124,7 +146,12 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem>
-            <ListItemButton>
+            <ListItemButton
+              component={RouterLink}
+              href="/w/console/plugins"
+              underline="none"
+              selected={isSelected('plugins')}
+            >
               <ExtensionRounded />
               <ListItemContent>
                 <Typography level="title-md">{t('Plugins')}</Typography>
@@ -133,7 +160,12 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem>
-            <ListItemButton>
+            <ListItemButton
+              component={RouterLink}
+              href="/w/console/flows"
+              underline="none"
+              selected={isSelected('flows')}
+            >
               <AccountTreeRounded />
               <ListItemContent>
                 <Typography level="title-md">{t('Flows')}</Typography>
@@ -142,8 +174,8 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem nested>
-            <MenuToggler
-              defaultExpanded
+            <NestedListToggle
+              defaultExpanded = {shouldExpand(['profile', 'credentials'])}
               renderToggle={({ open, setOpen }) => (
                 <ListItemButton onClick={() => setOpen(!open)}>
                   <SettingsRounded />
@@ -158,14 +190,28 @@ export default function Sidebar() {
             >
               <List sx={{ gap: 0.5 }}>
                 <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton selected>{t('My Profile')}</ListItemButton>
+                  <ListItemButton
+                    component={RouterLink}
+                    href="/w/console/profile"
+                    underline="none"
+                    selected={isSelected('profile')}
+                  >
+                    {t('My Profile')}
+                  </ListItemButton>
                 </ListItem>
 
                 <ListItem>
-                  <ListItemButton>{t('My Credentials')}</ListItemButton>
+                  <ListItemButton
+                    selected={isSelected('credentials')}
+                    component={RouterLink}
+                    href="/w/console/credentials"
+                    underline="none"
+                  >
+                    {t('My Credentials')}
+                  </ListItemButton>
                 </ListItem>
               </List>
-            </MenuToggler>
+            </NestedListToggle>
           </ListItem>
         </List>
       </Box>

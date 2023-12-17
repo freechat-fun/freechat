@@ -6,16 +6,15 @@ import org.apache.commons.lang3.StringUtils;
 public enum GenderType {
     MALE,
     FEMALE,
-    NON_HUMAN,
-    UNKNOWN;
+    OTHER;
     public static GenderType of(String text) {
         if (StringUtils.isBlank(text)) {
-            return UNKNOWN;
+            return OTHER;
         }
         try {
             return GenderType.valueOf(text.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return UNKNOWN;
+            return OTHER;
         }
     }
 

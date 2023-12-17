@@ -1,5 +1,8 @@
 package fun.freechat.api.util;
 
+import fun.freechat.access.auth.ApiTokenAuthenticationToken;
+import fun.freechat.access.user.SysUserDetails;
+import fun.freechat.access.user.SysUserDetailsManager;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.util.AuthorityUtils;
@@ -9,21 +12,26 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 public class AccountUtils implements ApplicationContextAware {
     private static SysUserService userService;
+    private static UserDetailsManager userDetailsManager;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         userService = applicationContext.getBean(SysUserService.class);
+        userDetailsManager = applicationContext.getBean(UserDetailsManager.class);
     }
 
     @NonNull
@@ -40,6 +48,24 @@ public class AccountUtils implements ApplicationContextAware {
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    public static void updateCurrentUser() {
+        User currentUser = currentUser();
+        SysUserDetails sysUser = ((SysUserDetailsManager) userDetailsManager).loadUserByUsernameAndPlatform(
+                currentUser.getUsername(), currentUser.getPlatform());
+        Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
+        Authentication newAuthenticated = authenticated;
+
+        if (authenticated instanceof UsernamePasswordAuthenticationToken) {
+            newAuthenticated = UsernamePasswordAuthenticationToken.authenticated(
+                    sysUser, authenticated.getCredentials(), authenticated.getAuthorities());
+        } else if (authenticated instanceof ApiTokenAuthenticationToken) {
+            newAuthenticated = new ApiTokenAuthenticationToken(
+                    sysUser, (Set<String>)authenticated.getCredentials());
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(newAuthenticated);
     }
 
     @NonNull

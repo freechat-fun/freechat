@@ -1,5 +1,5 @@
 import { Box, Sheet } from "@mui/joy";
-import { AccountMenu, FreeChatLogo, LanguageSelect, ModeToggle, SidebarToggle } from ".";
+import { AccountMenu, FreeChatLogo, LanguageSelect, ColorSchemeToggle, SidebarToggle } from ".";
 
 export default function Header() {
   return (
@@ -32,7 +32,7 @@ export default function Header() {
         display: 'flex'
       }}>
         <LanguageSelect />
-        <ModeToggle />
+        <ColorSchemeToggle />
         <AccountMenu />
       </Box>
     </Sheet>

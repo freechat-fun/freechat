@@ -25,23 +25,40 @@ interface FreeChatApiProps {
 }
 
 interface FreeChatApiContextValue {
-  configuration: Configuration;
-  aiServiceApi: AIServiceApi;
-  accountApi: AccountApi;
-  accountManagerForAdminApi: AccountManagerForAdminApi;
-  appConfigForAdminApi: AppConfigForAdminApi;
-  appMetaForAdminApi: AppMetaForAdminApi;
-  characterApi: CharacterApi;
-  encryptionManagerForAdminApi: EncryptionManagerForAdminApi;
-  flowApi: FlowApi;
-  interactiveStatisticsApi: InteractiveStatisticsApi;
-  organizationApi: OrganizationApi;
-  pluginApi: PluginApi;
-  promptApi: PromptApi;
-  promptTaskApi: PromptTaskApi;
+  configuration: Configuration | undefined;
+  aiServiceApi: AIServiceApi | undefined;
+  accountApi: AccountApi | undefined;
+  accountManagerForAdminApi: AccountManagerForAdminApi | undefined;
+  appConfigForAdminApi: AppConfigForAdminApi | undefined;
+  appMetaForAdminApi: AppMetaForAdminApi | undefined;
+  characterApi: CharacterApi | undefined;
+  encryptionManagerForAdminApi: EncryptionManagerForAdminApi | undefined;
+  flowApi: FlowApi | undefined;
+  interactiveStatisticsApi: InteractiveStatisticsApi | undefined;
+  organizationApi: OrganizationApi | undefined;
+  pluginApi: PluginApi | undefined;
+  promptApi: PromptApi | undefined;
+  promptTaskApi: PromptTaskApi | undefined;
 }
 
-const FreeChatApiContext = createContext<FreeChatApiContextValue | null>(null);
+const undefinedContext: FreeChatApiContextValue = {
+  configuration: undefined,
+  aiServiceApi: undefined,
+  accountApi: undefined,
+  accountManagerForAdminApi: undefined,
+  appConfigForAdminApi: undefined,
+  appMetaForAdminApi: undefined,
+  characterApi: undefined,
+  encryptionManagerForAdminApi: undefined,
+  flowApi: undefined,
+  interactiveStatisticsApi: undefined,
+  organizationApi: undefined,
+  pluginApi: undefined,
+  promptApi: undefined,
+  promptTaskApi: undefined,
+}
+
+const FreeChatApiContext = createContext<FreeChatApiContextValue>(undefinedContext);
 
 const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> = ({server, children }) => {
   const parameters = {

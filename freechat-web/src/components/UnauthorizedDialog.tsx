@@ -6,11 +6,13 @@ export default function UnauthorizedDialog() {
   const { t } = useTranslation('account');
   const { isAuthorized } = useUserInfoContext();
   const { pathname } = window.location;
-  const publicPaths = ['/', '/w', '/w/', '/w/login', '/w/login/'];
+  
+  const normalizePathname = pathname.replace(/\/+$/, "");
+  const publicPaths = ['', '/w', '/w/login'];
 
 
   return (
-    <Modal open={!isAuthorized() && !publicPaths.includes(pathname)}>
+    <Modal open={!isAuthorized() && !publicPaths.includes(normalizePathname)}>
       <ModalDialog layout='center'>
         <Typography sx={{
           display: 'flex',

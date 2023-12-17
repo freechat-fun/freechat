@@ -1,0 +1,1 @@
+const o="文档",t="异常",e="主页",n="狐狸猜",a={"Coming soon!":"即将推出！","Refer to the":"参考",documentation:o,Exception:t,"Page not found":"找不到页面","Sorry, the page you are looking for does not exist.":"对不起，你访问的页面不存在。","You can always go back to the":"你可以回到",homepage:e,FreeChat:n,".":"。"};export{t as Exception,n as FreeChat,a as default,o as documentation,e as homepage};

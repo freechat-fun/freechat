@@ -1,7 +1,8 @@
 {
-  "create_new": "New",
-  "edit": "Edit",
-  "delete": "Delete",
-  "cancel": "Cancel",
-  "submit": "Submit"
+  "New": "New",
+  "Edit": "Edit",
+  "Delete": "Delete",
+  "Cancel": "Cancel",
+  "Submit": "Submit",
+  "Save": "Save"
 }

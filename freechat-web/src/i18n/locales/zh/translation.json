@@ -1,4 +1,12 @@
 {
+  "Coming soon!": "即将推出！",
+  "Refer to the": "参考",
+  "documentation": "文档",
   "Exception": "异常",
-  "FreeChat": "狐狸猜"
+  "Page not found": "找不到页面",
+  "Sorry, the page you are looking for does not exist.": "对不起，你访问的页面不存在。",
+  "You can always go back to the": "你可以回到",
+  "homepage": "主页",
+  "FreeChat": "狐狸猜",
+  ".": "。"
 }

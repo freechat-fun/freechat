@@ -4,5 +4,19 @@
   "Sign out": "登出",
   "sign in": "登录",
   "You are not signed in yet.": "你尚未登录.",
-  "Please": "请"
+  "Please": "请",
+  "My Profile": "我的信息",
+  "My Credentials": "我的凭证",
+  "Site": "本站",
+  "Username": "用户名",
+  "Coming from": "来自",
+  "Gender": "性别",
+  "Male": "男",
+  "Female": "女",
+  "Other": "其他",
+  "Nickname": "昵称",
+  "Describe yourself: (This will make characters know you better.)": "描述你自己：（这将使虚拟角色更了解你）",
+  "Name description": "你好，我的名字是{{name}}。",
+  "Male description": "我是男性。",
+  "Female description": "我是女性。"
 }

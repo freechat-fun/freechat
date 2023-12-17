@@ -1,1 +1,0 @@
-const n="Please ",e={"My account":"My account","Sign in":"Sign in","Sign out":"Sign out","sign in":"sign in","You are not signed in yet.":"You are not signed in yet.",Please:n};export{n as Please,e as default};

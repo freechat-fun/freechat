@@ -86,7 +86,8 @@ public class AccountApi {
     @GetMapping("/details")
     public UserDetailsDTO details() {
         User user = AccountUtils.currentUser();
-        return UserDetailsDTO.from(user);
+        return UserDetailsDTO.from(userService.loadByUsernameAndPlatform(
+                user.getUsername(), user.getPlatform()));
     }
 
     @Operation(
@@ -102,7 +103,11 @@ public class AccountApi {
             UserDetailsDTO userDetails) {
         User user =userDetails.toUser();
         user.setUserId(AccountUtils.currentUser().getUserId());
-        return userService.update(user);
+        if (userService.update(user)) {
+            AccountUtils.updateCurrentUser();
+            return true;
+        }
+        return false;
     }
 
     @Operation(

@@ -2,6 +2,7 @@ package fun.freechat.web;
 
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.User;
+import fun.freechat.service.enums.GenderType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +23,13 @@ public class MainController {
             User user = AccountUtils.currentUser();
             model.addAttribute("username", user.getUsername());
             model.addAttribute("nickname", user.getNickname());
+            model.addAttribute("platform", user.getPlatform());
+            model.addAttribute("gender", user.getGender());
         } catch (ResponseStatusException e) {
             model.addAttribute("username", "");
             model.addAttribute("nickname", "");
+            model.addAttribute("platform", "");
+            model.addAttribute("gender", GenderType.OTHER.text());
         }
         return "index";
     }

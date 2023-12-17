@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `description` text DEFAULT NULL,
   `avatar` varchar(256) DEFAULT NULL,
   `picture` varchar(256) DEFAULT NULL,
-  `gender` varchar(16) DEFAULT 'unknown' COMMENT 'male | female | non_human | unknown',
+  `gender` varchar(16) DEFAULT 'unknown' COMMENT 'male | female | other',
   `lang` varchar(64) DEFAULT 'English' COMMENT 'English | Chinese (Simplified) | ...',
   `profile` text DEFAULT NULL,
   `greeting` text DEFAULT NULL,

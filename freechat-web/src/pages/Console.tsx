@@ -12,13 +12,13 @@ export default function Console() {
           component="main"
           className="MainContent"
           sx={{
-            pb: { xs: 2, sm: 2, md: 3 },
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
             minWidth: 0,
             gap: 1,
             overflow: 'auto',
+            px: { xs: 2, md: 6 }
           }}
         >
           <Outlet />

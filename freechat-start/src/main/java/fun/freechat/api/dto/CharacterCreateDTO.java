@@ -34,7 +34,7 @@ public class CharacterCreateDTO {
     private String avatar;
     @Schema(description = "Character picture url")
     private String picture;
-    @Schema(description = "Character gender: male | female | non_human | unknown")
+    @Schema(description = "Character gender: male | female | other")
     private String gender;
     @Schema(description = "Character profile")
     private String profile;
