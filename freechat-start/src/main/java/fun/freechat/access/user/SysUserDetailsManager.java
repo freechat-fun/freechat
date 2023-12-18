@@ -235,16 +235,16 @@ public class SysUserDetailsManager implements UserDetailsManager {
         return audSet;
     }
 
-    private String getProfile(OAuth2User oAuth2User, String platform) {
-        String profile = oAuth2User.getAttribute(StandardClaimNames.PROFILE);
-        if (StringUtils.isBlank(profile)) {
+    private String getWebsite(OAuth2User oAuth2User, String platform) {
+        String website = oAuth2User.getAttribute(StandardClaimNames.WEBSITE);
+        if (StringUtils.isBlank(website)) {
             if ("github".equalsIgnoreCase(platform)) {
-                profile = oAuth2User.getAttribute("html_url");
+                website = oAuth2User.getAttribute("html_url");
             } else {
-                profile = oAuth2User.getAttribute("url");
+                website = oAuth2User.getAttribute("url");
             }
         }
-        return profile;
+        return website;
     }
 
     private Date toDate(String dateStr, String zoneInfo) {
@@ -310,9 +310,9 @@ public class SysUserDetailsManager implements UserDetailsManager {
                     .withMiddleName(oAuth2User.getAttribute(StandardClaimNames.MIDDLE_NAME))
                     .withFamilyName(oAuth2User.getAttribute(StandardClaimNames.FAMILY_NAME))
                     .withPreferredUsername(oAuth2User.getAttribute(StandardClaimNames.PREFERRED_USERNAME))
-                    .withProfile(getProfile(oAuth2User, platform))
+                    .withProfile(oAuth2User.getAttribute(StandardClaimNames.PROFILE))
                     .withPicture(oAuth2User.getAttribute(StandardClaimNames.PICTURE))
-                    .withWebsite(oAuth2User.getAttribute(StandardClaimNames.WEBSITE))
+                    .withWebsite(getWebsite(oAuth2User, platform))
                     .withEmail(oAuth2User.getAttribute(StandardClaimNames.EMAIL))
                     .withEmailVerified(toByte(oAuth2User.getAttribute(StandardClaimNames.EMAIL_VERIFIED)))
                     .withGender(oAuth2User.getAttribute(StandardClaimNames.GENDER))
