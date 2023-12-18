@@ -1,4 +1,4 @@
-export { default as LanguageSelect } from "./LanguageSelect";
+export { default as LanguageSelector } from "./LanguageSelector";
 export { default as ColorSchemeToggle } from "./ColorSchemeToggle";
 export { default as RouterLink } from "./RouterLink";
 export { default as FreeChatLogo } from "./FreeChatLogo";
@@ -11,4 +11,4 @@ export { default as Header } from "./Header";
 export { default as Sidebar } from "./Sidebar";
 export { default as SidebarToggle } from "./SidebarToggle";
 export { default as Breadcrumbsbar } from "./Breadcrumbsbar";
-export { default as ImageUpload } from './ImageUpload';
+export { default as ImageSelector } from './ImageSelector';

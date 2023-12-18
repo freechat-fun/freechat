@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../context";
 import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, Divider, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
-import { Breadcrumbsbar, ImageUpload } from "../../components";
+import { Breadcrumbsbar, ImageSelector } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
 
 export default function MyProfile() {
@@ -207,7 +207,7 @@ export default function MyProfile() {
                 >
                   <Avatar variant="soft" src={currentAvatar} />
                 </AspectRatio>
-                <ImageUpload
+                <ImageSelector
                   onImageSelect={handleImageSelect}
                   disabled={!editEnabled}
                   aria-label="upload new picture"
