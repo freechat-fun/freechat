@@ -10,4 +10,5 @@ export { default as ErrorMessageSnackbar } from "./ErrorMessageSnackbar";
 export { default as Header } from "./Header";
 export { default as Sidebar } from "./Sidebar";
 export { default as SidebarToggle } from "./SidebarToggle";
-export { default as StyledBreadcrumbs } from "./StyledBreadcrumbs";
+export { default as Breadcrumbsbar } from "./Breadcrumbsbar";
+export { default as ImageUpload } from './ImageUpload';

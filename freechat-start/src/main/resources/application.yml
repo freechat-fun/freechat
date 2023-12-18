@@ -61,6 +61,10 @@ spring:
             clientName: Aliyun
             redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: openid
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   task:
     defaultExecution:
       threadNamePrefix: default-task-

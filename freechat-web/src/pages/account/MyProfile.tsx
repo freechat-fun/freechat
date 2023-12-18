@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../context";
-import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, Divider, FormControl, FormLabel, IconButton, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
-import { StyledBreadcrumbs } from "../../components";
-import { EditRounded, SaveAltRounded } from "@mui/icons-material";
+import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, Divider, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
+import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
+import { Breadcrumbsbar, ImageUpload } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
 
 export default function MyProfile() {
-  const { handleError } = useErrorMessageBusContext();
   const { t } = useTranslation(['account', 'button']);
   const { accountApi } = useFreeChatApiContext();
+  const { handleError } = useErrorMessageBusContext();
   const { username, platform, resetUser } = useUserInfoContext();
   const [currentGender, setCurrentGender] = useState('other');
   const [currentNickname, setCurrentNickname] = useState('');
   const [currentDescription, setCurrentDescription] = useState('');
   const [currentAvatar, setCurrentAvatar] = useState<string>();
   const [editEnabled, setEditEnabled] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const labelGridUnits = 3;
   const valueGridUnits = 12 - labelGridUnits;
@@ -73,15 +74,31 @@ export default function MyProfile() {
   }
 
   function handleGenderChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    setCurrentGender(event.target.value);
+    if (event.target.value !== currentGender) {
+      setCurrentGender(event.target.value);
+      setSaved(false);
+    }
   }
 
   function handleNicknameChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    setCurrentNickname(event.target.value);
+    if (event.target.value !== currentNickname) {
+      setCurrentNickname(event.target.value);
+      setSaved(false);
+    }
   }
 
   function handleDescriptionChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
-    setCurrentDescription(event.target.value);
+    if (event.target.value !== currentDescription) {
+      setCurrentDescription(event.target.value);
+      setSaved(false);
+    }
+  }
+
+  function handleImageSelect(file: Blob, name: string) {
+    const request = new File([file], name);
+    accountApi?.uploadUserPicture(request)
+      .then(url => setCurrentAvatar(url))
+      .catch(handleError);
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
@@ -100,12 +117,18 @@ export default function MyProfile() {
       userDetails.profile = currentDescription;
     }
 
-    accountApi?.updateUserInfo(userDetails);
+    if (currentAvatar) {
+      userDetails.picture = currentAvatar;
+    }
+
+    accountApi?.updateUserInfo(userDetails)
+      .then((result) => result && setSaved(true))
+      .catch(handleError);
   }
 
   return (
     <>
-      <StyledBreadcrumbs breadcrumbs={breadcrumbs} />
+      <Breadcrumbsbar breadcrumbs={breadcrumbs} />
       <Typography level="title-lg" sx={{ mt: 1, mb: 1 }}>
         {t('My Profile')}
       </Typography>
@@ -184,7 +207,8 @@ export default function MyProfile() {
                 >
                   <Avatar variant="soft" src={currentAvatar} />
                 </AspectRatio>
-                <IconButton
+                <ImageUpload
+                  onImageSelect={handleImageSelect}
                   disabled={!editEnabled}
                   aria-label="upload new picture"
                   size="sm"
@@ -196,17 +220,21 @@ export default function MyProfile() {
                     zIndex: 2,
                     borderRadius: '50%',
                     right: 20,
-                    top: 100,
+                    top: 110,
                     boxShadow: 'sm',
                   }}
-                >
-                  <EditRounded />
-                </IconButton>
+                />
               </Stack>
             </Stack>
             <CardOverflow>
               <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-                <Button size="sm" variant="solid" type="submit" startDecorator={<SaveAltRounded />}>
+                <Button
+                  size="sm"
+                  variant="solid"
+                  type="submit"
+                  startDecorator={saved ? <DoneRounded /> : <SaveAltRounded />}
+                  disabled={saved}
+                >
                   {t('button:Save')}
                 </Button>
               </CardActions>

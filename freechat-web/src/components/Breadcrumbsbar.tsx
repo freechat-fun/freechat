@@ -1,4 +1,4 @@
-import { ChevronRightRounded } from "@mui/icons-material";
+import { ChevronRightRounded, HomeRounded } from "@mui/icons-material";
 import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { RouterLink } from ".";
 
@@ -6,7 +6,7 @@ interface PairBreadcrumbsProps {
   breadcrumbs: { [name: string]: string | undefined; };
 }
 
-export default function PairBreadcrumbs({ breadcrumbs }: PairBreadcrumbsProps) {
+export default function StyledBreadcrumbs({ breadcrumbs }: PairBreadcrumbsProps) {
   return (
     <Box sx={{ width: '100%' }}>
       <Breadcrumbs
@@ -26,7 +26,7 @@ export default function PairBreadcrumbs({ breadcrumbs }: PairBreadcrumbsProps) {
                 href={value}
                 aria-label={name}
               >
-                {name}
+                {name === 'Home' ? <HomeRounded /> : name}
               </RouterLink>
             );
           } else {

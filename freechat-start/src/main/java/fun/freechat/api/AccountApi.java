@@ -53,7 +53,7 @@ public class AccountApi {
 
     private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
 
-    private static final int DEFAULT_PICTURE_MAX_COUNT = 4;
+    private static final int DEFAULT_PICTURE_MAX_COUNT = 100;
 
     @Autowired
     private SysUserService userService;

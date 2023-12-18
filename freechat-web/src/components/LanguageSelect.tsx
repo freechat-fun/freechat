@@ -15,7 +15,7 @@ export default function LanguageSelect() {
     }
   };
 
-  const language = i18n.language ? i18n.language : i18nConfig.defaultLocale;
+  const language = i18n.language || i18nConfig.defaultLocale;
 
   return (
     <Select

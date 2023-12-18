@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Tab, TabList, Tabs, Typography, tabClasses } from "@mui/joy";
-import { StyledBreadcrumbs } from "../../components";
+import { Breadcrumbsbar } from "../../components";
 
 export default function Credentials() {
   const { t } = useTranslation('account');
@@ -11,7 +11,7 @@ export default function Credentials() {
 
   return (
     <>
-      <StyledBreadcrumbs breadcrumbs={breadcrumbs} />
+      <Breadcrumbsbar breadcrumbs={breadcrumbs} />
       <Typography level="title-lg" sx={{ mt: 1, mb: 2 }}>
         {t('My Credentials')}
       </Typography>
