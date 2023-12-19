@@ -1,5 +1,6 @@
 package fun.freechat.api.admin;
 
+import fun.freechat.api.dto.ApiTokenInfoDTO;
 import fun.freechat.api.dto.UserBasicInfoDTO;
 import fun.freechat.api.dto.UserDetailsDTO;
 import fun.freechat.api.dto.UserFullDetailsDTO;
@@ -169,14 +170,17 @@ public class AccountManagerApi {
             description = "Get the list of API Tokens of the user."
     )
     @GetMapping("/token/{username}")
-    public List<String> listTokens(
+    public List<ApiTokenInfoDTO> listTokens(
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username) {
         User user = userService.loadByUsername(username);
         if (Objects.isNull(user)) {
             return null;
         }
-        return apiTokenService.list(user);
+        return apiTokenService.list(user)
+                .stream()
+                .map(ApiTokenInfoDTO::from)
+                .toList();
     }
 
     @Operation(

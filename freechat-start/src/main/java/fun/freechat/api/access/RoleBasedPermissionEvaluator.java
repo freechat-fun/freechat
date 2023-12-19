@@ -5,6 +5,7 @@ import fun.freechat.api.dto.PromptRefDTO;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.User;
+import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.character.ChatContextService;
@@ -49,6 +50,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
     private AiApiKeyService aiApiKeyService;
 
     private OrgService orgService;
+
+    private SysApiTokenService sysApiTokenService;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetObject, Object permission) {
@@ -215,6 +218,14 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         allow = currentUser.getUserId().equals(ownerId);
                     }
                 }
+                case "apiTokenByContentDefaultOp" -> {
+                    ownerId = getSysApiTokenService().getOwner((String) targetObject);
+                    allow = currentUser.getUserId().equals(ownerId);
+                }
+                case "apiTokenByIdDefaultOp" -> {
+                    ownerId = getSysApiTokenService().getOwner((Long) targetObject);
+                    allow = currentUser.getUserId().equals(ownerId);
+                }
                 default -> allow = false;
             }
         } catch (Exception e) {
@@ -295,6 +306,13 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
             orgService = applicationContext.getBean(OrgService.class);
         }
         return orgService;
+    }
+
+    private SysApiTokenService getSysApiTokenService() {
+        if (Objects.isNull(sysApiTokenService)) {
+            sysApiTokenService = applicationContext.getBean(SysApiTokenService.class);
+        }
+        return sysApiTokenService;
     }
 
     @Override

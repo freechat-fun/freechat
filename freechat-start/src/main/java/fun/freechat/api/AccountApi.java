@@ -1,5 +1,6 @@
 package fun.freechat.api;
 
+import fun.freechat.api.dto.ApiTokenInfoDTO;
 import fun.freechat.api.dto.UserBasicInfoDTO;
 import fun.freechat.api.dto.UserDetailsDTO;
 import fun.freechat.api.util.AccountUtils;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 
 import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
@@ -53,7 +56,7 @@ public class AccountApi {
 
     private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
 
-    private static final int DEFAULT_PICTURE_MAX_COUNT = 100;
+    private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
 
     @Autowired
     private SysUserService userService;
@@ -113,27 +116,14 @@ public class AccountApi {
     @Operation(
             operationId = "createToken",
             summary = "Create API Token",
-            description = "Create an unlimited duration API Token."
-    )
-    @PostMapping(value = "/token", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String createToken() {
-        String token = apiTokenService.create(AccountUtils.currentUser());
-        if (Objects.isNull(token)) {
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many tokens.");
-        }
-        return token;
-    }
-
-    @Operation(
-            operationId = "createTokenWithDuration",
-            summary = "Create Timed API Token",
             description = "Create a timed API Token, valid for {duration} seconds."
     )
-    @PostMapping(value = "/token/{duration}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = {"/token", "/token/{duration}"}, produces = MediaType.TEXT_PLAIN_VALUE)
     public String createToken(
-            @Parameter(description = "Token validity duration (seconds)") @PathVariable("duration") @NotNull @Positive
-            Long duration) {
-        String token = apiTokenService.create(AccountUtils.currentUser(), Duration.ofSeconds(duration));
+            @Parameter(description = "Token validity duration (seconds)") @PathVariable("duration") @Positive
+            Optional<Long> duration) {
+        String token = apiTokenService.create(AccountUtils.currentUser(),
+                    duration.map(Duration::ofSeconds).orElse(null));
         if (Objects.isNull(token)) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many tokens.");
         }
@@ -146,14 +136,10 @@ public class AccountApi {
             description = "Delete an API Token."
     )
     @DeleteMapping(value = "/token/{token}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p0, 'apiTokenByContentDefaultOp')")
     public String deleteToken(
             @Parameter(description = "Token content") @PathVariable("token") @NotBlank
             String token) {
-        User user = apiTokenService.getUser(token);
-        if (Objects.isNull(user) ||
-                !AccountUtils.currentUser().getUserId().equals(user.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
         if (!apiTokenService.delete(token)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -166,14 +152,10 @@ public class AccountApi {
             description = "Disable an API Token, the token is not deleted."
     )
     @PutMapping(value = "/token/{token}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p0, 'apiTokenByContentDefaultOp')")
     public String disableToken(
             @Parameter(description = "Token content") @PathVariable("token") @NotBlank
             String token) {
-        User user = apiTokenService.getUser(token);
-        if (Objects.isNull(user) ||
-                !AccountUtils.currentUser().getUserId().equals(user.getUserId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
         if (!apiTokenService.disable(token)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -186,8 +168,50 @@ public class AccountApi {
             description = "List currently valid tokens."
     )
     @GetMapping("/tokens")
-    public List<String> listTokens() {
-        return apiTokenService.list(AccountUtils.currentUser());
+    public List<ApiTokenInfoDTO> listTokens() {
+        return apiTokenService.list(AccountUtils.currentUser())
+                .stream()
+                .map(ApiTokenInfoDTO::from)
+                .toList();
+    }
+
+    @Operation(
+            operationId = "getTokenById",
+            summary = "Get API Token by Id",
+            description = "Get the API token by id."
+    )
+    @GetMapping(value = "/token/id/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p0, 'apiTokenByIdDefaultOp')")
+    public String getTokenById(
+            @Parameter(description = "Token id") @PathVariable("id") @NotNull @Positive
+            Long id) {
+        return apiTokenService.getById(id);
+    }
+
+    @Operation(
+            operationId = "deleteTokenById",
+            summary = "Delete API Token by Id",
+            description = "Delete the API token by id."
+    )
+    @DeleteMapping("/token/id/{id}")
+    @PreAuthorize("hasPermission(#p0, 'apiTokenByIdDefaultOp')")
+    public Boolean deleteTokenById(
+            @Parameter(description = "Token id") @PathVariable("id") @NotNull @Positive
+            Long id) {
+        return apiTokenService.deleteById(id);
+    }
+
+    @Operation(
+            operationId = "disableTokenById",
+            summary = "Disable API Token by Id",
+            description = "Disable the API token by id."
+    )
+    @PutMapping("/token/id/{id}")
+    @PreAuthorize("hasPermission(#p0, 'apiTokenByIdDefaultOp')")
+    public Boolean disableTokenById(
+            @Parameter(description = "Token id") @PathVariable("id") @NotNull @Positive
+            Long id) {
+        return apiTokenService.deleteById(id);
     }
 
     @Operation(

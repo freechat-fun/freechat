@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { Tab, TabList, Tabs, Typography, tabClasses } from "@mui/joy";
+import { Tab, TabList, TabPanel, Tabs, tabClasses } from "@mui/joy";
 import { Breadcrumbsbar } from "../../components";
+import { ApiTokenPanel } from "../../components/account";
 
 export default function Credentials() {
-  const { t } = useTranslation('account');
+  const { t } = useTranslation(['account', 'button']);
+
   const breadcrumbs = {
     'Home': '/w',
     'My Credentials': undefined,
@@ -12,9 +14,6 @@ export default function Credentials() {
   return (
     <>
       <Breadcrumbsbar breadcrumbs={breadcrumbs} />
-      <Typography level="title-lg" sx={{ mt: 1, mb: 2 }}>
-        {t('My Credentials')}
-      </Typography>
       <Tabs
         defaultValue={0}
         sx={{
@@ -52,6 +51,15 @@ export default function Credentials() {
             DashScope
           </Tab>
         </TabList>
+        <TabPanel value={0}>
+          <ApiTokenPanel />
+        </TabPanel>
+        <TabPanel value={1}>
+          2
+        </TabPanel>
+        <TabPanel value={2}>
+          3
+        </TabPanel>
       </Tabs>
     </>
   );

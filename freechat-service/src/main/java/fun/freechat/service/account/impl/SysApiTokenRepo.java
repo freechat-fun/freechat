@@ -22,7 +22,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 public class SysApiTokenRepo {
     final static String TOKEN_CACHE_KEY = "'SysApiTokenRepo_token_' + #p0";
     final static String USER_CACHE_KEY = "'SysApiTokenRepo_user_' + #p0";
-
+    final static String TOKEN_BY_ID_CACHE_KEY = "'SysApiTokenRepo_token_byId_' + #p0";
     @Autowired
     private ApiTokenMapper apiTokenMapper;
 
@@ -48,12 +48,27 @@ public class SysApiTokenRepo {
                 .orElse(null);
     }
 
+    @LongPeriodCache(keyBy = TOKEN_BY_ID_CACHE_KEY)
+    public ApiToken getApiTokenById(Long id) {
+        return apiTokenMapper.selectByPrimaryKey(id)
+                .orElse(null);
+    }
+
     @Caching(evict = {
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = TOKEN_CACHE_KEY),
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = USER_CACHE_KEY)
     })
     public void onDelete(String token) {}
 
-    @LongPeriodCacheEvict(keyBy = TOKEN_CACHE_KEY)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = TOKEN_CACHE_KEY),
+            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = USER_CACHE_KEY)
+    })
     public void onDisable(String token) {}
+
+    @LongPeriodCacheEvict(key = TOKEN_BY_ID_CACHE_KEY)
+    public void onDeleteById(Long id) {}
+
+    @LongPeriodCacheEvict(keyBy = TOKEN_BY_ID_CACHE_KEY)
+    public void onDisableById(Long id) {}
 }

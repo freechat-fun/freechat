@@ -17,14 +17,25 @@ public interface SysApiTokenService {
         return create(user, null);
     }
 
-    List<String> list(User user);
+    List<MaskedApiToken> list(User user);
+
+    String getById(Long id);
+
     boolean deleteByUserId(String userId);
 
     boolean delete(String token);
 
+    boolean deleteById(Long id);
+
     boolean disable(String token);
+
+    boolean disableById(Long id);
 
     boolean isEnabled(String token);
 
     User getUser(String token);
+
+    String getOwner(String token);
+
+    String getOwner(Long id);
 }

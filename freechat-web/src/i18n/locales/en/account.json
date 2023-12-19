@@ -18,5 +18,10 @@
   "Describe yourself: (This will make characters know you better.)": "Describe yourself: (This will make characters know you better.)",
   "Name description": "Hello, my name is {{name}}.",
   "Male description": "I'm male.",
-  "Female description": "I'm female."
+  "Female description": "I'm female.",
+  "API tokens: (maximum of 5 tokens allowed)": "API tokens: (maximum of 5 tokens allowed)",
+  "Token": "Token",
+  "Creation Time": "Creation Time",
+  "Expiration Time": "Expiration Time",
+  "Actions": "Actions"
 }

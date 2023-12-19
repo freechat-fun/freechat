@@ -5,6 +5,7 @@ import {mergeMap, map} from  '../rxjsStub.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -427,7 +428,7 @@ export class ObservableAccountApi {
     }
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
     public createTokenWithHttpInfo(_options?: Configuration): Observable<HttpInfo<string>> {
@@ -450,7 +451,7 @@ export class ObservableAccountApi {
     }
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
     public createToken(_options?: Configuration): Observable<string> {
@@ -459,11 +460,11 @@ export class ObservableAccountApi {
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createTokenWithDurationWithHttpInfo(duration: number, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.createTokenWithDuration(duration, _options);
+    public createToken1WithHttpInfo(duration: number, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.createToken1(duration, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -477,17 +478,17 @@ export class ObservableAccountApi {
                 for (let middleware of this.configuration.middleware) {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createTokenWithDurationWithHttpInfo(rsp)));
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createToken1WithHttpInfo(rsp)));
             }));
     }
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createTokenWithDuration(duration: number, _options?: Configuration): Observable<string> {
-        return this.createTokenWithDurationWithHttpInfo(duration, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createToken1(duration: number, _options?: Configuration): Observable<string> {
+        return this.createToken1WithHttpInfo(duration, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -524,6 +525,39 @@ export class ObservableAccountApi {
     }
 
     /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param id Token id
+     */
+    public deleteTokenByIdWithHttpInfo(id: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteTokenById(id, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteTokenByIdWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param id Token id
+     */
+    public deleteTokenById(id: number, _options?: Configuration): Observable<boolean> {
+        return this.deleteTokenByIdWithHttpInfo(id, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
      * Disable an API Token, the token is not deleted.
      * Disable API Token
      * @param token Token content
@@ -554,6 +588,72 @@ export class ObservableAccountApi {
      */
     public disableToken(token: string, _options?: Configuration): Observable<string> {
         return this.disableTokenWithHttpInfo(token, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param id Token id
+     */
+    public disableTokenByIdWithHttpInfo(id: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.disableTokenById(id, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.disableTokenByIdWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param id Token id
+     */
+    public disableTokenById(id: number, _options?: Configuration): Observable<boolean> {
+        return this.disableTokenByIdWithHttpInfo(id, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param id Token id
+     */
+    public getTokenByIdWithHttpInfo(id: number, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.getTokenById(id, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getTokenByIdWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param id Token id
+     */
+    public getTokenById(id: number, _options?: Configuration): Observable<string> {
+        return this.getTokenByIdWithHttpInfo(id, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -624,7 +724,7 @@ export class ObservableAccountApi {
      * List currently valid tokens.
      * List API Tokens
      */
-    public listTokensWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public listTokensWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<ApiTokenInfoDTO>>> {
         const requestContextPromise = this.requestFactory.listTokens(_options);
 
         // build promise chain
@@ -647,8 +747,8 @@ export class ObservableAccountApi {
      * List currently valid tokens.
      * List API Tokens
      */
-    public listTokens(_options?: Configuration): Observable<Array<string>> {
-        return this.listTokensWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public listTokens(_options?: Configuration): Observable<Array<ApiTokenInfoDTO>> {
+        return this.listTokensWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<ApiTokenInfoDTO>>) => apiResponse.data));
     }
 
     /**
@@ -1006,7 +1106,7 @@ export class ObservableAccountManagerForAdminApi {
      * Get API Token of User
      * @param username Username
      */
-    public listTokensOfUserWithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public listTokensOfUserWithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<Array<ApiTokenInfoDTO>>> {
         const requestContextPromise = this.requestFactory.listTokensOfUser(username, _options);
 
         // build promise chain
@@ -1030,8 +1130,8 @@ export class ObservableAccountManagerForAdminApi {
      * Get API Token of User
      * @param username Username
      */
-    public listTokensOfUser(username: string, _options?: Configuration): Observable<Array<string>> {
-        return this.listTokensOfUserWithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public listTokensOfUser(username: string, _options?: Configuration): Observable<Array<ApiTokenInfoDTO>> {
+        return this.listTokensOfUserWithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<Array<ApiTokenInfoDTO>>) => apiResponse.data));
     }
 
     /**

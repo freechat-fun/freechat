@@ -4,6 +4,7 @@ import { Configuration} from '../configuration.js'
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -294,7 +295,7 @@ export class PromiseAccountApi {
     }
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
     public createTokenWithHttpInfo(_options?: Configuration): Promise<HttpInfo<string>> {
@@ -303,7 +304,7 @@ export class PromiseAccountApi {
     }
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
     public createToken(_options?: Configuration): Promise<string> {
@@ -313,21 +314,21 @@ export class PromiseAccountApi {
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createTokenWithDurationWithHttpInfo(duration: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createTokenWithDurationWithHttpInfo(duration, _options);
+    public createToken1WithHttpInfo(duration: number, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.createToken1WithHttpInfo(duration, _options);
         return result.toPromise();
     }
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createTokenWithDuration(duration: number, _options?: Configuration): Promise<string> {
-        const result = this.api.createTokenWithDuration(duration, _options);
+    public createToken1(duration: number, _options?: Configuration): Promise<string> {
+        const result = this.api.createToken1(duration, _options);
         return result.toPromise();
     }
 
@@ -352,6 +353,26 @@ export class PromiseAccountApi {
     }
 
     /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param id Token id
+     */
+    public deleteTokenByIdWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteTokenByIdWithHttpInfo(id, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param id Token id
+     */
+    public deleteTokenById(id: number, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteTokenById(id, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Disable an API Token, the token is not deleted.
      * Disable API Token
      * @param token Token content
@@ -368,6 +389,46 @@ export class PromiseAccountApi {
      */
     public disableToken(token: string, _options?: Configuration): Promise<string> {
         const result = this.api.disableToken(token, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param id Token id
+     */
+    public disableTokenByIdWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.disableTokenByIdWithHttpInfo(id, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param id Token id
+     */
+    public disableTokenById(id: number, _options?: Configuration): Promise<boolean> {
+        const result = this.api.disableTokenById(id, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param id Token id
+     */
+    public getTokenByIdWithHttpInfo(id: number, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.getTokenByIdWithHttpInfo(id, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param id Token id
+     */
+    public getTokenById(id: number, _options?: Configuration): Promise<string> {
+        const result = this.api.getTokenById(id, _options);
         return result.toPromise();
     }
 
@@ -413,7 +474,7 @@ export class PromiseAccountApi {
      * List currently valid tokens.
      * List API Tokens
      */
-    public listTokensWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listTokensWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
         const result = this.api.listTokensWithHttpInfo(_options);
         return result.toPromise();
     }
@@ -422,7 +483,7 @@ export class PromiseAccountApi {
      * List currently valid tokens.
      * List API Tokens
      */
-    public listTokens(_options?: Configuration): Promise<Array<string>> {
+    public listTokens(_options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
         const result = this.api.listTokens(_options);
         return result.toPromise();
     }
@@ -653,7 +714,7 @@ export class PromiseAccountManagerForAdminApi {
      * Get API Token of User
      * @param username Username
      */
-    public listTokensOfUserWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listTokensOfUserWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
         const result = this.api.listTokensOfUserWithHttpInfo(username, _options);
         return result.toPromise();
     }
@@ -663,7 +724,7 @@ export class PromiseAccountManagerForAdminApi {
      * Get API Token of User
      * @param username Username
      */
-    public listTokensOfUser(username: string, _options?: Configuration): Promise<Array<string>> {
+    public listTokensOfUser(username: string, _options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
         const result = this.api.listTokensOfUser(username, _options);
         return result.toPromise();
     }

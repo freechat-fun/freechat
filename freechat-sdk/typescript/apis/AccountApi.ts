@@ -8,6 +8,7 @@ import {canConsumeForm, isCodeInRange} from '../util.js';
 import {SecurityAuthentication} from '../auth/auth.js';
 
 
+import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 
@@ -17,7 +18,7 @@ import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      */
     public async createToken(_options?: Configuration): Promise<RequestContext> {
@@ -48,15 +49,15 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public async createTokenWithDuration(duration: number, _options?: Configuration): Promise<RequestContext> {
+    public async createToken1(duration: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'duration' is not null or undefined
         if (duration === null || duration === undefined) {
-            throw new RequiredError("AccountApi", "createTokenWithDuration", "duration");
+            throw new RequiredError("AccountApi", "createToken1", "duration");
         }
 
 
@@ -123,6 +124,44 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param id Token id
+     */
+    public async deleteTokenById(id: number, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'id' is not null or undefined
+        if (id === null || id === undefined) {
+            throw new RequiredError("AccountApi", "deleteTokenById", "id");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/account/token/id/{id}'
+            .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * Disable an API Token, the token is not deleted.
      * Disable API Token
      * @param token Token content
@@ -142,6 +181,82 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param id Token id
+     */
+    public async disableTokenById(id: number, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'id' is not null or undefined
+        if (id === null || id === undefined) {
+            throw new RequiredError("AccountApi", "disableTokenById", "id");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/account/token/id/{id}'
+            .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param id Token id
+     */
+    public async getTokenById(id: number, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'id' is not null or undefined
+        if (id === null || id === undefined) {
+            throw new RequiredError("AccountApi", "getTokenById", "id");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/account/token/id/{id}'
+            .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
         requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
 
 
@@ -407,10 +522,10 @@ export class AccountApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to createTokenWithDuration
+     * @params response Response returned by the server for a request to createToken1
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createTokenWithDurationWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async createToken1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: string = ObjectSerializer.deserialize(
@@ -465,10 +580,97 @@ export class AccountApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
+     * @params response Response returned by the server for a request to deleteTokenById
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async deleteTokenByIdWithHttpInfo(response: ResponseContext): Promise<HttpInfo<boolean >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: boolean = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "boolean", ""
+            ) as boolean;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: boolean = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "boolean", ""
+            ) as boolean;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
      * @params response Response returned by the server for a request to disableToken
      * @throws ApiException if the response code was not in [200, 299]
      */
      public async disableTokenWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: string = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "string", ""
+            ) as string;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: string = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "string", ""
+            ) as string;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to disableTokenById
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async disableTokenByIdWithHttpInfo(response: ResponseContext): Promise<HttpInfo<boolean >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: boolean = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "boolean", ""
+            ) as boolean;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: boolean = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "boolean", ""
+            ) as boolean;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getTokenById
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getTokenByIdWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: string = ObjectSerializer.deserialize(
@@ -555,22 +757,22 @@ export class AccountApiResponseProcessor {
      * @params response Response returned by the server for a request to listTokens
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async listTokensWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async listTokensWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<ApiTokenInfoDTO> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<ApiTokenInfoDTO> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<ApiTokenInfoDTO>", ""
+            ) as Array<ApiTokenInfoDTO>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<ApiTokenInfoDTO> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<ApiTokenInfoDTO>", ""
+            ) as Array<ApiTokenInfoDTO>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

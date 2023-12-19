@@ -60,11 +60,11 @@ public class CharacterApi {
 
     private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
 
-    private static final int DEFAULT_PICTURE_MAX_COUNT = 4;
+    private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
 
     private static final long DEFAULT_AVATAR_MAX_SIZE = 64 * 1024;
 
-    private static final int DEFAULT_AVATAR_MAX_COUNT = 4;
+    private static final int DEFAULT_AVATAR_MAX_COUNT = 10;
 
     @Value("${chat.memory.minWindowSize:50}")
     private Integer minWindowSize;

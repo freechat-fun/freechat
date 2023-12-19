@@ -481,7 +481,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **listTokensOfUser**
-> Array<string> listTokensOfUser()
+> Array<ApiTokenInfoDTO> listTokensOfUser()
 
 Get the list of API Tokens of the user.
 
@@ -515,7 +515,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Array<string>**
+**Array<ApiTokenInfoDTO>**
 
 ### Authorization
 

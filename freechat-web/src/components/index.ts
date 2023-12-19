@@ -12,3 +12,4 @@ export { default as Sidebar } from "./Sidebar";
 export { default as SidebarToggle } from "./SidebarToggle";
 export { default as Breadcrumbsbar } from "./Breadcrumbsbar";
 export { default as ImageSelector } from './ImageSelector';
+export { default as ConfirmModal } from './ConfirmModal';

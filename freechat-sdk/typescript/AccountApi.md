@@ -5,9 +5,12 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createToken**](AccountApi.md#createToken) | **POST** /api/v1/account/token | Create API Token
-[**createTokenWithDuration**](AccountApi.md#createTokenWithDuration) | **POST** /api/v1/account/token/{duration} | Create Timed API Token
+[**createToken1**](AccountApi.md#createToken1) | **POST** /api/v1/account/token/{duration} | Create API Token
 [**deleteToken**](AccountApi.md#deleteToken) | **DELETE** /api/v1/account/token/{token} | Delete API Token
+[**deleteTokenById**](AccountApi.md#deleteTokenById) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id
 [**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token
+[**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
+[**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
 [**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
 [**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details
 [**listTokens**](AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens
@@ -18,7 +21,7 @@ Method | HTTP request | Description
 # **createToken**
 > string createToken()
 
-Create an unlimited duration API Token.
+Create a timed API Token, valid for {duration} seconds.
 
 ### Example
 
@@ -63,8 +66,8 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
-# **createTokenWithDuration**
-> string createTokenWithDuration()
+# **createToken1**
+> string createToken1()
 
 Create a timed API Token, valid for {duration} seconds.
 
@@ -78,12 +81,12 @@ import * as fs from 'fs';
 const configuration = .createConfiguration();
 const apiInstance = new .AccountApi(configuration);
 
-let body:.AccountApiCreateTokenWithDurationRequest = {
+let body:.AccountApiCreateToken1Request = {
   // number | Token validity duration (seconds)
   duration: 1,
 };
 
-apiInstance.createTokenWithDuration(body).then((data:any) => {
+apiInstance.createToken1(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```
@@ -171,6 +174,60 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
+# **deleteTokenById**
+> boolean deleteTokenById()
+
+Delete the API token by id.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .AccountApi(configuration);
+
+let body:.AccountApiDeleteTokenByIdRequest = {
+  // number | Token id
+  id: 1,
+};
+
+apiInstance.deleteTokenById(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**number**] | Token id | defaults to undefined
+
+
+### Return type
+
+**boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
 # **disableToken**
 > string disableToken()
 
@@ -202,6 +259,114 @@ apiInstance.disableToken(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **token** | [**string**] | Token content | defaults to undefined
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **disableTokenById**
+> boolean disableTokenById()
+
+Disable the API token by id.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .AccountApi(configuration);
+
+let body:.AccountApiDisableTokenByIdRequest = {
+  // number | Token id
+  id: 1,
+};
+
+apiInstance.disableTokenById(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**number**] | Token id | defaults to undefined
+
+
+### Return type
+
+**boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **getTokenById**
+> string getTokenById()
+
+Get the API token by id.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .AccountApi(configuration);
+
+let body:.AccountApiGetTokenByIdRequest = {
+  // number | Token id
+  id: 1,
+};
+
+apiInstance.getTokenById(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**number**] | Token id | defaults to undefined
 
 
 ### Return type
@@ -328,7 +493,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **listTokens**
-> Array<string> listTokens()
+> Array<ApiTokenInfoDTO> listTokens()
 
 List currently valid tokens.
 
@@ -356,7 +521,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**Array<string>**
+**Array<ApiTokenInfoDTO>**
 
 ### Authorization
 

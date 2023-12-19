@@ -1,6 +1,7 @@
 export * from '../models/AiApiKeyCreateDTO.js'
 export * from '../models/AiApiKeyInfoDTO.js'
 export * from '../models/AiModelInfoDTO.js'
+export * from '../models/ApiTokenInfoDTO.js'
 export * from '../models/AppConfigCreateDTO.js'
 export * from '../models/AppConfigInfoDTO.js'
 export * from '../models/AppMetaDTO.js'

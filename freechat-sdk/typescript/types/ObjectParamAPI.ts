@@ -4,6 +4,7 @@ import { Configuration} from '../configuration.js'
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -349,11 +350,11 @@ import { AccountApiRequestFactory, AccountApiResponseProcessor} from "../apis/Ac
 export interface AccountApiCreateTokenRequest {
 }
 
-export interface AccountApiCreateTokenWithDurationRequest {
+export interface AccountApiCreateToken1Request {
     /**
      * Token validity duration (seconds)
      * @type number
-     * @memberof AccountApicreateTokenWithDuration
+     * @memberof AccountApicreateToken1
      */
     duration: number
 }
@@ -367,6 +368,15 @@ export interface AccountApiDeleteTokenRequest {
     token: string
 }
 
+export interface AccountApiDeleteTokenByIdRequest {
+    /**
+     * Token id
+     * @type number
+     * @memberof AccountApideleteTokenById
+     */
+    id: number
+}
+
 export interface AccountApiDisableTokenRequest {
     /**
      * Token content
@@ -374,6 +384,24 @@ export interface AccountApiDisableTokenRequest {
      * @memberof AccountApidisableToken
      */
     token: string
+}
+
+export interface AccountApiDisableTokenByIdRequest {
+    /**
+     * Token id
+     * @type number
+     * @memberof AccountApidisableTokenById
+     */
+    id: number
+}
+
+export interface AccountApiGetTokenByIdRequest {
+    /**
+     * Token id
+     * @type number
+     * @memberof AccountApigetTokenById
+     */
+    id: number
 }
 
 export interface AccountApiGetUserBasicRequest {
@@ -417,7 +445,7 @@ export class ObjectAccountApi {
     }
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      * @param param the request object
      */
@@ -426,7 +454,7 @@ export class ObjectAccountApi {
     }
 
     /**
-     * Create an unlimited duration API Token.
+     * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
      * @param param the request object
      */
@@ -436,20 +464,20 @@ export class ObjectAccountApi {
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param param the request object
      */
-    public createTokenWithDurationWithHttpInfo(param: AccountApiCreateTokenWithDurationRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.createTokenWithDurationWithHttpInfo(param.duration,  options).toPromise();
+    public createToken1WithHttpInfo(param: AccountApiCreateToken1Request, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.createToken1WithHttpInfo(param.duration,  options).toPromise();
     }
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
-     * Create Timed API Token
+     * Create API Token
      * @param param the request object
      */
-    public createTokenWithDuration(param: AccountApiCreateTokenWithDurationRequest, options?: Configuration): Promise<string> {
-        return this.api.createTokenWithDuration(param.duration,  options).toPromise();
+    public createToken1(param: AccountApiCreateToken1Request, options?: Configuration): Promise<string> {
+        return this.api.createToken1(param.duration,  options).toPromise();
     }
 
     /**
@@ -471,6 +499,24 @@ export class ObjectAccountApi {
     }
 
     /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param param the request object
+     */
+    public deleteTokenByIdWithHttpInfo(param: AccountApiDeleteTokenByIdRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteTokenByIdWithHttpInfo(param.id,  options).toPromise();
+    }
+
+    /**
+     * Delete the API token by id.
+     * Delete API Token by Id
+     * @param param the request object
+     */
+    public deleteTokenById(param: AccountApiDeleteTokenByIdRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteTokenById(param.id,  options).toPromise();
+    }
+
+    /**
      * Disable an API Token, the token is not deleted.
      * Disable API Token
      * @param param the request object
@@ -486,6 +532,42 @@ export class ObjectAccountApi {
      */
     public disableToken(param: AccountApiDisableTokenRequest, options?: Configuration): Promise<string> {
         return this.api.disableToken(param.token,  options).toPromise();
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param param the request object
+     */
+    public disableTokenByIdWithHttpInfo(param: AccountApiDisableTokenByIdRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.disableTokenByIdWithHttpInfo(param.id,  options).toPromise();
+    }
+
+    /**
+     * Disable the API token by id.
+     * Disable API Token by Id
+     * @param param the request object
+     */
+    public disableTokenById(param: AccountApiDisableTokenByIdRequest, options?: Configuration): Promise<boolean> {
+        return this.api.disableTokenById(param.id,  options).toPromise();
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param param the request object
+     */
+    public getTokenByIdWithHttpInfo(param: AccountApiGetTokenByIdRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.getTokenByIdWithHttpInfo(param.id,  options).toPromise();
+    }
+
+    /**
+     * Get the API token by id.
+     * Get API Token by Id
+     * @param param the request object
+     */
+    public getTokenById(param: AccountApiGetTokenByIdRequest, options?: Configuration): Promise<string> {
+        return this.api.getTokenById(param.id,  options).toPromise();
     }
 
     /**
@@ -529,7 +611,7 @@ export class ObjectAccountApi {
      * List API Tokens
      * @param param the request object
      */
-    public listTokensWithHttpInfo(param: AccountApiListTokensRequest = {}, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listTokensWithHttpInfo(param: AccountApiListTokensRequest = {}, options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
         return this.api.listTokensWithHttpInfo( options).toPromise();
     }
 
@@ -538,7 +620,7 @@ export class ObjectAccountApi {
      * List API Tokens
      * @param param the request object
      */
-    public listTokens(param: AccountApiListTokensRequest = {}, options?: Configuration): Promise<Array<string>> {
+    public listTokens(param: AccountApiListTokensRequest = {}, options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
         return this.api.listTokens( options).toPromise();
     }
 
@@ -877,7 +959,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get API Token of User
      * @param param the request object
      */
-    public listTokensOfUserWithHttpInfo(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listTokensOfUserWithHttpInfo(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: Configuration): Promise<HttpInfo<Array<ApiTokenInfoDTO>>> {
         return this.api.listTokensOfUserWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -886,7 +968,7 @@ export class ObjectAccountManagerForAdminApi {
      * Get API Token of User
      * @param param the request object
      */
-    public listTokensOfUser(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: Configuration): Promise<Array<string>> {
+    public listTokensOfUser(param: AccountManagerForAdminApiListTokensOfUserRequest, options?: Configuration): Promise<Array<ApiTokenInfoDTO>> {
         return this.api.listTokensOfUser(param.username,  options).toPromise();
     }
 

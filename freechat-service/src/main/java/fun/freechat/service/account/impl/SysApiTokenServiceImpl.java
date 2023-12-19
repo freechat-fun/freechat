@@ -5,6 +5,7 @@ import fun.freechat.mapper.ApiTokenMapper;
 import fun.freechat.model.ApiToken;
 import fun.freechat.model.User;
 import fun.freechat.service.account.ApiTokenType;
+import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.util.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,12 +55,18 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
     }
 
     @Override
-    public List<String> list(User user) {
+    public List<MaskedApiToken> list(User user) {
         return apiTokenMapper.select(c -> c.where(ApiTokenDynamicSqlSupport.userId, isEqualTo(user.getUserId())))
                 .stream()
                 .filter(this::isEnabled)
-                .map(ApiToken::getToken)
+                .map(MaskedApiToken::of)
                 .toList();
+    }
+
+    @Override
+    public String getById(Long id) {
+        ApiToken apiToken = apiTokenRepo.getApiTokenById(id);
+        return Objects.nonNull(apiToken) ? apiToken.getToken() : null;
     }
 
     @Override
@@ -80,6 +87,16 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
     }
 
     @Override
+    public boolean deleteById(Long id) {
+        int rows = apiTokenMapper.deleteByPrimaryKey(id);
+        if (rows > 0 ) {
+            apiTokenRepo.onDeleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean disable(String token) {
         int rows = 0;
         ApiToken apiToken = apiTokenRepo.getApiToken(token);
@@ -89,6 +106,21 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
         }
         if (rows > 0) {
             apiTokenRepo.onDisable(token);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean disableById(Long id) {
+        int rows = 0;
+        ApiToken apiToken = apiTokenRepo.getApiTokenById(id);
+        if (Objects.nonNull(apiToken)) {
+            apiToken.setExpiresAt(apiToken.getIssuedAt());
+            rows = apiTokenMapper.updateByPrimaryKey(apiToken);
+        }
+        if (rows > 0) {
+            apiTokenRepo.onDisableById(id);
             return true;
         }
         return false;
@@ -109,5 +141,17 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
     @Override
     public User getUser(String token) {
         return isEnabled(token) ? apiTokenRepo.getUser(token) : null;
+    }
+
+    @Override
+    public String getOwner(String token) {
+        ApiToken apiToken = apiTokenRepo.getApiToken(token);
+        return Objects.nonNull(apiToken) ? apiToken.getUserId() : null;
+    }
+
+    @Override
+    public String getOwner(Long id) {
+        ApiToken apiToken = apiTokenRepo.getApiTokenById(id);
+        return Objects.nonNull(apiToken) ? apiToken.getUserId() : null;
     }
 }

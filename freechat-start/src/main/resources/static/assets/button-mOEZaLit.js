@@ -1,0 +1,1 @@
+const t="新建",o="编辑",e="删除",n="取消",c="提交",s="修改",i="保存",a="确认",d={New:t,Edit:o,Delete:e,Cancel:n,Submit:c,Modify:s,Save:i,Confirm:a};export{n as Cancel,a as Confirm,e as Delete,o as Edit,s as Modify,t as New,i as Save,c as Submit,d as default};
