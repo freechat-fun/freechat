@@ -11,6 +11,7 @@ export default function MyProfile() {
   const { accountApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username, platform, resetUser } = useUserInfoContext();
+  
   const [currentGender, setCurrentGender] = useState('other');
   const [currentNickname, setCurrentNickname] = useState('');
   const [currentDescription, setCurrentDescription] = useState('');

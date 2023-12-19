@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../context";
 import { Box, IconButton, Stack, Table, Typography } from "@mui/joy";
-import { AddCircleRounded, DeleteRounded, VisibilityRounded } from "@mui/icons-material";
+import { AddCircleRounded, ContentCopyRounded, DeleteRounded, VisibilityRounded } from "@mui/icons-material";
 import { ApiTokenInfoDTO } from "freechat-sdk";
 import { formatDate } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
@@ -12,7 +12,8 @@ export default function ApiTokenPanel() {
   const { accountApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const [tokens, setTokens] = useState<Array<ApiTokenInfoDTO>>([]);
-  const [, setTokenText] = useState<string | undefined>();
+  const [tokenText, setTokenText] = useState<string | undefined>();
+  const [tokenTextCopied, setTokenTextCopied] = useState(false);
   const [tokenIdToConfirm, setTokenIdToConfirm] = useState<number | undefined>();
 
   useEffect(() => {
@@ -32,7 +33,12 @@ export default function ApiTokenPanel() {
       .catch(handleError);
   }
 
-  function handleDelete(id: string | number): void {
+  function handleViewClose(): void {
+    setTokenText(undefined);
+    setTokenTextCopied(false);
+  }
+
+  function handleDelete(id: string | number | undefined): void {
     id && accountApi?.disableTokenById(id as number)
       .then(resp => resp && setTokens(tokens.filter(token => token.id !== id)))
       .catch(handleError);
@@ -53,7 +59,7 @@ export default function ApiTokenPanel() {
         gap: 3,
       }}>
         <Typography level="title-md">{t('API tokens: (maximum of 5 tokens allowed)')}</Typography>
-        <IconButton color="primary">
+        <IconButton color="primary" disabled={tokens.length >= 5}>
           <AddCircleRounded />
         </IconButton>
       </Box>
@@ -93,6 +99,10 @@ export default function ApiTokenPanel() {
         open={!!tokenIdToConfirm}
         onClose={() => setTokenIdToConfirm(undefined)}
         obj={tokenIdToConfirm || 0}
+        dialog={{
+          color: 'danger',
+          title: t('Please confirm carefully!'),
+        }}
         button={{
           color: 'danger',
           text: t('button:Delete'),
@@ -104,6 +114,46 @@ export default function ApiTokenPanel() {
             .filter(token => token.id === tokenIdToConfirm)
             .map(token => token.token)[0]}
         </Typography>
+      </ConfirmModal>
+      <ConfirmModal
+        open={!!tokenText}
+        onClose={handleViewClose}
+        obj={tokenText || ''}
+        onConfirm={handleViewClose}
+        dialog={{
+          color: 'success',
+          title: t('Token Information'),
+        }}
+      >
+        <Box sx={{
+          m: 2,
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <Box sx={{
+            mt: 2,
+            gap: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+            <Typography>
+              {tokenText}
+            </Typography>
+            <IconButton onClick={() => {
+              tokenText && navigator?.clipboard?.writeText(tokenText)
+                .then(() => setTokenTextCopied(true))
+                .catch(handleError);
+            }}>
+              <ContentCopyRounded />
+            </IconButton>
+          </Box>
+          <Typography sx={{
+            fontStyle: 'italic',
+            color: tokenTextCopied ? 'gray' : 'transparent',
+          }}>
+            {t('Copied!')}
+          </Typography>
+        </Box>
       </ConfirmModal>
     </Stack>
   );

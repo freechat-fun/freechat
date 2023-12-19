@@ -3,7 +3,7 @@ import { Option, Select } from "@mui/joy";
 import { LanguageRounded } from "@mui/icons-material";
 import { locales, i18nConfig } from "../i18n/i18n-config.ts";
 
-export default function LanguageSelect() {
+export default function LanguageSelector() {
   const { i18n } = useTranslation();
 
   const handleChange = (

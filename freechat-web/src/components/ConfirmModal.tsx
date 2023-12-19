@@ -3,22 +3,26 @@ import { useTranslation } from "react-i18next";
 import { ModalProps, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, DialogActions, Button } from "@mui/joy";
 
 export default function ConfirmModal(props: ModalProps & {
-  obj: string | number,
+  obj?: string | number,
+  dialog?: {
+    title?: string,
+    color?: 'danger' | 'neutral' | 'primary' | 'success' | 'warning',
+  },
   button?: {
     text?: string,
     color?: 'danger' | 'neutral' | 'primary' | 'success' | 'warning',
-  }
-  onConfirm: (obj: string | number) => void,
+  },
+  onConfirm?: (obj: string | number | undefined) => void,
   children: ReactNode
 }) {
-  const { obj, button, onConfirm, children, ...modalProps } = props;
+  const { obj, dialog, button, onConfirm, children, ...modalProps } = props;
   const { t } = useTranslation(['button']);
 
   return (
     <Modal {...modalProps}>
-      <ModalDialog>
+      <ModalDialog color={dialog?.color}>
         <ModalClose />
-        <DialogTitle color="warning">{t('Please confirm carefully!')}</DialogTitle>
+        <DialogTitle>{dialog?.title}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{
             display: 'flex',
@@ -29,7 +33,7 @@ export default function ConfirmModal(props: ModalProps & {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button color={button?.color} onClick={() => onConfirm(obj)}>{button?.text || t('button:Confirm')}</Button>
+          <Button color={button?.color} onClick={() => onConfirm && onConfirm(obj)}>{button?.text || t('button:Confirm')}</Button>
         </DialogActions>
       </ModalDialog>
     </Modal>

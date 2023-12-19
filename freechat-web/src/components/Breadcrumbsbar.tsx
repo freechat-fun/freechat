@@ -2,11 +2,11 @@ import { ChevronRightRounded, HomeRounded } from "@mui/icons-material";
 import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { RouterLink } from ".";
 
-interface PairBreadcrumbsProps {
+interface BreadcrumbsbarProps {
   breadcrumbs: { [name: string]: string | undefined; };
 }
 
-export default function StyledBreadcrumbs({ breadcrumbs }: PairBreadcrumbsProps) {
+export default function Breadcrumbsbar({ breadcrumbs }: BreadcrumbsbarProps) {
   return (
     <Box sx={{ width: '100%' }}>
       <Breadcrumbs
