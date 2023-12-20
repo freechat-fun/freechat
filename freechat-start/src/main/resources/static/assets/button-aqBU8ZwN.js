@@ -1,1 +1,0 @@
-const e="New",t="Edit",o="Delete",n="Cancel",c="Submit",i="Modify",a="Save",s="Confirm",C="Create",d={New:e,Edit:t,Delete:o,Cancel:n,Submit:c,Modify:i,Save:a,Confirm:s,Create:C};export{n as Cancel,s as Confirm,C as Create,o as Delete,t as Edit,i as Modify,e as New,a as Save,c as Submit,d as default};

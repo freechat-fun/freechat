@@ -24,13 +24,14 @@ export default function ApiTokenPanel() {
 
 
   useEffect(() => {
-    getTokens();
+    // getTokens();
+    setTokens([new ApiTokenInfoDTO()]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountApi]);
 
   function getTokens(): void {
     accountApi?.listTokens()
-      .then(resp => setTokens(resp))
+      .then(resp => setTokens(resp.filter(token => !!token.id)))
       .catch(handleError);
   }
 

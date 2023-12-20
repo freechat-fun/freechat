@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ModalProps, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, DialogActions, Button } from "@mui/joy";
 
 export default function ConfirmModal(props: ModalProps & {
-  obj?: string | number,
+  obj?: any,
   dialog?: {
     title?: string,
     color?: 'danger' | 'neutral' | 'primary' | 'success' | 'warning',
@@ -12,7 +13,7 @@ export default function ConfirmModal(props: ModalProps & {
     text?: string,
     color?: 'danger' | 'neutral' | 'primary' | 'success' | 'warning',
   },
-  onConfirm?: (obj: string | number | undefined) => void,
+  onConfirm?: (obj: any) => void,
   children: ReactNode
 }) {
   const { obj, dialog, button, onConfirm, children, ...modalProps } = props;

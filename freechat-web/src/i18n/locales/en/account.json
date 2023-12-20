@@ -27,5 +27,10 @@
   "Actions": "Actions",
   "Create Token": "Create Token",
   "Valid until": "Valid until",
-  "Never expires": "Never expires"
+  "Never expires": "Never expires",
+  "API keys: (maximum of 3 keys allowed)": "API keys: (maximum of 3 keys allowed)",
+  "API key": "API Key",
+  "Last Used Time": "Last Used Time",
+  "API Key Information": "API Key Information",
+  "Add API Key": "Add API Key"
 }

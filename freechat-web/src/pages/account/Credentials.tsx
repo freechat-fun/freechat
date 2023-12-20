@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Tab, TabList, TabPanel, Tabs, tabClasses } from "@mui/joy";
 import { Breadcrumbsbar } from "../../components";
 import { ApiTokenPanel } from "../../components/account";
+import AiApiKeyPanel from "../../components/account/AiApiKeyPanel";
 
 export default function Credentials() {
   const { t } = useTranslation(['account', 'button']);
@@ -55,10 +56,10 @@ export default function Credentials() {
           <ApiTokenPanel />
         </TabPanel>
         <TabPanel value={1}>
-          2
+          <AiApiKeyPanel provider="open_ai" />
         </TabPanel>
         <TabPanel value={2}>
-          3
+          <AiApiKeyPanel provider="dash_scope" />
         </TabPanel>
       </Tabs>
     </>

@@ -1,0 +1,1 @@
+const e="New",t="Edit",o="Delete",n="Cancel",c="Submit",d="Modify",s="Save",i="Confirm",a="Create",m="Add",C="Remove",f={New:e,Edit:t,Delete:o,Cancel:n,Submit:c,Modify:d,Save:s,Confirm:i,Create:a,Add:m,Remove:C};export{m as Add,n as Cancel,i as Confirm,a as Create,o as Delete,t as Edit,d as Modify,e as New,C as Remove,s as Save,c as Submit,f as default};

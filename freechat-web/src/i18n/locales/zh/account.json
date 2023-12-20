@@ -27,5 +27,10 @@
   "Actions": "操作",
   "Create Token": "新建凭证",
   "Valid until": "有效期至",
-  "Never expires": "永不过期"
+  "Never expires": "永不过期",
+  "API keys: (maximum of 3 keys allowed)": "访问凭证：（最多允许 3 个 keys）",
+  "API key": "API Key",
+  "Last Used Time": "最后使用时间",
+  "API Key Information": "API Key 信息",
+  "Add API Key": "添加 API Key"
 }
