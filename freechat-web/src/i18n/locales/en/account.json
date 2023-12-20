@@ -24,5 +24,8 @@
   "Creation Time": "Creation Time",
   "Expiration Time": "Expiration Time",
   "Token Information": "Token Information",
-  "Actions": "Actions"
+  "Actions": "Actions",
+  "Create Token": "Create Token",
+  "Valid until": "Valid until",
+  "Never expires": "Never expires"
 }

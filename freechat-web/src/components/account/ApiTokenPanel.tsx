@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../context";
-import { Box, IconButton, Stack, Table, Typography } from "@mui/joy";
+import { Box, Checkbox, IconButton, Stack, Table, Typography } from "@mui/joy";
 import { AddCircleRounded, ContentCopyRounded, DeleteRounded, VisibilityRounded } from "@mui/icons-material";
 import { ApiTokenInfoDTO } from "freechat-sdk";
-import { formatDate } from "../../libs/date_utils";
+import { formatDate, getSecondsBetweenDates } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 export default function ApiTokenPanel() {
   const { t } = useTranslation(['account', 'button']);
   const { accountApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
+
   const [tokens, setTokens] = useState<Array<ApiTokenInfoDTO>>([]);
   const [tokenText, setTokenText] = useState<string | undefined>();
   const [tokenTextCopied, setTokenTextCopied] = useState(false);
   const [tokenIdToConfirm, setTokenIdToConfirm] = useState<number | undefined>();
+  const [tokenExpiresTime, setTokenExpiresTime] = useState<Date | undefined | null>();
+  const [tokenNeverExpires, setTokenNeverExpires] = useState(false);
+  const [creatingToken, setCreatingToken] = useState(false);
+
 
   useEffect(() => {
     getTokens();
@@ -23,8 +30,22 @@ export default function ApiTokenPanel() {
 
   function getTokens(): void {
     accountApi?.listTokens()
-      .then(resp => {console.log(resp); setTokens(resp)})
+      .then(resp => setTokens(resp))
       .catch(handleError);
+  }
+
+  function handleCreate(): void {
+    const duration = getSecondsBetweenDates(new Date(), tokenExpiresTime);
+    if (tokenNeverExpires || duration <= 0) {
+      accountApi?.createToken()
+        .then(() => getTokens())
+        .catch(handleError);
+    } else {
+      accountApi?.createToken1(duration)
+        .then(() => getTokens())
+        .catch(handleError);
+    }
+    setCreatingToken(false);
   }
 
   function handleView(id: number | undefined): void {
@@ -59,7 +80,15 @@ export default function ApiTokenPanel() {
         gap: 3,
       }}>
         <Typography level="title-md">{t('API tokens: (maximum of 5 tokens allowed)')}</Typography>
-        <IconButton color="primary" disabled={tokens.length >= 5}>
+        <IconButton
+          disabled={tokens.length >= 5}
+          color="primary"
+          onClick={() => {
+            setTokenExpiresTime(new Date(new Date().getTime() + 24 * 60 * 60 * 1000));
+            setTokenNeverExpires(false);
+            setCreatingToken(true);
+          }}
+        >
           <AddCircleRounded />
         </IconButton>
       </Box>
@@ -154,6 +183,33 @@ export default function ApiTokenPanel() {
             {t('Copied!')}
           </Typography>
         </Box>
+      </ConfirmModal>
+      <ConfirmModal
+        open={creatingToken}
+        onClose={() => setCreatingToken(false)}
+        dialog={{
+          title: t('Create Token'),
+        }}
+        button={{
+          text: t('button:Create'),
+        }}
+        onConfirm={handleCreate}
+      >
+        <Stack direction="row" spacing={2} sx={{
+          alignItems: 'center',
+        }}>
+          <DateTimePicker
+            label={t('Valid until')}
+            ampm={false}
+            defaultValue={dayjs(tokenExpiresTime)}
+            disabled={tokenNeverExpires}
+            onAccept={(value) => setTokenExpiresTime(value?.toDate())}
+          />
+          <Checkbox
+            label={t('Never expires')}
+            onChange={(event) => setTokenNeverExpires(event.target.checked)}
+          />
+        </Stack>
       </ConfirmModal>
     </Stack>
   );

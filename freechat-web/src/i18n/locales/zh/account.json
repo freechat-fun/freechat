@@ -24,5 +24,8 @@
   "Creation Time": "创建时间",
   "Expiration Time": "过期时间",
   "Token Information": "凭证信息",
-  "Actions": "操作"
+  "Actions": "操作",
+  "Create Token": "新建凭证",
+  "Valid until": "有效期至",
+  "Never expires": "永不过期"
 }

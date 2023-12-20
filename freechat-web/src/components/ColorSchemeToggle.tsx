@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { IconButton, IconButtonProps, useColorScheme } from "@mui/joy";
+import { IconButton, IconButtonProps, useColorScheme as useJoyColorScheme } from "@mui/joy";
 import { DarkModeRounded, LightModeRounded } from "@mui/icons-material";
+import { useColorScheme as useMaterialColorScheme } from '@mui/material';
 
 export default function ColorSchemeToggle(props: IconButtonProps) {
   const { onClick, sx, ...other } = props;
-  const { mode, setMode } = useColorScheme();
+  const { mode, setMode: setJoyMode } = useJoyColorScheme();
+  const { setMode: setMaterialMode } = useMaterialColorScheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,9 +33,11 @@ export default function ColorSchemeToggle(props: IconButtonProps) {
       {...props}
       onClick={(event) => {
         if (mode === 'light') {
-          setMode('dark');
+          setJoyMode('dark');
+          setMaterialMode('dark');
         } else {
-          setMode('light');
+          setJoyMode('light');
+          setMaterialMode('light');
         }
         onClick?.(event);
       }}

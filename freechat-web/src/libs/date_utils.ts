@@ -10,3 +10,10 @@ export function formatDate(date: Date | undefined): string {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+export function getSecondsBetweenDates(earlier: Date | undefined | null, later: Date | undefined | null) {
+  const timestamp1 = earlier?.getTime() || 0;
+  const timestamp2 = later?.getTime() || 0;
+  const millisecondsDifference = timestamp2 - timestamp1;
+  return Math.floor(millisecondsDifference / 1000);
+}

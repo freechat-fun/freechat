@@ -121,7 +121,8 @@ CREATE TABLE IF NOT EXISTS `prompt_info` (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
-  INDEX `idx_user_name` (`user_id`, `name`)
+  INDEX `idx_user_name` (`user_id`, `name`),
+  INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='prompt info table'
 ;
 
@@ -145,7 +146,8 @@ CREATE TABLE IF NOT EXISTS `flow_info` (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
-  INDEX `idx_user_name` (`user_id`, `name`)
+  INDEX `idx_user_name` (`user_id`, `name`),
+  INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='flow info table'
 ;
 
@@ -166,7 +168,8 @@ CREATE TABLE IF NOT EXISTS `plugin_info` (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
-  INDEX `idx_user_name` (`user_id`, `name`)
+  INDEX `idx_user_name` (`user_id`, `name`),
+  INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='plugin info table'
 ;
 
@@ -195,7 +198,8 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
-  INDEX `idx_user_name` (`user_id`, `name`)
+  INDEX `idx_user_name` (`user_id`, `name`),
+  INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character info table'
 ;
 

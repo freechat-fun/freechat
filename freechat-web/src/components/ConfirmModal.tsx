@@ -25,6 +25,7 @@ export default function ConfirmModal(props: ModalProps & {
         <DialogTitle>{dialog?.title}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{
+            p: 2,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'

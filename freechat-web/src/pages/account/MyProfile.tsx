@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../context";
 import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, Divider, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
-import { Breadcrumbsbar, ImageSelector } from "../../components";
+import { Breadcrumbsbar, ImagePicker } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
 
 export default function MyProfile() {
@@ -11,7 +11,7 @@ export default function MyProfile() {
   const { accountApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username, platform, resetUser } = useUserInfoContext();
-  
+
   const [currentGender, setCurrentGender] = useState('other');
   const [currentNickname, setCurrentNickname] = useState('');
   const [currentDescription, setCurrentDescription] = useState('');
@@ -208,7 +208,7 @@ export default function MyProfile() {
                 >
                   <Avatar variant="soft" src={currentAvatar} />
                 </AspectRatio>
-                <ImageSelector
+                <ImagePicker
                   onImageSelect={handleImageSelect}
                   disabled={!editEnabled}
                   aria-label="upload new picture"

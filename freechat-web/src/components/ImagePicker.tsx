@@ -19,7 +19,7 @@ const ImagePreview = styled('div')<ImagePreviewProps>(({ src, width, height }) =
   borderRadius: '50%',
 }));
 
-export default function ImageSelector(props: IconButtonProps & { onImageSelect: (file: Blob, name: string) => void }) {
+export default function ImagePicker(props: IconButtonProps & { onImageSelect: (file: Blob, name: string) => void }) {
   const {onImageSelect, ...iconButtonProps } = props;
   const { t } = useTranslation('button');
   const [image, setImage] = useState<string | undefined>();

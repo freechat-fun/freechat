@@ -16,6 +16,8 @@
     "@mui/icons-material": "^5.14.18",
     "@mui/joy": "^5.0.0-beta.15",
     "@mui/material": "^5.14.18",
+    "@mui/x-date-pickers": "^6.18.5",
+    "dayjs": "^1.11.10",
     "freechat-sdk": "file:../freechat-sdk/typescript",
     "i18next": "^23.7.7",
     "i18next-browser-languagedetector": "^7.2.0",
