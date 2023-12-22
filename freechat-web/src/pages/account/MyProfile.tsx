@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../context";
-import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, Divider, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
+import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
+import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
 import { Breadcrumbsbar, ImagePicker } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
@@ -130,10 +130,6 @@ export default function MyProfile() {
   return (
     <>
       <Breadcrumbsbar breadcrumbs={breadcrumbs} />
-      <Typography level="title-lg" sx={{ mt: 1, mb: 1 }}>
-        {t('My Profile')}
-      </Typography>
-      <Divider />
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -195,6 +191,7 @@ export default function MyProfile() {
                       disabled={!editEnabled}
                       name="description"
                       value={currentDescription}
+                      minRows={3}
                       onChange={handleDescriptionChange}
                     />
                   </FormControl>

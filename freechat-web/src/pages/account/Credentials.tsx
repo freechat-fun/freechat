@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Tab, TabList, TabPanel, Tabs, tabClasses } from "@mui/joy";
 import { Breadcrumbsbar } from "../../components";
-import { ApiTokenPanel } from "../../components/account";
-import AiApiKeyPanel from "../../components/account/AiApiKeyPanel";
+import { ApiTokenPanel, AiApiKeyPanel } from "../../components/account";
+import { providers } from "../../configs/model-providers-config";
 
 export default function Credentials() {
   const { t } = useTranslation(['account', 'button']);
@@ -42,25 +42,23 @@ export default function Credentials() {
             },
           }}
         >
-          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0}>
+          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0} key="api-token-panel">
             {t('Site')}
           </Tab>
-          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={1}>
-            OpenAI
-          </Tab>
-          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={2}>
-            DashScope
-          </Tab>
+          {providers.map((provider, index) => (
+            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={index + 1} key={`ai-api-key-${index}`}>
+              {provider.label}
+            </Tab>
+          ))}
         </TabList>
         <TabPanel value={0}>
           <ApiTokenPanel />
         </TabPanel>
-        <TabPanel value={1}>
-          <AiApiKeyPanel provider="open_ai" />
-        </TabPanel>
-        <TabPanel value={2}>
-          <AiApiKeyPanel provider="dash_scope" />
-        </TabPanel>
+        {providers.map((provider, index) => (
+          <TabPanel value={index + 1}>
+            <AiApiKeyPanel provider={provider.provider} />
+          </TabPanel>
+        ))}
       </Tabs>
     </>
   );

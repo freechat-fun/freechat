@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link, Modal, ModalDialog, Typography } from "@mui/joy";
-import { useUserInfoContext } from "../context";
+import { useUserInfoContext } from "../contexts";
 
 export default function UnauthorizedDialog() {
   const { t } = useTranslation('account');

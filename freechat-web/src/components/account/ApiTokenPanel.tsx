@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../context";
+import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, Checkbox, IconButton, Stack, Table, Typography } from "@mui/joy";
 import { AddCircleRounded, ContentCopyRounded, DeleteRounded, VisibilityRounded } from "@mui/icons-material";
 import { ApiTokenInfoDTO } from "freechat-sdk";
@@ -24,8 +24,7 @@ export default function ApiTokenPanel() {
 
 
   useEffect(() => {
-    // getTokens();
-    setTokens([new ApiTokenInfoDTO()]);
+    getTokens();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountApi]);
 

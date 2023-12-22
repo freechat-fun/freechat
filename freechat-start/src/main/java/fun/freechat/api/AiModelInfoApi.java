@@ -42,7 +42,7 @@ public class AiModelInfoApi {
     public List<AiModelInfoDTO> list(
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
             @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum) {
-        long limit = pageSize.filter(size -> size > 0).orElse(10L);
+        long limit = pageSize.filter(size -> size > 0).orElse(0L);
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         return aiModelInfoService.list(limit, offset).stream()
                 .map(AiModelInfoDTO::from)

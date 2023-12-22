@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../context";
+import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, FormLabel, Grid, IconButton, Input, Stack, Table, Typography } from "@mui/joy";
 import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from "freechat-sdk";
 import { AddCircleRounded, RemoveCircleRounded } from "@mui/icons-material";

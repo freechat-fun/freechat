@@ -1,7 +1,8 @@
+import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link, LinkProps } from '@mui/joy';
 
-export default function RouterLink(props: LinkProps) {
+const RouterLink = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   const navigate = useNavigate();
   
   if (props && (!props.href || props.onClick)) {
@@ -9,10 +10,12 @@ export default function RouterLink(props: LinkProps) {
   }
   
   return (
-    <Link onClick={() => {
+    <Link ref={ref} onClick={() => {
       if (props.href) {
         navigate(props.href);
       }
     }} {...props} />
   );
-}
+});
+
+export default RouterLink;

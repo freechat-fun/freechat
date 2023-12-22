@@ -20,4 +20,18 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            const bearerToken = 'fc-bd01ea2850d84e6ea821ed920a2bd0f5';
+            proxyReq.setHeader('Authorization', `Bearer ${bearerToken}`);
+          });
+        },
+      },
+    },
+  },
 })

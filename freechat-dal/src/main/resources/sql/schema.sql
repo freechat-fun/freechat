@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `authority` (
   `scope` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_user_scope` (`user_id`,`scope`(128)),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`)
+  INDEX `idx_user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='authority table'
 ;
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `binding` (
   `issued_at` datetime DEFAULT NULL,
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`)
+  INDEX `idx_user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='oauth2 binding table'
 ;
 
@@ -72,14 +72,13 @@ CREATE TABLE IF NOT EXISTS `api_token` (
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `user_id` varchar(32) NOT NULL,
-  `token` text NOT NULL,
+  `token` varchar(64) NOT NULL,
   `type` varchar(16) NOT NULL DEFAULT 'access',
   `policy` text DEFAULT NULL,
   `issued_at` datetime NOT NULL,
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_token` (`token`(64)),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`)
+  UNIQUE KEY `uk_token` (`token`),
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='api token table'
 ;
 
@@ -118,9 +117,9 @@ CREATE TABLE IF NOT EXISTS `prompt_info` (
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
   PRIMARY KEY (`prompt_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
+  INDEX `idx_user` (`user_id`),
   INDEX `idx_user_name` (`user_id`, `name`),
   INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='prompt info table'
@@ -143,9 +142,9 @@ CREATE TABLE IF NOT EXISTS `flow_info` (
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
   PRIMARY KEY (`flow_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
+  INDEX `idx_user` (`user_id`),
   INDEX `idx_user_name` (`user_id`, `name`),
   INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='flow info table'
@@ -165,9 +164,9 @@ CREATE TABLE IF NOT EXISTS `plugin_info` (
   `api_format` varchar(24) DEFAULT 'openapi_v3' COMMENT 'openapi_v3 | open_ai',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`plugin_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
+  INDEX `idx_user` (`user_id`),
   INDEX `idx_user_name` (`user_id`, `name`),
   INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='plugin info table'
@@ -195,9 +194,9 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
   PRIMARY KEY (`character_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
+  INDEX `idx_user` (`user_id`),
   INDEX `idx_user_name` (`user_id`, `name`),
   INDEX `idx_modified` (`gmt_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character info table'

@@ -1,5 +1,5 @@
 import { RouterProvider } from 'react-router-dom';
-import { ContextsProvider } from './context';
+import { ContextsProvider } from './contexts';
 import { CssVarsProvider as JoyCssVarsProvider, GlobalStyles, CssBaseline, Box } from '@mui/joy';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

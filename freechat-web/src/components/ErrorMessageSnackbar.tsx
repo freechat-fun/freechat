@@ -1,5 +1,5 @@
 import { IconButton, Snackbar, Stack, Typography } from "@mui/joy";
-import { useErrorMessageBusContext } from "../context";
+import { useErrorMessageBusContext } from "../contexts";
 import { useTranslation } from 'react-i18next';
 import { ClearRounded, ErrorOutlineRounded } from "@mui/icons-material";
 

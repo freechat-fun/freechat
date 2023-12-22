@@ -6,11 +6,16 @@ import Credentials from './pages/account/Credentials';
 import Console from './pages/Console';
 import ComingSoon from './pages/ComingSoon';
 import NotFound from './pages/NotFound';
+import Prompts from './pages/prompt/Prompts';
 
 const consoleRoutes = [
   {
     index: true,
     element: <MyProfile />,
+  },
+  {
+    path: 'prompts',
+    element: <Prompts />,
   },
   {
     path: 'plugins',

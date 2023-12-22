@@ -123,6 +123,9 @@ export default function Sidebar() {
               href="/w/console/characters"
               underline="none"
               selected={isSelected('characters')}
+              sx={{
+                pl: 1.8
+              }}
             >
               <FoxIcon />
               <ListItemContent>

@@ -1,7 +1,7 @@
 import { Dropdown, MenuButton, Menu, MenuItem, IconButton, ListItemDecorator } from '@mui/joy';
 import { LoginRounded, LogoutRounded, ManageAccountsRounded, PermIdentityRounded } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useUserInfoContext } from '../context';
+import { useUserInfoContext } from '../contexts';
 
 export default function AccountMenu() {
   const { t } = useTranslation('account');
