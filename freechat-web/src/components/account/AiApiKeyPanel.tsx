@@ -4,7 +4,7 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { Box, FormLabel, Grid, IconButton, Input, Stack, Table, Typography } from "@mui/joy";
 import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from "freechat-sdk";
 import { AddCircleRounded, RemoveCircleRounded } from "@mui/icons-material";
-import { formatDate } from "../../libs/date_utils";
+import { formatDateTime } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
 
 export default function AiApiKeyPanel(props: {
@@ -113,8 +113,8 @@ export default function AiApiKeyPanel(props: {
                 >
                   <td>{key.name}</td>
                   <td>{key.token}</td>
-                  <td>{formatDate(key.gmtCreate)}</td>
-                  <td>{formatDate(key.gmtUsed)}</td>
+                  <td>{formatDateTime(key.gmtCreate)}</td>
+                  <td>{formatDateTime(key.gmtUsed)}</td>
                   <td>
                     <IconButton color="warning" onClick={() => handleTryRemove(key.id)}>
                       <RemoveCircleRounded />

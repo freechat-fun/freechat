@@ -62,9 +62,8 @@ export default function InfoSearchbar(props: {
             justifyContent: 'start',
             alignItems: { xs: 'flex-start', sm: 'center' },
             py: 1,
-            pl: { sm: 2 },
             pr: { xs: 1, sm: 1 },
-            gap:{ xs: 1, sm: 2, md: 5 },
+            gap:{ xs: 1, sm: 2, md: 3 },
             borderTopLeftRadius: 'var(--unstable_actionRadius)',
             borderTopRightRadius: 'var(--unstable_actionRadius)',
           }}
@@ -77,7 +76,7 @@ export default function InfoSearchbar(props: {
             placeholder={t('Search title, description, content and more')}
             startDecorator={<SearchRounded />}
             sx={{
-              minWidth: { xs: '20rem', md: '25rem' },
+              minWidth: { xs: '20rem', md: '23.5rem' },
             }}
           />
           <Select

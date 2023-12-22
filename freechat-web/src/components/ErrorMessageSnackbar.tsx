@@ -20,7 +20,11 @@ export default function ErrorMessageSnackbar() {
             <IconButton onClick={() => message && removeMessage(message)}>
               <ClearRounded />
             </IconButton>
-        }>
+          }
+          sx={{
+            zIndex: 10000,
+          }}
+        >
           {message &&
             <Stack>
               <Typography level="title-md">

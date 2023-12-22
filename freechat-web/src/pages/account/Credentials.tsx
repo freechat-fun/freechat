@@ -42,20 +42,20 @@ export default function Credentials() {
             },
           }}
         >
-          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0} key="api-token-panel">
+          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0} key="api-token-tab">
             {t('Site')}
           </Tab>
           {providers.map((provider, index) => (
-            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={index + 1} key={`ai-api-key-${index}`}>
+            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={index + 1} key={`ai-model-provider-tab-${index}`}>
               {provider.label}
             </Tab>
           ))}
         </TabList>
-        <TabPanel value={0}>
+        <TabPanel value={0} key="ap-token-panel">
           <ApiTokenPanel />
         </TabPanel>
         {providers.map((provider, index) => (
-          <TabPanel value={index + 1}>
+          <TabPanel value={index + 1} key={`ai-model-provider-panel-${index}`}>
             <AiApiKeyPanel provider={provider.provider} />
           </TabPanel>
         ))}

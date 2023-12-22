@@ -4,7 +4,7 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { Box, Checkbox, IconButton, Stack, Table, Typography } from "@mui/joy";
 import { AddCircleRounded, ContentCopyRounded, DeleteRounded, VisibilityRounded } from "@mui/icons-material";
 import { ApiTokenInfoDTO } from "freechat-sdk";
-import { formatDate, getSecondsBetweenDates } from "../../libs/date_utils";
+import { formatDateTime, getSecondsBetweenDates } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -109,8 +109,8 @@ export default function ApiTokenPanel() {
                   key={token.token || `unknown-token-${index}`}
                 >
                   <td>{token.token}</td>
-                  <td>{formatDate(token.issuedAt)}</td>
-                  <td>{formatDate(token.expiresAt)}</td>
+                  <td>{formatDateTime(token.issuedAt)}</td>
+                  <td>{formatDateTime(token.expiresAt)}</td>
                   <td>
                     <IconButton onClick={() => handleView(token.id)}>
                       <VisibilityRounded />

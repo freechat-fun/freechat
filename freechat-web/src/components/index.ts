@@ -14,3 +14,4 @@ export { default as Breadcrumbsbar } from "./Breadcrumbsbar";
 export { default as ImagePicker } from './ImagePicker';
 export { default as ConfirmModal } from './ConfirmModal';
 export { default as InfoSearchbar } from './InfoSearchbar';
+export { default as LinePlaceholder } from './LinePlaceholder';

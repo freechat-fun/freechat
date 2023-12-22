@@ -15,5 +15,8 @@
   "Default": "默认",
   "Search title, description, content and more": "搜索标题、描述、内容等",
   "Select model providers": "选择模型提供商",
+  "public": "公开",
+  "private": "私密",
+  "Create new": "新建",
   ".": "。"
 }

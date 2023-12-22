@@ -87,7 +87,7 @@ VALUES (
   '2023-12-16 17:39:34',
   '1',
   'public',
-  'an_expert',
+  '某专家',
   'chat',
   '某方面的专家，且限制了拒识回复。',
   '{"system":"你是一个对`{something}`非常了解的助手，请判断问题是否跟`{something}`相关，如果不相关，则回复`{default_reply}`。1111","messageToBeSent":{"role":"user","name":"","content":"{human_input}"},"messages":[{"role":"user","name":"","content":"请问明天天气怎么样？"},{"role":"assistant","name":"","content":"{default_reply}"}]}',

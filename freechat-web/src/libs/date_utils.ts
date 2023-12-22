@@ -1,4 +1,4 @@
-export function formatDate(date: Date | undefined): string {
+export function formatDateTime(date: Date | undefined): string {
   const pad = (n: number) => n < 10 ? '0' + n : n;
 
   const year = date?.getFullYear() || 9999;
@@ -9,6 +9,16 @@ export function formatDate(date: Date | undefined): string {
   const seconds = pad(date?.getSeconds() || 59);
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+export function formatDate(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+  };
+
+  return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
 export function getSecondsBetweenDates(earlier: Date | undefined | null, later: Date | undefined | null) {

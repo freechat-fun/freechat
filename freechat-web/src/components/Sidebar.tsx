@@ -68,7 +68,7 @@ export default function Sidebar() {
         zIndex: 9999,
         height: '100vh',
         width: 'var(--Sidebar-width)',
-        top: 0,
+        top: 'var(--Header-height)',
         p: 2,
         flexShrink: 0,
         display: 'flex',

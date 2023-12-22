@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
-import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar } from "@mui/joy";
+import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar, Divider } from "@mui/joy";
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
-import { Breadcrumbsbar, ImagePicker } from "../../components";
+import { Breadcrumbsbar, ImagePicker, LinePlaceholder } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
 
 export default function MyProfile() {
@@ -42,7 +42,7 @@ export default function MyProfile() {
         const picture = userDetails.picture;
 
         if (name !== username || from !== platform) {
-          resetUser(name, nick);
+          resetUser(name, from);
         }
         if (picture) {
           setCurrentAvatar(picture);
@@ -130,6 +130,9 @@ export default function MyProfile() {
   return (
     <>
       <Breadcrumbsbar breadcrumbs={breadcrumbs} />
+      <LinePlaceholder spacing={1} />
+      <Typography level="title-lg" sx={{ ml: 3 }}>{t('My details')}</Typography>
+      <Divider />
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -142,8 +145,6 @@ export default function MyProfile() {
             px: { xs: 2, md: 6 },
             py: { xs: 2, md: 3 },
             gap: 2,
-            borderTopLeftRadius: 'var(--unstable_actionRadius)',
-            borderTopRightRadius: 'var(--unstable_actionRadius)',
           }}
         >
           <Card>

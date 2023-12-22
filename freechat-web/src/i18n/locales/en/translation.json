@@ -15,5 +15,8 @@
   "Default": "Default",
   "Search title, description, content and more": "Search title, description, content and more",
   "Select model providers": "Select model providers",
+  "public": "public",
+  "private": "private",
+  "Create new": "Create new",
   ".": "."
 }
