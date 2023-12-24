@@ -18,5 +18,11 @@
   "public": "public",
   "private": "private",
   "Create new": "Create new",
+  "Updated on": "Updated on",
+  "Description": "Description",
+  "Language": "Language",
+  "Tags": "Tags",
+  "Models": "Models",
+  "Format": "Format",
   ".": "."
 }

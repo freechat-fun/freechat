@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { InfoSearchbar, LinePlaceholder } from "../../components";
+import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder } from "../../components";
 import { PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
-import { Box, Button, Card, CardCover, Chip, Grid, IconButton, Typography } from "@mui/joy";
-import { AddCircleRounded, DeleteRounded, EditRounded, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, VisibilityRounded } from "@mui/icons-material";
-import { formatDate } from '../../libs/date_utils';
+import { Box, Button, Card, Chip, Grid, IconButton, Typography } from "@mui/joy";
+import { AddCircleRounded, DeleteForeverRounded, KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from "@mui/icons-material";
+import { getDateLabel } from '../../libs/date_utils';
 
-function RecordCard(props: { record: PromptSummaryDTO }) {
-  const { record } = props;
-  const { t } = useTranslation();
+function RecordCard(props: {
+  record: PromptSummaryDTO,
+  onView: (record: PromptSummaryDTO) => void,
+  onEdit: (record: PromptSummaryDTO) => void,
+  onDelete: (record: PromptSummaryDTO) => void,
+}) {
+  const { record, onView, onEdit, onDelete } = props;
+  const { t, i18n } = useTranslation();
 
   return (
     <Card sx={{
@@ -17,7 +23,7 @@ function RecordCard(props: { record: PromptSummaryDTO }) {
       boxShadow: 'sm',
       '&:hover': {
         boxShadow: 'lg',
-        transform: 'translateY(-2px)',
+        transform: 'translateY(-1px)',
       },
     }}>
       <Typography
@@ -37,7 +43,7 @@ function RecordCard(props: { record: PromptSummaryDTO }) {
         alignItems: 'center',
       }}>
         <Typography level="body-sm" textColor="gray">
-          {formatDate(record.gmtModified || new Date(0))}
+          {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
         <Typography level="body-sm" textColor={record.visibility === 'public' ? 'success.500' : 'warning.500'}>
           {record.visibility === 'public' ? t('public') : t('private')}
@@ -68,57 +74,18 @@ function RecordCard(props: { record: PromptSummaryDTO }) {
         {record.description}
       </Typography>
       <LinePlaceholder spacing={2} />
-      <CardCover
-        className="gradient-cover"
-        sx={{
-          '&:hover, &:focus-within': {
-            opacity: 1,
-          },
-          opacity: 0,
-          transition: '0.3s ease-in',
-          background:
-            'linear-gradient(180deg, transparent 67%, rgba(0,0,0,0.00345888) 68.94%, rgba(0,0,0,0.014204) 70.89%, rgba(0,0,0,0.0326639) 72.83%, rgba(0,0,0,0.0589645) 74.78%, rgba(0,0,0,0.0927099) 76.72%, rgba(0,0,0,0.132754) 78.67%, rgba(0,0,0,0.177076) 80.61%, rgba(0,0,0,0.222924) 82.56%, rgba(0,0,0,0.267246) 84.5%, rgba(0,0,0,0.30729) 86.44%, rgba(0,0,0,0.341035) 88.39%, rgba(0,0,0,0.367336) 90.33%, rgba(0,0,0,0.385796) 92.28%, rgba(0,0,0,0.396541) 94.22%, rgba(0,0,0,0.4) 96.17%)',
-        }}
-      >
-        <div>
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end',
-            alignSelf: 'flex-end',
-            gap: 1,
-            width: '100%',
-          }}>
-            <IconButton
-              variant="solid"
-              color="neutral"
-              sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
-            >
-              <VisibilityRounded />
-            </IconButton>
-            <IconButton
-              variant="solid"
-              color="neutral"
-              sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
-            >
-              <EditRounded />
-            </IconButton>
-            <IconButton
-              variant="solid"
-              color="neutral"
-              sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
-            >
-              <DeleteRounded />
-            </IconButton>
-          </Box>
-      </div>
-      </CardCover>
+      <InfoCardCover
+        onView={() => onView(record)}
+        onEdit={() => onEdit(record)}
+        onDelete={() => onDelete(record)}
+      />
     </Card>
   )
 }
 
 export default function Prompts() {
-  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { t } = useTranslation(['prompt']);
   const { promptApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -128,11 +95,12 @@ export default function Prompts() {
   const [query, setQuery] = useState<PromptQueryDTO>(defaultQuery());
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const [recordDeleted, setRecordDeleted] = useState<PromptSummaryDTO>();
 
   useEffect(() => {
     doSearch(query);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+  }, [promptApi, query]);
 
   function defaultQuery(): PromptQueryDTO {
     const newQuery = new PromptQueryDTO();
@@ -183,6 +151,23 @@ export default function Prompts() {
     setQuery(newQuery);
   }
 
+  function handleDelete(record: PromptSummaryDTO | undefined): void {
+    record?.promptId && promptApi?.deletePrompt(record.promptId)
+      .then(resp => resp && setRecords(
+        records.filter(r => r.promptId !== record.promptId)))
+      .catch(handleError);
+
+    setRecordDeleted(undefined);
+  }
+
+  function handleTryDelete(record: PromptSummaryDTO): void {
+    setRecordDeleted(record);
+  }
+
+  function handleView(record: PromptSummaryDTO): void {
+    navigate(`/w/console/prompt/${record.promptId}`)
+  }
+
   function getLabelDisplayedRowsTo(): number {
     const currentCount = (page + 1) * pageSize;
     return total === 0 && records.length > 0 ? currentCount : Math.min(total, currentCount);
@@ -213,7 +198,12 @@ export default function Prompts() {
     <Grid container spacing={3} alignItems="center" >
       {records.map(record => (
         <Grid xs={12} sm={6} lg={4} key={record.promptId}>
-          <RecordCard record={record} />
+          <RecordCard
+            record={record}
+            onView={handleView}
+            onEdit={() => {}}
+            onDelete={handleTryDelete}
+          />
         </Grid>
       ))}
     </Grid>
@@ -256,6 +246,23 @@ export default function Prompts() {
         <KeyboardArrowRightRounded />
       </IconButton>
     </Box>
+    <ConfirmModal
+      open={!!recordDeleted}
+      onClose={() => setRecordDeleted(undefined)}
+      obj={recordDeleted}
+      dialog={{
+        color: 'danger',
+        title: t('Do you really want to delete this prompt?'),
+      }}
+      button={{
+        color: 'danger',
+        text: t('button:Delete'),
+        startDecorator: <DeleteForeverRounded />
+      }}
+      onConfirm={handleDelete}
+    >
+      <Typography>{recordDeleted?.name}</Typography>
+    </ConfirmModal>
   </>
   );
 }

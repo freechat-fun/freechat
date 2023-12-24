@@ -10,7 +10,7 @@
   "FreeChat": "狐狸猜",
   "Choose a picture": "选择一张图片",
   "Please confirm carefully!": "请仔细确认！",
-  "Copied!": "已拷贝！",
+  "Copied!": "已复制！",
   "Name": "名称",
   "Default": "默认",
   "Search title, description, content and more": "搜索标题、描述、内容等",
@@ -18,5 +18,11 @@
   "public": "公开",
   "private": "私密",
   "Create new": "新建",
+  "Updated on": "更新于",
+  "Description": "描述",
+  "Language": "语言",
+  "Tags": "标签",
+  "Models": "模型",
+  "Format": "格式",
   ".": "。"
 }

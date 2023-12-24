@@ -6,8 +6,15 @@ const locales: Readonly<{ [key: string]: string }> = {
 const i18nConfig = {
   locales: Object.keys(locales),
   defaultLocale: Object.keys(locales)[0],
-  namespaces: ['translation', 'button', 'sign-in', 'account', 'sidebar'],
+  namespaces: ['translation', 'button', 'sign-in', 'account', 'sidebar', 'prompt'],
   defaultNamespace: 'translation',
 } as const;
 
-export { locales, i18nConfig };
+function getLocaleLabel(key: string): string | undefined {
+  if (key in locales) {
+    return locales[key];
+  }
+  return undefined;
+}
+
+export { locales, i18nConfig, getLocaleLabel };

@@ -7,6 +7,7 @@ import Console from './pages/Console';
 import ComingSoon from './pages/ComingSoon';
 import NotFound from './pages/NotFound';
 import Prompts from './pages/prompt/Prompts';
+import PromptInfo from './pages/prompt/PromptInfo';
 
 const consoleRoutes = [
   {
@@ -16,6 +17,10 @@ const consoleRoutes = [
   {
     path: 'prompts',
     element: <Prompts />,
+  },
+  {
+    path: 'prompt/:id',
+    element: <PromptInfo />,
   },
   {
     path: 'plugins',

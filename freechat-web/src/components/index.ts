@@ -15,3 +15,4 @@ export { default as ImagePicker } from './ImagePicker';
 export { default as ConfirmModal } from './ConfirmModal';
 export { default as InfoSearchbar } from './InfoSearchbar';
 export { default as LinePlaceholder } from './LinePlaceholder';
+export { default as InfoCardCover } from './InfoCardCover';

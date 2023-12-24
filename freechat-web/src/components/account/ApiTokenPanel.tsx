@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Checkbox, IconButton, Stack, Table, Typography } from "@mui/joy";
-import { AddCircleRounded, ContentCopyRounded, DeleteRounded, VisibilityRounded } from "@mui/icons-material";
+import { Box, Checkbox, Chip, IconButton, Stack, Table, Typography } from "@mui/joy";
+import { AddCircleRounded, ContentCopyRounded, DeleteForeverRounded, DeleteRounded, SaveAltRounded, VisibilityRounded } from "@mui/icons-material";
 import { ApiTokenInfoDTO } from "freechat-sdk";
-import { formatDateTime, getSecondsBetweenDates } from "../../libs/date_utils";
+import { formatDate, getSecondsBetweenDates } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -109,13 +109,13 @@ export default function ApiTokenPanel() {
                   key={token.token || `unknown-token-${index}`}
                 >
                   <td>{token.token}</td>
-                  <td>{formatDateTime(token.issuedAt)}</td>
-                  <td>{formatDateTime(token.expiresAt)}</td>
+                  <td>{formatDate(token.issuedAt)}</td>
+                  <td>{formatDate(token.expiresAt)}</td>
                   <td>
                     <IconButton onClick={() => handleView(token.id)}>
                       <VisibilityRounded />
                     </IconButton>
-                    <IconButton color="danger" onClick={() => handleTryDelete(token.id)}>
+                    <IconButton onClick={() => handleTryDelete(token.id)}>
                       <DeleteRounded />
                     </IconButton>
                   </td>
@@ -135,6 +135,7 @@ export default function ApiTokenPanel() {
         button={{
           color: 'danger',
           text: t('button:Delete'),
+          startDecorator: <DeleteForeverRounded />
         }}
         onConfirm={handleDelete}
       >
@@ -176,12 +177,11 @@ export default function ApiTokenPanel() {
               <ContentCopyRounded />
             </IconButton>
           </Box>
-          <Typography sx={{
-            fontStyle: 'italic',
+          <Chip variant={tokenTextCopied ? 'outlined' : 'plain'} sx={{
             color: tokenTextCopied ? 'gray' : 'transparent',
           }}>
             {t('Copied!')}
-          </Typography>
+          </Chip>
         </Box>
       </ConfirmModal>
       <ConfirmModal
@@ -192,6 +192,7 @@ export default function ApiTokenPanel() {
         }}
         button={{
           text: t('button:Create'),
+          startDecorator: <SaveAltRounded />
         }}
         onConfirm={handleCreate}
       >

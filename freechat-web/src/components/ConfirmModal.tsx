@@ -12,6 +12,7 @@ export default function ConfirmModal(props: ModalProps & {
   button?: {
     text?: string,
     color?: 'danger' | 'neutral' | 'primary' | 'success' | 'warning',
+    startDecorator?: ReactNode,
   },
   onConfirm?: (obj: any) => void,
   children: ReactNode
@@ -23,7 +24,10 @@ export default function ConfirmModal(props: ModalProps & {
     <Modal {...modalProps}>
       <ModalDialog color={dialog?.color}>
         <ModalClose />
-        <DialogTitle>{dialog?.title}</DialogTitle>
+        <DialogTitle sx={{
+          pr: 4,
+          alignItems: 'center',
+        }}>{dialog?.title}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{
             p: 2,
@@ -35,7 +39,13 @@ export default function ConfirmModal(props: ModalProps & {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button color={button?.color} onClick={() => onConfirm && onConfirm(obj)}>{button?.text || t('button:Confirm')}</Button>
+          <Button
+            color={button?.color}
+            onClick={() => onConfirm && onConfirm(obj)}
+            startDecorator={button?.startDecorator}
+          >
+            {button?.text || t('button:Confirm')}
+          </Button>
         </DialogActions>
       </ModalDialog>
     </Modal>
