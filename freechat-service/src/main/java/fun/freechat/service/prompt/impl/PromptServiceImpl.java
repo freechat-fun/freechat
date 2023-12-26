@@ -1,6 +1,7 @@
 package fun.freechat.service.prompt.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import dev.langchain4j.model.input.PromptTemplate;
 import fun.freechat.langchain4j.model.input.FStringPromptTemplate;
 import fun.freechat.mapper.*;
@@ -26,7 +27,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.poi.util.StringUtil;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -650,7 +650,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             info.setPromptId(null);
             info.setVersion(version + 1);
 
-            if (StringUtil.isNotBlank(info.getDraft())) {
+            if (StringUtils.isNotBlank(info.getDraft())) {
                 info.setTemplate(info.getDraft());
                 info.setDraft(null);
             }
@@ -715,7 +715,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         ChatMessage message = new ChatMessage();
         message.setRole(original.getRole());
         message.setName(original.getName());
-        message.setToolCall(original.getToolCall());
+        message.setToolCalls(original.getToolCalls());
         message.setContent(apply(original.getContent(), variables, format));
         message.setGmtCreate(original.getGmtCreate());
         return message;
@@ -750,6 +750,25 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             return null;
         }
 
+        if (StringUtils.isNotBlank(promptInfo.getInputs())) {
+            try {
+                Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
+                        promptInfo.getInputs(), new TypeReference<>() {});
+                for (Map.Entry<String, Object> input : inputs.entrySet()) {
+                    String key = input.getKey();
+                    Object value = input.getValue();
+                    if (variables.containsKey(key) ||
+                            Objects.isNull(value) ||
+                            (value instanceof String strValue && StringUtils.isBlank(strValue))) {
+                        continue;
+                    }
+                    variables.put(input.getKey(), value);
+                }
+            } catch (JsonProcessingException e) {
+                log.warn("Failed to parse inputs from prompt {}", promptId);
+            }
+
+        }
         String promptTemplate = draft ? promptInfo.getDraft() : promptInfo.getTemplate();
         PromptFormat format = PromptFormat.of(promptInfo.getFormat());
         PromptType type = PromptType.of(promptInfo.getType());

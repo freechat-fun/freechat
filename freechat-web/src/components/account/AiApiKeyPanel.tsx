@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, FormLabel, Grid, IconButton, Input, Stack, Table, Typography } from "@mui/joy";
+import { Box, FormLabel, IconButton, Input, Stack, Table, Typography } from "@mui/joy";
 import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from "freechat-sdk";
 import { AddCircleRounded, BookmarkAddRounded, DeleteForeverRounded, RemoveCircleRounded } from "@mui/icons-material";
 import { formatDate } from "../../libs/date_utils";
@@ -20,9 +20,6 @@ export default function AiApiKeyPanel(props: {
   const [keyNameToAdd, setKeyNameToAdd] = useState<string | undefined>();
   const [keyTextToAdd, setKeyTextToAdd] = useState<string | undefined>();
   const [addingKey, setAddingKey] = useState(false);
-
-  const labelGridUnits = 3;
-  const valueGridUnits = 12 - labelGridUnits;
 
   useEffect(() => {
     getKeys();
@@ -158,25 +155,29 @@ export default function AiApiKeyPanel(props: {
         }}
         onConfirm={handleAdd}
       >
-        <Grid container spacing={1} alignItems="center">
-          <Grid xs={labelGridUnits}><FormLabel>{t('Name')}</FormLabel></Grid>
-          <Grid xs={valueGridUnits}>
-            <Input
-              name="apiKeyName"
-              value={keyNameToAdd || keyTextToAdd}
-              onChange={handleKeyNameChange}
-            />
-          </Grid>
-          <Grid xs={labelGridUnits}><FormLabel>{t('API Key')}</FormLabel></Grid>
-          <Grid xs={valueGridUnits}>
-            <Input
-              required
-              name="apiKeyText"
-              value={keyTextToAdd}
-              onChange={handleKeyTextChange}
-            />
-          </Grid>
-        </Grid>
+        <Box sx={{
+          flex: 1,
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr',
+          gap: 2,
+        }}>
+          <FormLabel>{t('Name')}</FormLabel>
+          <Input
+            name="apiKeyName"
+            value={keyNameToAdd || keyTextToAdd}
+            onChange={handleKeyNameChange}
+          />
+          <FormLabel>{t('API Key')}</FormLabel>
+          <Input
+            required
+            name="apiKeyText"
+            value={keyTextToAdd}
+            onChange={handleKeyTextChange}
+            sx={{
+              minWidth: '16rem',
+            }}
+          />
+        </Box>
       </ConfirmModal>
     </Stack>
   );

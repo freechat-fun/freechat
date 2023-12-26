@@ -167,6 +167,19 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             Map<String, Object> variables = new HashMap<>(ChatVar.values().length);
 
+            if (StringUtils.isNotBlank(promptInfo.getInputs())) {
+                Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
+                        promptInfo.getInputs(), new TypeReference<>() {});
+                for (Map.Entry<String, Object> input : inputs.entrySet()) {
+                    Object value = input.getValue();
+                    if  (Objects.isNull(value) ||
+                            (value instanceof String strValue && StringUtils.isBlank(strValue))) {
+                        continue;
+                    }
+                    variables.put(input.getKey(), value);
+                }
+            }
+
             if (StringUtils.isNotBlank(promptTask.getVariables())) {
                 Map<String, Object> predefinedVariables = InfoUtils.defaultMapper().readValue(
                         promptTask.getVariables(), new TypeReference<>() {});
@@ -266,7 +279,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             List<dev.langchain4j.data.message.ChatMessage> messages) {
         return messages.stream()
                 .filter(it -> !(it instanceof ToolExecutionResultMessage))
-                .filter(it -> !(it instanceof AiMessage && ((AiMessage) it).toolExecutionRequest() != null))
+                .filter(it -> !(it instanceof AiMessage aiMessage && CollectionUtils.isNotEmpty(aiMessage.toolExecutionRequests())))
                 .collect(toList());
     }
 

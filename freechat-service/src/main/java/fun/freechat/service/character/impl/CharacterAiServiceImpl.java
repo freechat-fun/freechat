@@ -3,6 +3,7 @@ package fun.freechat.service.character.impl;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolExecutor;
 import dev.langchain4j.agent.tool.ToolSpecification;
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -40,7 +41,7 @@ import static java.util.stream.Collectors.joining;
 @Slf4j
 @SuppressWarnings("unused")
 public class CharacterAiServiceImpl implements CharacterAiService {
-    private static final int MAX_TOOL_EXECUTION_TIMES = 10;
+    private static final int MAX_SEQUENTIAL_TOOL_EXECUTIONS = 10;
 
     @Autowired
     private ChatContextService chatContextService;
@@ -111,21 +112,23 @@ public class CharacterAiServiceImpl implements CharacterAiService {
 
         chatSessionService.verifyModerationIfNeeded(session, moderationFuture);
 
-        ToolExecutionRequest toolExecutionRequest;
-        for (int i = 0; i < MAX_TOOL_EXECUTION_TIMES; ++i) {
+        for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
             chatMemory.add(response.content());
 
-            toolExecutionRequest = response.content().toolExecutionRequest();
-            if (Objects.isNull(toolExecutionRequest)) {
+            AiMessage aiMessage = response.content();
+
+            if (!aiMessage.hasToolExecutionRequests()) {
                 break;
             }
 
-            ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
-            String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
-            dev.langchain4j.data.message.ToolExecutionResultMessage toolExecutionResultMessage
-                    = toolExecutionResultMessage(toolExecutionRequest.name(), toolExecutionResult);
+            for (ToolExecutionRequest toolExecutionRequest : aiMessage.toolExecutionRequests()) {
+                ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
+                String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, memoryId);
+                dev.langchain4j.data.message.ToolExecutionResultMessage toolExecutionResultMessage
+                        = toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
+                chatMemory.add(toolExecutionResultMessage);
+            }
 
-            chatMemory.add(toolExecutionResultMessage);
             response = chatModel.generate(chatMemory.messages(), toolSpecifications);
             tokenUsageAccumulator = tokenUsageAccumulator.add(response.tokenUsage());
         }

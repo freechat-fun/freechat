@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FStringPromptTemplate extends PromptTemplate {
-    private static final Pattern VAR_PATTERN = Pattern.compile("(^|[^\\{])(\\{)(\\{*[^\\{\\}]*\\}*)(\\})([^\\}]|$)");
+    static final Pattern VAR_PATTERN = Pattern.compile("(^|[^\\{])(\\{)(\\{*[^\\{\\}]*\\}*)(\\})([^\\}]|$)");
 
     private final String template;
 
@@ -27,7 +27,7 @@ public class FStringPromptTemplate extends PromptTemplate {
     }
 
     public FStringPromptTemplate(String template) {
-        super(template);
+        super(null);
         this.template = template;
     }
 
@@ -36,7 +36,7 @@ public class FStringPromptTemplate extends PromptTemplate {
         StringBuilder buffer = new StringBuilder();
         Matcher m = VAR_PATTERN.matcher(template);
         while (m.find()) {
-            String content = getAsString(variables.getOrDefault(m.group(3).trim(), m.group(3)));
+            String content = getAsString(variables.getOrDefault(m.group(3).trim(), ""));
             m.appendReplacement(buffer, m.group(1) + content + m.group(5));
         }
         m.appendTail(buffer);

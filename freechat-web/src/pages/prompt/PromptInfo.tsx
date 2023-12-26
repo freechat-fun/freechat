@@ -2,12 +2,13 @@ import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { useParams } from "react-router-dom";
-import { Box, Button, Card, Chip, Divider, Stack, Tooltip, Typography } from "@mui/joy";
+import { Box, Button, Card, Chip, Divider, Stack, Table, Tooltip, Typography, styled } from "@mui/joy";
 import { ChatBubbleOutlineRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
-import { LinePlaceholder } from "../../components";
+import { LinePlaceholder, RouterLink, Text } from "../../components";
 import { PromptDetailsDTO, ChatMessageDTO, AiModelInfoDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { getLocaleLabel } from "../../configs/i18n-config";
+import { extractJson } from "../../libs/template_utils";
 
 function TemplateContent(props: { record: PromptDetailsDTO | undefined }) {
   const { record } = props;
@@ -83,9 +84,12 @@ function TemplateContent(props: { record: PromptDetailsDTO | undefined }) {
   }
 }
 
-function ContentPanel(props: { record: PromptDetailsDTO | undefined }) {
+function ContentPanel(props: {
+  record: PromptDetailsDTO | undefined,
+}) {
   const { record } = props;
   const { t } = useTranslation(['prompt']);
+  const inputs = record?.inputs ? extractJson(record.inputs) : undefined;
 
   return (
     <Stack spacing={3} sx={{
@@ -103,9 +107,10 @@ function ContentPanel(props: { record: PromptDetailsDTO | undefined }) {
         </Typography>
         <Divider />
         <Typography level="body-md">
-          {record?.description}
+          <Text mode="markdown" value={record?.description || ''} />
         </Typography>
       </Card>
+
       <Card sx={{
         minWidth: { sm: '12rem' },
         p: 2,
@@ -117,7 +122,28 @@ function ContentPanel(props: { record: PromptDetailsDTO | undefined }) {
         <Divider />
         <TemplateContent record={record} />
       </Card>
-      { record?.example && (
+
+      {inputs && inputs.size > 0 && (
+        <Table sx={{ my: 1 }}>
+          <thead>
+            <tr>
+              <th style={{ width: '30%', maxWidth: '50%', overflowWrap: 'break-word' }}>{t('Placeholder')}</th>
+              <th>{t('Default value')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...inputs].map(([k, v]) => (
+              <tr key={`input-${k}`}>
+                <td>{k}</td>
+                <td>{v}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
+      )}
+
+      {record?.example && (
         <Card sx={{
           minWidth: { sm: '12rem' },
           p: 2,
@@ -135,13 +161,24 @@ function ContentPanel(props: { record: PromptDetailsDTO | undefined }) {
   );
 }
 
-function InfoPanel(props: { record: PromptDetailsDTO | undefined }) {
-  const { record } = props;
+function InfoPanel(props: {
+  record: PromptDetailsDTO | undefined,
+  history: string[],
+}) {
+  const { record, history } = props;
   const { t } = useTranslation(['prompt']);
+
   const format = record?.format;
   const lang = record?.lang;
   const tags: string[] = record?.tags || [];
   const models: AiModelInfoDTO[] = record?.aiModels || [];
+
+  const HistoryTypography = styled(Typography)(() => ({
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    p: 1,
+  }));
 
   return (
     <Card sx={{
@@ -214,6 +251,31 @@ function InfoPanel(props: { record: PromptDetailsDTO | undefined }) {
           <LinePlaceholder spacing={2} />
         </Fragment>
       )}
+
+      {history.length > 0 && (
+        <Fragment>
+          <Typography level="title-sm" textColor="neutral">
+            {t('History')}
+          </Typography>
+          {history.map(id => {
+            if (id === record?.promptId) {
+              return (
+                <HistoryTypography textColor="gray" level="body-sm">
+                  {id}
+                </HistoryTypography>
+              );
+            } else {
+              return (
+                <RouterLink href={`/w/console/prompt/${id}`}>
+                  <HistoryTypography level="body-sm">
+                    {id}
+                  </HistoryTypography>
+                </RouterLink>
+              );
+            }
+          })}
+        </Fragment>
+      )}
     </Card>
   );
 }
@@ -225,6 +287,7 @@ export default function PromptInfo() {
   const { handleError } = useErrorMessageBusContext();
 
   const [record, setRecord] = useState<PromptDetailsDTO>();
+  const [history, setHistory] = useState<string[]>([]);
 
   useEffect(() => {
     getRecord();
@@ -233,7 +296,13 @@ export default function PromptInfo() {
 
   function getRecord() {
     id && promptApi?.getPromptDetails(id)
-      .then(resp => setRecord(resp))
+      .then(resp => {
+        setRecord(resp);
+        resp?.name && promptApi?.listPromptVersionsByName(resp?.name)
+          .then(resp => resp.map(item => item.promptId))
+          .then(ids => setHistory(ids as string[]))
+          .catch(handleError);
+      })
       .catch(handleError);
   }
 
@@ -282,7 +351,7 @@ export default function PromptInfo() {
         gap: { xs: 1, sm: 2 },
       }}>
         <ContentPanel record={record} />
-        <InfoPanel record={record} />
+        <InfoPanel record={record} history={history} />
       </Box>
     </>
   );

@@ -46,7 +46,7 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
                     messages.remove(systemMessage.get()); // need to replace existing system message
                 }
             }
-            messages.add(0, message);
+            messages.addFirst(message);
         } else {
             messages.add(message);
         }
@@ -77,7 +77,7 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     private static void ensureCapacity(List<ChatMessage> messages, int maxMessages) {
         while (messages.size() > maxMessages) {
             int messageToRemove = 0;
-            if (messages.get(0) instanceof SystemMessage) {
+            if (messages.getFirst() instanceof SystemMessage) {
                 messageToRemove = 1;
             }
             ChatMessage removedMessage = messages.remove(messageToRemove);

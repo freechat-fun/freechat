@@ -6,6 +6,7 @@ import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Date;
 import java.util.Objects;
@@ -51,8 +52,11 @@ public class LlmResultDTO extends TraceableDTO {
                 message.setGmtCreate(origMessage.getGmtCreate());
                 message.setName(origMessage.getName());
                 message.setRole(origMessage.getRole().text());
-                message.setToolCall(
-                        ChatToolCallDTO.from(origMessage.getToolCall()));
+                if (CollectionUtils.isNotEmpty(origMessage.getToolCalls())) {
+                    message.setToolCalls(origMessage.getToolCalls().stream()
+                            .map(ChatToolCallDTO::from)
+                            .toList());
+                }
             }
             case String textMessage -> {
                 text = textMessage;
@@ -64,12 +68,17 @@ public class LlmResultDTO extends TraceableDTO {
                 text = aiMessage.text();
                 message.setContent(text);
                 message.setGmtCreate(new Date());
-                if (Objects.nonNull(aiMessage.toolExecutionRequest())) {
-                    ChatToolCallDTO toolCall = new ChatToolCallDTO();
-                    toolCall.setName(aiMessage.toolExecutionRequest().name());
-                    toolCall.setArguments(aiMessage.toolExecutionRequest().arguments());
-
-                    message.setToolCall(toolCall);
+                if (aiMessage.hasToolExecutionRequests()) {
+                    message.setToolCalls(aiMessage.toolExecutionRequests().stream()
+                            .map(request -> {
+                                ChatToolCallDTO toolCall = new ChatToolCallDTO();
+                                toolCall.setId(request.id());
+                                toolCall.setName(request.name());
+                                toolCall.setArguments(request.arguments());
+                                return toolCall;
+                            })
+                            .toList()
+                    );
                     message.setRole(PromptRole.FUNCTION_CALL.text());
                 } else {
                     message.setRole(PromptRole.ASSISTANT.text());

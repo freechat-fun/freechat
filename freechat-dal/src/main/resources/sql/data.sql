@@ -1,6 +1,6 @@
 USE `freechat`;
 
-INSERT IGNORE INFO `ai_model_info` VALUES (`model_id`, `gmt_create`, `gmt_modified`, `name`, `description`, `provider`, `type`) VALUES
+INSERT IGNORE INTO `ai_model_info` (`model_id`, `gmt_create`, `gmt_modified`, `name`, `description`, `provider`, `type`) VALUES
 ('[dash_scope]qwen-turbo', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-turbo', 'qwen base model, 4k context', 'dash_scope', 'text2chat'),
 ('[dash_scope]qwen-plus', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-plus', 'qwen plus model, 8k context', 'dash_scope', 'text2chat'),
 ('[dash_scope]qwen-7b-chat', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-7b-chat', 'qwen open sourced 7-billion-parameters version, 8k context', 'dash_scope', 'text2chat'),

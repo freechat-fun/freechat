@@ -9,6 +9,8 @@ import java.util.Objects;
 @Schema(description = "Tool call information during the conversation")
 @Data
 public class ChatToolCallDTO {
+    @Schema(description = "Tool id")
+    private String id;
     @Schema(description = "Tool name")
     private String name;
     @Schema(description = "Tool parameters")
@@ -20,6 +22,7 @@ public class ChatToolCallDTO {
         }
 
         ChatToolCallDTO dto = new ChatToolCallDTO();
+        dto.setId(toolCall.getId());
         dto.setName(toolCall.getName());
         dto.setArguments(toolCall.getArguments());
         return dto;

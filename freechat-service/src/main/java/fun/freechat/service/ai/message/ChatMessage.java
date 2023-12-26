@@ -4,13 +4,14 @@ import fun.freechat.service.enums.PromptRole;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ChatMessage {
     private PromptRole role;
     private String name;
     private String content;
-    private ChatToolCall toolCall;
+    private List<ChatToolCall> toolCalls;
     private Date gmtCreate;
 
     public static ChatMessage from(PromptRole role, String text) {

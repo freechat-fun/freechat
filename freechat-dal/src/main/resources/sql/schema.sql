@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `api_token` (
   `expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_token` (`token`),
+  INDEX `idx_user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='api token table'
 ;
 

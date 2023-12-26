@@ -15,7 +15,7 @@ export default function InfoSearchbar(props: {
   const { handleError } = useErrorMessageBusContext();
 
   const [text, setText] = useState<string | undefined>();
-  const [providers, setProviders] = useState<string[] | undefined>(modelProviders.map(p => p.provider));
+  const [providers, setProviders] = useState<string[] | undefined>();
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
 
   useEffect(() => {

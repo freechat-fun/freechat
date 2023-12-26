@@ -22,7 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.poi.util.StringUtil;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -616,7 +615,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
             info.setVisibility(visibility.text());
             info.setVersion(version + 1);
 
-            if (StringUtil.isNotBlank(info.getDraft())) {
+            if (StringUtils.isNotBlank(info.getDraft())) {
                 CharacterInfoDraft draft = InfoUtils.defaultMapper().readValue(
                         info.getDraft(), CharacterInfoDraft.class);
                 overrideByDraft(draft, info);

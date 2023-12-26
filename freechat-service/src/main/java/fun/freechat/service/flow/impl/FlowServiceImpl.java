@@ -20,7 +20,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.poi.util.StringUtil;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -626,7 +625,7 @@ select distinct f.user_id, f.flow_id, f.visibility... \
             info.setFlowId(null);
             info.setVersion(version + 1);
 
-            if (StringUtil.isNotBlank(info.getDraft())) {
+            if (StringUtils.isNotBlank(info.getDraft())) {
                 info.setConfig(info.getDraft());
                 info.setDraft(null);
             }
