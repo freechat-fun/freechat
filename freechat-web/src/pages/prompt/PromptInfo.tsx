@@ -4,7 +4,7 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { useParams } from "react-router-dom";
 import { Box, Button, Card, Chip, Divider, Stack, Table, Tooltip, Typography, styled } from "@mui/joy";
 import { ChatBubbleOutlineRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
-import { LinePlaceholder, RouterLink, Text } from "../../components";
+import { LinePlaceholder, MarkdownContent, RouterLink } from "../../components";
 import { PromptDetailsDTO, ChatMessageDTO, AiModelInfoDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { getLocaleLabel } from "../../configs/i18n-config";
@@ -107,7 +107,9 @@ function ContentPanel(props: {
         </Typography>
         <Divider />
         <Typography level="body-md">
-          <Text mode="markdown" value={record?.description || ''} />
+          <MarkdownContent>
+            {record?.description}
+          </MarkdownContent>
         </Typography>
       </Card>
 
