@@ -23,7 +23,7 @@ public class OpenAiParamDTO extends AiModelParamDTO{
     @Schema(description = "Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.")
     private Double frequencyPenalty;
     @Schema(description = "If specified, OpenAI will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.")
-    Integer seed;
-    @Schema(description = "Up to 4 sequences where the API will stop generating further tokens.")
-    List<String> stop;
+    private Integer seed;
+    @Schema(description = "A collection of stop words that controls the API from generating more tokens.")
+    private List<String> stop;
 }

@@ -15,6 +15,7 @@
   "Default": "Default",
   "Search title, description, content and more": "Search title, description, content and more",
   "Select model providers": "Select model providers",
+  "Select model": "Select model",
   "public": "public",
   "private": "private",
   "Create new": "Create new",
@@ -27,5 +28,7 @@
   "History": "History",
   "Placeholder": "Placeholder",
   "Default value": "Default value",
+  "Inputs": "Inputs",
+  "Output": "Output",
   ".": "."
 }

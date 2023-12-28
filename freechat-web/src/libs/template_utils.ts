@@ -32,6 +32,8 @@ export function extractJson(jsonString: string): Map<string,  string | undefined
   for (const [key, value] of Object.entries(jsonObject)) {
     if (value === null) {
       resultMap.set(key, undefined);
+    } else if (typeof value === 'string') {
+      resultMap.set(key, value);
     } else {
       resultMap.set(key, JSON.stringify(value));
     }

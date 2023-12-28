@@ -15,6 +15,7 @@
   "Default": "默认",
   "Search title, description, content and more": "搜索标题、描述、内容等",
   "Select model providers": "选择模型提供商",
+  "Select model": "选择模型",
   "public": "公开",
   "private": "私密",
   "Create new": "新建",
@@ -27,5 +28,7 @@
   "History": "历史",
   "Placeholder": "占位符",
   "Default value": "默认值",
+  "Inputs": "输入",
+  "Output": "输出",
   ".": "。"
 }

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder } from "../../components";
 import { PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
-import { Box, Button, Card, Chip, Grid, IconButton, Typography } from "@mui/joy";
+import { Box, Button, Card, Chip, IconButton, Typography } from "@mui/joy";
 import { AddCircleRounded, DeleteForeverRounded, KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from "@mui/icons-material";
 import { getDateLabel } from '../../libs/date_utils';
 
@@ -195,18 +195,23 @@ export default function Prompts() {
       </Button>
     </Box>
     <LinePlaceholder />
-    <Grid container spacing={3} alignItems="center" >
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+        gap: 3,
+      }}
+    >
       {records.map(record => (
-        <Grid xs={12} sm={6} lg={4} key={record.promptId}>
-          <RecordCard
-            record={record}
-            onView={handleView}
-            onEdit={() => {}}
-            onDelete={handleTryDelete}
-          />
-        </Grid>
+        <RecordCard
+          key={record.promptId}
+          record={record}
+          onView={handleView}
+          onEdit={() => {}}
+          onDelete={handleTryDelete}
+        />
       ))}
-    </Grid>
+    </Box>
     <Box sx={{
       display: 'flex',
       justifyContent: 'end',

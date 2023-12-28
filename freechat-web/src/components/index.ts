@@ -17,3 +17,6 @@ export { default as InfoSearchbar } from './InfoSearchbar';
 export { default as LinePlaceholder } from './LinePlaceholder';
 export { default as InfoCardCover } from './InfoCardCover';
 export { default as MarkdownContent } from './MarkdownContent';
+export { default as TinyInput } from './TinyInput';
+export { default as CommonBox } from './CommonBox';
+export { default as OptionCard } from './OptionCard';

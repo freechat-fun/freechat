@@ -2,7 +2,7 @@ const providers = [{
   label: 'OpenAI',
   provider: 'open_ai',
 },{
-  label: 'DashScrope',
+  label: 'DashScope',
   provider: 'dash_scope',
 }];
 

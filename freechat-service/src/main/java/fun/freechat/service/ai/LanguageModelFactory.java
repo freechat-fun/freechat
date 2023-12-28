@@ -92,6 +92,9 @@ public class LanguageModelFactory {
                 .topK((Integer) parameters.get("topK"))
                 .enableSearch((Boolean) parameters.get("enableSearch"))
                 .seed((Integer) parameters.get("seed"))
+                .repetitionPenalty((Float) parameters.get("repetitionPenalty"))
+                .temperature((Float) parameters.get("temperature"))
+                .stops((List<String>) parameters.get("stop"))
                 .build();
     }
 
