@@ -20,8 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Service
 @SuppressWarnings("unused")
@@ -129,7 +128,7 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
     @LongPeriodCache
     @Override
     public String getOwner(String userId, String name) {
-        var statement = select(AiApiKeyDynamicSqlSupport.userId)
+        var statement = selectDistinct(AiApiKeyDynamicSqlSupport.userId)
                 .from(AiApiKeyDynamicSqlSupport.aiApiKey)
                 .where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(userId))
                 .and(AiApiKeyDynamicSqlSupport.name, isEqualTo(name))

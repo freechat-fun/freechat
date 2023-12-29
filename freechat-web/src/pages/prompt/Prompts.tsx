@@ -1,24 +1,31 @@
-import { useEffect, useState } from "react";
+import { createRef, forwardRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder } from "../../components";
 import { PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
 import { Box, Button, Card, Chip, IconButton, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { AddCircleRounded, DeleteForeverRounded, KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from "@mui/icons-material";
+import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
+import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
 
-function RecordCard(props: {
+interface RecordCardProps {
   record: PromptSummaryDTO,
   onView: (record: PromptSummaryDTO) => void,
   onEdit: (record: PromptSummaryDTO) => void,
   onDelete: (record: PromptSummaryDTO) => void,
-}) {
-  const { record, onView, onEdit, onDelete } = props;
+  sx?: SxProps,
+}
+
+const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
+  const { record, onView, onEdit, onDelete, sx } = props;
   const { t, i18n } = useTranslation();
 
   return (
-    <Card sx={{
+    <Card ref={ref} sx={{
+      ...sx,
       transition: 'transform 0.4s, box-shadow 0.4s',
       boxShadow: 'sm',
       '&:hover': {
@@ -29,6 +36,7 @@ function RecordCard(props: {
       <Typography
         level="title-lg"
         sx={{
+          ...sx,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -38,6 +46,7 @@ function RecordCard(props: {
         {record.name}
       </Typography>
       <Box sx={{
+        ...sx,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -50,6 +59,7 @@ function RecordCard(props: {
         </Typography>
       </Box>
       <Box sx={{
+        ...sx,
         display: 'flex',
         justifyContent: 'start',
         alignItems: 'center',
@@ -60,6 +70,7 @@ function RecordCard(props: {
       </Box>
       <Typography
         sx={{
+          ...sx,
           display: '-webkit-box',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -81,7 +92,7 @@ function RecordCard(props: {
       />
     </Card>
   )
-}
+});
 
 export default function Prompts() {
   const navigate = useNavigate();
@@ -97,8 +108,13 @@ export default function Prompts() {
   const [total, setTotal] = useState(0);
   const [recordDeleted, setRecordDeleted] = useState<PromptSummaryDTO>();
 
+  const [showCards, setShowCards] = useState(false);
+  const [showCardsFinish, setShowCardsFinish] = useState(false);
+  const cardRefs = useRef(Array(pageSize).fill(createRef()));
+
   useEffect(() => {
     doSearch(query);
+    return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promptApi, query]);
 
@@ -118,7 +134,7 @@ export default function Prompts() {
         setRecords(resp);
         if (page === 0) {
           promptApi?.countPrompts(query)
-            .then(resp => setTotal(resp))
+            .then(setTotal)
             .catch(handleError);
         }
       })
@@ -202,17 +218,34 @@ export default function Prompts() {
         gap: 3,
       }}
     >
-      {records.map(record => (
-        <RecordCard
-          key={record.promptId}
-          record={record}
-          onView={handleView}
-          onEdit={() => {}}
-          onDelete={handleTryDelete}
-        />
+      {records.map((record, index) => (
+        <Transition
+          in={showCards}
+          timeout={index * defaultTransitionInterval}
+          unmountOnExit
+          key={record.promptId || `transition-${index}`}
+          nodeRef={cardRefs.current[index]}
+        >
+          {(state) => (
+            <RecordCard
+              key={record.promptId}
+              ref={cardRefs.current[index]}
+              record={record}
+              onView={handleView}
+              onEdit={() => {}}
+              onDelete={handleTryDelete}
+              sx={{
+                transition: defaultTransitionSetting,
+                ...transitionStyles[state],
+              }}
+            />
+          )}
+        </Transition>
+        
       ))}
     </Box>
     <Box sx={{
+      opacity: showCardsFinish ? 1 : 0,
       display: 'flex',
       justifyContent: 'end',
       alignItems: 'center',

@@ -10,10 +10,7 @@ import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
-import fun.freechat.service.enums.InfoType;
-import fun.freechat.service.enums.PromptFormat;
-import fun.freechat.service.enums.PromptType;
-import fun.freechat.service.enums.Visibility;
+import fun.freechat.service.enums.*;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.util.CacheUtils;
@@ -22,6 +19,7 @@ import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -39,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static fun.freechat.service.enums.PromptFormat.F_STRING;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Service
@@ -769,13 +768,20 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             }
 
         }
-        String promptTemplate = draft ? promptInfo.getDraft() : promptInfo.getTemplate();
+        String promptTemplate = BooleanUtils.isTrue(draft) ? promptInfo.getDraft() : promptInfo.getTemplate();
         PromptFormat format = PromptFormat.of(promptInfo.getFormat());
         PromptType type = PromptType.of(promptInfo.getType());
         if (type == PromptType.CHAT) {
             try {
                 ChatPromptContent promptContent =
                         InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
+                if (Objects.isNull(promptContent.getMessagesToSend()) && variables.containsKey("input")) {
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setRole(PromptRole.USER);
+                    chatMessage.setGmtCreate(new Date());
+                    chatMessage.setContent(format == F_STRING ? "{input}" : "{{input}}");
+                    promptContent.setMessagesToSend(chatMessage);
+                }
                 ChatPromptContent applied = apply(promptContent, variables, format);
                 return Pair.of(InfoUtils.defaultMapper().writeValueAsString(applied), type);
             } catch (JsonProcessingException e) {

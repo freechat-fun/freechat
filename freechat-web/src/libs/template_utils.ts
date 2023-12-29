@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Mustache from 'mustache';
+import { PromptDetailsDTO } from 'freechat-sdk';
 
-export function extractMustacheTemplateVariables(templateContent: string): Set<string> {
+export function extractMustacheTemplateVariableNames(templateContent: string): Set<string> {
   const variables = new Set<string>();
   const context = {
     get(name: string): string {
@@ -13,19 +15,46 @@ export function extractMustacheTemplateVariables(templateContent: string): Set<s
   return variables;
 }
 
-export function extractFStringTemplateVariables(templateContent: string): Set<string> {
-  const VAR_PATTERN: RegExp = /(^|[^{])({)(\{*[^{}]*\})(})([^}]|$)/g;
+export function extractFStringTemplateVariableNames(templateContent: string): Set<string> {
+  const VAR_PATTERN: RegExp = /{(.*?)}(?!})/g;
   const variables = new Set<string>();
   let match: RegExpExecArray | null;
 
   while ((match = VAR_PATTERN.exec(templateContent)) !== null) {
-      variables.add(match[3].trim());
+      variables.add(match[1].trim());
   }
-
+  
   return variables;
 }
 
-export function extractJson(jsonString: string): Map<string,  string | undefined> {
+export function extractVariables(record: PromptDetailsDTO | undefined): Map<string,  any> | undefined {
+  const templateContent = getTemplateContent(record);
+  if (!templateContent) {
+    return undefined;
+  }
+  const variableNames = record?.format === 'f_string' ?
+    extractFStringTemplateVariableNames(templateContent) :
+    extractMustacheTemplateVariableNames(templateContent);
+
+  const defaultInputs = record?.inputs ? extractJson(record.inputs) : undefined;
+
+  return initVariables(variableNames, defaultInputs);
+}
+
+export function getTemplateContent(record: PromptDetailsDTO | undefined): string | undefined{
+  return record?.type === 'chat' && record?.chatTemplate ?
+    `${record?.chatTemplate?.system ?? ''}\n
+      ${record?.chatTemplate?.messagesToSend?.content ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}` :
+    record?.template;
+}
+
+export function initVariables(names: Set<string>, defaultInputs: Map<string,  any> | undefined): Map<string,  any> {
+  const resultMap = new Map<string, string | undefined>();
+  names.forEach(name => resultMap.set(name, defaultInputs?.get(name)));
+  return resultMap;
+}
+
+export function extractJson(jsonString: string): Map<string,  any> {
   const jsonObject = JSON.parse(jsonString);
   const resultMap = new Map<string, string | undefined>();
 
@@ -39,4 +68,15 @@ export function extractJson(jsonString: string): Map<string,  string | undefined
     }
   }
   return resultMap;
+}
+
+export function mapToTypedObject<T>(map: Map<string, any> | undefined): T | undefined {
+  if (typeof map === 'undefined') {
+    return undefined;
+  }
+  const result: { [key: string] : any } = {};
+  map.forEach((value, key) => {
+    result[key] = value;
+  });
+  return result as T;
 }

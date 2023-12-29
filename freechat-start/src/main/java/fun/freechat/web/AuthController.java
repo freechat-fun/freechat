@@ -40,7 +40,7 @@ public class AuthController {
 
     @RequestMapping("/login/oauth2/success")
     public String oAuth2Success(HttpServletRequest request) {
-        return "redirect:/public/docs/api/explorer";
+        return "redirect:/w";
     }
 
     @RequestMapping("/login/oauth2/failure")
@@ -50,7 +50,7 @@ public class AuthController {
 
     @RequestMapping("/login/portal/success")
     public String portalSuccess() {
-        return "redirect:/public/docs/api/explorer";
+        return "redirect:/w";
     }
 
     @RequestMapping("/login/portal/failure")

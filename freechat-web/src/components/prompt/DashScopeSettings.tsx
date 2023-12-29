@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { createRef, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, Drawer, IconButton, ModalClose, Option, Select, Sheet, Slider, Switch, Tooltip, Typography } from "@mui/joy";
+import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, Drawer, IconButton, Option, Select, Sheet, Slider, Switch, Tooltip, Typography } from "@mui/joy";
 import { AddCircleRounded, HelpOutlineRounded } from "@mui/icons-material";
 import { CommonBox, OptionCard, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
@@ -8,39 +8,42 @@ import { AiModelInfoDTO } from 'freechat-sdk';
 export default function DashScopeSettings(props: {
   open: boolean,
   models:(AiModelInfoDTO | undefined)[] | undefined,
-  onClose: () => void,
+  onClose: (parameters: Map<string, object>) => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defaultParameters?: Map<string, any>,
 }) {
-  const { open, models, onClose } = props;
+  const { open, models, onClose, defaultParameters } = props;
 
   const { t } = useTranslation(['prompt']);
 
-  const [model, setModel] = useState<AiModelInfoDTO>();
+  const [model, setModel] = useState<AiModelInfoDTO | undefined>(
+    models?.find(modelInfo => modelInfo?.modelId === defaultParameters?.get('modelId')));
 
-  const [topP, setTopP] = useState<number>(0.8);
+  const [topP, setTopP] = useState<number>(defaultParameters?.get('topP') ?? 0.8);
   const [enableTopP, setEnableTopP] = useState(false);
 
-  const [topK, setTopK] = useState<number>(0);
+  const [topK, setTopK] = useState<number>(defaultParameters?.get('topK') ?? 0);
   const [enableTopK, setEnableTopK] = useState(false);
 
-  const [maxTokens, setMaxTokens] = useState<number>(2000);
+  const [maxTokens, setMaxTokens] = useState<number>(defaultParameters?.get('maxTokens') ?? 2000);
   const [enableMaxTokens, setEnableMaxTokens] = useState(false);
 
-  const [enableSearch, setEnableSearch] = useState<boolean>(false);
+  const [enableSearch, setEnableSearch] = useState<boolean>(defaultParameters?.get('enableSearch') ?? false);
 
-  const [seed, setSeed] = useState<number>(1234);
+  const [seed, setSeed] = useState<number>(defaultParameters?.get('seed') ?? 1234);
   const [enableSeed, setEnableSeed] = useState(false);
 
-  const [repetitionPenalty, setRepetitionPenalty] = useState<number>(1.1);
+  const [repetitionPenalty, setRepetitionPenalty] = useState<number>(defaultParameters?.get('repetitionPenalty') ?? 1.1);
   const [enableRepetitionPenalty, setEnableRepetitionPenalty] = useState(false);
 
-  const [temperature, setTemperature] = useState<number>(1);
+  const [temperature, setTemperature] = useState<number>(defaultParameters?.get('temperature') ?? 1);
   const [enableTemperature, setEnableTemperature] = useState(false);
 
-  const [stop, setStop] = useState<string[]>([]);
+  const [stop, setStop] = useState<string[]>(defaultParameters?.get('stop') ?? []);
   const [enableStop, setEnableStop] = useState(false);
   const [stopWord, setStopWord] = useState<string>();
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
     if (newValue && newValue !== model) {
@@ -58,13 +61,54 @@ export default function DashScopeSettings(props: {
     setStop(stop.filter(stopWord => stopWord !== word));
   }
 
+  function handleClose(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const parameters = new Map<string, any>();
+
+    if (model) {
+      parameters.set('modelId', model.modelId);
+    }
+
+    if (enableTopP) {
+      parameters.set('topP', topP);
+    }
+
+    if (enableTopK) {
+      parameters.set('topK', topK);
+    }
+
+    if (enableMaxTokens) {
+      parameters.set('maxTokens', maxTokens);
+    }
+
+    parameters.set('enableSearch', enableSearch);
+
+    if (enableSeed) {
+      parameters.set('seed', seed);
+    }
+
+    if (enableRepetitionPenalty) {
+      parameters.set('repetitionPenalty', repetitionPenalty);
+    }
+
+    if (enableTemperature) {
+      parameters.set('temperature', temperature);
+    }
+
+    if (enableStop) {
+      parameters.set('stop', stop);
+    }
+
+    onClose(parameters);
+  }
+
   return (
     <Drawer
       size="md"
       variant="plain"
       anchor="right"
       open={open}
-      onClose={() => onClose()}
+      onClose={() => handleClose()}
       slotProps={{
         content: {
           sx: {
@@ -89,7 +133,6 @@ export default function DashScopeSettings(props: {
         }}
       >
         <DialogTitle>{t('Model Parameters')}</DialogTitle>
-        <ModalClose />
         <Divider sx={{ mt: 'auto' }} />
 
         <DialogContent>
@@ -107,7 +150,7 @@ export default function DashScopeSettings(props: {
               }}
             >
               {models && models.length > 0 ? models?.map(modelInfo => modelInfo && (
-                <Option value={modelInfo.modelId} key={`option-${modelInfo}`}>{modelInfo.name}</Option>
+                <Option value={modelInfo.modelId} key={`option-${modelInfo.modelId}`}>{modelInfo.name}</Option>
               )) : (
                 <Option value="" key='option-unknown'>--No Model--</Option>
               )}
@@ -122,13 +165,13 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={!enableTopP}
                   type="number"
                   slotProps={{
                     input: {
-                      ref: inputRef,
+                      ref: inputRefs.current[0],
                       min: 0,
                       max: 1,
                       step: 0.01,
@@ -158,13 +201,13 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('The size of the sampling candidate set during generation. For example, when the value is 50, only the top 50 tokens with the highest scores in a single generation are included in the random sampling candidate set. The larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation. The default value is 0, which means that the top_k strategy is not enabled, and only the top_p strategy is effective.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={!enableTopK}
                   type="number"
                   slotProps={{
                     input: {
-                      ref: inputRef,
+                      ref: inputRefs.current[1],
                       min: 0,
                       max: 100,
                       step: 1,
@@ -194,13 +237,13 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model\'s context length.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={!enableMaxTokens}
                   type="number"
                   slotProps={{
                     input: {
-                      ref: inputRef,
+                      ref: inputRefs.current[2],
                       min: 1000,
                       step: 1000,
                     },
@@ -220,7 +263,7 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Whether to use a search engine for data enhancement.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <Switch checked={enableSearch} onChange={() => setEnableSearch(!enableSearch)} />
               </CommonBox>
             </CommonBox>
@@ -233,13 +276,13 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('The random number seed used when generating, the user controls the randomness of the content generated by the model. seed supports unsigned 64-bit integers, with a default value of 1234. When using seed, the model will try its best to generate the same or similar results, but there is currently no guarantee that the results will be exactly the same every time.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={!enableSeed}
                   type="number"
                   slotProps={{
                     input: {
-                      ref: inputRef,
+                      ref: inputRefs.current[3],
                       min: 1,
                       step: 1,
                     },
@@ -247,7 +290,7 @@ export default function DashScopeSettings(props: {
                   value={seed}
                   onChange={(event => setSeed(+event.target.value))}
                 />
-                <Switch checked={enableMaxTokens} onChange={() => setEnableSeed(!enableSeed)} />
+                <Switch checked={enableSeed} onChange={() => setEnableSeed(!enableSeed)} />
               </CommonBox>
             </CommonBox>
           </OptionCard>
@@ -259,13 +302,13 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Used to control the repeatability when generating models. Increasing repetition_penalty can reduce the duplication of model generation. 1.0 means no punishment.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={!enableRepetitionPenalty}
                   type="number"
                   slotProps={{
                     input: {
-                      ref: inputRef,
+                      ref: inputRefs.current[4],
                       min: 1,
                       step: 0.1,
                     },
@@ -285,13 +328,13 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Used to adjust the degree of randomness from sampling in the generated model, the value range is [0, 2), a temperature of 0 will always produce the same output. The higher the temperature, the greater the randomness.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={!enableTemperature}
                   type="number"
                   slotProps={{
                     input: {
-                      ref: inputRef,
+                      ref: inputRefs.current[5],
                       min: 0,
                       max: 2,
                       step: 0.1,
@@ -321,7 +364,7 @@ export default function DashScopeSettings(props: {
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Sequences where the API will stop generating further tokens.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
-              <CommonBox sx={{ marginLeft: 'auto' }}>
+              <CommonBox sx={{ ml: 'auto' }}>
                 <Switch checked={enableStop} onChange={() => setEnableStop(!enableStop)} />
               </CommonBox>
             </CommonBox>

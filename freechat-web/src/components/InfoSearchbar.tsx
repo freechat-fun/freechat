@@ -25,7 +25,7 @@ export default function InfoSearchbar(props: {
 
   function getModels(): void {
     aiServiceApi?.listAiModelInfo1()
-      .then(resp => resp && setModels(resp))
+      .then(setModels)
       .catch(handleError);
   }
 

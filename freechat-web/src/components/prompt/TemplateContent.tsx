@@ -16,8 +16,6 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
     const userName = template?.messagesToSend?.name || 'User';
     const userMessage = template?.messagesToSend?.content || defaultInput;
     const messages: ChatMessageDTO[] = template?.messages?.length ? template?.messages : [];
-
-    messages.forEach(m => console.log(m));
     
     return (
       <Fragment>

@@ -30,7 +30,7 @@ export default function ApiTokenPanel() {
 
   function getTokens(): void {
     accountApi?.listTokens()
-      .then(resp => setTokens(resp.filter(token => !!token.id)))
+      .then(setTokens)
       .catch(handleError);
   }
 

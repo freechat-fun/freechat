@@ -2,12 +2,12 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack } from "@mui/joy";
-import { CheckRounded, CloseRounded, KeyRounded, TuneRounded } from "@mui/icons-material";
-import { ConfirmModal, LinePlaceholder } from "../../components"
-import { providers as modelProviders } from "../../configs/model-providers-config";
-import { PromptDetailsDTO, AiModelInfoDTO } from "freechat-sdk";
-import { extractJson } from "../../libs/template_utils";
+import { CheckRounded, CloseRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
+import { CommonBox, ConfirmModal, LinePlaceholder } from "../../components"
 import { DashScopeSettings } from ".";
+import { providers as modelProviders } from "../../configs/model-providers-config";
+import { PromptAiParamDTO, PromptDetailsDTO, PromptRefDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO, PromptTaskDetailsDTO } from "freechat-sdk";
+import { extractVariables, mapToTypedObject } from "../../libs/template_utils";
 
 function AiApiKeySetting(props: {
   defaultKeyName: string | undefined,
@@ -68,7 +68,7 @@ function AiApiKeySetting(props: {
               action={action}
               name="apiKeyName"
               placeholder={<Typography textColor="gray">No API Key</Typography>}
-              value={apiKeyName || (keyNames && keyNames.length > 0) ? keyNames![0] : 'No API Key'}
+              value={apiKeyName || 'No API Key'}
               onChange={handleSelectChange}
               sx={{
                 flex: 1,
@@ -123,29 +123,34 @@ function AiApiKeySetting(props: {
 
 export default function PromptRunner(props: {
   record: PromptDetailsDTO | undefined,
+  draft?: boolean,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defaultParameters?: Map<string, any>,
 }) {
-  const { record } = props;
+  const { record, draft, defaultParameters } = props;
   const { t } = useTranslation();
-  const { aiServiceApi } = useFreeChatApiContext();
+  const { aiServiceApi, promptApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [provider, setProvider] = useState<string | null>();
-  const [inputs, setInputs] = useState(record?.inputs ? extractJson(record.inputs) : undefined);
-  const [output, setOutput] = useState<string>();
+  const [inputs, setInputs] = useState(extractVariables(record));
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
   const [apiKeyName, setApiKeyName] = useState<string>();
   const [apiKeyValue, setApiKeyValue] = useState<string>();
   const [apiKeyNames, setApiKeyNames] = useState<(string | undefined)[]>([]);
   const [modelSetting, setModelSetting] = useState(false);
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
+  const [output, setOutput ] = useState<LlmResultDTO>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [parameters, setParameters] = useState(defaultParameters);
 
   const [width, setWidth] = useState('30%');
 
   useEffect(() => {
-    setInputs(record?.inputs ? extractJson(record.inputs) : undefined);
+    setInputs(extractVariables(record));
     setWidth('50%');
     aiServiceApi?.listAiModelInfo1()
-      .then(resp => resp && setModels(resp))
+      .then(setModels)
       .catch(handleError);
   }, [record, aiServiceApi, handleError]);
 
@@ -172,6 +177,51 @@ export default function PromptRunner(props: {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleDashScopeSettings(parameters: Map<string, any>) {
+    const task = new PromptTaskDetailsDTO();
+    task.modelId = parameters.get('modelId');
+    task.params = mapToTypedObject(parameters);
+
+    setParameters(parameters);
+    setModelSetting(false);
+  }
+
+  function handlePlay() {
+    if (!record) {
+      return;
+    }
+
+    const request = new PromptAiParamDTO();
+
+    if (record.promptId) {
+      const promptRef = new PromptRefDTO();
+      promptRef.promptId = record.promptId;
+      promptRef.variables = mapToTypedObject(inputs);
+      promptRef.draft = draft;
+
+      request.promptRef = promptRef;
+    } else {
+      const promptTemplate = new PromptTemplateDTO();
+      promptTemplate.format = record.format;
+      promptTemplate.template = record.template;
+      promptTemplate.chatTemplate = record.chatTemplate;
+      promptTemplate.variables = mapToTypedObject(inputs);
+
+      request.promptTemplate = promptTemplate;
+    }
+
+    request.params = mapToTypedObject(parameters) as typeof request.params;
+    if (apiKeyValue) {
+      request.params['apiKey'] = apiKeyValue;
+    } else if (apiKeyName) {
+      request.params['apiKeyName'] = apiKeyName;
+    }
+
+    promptApi?.sendPrompt(request)
+      .then(setOutput)
+      .catch(handleError);
+  }
 
   function filterModels(): (AiModelInfoDTO | undefined)[] {
     return record && provider && models ? models.filter(model => {
@@ -233,7 +283,7 @@ export default function PromptRunner(props: {
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'flex-end',
-          alignItems: 'center',
+          alignItems:  { xs: 'flex-start', sm: 'center' },
           gap: 2,
         }}>
           <Select
@@ -265,15 +315,26 @@ export default function PromptRunner(props: {
           </Button>
         </Box>
         <LinePlaceholder />
-        <Typography level="title-sm" textColor="neutral">
-          {t('Output')}
-        </Typography>
+        <CommonBox sx={{ justifyContent: 'space-between' }}>
+          <Typography level="title-sm" textColor="neutral">
+            {t('Output')}
+          </Typography>
+          <IconButton
+            disabled={!parameters}
+            color="primary"
+            onClick={handlePlay}
+          >
+            {output ? 
+              <ReplayCircleFilledRounded fontSize="large" /> : 
+              <PlayCircleFilledRounded fontSize="large" />
+            }
+          </IconButton>
+        </CommonBox>
         <Textarea
           readOnly
           minRows={3}
-        >
-          {output}
-        </Textarea>
+          value={output?.message?.content ?? output?.text}
+        />
         <Button disabled={!output} sx={{
           alignSelf: 'flex-end',
         }}>
@@ -295,7 +356,8 @@ export default function PromptRunner(props: {
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
         models={filterModels()}
-        onClose={() => setModelSetting(false)}
+        onClose={handleDashScopeSettings}
+        defaultParameters={parameters}
       />
     </Fragment>
     
