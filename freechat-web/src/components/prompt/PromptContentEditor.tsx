@@ -44,8 +44,9 @@ function messagesToRounds(messages: ChatMessageDTO[] | undefined): MessageRound[
 
 export default function PromptContentEditor(props: {
   record: PromptDetailsDTO | undefined,
+  onUpdate?: (record: PromptDetailsDTO) => void;
 }) {
-  const { record } = props;
+  const { record, onUpdate } = props;
   const { t } = useTranslation(['prompt']);
 
   const [description, setDescription] = useState(record?.description);
@@ -73,6 +74,16 @@ export default function PromptContentEditor(props: {
     flex: 1,
   };
 
+  const roundItemStyle = (theme: Theme) => ({
+    width: '100%',
+    mr: 'auto',
+    justifyContent: 'flex-end',
+    border: `1px solid ${theme.palette.primary.outlinedBorder}`,
+    backgroundColor: theme.palette.background.body,
+    padding: theme.spacing(1, 2),
+    borderRadius: '12px',
+  });
+
   useEffect(() => {
     setDescription(record?.description);
     setStringTemplate(record?.template);
@@ -89,8 +100,8 @@ export default function PromptContentEditor(props: {
 
 
   useEffect(() => {
-    setInputs(extractVariables(editRecord));
-  }, [editRecord]);
+    onUpdate?.(editRecord);
+  }, [editRecord, onUpdate]);
 
   useEffect(() => {
     setEditRecord(prevRecord => {
@@ -99,6 +110,7 @@ export default function PromptContentEditor(props: {
         newRecord.chatTemplate = new ChatPromptContentDTO();
       }
       newRecord.chatTemplate.system = system;
+      setInputs(extractVariables(newRecord));
       return newRecord;
     });
   }, [system]);
@@ -111,6 +123,7 @@ export default function PromptContentEditor(props: {
         newRecord.chatTemplate = new ChatPromptContentDTO();
       }
       newRecord.chatTemplate.messages = messages;
+      setInputs(extractVariables(newRecord));
       return newRecord;
     });
   }, [messages]);
@@ -126,6 +139,7 @@ export default function PromptContentEditor(props: {
         newRecord.chatTemplate.messageToSend.role = 'user';
       }
       newRecord.chatTemplate.messageToSend.content = userMessage;
+      setInputs(extractVariables(newRecord));
       return newRecord;
     });
   }, [userMessage]);
@@ -134,6 +148,7 @@ export default function PromptContentEditor(props: {
     setEditRecord(prevRecord => {
       const newRecord = { ...prevRecord };
       newRecord.template = stringTemplate;
+      setInputs(extractVariables(newRecord));
       return newRecord;
     });
   }, [stringTemplate]);
@@ -142,9 +157,18 @@ export default function PromptContentEditor(props: {
     setEditRecord(prevRecord => {
       const newRecord = { ...prevRecord };
       newRecord.example = example;
+      setInputs(extractVariables(newRecord));
       return newRecord;
     });
   }, [example]);
+
+  useEffect(() => {
+    setEditRecord(prevRecord => {
+      const newRecord = { ...prevRecord };
+      newRecord.inputs = JSON.stringify(inputs);
+      return newRecord;
+    });
+  }, [inputs]);
 
   function handleRoundRemoved(round: MessageRound) {
     const newMessages = messages.filter(message => (message !== round.assistant) && (message !== round.user));
@@ -160,7 +184,7 @@ export default function PromptContentEditor(props: {
     setEditRound(true);
   }
 
-  function handleRoundCommit() {
+  function handleRoundCommit(): void {
     const currentUserMessage = new ChatMessageDTO();
     currentUserMessage.role = 'user',
     currentUserMessage.name = editUserName;
@@ -177,15 +201,11 @@ export default function PromptContentEditor(props: {
     setEditRound(false);
   }
 
-  const roundItemStyle = (theme: Theme) => ({
-    width: '100%',
-    mr: 'auto',
-    justifyContent: 'flex-end',
-    border: `1px solid ${theme.palette.primary.outlinedBorder}`,
-    backgroundColor: theme.palette.background.body,
-    padding: theme.spacing(1, 2),
-    borderRadius: '12px',
-  });
+  function handleInputChange(k: string, v: string): void {
+    const currentInputs = {...inputs ?? {}};
+    currentInputs[k] = v;
+    setInputs(currentInputs);
+  }
 
   return (
     <Stack spacing={3} sx={{
@@ -201,7 +221,7 @@ export default function PromptContentEditor(props: {
           <Typography level="title-lg" color="primary">
             {t('Description')}
           </Typography>
-          <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Supports Markdown format')}>
+          <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
             <HelpOutlineRounded fontSize="small" />
           </Tooltip>
         </CommonBox>
@@ -232,7 +252,7 @@ export default function PromptContentEditor(props: {
           }}>
             <CommonBox>
               <Chip variant="soft" color="primary">MESSAGES</Chip>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('These messages will always be used as the starting message in the chat history')}>
+              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('These messages will always be used as the starting message in the chat history')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
               <IconButton
@@ -368,6 +388,15 @@ export default function PromptContentEditor(props: {
         </Card>
       )}
 
+      <LinePlaceholder />
+      <CommonBox>
+        <Typography level="title-lg" color="primary">
+          {t('Inputs')}
+        </Typography>
+        <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('If an input\'s value is not specified at runtime, the default value set here will be used')}>
+          <HelpOutlineRounded fontSize="small" />
+        </Tooltip>
+      </CommonBox>
       {inputs && Object.keys(inputs).length > 0 && (
         <Table sx={{ my: 1 }}>
           <thead>
@@ -380,7 +409,13 @@ export default function PromptContentEditor(props: {
             {Object.entries(inputs).map(([k, v]) => (
               <tr key={`input-${k}`}>
                 <td>{k}</td>
-                <td>{v}</td>
+                <td>
+                <Textarea
+                  name={`input-value-${k}`}
+                  value={v}
+                  onChange={(event) => handleInputChange(k, event.target.value)}
+                />
+                </td>
               </tr>
             ))}
           </tbody>
@@ -394,7 +429,7 @@ export default function PromptContentEditor(props: {
           <Typography level="title-lg" color="primary">
             {t('Example')}
           </Typography>
-          <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Supports Markdown format')}>
+          <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
             <HelpOutlineRounded fontSize="small" />
           </Tooltip>
         </CommonBox>
