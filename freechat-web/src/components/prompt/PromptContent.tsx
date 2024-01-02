@@ -10,7 +10,7 @@ export default function PromptContent(props: {
 }) {
   const { record } = props;
   const { t } = useTranslation(['prompt']);
-  const inputs = record?.inputs ? extractJson(record.inputs) : undefined;
+  const inputs = extractJson(record?.inputs);
 
   return (
     <Stack spacing={3} sx={{
@@ -47,7 +47,7 @@ export default function PromptContent(props: {
         <TemplateContent record={record} />
       </Card>
 
-      {inputs && inputs.size > 0 && (
+      {inputs && Object.keys(inputs).length > 0 && (
         <Table sx={{ my: 1 }}>
           <thead>
             <tr>
@@ -56,7 +56,7 @@ export default function PromptContent(props: {
             </tr>
           </thead>
           <tbody>
-            {[...inputs].map(([k, v]) => (
+            {Object.entries(inputs).map(([k, v]) => (
               <tr key={`input-${k}`}>
                 <td>{k}</td>
                 <td>{v}</td>
@@ -76,7 +76,9 @@ export default function PromptContent(props: {
           </Typography>
           <Divider />
           <Typography level="body-md">
-            {record?.example}
+            <MarkdownContent>
+              {record?.example}
+            </MarkdownContent>
           </Typography>
         </Card>
       )}

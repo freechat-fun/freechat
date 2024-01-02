@@ -25,6 +25,7 @@ interface FreeChatApiProps {
 }
 
 interface FreeChatApiContextValue {
+  serverUrl: string | undefined;
   configuration: Configuration | undefined;
   aiServiceApi: AIServiceApi | undefined;
   accountApi: AccountApi | undefined;
@@ -42,6 +43,7 @@ interface FreeChatApiContextValue {
 }
 
 const undefinedContext: FreeChatApiContextValue = {
+  serverUrl: undefined,
   configuration: undefined,
   aiServiceApi: undefined,
   accountApi: undefined,
@@ -83,6 +85,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
 
   return (
     <FreeChatApiContext.Provider value={{
+      serverUrl: server,
       configuration,
       aiServiceApi,
       accountApi,

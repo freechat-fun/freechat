@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **role** | **str** | Chat role: system | assistant | user | function_call | function_result | [optional] 
 **name** | **str** | user: Name of the user role; function_call: Name of the called tool | [optional] 
 **content** | **str** | default: Dialogue content; function_result: function call result, serialized as json | [optional] 
-**tool_call** | [**ChatToolCallDTO**](ChatToolCallDTO.md) |  | [optional] 
+**tool_calls** | [**List[ChatToolCallDTO]**](ChatToolCallDTO.md) | Tool calls information during the conversation | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 
 ## Example

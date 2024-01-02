@@ -43,24 +43,24 @@ redis:
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-  security:
-    oauth2:
-      client:
-        provider:
-          aliyun:
-            authorizationUri: https://signin.aliyun.com/oauth2/v1/auth
-            issuerUri: https://oauth.aliyun.com
-            jwkSetUri: https://oauth.aliyun.com/v1/keys
-            tokenUri: https://oauth.aliyun.com/v1/token
-            userInfoUri: https://oauth.aliyun.com/v1/userinfo
-            userNameAttribute: sub
-        registration:
-          aliyun:
-            authorizationGrantType: authorization_code
-            clientAuthenticationMethod: client_secret_basic
-            clientName: Aliyun
-            redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid
+#  security:
+#    oauth2:
+#      client:
+#        provider:
+#          aliyun:
+#            authorizationUri: https://signin.aliyun.com/oauth2/v1/auth
+#            issuerUri: https://oauth.aliyun.com
+#            jwkSetUri: https://oauth.aliyun.com/v1/keys
+#            tokenUri: https://oauth.aliyun.com/v1/token
+#            userInfoUri: https://oauth.aliyun.com/v1/userinfo
+#            userNameAttribute: sub
+#        registration:
+#          aliyun:
+#            authorizationGrantType: authorization_code
+#            clientAuthenticationMethod: client_secret_basic
+#            clientName: Aliyun
+#            redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
+#            scope: openid
   servlet:
     multipart:
       max-file-size: 10MB

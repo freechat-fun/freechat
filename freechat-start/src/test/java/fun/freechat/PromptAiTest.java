@@ -286,7 +286,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
         ChatPromptContentDTO promptContent = new ChatPromptContentDTO();
         promptContent.setSystem(system);
-        promptContent.setMessagesToSend(messageToBeSent);
+        promptContent.setMessageToSend(messageToBeSent);
         promptContent.setMessages(messages);
 
         Map<String, Object> variables = new HashMap<>(2);

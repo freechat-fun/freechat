@@ -5,9 +5,12 @@ All URIs are relative to *http://127.0.0.1:8080*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**createToken**](AccountApi.md#createToken) | **POST** /api/v1/account/token | Create API Token |
-| [**createTokenWithDuration**](AccountApi.md#createTokenWithDuration) | **POST** /api/v1/account/token/{duration} | Create Timed API Token |
+| [**createToken1**](AccountApi.md#createToken1) | **POST** /api/v1/account/token/{duration} | Create API Token |
 | [**deleteToken**](AccountApi.md#deleteToken) | **DELETE** /api/v1/account/token/{token} | Delete API Token |
+| [**deleteTokenById**](AccountApi.md#deleteTokenById) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id |
 | [**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token |
+| [**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id |
+| [**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id |
 | [**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information |
 | [**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details |
 | [**listTokens**](AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens |
@@ -21,7 +24,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Create API Token
 
-Create an unlimited duration API Token.
+Create a timed API Token, valid for {duration} seconds.
 
 ### Example
 ```java
@@ -78,11 +81,11 @@ This endpoint does not need any parameter.
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
-<a id="createTokenWithDuration"></a>
-# **createTokenWithDuration**
-> String createTokenWithDuration(duration)
+<a id="createToken1"></a>
+# **createToken1**
+> String createToken1(duration)
 
-Create Timed API Token
+Create API Token
 
 Create a timed API Token, valid for {duration} seconds.
 
@@ -108,10 +111,10 @@ public class Example {
     AccountApi apiInstance = new AccountApi(defaultClient);
     Long duration = 56L; // Long | Token validity duration (seconds)
     try {
-      String result = apiInstance.createTokenWithDuration(duration);
+      String result = apiInstance.createToken1(duration);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling AccountApi#createTokenWithDuration");
+      System.err.println("Exception when calling AccountApi#createToken1");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -212,6 +215,73 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
+<a id="deleteTokenById"></a>
+# **deleteTokenById**
+> Boolean deleteTokenById(id)
+
+Delete API Token by Id
+
+Delete the API token by id.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountApi apiInstance = new AccountApi(defaultClient);
+    Long id = 56L; // Long | Token id
+    try {
+      Boolean result = apiInstance.deleteTokenById(id);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountApi#deleteTokenById");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **Long**| Token id | |
+
+### Return type
+
+**Boolean**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
 <a id="disableToken"></a>
 # **disableToken**
 > String disableToken(token)
@@ -260,6 +330,140 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **token** | **String**| Token content | |
+
+### Return type
+
+**String**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="disableTokenById"></a>
+# **disableTokenById**
+> Boolean disableTokenById(id)
+
+Disable API Token by Id
+
+Disable the API token by id.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountApi apiInstance = new AccountApi(defaultClient);
+    Long id = 56L; // Long | Token id
+    try {
+      Boolean result = apiInstance.disableTokenById(id);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountApi#disableTokenById");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **Long**| Token id | |
+
+### Return type
+
+**Boolean**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="getTokenById"></a>
+# **getTokenById**
+> String getTokenById(id)
+
+Get API Token by Id
+
+Get the API token by id.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountApi apiInstance = new AccountApi(defaultClient);
+    Long id = 56L; // Long | Token id
+    try {
+      String result = apiInstance.getTokenById(id);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountApi#getTokenById");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **Long**| Token id | |
 
 ### Return type
 
@@ -411,7 +615,7 @@ This endpoint does not need any parameter.
 
 <a id="listTokens"></a>
 # **listTokens**
-> List&lt;String&gt; listTokens()
+> List&lt;ApiTokenInfoDTO&gt; listTokens()
 
 List API Tokens
 
@@ -438,7 +642,7 @@ public class Example {
 
     AccountApi apiInstance = new AccountApi(defaultClient);
     try {
-      List<String> result = apiInstance.listTokens();
+      List<ApiTokenInfoDTO> result = apiInstance.listTokens();
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AccountApi#listTokens");
@@ -456,7 +660,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**List&lt;String&gt;**
+[**List&lt;ApiTokenInfoDTO&gt;**](ApiTokenInfoDTO.md)
 
 ### Authorization
 

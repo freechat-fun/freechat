@@ -47,8 +47,14 @@ let body:.AppMetaForAdminApiExposeRequest = {
     modelId: "modelId_example",
     topP: 3.14,
     topK: 1,
+    maxTokens: 1,
     enableSearch: true,
     seed: 1,
+    repetitionPenalty: 3.14,
+    temperature: 3.14,
+    stop: [
+      "stop_example",
+    ],
   },
   // LlmResultDTO
   aiForPromptResult: {
@@ -58,10 +64,13 @@ let body:.AppMetaForAdminApiExposeRequest = {
       role: "role_example",
       name: "name_example",
       content: "content_example",
-      toolCall: {
-        name: "name_example",
-        arguments: "arguments_example",
-      },
+      toolCalls: [
+        {
+          id: "id_example",
+          name: "name_example",
+          arguments: "arguments_example",
+        },
+      ],
       gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
     },
     finishReason: "finishReason_example",

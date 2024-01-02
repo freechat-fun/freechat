@@ -560,7 +560,7 @@ public class Example {
 
 <a id="listTokensOfUser"></a>
 # **listTokensOfUser**
-> List&lt;String&gt; listTokensOfUser(username)
+> List&lt;ApiTokenInfoDTO&gt; listTokensOfUser(username)
 
 Get API Token of User
 
@@ -588,7 +588,7 @@ public class Example {
     AccountManagerForAdminApi apiInstance = new AccountManagerForAdminApi(defaultClient);
     String username = "username_example"; // String | Username
     try {
-      List<String> result = apiInstance.listTokensOfUser(username);
+      List<ApiTokenInfoDTO> result = apiInstance.listTokensOfUser(username);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AccountManagerForAdminApi#listTokensOfUser");
@@ -609,7 +609,7 @@ public class Example {
 
 ### Return type
 
-**List&lt;String&gt;**
+[**List&lt;ApiTokenInfoDTO&gt;**](ApiTokenInfoDTO.md)
 
 ### Authorization
 

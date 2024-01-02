@@ -726,9 +726,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         applied.setFormat(format.text());
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
-        if (Objects.nonNull(promptContent.getMessagesToSend())) {
-            ChatMessage original = promptContent.getMessagesToSend();
-            applied.setMessagesToSend(apply(original, variables, format));
+        if (Objects.nonNull(promptContent.getMessageToSend())) {
+            ChatMessage original = promptContent.getMessageToSend();
+            applied.setMessageToSend(apply(original, variables, format));
         }
 
         if (CollectionUtils.isNotEmpty(promptContent.getMessages())) {
@@ -775,12 +775,12 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             try {
                 ChatPromptContent promptContent =
                         InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
-                if (Objects.isNull(promptContent.getMessagesToSend()) && variables.containsKey("input")) {
+                if (Objects.isNull(promptContent.getMessageToSend()) && variables.containsKey("input")) {
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.setRole(PromptRole.USER);
                     chatMessage.setGmtCreate(new Date());
                     chatMessage.setContent(format == F_STRING ? "{input}" : "{{input}}");
-                    promptContent.setMessagesToSend(chatMessage);
+                    promptContent.setMessageToSend(chatMessage);
                 }
                 ChatPromptContent applied = apply(promptContent, variables, format);
                 return Pair.of(InfoUtils.defaultMapper().writeValueAsString(applied), type);

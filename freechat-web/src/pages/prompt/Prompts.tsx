@@ -184,6 +184,10 @@ export default function Prompts() {
     navigate(`/w/console/prompt/${record.promptId}`)
   }
 
+  function handleEdit(record: PromptSummaryDTO): void {
+    navigate(`/w/console/prompt/edit/${record.promptId}`)
+  }
+
   function getLabelDisplayedRowsTo(): number {
     const currentCount = (page + 1) * pageSize;
     return total === 0 && records.length > 0 ? currentCount : Math.min(total, currentCount);
@@ -232,7 +236,7 @@ export default function Prompts() {
               ref={cardRefs.current[index]}
               record={record}
               onView={handleView}
-              onEdit={() => {}}
+              onEdit={handleEdit}
               onDelete={handleTryDelete}
               sx={{
                 transition: defaultTransitionSetting,

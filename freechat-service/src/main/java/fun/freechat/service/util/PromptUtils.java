@@ -147,8 +147,8 @@ public class PromptUtils {
                 }
             }
         }
-        if (Objects.nonNull(promptTemplate.getMessagesToSend())) {
-            messages.add(convertChatMessage(promptTemplate.getMessagesToSend()));
+        if (Objects.nonNull(promptTemplate.getMessageToSend())) {
+            messages.add(convertChatMessage(promptTemplate.getMessageToSend()));
         }
         return messages;
     }

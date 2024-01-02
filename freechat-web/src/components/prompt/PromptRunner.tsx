@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack } from "@mui/joy";
-import { CheckRounded, CloseRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
-import { CommonBox, ConfirmModal, LinePlaceholder } from "../../components"
+import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack, Divider } from "@mui/joy";
+import { CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
+import { CommonBox, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
 import { DashScopeSettings } from ".";
 import { providers as modelProviders } from "../../configs/model-providers-config";
-import { PromptAiParamDTO, PromptDetailsDTO, PromptRefDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO, PromptTaskDetailsDTO } from "freechat-sdk";
-import { extractVariables, mapToTypedObject } from "../../libs/template_utils";
+import { PromptAiParamDTO, PromptDetailsDTO, PromptRefDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
+import { extractModelProvider, extractVariables } from "../../libs/template_utils";
 
 function AiApiKeySetting(props: {
   defaultKeyName: string | undefined,
@@ -122,43 +123,53 @@ function AiApiKeySetting(props: {
 }
 
 export default function PromptRunner(props: {
+  apiPath: string,
   record: PromptDetailsDTO | undefined,
   draft?: boolean,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  defaultParameters?: Map<string, any>,
+  defaultVariables?: { [key: string]: any },
+  defaultParameters?: { [key: string]: any },
+  defaultOutputText?: string,
+  onPlayFailure?: (request: PromptAiParamDTO | undefined, error: any) => void,
+  onPlaySuccess?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
+  onExampleSave?: (response: LlmResultDTO | undefined) => void,
 }) {
-  const { record, draft, defaultParameters } = props;
+  const { apiPath, record, draft, defaultVariables, defaultParameters, defaultOutputText, onPlayFailure, onPlaySuccess, onExampleSave } = props;
   const { t } = useTranslation();
-  const { aiServiceApi, promptApi } = useFreeChatApiContext();
+  const { aiServiceApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [provider, setProvider] = useState<string | null>();
-  const [inputs, setInputs] = useState(extractVariables(record));
+  const [provider, setProvider] = useState<string | undefined>(extractModelProvider(defaultParameters?.modelId));
+  const [inputs, setInputs] = useState(defaultVariables ?? extractVariables(record));
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
-  const [apiKeyName, setApiKeyName] = useState<string>();
-  const [apiKeyValue, setApiKeyValue] = useState<string>();
+  const [apiKeyName, setApiKeyName] = useState<string | undefined>(defaultParameters?.apiKeyName);
+  const [apiKeyValue, setApiKeyValue] = useState<string | undefined>(defaultParameters?.apiKey);
   const [apiKeyNames, setApiKeyNames] = useState<(string | undefined)[]>([]);
   const [modelSetting, setModelSetting] = useState(false);
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
   const [output, setOutput ] = useState<LlmResultDTO>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [aiRequest, setAiRequest] = useState<PromptAiParamDTO>();
+  const [playing, setPlaying] = useState(false);
   const [parameters, setParameters] = useState(defaultParameters);
 
   const [width, setWidth] = useState('30%');
 
   useEffect(() => {
-    setInputs(extractVariables(record));
     setWidth('50%');
     aiServiceApi?.listAiModelInfo1()
       .then(setModels)
       .catch(handleError);
-  }, [record, aiServiceApi, handleError]);
+    provider && aiServiceApi?.listAiApiKeys(provider)
+      .then(resp => setApiKeyNames(resp
+        .filter(key => !!key.name && key.enabled)
+        .map(key => key.name)))
+      .catch(handleError);
+  }, [record, provider, aiServiceApi, handleError]);
 
   function handleInputChange(key: string, value: string | undefined): void {
-    if (inputs && value !== inputs.get(key)) {
-      const newInputs = new Map<string, string | undefined>();
-      inputs.forEach((v, k) => newInputs.set(k, v));
-      newInputs.set(key, value);
+    if (inputs && value !== inputs[key]) {
+      const newInputs: { [key: string]: any } = {};
+      Object.entries(inputs).forEach(([k, v]) => newInputs[k] = v);
+      newInputs[key] = value;
       setInputs(newInputs);
     }
   }
@@ -166,23 +177,11 @@ export default function PromptRunner(props: {
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
     if (newValue && newValue !== provider) {
-      aiServiceApi?.listAiApiKeys(newValue)
-        .then(resp => {
-          setApiKeyNames(resp
-            .filter(key => !!key.name && key.enabled)
-            .map(key => key.name));
-          setProvider(newValue);
-        })
-        .catch(handleError);
+      setProvider(newValue);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleDashScopeSettings(parameters: Map<string, any>) {
-    const task = new PromptTaskDetailsDTO();
-    task.modelId = parameters.get('modelId');
-    task.params = mapToTypedObject(parameters);
-
+  function handleDashScopeSettings(parameters: { [key: string]: any }) {
     setParameters(parameters);
     setModelSetting(false);
   }
@@ -197,7 +196,7 @@ export default function PromptRunner(props: {
     if (record.promptId) {
       const promptRef = new PromptRefDTO();
       promptRef.promptId = record.promptId;
-      promptRef.variables = mapToTypedObject(inputs);
+      promptRef.variables = inputs;
       promptRef.draft = draft;
 
       request.promptRef = promptRef;
@@ -206,21 +205,20 @@ export default function PromptRunner(props: {
       promptTemplate.format = record.format;
       promptTemplate.template = record.template;
       promptTemplate.chatTemplate = record.chatTemplate;
-      promptTemplate.variables = mapToTypedObject(inputs);
+      promptTemplate.variables = inputs;
 
       request.promptTemplate = promptTemplate;
     }
 
-    request.params = mapToTypedObject(parameters) as typeof request.params;
+    request.params = parameters as typeof request.params;
     if (apiKeyValue) {
       request.params['apiKey'] = apiKeyValue;
     } else if (apiKeyName) {
       request.params['apiKeyName'] = apiKeyName;
     }
 
-    promptApi?.sendPrompt(request)
-      .then(setOutput)
-      .catch(handleError);
+    setPlaying(true);
+    setAiRequest(request);
   }
 
   function filterModels(): (AiModelInfoDTO | undefined)[] {
@@ -242,6 +240,10 @@ export default function PromptRunner(props: {
     }) : [];
   }
 
+  function getServiceUrl(): string {
+    return serverUrl + apiPath;
+  }
+
   return (
     <Fragment>
       <Card sx={{
@@ -257,13 +259,13 @@ export default function PromptRunner(props: {
         <Typography level="title-sm" textColor="neutral">
           {t('Inputs')}
         </Typography>
-        {inputs && inputs.size > 0 && (
+        {inputs && Object.keys(inputs).length > 0 && (
           <Box sx={{
             display: 'grid',
             gridTemplateColumns: 'auto 1fr',
             gap: 1,
           }}>
-            {[...inputs].map(([k, v]) => (
+            {Object.entries(inputs).map(([k, v]) => (
               <Fragment key={`input-${k}`}>
                 <FormLabel>{k}</FormLabel>
                 <Textarea
@@ -307,6 +309,7 @@ export default function PromptRunner(props: {
           </Button>
           <Button
             variant="soft"
+            color={!parameters?.modelId ? 'danger' : 'primary'}
             disabled={!provider}
             startDecorator={<TuneRounded />}
             onClick={() => setModelSetting(true)}
@@ -320,7 +323,7 @@ export default function PromptRunner(props: {
             {t('Output')}
           </Typography>
           <IconButton
-            disabled={!parameters}
+            disabled={!parameters || playing}
             color="primary"
             onClick={handlePlay}
           >
@@ -330,16 +333,65 @@ export default function PromptRunner(props: {
             }
           </IconButton>
         </CommonBox>
-        <Textarea
-          readOnly
-          minRows={3}
-          value={output?.message?.content ?? output?.text}
-        />
-        <Button disabled={!output} sx={{
-          alignSelf: 'flex-end',
-        }}>
-          {t('Save as Example', {ns: 'button'})}
-        </Button>
+        <TextareaTypography>
+          <ChatContent
+            url={aiRequest ? getServiceUrl() : undefined}
+            body={aiRequest ? JSON.stringify(aiRequest) : undefined}
+            initialData={defaultOutputText}
+            onFinish={setOutput}
+            onClose={() => {
+              onPlaySuccess?.(aiRequest, output);
+              setPlaying(false);
+              setAiRequest(undefined);
+            }}
+            onError={(error) => {
+              onPlayFailure?.(aiRequest, error);
+              setPlaying(false);
+              setAiRequest(undefined);
+              handleError(error);
+            }}
+          />
+        </TextareaTypography>
+        <CommonBox sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          {!playing && output?.tokenUsage && (
+            <Fragment>
+              <Box sx={{
+                width: '50%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+              }}>
+                <Typography fontWeight="bold">Token Usage</Typography>
+                <Divider sx={{ backgroundColor: 'black' }}/>
+                <Box sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'auto 1fr',
+                }}>
+                  <FormLabel>Input: </FormLabel>
+                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.tokenUsage.inputTokenCount}</Typography>
+                  <FormLabel>Output: </FormLabel>
+                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.tokenUsage.outputTokenCount}</Typography>
+                  <Box sx={{ gridColumn: '1 / -1' }}>
+                    <Divider />
+                  </Box>
+                  <FormLabel>Total: </FormLabel>
+                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.tokenUsage.totalTokenCount}</Typography>
+                </Box>
+              </Box>
+            </Fragment>
+          )}
+          {onExampleSave && output && (
+            <Button
+              size="sm"
+              variant="outlined"
+              color="success"
+              startDecorator={<IosShareRounded />}
+              onClick={() => onExampleSave(output)}
+            >
+              {t('Save as Example', {ns: 'button'})}
+            </Button>
+          )}
+        </CommonBox>
       </Card>
       <AiApiKeySetting
         defaultKeyName={apiKeyName}

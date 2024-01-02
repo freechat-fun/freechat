@@ -8,6 +8,7 @@ import ComingSoon from './pages/ComingSoon';
 import NotFound from './pages/NotFound';
 import Prompts from './pages/prompt/Prompts';
 import PromptInfo from './pages/prompt/PromptInfo';
+import PromptEditor from './pages/prompt/PromptEditor';
 
 const consoleRoutes = [
   {
@@ -21,6 +22,10 @@ const consoleRoutes = [
   {
     path: 'prompt/:id',
     element: <PromptInfo />,
+  },
+  {
+    path: 'prompt/edit/:id',
+    element: <PromptEditor />,
   },
   {
     path: 'plugins',

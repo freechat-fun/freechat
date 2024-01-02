@@ -179,7 +179,7 @@ public class CharacterAiServiceImpl implements CharacterAiService {
                 PromptRole.SYSTEM,
                 promptService.apply(prompt.getSystem(), variables, PromptFormat.of(prompt.getFormat())));
 
-        ChatMessage userMessage = Optional.ofNullable(prompt.getMessagesToSend())
+        ChatMessage userMessage = Optional.ofNullable(prompt.getMessageToSend())
                 .map(userPrompt ->
                         promptService.apply(userPrompt, variables, PromptFormat.of(prompt.getFormat())))
                 .orElse(ChatMessage.from(PromptRole.USER, text));

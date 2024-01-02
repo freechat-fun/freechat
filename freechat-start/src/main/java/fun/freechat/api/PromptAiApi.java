@@ -184,12 +184,12 @@ public class PromptAiApi {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
-                if (Objects.isNull(chatTemplate.getMessagesToSend()) && variables.containsKey("input")) {
+                if (Objects.isNull(chatTemplate.getMessageToSend()) && variables.containsKey("input")) {
                     ChatMessageDTO chatMessage = new ChatMessageDTO();
                     chatMessage.setRole(PromptRole.USER.text());
                     chatMessage.setGmtCreate(new Date());
                     chatMessage.setContent(format == PromptFormat.F_STRING ? "{input}" : "{{input}}");
-                    chatTemplate.setMessagesToSend(chatMessage);
+                    chatTemplate.setMessageToSend(chatMessage);
                 }
                 try {
                     ChatPromptContent promptContent = promptService.apply(

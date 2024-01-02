@@ -20,3 +20,5 @@ export { default as MarkdownContent } from './MarkdownContent';
 export { default as TinyInput } from './TinyInput';
 export { default as CommonBox } from './CommonBox';
 export { default as OptionCard } from './OptionCard';
+export { default as ChatContent } from './ChatContent';
+export { default as TextareaTypography } from './TextareaTypography';

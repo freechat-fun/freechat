@@ -2,32 +2,32 @@
 import Mustache from 'mustache';
 import { PromptDetailsDTO } from 'freechat-sdk';
 
-export function extractMustacheTemplateVariableNames(templateContent: string): Set<string> {
-  const variables = new Set<string>();
+export function extractMustacheTemplateVariableNames(templateContent: string): string[] {
+  const variables: string[] = [];
   const context = {
     get(name: string): string {
-      variables.add(name);
+      variables.push(name);
       return '';
     }
   };
 
   Mustache.render(templateContent, context);
-  return variables;
+  return [...new Set(variables)];
 }
 
-export function extractFStringTemplateVariableNames(templateContent: string): Set<string> {
+export function extractFStringTemplateVariableNames(templateContent: string): string[] {
   const VAR_PATTERN: RegExp = /{(.*?)}(?!})/g;
-  const variables = new Set<string>();
+  const variables: string[] = [];
   let match: RegExpExecArray | null;
 
   while ((match = VAR_PATTERN.exec(templateContent)) !== null) {
-      variables.add(match[1].trim());
+    variables.push(match[1].trim());
   }
   
-  return variables;
+  return [...new Set(variables)];
 }
 
-export function extractVariables(record: PromptDetailsDTO | undefined): Map<string,  any> | undefined {
+export function extractVariables(record: PromptDetailsDTO | undefined): { [key: string]: any } | undefined {
   const templateContent = getTemplateContent(record);
   if (!templateContent) {
     return undefined;
@@ -42,41 +42,54 @@ export function extractVariables(record: PromptDetailsDTO | undefined): Map<stri
 }
 
 export function getTemplateContent(record: PromptDetailsDTO | undefined): string | undefined{
-  return record?.type === 'chat' && record?.chatTemplate ?
-    `${record?.chatTemplate?.system ?? ''}\n
-      ${record?.chatTemplate?.messagesToSend?.content ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}` :
-    record?.template;
-}
+  if (record?.type === 'chat' && record?.chatTemplate) {
+    const chatTemplate = record?.chatTemplate;
+    let template = chatTemplate.system ?? '';
 
-export function initVariables(names: Set<string>, defaultInputs: Map<string,  any> | undefined): Map<string,  any> {
-  const resultMap = new Map<string, string | undefined>();
-  names.forEach(name => resultMap.set(name, defaultInputs?.get(name)));
-  return resultMap;
-}
+    const messages = chatTemplate.messages ?? [];
+    messages.forEach(message => 
+      template = `${template}\n${message.name || message.role}:${message.content}`);
+    
+    template = `${template}\n${chatTemplate.messageToSend?.content ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}`;
 
-export function extractJson(jsonString: string): Map<string,  any> {
-  const jsonObject = JSON.parse(jsonString);
-  const resultMap = new Map<string, string | undefined>();
-
-  for (const [key, value] of Object.entries(jsonObject)) {
-    if (value === null) {
-      resultMap.set(key, undefined);
-    } else if (typeof value === 'string') {
-      resultMap.set(key, value);
-    } else {
-      resultMap.set(key, JSON.stringify(value));
-    }
+    return template;
+  } else {
+    return record?.template;
   }
-  return resultMap;
 }
 
-export function mapToTypedObject<T>(map: Map<string, any> | undefined): T | undefined {
-  if (typeof map === 'undefined') {
+export function initVariables(names: string[], defaultInputs: { [key: string]: any } | undefined): { [key: string]: any } {
+  const result: { [key: string]: any } = {};
+  names.forEach(name => result[name] = defaultInputs?.[name] || '');
+  return result;
+}
+
+export function extractJson(jsonString: string | undefined): { [key: string]: any } | undefined {
+  if (!jsonString) {
     return undefined;
   }
-  const result: { [key: string] : any } = {};
-  map.forEach((value, key) => {
-    result[key] = value;
+  const jsonObject = JSON.parse(jsonString);
+  const result: { [key: string]: any } = {};
+
+  Object.entries(jsonObject).forEach(([k, v]) => {
+    if (v === null) {
+      result[k] = undefined;
+    } else if (typeof v === 'string') {
+      result[k] = v;
+    } else {
+      result[k] = JSON.stringify(v);
+    }
   });
-  return result as T;
+
+  return result;
+}
+
+export function extractModelProvider(modelId: string | undefined): string | undefined {
+  if (!modelId) {
+    return undefined;
+  }
+  const regex = /\[([^\]]+)\]/;
+  const match = modelId.match(regex);
+
+  return match?.[1];
 }

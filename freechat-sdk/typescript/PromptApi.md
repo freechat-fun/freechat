@@ -107,14 +107,17 @@ let body:.PromptApiApplyStringPromptTemplateRequest = {
     template: "template_example",
     chatTemplate: {
       system: "system_example",
-      messagesToSend: {
+      messageToSend: {
         role: "role_example",
         name: "name_example",
         content: "content_example",
-        toolCall: {
-          name: "name_example",
-          arguments: "arguments_example",
-        },
+        toolCalls: [
+          {
+            id: "id_example",
+            name: "name_example",
+            arguments: "arguments_example",
+          },
+        ],
         gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
       },
       messages: [
@@ -122,10 +125,13 @@ let body:.PromptApiApplyStringPromptTemplateRequest = {
           role: "role_example",
           name: "name_example",
           content: "content_example",
-          toolCall: {
-            name: "name_example",
-            arguments: "arguments_example",
-          },
+          toolCalls: [
+            {
+              id: "id_example",
+              name: "name_example",
+              arguments: "arguments_example",
+            },
+          ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         },
       ],
@@ -538,14 +544,17 @@ let body:.PromptApiCreatePromptRequest = {
     template: "template_example",
     chatTemplate: {
       system: "system_example",
-      messagesToSend: {
+      messageToSend: {
         role: "role_example",
         name: "name_example",
         content: "content_example",
-        toolCall: {
-          name: "name_example",
-          arguments: "arguments_example",
-        },
+        toolCalls: [
+          {
+            id: "id_example",
+            name: "name_example",
+            arguments: "arguments_example",
+          },
+        ],
         gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
       },
       messages: [
@@ -553,10 +562,13 @@ let body:.PromptApiCreatePromptRequest = {
           role: "role_example",
           name: "name_example",
           content: "content_example",
-          toolCall: {
-            name: "name_example",
-            arguments: "arguments_example",
-          },
+          toolCalls: [
+            {
+              id: "id_example",
+              name: "name_example",
+              arguments: "arguments_example",
+            },
+          ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         },
       ],
@@ -636,14 +648,17 @@ let body:.PromptApiCreatePromptsRequest = {
       template: "template_example",
       chatTemplate: {
         system: "system_example",
-        messagesToSend: {
+        messageToSend: {
           role: "role_example",
           name: "name_example",
           content: "content_example",
-          toolCall: {
-            name: "name_example",
-            arguments: "arguments_example",
-          },
+          toolCalls: [
+            {
+              id: "id_example",
+              name: "name_example",
+              arguments: "arguments_example",
+            },
+          ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         },
         messages: [
@@ -651,10 +666,13 @@ let body:.PromptApiCreatePromptsRequest = {
             role: "role_example",
             name: "name_example",
             content: "content_example",
-            toolCall: {
-              name: "name_example",
-              arguments: "arguments_example",
-            },
+            toolCalls: [
+              {
+                id: "id_example",
+                name: "name_example",
+                arguments: "arguments_example",
+              },
+            ],
             gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           },
         ],
@@ -1213,14 +1231,17 @@ let body:.PromptApiSendPromptRequest = {
       template: "template_example",
       chatTemplate: {
         system: "system_example",
-        messagesToSend: {
+        messageToSend: {
           role: "role_example",
           name: "name_example",
           content: "content_example",
-          toolCall: {
-            name: "name_example",
-            arguments: "arguments_example",
-          },
+          toolCalls: [
+            {
+              id: "id_example",
+              name: "name_example",
+              arguments: "arguments_example",
+            },
+          ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         },
         messages: [
@@ -1228,10 +1249,13 @@ let body:.PromptApiSendPromptRequest = {
             role: "role_example",
             name: "name_example",
             content: "content_example",
-            toolCall: {
-              name: "name_example",
-              arguments: "arguments_example",
-            },
+            toolCalls: [
+              {
+                id: "id_example",
+                name: "name_example",
+                arguments: "arguments_example",
+              },
+            ],
             gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           },
         ],
@@ -1311,14 +1335,17 @@ let body:.PromptApiStreamSendPromptRequest = {
       template: "template_example",
       chatTemplate: {
         system: "system_example",
-        messagesToSend: {
+        messageToSend: {
           role: "role_example",
           name: "name_example",
           content: "content_example",
-          toolCall: {
-            name: "name_example",
-            arguments: "arguments_example",
-          },
+          toolCalls: [
+            {
+              id: "id_example",
+              name: "name_example",
+              arguments: "arguments_example",
+            },
+          ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         },
         messages: [
@@ -1326,10 +1353,13 @@ let body:.PromptApiStreamSendPromptRequest = {
             role: "role_example",
             name: "name_example",
             content: "content_example",
-            toolCall: {
-              name: "name_example",
-              arguments: "arguments_example",
-            },
+            toolCalls: [
+              {
+                id: "id_example",
+                name: "name_example",
+                arguments: "arguments_example",
+              },
+            ],
             gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           },
         ],
@@ -1413,14 +1443,17 @@ let body:.PromptApiUpdatePromptRequest = {
     template: "template_example",
     chatTemplate: {
       system: "system_example",
-      messagesToSend: {
+      messageToSend: {
         role: "role_example",
         name: "name_example",
         content: "content_example",
-        toolCall: {
-          name: "name_example",
-          arguments: "arguments_example",
-        },
+        toolCalls: [
+          {
+            id: "id_example",
+            name: "name_example",
+            arguments: "arguments_example",
+          },
+        ],
         gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
       },
       messages: [
@@ -1428,10 +1461,13 @@ let body:.PromptApiUpdatePromptRequest = {
           role: "role_example",
           name: "name_example",
           content: "content_example",
-          toolCall: {
-            name: "name_example",
-            arguments: "arguments_example",
-          },
+          toolCalls: [
+            {
+              id: "id_example",
+              name: "name_example",
+              arguments: "arguments_example",
+            },
+          ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         },
       ],

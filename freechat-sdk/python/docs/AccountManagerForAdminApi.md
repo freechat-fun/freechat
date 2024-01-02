@@ -634,7 +634,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_tokens_of_user**
-> List[str] list_tokens_of_user(username)
+> List[ApiTokenInfoDTO] list_tokens_of_user(username)
 
 Get API Token of User
 
@@ -647,6 +647,7 @@ Get the list of API Tokens of the user.
 import time
 import os
 import freechat-sdk
+from freechat-sdk.models.api_token_info_dto import ApiTokenInfoDTO
 from freechat-sdk.rest import ApiException
 from pprint import pprint
 
@@ -691,7 +692,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**List[str]**
+[**List[ApiTokenInfoDTO]**](ApiTokenInfoDTO.md)
 
 ### Authorization
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -18,6 +19,9 @@ export default function PromptInfo() {
   const [record, setRecord] = useState<PromptDetailsDTO>();
   const [history, setHistory] = useState<string[]>([]);
   const [play, setPlay] = useState(false);
+  const [defaultParameters, setDefaultParameters] = useState<{ [key: string]: any }>()
+  const [defaultVariables, setDefaultVariables] = useState<{ [key: string]: any }>()
+  const [defaultOutputText, setDefaultOutputText] = useState<string>();
 
   useEffect(() => {
     getRecord();
@@ -93,7 +97,30 @@ export default function PromptInfo() {
         gap: { xs: 1, sm: 2 },
       }}>
         <PromptContent record={record} />
-        {play ? <PromptRunner record={record} /> : <PromptMeta record={record} history={history} />}
+        {play ? 
+          <PromptRunner
+            apiPath="/api/v1/prompt/send/stream"
+            record={record}
+            defaultVariables={defaultVariables}
+            defaultParameters={defaultParameters}
+            defaultOutputText={defaultOutputText}
+            onPlaySuccess={(request, response) => {
+              request?.params && Object.keys(request?.params).length > 0 ?
+                setDefaultParameters(request?.params) :
+                setDefaultParameters(undefined);
+
+              if (request?.promptRef?.variables && Object.keys(request?.promptRef?.variables).length > 0) {
+                setDefaultVariables(request?.promptRef?.variables); 
+              } else if (request?.promptTemplate?.variables && Object.keys(request?.promptTemplate?.variables).length > 0) {
+                setDefaultVariables(request?.promptTemplate?.variables);
+              } else {
+                setDefaultVariables(undefined);
+              }
+
+              setDefaultOutputText(response?.message?.content ?? response?.text);
+            }}
+          /> :
+          <PromptMeta record={record} history={history} />}
       </Box>
     </>
   );

@@ -6,7 +6,7 @@ Prompt chat template content
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **system** | **str** | Prompt system template | [optional] 
-**messages_to_send** | [**ChatMessageDTO**](ChatMessageDTO.md) |  | [optional] 
+**message_to_send** | [**ChatMessageDTO**](ChatMessageDTO.md) |  | [optional] 
 **messages** | [**List[ChatMessageDTO]**](ChatMessageDTO.md) | Pre-set chat messages in the Prompt | [optional] 
 
 ## Example

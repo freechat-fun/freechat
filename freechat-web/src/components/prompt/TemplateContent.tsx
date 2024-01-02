@@ -13,14 +13,14 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
     const defaultInput = record?.format === 'f_string' ? '{input}' : '{{input}}';
     const template = record?.chatTemplate;
     const system = template?.system;
-    const userName = template?.messagesToSend?.name || 'User';
-    const userMessage = template?.messagesToSend?.content || defaultInput;
-    const messages: ChatMessageDTO[] = template?.messages?.length ? template?.messages : [];
+    const userName = template?.messageToSend?.name || 'user';
+    const userMessage = template?.messageToSend?.content || defaultInput;
+    const messages: ChatMessageDTO[] = template?.messages ?? [];
     
     return (
       <Fragment>
         <Card sx={{ p: 2, border: 'none' }}>
-          <Chip variant="soft" color="primary">System</Chip>
+          <Chip variant="soft" color="primary">SYSTEM</Chip>
           <Typography level="body-md" sx={contentStyle}>
             {system}
           </Typography>
@@ -35,7 +35,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
             {
               messages?.map((message, index) => {
                 const isAssistant = message.role === 'assistant';
-                const name = message.name || message.role || 'user';
+                const name = (message.name || message.role || 'user').toUpperCase();
                 const content = message.content || '';
 
                 return (
@@ -58,7 +58,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
         }
         <Divider sx={{ mx: 2 }} />
         <Card sx={{ p: 2, border: 'none' }}>
-          <Chip variant="soft" color="success">{userName}</Chip>
+          <Chip variant="soft" color="success">{userName.toUpperCase()}</Chip>
           <Typography level="body-md" sx={contentStyle}>
             {userMessage}
           </Typography>
@@ -67,7 +67,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
     );
   } else {
     return (
-      <Typography level="body-md"  sx={contentStyle}>
+      <Typography level="body-md" sx={contentStyle}>
         {record?.template}
       </Typography>
     );

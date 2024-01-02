@@ -18,7 +18,7 @@ OpenAI series model parameters
 |**presencePenalty** | **Double** | Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model&#39;s likelihood to talk about new topics. |  [optional] |
 |**frequencyPenalty** | **Double** | Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model&#39;s likelihood to repeat the same line verbatim. |  [optional] |
 |**seed** | **Integer** | If specified, OpenAI will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result. |  [optional] |
-|**stop** | **List&lt;String&gt;** | Up to 4 sequences where the API will stop generating further tokens. |  [optional] |
+|**stop** | **List&lt;String&gt;** | A collection of stop words that controls the API from generating more tokens. |  [optional] |
 
 
 

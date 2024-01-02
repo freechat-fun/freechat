@@ -8,6 +8,7 @@ Tool call information during the conversation
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
+|**id** | **String** | Tool id |  [optional] |
 |**name** | **String** | Tool name |  [optional] |
 |**arguments** | **String** | Tool parameters |  [optional] |
 

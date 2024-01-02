@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.2.0
+  version: 0.2.6
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -963,6 +963,79 @@ paths:
       tags:
       - Account
       x-accepts: text/plain
+  /api/v1/account/token/id/{id}:
+    delete:
+      description: Delete the API token by id.
+      operationId: deleteTokenById
+      parameters:
+      - description: Token id
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete API Token by Id
+      tags:
+      - Account
+      x-accepts: application/json
+    get:
+      description: Get the API token by id.
+      operationId: getTokenById
+      parameters:
+      - description: Token id
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Get API Token by Id
+      tags:
+      - Account
+      x-accepts: text/plain
+    put:
+      description: Disable the API token by id.
+      operationId: disableTokenById
+      parameters:
+      - description: Token id
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Disable API Token by Id
+      tags:
+      - Account
+      x-accepts: application/json
   /api/v1/account/details:
     get:
       description: "Return the detailed user information of the current account, the\
@@ -3218,8 +3291,9 @@ paths:
       x-accepts: application/json
   /api/v1/account/token:
     post:
-      description: Create an unlimited duration API Token.
+      description: "Create a timed API Token, valid for {duration} seconds."
       operationId: createToken
+      parameters: []
       responses:
         "200":
           content:
@@ -3234,7 +3308,7 @@ paths:
   /api/v1/account/token/{duration}:
     post:
       description: "Create a timed API Token, valid for {duration} seconds."
-      operationId: createTokenWithDuration
+      operationId: createToken_1
       parameters:
       - description: Token validity duration (seconds)
         explode: false
@@ -3252,7 +3326,7 @@ paths:
               schema:
                 type: string
           description: OK
-      summary: Create Timed API Token
+      summary: Create API Token
       tags:
       - Account
       x-accepts: text/plain
@@ -4704,7 +4778,7 @@ paths:
             application/json:
               schema:
                 items:
-                  type: string
+                  $ref: '#/components/schemas/ApiTokenInfoDTO'
                 type: array
           description: OK
       summary: Get API Token of User
@@ -4857,7 +4931,7 @@ paths:
             application/json:
               schema:
                 items:
-                  type: string
+                  $ref: '#/components/schemas/ApiTokenInfoDTO'
                 type: array
           description: OK
       summary: List API Tokens
@@ -4946,11 +5020,15 @@ components:
     ChatMessageDTO:
       description: Chat message
       example:
-        toolCall:
-          name: name
-          arguments: arguments
         role: role
         name: name
+        toolCalls:
+        - name: name
+          arguments: arguments
+          id: id
+        - name: name
+          arguments: arguments
+          id: id
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         content: content
       properties:
@@ -4965,8 +5043,11 @@ components:
           description: "default: Dialogue content; function_result: function call\
             \ result, serialized as json"
           type: string
-        toolCall:
-          $ref: '#/components/schemas/ChatToolCallDTO'
+        toolCalls:
+          description: Tool calls information during the conversation
+          items:
+            $ref: '#/components/schemas/ChatToolCallDTO'
+          type: array
         gmtCreate:
           description: Creation time
           format: date-time
@@ -4977,33 +5058,45 @@ components:
       example:
         system: system
         messages:
-        - toolCall:
-            name: name
-            arguments: arguments
-          role: role
+        - role: role
           name: name
+          toolCalls:
+          - name: name
+            arguments: arguments
+            id: id
+          - name: name
+            arguments: arguments
+            id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           content: content
-        - toolCall:
-            name: name
-            arguments: arguments
-          role: role
+        - role: role
           name: name
+          toolCalls:
+          - name: name
+            arguments: arguments
+            id: id
+          - name: name
+            arguments: arguments
+            id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           content: content
-        messagesToSend:
-          toolCall:
-            name: name
-            arguments: arguments
+        messageToSend:
           role: role
           name: name
+          toolCalls:
+          - name: name
+            arguments: arguments
+            id: id
+          - name: name
+            arguments: arguments
+            id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           content: content
       properties:
         system:
           description: Prompt system template
           type: string
-        messagesToSend:
+        messageToSend:
           $ref: '#/components/schemas/ChatMessageDTO'
         messages:
           description: Pre-set chat messages in the Prompt
@@ -5016,7 +5109,11 @@ components:
       example:
         name: name
         arguments: arguments
+        id: id
       properties:
+        id:
+          description: Tool id
+          type: string
         name:
           description: Tool name
           type: string
@@ -5044,26 +5141,38 @@ components:
         chatTemplate:
           system: system
           messages:
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          messagesToSend:
-            toolCall:
-              name: name
-              arguments: arguments
+          messageToSend:
             role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
         draft: draft
@@ -5377,7 +5486,7 @@ components:
           description: Character picture url
           type: string
         gender:
-          description: "Character gender: male | female | non_human | unknown"
+          description: "Character gender: male | female | other"
           type: string
         profile:
           description: Character profile
@@ -5634,26 +5743,38 @@ components:
         chatTemplate:
           system: system
           messages:
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          messagesToSend:
-            toolCall:
-              name: name
-              arguments: arguments
+          messageToSend:
             role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
         draft: draft
@@ -5808,26 +5929,38 @@ components:
           chatTemplate:
             system: system
             messages:
-            - toolCall:
-                name: name
-                arguments: arguments
-              role: role
+            - role: role
               name: name
+              toolCalls:
+              - name: name
+                arguments: arguments
+                id: id
+              - name: name
+                arguments: arguments
+                id: id
               gmtCreate: 2000-01-23T04:56:07.000+00:00
               content: content
-            - toolCall:
-                name: name
-                arguments: arguments
-              role: role
+            - role: role
               name: name
+              toolCalls:
+              - name: name
+                arguments: arguments
+                id: id
+              - name: name
+                arguments: arguments
+                id: id
               gmtCreate: 2000-01-23T04:56:07.000+00:00
               content: content
-            messagesToSend:
-              toolCall:
-                name: name
-                arguments: arguments
+            messageToSend:
               role: role
               name: name
+              toolCalls:
+              - name: name
+                arguments: arguments
+                id: id
+              - name: name
+                arguments: arguments
+                id: id
               gmtCreate: 2000-01-23T04:56:07.000+00:00
               content: content
           format: format
@@ -5862,26 +5995,38 @@ components:
         chatTemplate:
           system: system
           messages:
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          messagesToSend:
-            toolCall:
-              name: name
-              arguments: arguments
+          messageToSend:
             role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
         format: format
@@ -5913,11 +6058,15 @@ components:
         finishReason: finishReason
         text: text
         message:
-          toolCall:
-            name: name
-            arguments: arguments
           role: role
           name: name
+          toolCalls:
+          - name: name
+            arguments: arguments
+            id: id
+          - name: name
+            arguments: arguments
+            id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           content: content
       properties:
@@ -6224,26 +6373,38 @@ components:
         chatTemplate:
           system: system
           messages:
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          - toolCall:
-              name: name
-              arguments: arguments
-            role: role
+          - role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
-          messagesToSend:
-            toolCall:
-              name: name
-              arguments: arguments
+          messageToSend:
             role: role
             name: name
+            toolCalls:
+            - name: name
+              arguments: arguments
+              id: id
+            - name: name
+              arguments: arguments
+              id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
             content: content
         requestId: requestId
@@ -7088,7 +7249,7 @@ components:
           description: Character picture url
           type: string
         gender:
-          description: "Character gender: male | female | non_human | unknown"
+          description: "Character gender: male | female | other"
           type: string
         profile:
           description: Character profile
@@ -8109,6 +8270,56 @@ components:
           description: Avatar
           type: string
       type: object
+    ApiTokenInfoDTO:
+      description: API token information
+      example:
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        requestId: requestId
+        id: 0
+        issuedAt: 2000-01-23T04:56:07.000+00:00
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        type: type
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+        token: token
+        policy: policy
+        username: username
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        id:
+          description: Token identifier
+          format: int64
+          type: integer
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        type:
+          description: Token type
+          type: string
+        issuedAt:
+          description: Token issuance time
+          format: date-time
+          type: string
+        expiresAt:
+          description: Token expiration time
+          format: date-time
+          type: string
+        token:
+          description: Token content
+          type: string
+        policy:
+          description: Token policy
+          type: string
+        username:
+          description: Token owner
+          type: string
+      type: object
     AppMetaDTO:
       description: Application metadata
       example:
@@ -8199,11 +8410,11 @@ components:
           format: int32
           type: integer
         stop:
-          description: Up to 4 sequences where the API will stop generating further
-            tokens.
+          description: A collection of stop words that controls the API from generating
+            more tokens.
           items:
-            description: Up to 4 sequences where the API will stop generating further
-              tokens.
+            description: A collection of stop words that controls the API from generating
+              more tokens.
             type: string
           type: array
       required:
@@ -8228,8 +8439,7 @@ components:
             \ set of most likely tokens whose probabilities add up to 0.8 or more\
             \ is retained as the candidate set. The value range is (0, 1.0), the larger\
             \ the value, the higher the randomness of the generation; the smaller\
-            \ the value, the higher the certainty of the generation. The default value\
-            \ is 0.5."
+            \ the value, the higher the certainty of the generation."
           format: double
           type: number
         topK:
@@ -8239,21 +8449,48 @@ components:
             \ set. The larger the value, the higher the randomness of the generation;\
             \ the smaller the value, the higher the certainty of the generation. The\
             \ default value is 0, which means that the top_k strategy is not enabled,\
-            \ and only the top_p strategy is effective. The default value is 0."
+            \ and only the top_p strategy is effective."
+          format: int32
+          type: integer
+        maxTokens:
+          description: The maximum number of tokens to generate in the chat completion.
+            The total length of input tokens and generated tokens is limited by the
+            model's context length.
           format: int32
           type: integer
         enableSearch:
-          description: Whether to use a search engine for data enhancement. Default
-            is false.
+          description: Whether to use a search engine for data enhancement.
           type: boolean
         seed:
-          description: "During generation, the seed of the random number, used to\
-            \ control the randomness of the model generation. If the same seed is\
-            \ used, the results of each run will be the same; when you need to reproduce\
-            \ the results of the model, you can use the same seed. The default value\
-            \ is 1234."
+          description: "The random number seed used when generating, the user controls\
+            \ the randomness of the content generated by the model. seed supports\
+            \ unsigned 64-bit integers, with a default value of 1234. When using seed,\
+            \ the model will try its best to generate the same or similar results,\
+            \ but there is currently no guarantee that the results will be exactly\
+            \ the same every time."
           format: int32
           type: integer
+        repetitionPenalty:
+          description: Used to control the repeatability when generating models. Increasing
+            repetition_penalty can reduce the duplication of model generation. 1.0
+            means no punishment.
+          format: float
+          type: number
+        temperature:
+          description: "Used to adjust the degree of randomness from sampling in the\
+            \ generated model, the value range is [0, 2), a temperature of 0 will\
+            \ always produce the same output. The higher the temperature, the greater\
+            \ the randomness."
+          format: float
+          type: number
+        stop:
+          description: A collection of stop words that controls the API from generating
+            more tokens.
+          items:
+            description: A collection of stop words that controls the API from generating
+              more tokens.
+            type: string
+          type: array
       required:
       - modelId
       type: object

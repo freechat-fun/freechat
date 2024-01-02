@@ -5,6 +5,7 @@ Tool call information during the conversation
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**id** | **str** | Tool id | [optional] 
 **name** | **str** | Tool name | [optional] 
 **arguments** | **str** | Tool parameters | [optional] 
 

@@ -1,49 +1,57 @@
-import { createRef, useRef, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, Drawer, IconButton, Option, Select, Sheet, Slider, Switch, Tooltip, Typography } from "@mui/joy";
 import { AddCircleRounded, HelpOutlineRounded } from "@mui/icons-material";
 import { CommonBox, OptionCard, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
 
+function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
+  return !!parameters && Object.keys(parameters).includes(key);
+}
+
 export default function DashScopeSettings(props: {
   open: boolean,
   models:(AiModelInfoDTO | undefined)[] | undefined,
-  onClose: (parameters: Map<string, object>) => void,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  defaultParameters?: Map<string, any>,
+  onClose: (parameters: { [key: string]: any }) => void,
+  defaultParameters?: { [key: string]: any },
 }) {
   const { open, models, onClose, defaultParameters } = props;
 
   const { t } = useTranslation(['prompt']);
 
   const [model, setModel] = useState<AiModelInfoDTO | undefined>(
-    models?.find(modelInfo => modelInfo?.modelId === defaultParameters?.get('modelId')));
+    models?.find(modelInfo => modelInfo?.modelId === defaultParameters?.modelId));
 
-  const [topP, setTopP] = useState<number>(defaultParameters?.get('topP') ?? 0.8);
-  const [enableTopP, setEnableTopP] = useState(false);
+  const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
+  const [enableTopP, setEnableTopP] = useState(containsKey(defaultParameters, 'topP'));
 
-  const [topK, setTopK] = useState<number>(defaultParameters?.get('topK') ?? 0);
-  const [enableTopK, setEnableTopK] = useState(false);
+  const [topK, setTopK] = useState<number>(defaultParameters?.topK ?? 0);
+  const [enableTopK, setEnableTopK] = useState(containsKey(defaultParameters, 'topK'));
 
-  const [maxTokens, setMaxTokens] = useState<number>(defaultParameters?.get('maxTokens') ?? 2000);
-  const [enableMaxTokens, setEnableMaxTokens] = useState(false);
+  const [maxTokens, setMaxTokens] = useState<number>(defaultParameters?.maxTokens ?? 2000);
+  const [enableMaxTokens, setEnableMaxTokens] = useState(containsKey(defaultParameters, 'maxTokens'));
 
-  const [enableSearch, setEnableSearch] = useState<boolean>(defaultParameters?.get('enableSearch') ?? false);
+  const [enableSearch, setEnableSearch] = useState<boolean>(defaultParameters?.enableSearch ?? false);
 
-  const [seed, setSeed] = useState<number>(defaultParameters?.get('seed') ?? 1234);
-  const [enableSeed, setEnableSeed] = useState(false);
+  const [seed, setSeed] = useState<number>(defaultParameters?.seed ?? 1234);
+  const [enableSeed, setEnableSeed] = useState(containsKey(defaultParameters, 'seed'));
 
-  const [repetitionPenalty, setRepetitionPenalty] = useState<number>(defaultParameters?.get('repetitionPenalty') ?? 1.1);
-  const [enableRepetitionPenalty, setEnableRepetitionPenalty] = useState(false);
+  const [repetitionPenalty, setRepetitionPenalty] = useState<number>(defaultParameters?.repetitionPenalty ?? 1.1);
+  const [enableRepetitionPenalty, setEnableRepetitionPenalty] = useState(containsKey(defaultParameters, 'repetitionPenalty'));
 
-  const [temperature, setTemperature] = useState<number>(defaultParameters?.get('temperature') ?? 1);
-  const [enableTemperature, setEnableTemperature] = useState(false);
+  const [temperature, setTemperature] = useState<number>(defaultParameters?.temperature ?? 1);
+  const [enableTemperature, setEnableTemperature] = useState(containsKey(defaultParameters, 'temperature'));
 
-  const [stop, setStop] = useState<string[]>(defaultParameters?.get('stop') ?? []);
-  const [enableStop, setEnableStop] = useState(false);
+  const [stop, setStop] = useState<string[]>(defaultParameters?.stop ?? []);
+  const [enableStop, setEnableStop] = useState(containsKey(defaultParameters, 'stop'));
   const [stopWord, setStopWord] = useState<string>();
 
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
+
+  useEffect(() => {
+    setModel(models?.find(modelInfo => modelInfo?.modelId === defaultParameters?.modelId));
+  }, [defaultParameters?.modelId, models]);
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
     if (newValue && newValue !== model) {
@@ -63,40 +71,40 @@ export default function DashScopeSettings(props: {
 
   function handleClose(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parameters = new Map<string, any>();
+    const parameters: { [key: string]: any } = {};
 
     if (model) {
-      parameters.set('modelId', model.modelId);
+      parameters['modelId'] = model.modelId;
     }
 
     if (enableTopP) {
-      parameters.set('topP', topP);
+      parameters['topP'] = topP;
     }
 
     if (enableTopK) {
-      parameters.set('topK', topK);
+      parameters['topK'] = topK;
     }
 
     if (enableMaxTokens) {
-      parameters.set('maxTokens', maxTokens);
+      parameters['maxTokens'] = maxTokens;
     }
 
-    parameters.set('enableSearch', enableSearch);
+    parameters['enableSearch'] = enableSearch;
 
     if (enableSeed) {
-      parameters.set('seed', seed);
+      parameters['seed'] = seed;
     }
 
     if (enableRepetitionPenalty) {
-      parameters.set('repetitionPenalty', repetitionPenalty);
+      parameters['repetitionPenalty'] = repetitionPenalty;
     }
 
     if (enableTemperature) {
-      parameters.set('temperature', temperature);
+      parameters['temperature'] = temperature;
     }
 
     if (enableStop) {
-      parameters.set('stop', stop);
+      parameters['stop'] = stop;
     }
 
     onClose(parameters);
@@ -142,7 +150,7 @@ export default function DashScopeSettings(props: {
               <Select
               name="modelName"
               placeholder={<Typography textColor="gray">No model provided</Typography>}
-              value={model?.modelId || ((models && models.length > 0) ? models![0]?.modelId : '')}
+              value={model?.modelId}
               onChange={handleSelectChange}
               sx={{
                 ml: 2,

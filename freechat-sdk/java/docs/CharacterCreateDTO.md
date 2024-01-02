@@ -14,7 +14,7 @@ Request data for creating new character information
 |**description** | **String** | Character description |  [optional] |
 |**avatar** | **String** | Character avatar url |  [optional] |
 |**picture** | **String** | Character picture url |  [optional] |
-|**gender** | **String** | Character gender: male | female | non_human | unknown |  [optional] |
+|**gender** | **String** | Character gender: male | female | other |  [optional] |
 |**profile** | **String** | Character profile |  [optional] |
 |**greeting** | **String** | Character greeting |  [optional] |
 |**chatStyle** | **String** | Character chat-style |  [optional] |

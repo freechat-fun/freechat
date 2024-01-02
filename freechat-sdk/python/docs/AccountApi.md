@@ -5,9 +5,12 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_token**](AccountApi.md#create_token) | **POST** /api/v1/account/token | Create API Token
-[**create_token_with_duration**](AccountApi.md#create_token_with_duration) | **POST** /api/v1/account/token/{duration} | Create Timed API Token
+[**create_token1**](AccountApi.md#create_token1) | **POST** /api/v1/account/token/{duration} | Create API Token
 [**delete_token**](AccountApi.md#delete_token) | **DELETE** /api/v1/account/token/{token} | Delete API Token
+[**delete_token_by_id**](AccountApi.md#delete_token_by_id) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id
 [**disable_token**](AccountApi.md#disable_token) | **PUT** /api/v1/account/token/{token} | Disable API Token
+[**disable_token_by_id**](AccountApi.md#disable_token_by_id) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
+[**get_token_by_id**](AccountApi.md#get_token_by_id) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
 [**get_user_basic**](AccountApi.md#get_user_basic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
 [**get_user_details**](AccountApi.md#get_user_details) | **GET** /api/v1/account/details | Get User Details
 [**list_tokens**](AccountApi.md#list_tokens) | **GET** /api/v1/account/tokens | List API Tokens
@@ -20,7 +23,7 @@ Method | HTTP request | Description
 
 Create API Token
 
-Create an unlimited duration API Token.
+Create a timed API Token, valid for {duration} seconds.
 
 ### Example
 
@@ -87,10 +90,10 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **create_token_with_duration**
-> str create_token_with_duration(duration)
+# **create_token1**
+> str create_token1(duration)
 
-Create Timed API Token
+Create API Token
 
 Create a timed API Token, valid for {duration} seconds.
 
@@ -127,12 +130,12 @@ with freechat-sdk.ApiClient(configuration) as api_client:
     duration = 56 # int | Token validity duration (seconds)
 
     try:
-        # Create Timed API Token
-        api_response = api_instance.create_token_with_duration(duration)
-        print("The response of AccountApi->create_token_with_duration:\n")
+        # Create API Token
+        api_response = api_instance.create_token1(duration)
+        print("The response of AccountApi->create_token1:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AccountApi->create_token_with_duration: %s\n" % e)
+        print("Exception when calling AccountApi->create_token1: %s\n" % e)
 ```
 
 
@@ -239,6 +242,82 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **delete_token_by_id**
+> bool delete_token_by_id(id)
+
+Delete API Token by Id
+
+Delete the API token by id.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+```python
+import time
+import os
+import freechat-sdk
+from freechat-sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat-sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat-sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat-sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat-sdk.AccountApi(api_client)
+    id = 56 # int | Token id
+
+    try:
+        # Delete API Token by Id
+        api_response = api_instance.delete_token_by_id(id)
+        print("The response of AccountApi->delete_token_by_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AccountApi->delete_token_by_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **int**| Token id | 
+
+### Return type
+
+**bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **disable_token**
 > str disable_token(token)
 
@@ -294,6 +373,158 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **token** | **str**| Token content | 
+
+### Return type
+
+**str**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **disable_token_by_id**
+> bool disable_token_by_id(id)
+
+Disable API Token by Id
+
+Disable the API token by id.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+```python
+import time
+import os
+import freechat-sdk
+from freechat-sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat-sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat-sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat-sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat-sdk.AccountApi(api_client)
+    id = 56 # int | Token id
+
+    try:
+        # Disable API Token by Id
+        api_response = api_instance.disable_token_by_id(id)
+        print("The response of AccountApi->disable_token_by_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AccountApi->disable_token_by_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **int**| Token id | 
+
+### Return type
+
+**bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_token_by_id**
+> str get_token_by_id(id)
+
+Get API Token by Id
+
+Get the API token by id.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+```python
+import time
+import os
+import freechat-sdk
+from freechat-sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat-sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat-sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat-sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat-sdk.AccountApi(api_client)
+    id = 56 # int | Token id
+
+    try:
+        # Get API Token by Id
+        api_response = api_instance.get_token_by_id(id)
+        print("The response of AccountApi->get_token_by_id:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AccountApi->get_token_by_id: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **int**| Token id | 
 
 ### Return type
 
@@ -466,7 +697,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_tokens**
-> List[str] list_tokens()
+> List[ApiTokenInfoDTO] list_tokens()
 
 List API Tokens
 
@@ -479,6 +710,7 @@ List currently valid tokens.
 import time
 import os
 import freechat-sdk
+from freechat-sdk.models.api_token_info_dto import ApiTokenInfoDTO
 from freechat-sdk.rest import ApiException
 from pprint import pprint
 
@@ -519,7 +751,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**List[str]**
+[**List[ApiTokenInfoDTO]**](ApiTokenInfoDTO.md)
 
 ### Authorization
 

@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **description** | **str** | Character description | [optional] 
 **avatar** | **str** | Character avatar url | [optional] 
 **picture** | **str** | Character picture url | [optional] 
-**gender** | **str** | Character gender: male | female | non_human | unknown | [optional] 
+**gender** | **str** | Character gender: male | female | other | [optional] 
 **profile** | **str** | Character profile | [optional] 
 **greeting** | **str** | Character greeting | [optional] 
 **chat_style** | **str** | Character chat-style | [optional] 

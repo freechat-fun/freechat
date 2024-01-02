@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.2.0
+- API version: 0.2.6
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.1</version>
+  <version>0.2.6</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.1"
+     implementation "fun.freechat:freechat-sdk:0.2.6"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.1.jar`
+* `target/freechat-sdk-0.2.6.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -118,9 +118,12 @@ All URIs are relative to *http://127.0.0.1:8080*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AccountApi* | [**createToken**](docs/AccountApi.md#createToken) | **POST** /api/v1/account/token | Create API Token
-*AccountApi* | [**createTokenWithDuration**](docs/AccountApi.md#createTokenWithDuration) | **POST** /api/v1/account/token/{duration} | Create Timed API Token
+*AccountApi* | [**createToken1**](docs/AccountApi.md#createToken1) | **POST** /api/v1/account/token/{duration} | Create API Token
 *AccountApi* | [**deleteToken**](docs/AccountApi.md#deleteToken) | **DELETE** /api/v1/account/token/{token} | Delete API Token
+*AccountApi* | [**deleteTokenById**](docs/AccountApi.md#deleteTokenById) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id
 *AccountApi* | [**disableToken**](docs/AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token
+*AccountApi* | [**disableTokenById**](docs/AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
+*AccountApi* | [**getTokenById**](docs/AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
 *AccountApi* | [**getUserBasic**](docs/AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
 *AccountApi* | [**getUserDetails**](docs/AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details
 *AccountApi* | [**listTokens**](docs/AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens
@@ -275,6 +278,7 @@ Class | Method | HTTP request | Description
  - [AiApiKeyCreateDTO](docs/AiApiKeyCreateDTO.md)
  - [AiApiKeyInfoDTO](docs/AiApiKeyInfoDTO.md)
  - [AiModelInfoDTO](docs/AiModelInfoDTO.md)
+ - [ApiTokenInfoDTO](docs/ApiTokenInfoDTO.md)
  - [AppConfigCreateDTO](docs/AppConfigCreateDTO.md)
  - [AppConfigInfoDTO](docs/AppConfigInfoDTO.md)
  - [AppMetaDTO](docs/AppMetaDTO.md)
