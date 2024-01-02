@@ -2,27 +2,32 @@
 import Mustache from 'mustache';
 import { PromptDetailsDTO } from 'freechat-sdk';
 
-export function extractMustacheTemplateVariableNames(templateContent: string): string[] {
+export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
   const variables: string[] = [];
-  const context = {
-    get(name: string): string {
-      variables.push(name);
+
+  const contextHandler = {
+    get: function(_target: any, prop: string) {
+      variables.push(prop);
       return '';
     }
   };
 
-  Mustache.render(templateContent, context);
+  templateContents.forEach(templateContent => 
+    Mustache.render(templateContent, new Proxy({}, contextHandler)));
+
   return [...new Set(variables)];
 }
 
-export function extractFStringTemplateVariableNames(templateContent: string): string[] {
+export function extractFStringTemplateVariableNames(templateContents: string[]): string[] {
   const VAR_PATTERN: RegExp = /{(.*?)}(?!})/g;
   const variables: string[] = [];
   let match: RegExpExecArray | null;
 
-  while ((match = VAR_PATTERN.exec(templateContent)) !== null) {
-    variables.push(match[1].trim());
-  }
+  templateContents.forEach(templateContent => {
+    while ((match = VAR_PATTERN.exec(templateContent)) !== null) {
+      variables.push(match[1].trim());
+    }
+  });
   
   return [...new Set(variables)];
 }
@@ -32,30 +37,37 @@ export function extractVariables(record: PromptDetailsDTO | undefined): { [key: 
   if (!templateContent) {
     return undefined;
   }
-  const variableNames = record?.format === 'f_string' ?
-    extractFStringTemplateVariableNames(templateContent) :
-    extractMustacheTemplateVariableNames(templateContent);
 
   const defaultInputs = record?.inputs ? extractJson(record.inputs) : undefined;
 
-  return initVariables(variableNames, defaultInputs);
+  try {
+    const variableNames = record?.format === 'f_string' ?
+      extractFStringTemplateVariableNames(templateContent) :
+      extractMustacheTemplateVariableNames(templateContent);
+
+    return initVariables(variableNames, defaultInputs);
+  } catch (error) {
+    return defaultInputs;
+  }
 }
 
-export function getTemplateContent(record: PromptDetailsDTO | undefined): string | undefined{
+export function getTemplateContent(record: PromptDetailsDTO | undefined): string[] {
+  const templates: string[] = [];
+
   if (record?.type === 'chat' && record?.chatTemplate) {
     const chatTemplate = record?.chatTemplate;
-    let template = chatTemplate.system ?? '';
+    templates.push(chatTemplate.system ?? '');
 
     const messages = chatTemplate.messages ?? [];
     messages.forEach(message => 
-      template = `${template}\n${message.name || message.role}:${message.content}`);
+      templates.push(`${message.content}`));
     
-    template = `${template}\n${chatTemplate.messageToSend?.content ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}`;
-
-    return template;
+    templates.push(`${chatTemplate.messageToSend?.content ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}`);
   } else {
-    return record?.template;
+    templates.push(record?.template || '');
   }
+
+  return templates;
 }
 
 export function initVariables(names: string[], defaultInputs: { [key: string]: any } | undefined): { [key: string]: any } {

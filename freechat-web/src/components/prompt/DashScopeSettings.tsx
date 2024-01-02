@@ -387,7 +387,7 @@ export default function DashScopeSettings(props: {
                   {word}
                 </Chip>
               ))}
-              {(!stop || stop.length < 4) && (typeof stopWord === 'undefined') && (
+              {(!stop || stop.length < 4) && (stopWord === undefined) && (
                 <IconButton
                   disabled={!enableStop}
                   color="primary"
@@ -396,7 +396,7 @@ export default function DashScopeSettings(props: {
                   <AddCircleRounded />
                 </IconButton>
               )}
-              {(typeof stopWord !== 'undefined') && (
+              {(stopWord !== undefined) && (
                 <form onSubmit={handleStopWordSubmit}>
                   <TinyInput
                     disabled={!enableStop}

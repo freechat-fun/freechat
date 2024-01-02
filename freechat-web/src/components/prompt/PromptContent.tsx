@@ -17,7 +17,6 @@ export default function PromptContent(props: {
       minWidth: { sm: '16rem' },
       mt: 2,
       flex: 1,
-      transition: 'width 0.3s',
     }}>
       <Card sx={{
         minWidth: { sm: '12rem' },

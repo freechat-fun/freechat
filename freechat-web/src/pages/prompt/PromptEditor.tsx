@@ -8,7 +8,7 @@ import { ArrowBackRounded, ChatBubbleOutlineRounded, PlayCircleOutlineRounded, P
 import { LinePlaceholder } from "../../components";
 import { PromptDetailsDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
-import { PromptContentEditor, PromptMeta, PromptRunner } from "../../components/prompt";
+import { PromptContentEditor, PromptRunner } from "../../components/prompt";
 
 export default function PromptEditor() {
   const { id } = useParams();
@@ -17,7 +17,6 @@ export default function PromptEditor() {
   const { handleError } = useErrorMessageBusContext();
 
   const [record, setRecord] = useState<PromptDetailsDTO>();
-  const [history, setHistory] = useState<string[]>([]);
   const [play, setPlay] = useState(false);
   const [defaultParameters, setDefaultParameters] = useState<{ [key: string]: any }>()
   const [defaultVariables, setDefaultVariables] = useState<{ [key: string]: any }>()
@@ -30,13 +29,7 @@ export default function PromptEditor() {
 
   function getRecord(): void {
     id && promptApi?.getPromptDetails(id)
-      .then(resp => {
-        setRecord(resp);
-        resp?.name && promptApi?.listPromptVersionsByName(resp?.name)
-          .then(resp => resp.map(item => item.promptId))
-          .then(ids => setHistory(ids as string[]))
-          .catch(handleError);
-      })
+      .then(setRecord)
       .catch(handleError);
   }
 
@@ -97,8 +90,10 @@ export default function PromptEditor() {
         gap: { xs: 1, sm: 2 },
       }}>
         <PromptContentEditor record={record} />
-        {play ? 
+        {play && 
           <PromptRunner
+            minWidth="16rem"
+            maxWidth="40%"
             apiPath="/api/v1/prompt/send/stream"
             record={record}
             defaultVariables={defaultVariables}
@@ -119,8 +114,7 @@ export default function PromptEditor() {
 
               setDefaultOutputText(response?.message?.content ?? response?.text);
             }}
-          /> :
-          <PromptMeta record={record} history={history} />}
+          /> }
       </Box>
     </>
   );

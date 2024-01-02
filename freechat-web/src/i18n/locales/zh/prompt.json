@@ -5,6 +5,7 @@
   "Set API Key": "设置 API Key",
   "Select a key": "选择外部凭证",
   "or you can use a temporary key": "或者你可以使用一个临时凭证",
+  "Choose a model": "选择模型",
   "Model Parameters": "模型参数",
   "Supports Markdown format": "支持 Markdown 格式",
   "If an input's value is not specified at runtime, the default value set here will be used": "如果运行时未指定输入值，则将使用此处设置的默认值",

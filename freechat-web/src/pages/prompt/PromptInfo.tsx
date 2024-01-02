@@ -99,6 +99,8 @@ export default function PromptInfo() {
         <PromptContent record={record} />
         {play ? 
           <PromptRunner
+            minWidth="16rem"
+            maxWidth="50%"
             apiPath="/api/v1/prompt/send/stream"
             record={record}
             defaultVariables={defaultVariables}

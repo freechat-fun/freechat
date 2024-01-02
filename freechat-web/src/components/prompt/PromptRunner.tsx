@@ -129,11 +129,13 @@ export default function PromptRunner(props: {
   defaultVariables?: { [key: string]: any },
   defaultParameters?: { [key: string]: any },
   defaultOutputText?: string,
+  minWidth?: string,
+  maxWidth?: string,
   onPlayFailure?: (request: PromptAiParamDTO | undefined, error: any) => void,
   onPlaySuccess?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
   onExampleSave?: (response: LlmResultDTO | undefined) => void,
 }) {
-  const { apiPath, record, draft, defaultVariables, defaultParameters, defaultOutputText, onPlayFailure, onPlaySuccess, onExampleSave } = props;
+  const { apiPath, record, draft, defaultVariables, defaultParameters, defaultOutputText, minWidth, maxWidth, onPlayFailure, onPlaySuccess, onExampleSave } = props;
   const { t } = useTranslation();
   const { aiServiceApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -151,10 +153,10 @@ export default function PromptRunner(props: {
   const [playing, setPlaying] = useState(false);
   const [parameters, setParameters] = useState(defaultParameters);
 
-  const [width, setWidth] = useState('30%');
+  const [width, setWidth] = useState(minWidth || '30%');
 
   useEffect(() => {
-    setWidth('50%');
+    setWidth(maxWidth || '50%');
     aiServiceApi?.listAiModelInfo1()
       .then(setModels)
       .catch(handleError);
@@ -163,7 +165,7 @@ export default function PromptRunner(props: {
         .filter(key => !!key.name && key.enabled)
         .map(key => key.name)))
       .catch(handleError);
-  }, [record, provider, aiServiceApi, handleError]);
+  }, [record, provider, aiServiceApi, handleError, maxWidth]);
 
   function handleInputChange(key: string, value: string | undefined): void {
     if (inputs && value !== inputs[key]) {

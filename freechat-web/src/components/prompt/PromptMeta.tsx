@@ -14,8 +14,8 @@ export default function PromptMeta(props: {
 
   const format = record?.format;
   const lang = record?.lang;
-  const tags: string[] = record?.tags || [];
-  const models: AiModelInfoDTO[] = record?.aiModels || [];
+  const tags: string[] = record?.tags ?? [];
+  const models: AiModelInfoDTO[] = record?.aiModels ?? [];
 
   const HistoryTypography = styled(Typography)(() => ({
     overflow: 'hidden',
@@ -26,8 +26,7 @@ export default function PromptMeta(props: {
 
   return (
     <Card sx={{
-      minWidth: { sm: '12rem' },
-      maxWidth: { sm: '16rem' },
+      width: { sm: '16rem' },
       mt: 2,
       p: 2,
       boxShadow: 'sm',
