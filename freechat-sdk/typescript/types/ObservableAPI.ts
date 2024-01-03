@@ -5031,6 +5031,39 @@ export class ObservablePromptApi {
     }
 
     /**
+     * Check if the name already exists.
+     * Check If Name Exists
+     * @param name Name
+     */
+    public existsNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.existsName(name, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.existsNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Check if the name already exists.
+     * Check If Name Exists
+     * @param name Name
+     */
+    public existsName(name: string, _options?: Configuration): Observable<boolean> {
+        return this.existsNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
      * Get prompt detailed information.
      * Get Prompt Details
      * @param promptId PromptId to be obtained

@@ -31,5 +31,7 @@
   "Default value": "Default value",
   "Inputs": "Inputs",
   "Output": "Output",
+  "Please enter a new name": "Please enter a new name",
+  "Name already exists!": "Name already exists!",
   ".": "."
 }

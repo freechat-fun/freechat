@@ -196,6 +196,20 @@ public class PromptApiTest {
     }
 
     /**
+     * Check If Name Exists
+     *
+     * Check if the name already exists.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void existsNameTest() throws ApiException {
+        String name = null;
+        Boolean response = api.existsName(name);
+        // TODO: test validations
+    }
+
+    /**
      * Get Prompt Details
      *
      * Get prompt detailed information.

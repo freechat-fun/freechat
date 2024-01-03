@@ -4106,6 +4106,15 @@ export interface PromptApiDeletePromptsRequest {
     requestBody: Array<string>
 }
 
+export interface PromptApiExistsNameRequest {
+    /**
+     * Name
+     * @type string
+     * @memberof PromptApiexistsName
+     */
+    name: string
+}
+
 export interface PromptApiGetPromptDetailsRequest {
     /**
      * PromptId to be obtained
@@ -4402,6 +4411,24 @@ export class ObjectPromptApi {
      */
     public deletePrompts(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<Array<string>> {
         return this.api.deletePrompts(param.requestBody,  options).toPromise();
+    }
+
+    /**
+     * Check if the name already exists.
+     * Check If Name Exists
+     * @param param the request object
+     */
+    public existsNameWithHttpInfo(param: PromptApiExistsNameRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.existsNameWithHttpInfo(param.name,  options).toPromise();
+    }
+
+    /**
+     * Check if the name already exists.
+     * Check If Name Exists
+     * @param param the request object
+     */
+    public existsName(param: PromptApiExistsNameRequest, options?: Configuration): Promise<boolean> {
+        return this.api.existsName(param.name,  options).toPromise();
     }
 
     /**

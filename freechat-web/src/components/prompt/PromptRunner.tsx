@@ -7,7 +7,7 @@ import { CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFill
 import { CommonBox, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
 import { DashScopeSettings } from ".";
 import { providers as modelProviders } from "../../configs/model-providers-config";
-import { PromptAiParamDTO, PromptDetailsDTO, PromptRefDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
+import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
 import { extractModelProvider, extractVariables } from "../../libs/template_utils";
 
 function AiApiKeySetting(props: {
@@ -125,7 +125,6 @@ function AiApiKeySetting(props: {
 export default function PromptRunner(props: {
   apiPath: string,
   record: PromptDetailsDTO | undefined,
-  draft?: boolean,
   defaultVariables?: { [key: string]: any },
   defaultParameters?: { [key: string]: any },
   defaultOutputText?: string,
@@ -135,7 +134,7 @@ export default function PromptRunner(props: {
   onPlaySuccess?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
   onExampleSave?: (response: LlmResultDTO | undefined) => void,
 }) {
-  const { apiPath, record, draft, defaultVariables, defaultParameters, defaultOutputText, minWidth, maxWidth, onPlayFailure, onPlaySuccess, onExampleSave } = props;
+  const { apiPath, record, defaultVariables, defaultParameters, defaultOutputText, minWidth, maxWidth, onPlayFailure, onPlaySuccess, onExampleSave } = props;
   const { t } = useTranslation();
   const { aiServiceApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -195,22 +194,13 @@ export default function PromptRunner(props: {
 
     const request = new PromptAiParamDTO();
 
-    if (record.promptId) {
-      const promptRef = new PromptRefDTO();
-      promptRef.promptId = record.promptId;
-      promptRef.variables = inputs;
-      promptRef.draft = draft;
+    const promptTemplate = new PromptTemplateDTO();
+    promptTemplate.format = record.format;
+    promptTemplate.template = record.template;
+    promptTemplate.chatTemplate = record.chatTemplate;
+    promptTemplate.variables = inputs;
 
-      request.promptRef = promptRef;
-    } else {
-      const promptTemplate = new PromptTemplateDTO();
-      promptTemplate.format = record.format;
-      promptTemplate.template = record.template;
-      promptTemplate.chatTemplate = record.chatTemplate;
-      promptTemplate.variables = inputs;
-
-      request.promptTemplate = promptTemplate;
-    }
+    request.promptTemplate = promptTemplate;
 
     request.params = parameters as typeof request.params;
     if (apiKeyValue) {

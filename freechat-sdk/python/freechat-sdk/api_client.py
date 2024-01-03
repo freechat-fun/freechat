@@ -86,7 +86,7 @@ class ApiClient:
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = 'freechat-sdk/0.2.6/python'
+        self.user_agent = 'freechat-sdk/0.2.7/python'
         self.client_side_validation = configuration.client_side_validation
 
     def __enter__(self):

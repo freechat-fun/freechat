@@ -54,7 +54,7 @@ export default function DashScopeSettings(props: {
   }, [defaultParameters?.modelId, models]);
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
-    if (newValue && newValue !== model) {
+    if (newValue && newValue !== model?.modelId) {
       setModel(models?.find(modelInfo => modelInfo?.modelId === newValue))
     }
   }

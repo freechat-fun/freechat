@@ -14,7 +14,7 @@
 """  # noqa: E501
 
 
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 
 # import apis into sdk package
 from freechat-sdk.api.ai_service_api import AIServiceApi

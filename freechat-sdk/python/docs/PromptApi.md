@@ -15,6 +15,7 @@ Method | HTTP request | Description
 [**create_prompts**](PromptApi.md#create_prompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 [**delete_prompt**](PromptApi.md#delete_prompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
 [**delete_prompts**](PromptApi.md#delete_prompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
+[**exists_name**](PromptApi.md#exists_name) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists
 [**get_prompt_details**](PromptApi.md#get_prompt_details) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
 [**get_prompt_summary**](PromptApi.md#get_prompt_summary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
 [**list_prompt_versions_by_name**](PromptApi.md#list_prompt_versions_by_name) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
@@ -862,6 +863,82 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **exists_name**
+> bool exists_name(name)
+
+Check If Name Exists
+
+Check if the name already exists.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+```python
+import time
+import os
+import freechat-sdk
+from freechat-sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat-sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat-sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat-sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat-sdk.PromptApi(api_client)
+    name = 'name_example' # str | Name
+
+    try:
+        # Check If Name Exists
+        api_response = api_instance.exists_name(name)
+        print("The response of PromptApi->exists_name:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling PromptApi->exists_name: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | **str**| Name | 
+
+### Return type
+
+**bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 ### HTTP response details

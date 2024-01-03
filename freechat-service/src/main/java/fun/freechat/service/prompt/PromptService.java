@@ -72,4 +72,5 @@ public interface PromptService {
     ChatMessage apply(ChatMessage original, Map<String, Object> variables, PromptFormat format);
     ChatPromptContent apply(ChatPromptContent promptContent, Map<String, Object> variables, PromptFormat format);
     Pair<String, PromptType> apply(String promptId, Map<String, Object> variables, Boolean draft);
+    boolean existsName(String name, User user);
 }

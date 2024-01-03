@@ -39,6 +39,7 @@ import java.util.*;
 
 import static fun.freechat.service.enums.PromptFormat.F_STRING;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
 
 @Service
 @Slf4j
@@ -790,6 +791,19 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         } else {
             return Pair.of(apply(promptTemplate, variables, format), type);
         }
+    }
+
+    @Override
+    public boolean existsName(String name, User user) {
+        var statement = select(Info.name)
+                .from(Info.table)
+                .where(Info.name, isEqualTo(name))
+                .and(Info.userId, isEqualTo(user.getUserId()))
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return !promptInfoMapper.selectMany(statement).isEmpty();
     }
 
     private static class Info {

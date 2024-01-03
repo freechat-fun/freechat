@@ -3,6 +3,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useReducer } from "react";
 
+const MAX_ERRORS = 3;
+
 type ErrorMessage = {
   code: number | undefined;
   message: string | undefined;
@@ -44,6 +46,9 @@ const ErrorMessageBusProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   const handleError = (reason: any) => {
+    if (messages.length > MAX_ERRORS) {
+      return;
+    }
     const code = reason?.code || -1;
     const message = reason?.message || 'Unknown Error';
     putMessage({code: code, message: message});

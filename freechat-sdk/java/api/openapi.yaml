@@ -3985,6 +3985,30 @@ paths:
       tags:
       - Prompt
       x-accepts: application/json
+  /api/v1/prompt/exists/name/{name}:
+    get:
+      description: Check if the name already exists.
+      operationId: existsName
+      parameters:
+      - description: Name
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Check If Name Exists
+      tags:
+      - Prompt
+      x-accepts: application/json
   /api/v1/prompt/details/{promptId}:
     get:
       description: Get prompt detailed information.

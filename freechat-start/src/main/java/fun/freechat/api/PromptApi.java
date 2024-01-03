@@ -620,4 +620,15 @@ public class PromptApi {
                 promptRef.getPromptId(), promptRef.getVariables(), promptRef.getDraft());
         return Objects.nonNull(applied) ? applied.getLeft() : null;
     }
+
+    @Operation(
+            operationId = "existsName",
+            summary = "Check If Name Exists",
+            description = "Check if the name already exists."
+    )
+    @GetMapping("/exists/name/{name}")
+    public Boolean existsName(
+            @Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
+        return promptService.existsName(name, AccountUtils.currentUser());
+    }
 }

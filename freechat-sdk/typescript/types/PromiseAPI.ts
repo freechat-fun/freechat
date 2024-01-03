@@ -3205,6 +3205,26 @@ export class PromisePromptApi {
     }
 
     /**
+     * Check if the name already exists.
+     * Check If Name Exists
+     * @param name Name
+     */
+    public existsNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.existsNameWithHttpInfo(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Check if the name already exists.
+     * Check If Name Exists
+     * @param name Name
+     */
+    public existsName(name: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.existsName(name, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Get prompt detailed information.
      * Get Prompt Details
      * @param promptId PromptId to be obtained

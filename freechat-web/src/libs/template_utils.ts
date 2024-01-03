@@ -5,15 +5,21 @@ import { PromptDetailsDTO } from 'freechat-sdk';
 export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
   const variables: string[] = [];
 
-  const contextHandler = {
-    get: function(_target: any, prop: string) {
-      variables.push(prop);
-      return '';
-    }
-  };
+  // const contextHandler = {
+  //   get: function(_target: any, prop: string) {
+  //     variables.push(prop);
+  //     return '';
+  //   }
+  // };
 
-  templateContents.forEach(templateContent => 
-    Mustache.render(templateContent, new Proxy({}, contextHandler)));
+  // templateContents.forEach(templateContent => 
+  //   Mustache.render(templateContent, new Proxy({}, contextHandler)));
+
+  templateContents.forEach(templateContent => variables.push(
+    ...Mustache.parse(templateContent)
+      .filter(function(v) { return v[0] === 'name' || v[0] === '#' || v[0] === '&' })
+      .map(function(v) { return v[1]; })
+    ));
 
   return [...new Set(variables)];
 }
