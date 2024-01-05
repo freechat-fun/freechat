@@ -1,13 +1,14 @@
 package fun.freechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.PromptInfo;
+import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.*;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.stats.InteractiveStatsService;
+import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -25,15 +28,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 @Tag(name = "Prompt")
@@ -580,36 +579,52 @@ public class PromptApi {
     }
 
     @Operation(
-            operationId = "applyStringPromptTemplate",
-            summary = "Apply Parameters to String Prompt Template",
-            description = "Apply parameters to string type prompt template."
+            operationId = "applyPromptTemplate",
+            summary = "Apply Parameters to Prompt Template",
+            description = "Apply parameters to prompt template."
     )
-    @PostMapping("/apply/string")
+    @PostMapping(value = "/apply/template", produces = MediaType.TEXT_PLAIN_VALUE)
     public String apply(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "String type prompt template")
             @RequestBody
             @NotNull
             PromptTemplateDTO promptTemplate) {
         String template = promptTemplate.getTemplate();
-        if (StringUtils.isBlank(template) && Objects.nonNull(promptTemplate.getChatTemplate())) {
+        if (StringUtils.isNotBlank(template)) {
+            return promptService.apply(template, promptTemplate.getVariables(),
+                    PromptFormat.of(promptTemplate.getFormat()));
+        }
+        if (Objects.nonNull(promptTemplate.getChatTemplate())) {
             try {
-                template = new ObjectMapper().writeValueAsString(promptTemplate.getChatTemplate());
+                ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
+                Map<String, Object> variables = promptTemplate.getVariables();
+                PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
+                if (Objects.isNull(chatTemplate.getMessageToSend()) &&
+                        MapUtils.isNotEmpty(variables) &&
+                        variables.containsKey("input")) {
+                    ChatMessageDTO chatMessage = new ChatMessageDTO();
+                    chatMessage.setRole(PromptRole.USER.text());
+                    chatMessage.setGmtCreate(new Date());
+                    chatMessage.setContent(format == PromptFormat.F_STRING ? "{input}" : "{{input}}");
+                    chatTemplate.setMessageToSend(chatMessage);
+                }
+                ChatPromptContent applied = promptService.apply(
+                        chatTemplate.toChatPromptContent(),variables, format);
+                return InfoUtils.defaultMapper().writeValueAsString(ChatPromptContentDTO.from(applied));
             } catch (JsonProcessingException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
             }
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "template or chatTemplate must be defined.");
         }
-        return promptService.apply(template, promptTemplate.getVariables(),
-                PromptFormat.of(promptTemplate.getFormat()));
     }
 
     @Operation(
-            operationId = "applyStringPromptRef",
+            operationId = "applyPromptRef",
             summary = "Apply Parameters to Prompt Record",
             description = "Apply parameters to prompt record."
     )
-    @PostMapping("/apply/ref")
+    @PostMapping(value = "/apply/ref", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0.promptId, 'promptDefaultOp')")
     public String apply(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Prompt record")

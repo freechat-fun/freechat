@@ -49,9 +49,9 @@ public class PromptApiTest {
      * @throws ApiException if the Api call fails
      */
     @Test
-    public void applyStringPromptRefTest() throws ApiException {
+    public void applyPromptRefTest() throws ApiException {
         PromptRefDTO promptRefDTO = null;
-        String response = api.applyStringPromptRef(promptRefDTO);
+        String response = api.applyPromptRef(promptRefDTO);
         // TODO: test validations
     }
 
@@ -63,9 +63,9 @@ public class PromptApiTest {
      * @throws ApiException if the Api call fails
      */
     @Test
-    public void applyStringPromptTemplateTest() throws ApiException {
+    public void applyPromptTemplateTest() throws ApiException {
         PromptTemplateDTO promptTemplateDTO = null;
-        String response = api.applyStringPromptTemplate(promptTemplateDTO);
+        String response = api.applyPromptTemplate(promptTemplateDTO);
         // TODO: test validations
     }
 

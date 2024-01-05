@@ -30,12 +30,12 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public async applyStringPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<RequestContext> {
+    public async applyPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptRefDTO' is not null or undefined
         if (promptRefDTO === null || promptRefDTO === undefined) {
-            throw new RequiredError("PromptApi", "applyStringPromptRef", "promptRefDTO");
+            throw new RequiredError("PromptApi", "applyPromptRef", "promptRefDTO");
         }
 
 
@@ -78,17 +78,17 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Apply Parameters to String Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public async applyStringPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<RequestContext> {
+    public async applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptTemplateDTO' is not null or undefined
         if (promptTemplateDTO === null || promptTemplateDTO === undefined) {
-            throw new RequiredError("PromptApi", "applyStringPromptTemplate", "promptTemplateDTO");
+            throw new RequiredError("PromptApi", "applyPromptTemplate", "promptTemplateDTO");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/apply/string';
+        const localVarPath = '/api/v1/prompt/apply/template';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -987,10 +987,10 @@ export class PromptApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to applyStringPromptRef
+     * @params response Response returned by the server for a request to applyPromptRef
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async applyStringPromptRefWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async applyPromptRefWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: string = ObjectSerializer.deserialize(
@@ -1016,10 +1016,10 @@ export class PromptApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to applyStringPromptTemplate
+     * @params response Response returned by the server for a request to applyPromptTemplate
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async applyStringPromptTemplateWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async applyPromptTemplateWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: string = ObjectSerializer.deserialize(

@@ -4,8 +4,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**applyStringPromptRef**](PromptApi.md#applyStringPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record |
-| [**applyStringPromptTemplate**](PromptApi.md#applyStringPromptTemplate) | **POST** /api/v1/prompt/apply/string | Apply Parameters to String Prompt Template |
+| [**applyPromptRef**](PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record |
+| [**applyPromptTemplate**](PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template |
 | [**batchSearchPromptDetails**](PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details |
 | [**batchSearchPromptSummary**](PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries |
 | [**clonePrompt**](PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt |
@@ -27,9 +27,9 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**updatePrompt**](PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt |
 
 
-<a id="applyStringPromptRef"></a>
-# **applyStringPromptRef**
-> String applyStringPromptRef(promptRefDTO)
+<a id="applyPromptRef"></a>
+# **applyPromptRef**
+> String applyPromptRef(promptRefDTO)
 
 Apply Parameters to Prompt Record
 
@@ -57,10 +57,10 @@ public class Example {
     PromptApi apiInstance = new PromptApi(defaultClient);
     PromptRefDTO promptRefDTO = new PromptRefDTO(); // PromptRefDTO | Prompt record
     try {
-      String result = apiInstance.applyStringPromptRef(promptRefDTO);
+      String result = apiInstance.applyPromptRef(promptRefDTO);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling PromptApi#applyStringPromptRef");
+      System.err.println("Exception when calling PromptApi#applyPromptRef");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -87,16 +87,16 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
-<a id="applyStringPromptTemplate"></a>
-# **applyStringPromptTemplate**
-> String applyStringPromptTemplate(promptTemplateDTO)
+<a id="applyPromptTemplate"></a>
+# **applyPromptTemplate**
+> String applyPromptTemplate(promptTemplateDTO)
 
 Apply Parameters to String Prompt Template
 
@@ -124,10 +124,10 @@ public class Example {
     PromptApi apiInstance = new PromptApi(defaultClient);
     PromptTemplateDTO promptTemplateDTO = new PromptTemplateDTO(); // PromptTemplateDTO | String type prompt template
     try {
-      String result = apiInstance.applyStringPromptTemplate(promptTemplateDTO);
+      String result = apiInstance.applyPromptTemplate(promptTemplateDTO);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling PromptApi#applyStringPromptTemplate");
+      System.err.println("Exception when calling PromptApi#applyPromptTemplate");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -154,7 +154,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 ### HTTP response details
 | Status code | Description | Response headers |

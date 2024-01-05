@@ -132,7 +132,7 @@ export default function PromptRunner(props: {
   maxWidth?: string,
   onPlayFailure?: (request: PromptAiParamDTO | undefined, error: any) => void,
   onPlaySuccess?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
-  onExampleSave?: (response: LlmResultDTO | undefined) => void,
+  onExampleSave?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
 }) {
   const { apiPath, record, defaultVariables, defaultParameters, defaultOutputText, minWidth, maxWidth, onPlayFailure, onPlaySuccess, onExampleSave } = props;
   const { t } = useTranslation();
@@ -327,14 +327,13 @@ export default function PromptRunner(props: {
         </CommonBox>
         <TextareaTypography>
           <ChatContent
-            url={aiRequest ? getServiceUrl() : undefined}
-            body={aiRequest ? JSON.stringify(aiRequest) : undefined}
+            url={playing ? getServiceUrl() : undefined}
+            body={playing && aiRequest ? JSON.stringify(aiRequest) : undefined}
             initialData={defaultOutputText}
             onFinish={setOutput}
             onClose={() => {
               onPlaySuccess?.(aiRequest, output);
               setPlaying(false);
-              setAiRequest(undefined);
             }}
             onError={(error) => {
               onPlayFailure?.(aiRequest, error);
@@ -378,7 +377,7 @@ export default function PromptRunner(props: {
               variant="outlined"
               color="success"
               startDecorator={<IosShareRounded />}
-              onClick={() => onExampleSave(output)}
+              onClick={() => onExampleSave(aiRequest, output)}
             >
               {t('Save as Example', {ns: 'button'})}
             </Button>

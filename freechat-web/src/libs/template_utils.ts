@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Mustache from 'mustache';
-import { PromptDetailsDTO } from 'freechat-sdk';
+import { ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
 
 export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
   const variables: string[] = [];
@@ -110,4 +110,99 @@ export function extractModelProvider(modelId: string | undefined): string | unde
   const match = modelId.match(regex);
 
   return match?.[1];
+}
+
+const EXAMPLE_TEMPLATE = `### Variable Settings
+{{{variables}}}
+
+### Model Info
+{{model}}
+
+### Model Parameters:
+{{{parameters}}}
+
+### Input
+{{{prompt}}}
+
+### Output
+{{{output}}}
+`;
+
+function objectToMarkdownTable(obj: { [key: string]: any } | undefined, keyColumn: string, valueColumn: string = 'Value'): string {
+  if (!obj) {
+    return '';
+  }
+
+  try {
+      let markdownTable = `| **${keyColumn}** | **${valueColumn}** |\n|----|----|\n`;
+
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          const v = obj[key];
+          let literal: string;
+          if (v === undefined || v === null) {
+            continue;
+          } else if (typeof v === 'string') {
+            literal = v;
+          } else {
+            literal = JSON.stringify(v);
+          }
+
+          markdownTable += `| ${key} | ${literal} |\n`;
+        }
+      }
+
+      return markdownTable;
+  } catch (error) {
+      console.error('Invalid parameters:', error);
+      return '';
+  }
+}
+
+function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | undefined, format: string | undefined): string {
+  if (!chatTemplate) {
+    return '';
+  }
+
+  let markdownContent = '**[SYSTEM]**\n';
+
+  markdownContent += `${chatTemplate.system ?? ''}\n\n`;
+
+  if (chatTemplate.messages && chatTemplate.messages.length > 0) {
+    markdownContent += '**[MESSAGES]**\n';
+    chatTemplate.messages.forEach(message => {
+      markdownContent += `**${message.role?.toUpperCase()}: **${message.content}\n`;
+    });
+    markdownContent += '\n';
+  }
+
+  markdownContent += '**[USER]**\n';
+  markdownContent += `${chatTemplate.messageToSend?.content ?? (format === 'f_string' ? '{input}' : '{{input}}')}`;
+
+  return markdownContent;
+}
+
+export function generateExample(request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined): string | undefined {
+  if (!request || !response) {
+    return undefined;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { modelId, apiKeyName, apiKey, ...modelParameters } = request.params;
+
+  const variables = objectToMarkdownTable(request.promptTemplate?.variables ?? request.promptRef?.variables, 'Placeholder');
+  const prompt = request.prompt ?? chatTemplateToMarkdownContent(request.promptTemplate?.chatTemplate, request.promptTemplate?.format);
+  const model = modelId as string;
+  const parameters =  objectToMarkdownTable(modelParameters, 'Parameters');
+  const output = response.message?.content ?? response.text;
+
+  const markdownContext = {
+    variables: variables,
+    prompt: prompt,
+    model: model,
+    parameters: parameters,
+    output: output,
+  };
+
+  return Mustache.render(EXAMPLE_TEMPLATE, markdownContext);
 }

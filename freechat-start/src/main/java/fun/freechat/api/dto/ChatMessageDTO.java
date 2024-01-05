@@ -2,6 +2,7 @@ package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fun.freechat.service.ai.message.ChatMessage;
+import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
@@ -43,5 +44,19 @@ public class ChatMessageDTO {
                     .toList());
         }
         return dto;
+    }
+
+    public ChatMessage toChatMessage() {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setRole(PromptRole.of(getRole()));
+        chatMessage.setName(getName());
+        chatMessage.setContent(getContent());
+        if (CollectionUtils.isNotEmpty(getToolCalls())) {
+            chatMessage.setToolCalls(getToolCalls().stream()
+                    .map(ChatToolCallDTO::toChatToolCall)
+                    .toList());
+        }
+        chatMessage.setGmtCreate(getGmtCreate());
+        return chatMessage;
     }
 }

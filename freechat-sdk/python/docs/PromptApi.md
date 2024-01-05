@@ -4,8 +4,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**apply_string_prompt_ref**](PromptApi.md#apply_string_prompt_ref) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-[**apply_string_prompt_template**](PromptApi.md#apply_string_prompt_template) | **POST** /api/v1/prompt/apply/string | Apply Parameters to String Prompt Template
+[**apply_prompt_ref**](PromptApi.md#apply_prompt_ref) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
+[**apply_prompt_template**](PromptApi.md#apply_prompt_template) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template
 [**batch_search_prompt_details**](PromptApi.md#batch_search_prompt_details) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
 [**batch_search_prompt_summary**](PromptApi.md#batch_search_prompt_summary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
 [**clone_prompt**](PromptApi.md#clone_prompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
@@ -27,8 +27,8 @@ Method | HTTP request | Description
 [**update_prompt**](PromptApi.md#update_prompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
 
 
-# **apply_string_prompt_ref**
-> str apply_string_prompt_ref(prompt_ref_dto)
+# **apply_prompt_ref**
+> str apply_prompt_ref(prompt_ref_dto)
 
 Apply Parameters to Prompt Record
 
@@ -69,11 +69,11 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
     try:
         # Apply Parameters to Prompt Record
-        api_response = api_instance.apply_string_prompt_ref(prompt_ref_dto)
-        print("The response of PromptApi->apply_string_prompt_ref:\n")
+        api_response = api_instance.apply_prompt_ref(prompt_ref_dto)
+        print("The response of PromptApi->apply_prompt_ref:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling PromptApi->apply_string_prompt_ref: %s\n" % e)
+        print("Exception when calling PromptApi->apply_prompt_ref: %s\n" % e)
 ```
 
 
@@ -95,7 +95,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -104,8 +104,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **apply_string_prompt_template**
-> str apply_string_prompt_template(prompt_template_dto)
+# **apply_prompt_template**
+> str apply_prompt_template(prompt_template_dto)
 
 Apply Parameters to String Prompt Template
 
@@ -146,11 +146,11 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
     try:
         # Apply Parameters to String Prompt Template
-        api_response = api_instance.apply_string_prompt_template(prompt_template_dto)
-        print("The response of PromptApi->apply_string_prompt_template:\n")
+        api_response = api_instance.apply_prompt_template(prompt_template_dto)
+        print("The response of PromptApi->apply_prompt_template:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling PromptApi->apply_string_prompt_template: %s\n" % e)
+        print("Exception when calling PromptApi->apply_prompt_template: %s\n" % e)
 ```
 
 
@@ -172,7 +172,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 ### HTTP response details
 | Status code | Description | Response headers |

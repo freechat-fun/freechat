@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.7</version>
+  <version>0.2.9</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.7"
+     implementation "fun.freechat:freechat-sdk:0.2.9"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.7.jar`
+* `target/freechat-sdk-0.2.9.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -247,8 +247,8 @@ Class | Method | HTTP request | Description
 *PluginApi* | [**searchPluginDetails**](docs/PluginApi.md#searchPluginDetails) | **POST** /api/v1/plugin/details/search | Search Plugin Details
 *PluginApi* | [**searchPluginSummary**](docs/PluginApi.md#searchPluginSummary) | **POST** /api/v1/plugin/search | Search Plugin Summary
 *PluginApi* | [**updatePlugin**](docs/PluginApi.md#updatePlugin) | **PUT** /api/v1/plugin/{pluginId} | Update Plugin
-*PromptApi* | [**applyStringPromptRef**](docs/PromptApi.md#applyStringPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-*PromptApi* | [**applyStringPromptTemplate**](docs/PromptApi.md#applyStringPromptTemplate) | **POST** /api/v1/prompt/apply/string | Apply Parameters to String Prompt Template
+*PromptApi* | [**applyPromptRef**](docs/PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
+*PromptApi* | [**applyPromptTemplate**](docs/PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template
 *PromptApi* | [**batchSearchPromptDetails**](docs/PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
 *PromptApi* | [**batchSearchPromptSummary**](docs/PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
 *PromptApi* | [**clonePrompt**](docs/PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt

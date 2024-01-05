@@ -2989,8 +2989,8 @@ export class PromisePromptApi {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public applyStringPromptRefWithHttpInfo(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.applyStringPromptRefWithHttpInfo(promptRefDTO, _options);
+    public applyPromptRefWithHttpInfo(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.applyPromptRefWithHttpInfo(promptRefDTO, _options);
         return result.toPromise();
     }
 
@@ -2999,8 +2999,8 @@ export class PromisePromptApi {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public applyStringPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.applyStringPromptRef(promptRefDTO, _options);
+    public applyPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.applyPromptRef(promptRefDTO, _options);
         return result.toPromise();
     }
 
@@ -3009,8 +3009,8 @@ export class PromisePromptApi {
      * Apply Parameters to String Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public applyStringPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.applyStringPromptTemplateWithHttpInfo(promptTemplateDTO, _options);
+    public applyPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.applyPromptTemplateWithHttpInfo(promptTemplateDTO, _options);
         return result.toPromise();
     }
 
@@ -3019,8 +3019,8 @@ export class PromisePromptApi {
      * Apply Parameters to String Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public applyStringPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.applyStringPromptTemplate(promptTemplateDTO, _options);
+    public applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.applyPromptTemplate(promptTemplateDTO, _options);
         return result.toPromise();
     }
 

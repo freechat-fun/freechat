@@ -1772,10 +1772,10 @@ paths:
       - Prompt
       x-content-type: application/json
       x-accepts: application/json
-  /api/v1/prompt/apply/string:
+  /api/v1/prompt/apply/template:
     post:
       description: Apply parameters to string type prompt template.
-      operationId: applyStringPromptTemplate
+      operationId: applyPromptTemplate
       requestBody:
         content:
           application/json:
@@ -1786,7 +1786,7 @@ paths:
       responses:
         "200":
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
           description: OK
@@ -1794,11 +1794,11 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts: text/plain
   /api/v1/prompt/apply/ref:
     post:
       description: Apply parameters to prompt record.
-      operationId: applyStringPromptRef
+      operationId: applyPromptRef
       requestBody:
         content:
           application/json:
@@ -1809,7 +1809,7 @@ paths:
       responses:
         "200":
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
           description: OK
@@ -1817,7 +1817,7 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts: text/plain
   /api/v1/plugin:
     post:
       description: |

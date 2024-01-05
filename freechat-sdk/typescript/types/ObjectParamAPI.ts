@@ -4007,20 +4007,20 @@ export class ObjectPluginApi {
 import { ObservablePromptApi } from "./ObservableAPI.js";
 import { PromptApiRequestFactory, PromptApiResponseProcessor} from "../apis/PromptApi.js";
 
-export interface PromptApiApplyStringPromptRefRequest {
+export interface PromptApiApplyPromptRefRequest {
     /**
      * Prompt record
      * @type PromptRefDTO
-     * @memberof PromptApiapplyStringPromptRef
+     * @memberof PromptApiapplyPromptRef
      */
     promptRefDTO: PromptRefDTO
 }
 
-export interface PromptApiApplyStringPromptTemplateRequest {
+export interface PromptApiApplyPromptTemplateRequest {
     /**
      * String type prompt template
      * @type PromptTemplateDTO
-     * @memberof PromptApiapplyStringPromptTemplate
+     * @memberof PromptApiapplyPromptTemplate
      */
     promptTemplateDTO: PromptTemplateDTO
 }
@@ -4220,8 +4220,8 @@ export class ObjectPromptApi {
      * Apply Parameters to Prompt Record
      * @param param the request object
      */
-    public applyStringPromptRefWithHttpInfo(param: PromptApiApplyStringPromptRefRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.applyStringPromptRefWithHttpInfo(param.promptRefDTO,  options).toPromise();
+    public applyPromptRefWithHttpInfo(param: PromptApiApplyPromptRefRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.applyPromptRefWithHttpInfo(param.promptRefDTO,  options).toPromise();
     }
 
     /**
@@ -4229,8 +4229,8 @@ export class ObjectPromptApi {
      * Apply Parameters to Prompt Record
      * @param param the request object
      */
-    public applyStringPromptRef(param: PromptApiApplyStringPromptRefRequest, options?: Configuration): Promise<string> {
-        return this.api.applyStringPromptRef(param.promptRefDTO,  options).toPromise();
+    public applyPromptRef(param: PromptApiApplyPromptRefRequest, options?: Configuration): Promise<string> {
+        return this.api.applyPromptRef(param.promptRefDTO,  options).toPromise();
     }
 
     /**
@@ -4238,8 +4238,8 @@ export class ObjectPromptApi {
      * Apply Parameters to String Prompt Template
      * @param param the request object
      */
-    public applyStringPromptTemplateWithHttpInfo(param: PromptApiApplyStringPromptTemplateRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.applyStringPromptTemplateWithHttpInfo(param.promptTemplateDTO,  options).toPromise();
+    public applyPromptTemplateWithHttpInfo(param: PromptApiApplyPromptTemplateRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.applyPromptTemplateWithHttpInfo(param.promptTemplateDTO,  options).toPromise();
     }
 
     /**
@@ -4247,8 +4247,8 @@ export class ObjectPromptApi {
      * Apply Parameters to String Prompt Template
      * @param param the request object
      */
-    public applyStringPromptTemplate(param: PromptApiApplyStringPromptTemplateRequest, options?: Configuration): Promise<string> {
-        return this.api.applyStringPromptTemplate(param.promptTemplateDTO,  options).toPromise();
+    public applyPromptTemplate(param: PromptApiApplyPromptTemplateRequest, options?: Configuration): Promise<string> {
+        return this.api.applyPromptTemplate(param.promptTemplateDTO,  options).toPromise();
     }
 
     /**

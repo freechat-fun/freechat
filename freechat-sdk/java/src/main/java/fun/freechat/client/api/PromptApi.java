@@ -83,7 +83,7 @@ public class PromptApi {
     }
 
     /**
-     * Build call for applyStringPromptRef
+     * Build call for applyPromptRef
      * @param promptRefDTO Prompt record (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -94,7 +94,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyStringPromptRefCall(PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call applyPromptRefCall(PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -120,7 +120,7 @@ public class PromptApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "application/json"
+            "text/plain"
         };
         final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) {
@@ -140,13 +140,13 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call applyStringPromptRefValidateBeforeCall(PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call applyPromptRefValidateBeforeCall(PromptRefDTO promptRefDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptRefDTO' is set
         if (promptRefDTO == null) {
-            throw new ApiException("Missing the required parameter 'promptRefDTO' when calling applyStringPromptRef(Async)");
+            throw new ApiException("Missing the required parameter 'promptRefDTO' when calling applyPromptRef(Async)");
         }
 
-        return applyStringPromptRefCall(promptRefDTO, _callback);
+        return applyPromptRefCall(promptRefDTO, _callback);
 
     }
 
@@ -162,8 +162,8 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String applyStringPromptRef(PromptRefDTO promptRefDTO) throws ApiException {
-        ApiResponse<String> localVarResp = applyStringPromptRefWithHttpInfo(promptRefDTO);
+    public String applyPromptRef(PromptRefDTO promptRefDTO) throws ApiException {
+        ApiResponse<String> localVarResp = applyPromptRefWithHttpInfo(promptRefDTO);
         return localVarResp.getData();
     }
 
@@ -179,8 +179,8 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> applyStringPromptRefWithHttpInfo(PromptRefDTO promptRefDTO) throws ApiException {
-        okhttp3.Call localVarCall = applyStringPromptRefValidateBeforeCall(promptRefDTO, null);
+    public ApiResponse<String> applyPromptRefWithHttpInfo(PromptRefDTO promptRefDTO) throws ApiException {
+        okhttp3.Call localVarCall = applyPromptRefValidateBeforeCall(promptRefDTO, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -198,15 +198,15 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyStringPromptRefAsync(PromptRefDTO promptRefDTO, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call applyPromptRefAsync(PromptRefDTO promptRefDTO, final ApiCallback<String> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = applyStringPromptRefValidateBeforeCall(promptRefDTO, _callback);
+        okhttp3.Call localVarCall = applyPromptRefValidateBeforeCall(promptRefDTO, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for applyStringPromptTemplate
+     * Build call for applyPromptTemplate
      * @param promptTemplateDTO String type prompt template (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -217,7 +217,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyStringPromptTemplateCall(PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call applyPromptTemplateCall(PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -234,7 +234,7 @@ public class PromptApi {
         Object localVarPostBody = promptTemplateDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/prompt/apply/string";
+        String localVarPath = "/api/v1/prompt/apply/template";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -243,7 +243,7 @@ public class PromptApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "application/json"
+            "text/plain"
         };
         final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) {
@@ -263,13 +263,13 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call applyStringPromptTemplateValidateBeforeCall(PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call applyPromptTemplateValidateBeforeCall(PromptTemplateDTO promptTemplateDTO, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'promptTemplateDTO' is set
         if (promptTemplateDTO == null) {
-            throw new ApiException("Missing the required parameter 'promptTemplateDTO' when calling applyStringPromptTemplate(Async)");
+            throw new ApiException("Missing the required parameter 'promptTemplateDTO' when calling applyPromptTemplate(Async)");
         }
 
-        return applyStringPromptTemplateCall(promptTemplateDTO, _callback);
+        return applyPromptTemplateCall(promptTemplateDTO, _callback);
 
     }
 
@@ -285,8 +285,8 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String applyStringPromptTemplate(PromptTemplateDTO promptTemplateDTO) throws ApiException {
-        ApiResponse<String> localVarResp = applyStringPromptTemplateWithHttpInfo(promptTemplateDTO);
+    public String applyPromptTemplate(PromptTemplateDTO promptTemplateDTO) throws ApiException {
+        ApiResponse<String> localVarResp = applyPromptTemplateWithHttpInfo(promptTemplateDTO);
         return localVarResp.getData();
     }
 
@@ -302,8 +302,8 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> applyStringPromptTemplateWithHttpInfo(PromptTemplateDTO promptTemplateDTO) throws ApiException {
-        okhttp3.Call localVarCall = applyStringPromptTemplateValidateBeforeCall(promptTemplateDTO, null);
+    public ApiResponse<String> applyPromptTemplateWithHttpInfo(PromptTemplateDTO promptTemplateDTO) throws ApiException {
+        okhttp3.Call localVarCall = applyPromptTemplateValidateBeforeCall(promptTemplateDTO, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -321,9 +321,9 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call applyStringPromptTemplateAsync(PromptTemplateDTO promptTemplateDTO, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call applyPromptTemplateAsync(PromptTemplateDTO promptTemplateDTO, final ApiCallback<String> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = applyStringPromptTemplateValidateBeforeCall(promptTemplateDTO, _callback);
+        okhttp3.Call localVarCall = applyPromptTemplateValidateBeforeCall(promptTemplateDTO, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;

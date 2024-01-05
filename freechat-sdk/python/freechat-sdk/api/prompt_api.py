@@ -60,7 +60,7 @@ class PromptApi:
 
 
     @validate_call
-    def apply_string_prompt_ref(
+    def apply_prompt_ref(
         self,
         prompt_ref_dto: Annotated[PromptRefDTO, Field(description="Prompt record")],
         _request_timeout: Union[
@@ -104,7 +104,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._apply_string_prompt_ref_serialize(
+        _param = self._apply_prompt_ref_serialize(
             prompt_ref_dto=prompt_ref_dto,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -128,7 +128,7 @@ class PromptApi:
 
 
     @validate_call
-    def apply_string_prompt_ref_with_http_info(
+    def apply_prompt_ref_with_http_info(
         self,
         prompt_ref_dto: Annotated[PromptRefDTO, Field(description="Prompt record")],
         _request_timeout: Union[
@@ -172,7 +172,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._apply_string_prompt_ref_serialize(
+        _param = self._apply_prompt_ref_serialize(
             prompt_ref_dto=prompt_ref_dto,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -196,7 +196,7 @@ class PromptApi:
 
 
     @validate_call
-    def apply_string_prompt_ref_without_preload_content(
+    def apply_prompt_ref_without_preload_content(
         self,
         prompt_ref_dto: Annotated[PromptRefDTO, Field(description="Prompt record")],
         _request_timeout: Union[
@@ -240,7 +240,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._apply_string_prompt_ref_serialize(
+        _param = self._apply_prompt_ref_serialize(
             prompt_ref_dto=prompt_ref_dto,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -259,7 +259,7 @@ class PromptApi:
         return response_data.response
 
 
-    def _apply_string_prompt_ref_serialize(
+    def _apply_prompt_ref_serialize(
         self,
         prompt_ref_dto,
         _request_auth,
@@ -293,7 +293,7 @@ class PromptApi:
         # set the HTTP header `Accept`
         _header_params['Accept'] = self.api_client.select_header_accept(
             [
-                'application/json'
+                'text/plain'
             ]
         )
 
@@ -335,7 +335,7 @@ class PromptApi:
 
 
     @validate_call
-    def apply_string_prompt_template(
+    def apply_prompt_template(
         self,
         prompt_template_dto: Annotated[PromptTemplateDTO, Field(description="String type prompt template")],
         _request_timeout: Union[
@@ -379,7 +379,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._apply_string_prompt_template_serialize(
+        _param = self._apply_prompt_template_serialize(
             prompt_template_dto=prompt_template_dto,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -403,7 +403,7 @@ class PromptApi:
 
 
     @validate_call
-    def apply_string_prompt_template_with_http_info(
+    def apply_prompt_template_with_http_info(
         self,
         prompt_template_dto: Annotated[PromptTemplateDTO, Field(description="String type prompt template")],
         _request_timeout: Union[
@@ -447,7 +447,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._apply_string_prompt_template_serialize(
+        _param = self._apply_prompt_template_serialize(
             prompt_template_dto=prompt_template_dto,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -471,7 +471,7 @@ class PromptApi:
 
 
     @validate_call
-    def apply_string_prompt_template_without_preload_content(
+    def apply_prompt_template_without_preload_content(
         self,
         prompt_template_dto: Annotated[PromptTemplateDTO, Field(description="String type prompt template")],
         _request_timeout: Union[
@@ -515,7 +515,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._apply_string_prompt_template_serialize(
+        _param = self._apply_prompt_template_serialize(
             prompt_template_dto=prompt_template_dto,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -534,7 +534,7 @@ class PromptApi:
         return response_data.response
 
 
-    def _apply_string_prompt_template_serialize(
+    def _apply_prompt_template_serialize(
         self,
         prompt_template_dto,
         _request_auth,
@@ -568,7 +568,7 @@ class PromptApi:
         # set the HTTP header `Accept`
         _header_params['Accept'] = self.api_client.select_header_accept(
             [
-                'application/json'
+                'text/plain'
             ]
         )
 
@@ -593,7 +593,7 @@ class PromptApi:
 
         return self.api_client.param_serialize(
             method='POST',
-            resource_path='/api/v1/prompt/apply/string',
+            resource_path='/api/v1/prompt/apply/template',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

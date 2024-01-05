@@ -26,15 +26,15 @@ class TestPromptApi(unittest.TestCase):
     def tearDown(self) -> None:
         pass
 
-    def test_apply_string_prompt_ref(self) -> None:
-        """Test case for apply_string_prompt_ref
+    def test_apply_prompt_ref(self) -> None:
+        """Test case for apply_prompt_ref
 
         Apply Parameters to Prompt Record
         """
         pass
 
-    def test_apply_string_prompt_template(self) -> None:
-        """Test case for apply_string_prompt_template
+    def test_apply_prompt_template(self) -> None:
+        """Test case for apply_prompt_template
 
         Apply Parameters to String Prompt Template
         """

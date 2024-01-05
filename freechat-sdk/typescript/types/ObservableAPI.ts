@@ -4672,8 +4672,8 @@ export class ObservablePromptApi {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public applyStringPromptRefWithHttpInfo(promptRefDTO: PromptRefDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.applyStringPromptRef(promptRefDTO, _options);
+    public applyPromptRefWithHttpInfo(promptRefDTO: PromptRefDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.applyPromptRef(promptRefDTO, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4687,7 +4687,7 @@ export class ObservablePromptApi {
                 for (let middleware of this.configuration.middleware) {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.applyStringPromptRefWithHttpInfo(rsp)));
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.applyPromptRefWithHttpInfo(rsp)));
             }));
     }
 
@@ -4696,8 +4696,8 @@ export class ObservablePromptApi {
      * Apply Parameters to Prompt Record
      * @param promptRefDTO Prompt record
      */
-    public applyStringPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Observable<string> {
-        return this.applyStringPromptRefWithHttpInfo(promptRefDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public applyPromptRef(promptRefDTO: PromptRefDTO, _options?: Configuration): Observable<string> {
+        return this.applyPromptRefWithHttpInfo(promptRefDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -4705,8 +4705,8 @@ export class ObservablePromptApi {
      * Apply Parameters to String Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public applyStringPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.applyStringPromptTemplate(promptTemplateDTO, _options);
+    public applyPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.applyPromptTemplate(promptTemplateDTO, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4720,7 +4720,7 @@ export class ObservablePromptApi {
                 for (let middleware of this.configuration.middleware) {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.applyStringPromptTemplateWithHttpInfo(rsp)));
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.applyPromptTemplateWithHttpInfo(rsp)));
             }));
     }
 
@@ -4729,8 +4729,8 @@ export class ObservablePromptApi {
      * Apply Parameters to String Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
-    public applyStringPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Observable<string> {
-        return this.applyStringPromptTemplateWithHttpInfo(promptTemplateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Observable<string> {
+        return this.applyPromptTemplateWithHttpInfo(promptTemplateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**

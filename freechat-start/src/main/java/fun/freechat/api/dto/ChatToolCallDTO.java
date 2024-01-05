@@ -27,4 +27,12 @@ public class ChatToolCallDTO {
         dto.setArguments(toolCall.getArguments());
         return dto;
     }
+
+    public ChatToolCall toChatToolCall() {
+        ChatToolCall toolCall = new ChatToolCall();
+        toolCall.setId(getId());
+        toolCall.setName(getName());
+        toolCall.setArguments(getArguments());
+        return toolCall;
+    }
 }

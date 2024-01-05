@@ -10,7 +10,7 @@ public class FStringTemplateVariablesExtractor {
         LinkedHashSet<String> variables = new LinkedHashSet<>();
         Matcher m = FStringPromptTemplate.VAR_PATTERN.matcher(templateContent);
         while (m.find()) {
-            variables.add(m.group(3).trim());
+            variables.add(m.group(1).trim());
         }
 
         return variables;

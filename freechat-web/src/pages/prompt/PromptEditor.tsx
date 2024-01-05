@@ -6,11 +6,11 @@ import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } 
 import { Box, Button, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
 import { CommonBox, ConfirmModal, LinePlaceholder, TinyInput } from "../../components";
-import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from "freechat-sdk";
+import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
 import { i18nConfig, locales } from "../../configs/i18n-config";
-import { extractVariables } from "../../libs/template_utils";
+import { extractVariables, generateExample } from "../../libs/template_utils";
 import { providers } from "../../configs/model-providers-config";
 
 interface MessageRound {
@@ -398,6 +398,63 @@ export default function PromptEditor() {
     const modelInfo = modelInfos.find(modelInfo => modelInfo.modelId === modelId);
     modelInfo && models && !models.find(model => modelId === model.modelId) && setModels([...models, modelInfo]);
     setModelId(undefined);
+  }
+
+  function handleExampleGenerate(request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined): void {
+    if (!request || !response) {
+      return;
+    }
+    const req = {...request};
+    const onRendered = ((renderedRequest: PromptAiParamDTO) => {
+      const newExample = generateExample(renderedRequest, response);
+      if (newExample) {
+        setExample(newExample);
+      }
+    });
+    
+    if (req.prompt) {
+      onRendered(req);
+    } else if (req.promptTemplate) {
+      promptApi?.applyPromptTemplate(req.promptTemplate)
+        .then(resp => {
+          if (!resp) {
+            return;
+          }
+          if (req.promptTemplate?.template) {
+            req.promptTemplate.template = resp;
+          } else if (req.promptTemplate?.chatTemplate) {
+            req.promptTemplate.chatTemplate = JSON.parse(resp) as ChatPromptContentDTO;
+          }
+
+          onRendered(req);
+        })
+        .catch(handleError);
+    } else if (req.promptRef) {
+      promptApi?.applyPromptRef(req.promptRef)
+        .then(resp => {
+          if (!resp) {
+            return;
+          }
+          const promptTemplate = new PromptTemplateDTO();
+          if (req.promptRef?.variables?.containsKey('{input}')) {
+            promptTemplate.format = 'f_string';
+          } else {
+            promptTemplate.format = 'mustache';
+          }
+          try {
+            promptTemplate.chatTemplate = JSON.parse(resp) as ChatPromptContentDTO;
+          } catch(error) {
+            promptTemplate.template = resp;
+          }
+          promptTemplate.variables = req.promptRef?.variables;
+
+          req.promptTemplate = promptTemplate;
+          req.promptRef = undefined;
+
+          onRendered(req);
+        })
+        .catch(handleError);
+    }
   }
 
   function filterModels(provider?: string): (AiModelInfoDTO)[] {
@@ -971,8 +1028,9 @@ export default function PromptEditor() {
             defaultParameters={defaultParameters}
             defaultOutputText={defaultOutputText}
             onPlaySuccess={handlePlaySuccess}
+            onExampleSave={handleExampleGenerate}
           /> }
-      </Box>z
+      </Box>
       <ConfirmModal
         open={editRecordName !== undefined}
         onClose={() => setEditRecordName(undefined)}

@@ -19,6 +19,7 @@ import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -776,7 +777,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             try {
                 ChatPromptContent promptContent =
                         InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
-                if (Objects.isNull(promptContent.getMessageToSend()) && variables.containsKey("input")) {
+                if (Objects.isNull(promptContent.getMessageToSend()) &&
+                        MapUtils.isNotEmpty(variables) &&
+                        variables.containsKey("input")) {
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.setRole(PromptRole.USER);
                     chatMessage.setGmtCreate(new Date());

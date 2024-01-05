@@ -1,5 +1,5 @@
 import { Box } from "@mui/joy";
-import {  Sidebar } from "../components";
+import { Sidebar } from "../components";
 import { Outlet } from "react-router-dom";
 
 export default function Console() {

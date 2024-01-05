@@ -4,8 +4,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**applyStringPromptRef**](PromptApi.md#applyStringPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-[**applyStringPromptTemplate**](PromptApi.md#applyStringPromptTemplate) | **POST** /api/v1/prompt/apply/string | Apply Parameters to String Prompt Template
+[**applyPromptRef**](PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
+[**applyPromptTemplate**](PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template
 [**batchSearchPromptDetails**](PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
 [**batchSearchPromptSummary**](PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
 [**clonePrompt**](PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
@@ -27,8 +27,8 @@ Method | HTTP request | Description
 [**updatePrompt**](PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
 
 
-# **applyStringPromptRef**
-> string applyStringPromptRef(promptRefDTO)
+# **applyPromptRef**
+> string applyPromptRef(promptRefDTO)
 
 Apply parameters to prompt record.
 
@@ -42,7 +42,7 @@ import * as fs from 'fs';
 const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
-let body:.PromptApiApplyStringPromptRefRequest = {
+let body:.PromptApiApplyPromptRefRequest = {
   // PromptRefDTO | Prompt record
   promptRefDTO: {
     promptId: "promptId_example",
@@ -53,7 +53,7 @@ let body:.PromptApiApplyStringPromptRefRequest = {
   },
 };
 
-apiInstance.applyStringPromptRef(body).then((data:any) => {
+apiInstance.applyPromptRef(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```
@@ -77,7 +77,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 
 ### HTTP response details
@@ -87,8 +87,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
-# **applyStringPromptTemplate**
-> string applyStringPromptTemplate(promptTemplateDTO)
+# **applyPromptTemplate**
+> string applyPromptTemplate(promptTemplateDTO)
 
 Apply parameters to string type prompt template.
 
@@ -102,7 +102,7 @@ import * as fs from 'fs';
 const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
-let body:.PromptApiApplyStringPromptTemplateRequest = {
+let body:.PromptApiApplyPromptTemplateRequest = {
   // PromptTemplateDTO | String type prompt template
   promptTemplateDTO: {
     template: "template_example",
@@ -144,7 +144,7 @@ let body:.PromptApiApplyStringPromptTemplateRequest = {
   },
 };
 
-apiInstance.applyStringPromptTemplate(body).then((data:any) => {
+apiInstance.applyPromptTemplate(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```
@@ -168,7 +168,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 
 ### HTTP response details

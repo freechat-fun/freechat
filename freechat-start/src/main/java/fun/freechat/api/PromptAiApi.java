@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,7 +185,9 @@ public class PromptAiApi {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
-                if (Objects.isNull(chatTemplate.getMessageToSend()) && variables.containsKey("input")) {
+                if (Objects.isNull(chatTemplate.getMessageToSend()) &&
+                        MapUtils.isNotEmpty(variables) &&
+                        variables.containsKey("input")) {
                     ChatMessageDTO chatMessage = new ChatMessageDTO();
                     chatMessage.setRole(PromptRole.USER.text());
                     chatMessage.setGmtCreate(new Date());
@@ -193,9 +196,7 @@ public class PromptAiApi {
                 }
                 try {
                     ChatPromptContent promptContent = promptService.apply(
-                            InfoUtils.defaultMapper().convertValue(
-                                    chatTemplate, ChatPromptContent.class),
-                            variables, format);
+                            chatTemplate.toChatPromptContent(), variables, format);
                     prompt = InfoUtils.defaultMapper().writeValueAsString(promptContent);
                     promptType = PromptType.CHAT;
                 } catch (JsonProcessingException e) {
