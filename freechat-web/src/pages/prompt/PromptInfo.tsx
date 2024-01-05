@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Button, Chip, Divider, Tooltip, Typography } from "@mui/joy";
-import { ArrowBackRounded, ChatBubbleOutlineRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
-import { LinePlaceholder } from "../../components";
+import { Box, Button, ButtonGroup, Chip, Divider, Tooltip, Typography } from "@mui/joy";
+import { ArrowBackRounded, ChatBubbleOutlineRounded, ContentCopyRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
+import { CommonBox, LinePlaceholder } from "../../components";
 import { PromptDetailsDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt";
@@ -43,11 +43,8 @@ export default function PromptInfo() {
   return (
     <>
       <LinePlaceholder />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
+      <CommonBox sx={{
         alignItems: { xs: 'flex-start', sm: 'flex-end' },
-        gap: { xs: 1, sm: 2 },
         justifyContent: 'flex-end',
       }}>
         <Box sx={{
@@ -74,28 +71,39 @@ export default function PromptInfo() {
         <Typography level="body-sm">
           {t('Updated on')} {getDateLabel(record?.gmtModified || new Date(0), i18n.language, true)}
         </Typography>
-        {play ? (
+
+        <ButtonGroup
+          size="sm"
+          variant="soft"
+          color="primary"
+          sx={{
+          borderRadius: '16px',
+        }}>
           <Button
-          startDecorator={<ArrowBackRounded />}
-          onClick={() => setPlay(false)}
-        >
-          {t('button:Back')}
-        </Button>
-        ) : (
-          <Button
-            startDecorator={<PlayCircleOutlineRounded />}
-            onClick={() => setPlay(true)}
+            startDecorator={<ContentCopyRounded />}
           >
-            {t('Try it', { ns: 'button' })}
+            {t('button:Copy')}
           </Button>
-        )}
-      </Box>
+          {play ? (
+            <Button
+            startDecorator={<ArrowBackRounded />}
+            onClick={() => setPlay(false)}
+          >
+            {t('button:Back')}
+          </Button>
+          ) : (
+            <Button
+              startDecorator={<PlayCircleOutlineRounded />}
+              onClick={() => setPlay(true)}
+            >
+              {t('Try it', { ns: 'button' })}
+            </Button>
+          )}
+        </ButtonGroup>
+        
+      </CommonBox>
       <Divider />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
-        gap: { xs: 1, sm: 2 },
-      }}>
+      <CommonBox sx={{ flex: 1, alignItems: 'flex-start' }}>
         <PromptContent record={record} />
         {play ? 
           <PromptRunner
@@ -123,7 +131,7 @@ export default function PromptInfo() {
             }}
           /> :
           <PromptMeta record={record} history={history} />}
-      </Box>
+      </CommonBox>
     </>
   );
 }

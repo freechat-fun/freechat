@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Mustache from 'mustache';
-import { ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
+import { ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
+import { i18nConfig } from "../configs/i18n-config";
 
 export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
   const variables: string[] = [];
@@ -205,4 +206,28 @@ export function generateExample(request: PromptAiParamDTO | undefined, response:
   };
 
   return Mustache.render(EXAMPLE_TEMPLATE, markdownContext);
+}
+
+export function createRecord(type: string | undefined): PromptDetailsDTO {
+  const newRecord = new PromptDetailsDTO();
+  newRecord.name = undefined;
+  newRecord.format = 'mustache';
+  if (type === 'string') {
+    newRecord.type = 'string';
+    newRecord.template = '';
+  } else {
+    newRecord.type = 'chat';
+    newRecord.chatTemplate = new ChatPromptContentDTO();
+    newRecord.chatTemplate.system = '';
+    newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
+    newRecord.chatTemplate.messageToSend.role = 'user';
+    newRecord.chatTemplate.messageToSend.content = '{{input}}';
+    newRecord.inputs = JSON.stringify({'input': ''});
+  }
+  newRecord.lang = i18nConfig.defaultLocale;
+  newRecord.visibility = 'public';
+  newRecord.version = 0;
+  newRecord.username = undefined;
+
+  return newRecord;
 }

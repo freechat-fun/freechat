@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
-import { Box, Button, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
-import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
+import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
+import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
 import { CommonBox, ConfirmModal, LinePlaceholder, TinyInput } from "../../components";
 import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
-import { i18nConfig, locales } from "../../configs/i18n-config";
+import { locales } from "../../configs/i18n-config";
 import { extractVariables, generateExample } from "../../libs/template_utils";
 import { providers } from "../../configs/model-providers-config";
 
@@ -50,8 +50,7 @@ function messagesToRounds(messages: ChatMessageDTO[] | undefined): MessageRound[
 } 
 
 export default function PromptEditor() {
-  const params = useParams();
-  const location = useLocation();
+  const { id } = useParams();
   const { t, i18n } = useTranslation(['prompt', 'button']);
   const { promptApi, aiServiceApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -92,8 +91,6 @@ export default function PromptEditor() {
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
 
-  const isEditMode = location.pathname.includes('edit');
-
   const FORMATS = [
     {
       label: 'Mustache',
@@ -121,41 +118,19 @@ export default function PromptEditor() {
   });
 
   useEffect(() => {
-    if (isEditMode && params.id) {
-      promptApi?.getPromptDetails(params.id)
+    if (id) {
+      promptApi?.getPromptDetails(id)
         .then(resp => {
           setOrigRecord(resp);
           setEditRecord(resp);
         })
         .catch(handleError);
-    } else {
-      const newRecord = new PromptDetailsDTO();
-      newRecord.name = undefined;
-      newRecord.format = 'mustache';
-      if (params.type === 'string') {
-        newRecord.type = 'string';
-        newRecord.template = '';
-      } else {
-        newRecord.type = 'chat';
-        newRecord.chatTemplate = new ChatPromptContentDTO();
-        newRecord.chatTemplate.system = '';
-        newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
-        newRecord.chatTemplate.messageToSend.role = 'user';
-        newRecord.chatTemplate.messageToSend.content = '{{input}}';
-        newRecord.inputs = JSON.stringify({'input': ''});
-      }
-      newRecord.lang = i18nConfig.defaultLocale;
-      newRecord.visibility = 'public';
-      newRecord.version = 0;
-      newRecord.username = username ?? undefined;
-
-      setOrigRecord(newRecord);
     }
 
     aiServiceApi?.listAiModelInfo1()
       .then(setModelInfos)
       .catch(handleError);
-  }, [handleError, isEditMode, params, username, promptApi, aiServiceApi]);
+  }, [handleError, id, username, promptApi, aiServiceApi]);
 
   useEffect(() => {
     if (origRecord) {
@@ -487,7 +462,7 @@ export default function PromptEditor() {
         justifyContent: 'flex-end',
       }}>
         <CommonBox sx={{
-          alignItems: 'flex-end',
+          alignItems: 'center',
           flex: 1,
         }}>
           <Typography level="h3">{editRecord?.name}</Typography>
@@ -502,34 +477,44 @@ export default function PromptEditor() {
         <Typography level="body-sm">
           {t('Updated on')} {getDateLabel(editRecord?.gmtModified || new Date(0), i18n.language, true)}
         </Typography>
-        {play ? (
+
+        <ButtonGroup
+          size="sm"
+          variant="soft"
+          color="primary"
+          sx={{
+          borderRadius: '16px',
+        }}>
           <Button
-          startDecorator={<ArrowBackRounded />}
-          onClick={() => setPlay(false)}
-        >
-          {t('button:Back')}
-        </Button>
-        ) : (
-          <Button
-            startDecorator={<PlayCircleOutlineRounded />}
-            onClick={() => setPlay(true)}
+            startDecorator={<SaveAltRounded />}
           >
-            {t('Try it', { ns: 'button' })}
+            {t('button:Save')}
           </Button>
-        )}
+          <Button
+            startDecorator={<IosShareRounded />}
+          >
+            {t('button:Publish')}
+          </Button>
+          {play ? (
+            <Button
+            startDecorator={<ArrowBackRounded />}
+            onClick={() => setPlay(false)}
+          >
+            {t('button:Back')}
+          </Button>
+          ) : (
+            <Button
+              startDecorator={<PlayCircleOutlineRounded />}
+              onClick={() => setPlay(true)}
+            >
+              {t('Try it', { ns: 'button' })}
+            </Button>
+          )}
+        </ButtonGroup>
       </Box>
       <Divider />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
-        gap: { xs: 1, sm: 2 },
-      }}>
-        <Box sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          flex: 1,
-          gap: { xs: 1, sm: 2 },
-        }}>
+      <CommonBox sx={{ alignItems: 'flex-start' }}>
+        <CommonBox sx={{ flex: 1, alignItems: 'flex-start' }}>
           <Stack spacing={3} sx={{
             minWidth: { sm: '16rem' },
             mt: 2,
@@ -766,7 +751,7 @@ export default function PromptEditor() {
 
           {/* Meta Settings */}
           <Card sx={{
-            minWidth: '16rem',
+            width: '16rem',
             m: 2,
             p: 2,
             boxShadow: 'sm',
@@ -1016,7 +1001,7 @@ export default function PromptEditor() {
               </Fragment>
             )}
           </Card>
-        </Box>
+        </CommonBox>
         
         {play && 
           <PromptRunner
@@ -1029,8 +1014,9 @@ export default function PromptEditor() {
             defaultOutputText={defaultOutputText}
             onPlaySuccess={handlePlaySuccess}
             onExampleSave={handleExampleGenerate}
-          /> }
-      </Box>
+          />
+        }
+      </CommonBox>
       <ConfirmModal
         open={editRecordName !== undefined}
         onClose={() => setEditRecordName(undefined)}
