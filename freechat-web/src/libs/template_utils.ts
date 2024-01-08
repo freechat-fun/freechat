@@ -116,15 +116,19 @@ export function extractModelProvider(modelId: string | undefined): string | unde
 const EXAMPLE_TEMPLATE = `### Variable Settings
 {{{variables}}}
 
+<br>
 ### Model Info
 {{model}}
 
+<br>
 ### Model Parameters:
 {{{parameters}}}
 
+<br>
 ### Input
 {{{prompt}}}
 
+<br>
 ### Output
 {{{output}}}
 `;
@@ -165,19 +169,19 @@ function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | unde
     return '';
   }
 
-  let markdownContent = '**[SYSTEM]**\n';
+  let markdownContent = '**[SYSTEM]**<br>';
 
-  markdownContent += `${chatTemplate.system ?? ''}\n\n`;
+  markdownContent += `${chatTemplate.system ?? ''}<br><br>`;
 
   if (chatTemplate.messages && chatTemplate.messages.length > 0) {
-    markdownContent += '**[MESSAGES]**\n';
+    markdownContent += '**[MESSAGES]**<br>';
     chatTemplate.messages.forEach(message => {
-      markdownContent += `**${message.role?.toUpperCase()}: **${message.content}\n`;
+      markdownContent += `**${message.role?.toUpperCase()}: **${message.content}<br>`;
     });
-    markdownContent += '\n';
+    markdownContent += '<br>';
   }
 
-  markdownContent += '**[USER]**\n';
+  markdownContent += '**[USER]**<br>';
   markdownContent += `${chatTemplate.messageToSend?.content ?? (format === 'f_string' ? '{input}' : '{{input}}')}`;
 
   return markdownContent;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SxProps } from '@mui/joy/styles/types';
-import { Link, Skeleton, styled } from '@mui/joy';
+import { Link, Skeleton, Table, styled } from '@mui/joy';
 
 const Markdown = React.lazy(async () => import('markdown-to-jsx'));
 
@@ -124,7 +124,10 @@ export default function MarkdownContent({ loading, sx, children = '' }: Markdown
                 },
                 img: {
                   component: ImageContainer,
-                }
+                },
+                table: {
+                  component: Table,
+                },
               },
               slugify: () => '',
             }}

@@ -5,7 +5,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**applyPromptRef**](PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-[**applyPromptTemplate**](PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template
+[**applyPromptTemplate**](PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to Prompt Template
 [**batchSearchPromptDetails**](PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
 [**batchSearchPromptSummary**](PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
 [**clonePrompt**](PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**createPrompt**](PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt
 [**createPrompts**](PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 [**deletePrompt**](PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
+[**deletePromptByName**](PromptApi.md#deletePromptByName) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
 [**deletePrompts**](PromptApi.md#deletePrompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
 [**existsName**](PromptApi.md#existsName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists
 [**getPromptDetails**](PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
@@ -90,7 +91,7 @@ Name | Type | Description  | Notes
 # **applyPromptTemplate**
 > string applyPromptTemplate(promptTemplateDTO)
 
-Apply parameters to string type prompt template.
+Apply parameters to prompt template.
 
 ### Example
 
@@ -764,6 +765,60 @@ Name | Type | Description  | Notes
 ### Return type
 
 **boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **deletePromptByName**
+> Array<string> deletePromptByName()
+
+Delete prompt by name. return the list of successfully deleted promptIds.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .PromptApi(configuration);
+
+let body:.PromptApiDeletePromptByNameRequest = {
+  // string | The prompt name to be deleted
+  name: "name_example",
+};
+
+apiInstance.deletePromptByName(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | [**string**] | The prompt name to be deleted | defaults to undefined
+
+
+### Return type
+
+**Array<string>**
 
 ### Authorization
 

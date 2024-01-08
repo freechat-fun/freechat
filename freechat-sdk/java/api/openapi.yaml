@@ -1774,7 +1774,7 @@ paths:
       x-accepts: application/json
   /api/v1/prompt/apply/template:
     post:
-      description: Apply parameters to string type prompt template.
+      description: Apply parameters to prompt template.
       operationId: applyPromptTemplate
       requestBody:
         content:
@@ -1790,7 +1790,7 @@ paths:
               schema:
                 type: string
           description: OK
-      summary: Apply Parameters to String Prompt Template
+      summary: Apply Parameters to Prompt Template
       tags:
       - Prompt
       x-content-type: application/json
@@ -4987,6 +4987,33 @@ paths:
       tags:
       - Account
       x-accepts: application/json
+  /api/v1/prompt/name/{name}:
+    delete:
+      description: Delete prompt by name. return the list of successfully deleted
+        promptIds.
+      operationId: deletePromptByName
+      parameters:
+      - description: The prompt name to be deleted
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: Delete Prompt by Name
+      tags:
+      - Prompt
+      x-accepts: application/json
   /api/v1/flow/batch/delete:
     delete:
       description: "Delete multiple flows. Ensure transactionality, return the list\
@@ -5014,6 +5041,33 @@ paths:
       tags:
       - Flow
       x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/character/name/{name}:
+    delete:
+      description: Delete character by name. return the list of successfully deleted
+        characterIds.
+      operationId: deleteCharacterByName
+      parameters:
+      - description: The character name to be deleted
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: Delete Character by Name
+      tags:
+      - Character
       x-accepts: application/json
   /api/v1/character/chat/{chatId}:
     delete:

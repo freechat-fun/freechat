@@ -36,7 +36,7 @@ class TestPromptApi(unittest.TestCase):
     def test_apply_prompt_template(self) -> None:
         """Test case for apply_prompt_template
 
-        Apply Parameters to String Prompt Template
+        Apply Parameters to Prompt Template
         """
         pass
 
@@ -93,6 +93,13 @@ class TestPromptApi(unittest.TestCase):
         """Test case for delete_prompt
 
         Delete Prompt
+        """
+        pass
+
+    def test_delete_prompt_by_name(self) -> None:
+        """Test case for delete_prompt_by_name
+
+        Delete Prompt by Name
         """
         pass
 

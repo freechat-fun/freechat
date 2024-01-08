@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder } from "../../components";
-import { PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
-import { Box, Button, Card, Chip, IconButton, Typography } from "@mui/joy";
+import { ChatMessageDTO, ChatPromptContentDTO, PromptCreateDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
+import { Box, Button, Card, Chip, FormControl, FormHelperText, IconButton, Input, Radio, RadioGroup, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { AddCircleRounded, DeleteForeverRounded, KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from "@mui/icons-material";
+import { AddCircleRounded, DeleteForeverRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
+import { i18nConfig } from "../../configs/i18n-config";
 
 interface RecordCardProps {
   record: PromptSummaryDTO,
@@ -108,6 +109,10 @@ export default function Prompts() {
   const [total, setTotal] = useState(0);
   const [recordDeleted, setRecordDeleted] = useState<PromptSummaryDTO>();
 
+  const [editRecordName, setEditRecordName] = useState<string>();
+  const [editRecordNameError, setEditRecordNameError] = useState(false);
+  const [editRecordType, setEditRecordType] = useState('chat');
+
   const [showCards, setShowCards] = useState(false);
   const [showCardsFinish, setShowCardsFinish] = useState(false);
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
@@ -168,9 +173,8 @@ export default function Prompts() {
   }
 
   function handleDelete(record: PromptSummaryDTO | undefined): void {
-    record?.promptId && promptApi?.deletePrompt(record.promptId)
-      .then(resp => resp && setRecords(
-        records.filter(r => r.promptId !== record.promptId)))
+    record?.name && promptApi?.deletePromptByName(record.name)
+      .then(() =>doSearch(query))
       .catch(handleError);
 
     setRecordDeleted(undefined);
@@ -186,6 +190,46 @@ export default function Prompts() {
 
   function handleEdit(record: PromptSummaryDTO): void {
     navigate(`/w/console/prompt/edit/${record.promptId}`)
+  }
+
+  function handleNameChange(): void {
+    if (editRecordNameError || !editRecordName) {
+      return;
+    }
+      
+    promptApi?.existsName(editRecordName)
+      .then(resp => {
+        if (!resp) {
+          const request = new PromptCreateDTO();
+          if (editRecordType === 'chat') {
+            request.chatTemplate = new ChatPromptContentDTO();
+            request.chatTemplate.system = '';
+            request.chatTemplate.messageToSend = new ChatMessageDTO();
+            request.chatTemplate.messageToSend.role = 'user';
+            request.chatTemplate.messageToSend.content = '{{input}}';
+            request.inputs = JSON.stringify({'input': ''});
+          } else if (editRecordType === 'string') {
+            request.template = '';
+          }
+          request.format = 'mustache';
+          request.lang = i18nConfig.defaultLocale;
+          request.name = editRecordName;
+          request.visibility = 'public';
+
+          promptApi?.createPrompt(request)
+            .then(resp => {
+              if (resp) {
+                navigate(`/w/console/prompt/edit/${resp}`);
+              }
+            })
+            .catch(handleError);
+
+          setEditRecordName(undefined);
+        } else {
+          setEditRecordNameError(true);
+        }
+      })
+      .catch(handleError);
   }
 
   function getLabelDisplayedRowsTo(): number {
@@ -210,6 +254,7 @@ export default function Prompts() {
       <Button
         startDecorator={<AddCircleRounded />}
         sx={{ borderRadius: '20px' }}
+        onClick={() => setEditRecordName('untitled-1')}
       >
         {t('Create new')}
       </Button>
@@ -288,6 +333,7 @@ export default function Prompts() {
         <KeyboardArrowRightRounded />
       </IconButton>
     </Box>
+
     <ConfirmModal
       open={!!recordDeleted}
       onClose={() => setRecordDeleted(undefined)}
@@ -305,6 +351,82 @@ export default function Prompts() {
     >
       <Typography>{recordDeleted?.name}</Typography>
     </ConfirmModal>
+
+    <ConfirmModal
+        open={editRecordName !== undefined}
+        onClose={() => {
+          setEditRecordNameError(false);
+          setEditRecordName(undefined);
+        }}
+        dialog={{
+          title: t('Please enter a new name'),
+        }}
+        button={{
+          text: t('button:Create'),
+          startDecorator: <SaveAltRounded />
+        }}
+        onConfirm={handleNameChange}
+      >
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          gap: 0.5,
+        }}>
+          <FormControl error={editRecordNameError}>
+            <Input
+              name="RecordName"
+              value={editRecordName}
+              onChange={(event) => {
+                setEditRecordName(event.target.value);
+                setEditRecordNameError(false);
+            }}
+            />
+            {editRecordNameError && (
+              <FormHelperText>
+                <InfoOutlined />
+                {t('Name already exists!')}
+              </FormHelperText>
+            )}
+          </FormControl>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            gap: 1,
+          }}>
+            <Chip variant="outlined" size="md">{t('Type')}</Chip>
+            <RadioGroup
+              orientation="horizontal"
+              name="format"
+              size="sm"
+              value={editRecordType}
+              onChange={(event) => setEditRecordType(event.target.value)}
+              sx={{
+                p: 0.5,
+                '--RadioGroup-gap': '4px',
+                '--Radio-actionRadius': '4px',
+              }}
+            >
+              {['chat', 'string'].map((type) => (
+                <Radio
+                  key={`prompt-type-${type}`}
+                  color="neutral"
+                  size="sm"
+                  value={type}
+                  label={(<Typography noWrap level="body-sm">{type}</Typography>)}
+                  variant="outlined"
+                  sx={{
+                    p: 0.5,
+                    alignItems: 'center',
+                  }}
+                />
+              ))}
+            </RadioGroup>
+          </Box>
+        </Box>
+      </ConfirmModal>
   </>
   );
 }

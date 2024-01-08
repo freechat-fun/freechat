@@ -5,7 +5,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**apply_prompt_ref**](PromptApi.md#apply_prompt_ref) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-[**apply_prompt_template**](PromptApi.md#apply_prompt_template) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template
+[**apply_prompt_template**](PromptApi.md#apply_prompt_template) | **POST** /api/v1/prompt/apply/template | Apply Parameters to Prompt Template
 [**batch_search_prompt_details**](PromptApi.md#batch_search_prompt_details) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
 [**batch_search_prompt_summary**](PromptApi.md#batch_search_prompt_summary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
 [**clone_prompt**](PromptApi.md#clone_prompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**create_prompt**](PromptApi.md#create_prompt) | **POST** /api/v1/prompt | Create Prompt
 [**create_prompts**](PromptApi.md#create_prompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 [**delete_prompt**](PromptApi.md#delete_prompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
+[**delete_prompt_by_name**](PromptApi.md#delete_prompt_by_name) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
 [**delete_prompts**](PromptApi.md#delete_prompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
 [**exists_name**](PromptApi.md#exists_name) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists
 [**get_prompt_details**](PromptApi.md#get_prompt_details) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
@@ -107,9 +108,9 @@ Name | Type | Description  | Notes
 # **apply_prompt_template**
 > str apply_prompt_template(prompt_template_dto)
 
-Apply Parameters to String Prompt Template
+Apply Parameters to Prompt Template
 
-Apply parameters to string type prompt template.
+Apply parameters to prompt template.
 
 ### Example
 
@@ -145,7 +146,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
     prompt_template_dto = freechat-sdk.PromptTemplateDTO() # PromptTemplateDTO | String type prompt template
 
     try:
-        # Apply Parameters to String Prompt Template
+        # Apply Parameters to Prompt Template
         api_response = api_instance.apply_prompt_template(prompt_template_dto)
         print("The response of PromptApi->apply_prompt_template:\n")
         pprint(api_response)
@@ -779,6 +780,82 @@ Name | Type | Description  | Notes
 ### Return type
 
 **bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_prompt_by_name**
+> List[str] delete_prompt_by_name(name)
+
+Delete Prompt by Name
+
+Delete prompt by name. return the list of successfully deleted promptIds.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+```python
+import time
+import os
+import freechat-sdk
+from freechat-sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat-sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat-sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat-sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat-sdk.PromptApi(api_client)
+    name = 'name_example' # str | The prompt name to be deleted
+
+    try:
+        # Delete Prompt by Name
+        api_response = api_instance.delete_prompt_by_name(name)
+        print("The response of PromptApi->delete_prompt_by_name:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling PromptApi->delete_prompt_by_name: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | **str**| The prompt name to be deleted | 
+
+### Return type
+
+**List[str]**
 
 ### Authorization
 

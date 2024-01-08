@@ -68,7 +68,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
   } else {
     return (
       <Typography level="body-md" sx={contentStyle}>
-        {record?.template}
+        {record?.template || ' '}
       </Typography>
     );
   }

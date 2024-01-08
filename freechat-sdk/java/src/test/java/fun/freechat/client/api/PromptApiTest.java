@@ -56,9 +56,9 @@ public class PromptApiTest {
     }
 
     /**
-     * Apply Parameters to String Prompt Template
+     * Apply Parameters to Prompt Template
      *
-     * Apply parameters to string type prompt template.
+     * Apply parameters to prompt template.
      *
      * @throws ApiException if the Api call fails
      */
@@ -178,6 +178,20 @@ public class PromptApiTest {
     public void deletePromptTest() throws ApiException {
         String promptId = null;
         Boolean response = api.deletePrompt(promptId);
+        // TODO: test validations
+    }
+
+    /**
+     * Delete Prompt by Name
+     *
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void deletePromptByNameTest() throws ApiException {
+        String name = null;
+        List<String> response = api.deletePromptByName(name);
         // TODO: test validations
     }
 

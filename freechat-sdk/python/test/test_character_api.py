@@ -75,6 +75,13 @@ class TestCharacterApi(unittest.TestCase):
         """
         pass
 
+    def test_delete_character_by_name(self) -> None:
+        """Test case for delete_character_by_name
+
+        Delete Character by Name
+        """
+        pass
+
     def test_delete_chat(self) -> None:
         """Test case for delete_chat
 

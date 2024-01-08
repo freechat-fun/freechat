@@ -51,6 +51,7 @@ public interface CharacterService {
     boolean hide(String characterId, User user);
     boolean delete(String characterId, User user);
     List<String> delete(User user);
+    List<String> deleteByName(String name, User user);
     CharacterInfo summary(String characterId);
     Pair<CharacterInfo, List<String>> summary(String characterId, User user);
     List<Pair<CharacterInfo, List<String>>> summary(Collection<String> characterIds, User user);
@@ -60,6 +61,7 @@ public interface CharacterService {
     String getLatestIdByName(String name, User user);
     String publish(String characterId, Visibility visibility, User user);
     String getOwner(String characterId);
+    boolean existsName(String name, User user);
 
     String addBackend(CharacterBackend characterBackend);
     boolean removeBackend(String characterId, String characterBackendId);

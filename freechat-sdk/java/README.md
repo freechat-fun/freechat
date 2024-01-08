@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.9</version>
+  <version>0.2.10</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.9"
+     implementation "fun.freechat:freechat-sdk:0.2.10"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.9.jar`
+* `target/freechat-sdk-0.2.10.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -166,6 +166,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**countCharacters**](docs/CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters
 *CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 *CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
+*CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
 *CharacterApi* | [**deleteChat**](docs/CharacterApi.md#deleteChat) | **DELETE** /api/v1/character/chat/{chatId} | Delete Chat Session
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 *CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
@@ -248,7 +249,7 @@ Class | Method | HTTP request | Description
 *PluginApi* | [**searchPluginSummary**](docs/PluginApi.md#searchPluginSummary) | **POST** /api/v1/plugin/search | Search Plugin Summary
 *PluginApi* | [**updatePlugin**](docs/PluginApi.md#updatePlugin) | **PUT** /api/v1/plugin/{pluginId} | Update Plugin
 *PromptApi* | [**applyPromptRef**](docs/PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-*PromptApi* | [**applyPromptTemplate**](docs/PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template
+*PromptApi* | [**applyPromptTemplate**](docs/PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to Prompt Template
 *PromptApi* | [**batchSearchPromptDetails**](docs/PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
 *PromptApi* | [**batchSearchPromptSummary**](docs/PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
 *PromptApi* | [**clonePrompt**](docs/PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
@@ -257,6 +258,7 @@ Class | Method | HTTP request | Description
 *PromptApi* | [**createPrompt**](docs/PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt
 *PromptApi* | [**createPrompts**](docs/PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 *PromptApi* | [**deletePrompt**](docs/PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
+*PromptApi* | [**deletePromptByName**](docs/PromptApi.md#deletePromptByName) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
 *PromptApi* | [**deletePrompts**](docs/PromptApi.md#deletePrompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
 *PromptApi* | [**existsName**](docs/PromptApi.md#existsName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists
 *PromptApi* | [**getPromptDetails**](docs/PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details

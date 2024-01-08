@@ -144,6 +144,20 @@ public class CharacterApiTest {
     }
 
     /**
+     * Delete Character by Name
+     *
+     * Delete character by name. return the list of successfully deleted characterIds.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void deleteCharacterByNameTest() throws ApiException {
+        String name = null;
+        List<String> response = api.deleteCharacterByName(name);
+        // TODO: test validations
+    }
+
+    /**
      * Delete Chat Session
      *
      * Delete the chat session.

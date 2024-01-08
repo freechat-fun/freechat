@@ -155,7 +155,6 @@ export default function PromptRunner(props: {
   const [width, setWidth] = useState(minWidth || '30%');
 
   useEffect(() => {
-    setWidth(maxWidth || '50%');
     aiServiceApi?.listAiModelInfo1()
       .then(setModels)
       .catch(handleError);
@@ -164,7 +163,11 @@ export default function PromptRunner(props: {
         .filter(key => !!key.name && key.enabled)
         .map(key => key.name)))
       .catch(handleError);
-  }, [record, provider, aiServiceApi, handleError, maxWidth]);
+  }, [record, provider, aiServiceApi, handleError]);
+
+  useEffect(() => {
+    setWidth(maxWidth || '50%');
+  }, [maxWidth]);
 
   function handleInputChange(key: string, value: string | undefined): void {
     if (inputs && value !== inputs[key]) {
@@ -236,6 +239,8 @@ export default function PromptRunner(props: {
     return serverUrl + apiPath;
   }
 
+  const sx = {};
+
   return (
     <Fragment>
       <Card sx={{
@@ -247,6 +252,7 @@ export default function PromptRunner(props: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         transition: 'width 0.3s',
+        ...sx
       }}>
         <Typography level="title-sm" textColor="neutral">
           {t('Inputs')}

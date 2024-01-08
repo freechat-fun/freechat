@@ -90,6 +90,15 @@ public class CharacterApi {
             info.setParentId(parentId);
             info.setVisibility(Visibility.PRIVATE.text());
         }
+        int index = 0;
+        String name = info.getName();
+        while (characterService.existsName(name, AccountUtils.currentUser())) {
+            index++;
+            name = info.getName() + "-" + index;
+        }
+        if (index > 0) {
+            info.setName(name);
+        }
         info.setCharacterId(null);
         info.setVersion(1);
         info.setUserId(AccountUtils.currentUser().getUserId());
@@ -419,6 +428,18 @@ public class CharacterApi {
             @Parameter(description = "The characterId to be deleted") @PathVariable("characterId") @NotBlank
             String characterId) {
         return characterService.delete(characterId, AccountUtils.currentUser());
+    }
+
+    @Operation(
+            operationId = "deleteCharacterByName",
+            summary = "Delete Character by Name",
+            description = "Delete character by name. return the list of successfully deleted characterIds."
+    )
+    @DeleteMapping("/name/{name}")
+    public List<String> deleteByName(
+            @Parameter(description = "The character name to be deleted") @PathVariable("name") @NotBlank
+            String name) {
+        return characterService.deleteByName(name, AccountUtils.currentUser());
     }
 
     @Operation(

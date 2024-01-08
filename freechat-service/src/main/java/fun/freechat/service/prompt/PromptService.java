@@ -60,6 +60,7 @@ public interface PromptService {
     boolean delete(String promptId, User user);
     List<String> delete(List<String> promptIds, User user);
     List<String> delete(User user);
+    List<String> deleteByName(String name, User user);
     Triple<PromptInfo, List<String>, List<String>> summary(String promptId, User user);
     List<Triple<PromptInfo, List<String>, List<String>>> summary(Collection<String> promptIds, User user);
     Triple<PromptInfo, List<String>, List<String>> details(String promptId, User user);

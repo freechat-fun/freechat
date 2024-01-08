@@ -11,6 +11,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**countCharacters**](CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters |
 | [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character |
 | [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character |
+| [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name |
 | [**deleteChat**](CharacterApi.md#deleteChat) | **DELETE** /api/v1/character/chat/{chatId} | Delete Chat Session |
 | [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details |
 | [**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name |
@@ -492,6 +493,73 @@ public class Example {
 ### Return type
 
 **Boolean**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="deleteCharacterByName"></a>
+# **deleteCharacterByName**
+> List&lt;String&gt; deleteCharacterByName(name)
+
+Delete Character by Name
+
+Delete character by name. return the list of successfully deleted characterIds.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    String name = "name_example"; // String | The character name to be deleted
+    try {
+      List<String> result = apiInstance.deleteCharacterByName(name);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#deleteCharacterByName");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **name** | **String**| The character name to be deleted | |
+
+### Return type
+
+**List&lt;String&gt;**
 
 ### Authorization
 

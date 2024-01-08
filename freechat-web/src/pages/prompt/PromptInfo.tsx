@@ -1,20 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
+import { useNavigate, useParams } from "react-router-dom";
+import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Chip, Divider, Tooltip, Typography } from "@mui/joy";
-import { ArrowBackRounded, ChatBubbleOutlineRounded, ContentCopyRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
+import { ArrowBackRounded, ChatBubbleOutlineRounded, ContentCopyRounded, EditRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
 import { CommonBox, LinePlaceholder } from "../../components";
 import { PromptDetailsDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt";
 
 export default function PromptInfo() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { t, i18n } = useTranslation(['prompt', 'button']);
   const { promptApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
+  const { username } = useUserInfoContext();
 
   const [record, setRecord] = useState<PromptDetailsDTO>();
   const [history, setHistory] = useState<string[]>([]);
@@ -24,11 +26,6 @@ export default function PromptInfo() {
   const [defaultOutputText, setDefaultOutputText] = useState<string>();
 
   useEffect(() => {
-    getRecord();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [promptApi]);
-
-  function getRecord(): void {
     id && promptApi?.getPromptDetails(id)
       .then(resp => {
         setRecord(resp);
@@ -36,6 +33,20 @@ export default function PromptInfo() {
           .then(resp => resp.map(item => item.promptId))
           .then(ids => setHistory(ids as string[]))
           .catch(handleError);
+      })
+      .catch(handleError);
+  }, [handleError, id, promptApi]);
+
+  function handleEdit(): void {
+    id && navigate(`/w/console/prompt/edit/${id}`);
+  }
+
+  function handleCopy(): void {
+    id && promptApi?.clonePrompt(id)
+      .then(resp => {
+        if (resp) {
+          navigate(`/w/console/prompt/edit/${resp}`);
+        }
       })
       .catch(handleError);
   }
@@ -81,9 +92,18 @@ export default function PromptInfo() {
         }}>
           <Button
             startDecorator={<ContentCopyRounded />}
+            onClick={handleCopy}
           >
             {t('button:Copy')}
           </Button>
+          {record?.username === username && (
+            <Button
+              startDecorator={<EditRounded />}
+              onClick={handleEdit}
+            >
+              {t('button:Edit')}
+            </Button>
+          )}
           {play ? (
             <Button
             startDecorator={<ArrowBackRounded />}

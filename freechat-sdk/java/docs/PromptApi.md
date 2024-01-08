@@ -5,7 +5,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**applyPromptRef**](PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record |
-| [**applyPromptTemplate**](PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to String Prompt Template |
+| [**applyPromptTemplate**](PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to Prompt Template |
 | [**batchSearchPromptDetails**](PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details |
 | [**batchSearchPromptSummary**](PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries |
 | [**clonePrompt**](PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt |
@@ -14,6 +14,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**createPrompt**](PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt |
 | [**createPrompts**](PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts |
 | [**deletePrompt**](PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt |
+| [**deletePromptByName**](PromptApi.md#deletePromptByName) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name |
 | [**deletePrompts**](PromptApi.md#deletePrompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts |
 | [**existsName**](PromptApi.md#existsName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists |
 | [**getPromptDetails**](PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details |
@@ -98,9 +99,9 @@ public class Example {
 # **applyPromptTemplate**
 > String applyPromptTemplate(promptTemplateDTO)
 
-Apply Parameters to String Prompt Template
+Apply Parameters to Prompt Template
 
-Apply parameters to string type prompt template.
+Apply parameters to prompt template.
 
 ### Example
 ```java
@@ -682,6 +683,73 @@ public class Example {
 ### Return type
 
 **Boolean**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="deletePromptByName"></a>
+# **deletePromptByName**
+> List&lt;String&gt; deletePromptByName(name)
+
+Delete Prompt by Name
+
+Delete prompt by name. return the list of successfully deleted promptIds.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.PromptApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    PromptApi apiInstance = new PromptApi(defaultClient);
+    String name = "name_example"; // String | The prompt name to be deleted
+    try {
+      List<String> result = apiInstance.deletePromptByName(name);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling PromptApi#deletePromptByName");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **name** | **String**| The prompt name to be deleted | |
+
+### Return type
+
+**List&lt;String&gt;**
 
 ### Authorization
 

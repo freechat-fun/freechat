@@ -38,6 +38,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @SuppressWarnings("unused")
@@ -228,7 +229,10 @@ public class SecurityConfig {
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration =new CorsConfiguration().applyPermitDefaultValues();
+        CorsConfiguration configuration =new CorsConfiguration();
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.applyPermitDefaultValues();
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         for (String uri : apiUri) {
             source.registerCorsConfiguration(uri, configuration);

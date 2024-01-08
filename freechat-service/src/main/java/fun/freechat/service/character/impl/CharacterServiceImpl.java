@@ -475,6 +475,26 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .map(CharacterInfo::getCharacterId)
                 .toList();
 
+        return delete(ids, user);
+    }
+
+    @Override
+    public List<String> deleteByName(String name, User user) {
+        var statement = select(Info.characterId)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.name, isEqualTo(name))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<String> ids = characterInfoMapper.selectMany(statement)
+                .stream()
+                .map(CharacterInfo::getCharacterId)
+                .toList();
+
+        return delete(ids, user);
+    }
+
+    private List<String> delete(List<String> ids, User user) {
         LinkedList<String> deletedIds = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
         try {
@@ -683,6 +703,19 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .render(RenderingStrategies.MYBATIS3);
 
         return characterInfoMapper.selectOne(statement).map(CharacterInfo::getUserId).orElse(null);
+    }
+
+    @Override
+    public boolean existsName(String name, User user) {
+        var statement = select(Info.name)
+                .from(Info.table)
+                .where(Info.name, isEqualTo(name))
+                .and(Info.userId, isEqualTo(user.getUserId()))
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return !characterInfoMapper.selectMany(statement).isEmpty();
     }
 
     private void ensureDefaultBackend(CharacterBackend characterBackend, Date now) {

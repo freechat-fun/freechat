@@ -52,6 +52,15 @@ public class PromptApi {
             info.setParentId(parentId);
             info.setVisibility(Visibility.PRIVATE.text());
         }
+        int index = 0;
+        String name = info.getName();
+        while (promptService.existsName(name, AccountUtils.currentUser())) {
+            index++;
+            name = info.getName() + "-" + index;
+        }
+        if (index > 0) {
+            info.setName(name);
+        }
         info.setPromptId(null);
         info.setVersion(1);
         info.setUserId(AccountUtils.currentUser().getUserId());
@@ -487,6 +496,18 @@ public class PromptApi {
             @Parameter(description = "The promptId to be deleted") @PathVariable("promptId") @NotBlank
             String promptId) {
         return promptService.delete(promptId, AccountUtils.currentUser());
+    }
+
+    @Operation(
+            operationId = "deletePromptByName",
+            summary = "Delete Prompt by Name",
+            description = "Delete prompt by name. return the list of successfully deleted promptIds."
+    )
+    @DeleteMapping("/name/{name}")
+    public List<String> deleteByName(
+            @Parameter(description = "The prompt name to be deleted") @PathVariable("name") @NotBlank
+            String name) {
+        return promptService.deleteByName(name, AccountUtils.currentUser());
     }
 
     @Operation(

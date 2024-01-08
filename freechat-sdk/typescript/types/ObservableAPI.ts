@@ -1789,6 +1789,39 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Delete character by name. return the list of successfully deleted characterIds.
+     * Delete Character by Name
+     * @param name The character name to be deleted
+     */
+    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.deleteCharacterByName(name, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteCharacterByNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete character by name. return the list of successfully deleted characterIds.
+     * Delete Character by Name
+     * @param name The character name to be deleted
+     */
+    public deleteCharacterByName(name: string, _options?: Configuration): Observable<Array<string>> {
+        return this.deleteCharacterByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
      * Delete the chat session.
      * Delete Chat Session
      * @param chatId Chat session identifier
@@ -4701,8 +4734,8 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Apply parameters to string type prompt template.
-     * Apply Parameters to String Prompt Template
+     * Apply parameters to prompt template.
+     * Apply Parameters to Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
     public applyPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
@@ -4725,8 +4758,8 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Apply parameters to string type prompt template.
-     * Apply Parameters to String Prompt Template
+     * Apply parameters to prompt template.
+     * Apply Parameters to Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
     public applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Observable<string> {
@@ -4995,6 +5028,39 @@ export class ObservablePromptApi {
      */
     public deletePrompt(promptId: string, _options?: Configuration): Observable<boolean> {
         return this.deletePromptWithHttpInfo(promptId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     * Delete Prompt by Name
+     * @param name The prompt name to be deleted
+     */
+    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.deletePromptByName(name, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deletePromptByNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     * Delete Prompt by Name
+     * @param name The prompt name to be deleted
+     */
+    public deletePromptByName(name: string, _options?: Configuration): Observable<Array<string>> {
+        return this.deletePromptByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
     /**

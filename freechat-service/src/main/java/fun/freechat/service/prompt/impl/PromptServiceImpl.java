@@ -545,6 +545,22 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     @Override
+    public List<String> deleteByName(String name, User user) {
+        var statement = select(Info.promptId)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.name, isEqualTo(name))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<String> ids = promptInfoMapper.selectMany(statement)
+                .stream()
+                .map(PromptInfo::getPromptId)
+                .toList();
+
+        return delete(ids, user);
+    }
+
+    @Override
     public Triple<PromptInfo, List<String>, List<String>> summary(String promptId, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);

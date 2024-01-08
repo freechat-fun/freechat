@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**countCharacters**](CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters
 [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
+[**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
 [**deleteChat**](CharacterApi.md#deleteChat) | **DELETE** /api/v1/character/chat/{chatId} | Delete Chat Session
 [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 [**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
@@ -489,6 +490,60 @@ Name | Type | Description  | Notes
 ### Return type
 
 **boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **deleteCharacterByName**
+> Array<string> deleteCharacterByName()
+
+Delete character by name. return the list of successfully deleted characterIds.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .CharacterApi(configuration);
+
+let body:.CharacterApiDeleteCharacterByNameRequest = {
+  // string | The character name to be deleted
+  name: "name_example",
+};
+
+apiInstance.deleteCharacterByName(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | [**string**] | The character name to be deleted | defaults to undefined
+
+
+### Return type
+
+**Array<string>**
 
 ### Authorization
 

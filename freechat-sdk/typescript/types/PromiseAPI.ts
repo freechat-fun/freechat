@@ -1153,6 +1153,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Delete character by name. return the list of successfully deleted characterIds.
+     * Delete Character by Name
+     * @param name The character name to be deleted
+     */
+    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.deleteCharacterByNameWithHttpInfo(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete character by name. return the list of successfully deleted characterIds.
+     * Delete Character by Name
+     * @param name The character name to be deleted
+     */
+    public deleteCharacterByName(name: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.deleteCharacterByName(name, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Delete the chat session.
      * Delete Chat Session
      * @param chatId Chat session identifier
@@ -3005,8 +3025,8 @@ export class PromisePromptApi {
     }
 
     /**
-     * Apply parameters to string type prompt template.
-     * Apply Parameters to String Prompt Template
+     * Apply parameters to prompt template.
+     * Apply Parameters to Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
     public applyPromptTemplateWithHttpInfo(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
@@ -3015,8 +3035,8 @@ export class PromisePromptApi {
     }
 
     /**
-     * Apply parameters to string type prompt template.
-     * Apply Parameters to String Prompt Template
+     * Apply parameters to prompt template.
+     * Apply Parameters to Prompt Template
      * @param promptTemplateDTO String type prompt template
      */
     public applyPromptTemplate(promptTemplateDTO: PromptTemplateDTO, _options?: Configuration): Promise<string> {
@@ -3181,6 +3201,26 @@ export class PromisePromptApi {
      */
     public deletePrompt(promptId: string, _options?: Configuration): Promise<boolean> {
         const result = this.api.deletePrompt(promptId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     * Delete Prompt by Name
+     * @param name The prompt name to be deleted
+     */
+    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.deletePromptByNameWithHttpInfo(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     * Delete Prompt by Name
+     * @param name The prompt name to be deleted
+     */
+    public deletePromptByName(name: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.deletePromptByName(name, _options);
         return result.toPromise();
     }
 

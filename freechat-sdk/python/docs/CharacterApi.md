@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**count_characters**](CharacterApi.md#count_characters) | **POST** /api/v1/character/count | Calculate Number of Characters
 [**create_character**](CharacterApi.md#create_character) | **POST** /api/v1/character | Create Character
 [**delete_character**](CharacterApi.md#delete_character) | **DELETE** /api/v1/character/{characterId} | Delete Character
+[**delete_character_by_name**](CharacterApi.md#delete_character_by_name) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
 [**delete_chat**](CharacterApi.md#delete_chat) | **DELETE** /api/v1/character/chat/{chatId} | Delete Chat Session
 [**get_character_details**](CharacterApi.md#get_character_details) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 [**get_character_latest_id_by_name**](CharacterApi.md#get_character_latest_id_by_name) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
@@ -560,6 +561,82 @@ Name | Type | Description  | Notes
 ### Return type
 
 **bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_character_by_name**
+> List[str] delete_character_by_name(name)
+
+Delete Character by Name
+
+Delete character by name. return the list of successfully deleted characterIds.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+```python
+import time
+import os
+import freechat-sdk
+from freechat-sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat-sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat-sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat-sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat-sdk.CharacterApi(api_client)
+    name = 'name_example' # str | The character name to be deleted
+
+    try:
+        # Delete Character by Name
+        api_response = api_instance.delete_character_by_name(name)
+        print("The response of CharacterApi->delete_character_by_name:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->delete_character_by_name: %s\n" % e)
+```
+
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | **str**| The character name to be deleted | 
+
+### Return type
+
+**List[str]**
 
 ### Authorization
 

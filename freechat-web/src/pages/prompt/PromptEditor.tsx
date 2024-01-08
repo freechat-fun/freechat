@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
 import { CommonBox, ConfirmModal, LinePlaceholder, TinyInput } from "../../components";
-import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO } from "freechat-sdk";
-import { getDateLabel } from "../../libs/date_utils";
+import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
+import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
 import { locales } from "../../configs/i18n-config";
 import { extractVariables, generateExample } from "../../libs/template_utils";
@@ -18,38 +18,8 @@ interface MessageRound {
   assistant: ChatMessageDTO;
 }
 
-function messagesToRounds(messages: ChatMessageDTO[] | undefined): MessageRound[] {
-  const rounds: MessageRound[] = [];
-
-  if (!messages) {
-    return rounds;
-  }
-
-  for (let i = 0; i < messages.length; i = i + 2) {
-    if ((i + 1) < messages.length) {
-      let assistant: ChatMessageDTO;
-      let user: ChatMessageDTO;
-      if (messages[i].role === 'user') {
-        user = messages[i];
-        assistant = messages[i + 1];
-      } else {
-        assistant = messages[i];
-        user = messages[i + 1];
-      }
-
-      const round: MessageRound = {
-        assistant: assistant,
-        user: user,
-      }
-
-      rounds.push(round);
-    }
-  }
-
-  return rounds;
-} 
-
 export default function PromptEditor() {
+  const navigator = useNavigate();
   const { id } = useParams();
   const { t, i18n } = useTranslation(['prompt', 'button']);
   const { promptApi, aiServiceApi } = useFreeChatApiContext();
@@ -90,6 +60,7 @@ export default function PromptEditor() {
   const [editAssistantName, setEditAssistantName] = useState<string | undefined>('assistant')
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
+  const [saved, setSaved] = useState(false);
 
   const FORMATS = [
     {
@@ -154,6 +125,10 @@ export default function PromptEditor() {
       setModels(origRecord.aiModels ?? []);
     }
   }, [origRecord]);
+
+  useEffect(() => {
+    setSaved(() => false);
+  }, [editRecord]);
 
   useEffect(() => {
     setEditRecord(prevRecord => {
@@ -432,6 +407,46 @@ export default function PromptEditor() {
     }
   }
 
+  function handleRecordSave(): void {
+    if (!editRecord.promptId) {
+      return;
+    }
+    const request = recordToUpdateRequest(editRecord);
+    promptApi?.updatePrompt(editRecord.promptId, request)
+      .then(setSaved)
+      .catch(handleError);
+  }
+
+  function handleRecordPublish(): void {
+    if (!editRecord.promptId) {
+      return;
+    }
+    const onSaved = (id: string, visibility: string) => {
+      promptApi?.publishPrompt(id, visibility)
+        .then(resp => {
+          if (!resp) {
+            return;
+          }
+          navigator(`/w/console/prompt/${resp}`);
+        })
+        .catch(handleError);
+    };
+
+    if (!saved) {
+      const request = recordToUpdateRequest(editRecord);
+        promptApi?.updatePrompt(editRecord.promptId, request)
+          .then(resp => {
+            setSaved(resp);
+            if (resp) {
+              onSaved(editRecord.promptId as string, editRecord.visibility ?? 'public');
+            }
+          })
+          .catch(handleError);
+    } else {
+      onSaved(editRecord.promptId as string, editRecord.visibility ?? 'public');
+    }
+  }
+
   function filterModels(provider?: string): (AiModelInfoDTO)[] {
     return editRecord && modelInfos ? modelInfos.filter(modelInfo => {
       if (!modelInfo || (provider && modelInfo.provider !== provider)) {
@@ -449,6 +464,58 @@ export default function PromptEditor() {
         }
       }
     }) : [];
+  }
+
+  function messagesToRounds(messages: ChatMessageDTO[] | undefined): MessageRound[] {
+    const rounds: MessageRound[] = [];
+  
+    if (!messages) {
+      return rounds;
+    }
+  
+    for (let i = 0; i < messages.length; i = i + 2) {
+      if ((i + 1) < messages.length) {
+        let assistant: ChatMessageDTO;
+        let user: ChatMessageDTO;
+        if (messages[i].role === 'user') {
+          user = messages[i];
+          assistant = messages[i + 1];
+        } else {
+          assistant = messages[i];
+          user = messages[i + 1];
+        }
+  
+        const round: MessageRound = {
+          assistant: assistant,
+          user: user,
+        }
+  
+        rounds.push(round);
+      }
+    }
+  
+    return rounds;
+  }
+
+  function recordToUpdateRequest(record: PromptDetailsDTO): PromptUpdateDTO {
+    const request = new PromptUpdateDTO();
+    request.aiModels = record.aiModels?.map(modelInfo => modelInfo.modelId as string);
+    request.chatTemplate = record.chatTemplate;
+    request.description = record.description;
+    request.draft = record.draft;
+    request.example = record.example;
+    request.ext = record.ext;
+    request.format = record.format;
+    request.inputs = record.inputs;
+    request.lang = record.lang;
+    request.name = record.name ?? `untitiled-${formatDate(new Date())}`;
+    request.tags = record.tags;
+    request.template = record.template;
+    if (origRecord.visibility !== 'hidden') {
+      request.visibility = record.visibility;
+    }
+
+    return request;
   }
 
   return (
@@ -486,12 +553,15 @@ export default function PromptEditor() {
           borderRadius: '16px',
         }}>
           <Button
-            startDecorator={<SaveAltRounded />}
+            disabled={saved}
+            startDecorator={saved ? <CheckRounded /> : <SaveAltRounded />}
+            onClick={handleRecordSave}
           >
             {t('button:Save')}
           </Button>
           <Button
             startDecorator={<IosShareRounded />}
+            onClick={handleRecordPublish}
           >
             {t('button:Publish')}
           </Button>
@@ -548,6 +618,7 @@ export default function PromptEditor() {
                   <Chip variant="soft" color="primary">SYSTEM</Chip>
                   <Textarea
                     name="system"
+                    minRows={3}
                     sx={contentStyle}
                     value={system}
                     onChange={(event) => setSystem(event.target.value)}
@@ -676,22 +747,20 @@ export default function PromptEditor() {
 
               </Fragment>
             ) : (
-              <Card sx={{
+              <Stack spacing={1} sx={{
                 minWidth: { sm: '12rem' },
-                p: 2,
-                boxShadow: 'sm',
               }}>
                 <Typography level="title-lg" color="primary">
                   {t('Template')}
                 </Typography>
-                <Divider />
                 <Textarea
                   name="string-template"
+                  minRows={3}
                   sx={contentStyle}
                   value={stringTemplate}
                   onChange={(event) => setStringTemplate(event.target.value)}
                 />
-              </Card>
+              </Stack>
             )}
 
             <LinePlaceholder />

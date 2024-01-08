@@ -28,10 +28,6 @@ const consoleRoutes = [
     element: <PromptEditor />,
   },
   {
-    path: 'prompt/new/:type',
-    element: <PromptEditor />,
-  },
-  {
     path: 'plugins',
     element: <ComingSoon />,
   },

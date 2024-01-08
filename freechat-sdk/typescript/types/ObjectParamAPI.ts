@@ -1328,6 +1328,15 @@ export interface CharacterApiDeleteCharacterRequest {
     characterId: string
 }
 
+export interface CharacterApiDeleteCharacterByNameRequest {
+    /**
+     * The character name to be deleted
+     * @type string
+     * @memberof CharacterApideleteCharacterByName
+     */
+    name: string
+}
+
 export interface CharacterApiDeleteChatRequest {
     /**
      * Chat session identifier
@@ -1714,6 +1723,24 @@ export class ObjectCharacterApi {
      */
     public deleteCharacter(param: CharacterApiDeleteCharacterRequest, options?: Configuration): Promise<boolean> {
         return this.api.deleteCharacter(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * Delete character by name. return the list of successfully deleted characterIds.
+     * Delete Character by Name
+     * @param param the request object
+     */
+    public deleteCharacterByNameWithHttpInfo(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.deleteCharacterByNameWithHttpInfo(param.name,  options).toPromise();
+    }
+
+    /**
+     * Delete character by name. return the list of successfully deleted characterIds.
+     * Delete Character by Name
+     * @param param the request object
+     */
+    public deleteCharacterByName(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.deleteCharacterByName(param.name,  options).toPromise();
     }
 
     /**
@@ -4097,6 +4124,15 @@ export interface PromptApiDeletePromptRequest {
     promptId: string
 }
 
+export interface PromptApiDeletePromptByNameRequest {
+    /**
+     * The prompt name to be deleted
+     * @type string
+     * @memberof PromptApideletePromptByName
+     */
+    name: string
+}
+
 export interface PromptApiDeletePromptsRequest {
     /**
      * List of promptIds to be deleted
@@ -4234,8 +4270,8 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Apply parameters to string type prompt template.
-     * Apply Parameters to String Prompt Template
+     * Apply parameters to prompt template.
+     * Apply Parameters to Prompt Template
      * @param param the request object
      */
     public applyPromptTemplateWithHttpInfo(param: PromptApiApplyPromptTemplateRequest, options?: Configuration): Promise<HttpInfo<string>> {
@@ -4243,8 +4279,8 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Apply parameters to string type prompt template.
-     * Apply Parameters to String Prompt Template
+     * Apply parameters to prompt template.
+     * Apply Parameters to Prompt Template
      * @param param the request object
      */
     public applyPromptTemplate(param: PromptApiApplyPromptTemplateRequest, options?: Configuration): Promise<string> {
@@ -4393,6 +4429,24 @@ export class ObjectPromptApi {
      */
     public deletePrompt(param: PromptApiDeletePromptRequest, options?: Configuration): Promise<boolean> {
         return this.api.deletePrompt(param.promptId,  options).toPromise();
+    }
+
+    /**
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     * Delete Prompt by Name
+     * @param param the request object
+     */
+    public deletePromptByNameWithHttpInfo(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.deletePromptByNameWithHttpInfo(param.name,  options).toPromise();
+    }
+
+    /**
+     * Delete prompt by name. return the list of successfully deleted promptIds.
+     * Delete Prompt by Name
+     * @param param the request object
+     */
+    public deletePromptByName(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.deletePromptByName(param.name,  options).toPromise();
     }
 
     /**
