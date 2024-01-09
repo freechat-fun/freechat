@@ -13,7 +13,7 @@ import java.util.Set;
 public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
     private final Set<String> tokens;
 
-    private SysUserDetails sysUser;
+    private final SysUserDetails sysUser;
 
     private static List<GrantedAuthority> getAuthorities(SysUserDetails sysUser) {
         List<GrantedAuthority> authorities = new LinkedList<>(sysUser.getAuthorities());
@@ -21,17 +21,12 @@ public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
         return authorities;
     }
 
-    public ApiTokenAuthenticationToken(SysUserDetails sysUser, Set<String> tokens) {
+    public ApiTokenAuthenticationToken(
+            SysUserDetails sysUser, Set<String> tokens, boolean authenticated) {
         super(getAuthorities(sysUser));
         this.sysUser = sysUser;
         this.tokens = tokens;
-        setAuthenticated(true);
-    }
-
-    public ApiTokenAuthenticationToken(Set<String> tokens) {
-        super(null);
-        this.tokens = tokens;
-        setAuthenticated(false);
+        setAuthenticated(authenticated);
     }
 
     @Override

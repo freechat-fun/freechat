@@ -5,7 +5,7 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack, Divider } from "@mui/joy";
 import { CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
 import { CommonBox, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
-import { DashScopeSettings } from ".";
+import { DashScopeSettings, OpenAISettings } from ".";
 import { providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
 import { extractModelProvider, extractVariables } from "../../libs/template_utils";
@@ -139,7 +139,7 @@ export default function PromptRunner(props: {
   const { aiServiceApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [provider, setProvider] = useState<string | undefined>(extractModelProvider(defaultParameters?.modelId));
+  const [provider, setProvider] = useState<string | undefined>(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
   const [inputs, setInputs] = useState(defaultVariables ?? extractVariables(record));
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
   const [apiKeyName, setApiKeyName] = useState<string | undefined>(defaultParameters?.apiKeyName);
@@ -147,10 +147,11 @@ export default function PromptRunner(props: {
   const [apiKeyNames, setApiKeyNames] = useState<(string | undefined)[]>([]);
   const [modelSetting, setModelSetting] = useState(false);
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
-  const [output, setOutput ] = useState<LlmResultDTO>();
   const [aiRequest, setAiRequest] = useState<PromptAiParamDTO>();
   const [playing, setPlaying] = useState(false);
   const [parameters, setParameters] = useState(defaultParameters);
+
+  const output = useRef<LlmResultDTO>();
 
   const [width, setWidth] = useState(minWidth || '30%');
 
@@ -164,6 +165,13 @@ export default function PromptRunner(props: {
         .map(key => key.name)))
       .catch(handleError);
   }, [record, provider, aiServiceApi, handleError]);
+
+  useEffect(() => {
+    setProvider(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
+    setApiKeyName(defaultParameters?.apiKeyName);
+    setApiKeyValue(defaultParameters?.apiKey);
+    setParameters(defaultParameters);
+  }, [defaultParameters]);
 
   useEffect(() => {
     setWidth(maxWidth || '50%');
@@ -185,7 +193,7 @@ export default function PromptRunner(props: {
     }
   }
 
-  function handleDashScopeSettings(parameters: { [key: string]: any }) {
+  function handleModelSettings(parameters: { [key: string]: any }) {
     setParameters(parameters);
     setModelSetting(false);
   }
@@ -325,7 +333,7 @@ export default function PromptRunner(props: {
             color="primary"
             onClick={handlePlay}
           >
-            {output ? 
+            {output.current || defaultOutputText ? 
               <ReplayCircleFilledRounded fontSize="large" /> : 
               <PlayCircleFilledRounded fontSize="large" />
             }
@@ -333,12 +341,13 @@ export default function PromptRunner(props: {
         </CommonBox>
         <TextareaTypography>
           <ChatContent
-            url={playing ? getServiceUrl() : undefined}
-            body={playing && aiRequest ? JSON.stringify(aiRequest) : undefined}
+            disabled={!playing}
+            url={getServiceUrl()}
+            body={JSON.stringify(aiRequest)}
             initialData={defaultOutputText}
-            onFinish={setOutput}
+            onFinish={result => output.current = result}
             onClose={() => {
-              onPlaySuccess?.(aiRequest, output);
+              onPlaySuccess?.(aiRequest, output.current);
               setPlaying(false);
             }}
             onError={(error) => {
@@ -350,7 +359,7 @@ export default function PromptRunner(props: {
           />
         </TextareaTypography>
         <CommonBox sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          {!playing && output?.tokenUsage && (
+          {!playing && output.current?.tokenUsage && (
             <Fragment>
               <Box sx={{
                 width: '50%',
@@ -365,25 +374,25 @@ export default function PromptRunner(props: {
                   gridTemplateColumns: 'auto 1fr',
                 }}>
                   <FormLabel>Input: </FormLabel>
-                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.tokenUsage.inputTokenCount}</Typography>
+                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.current?.tokenUsage.inputTokenCount}</Typography>
                   <FormLabel>Output: </FormLabel>
-                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.tokenUsage.outputTokenCount}</Typography>
+                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.current?.tokenUsage.outputTokenCount}</Typography>
                   <Box sx={{ gridColumn: '1 / -1' }}>
                     <Divider />
                   </Box>
                   <FormLabel>Total: </FormLabel>
-                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.tokenUsage.totalTokenCount}</Typography>
+                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.current?.tokenUsage.totalTokenCount}</Typography>
                 </Box>
               </Box>
             </Fragment>
           )}
-          {onExampleSave && output && (
+          {onExampleSave && output.current && (
             <Button
               size="sm"
               variant="outlined"
               color="success"
               startDecorator={<IosShareRounded />}
-              onClick={() => onExampleSave(aiRequest, output)}
+              onClick={() => onExampleSave(aiRequest, output.current)}
             >
               {t('Save as Example', {ns: 'button'})}
             </Button>
@@ -402,10 +411,16 @@ export default function PromptRunner(props: {
           setOpenApiKeySetting(false);
         }}
       />
+      <OpenAISettings
+        open={modelSetting && provider === 'open_ai'}
+        models={filterModels()}
+        onClose={handleModelSettings}
+        defaultParameters={parameters}
+      />
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
         models={filterModels()}
-        onClose={handleDashScopeSettings}
+        onClose={handleModelSettings}
         defaultParameters={parameters}
       />
     </Fragment>

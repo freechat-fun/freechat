@@ -12,9 +12,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.thymeleaf.util.ArrayUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,28 +49,19 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private SecurityContextHolderStrategy securityContextHolderStrategy =
+            SecurityContextHolder.getContextHolderStrategy();
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        ApiTokenAuthenticationToken apiTokenAuthentication = (ApiTokenAuthenticationToken) authentication;
-        Set<String> tokens = (Set<String>)apiTokenAuthentication.getCredentials();
-        SysUserDetails sysUser = null;
-        for (String token : tokens) {
-            User user = apiTokenService.getUser(token);
-            if (Objects.nonNull(user)) {
-                sysUser = SysUserDetails.builder()
-                        .fromUser(user)
-                        .withAuthorityService(authorityService)
-                        .withPasswordEncoder(passwordEncoder)
-                        .build();
-                break;
-            }
-        }
-
+        SysUserDetails sysUser = (SysUserDetails)authentication.getPrincipal();
+        Set<String> tokens = (Set<String>)authentication.getCredentials();
         if (Objects.isNull(sysUser)) {
             throw new BadCredentialsException("Invalid tokens: " + String.join(",", tokens));
         }
 
-        ApiTokenAuthenticationToken authenticated = new ApiTokenAuthenticationToken(sysUser, tokens);
+        ApiTokenAuthenticationToken authenticated = new ApiTokenAuthenticationToken(
+                sysUser, tokens, true);
         authenticated.setDetails(authentication.getDetails());
         return authenticated;
     }
@@ -84,7 +78,32 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
             tokens = resolveTokensFromHeader(request);
         }
 
-        return CollectionUtils.isNotEmpty(tokens) ? new ApiTokenAuthenticationToken(tokens) : null;
+        if (CollectionUtils.isEmpty(tokens)) {
+            return null;
+        }
+
+        SysUserDetails sysUser = null;
+        String currentUserId = null;
+        Authentication origAuthentication = securityContextHolderStrategy.getContext().getAuthentication();
+        if (Objects.nonNull(origAuthentication) && origAuthentication.getPrincipal() instanceof User currentUser) {
+            currentUserId = currentUser.getUserId();
+        }
+        for (String token : tokens) {
+            User user = apiTokenService.getUser(token);
+            if (Objects.nonNull(user)) {
+                if (Objects.equals(user.getUserId(), currentUserId)) {
+                    return null;
+                }
+                sysUser = SysUserDetails.builder()
+                        .fromUser(user)
+                        .withAuthorityService(authorityService)
+                        .withPasswordEncoder(passwordEncoder)
+                        .build();
+                break;
+            }
+        }
+
+        return new ApiTokenAuthenticationToken(sysUser, tokens, false);
     }
 
     private boolean validateToken(String token) {
@@ -109,5 +128,10 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
         }
         return StringUtils.isBlank(tokenValue) ? null
                 : Arrays.stream(tokenValue.trim().split(",")).filter(this::validateToken).collect(Collectors.toSet());
+    }
+
+    public void setSecurityContextHolderStrategy(SecurityContextHolderStrategy securityContextHolderStrategy) {
+        Assert.notNull(securityContextHolderStrategy, "securityContextHolderStrategy cannot be null");
+        this.securityContextHolderStrategy = securityContextHolderStrategy;
     }
 }

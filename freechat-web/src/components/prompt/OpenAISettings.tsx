@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, Drawer, IconButton, Option, Select, Sheet, Slider, Switch, Tooltip, Typography } from "@mui/joy";
+import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, Drawer, IconButton, Input, Option, Select, Sheet, Slider, Switch, Tooltip, Typography } from "@mui/joy";
 import { AddCircleRounded, HelpOutlineRounded } from "@mui/icons-material";
 import { CommonBox, OptionCard, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
@@ -10,7 +10,7 @@ function containsKey(parameters: { [key: string]: any } | undefined, key: string
   return !!parameters && Object.keys(parameters).includes(key);
 }
 
-export default function DashScopeSettings(props: {
+export default function OpenAISettings(props: {
   open: boolean,
   models:(AiModelInfoDTO | undefined)[] | undefined,
   onClose: (parameters: { [key: string]: any }) => void,
@@ -21,24 +21,24 @@ export default function DashScopeSettings(props: {
   const { t } = useTranslation(['prompt']);
 
   const [model, setModel] = useState<AiModelInfoDTO | undefined>(
-    models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[dash_scope]qwen-plus')));
+    models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[open_ai]gpt-4')));
+  
+  const [baseUrl, setBaseUrl] = useState(defaultParameters?.baseUrl ?? 'https://api.openai.com/v1');
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
   const [enableTopP, setEnableTopP] = useState(containsKey(defaultParameters, 'topP'));
 
-  const [topK, setTopK] = useState<number>(defaultParameters?.topK ?? 0);
-  const [enableTopK, setEnableTopK] = useState(containsKey(defaultParameters, 'topK'));
-
   const [maxTokens, setMaxTokens] = useState<number>(defaultParameters?.maxTokens ?? 2000);
   const [enableMaxTokens, setEnableMaxTokens] = useState(containsKey(defaultParameters, 'maxTokens'));
-
-  const [enableSearch, setEnableSearch] = useState<boolean>(defaultParameters?.enableSearch ?? false);
 
   const [seed, setSeed] = useState<number>(defaultParameters?.seed ?? 1234);
   const [enableSeed, setEnableSeed] = useState(containsKey(defaultParameters, 'seed'));
 
-  const [repetitionPenalty, setRepetitionPenalty] = useState<number>(defaultParameters?.repetitionPenalty ?? 1.1);
-  const [enableRepetitionPenalty, setEnableRepetitionPenalty] = useState(containsKey(defaultParameters, 'repetitionPenalty'));
+  const [presencePenalty, setPresencePenalty] = useState<number>(defaultParameters?.presencePenalty ?? 0);
+  const [enablePresencePenalty, setEnablePresencePenalty] = useState(containsKey(defaultParameters, 'presencePenalty'));
+
+  const [frequencyPenalty, setFrequencyPenalty] = useState<number>(defaultParameters?.frequencyPenalty ?? 0);
+  const [enableFrequencyPenalty, setEnableFrequencyPenalty] = useState(containsKey(defaultParameters, 'frequencyPenalty'));
 
   const [temperature, setTemperature] = useState<number>(defaultParameters?.temperature ?? 1);
   const [enableTemperature, setEnableTemperature] = useState(containsKey(defaultParameters, 'temperature'));
@@ -50,7 +50,7 @@ export default function DashScopeSettings(props: {
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
-    setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[dash_scope]qwen-plus')));
+    setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[open_ai]gpt-4')));
   }, [defaultParameters?.modelId, models]);
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
@@ -77,26 +77,28 @@ export default function DashScopeSettings(props: {
       parameters['modelId'] = model.modelId;
     }
 
-    if (enableTopP) {
-      parameters['topP'] = topP;
+    if (baseUrl) {
+      parameters['baseUrl'] = baseUrl;
     }
 
-    if (enableTopK) {
-      parameters['topK'] = topK;
+    if (enableTopP) {
+      parameters['topP'] = topP;
     }
 
     if (enableMaxTokens) {
       parameters['maxTokens'] = maxTokens;
     }
 
-    parameters['enableSearch'] = enableSearch;
-
     if (enableSeed) {
       parameters['seed'] = seed;
     }
 
-    if (enableRepetitionPenalty) {
-      parameters['repetitionPenalty'] = repetitionPenalty;
+    if (enablePresencePenalty) {
+      parameters['presencePenalty'] = presencePenalty;
+    }
+
+    if (enableFrequencyPenalty) {
+      parameters['frequencyPenalty'] = frequencyPenalty;
     }
 
     if (enableTemperature) {
@@ -169,6 +171,22 @@ export default function DashScopeSettings(props: {
 
           <OptionCard>
             <CommonBox>
+              <Typography>baseUrl</Typography>
+              <Input
+                type="text"
+                value={baseUrl}
+                sx={{
+                  ml: 0.5,
+                  flex: 1,
+                }}
+                onChange={(event => setBaseUrl(event.target.value))}
+              />
+            </CommonBox>
+          </OptionCard>
+          <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+          <OptionCard>
+            <CommonBox>
               <Typography>topP</Typography>
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.')}>
                 <HelpOutlineRounded fontSize="small" />
@@ -205,42 +223,6 @@ export default function DashScopeSettings(props: {
 
           <OptionCard>
             <CommonBox>
-              <Typography>topK</Typography>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('The size of the sampling candidate set during generation. For example, when the value is 50, only the top 50 tokens with the highest scores in a single generation are included in the random sampling candidate set. The larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation. The default value is 0, which means that the top_k strategy is not enabled, and only the top_p strategy is effective.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonBox sx={{ ml: 'auto' }}>
-                <TinyInput
-                  disabled={!enableTopK}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[1],
-                      min: 0,
-                      max: 100,
-                      step: 1,
-                    },
-                  }}
-                  value={topK}
-                  onChange={(event => setTopK(+event.target.value))}
-                />
-                <Switch checked={enableTopK} onChange={() => setEnableTopK(!enableTopK)} />
-              </CommonBox>
-            </CommonBox>
-            <Slider
-              disabled={!enableTopK}
-              value={topK}
-              step={1}
-              min={0}
-              max={100}
-              valueLabelDisplay="auto"
-              onChange={(_event: Event, newValue: number | number[]) => setTopK(newValue as number)}
-            />
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonBox>
               <Typography>maxTokens</Typography>
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model\'s context length.')}>
                 <HelpOutlineRounded fontSize="small" />
@@ -260,19 +242,6 @@ export default function DashScopeSettings(props: {
                   onChange={(event => setMaxTokens(+event.target.value))}
                 />
                 <Switch checked={enableMaxTokens} onChange={() => setEnableMaxTokens(!enableMaxTokens)} />
-              </CommonBox>
-            </CommonBox>
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonBox>
-              <Typography>enableSearch</Typography>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Whether to use a search engine for data enhancement.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonBox sx={{ ml: 'auto' }}>
-                <Switch checked={enableSearch} onChange={() => setEnableSearch(!enableSearch)} />
               </CommonBox>
             </CommonBox>
           </OptionCard>
@@ -306,27 +275,73 @@ export default function DashScopeSettings(props: {
 
           <OptionCard>
             <CommonBox>
-              <Typography>repetitionPenalty</Typography>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Used to control the repeatability when generating models. Increasing repetition_penalty can reduce the duplication of model generation. 1.0 means no punishment.')}>
+              <Typography>presencePenalty</Typography>
+              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model\'s likelihood to talk about new topics.')}>
                 <HelpOutlineRounded fontSize="small" />
               </Tooltip>
               <CommonBox sx={{ ml: 'auto' }}>
                 <TinyInput
-                  disabled={!enableRepetitionPenalty}
+                  disabled={!enablePresencePenalty}
                   type="number"
                   slotProps={{
                     input: {
                       ref: inputRefs.current[4],
-                      min: 1,
+                      min: -2,
+                      max: 2,
                       step: 0.1,
                     },
                   }}
-                  value={repetitionPenalty}
-                  onChange={(event => setRepetitionPenalty(+event.target.value))}
+                  value={presencePenalty}
+                  onChange={(event => setPresencePenalty(+event.target.value))}
                 />
-                <Switch checked={enableRepetitionPenalty} onChange={() => setEnableRepetitionPenalty(!enableRepetitionPenalty)} />
+                <Switch checked={enablePresencePenalty} onChange={() => setEnablePresencePenalty(!enablePresencePenalty)} />
               </CommonBox>
             </CommonBox>
+            <Slider
+              disabled={!enablePresencePenalty}
+              value={presencePenalty}
+              step={0.1}
+              min={-2}
+              max={2}
+              valueLabelDisplay="auto"
+              onChange={(_event: Event, newValue: number | number[]) => setPresencePenalty(newValue as number)}
+            />
+          </OptionCard>
+          <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+          <OptionCard>
+            <CommonBox>
+              <Typography>frequencyPenalty</Typography>
+              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={t('Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model\'s likelihood to repeat the same line verbatim.')}>
+                <HelpOutlineRounded fontSize="small" />
+              </Tooltip>
+              <CommonBox sx={{ ml: 'auto' }}>
+                <TinyInput
+                  disabled={!enableFrequencyPenalty}
+                  type="number"
+                  slotProps={{
+                    input: {
+                      ref: inputRefs.current[4],
+                      min: -2,
+                      max: 2,
+                      step: 0.1,
+                    },
+                  }}
+                  value={frequencyPenalty}
+                  onChange={(event => setFrequencyPenalty(+event.target.value))}
+                />
+                <Switch checked={enableFrequencyPenalty} onChange={() => setEnableFrequencyPenalty(!enableFrequencyPenalty)} />
+              </CommonBox>
+            </CommonBox>
+            <Slider
+              disabled={!enableFrequencyPenalty}
+              value={frequencyPenalty}
+              step={0.1}
+              min={-2}
+              max={2}
+              valueLabelDisplay="auto"
+              onChange={(_event: Event, newValue: number | number[]) => setFrequencyPenalty(newValue as number)}
+            />
           </OptionCard>
           <Divider sx={{ mt: 'auto', mx: 2 }} />
 

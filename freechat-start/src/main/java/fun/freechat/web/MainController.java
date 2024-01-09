@@ -10,13 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
 @Controller
 @SuppressWarnings("unused")
 public class MainController {
-    private static final List<String> FAVICON_STYLES = List.of("dark", "light");
-
     @RequestMapping("/w/**")
     public String index(Model model) {
         try {

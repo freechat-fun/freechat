@@ -6,6 +6,7 @@ import { SxProps } from '@mui/joy/styles/types';
 import { MarkdownContent } from '.';
 
 interface ChatContentProps {
+  disabled?: boolean;
   url?: string;
   body?: string;
   initialData?: string;
@@ -17,7 +18,17 @@ interface ChatContentProps {
   onError?: (reason: any) => void;
 }
 
-export default function ChatContent({ url, body, initialData, sx, onMessage, onFinish, onClose, onError }: ChatContentProps) {
+export default function ChatContent({
+  disabled = false,
+  url,
+  body,
+  initialData,
+  sx,
+  onMessage,
+  onFinish,
+  onClose,
+  onError
+}: ChatContentProps) {
   const { handleError } = useErrorMessageBusContext();
 
   const [data, setData] = useState(initialData || '');
@@ -26,7 +37,7 @@ export default function ChatContent({ url, body, initialData, sx, onMessage, onF
     const hasBody = body !== undefined;
     const controller = new AbortController();
 
-    if (!url) {
+    if (disabled || !url) {
       return;
     }
 
@@ -68,7 +79,7 @@ export default function ChatContent({ url, body, initialData, sx, onMessage, onF
     startListening();
     return () => controller.abort();
     
-  }, [url, body, onFinish, onMessage, onError, onClose, handleError]);
+  }, [url, body, onFinish, onMessage, onError, onClose, handleError, disabled]);
 
   return (
     <MarkdownContent sx={sx}>

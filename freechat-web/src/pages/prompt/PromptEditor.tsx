@@ -105,6 +105,10 @@ export default function PromptEditor() {
 
   useEffect(() => {
     if (origRecord) {
+      if (origRecord.username !== username) {
+        return;
+      }
+      
       setOriginName(origRecord.name);
 
       setDescription(origRecord.description);
@@ -124,7 +128,7 @@ export default function PromptEditor() {
       setTags(origRecord.tags ?? []);
       setModels(origRecord.aiModels ?? []);
     }
-  }, [origRecord]);
+  }, [origRecord, username]);
 
   useEffect(() => {
     setSaved(() => false);
