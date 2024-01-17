@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, Chip, Typography, styled } from "@mui/joy";
-import { CommonBox, LinePlaceholder, RouterLink } from "../../components";
+import { Card, Chip, Typography } from "@mui/joy";
+import { CommonBox, HistoryTypography, LinePlaceholder, RouterLink } from "../../components";
 import { PromptDetailsDTO, AiModelInfoDTO } from "freechat-sdk";
 import { getLocaleLabel } from "../../configs/i18n-config";
 
@@ -17,17 +17,11 @@ export default function PromptMeta(props: {
   const tags: string[] = record?.tags ?? [];
   const models: AiModelInfoDTO[] = record?.aiModels ?? [];
 
-  const HistoryTypography = styled(Typography)(() => ({
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    p: 1,
-  }));
-
   return (
     <Card sx={{
-      width: { sm: '16rem' },
-      mt: 2,
+      width: { xs: '100%', sm: '16rem' },
+      my: 2,
+      mx: { xs: 0, sm: 2 },
       p: 2,
       boxShadow: 'sm',
     }}>

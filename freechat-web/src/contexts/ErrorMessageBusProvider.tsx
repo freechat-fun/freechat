@@ -46,7 +46,7 @@ const ErrorMessageBusProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   const handleError = (reason: any) => {
-    if (messages.length > MAX_ERRORS) {
+    if (!reason || messages.length > MAX_ERRORS) {
       return;
     }
     const code = reason?.code || -1;

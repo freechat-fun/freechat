@@ -27,7 +27,7 @@ export default defineConfig({
         changeOrigin: true,
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq) => {
-            const bearerToken = 'fc-a1a04c7cd8f1436ab4c6afe4f8474476';
+            const bearerToken = 'fc-guest';
             proxyReq.setHeader('Authorization', `Bearer ${bearerToken}`);
           });
         },

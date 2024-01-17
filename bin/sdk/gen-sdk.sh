@@ -165,7 +165,7 @@ function python_sdk {
     --git-repo-id ${GIT_REPO_ID} \
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
-    --package-name ${ARTIFACT_ID} \
+    --package-name ${ARTIFACT_ID//-/_} \
     --http-user-agent ${ARTIFACT_ID}/${VERSION}/python \
     --additional-properties \
 disallowAdditionalPropertiesIfNotPresent=false,\

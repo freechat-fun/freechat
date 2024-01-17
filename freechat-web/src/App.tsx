@@ -32,6 +32,7 @@ function App() {
                 [theme.breakpoints.up('lg')]: {
                   '--Sidebar-width': '240px',
                 },
+                '--ThinSidebar-width': '80px',
                 '--Header-height': '40px',
               },
             })}
@@ -39,13 +40,13 @@ function App() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <UnauthorizedDialog />
             <ErrorMessageSnackbar />
-            <Box sx={{
+            {/* <Box sx={{
               display: 'flex',
               flexDirection: 'column',
             }}>
-              <Header />
+              <Header /> */}
               <RouterProvider router={router} />
-            </Box>
+            {/* </Box> */}
           </LocalizationProvider>
         </JoyCssVarsProvider>
       </MaterialCssVarsProvider>

@@ -5,6 +5,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.InteractiveStatsScoreDetails;
 import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.common.TagService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.flow.FlowService;
@@ -48,6 +49,9 @@ public class InteractiveStatsApi {
     @Autowired
     private CharacterService characterService;
 
+    @Autowired
+    private TagService tagService;
+
     @Operation(
             operationId = "addStatistic",
             summary = "Add Statistics",
@@ -55,7 +59,7 @@ public class InteractiveStatsApi {
     )
     @PostMapping("/stats/{infoType}/{infoId}/{statsType}/{delta}")
     public Long add(
-            @Parameter(description = "Resource type: prompt | flow | plugin") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Delta in statistical value") @PathVariable("delta") @NotEmpty Long delta) {
@@ -76,7 +80,7 @@ public class InteractiveStatsApi {
     )
     @PostMapping("/stats/{infoType}/{infoId}/{statsType}")
     public Long increase(
-            @Parameter(description = "Resource type: prompt | flow | plugin") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType) {
         return add(infoType, infoId, statsType, 1L);
@@ -89,7 +93,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/stats/{infoType}/{infoId}/{statsType}")
     public Long get(
-            @Parameter(description = "Resource type: prompt | flow | plugin") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType) {
         return add(infoType, infoId, statsType, 0L);
@@ -102,7 +106,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/stats/{infoType}/{infoId}")
     public InteractiveStatsDTO get(
-            @Parameter(description = "Resource type: prompt | flow | plugin") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
         return InteractiveStatsDTO.from(
                 interactiveStatsService.get(InfoType.of(infoType), infoId));
@@ -115,7 +119,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/score/{infoType}/{infoId}")
     public Long getScore(
-            @Parameter(description = "Resource type: prompt | flow | plugin") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
         return Optional.ofNullable(interactiveStatsService.getScore(
                     AccountUtils.currentUser().getUserId(), InfoType.of(infoType), infoId))
@@ -155,6 +159,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
+        dtoList.sort((r1, r2) -> (int)(r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
         return dtoList;
     }
 
@@ -190,6 +195,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
+        dtoList.sort((r1, r2) -> (int)(r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
         return dtoList;
     }
 
@@ -225,6 +231,7 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
+        dtoList.sort((r1, r2) -> (int)(r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
         return dtoList;
     }
 
@@ -260,6 +267,23 @@ public class InteractiveStatsApi {
                 dtoList.add(dto);
             }
         }
+        dtoList.sort((r1, r2) -> (int)(r2.getGmtModified().getTime() - r1.getGmtModified().getTime()));
         return dtoList;
+    }
+
+    @Operation(
+            operationId = "listHotTags",
+            summary = "Hot Tags",
+            description = "Get popular tags for a specified info type."
+    )
+    @GetMapping("/tags/hot/{infoType}/{pageSize}")
+    public List<HotTagDTO> getHotTags(
+            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Long pageSize,
+            @Parameter(description = "Key word") @RequestParam("text") Optional<String> text) {
+        return tagService.listHot(InfoType.of(infoType),  text.orElse(null), pageSize)
+                .stream()
+                .map(HotTagDTO::fromHotTag)
+                .toList();
     }
 }

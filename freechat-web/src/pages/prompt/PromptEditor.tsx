@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
-import { CommonBox, ConfirmModal, LinePlaceholder, TinyInput } from "../../components";
+import { CommonBox, CommonContainer, ConfirmModal, LinePlaceholder, TinyInput } from "../../components";
 import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
@@ -127,12 +127,28 @@ export default function PromptEditor() {
       setLang(origRecord.lang ? origRecord.lang.split('_')[0] : 'en');
       setTags(origRecord.tags ?? []);
       setModels(origRecord.aiModels ?? []);
+      if (origRecord.ext) {
+        try {
+          const persistentParameters = JSON.parse(origRecord.ext) as { [key: string]: any };
+          setDefaultParameters(persistentParameters);
+        } catch (error) {
+          // ignore
+        }
+      }
     }
   }, [origRecord, username]);
 
   useEffect(() => {
     setSaved(() => false);
   }, [editRecord]);
+
+  useEffect(() => {
+    setEditRecord(prevRecord => {
+      const newRecord = { ...prevRecord };
+      newRecord.description = description;
+      return newRecord;
+    });
+  }, [description]);
 
   useEffect(() => {
     setEditRecord(prevRecord => {
@@ -188,7 +204,6 @@ export default function PromptEditor() {
     setEditRecord(prevRecord => {
       const newRecord = { ...prevRecord };
       newRecord.example = example;
-      setInputs(extractVariables(newRecord));
       return newRecord;
     });
   }, [example]);
@@ -198,6 +213,15 @@ export default function PromptEditor() {
       const newRecord = { ...prevRecord };
       newRecord.inputs = JSON.stringify(inputs);
       return newRecord;
+    });
+    setDefaultVariables(prevVariables => {
+      const filteredInputs: { [key: string]: any; } = {};
+      Object.keys(prevVariables ?? {}).forEach(k => {
+        if (k in (inputs ?? {}) && prevVariables?.k) {
+          filteredInputs[k] = prevVariables.k;
+        }
+      })
+      return {...inputs, ...filteredInputs};
     });
   }, [inputs]);
 
@@ -515,9 +539,8 @@ export default function PromptEditor() {
     request.name = record.name ?? `untitiled-${formatDate(new Date())}`;
     request.tags = record.tags;
     request.template = record.template;
-    if (origRecord.visibility !== 'hidden') {
-      request.visibility = record.visibility;
-    }
+    request.ext = JSON.stringify(defaultParameters ?? {});
+    request.visibility = record.visibility;
 
     return request;
   }
@@ -532,7 +555,7 @@ export default function PromptEditor() {
         gap: { xs: 1, sm: 2 },
         justifyContent: 'flex-end',
       }}>
-        <CommonBox sx={{
+        <CommonContainer sx={{
           alignItems: 'center',
           flex: 1,
         }}>
@@ -544,7 +567,7 @@ export default function PromptEditor() {
           >
             <EditRounded fontSize="small" />
           </IconButton>
-        </CommonBox>
+        </CommonContainer>
         <Typography level="body-sm">
           {t('Updated on')} {getDateLabel(editRecord?.gmtModified || new Date(0), i18n.language, true)}
         </Typography>
@@ -557,7 +580,7 @@ export default function PromptEditor() {
           borderRadius: '16px',
         }}>
           <Button
-            disabled={saved}
+            disabled={saved || visibility==='hidden'}
             startDecorator={saved ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
           >
@@ -587,8 +610,8 @@ export default function PromptEditor() {
         </ButtonGroup>
       </Box>
       <Divider />
-      <CommonBox sx={{ alignItems: 'flex-start' }}>
-        <CommonBox sx={{ flex: 1, alignItems: 'flex-start' }}>
+      <CommonContainer sx={{ alignItems: 'flex-start' }}>
+        <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
           <Stack spacing={3} sx={{
             minWidth: { sm: '16rem' },
             mt: 2,
@@ -656,11 +679,15 @@ export default function PromptEditor() {
                               gridTemplateColumns: 'auto 1fr',
                               gap: 1,
                             }}>
-                              <Chip variant="soft" color="success">{(round.user.name || round.user.role || 'user').toUpperCase()}</Chip>
+                              <Chip variant="soft" color="success" sx={{ "--Chip-radius": "2px"}}>
+                                {(round.user.name || round.user.role || 'user').toUpperCase()}
+                              </Chip>
                               <Typography level="body-md" sx={contentStyle}>
                                 {round.user.content}
                               </Typography>
-                              <Chip variant="soft" color="warning">{(round.assistant.name || round.assistant.role || 'assistant').toUpperCase()}</Chip>
+                              <Chip variant="soft" color="warning" sx={{ "--Chip-radius": "2px"}}>
+                                {(round.assistant.name || round.assistant.role || 'assistant').toUpperCase()}
+                              </Chip>
                               <Typography level="body-md" sx={contentStyle}>
                                 {round.assistant.content}
                               </Typography>
@@ -824,8 +851,9 @@ export default function PromptEditor() {
 
           {/* Meta Settings */}
           <Card sx={{
-            width: '16rem',
-            m: 2,
+            width: { xs: '100%', sm: '16rem' },
+            my: 2,
+            mx: { xs: 0, sm: 2 },
             p: 2,
             boxShadow: 'sm',
           }}>
@@ -834,8 +862,7 @@ export default function PromptEditor() {
                 {t('Public')}
               </Typography>
               <Switch
-                disabled={visibility==='hidden'}
-                checked={visibility==='public'}
+                checked={visibility==='public' || visibility==='hidden'}
                 sx={{
                   [`&.${switchClasses.checked}`]: {
                     '--Switch-trackBackground': '#4CA176',
@@ -899,7 +926,13 @@ export default function PromptEditor() {
             </CommonBox>
             <LinePlaceholder spacing={2} />
 
-            <CommonBox sx={{gap: 2}}>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 2,
+            }}>
               <Typography level="title-sm" textColor="neutral">
                 {t('Language')}
               </Typography>
@@ -916,10 +949,10 @@ export default function PromptEditor() {
                 ))}
               </Select>
               <LinePlaceholder spacing={2} />
-            </CommonBox>
+            </Box>
             <LinePlaceholder spacing={2} />
 
-            <CommonBox sx={{gap: 2}}>
+            <CommonBox>
               <Typography level="title-sm" textColor="neutral">
                 {t('Tags')}
               </Typography>
@@ -960,7 +993,7 @@ export default function PromptEditor() {
             </CommonBox>
             <LinePlaceholder spacing={2} />
 
-            <CommonBox sx={{gap: 2}}>
+            <CommonBox>
               <Typography level="title-sm" textColor="neutral">
                 {t('Models')}
               </Typography>
@@ -1074,13 +1107,13 @@ export default function PromptEditor() {
               </Fragment>
             )}
           </Card>
-        </CommonBox>
+        </CommonContainer>
         
         {play && 
           <PromptRunner
             minWidth="16rem"
             maxWidth="40%"
-            apiPath="/api/v1/prompt/send/stream"
+            apiPath="/api/prompt/send"
             record={editRecord}
             defaultVariables={defaultVariables}
             defaultParameters={defaultParameters}
@@ -1089,7 +1122,7 @@ export default function PromptEditor() {
             onExampleSave={handleExampleGenerate}
           />
         }
-      </CommonBox>
+      </CommonContainer>
       <ConfirmModal
         open={editRecordName !== undefined}
         onClose={() => setEditRecordName(undefined)}

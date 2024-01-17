@@ -7,10 +7,7 @@ import fun.freechat.model.Tag;
 import fun.freechat.model.User;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
-import fun.freechat.service.enums.ApiFormat;
-import fun.freechat.service.enums.InfoType;
-import fun.freechat.service.enums.ModelProvider;
-import fun.freechat.service.enums.Visibility;
+import fun.freechat.service.enums.*;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginFetchService;
 import fun.freechat.service.plugin.PluginService;
@@ -91,9 +88,18 @@ public class PluginServiceImpl implements PluginService {
     private boolean filterTags(Triple<PluginInfo, List<String>, List<String>> triple, Query query) {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
-        if (CollectionUtils.isNotEmpty(matchTags) && Objects.nonNull(and) && and) {
-            //noinspection SlowListContainsAll
-            return triple.getMiddle().containsAll(matchTags);
+        if (CollectionUtils.isNotEmpty(matchTags)) {
+            if (Objects.nonNull(and) && and) {
+                //noinspection SlowListContainsAll
+                return triple.getMiddle().containsAll(matchTags);
+            } else {
+                for (String matchTag : matchTags) {
+                    if (triple.getMiddle().contains(matchTag)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
         return true;
     }
@@ -101,9 +107,18 @@ public class PluginServiceImpl implements PluginService {
     private boolean filterAiModels(Triple<PluginInfo, List<String>, List<String>> triple, Query query) {
         List<String> matchAiModels = query.getWhere().getAiModels();
         Boolean and = query.getWhere().getAiModelsAnd();
-        if (CollectionUtils.isNotEmpty(matchAiModels) && Objects.nonNull(and) && and) {
-            //noinspection SlowListContainsAll
-            return triple.getRight().containsAll(matchAiModels);
+        if (CollectionUtils.isNotEmpty(matchAiModels)) {
+            if (Objects.nonNull(and) && and) {
+                //noinspection SlowListContainsAll
+                return triple.getRight().containsAll(matchAiModels);
+            } else {
+                for (String aiModel : matchAiModels) {
+                    if (triple.getRight().contains(aiModel)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
         return true;
     }
@@ -147,6 +162,10 @@ public class PluginServiceImpl implements PluginService {
         return switch (fieldName) {
             case "modifyTime" -> Info.gmtModified;
             case "createTime" -> Info.gmtCreate;
+            case "viewCount" -> InteractiveStatsDynamicSqlSupport.viewCount;
+            case "referCount" -> InteractiveStatsDynamicSqlSupport.referCount;
+            case "recommendCount" -> InteractiveStatsDynamicSqlSupport.recommendCount;
+            case "score" -> InteractiveStatsDynamicSqlSupport.score;
             default -> null;
         };
     }
@@ -216,6 +235,12 @@ public class PluginServiceImpl implements PluginService {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
                     .on(Info.pluginId, equalTo(AiModelDynamicSqlSupport.referId));
         }
+        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        orderByStats.retainAll(StatsType.fieldNames());
+        if (!orderByStats.isEmpty()) {
+            table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
+                    .on(Info.pluginId, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+        }
         // conditions
         var conditions = table.where();
         // visibility
@@ -251,26 +276,24 @@ public class PluginServiceImpl implements PluginService {
         if (apiFormat != ApiFormat.UNKNOWN) {
             conditions.and(Info.apiFormat, isEqualTo(apiFormat.text()));
         }
-        // tags
-        if (CollectionUtils.isNotEmpty(tags)) {
-            conditions.and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                    .and(TagDynamicSqlSupport.content, isIn(tags));
-        }
-        // model ids.
-        if (CollectionUtils.isNotEmpty(modelIds)) {
-            conditions.and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                    .and(AiModelDynamicSqlSupport.modelId, isIn(modelIds));
-        }
         // name
         conditions.and(Info.name,
                 isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
-            var commonTextCondition = isLike(commonText).map(s -> "%" + commonText + "%");
+            var commonTextCondition = isLike(commonText).map(s -> "%" + s + "%");
             conditions.and(Info.name, commonTextCondition,
                     or(Info.provider, commonTextCondition),
                     or(Info.manifestInfo, commonTextCondition));
+        }
+        // tags
+        if (CollectionUtils.isNotEmpty(tags)) {
+            conditions.and(TagDynamicSqlSupport.content, isIn(tags));
+        }
+        // models
+        if (CollectionUtils.isNotEmpty(modelIds)) {
+            conditions.and(AiModelDynamicSqlSupport.modelId, isIn(modelIds));
         }
 
         // order by
@@ -284,7 +307,8 @@ public class PluginServiceImpl implements PluginService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of("p", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(
+                    orderByStats.contains(orderBy) ? "i" : "p", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
@@ -336,7 +360,15 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
   limit {limit} offset {offset} \
 ;
          */
-        var fields = selectDistinct(Info.summaryColumns());
+        List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
+        if (CollectionUtils.isNotEmpty(query.getOrderBy())) {
+            for (String orderBy : query.getOrderBy()) {
+                if (StatsType.fieldNames().contains(orderBy)) {
+                    columns.add(nameToColumn(orderBy));
+                }
+            }
+        }
+        var fields = selectDistinct(columns);
         return doSearch(query, user, fields);
     }
 

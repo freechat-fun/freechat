@@ -90,9 +90,18 @@ public class PromptServiceImpl implements PromptService {
     private boolean filterTags(Triple<PromptInfo, List<String>, List<String>> triple, Query query) {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
-        if (CollectionUtils.isNotEmpty(matchTags) && Objects.nonNull(and) && and) {
-            //noinspection SlowListContainsAll
-            return triple.getMiddle().containsAll(matchTags);
+        if (CollectionUtils.isNotEmpty(matchTags)) {
+            if (Objects.nonNull(and) && and) {
+                //noinspection SlowListContainsAll
+                return triple.getMiddle().containsAll(matchTags);
+            } else {
+                for (String matchTag : matchTags) {
+                    if (triple.getMiddle().contains(matchTag)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
         return true;
     }
@@ -100,9 +109,18 @@ public class PromptServiceImpl implements PromptService {
     private boolean filterAiModels(Triple<PromptInfo, List<String>, List<String>> triple, Query query) {
         List<String> matchAiModels = query.getWhere().getAiModels();
         Boolean and = query.getWhere().getAiModelsAnd();
-        if (CollectionUtils.isNotEmpty(matchAiModels) && Objects.nonNull(and) && and) {
-            //noinspection SlowListContainsAll
-            return triple.getRight().containsAll(matchAiModels);
+        if (CollectionUtils.isNotEmpty(matchAiModels)) {
+            if (Objects.nonNull(and) && and) {
+                //noinspection SlowListContainsAll
+                return triple.getRight().containsAll(matchAiModels);
+            } else {
+                for (String aiModel : matchAiModels) {
+                    if (triple.getRight().contains(aiModel)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
         return true;
     }
@@ -137,6 +155,10 @@ public class PromptServiceImpl implements PromptService {
             case "version" -> Info.version;
             case "modifyTime" -> Info.gmtModified;
             case "createTime" -> Info.gmtCreate;
+            case "viewCount" -> InteractiveStatsDynamicSqlSupport.viewCount;
+            case "referCount" -> InteractiveStatsDynamicSqlSupport.referCount;
+            case "recommendCount" -> InteractiveStatsDynamicSqlSupport.recommendCount;
+            case "score" -> InteractiveStatsDynamicSqlSupport.score;
             default -> null;
         };
     }
@@ -227,6 +249,12 @@ public class PromptServiceImpl implements PromptService {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
                     .on(Info.promptId, equalTo(AiModelDynamicSqlSupport.referId));
         }
+        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        orderByStats.retainAll(StatsType.fieldNames());
+        if (!orderByStats.isEmpty()) {
+            table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
+                    .on(Info.promptId, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+        }
         // conditions
         var conditions = table.where();
         // visibility
@@ -257,16 +285,6 @@ public class PromptServiceImpl implements PromptService {
                 hasDraft = true;
             }
         }
-        // tags
-        if (CollectionUtils.isNotEmpty(tags)) {
-            conditions.and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                    .and(TagDynamicSqlSupport.content, isIn(tags));
-        }
-        // model ids.
-        if (CollectionUtils.isNotEmpty(modelIds)) {
-            conditions.and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                    .and(AiModelDynamicSqlSupport.modelId, isIn(modelIds));
-        }
         // name
         conditions.and(Info.name,
                 isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
@@ -285,6 +303,14 @@ public class PromptServiceImpl implements PromptService {
                     or(Info.template, commonTextCondition),
                     or(Info.example, commonTextCondition));
         }
+        // tags
+        if (CollectionUtils.isNotEmpty(tags)) {
+            conditions.and(TagDynamicSqlSupport.content, isIn(tags));
+        }
+        // models
+        if (CollectionUtils.isNotEmpty(modelIds)) {
+            conditions.and(AiModelDynamicSqlSupport.modelId, isIn(modelIds));
+        }
 
         // order by
         LinkedList<SortSpecification> orderByFields = new LinkedList<>();
@@ -297,7 +323,8 @@ public class PromptServiceImpl implements PromptService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of("p", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(
+                    orderByStats.contains(orderBy) ? "i" : "p", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
@@ -351,7 +378,15 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
          */
 
         // fields
-        var fields = selectDistinct(Info.summaryColumns());
+        List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
+        if (CollectionUtils.isNotEmpty(query.getOrderBy())) {
+            for (String orderBy : query.getOrderBy()) {
+                if (StatsType.fieldNames().contains(orderBy)) {
+                    columns.add(nameToColumn(orderBy));
+                }
+            }
+        }
+        var fields = selectDistinct(columns);
         return doSearch(query, user, fields);
     }
 

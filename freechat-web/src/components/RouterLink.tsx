@@ -10,7 +10,8 @@ const RouterLink = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   }
   
   return (
-    <Link ref={ref} onClick={() => {
+    <Link ref={ref} onClick={(event) => {
+      event.preventDefault();
       if (props.href) {
         navigate(props.href);
       }

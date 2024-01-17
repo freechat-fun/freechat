@@ -2,6 +2,7 @@
   "Coming soon!": "Coming soon!",
   "Refer to the": "Refer to the",
   "documentation": "documentation",
+  "Error!": "Error!",
   "Exception": "Exception",
   "Page not found": "Page not found",
   "Sorry, the page you are looking for does not exist.": "Sorry, the page you are looking for does not exist.",
@@ -34,5 +35,6 @@
   "Type": "Type",
   "Please enter a new name": "Please enter a new name",
   "Name already exists!": "Name already exists!",
+  "Search tags": "Search tags",
   ".": "."
 }

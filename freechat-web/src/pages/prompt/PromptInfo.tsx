@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Chip, Divider, Tooltip, Typography } from "@mui/joy";
 import { ArrowBackRounded, ChatBubbleOutlineRounded, ContentCopyRounded, EditRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
-import { CommonBox, LinePlaceholder } from "../../components";
+import { CommonContainer, LinePlaceholder } from "../../components";
 import { PromptDetailsDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt";
@@ -54,7 +54,7 @@ export default function PromptInfo() {
   return (
     <>
       <LinePlaceholder />
-      <CommonBox sx={{
+      <CommonContainer sx={{
         alignItems: { xs: 'flex-start', sm: 'flex-end' },
         justifyContent: 'flex-end',
       }}>
@@ -121,9 +121,9 @@ export default function PromptInfo() {
           )}
         </ButtonGroup>
         
-      </CommonBox>
+      </CommonContainer>
       <Divider />
-      <CommonBox sx={{ flex: 1, alignItems: 'flex-start' }}>
+      <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
         <PromptContent record={record} />
         {play ? 
           <PromptRunner
@@ -151,7 +151,7 @@ export default function PromptInfo() {
             }}
           /> :
           <PromptMeta record={record} history={history} />}
-      </CommonBox>
+      </CommonContainer>
     </>
   );
 }

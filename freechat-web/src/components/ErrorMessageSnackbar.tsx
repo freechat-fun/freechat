@@ -1,11 +1,15 @@
-import { IconButton, Snackbar, Stack, Typography } from "@mui/joy";
-import { useErrorMessageBusContext } from "../contexts";
+import { useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { useErrorMessageBusContext } from "../contexts";
+import { IconButton, Link, Snackbar, Stack, Typography } from "@mui/joy";
 import { ClearRounded, ErrorOutlineRounded } from "@mui/icons-material";
 
 export default function ErrorMessageSnackbar() {
   const { t } = useTranslation();
   const { messages, removeMessage } = useErrorMessageBusContext();
+
+  const [showDetails, setShowDetails] = useState(false);
+
   const message = messages && messages.length > 0 ? messages[0] : undefined;
 
   return (
@@ -25,7 +29,25 @@ export default function ErrorMessageSnackbar() {
             zIndex: 10000,
           }}
         >
-          {message &&
+          {!showDetails ? (
+            <Link
+              overlay
+              variant="plain"
+              color="danger"
+              sx={{
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'none',
+                  bgcolor: 'transparent',
+                }
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+                setShowDetails(true);
+            }}>
+              {t('Error!')}
+            </Link>
+          ) : message && (
             <Stack>
               <Typography level="title-md">
                 {`${t('Exception')}: ${message.code}`}
@@ -36,7 +58,7 @@ export default function ErrorMessageSnackbar() {
                 {message.message}
               </Typography>
             </Stack>
-          }
+          )}
         </Snackbar>
       }
     </>

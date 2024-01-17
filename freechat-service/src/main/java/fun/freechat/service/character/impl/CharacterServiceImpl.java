@@ -8,6 +8,7 @@ import fun.freechat.service.character.CharacterBackendEvent;
 import fun.freechat.service.character.CharacterInfoDraft;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.InfoType;
+import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.util.CacheUtils;
@@ -101,9 +102,18 @@ public class CharacterServiceImpl implements CharacterService {
     private boolean filterTags(Pair<CharacterInfo, List<String>> pair, CharacterService.Query query) {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
-        if (CollectionUtils.isNotEmpty(matchTags) && Objects.nonNull(and) && and) {
-            //noinspection SlowListContainsAll
-            return pair.getRight().containsAll(matchTags);
+        if (CollectionUtils.isNotEmpty(matchTags)) {
+            if (Objects.nonNull(and) && and) {
+                //noinspection SlowListContainsAll
+                return pair.getRight().containsAll(matchTags);
+            } else {
+                for (String matchTag : matchTags) {
+                    if (pair.getRight().contains(matchTag)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
         return true;
     }
@@ -145,6 +155,10 @@ public class CharacterServiceImpl implements CharacterService {
             case "version" -> Info.version;
             case "modifyTime" -> Info.gmtModified;
             case "createTime" -> Info.gmtCreate;
+            case "viewCount" -> InteractiveStatsDynamicSqlSupport.viewCount;
+            case "referCount" -> InteractiveStatsDynamicSqlSupport.referCount;
+            case "recommendCount" -> InteractiveStatsDynamicSqlSupport.recommendCount;
+            case "score" -> InteractiveStatsDynamicSqlSupport.score;
             default -> null;
         };
     }
@@ -223,6 +237,13 @@ public class CharacterServiceImpl implements CharacterService {
                     .on(Info.characterId, equalTo(TagDynamicSqlSupport.referId));
 
         }
+        List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
+        orderByStats.retainAll(StatsType.fieldNames());
+        if (!orderByStats.isEmpty()) {
+            table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
+                    .on(Info.characterId, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+        }
+
         // conditions
         var conditions = table.where();
         // visibility
@@ -253,11 +274,6 @@ public class CharacterServiceImpl implements CharacterService {
                 hasDraft = true;
             }
         }
-        // tags
-        if (CollectionUtils.isNotEmpty(tags)) {
-            conditions.and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                    .and(TagDynamicSqlSupport.content, isIn(tags));
-        }
         // name
         conditions.and(Info.name,
                 isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
@@ -267,12 +283,16 @@ public class CharacterServiceImpl implements CharacterService {
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
-            var commonTextCondition = isLike(commonText).map(s -> "%" + commonText + "%");
+            var commonTextCondition = isLike(commonText).map(s -> "%" + s + "%");
             conditions.and(Info.name, commonTextCondition,
                     or(Info.description, commonTextCondition),
                     or(Info.profile, commonTextCondition),
                     or(Info.chatStyle, commonTextCondition),
                     or(Info.experience, commonTextCondition));
+        }
+        // tags
+        if (CollectionUtils.isNotEmpty(tags)) {
+            conditions.and(TagDynamicSqlSupport.content, isIn(tags));
         }
 
         // order by
@@ -286,7 +306,8 @@ public class CharacterServiceImpl implements CharacterService {
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
                 orderByField = orderByField.descending();
             }
-            orderByFields.add(SortSpecificationWrapper.of("c", orderByField));
+            orderByFields.add(SortSpecificationWrapper.of(
+                    orderByStats.contains(orderBy) ? "i" : "c", orderByField));
         }
         if (CollectionUtils.isNotEmpty(orderByFields)) {
             conditions.orderBy(orderByFields);
@@ -345,7 +366,15 @@ select distinct c.user_id, c.character_id, c.visibility... \
   limit {limit} offset {offset} \
 ;
          */
-        var fields = selectDistinct(Info.summaryColumns());
+        List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
+        if (CollectionUtils.isNotEmpty(query.getOrderBy())) {
+            for (String orderBy : query.getOrderBy()) {
+                if (StatsType.fieldNames().contains(orderBy)) {
+                    columns.add(nameToColumn(orderBy));
+                }
+            }
+        }
+        var fields = selectDistinct(columns);
         return doSearchSummaries(query, user, fields);
     }
 

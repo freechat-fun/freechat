@@ -43,6 +43,7 @@ public class PromptQueryDTO {
             - version
             - modifyTime
             - createTime
+            - (interactive statistical fields)
                        
             Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\\"score\\", \\"scoreCount asc\\"] (scoreCount in ascending order)
             """)

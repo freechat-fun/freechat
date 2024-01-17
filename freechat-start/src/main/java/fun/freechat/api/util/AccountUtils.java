@@ -62,7 +62,7 @@ public class AccountUtils implements ApplicationContextAware {
                     sysUser, authenticated.getCredentials(), authenticated.getAuthorities());
         } else if (authenticated instanceof ApiTokenAuthenticationToken) {
             newAuthenticated = new ApiTokenAuthenticationToken(
-                    sysUser, (Set<String>)authenticated.getCredentials());
+                    sysUser, (Set<String>)authenticated.getCredentials(), true);
         }
 
         SecurityContextHolder.getContext().setAuthentication(newAuthenticated);

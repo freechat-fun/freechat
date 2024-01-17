@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack, Divider } from "@mui/joy";
 import { CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
-import { CommonBox, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
+import { CommonContainer, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
 import { DashScopeSettings, OpenAISettings } from ".";
 import { providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
@@ -170,12 +170,28 @@ export default function PromptRunner(props: {
     setProvider(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
     setApiKeyName(defaultParameters?.apiKeyName);
     setApiKeyValue(defaultParameters?.apiKey);
-    setParameters(defaultParameters);
+    const initialParameters = initParameters(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
+    if (initialParameters) {
+      setParameters(initialParameters);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultParameters]);
+
+  useEffect(() => {
+    defaultVariables && setInputs(defaultVariables);
+  }, [defaultVariables]);
 
   useEffect(() => {
     setWidth(maxWidth || '50%');
   }, [maxWidth]);
+
+  useEffect(() => {
+    const initialParameters = initParameters(provider ?? 'open_ai');
+    if (initialParameters) {
+      setParameters(initialParameters);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, models]);
 
   function handleInputChange(key: string, value: string | undefined): void {
     if (inputs && value !== inputs[key]) {
@@ -222,6 +238,24 @@ export default function PromptRunner(props: {
 
     setPlaying(true);
     setAiRequest(request);
+  }
+
+  function initParameters(initialProvider: string): { [key: string]: any } | undefined {
+    if (extractModelProvider(defaultParameters?.modelId) === initialProvider) {
+      return {...defaultParameters};
+    } else {
+      const defaultModelName = initialProvider === 'dash_scope' ? '[dash_scope]qwen-plus' : '[open_ai]gpt-4';
+      const defaultModel = models?.find(modelInfo => modelInfo?.modelId === defaultModelName);
+      if (defaultModel) {
+        const initialParameters: { [key: string]: any } = {};
+        initialParameters['modelId'] = defaultModel.modelId;
+        if (initialProvider === 'open_ai') {
+          initialParameters['baseUrl'] = 'https://api.openai-proxy.com/v1';
+        }
+        return initialParameters;
+      }
+    }
+    return undefined;
   }
 
   function filterModels(): (AiModelInfoDTO | undefined)[] {
@@ -289,7 +323,7 @@ export default function PromptRunner(props: {
         </Typography>
         <Box sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
+          flexDirection: 'row',
           justifyContent: 'flex-end',
           alignItems:  { xs: 'flex-start', sm: 'center' },
           gap: 2,
@@ -324,21 +358,25 @@ export default function PromptRunner(props: {
           </Button>
         </Box>
         <LinePlaceholder />
-        <CommonBox sx={{ justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography level="title-sm" textColor="neutral">
             {t('Output')}
           </Typography>
-          <IconButton
-            disabled={!parameters || playing}
-            color="primary"
-            onClick={handlePlay}
-          >
-            {output.current || defaultOutputText ? 
-              <ReplayCircleFilledRounded fontSize="large" /> : 
-              <PlayCircleFilledRounded fontSize="large" />
-            }
-          </IconButton>
-        </CommonBox>
+          {playing ? (
+            <Button loading variant="plain" />
+          ) : (
+            <IconButton
+              disabled={!parameters}
+              color="primary"
+              onClick={handlePlay}
+            >
+              {output.current || defaultOutputText ? 
+                <ReplayCircleFilledRounded fontSize="large" /> : 
+                <PlayCircleFilledRounded fontSize="large" />
+              }
+            </IconButton>
+          )}
+        </Box>
         <TextareaTypography>
           <ChatContent
             disabled={!playing}
@@ -358,7 +396,21 @@ export default function PromptRunner(props: {
             }}
           />
         </TextareaTypography>
-        <CommonBox sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <CommonContainer sx={{
+          justifyContent: onExampleSave ? 'space-between' : 'flex-end',
+          alignItems: 'flex-start',
+        }}>
+          {onExampleSave && output.current && (
+            <Button
+              size="sm"
+              variant="outlined"
+              color="success"
+              startDecorator={<IosShareRounded />}
+              onClick={() => onExampleSave(aiRequest, output.current)}
+            >
+              {t('Save as Example', {ns: 'button'})}
+            </Button>
+          )}
           {!playing && output.current?.tokenUsage && (
             <Fragment>
               <Box sx={{
@@ -386,18 +438,7 @@ export default function PromptRunner(props: {
               </Box>
             </Fragment>
           )}
-          {onExampleSave && output.current && (
-            <Button
-              size="sm"
-              variant="outlined"
-              color="success"
-              startDecorator={<IosShareRounded />}
-              onClick={() => onExampleSave(aiRequest, output.current)}
-            >
-              {t('Save as Example', {ns: 'button'})}
-            </Button>
-          )}
-        </CommonBox>
+        </CommonContainer>
       </Card>
       <AiApiKeySetting
         defaultKeyName={apiKeyName}

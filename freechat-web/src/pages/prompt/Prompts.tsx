@@ -77,7 +77,6 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           textOverflow: 'ellipsis',
           WebkitBoxOrient: 'vertical',
           WebkitLineClamp: 3,
-          maxWidth: '20rem',
           maxHeight: '4.5rem',
           minHeight: '4.5rem',
           lineHeight: '1.5rem',

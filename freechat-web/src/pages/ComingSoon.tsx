@@ -23,7 +23,7 @@ export default function ComingSoon() {
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        mb: 'calc(10=0px + var(--Header-height))',
+        mb: 'calc(10px + var(--Header-height))',
       }}>
           <Typography level="title-lg">
             {t('Coming soon!')}
