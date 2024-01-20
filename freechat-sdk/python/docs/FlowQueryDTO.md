@@ -3,6 +3,7 @@
 Flow information query request
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **where** | [**FlowQueryWhere**](FlowQueryWhere.md) |  | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.flow_query_dto import FlowQueryDTO
+from freechat_sdk.models.flow_query_dto import FlowQueryDTO
 
 # TODO update the JSON string below
 json = "{}"

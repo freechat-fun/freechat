@@ -3,6 +3,7 @@
 Request data for updating character information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **parent_id** | **str** | Referenced character | [optional] 
@@ -25,7 +26,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_update_dto import CharacterUpdateDTO
+from freechat_sdk.models.character_update_dto import CharacterUpdateDTO
 
 # TODO update the JSON string below
 json = "{}"

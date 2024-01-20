@@ -15,6 +15,7 @@ Method | HTTP request | Description
 [**listFlowsByStatistic**](InteractiveStatisticsApi.md#listFlowsByStatistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics
 [**listFlowsByStatistic1**](InteractiveStatisticsApi.md#listFlowsByStatistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics
 [**listFlowsByStatistic2**](InteractiveStatisticsApi.md#listFlowsByStatistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics
+[**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
 [**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
 [**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
 [**listPluginsByStatistic2**](InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/stats/plugins/by/{statsType} | List Plugins by Statistics
@@ -39,7 +40,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiAddStatisticRequest = {
-  // string | Resource type: prompt | flow | plugin
+  // string | Info type: prompt | flow | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -59,7 +60,7 @@ apiInstance.addStatistic(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Resource type: prompt | flow | plugin | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
  **delta** | [**number**] | Delta in statistical value | defaults to undefined
@@ -102,7 +103,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiGetScoreRequest = {
-  // string | Resource type: prompt | flow | plugin
+  // string | Info type: prompt | flow | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -118,7 +119,7 @@ apiInstance.getScore(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Resource type: prompt | flow | plugin | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
 
 
@@ -159,7 +160,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiGetStatisticRequest = {
-  // string | Resource type: prompt | flow | plugin
+  // string | Info type: prompt | flow | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -177,7 +178,7 @@ apiInstance.getStatistic(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Resource type: prompt | flow | plugin | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
 
@@ -219,7 +220,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiGetStatisticsRequest = {
-  // string | Resource type: prompt | flow | plugin
+  // string | Info type: prompt | flow | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -235,7 +236,7 @@ apiInstance.getStatistics(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Resource type: prompt | flow | plugin | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
 
 
@@ -276,7 +277,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiIncreaseStatisticRequest = {
-  // string | Resource type: prompt | flow | plugin
+  // string | Info type: prompt | flow | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -294,7 +295,7 @@ apiInstance.increaseStatistic(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Resource type: prompt | flow | plugin | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
 
@@ -662,6 +663,66 @@ Name | Type | Description  | Notes
 ### Return type
 
 **Array<FlowSummaryStatsDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listHotTags**
+> Array<HotTagDTO> listHotTags()
+
+Get popular tags for a specified info type.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .InteractiveStatisticsApi(configuration);
+
+let body:.InteractiveStatisticsApiListHotTagsRequest = {
+  // string | Info type: prompt | flow | plugin | character
+  infoType: "infoType_example",
+  // number | Maximum quantity
+  pageSize: 1,
+  // string | Key word (optional)
+  text: "text_example",
+};
+
+apiInstance.listHotTags(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **text** | [**string**] | Key word | (optional) defaults to undefined
+
+
+### Return type
+
+**Array<HotTagDTO>**
 
 ### Authorization
 

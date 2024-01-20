@@ -237,6 +237,9 @@ public class SecurityConfig {
         for (String uri : apiUri) {
             source.registerCorsConfiguration(uri, configuration);
         }
+        for (String uri : publicUri) {
+            source.registerCorsConfiguration(uri, configuration);
+        }
         return source;
     }
 }

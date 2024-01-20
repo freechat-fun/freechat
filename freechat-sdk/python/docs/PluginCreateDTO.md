@@ -3,6 +3,7 @@
 Request data for creating new plugin information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
@@ -19,7 +20,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.plugin_create_dto import PluginCreateDTO
+from freechat_sdk.models.plugin_create_dto import PluginCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

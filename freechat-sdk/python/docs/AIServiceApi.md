@@ -1,4 +1,4 @@
-# freechat-sdk.AIServiceApi
+# freechat_sdk.AIServiceApi
 
 All URIs are relative to *http://127.0.0.1:8080*
 
@@ -26,17 +26,18 @@ Add a credential for the model service.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -46,15 +47,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
-    ai_api_key_create_dto = freechat-sdk.AiApiKeyCreateDTO() # AiApiKeyCreateDTO | Model call credential information
+    api_instance = freechat_sdk.AIServiceApi(api_client)
+    ai_api_key_create_dto = freechat_sdk.AiApiKeyCreateDTO() # AiApiKeyCreateDTO | Model call credential information
 
     try:
         # Add Model Provider Credential
@@ -68,6 +69,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -87,6 +89,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -103,16 +106,17 @@ Delete the credential information of the model provider.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -122,14 +126,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     id = 56 # int | Credential identifier
 
     try:
@@ -144,6 +148,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -163,6 +168,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -179,16 +185,17 @@ Disable the credential information of the model provider.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -198,14 +205,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     id = 56 # int | Credential identifier
 
     try:
@@ -220,6 +227,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -239,6 +247,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -255,16 +264,17 @@ Enable the credential information of the model provider.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -274,14 +284,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     id = 56 # int | Credential identifier
 
     try:
@@ -296,6 +306,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -315,6 +326,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -331,17 +343,18 @@ Get the credential information of the model provider.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -351,14 +364,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     id = 56 # int | Credential identifier
 
     try:
@@ -373,6 +386,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -392,6 +406,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -408,17 +423,18 @@ Return specific model information.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_model_info_dto import AiModelInfoDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -428,14 +444,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     model_id = 'model_id_example' # str | Model identifier
 
     try:
@@ -450,6 +466,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -469,6 +486,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -485,17 +503,18 @@ List all credential information of the model provider.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -505,14 +524,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     provider = 'provider_example' # str | Model provider
 
     try:
@@ -527,6 +546,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -546,6 +566,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -562,17 +583,18 @@ Return model information by page, return the pageNum page, up to pageSize model 
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_model_info_dto import AiModelInfoDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -582,14 +604,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     page_size = 56 # int | Maximum quantity
 
     try:
@@ -604,6 +626,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -623,6 +646,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -639,17 +663,18 @@ Return model information by page, return the pageNum page, up to pageSize model 
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_model_info_dto import AiModelInfoDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -659,14 +684,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
 
     try:
         # List Models
@@ -680,6 +705,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 This endpoint does not need any parameter.
 
 ### Return type
@@ -696,6 +722,7 @@ This endpoint does not need any parameter.
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -712,17 +739,18 @@ Return model information by page, return the pageNum page, up to pageSize model 
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.ai_model_info_dto import AiModelInfoDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -732,14 +760,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.AIServiceApi(api_client)
+    api_instance = freechat_sdk.AIServiceApi(api_client)
     page_size = 56 # int | Maximum quantity
     page_num = 56 # int | Current page number
 
@@ -755,6 +783,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -775,6 +804,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |

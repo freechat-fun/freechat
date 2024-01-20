@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { AspectRatio, Box, Button, Card, CardActions, CardOverflow, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar, Divider } from "@mui/joy";
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
-import { Breadcrumbsbar, ImagePicker, LinePlaceholder } from "../../components";
+import { ImagePicker, LinePlaceholder } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
 
 export default function MyProfile() {
@@ -21,10 +21,6 @@ export default function MyProfile() {
 
   const labelGridUnits = 3;
   const valueGridUnits = 12 - labelGridUnits;
-  const breadcrumbs = {
-    'Home': '/w',
-    'My Profile': undefined,
-  };
 
   useEffect(() => {
     getUserInfo();
@@ -129,8 +125,7 @@ export default function MyProfile() {
 
   return (
     <>
-      <Breadcrumbsbar breadcrumbs={breadcrumbs} />
-      <LinePlaceholder spacing={1} />
+      <LinePlaceholder spacing={6} />
       <Typography level="title-lg" sx={{ ml: 3 }}>{t('My details')}</Typography>
       <Divider />
       <form onSubmit={handleSubmit}>

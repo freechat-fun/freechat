@@ -2,6 +2,7 @@
 
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **timeout** | **int** |  | [optional] 
@@ -9,7 +10,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.sse_emitter import SseEmitter
+from freechat_sdk.models.sse_emitter import SseEmitter
 
 # TODO update the JSON string below
 json = "{}"

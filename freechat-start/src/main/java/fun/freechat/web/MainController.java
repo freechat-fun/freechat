@@ -36,7 +36,7 @@ public class MainController {
     }
 
 
-    @GetMapping({"/public/check/live", "/status.taobao", "/checkpreload.htm"})
+    @GetMapping({"/public/check/live"})
     @ResponseBody
     public String live() {
         return "success";

@@ -3,6 +3,7 @@
 Request data for adding new model credential information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** | Credential name | 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
+from freechat_sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

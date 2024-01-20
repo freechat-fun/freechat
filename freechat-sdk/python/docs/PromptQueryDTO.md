@@ -3,17 +3,18 @@
 Prompt template query request
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **where** | [**PromptQueryWhere**](PromptQueryWhere.md) |  | [optional] 
-**order_by** | **List[str]** | Sorting condition, supported sorting fields are: - version - modifyTime - createTime  Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\\\&quot;score\\\&quot;, \\\&quot;scoreCount asc\\\&quot;] (scoreCount in ascending order)  | [optional] 
+**order_by** | **List[str]** | Sorting condition, supported sorting fields are: - version - modifyTime - createTime - (interactive statistical fields)  Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\\\&quot;score\\\&quot;, \\\&quot;scoreCount asc\\\&quot;] (scoreCount in ascending order)  | [optional] 
 **page_num** | **int** | Page number, default is 0 | [optional] 
 **page_size** | **int** | Number of items per page, 1～50, default is 10 | [optional] 
 
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -184,11 +184,11 @@ export default function Prompts() {
   }
 
   function handleView(record: PromptSummaryDTO): void {
-    navigate(`/w/console/prompt/${record.promptId}`)
+    navigate(`/w/prompt/${record.promptId}`)
   }
 
   function handleEdit(record: PromptSummaryDTO): void {
-    navigate(`/w/console/prompt/edit/${record.promptId}`)
+    navigate(`/w/prompt/edit/${record.promptId}`)
   }
 
   function handleNameChange(): void {
@@ -218,7 +218,7 @@ export default function Prompts() {
           promptApi?.createPrompt(request)
             .then(resp => {
               if (resp) {
-                navigate(`/w/console/prompt/edit/${resp}`);
+                navigate(`/w/prompt/edit/${resp}`);
               }
             })
             .catch(handleError);

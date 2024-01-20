@@ -3,6 +3,7 @@
 Prompt chat template content
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **system** | **str** | Prompt system template | [optional] 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.chat_prompt_content_dto import ChatPromptContentDTO
+from freechat_sdk.models.chat_prompt_content_dto import ChatPromptContentDTO
 
 # TODO update the JSON string below
 json = "{}"

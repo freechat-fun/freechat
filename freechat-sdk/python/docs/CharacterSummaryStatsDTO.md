@@ -3,6 +3,7 @@
 Character summary content, including interactive statistical information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -27,7 +28,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
+from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
 
 # TODO update the JSON string below
 json = "{}"

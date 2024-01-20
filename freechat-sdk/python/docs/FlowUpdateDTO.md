@@ -3,6 +3,7 @@
 Request data for updating flow information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **parent_id** | **str** | Referenced flow | [optional] 
@@ -21,7 +22,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.flow_update_dto import FlowUpdateDTO
+from freechat_sdk.models.flow_update_dto import FlowUpdateDTO
 
 # TODO update the JSON string below
 json = "{}"

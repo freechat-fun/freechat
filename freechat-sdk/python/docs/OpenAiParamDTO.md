@@ -3,6 +3,7 @@
 OpenAI series model parameters
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **api_key** | **str** | API-KEY, higher priority than apiKeyName. Either apiKey or apiKeyName must be specified. | [optional] 
@@ -20,7 +21,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.open_ai_param_dto import OpenAiParamDTO
+from freechat_sdk.models.open_ai_param_dto import OpenAiParamDTO
 
 # TODO update the JSON string below
 json = "{}"

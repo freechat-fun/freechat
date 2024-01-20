@@ -3,6 +3,7 @@
 Character identifier and version information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **character_id** | **str** | characterId | [optional] 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_item_for_name_dto import CharacterItemForNameDTO
+from freechat_sdk.models.character_item_for_name_dto import CharacterItemForNameDTO
 
 # TODO update the JSON string below
 json = "{}"

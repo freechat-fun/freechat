@@ -27,7 +27,7 @@ export default function PromptContent(props: {
           {t('Description')}
         </Typography>
         <Divider />
-        <Typography level="body-md">
+        <Typography component="span" level="body-md">
           <MarkdownContent>
             {record?.description}
           </MarkdownContent>
@@ -74,7 +74,7 @@ export default function PromptContent(props: {
             {t('Example')}
           </Typography>
           <Divider />
-          <Typography level="body-md">
+          <Typography component="span" level="body-md">
             <MarkdownContent>
               {record?.example}
             </MarkdownContent>

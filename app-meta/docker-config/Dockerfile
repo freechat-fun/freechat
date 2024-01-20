@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM openjdk:21-bullseye
 
 ARG APP_NAME=freechat
 ARG UNAME=admin
@@ -13,7 +13,9 @@ RUN useradd -m -u ${UID} -g ${GID} -o ${UNAME}
 
 COPY env/* ${APP_HOME}/
 
-RUN mkdir ${APP_HOME}/logs && \
+RUN apt-get update && \
+    apt-get install -y iproute2 && \
+    mkdir ${APP_HOME}/logs && \
     chmod +x ${APP_HOME}/*.sh && \
     chown -R ${UNAME}:${UNAME} ${APP_HOME}
 

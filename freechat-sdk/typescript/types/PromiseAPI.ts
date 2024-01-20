@@ -32,6 +32,7 @@ import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
 import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
 import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
 import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
+import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
@@ -2052,7 +2053,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -2065,7 +2066,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -2078,7 +2079,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScoreWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Promise<HttpInfo<number>> {
@@ -2089,7 +2090,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScore(infoType: string, infoId: string, _options?: Configuration): Promise<number> {
@@ -2100,7 +2101,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2112,7 +2113,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2124,7 +2125,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatisticsWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Promise<HttpInfo<InteractiveStatsDTO>> {
@@ -2135,7 +2136,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatistics(infoType: string, infoId: string, _options?: Configuration): Promise<InteractiveStatsDTO> {
@@ -2146,7 +2147,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2158,7 +2159,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2308,6 +2309,30 @@ export class PromiseInteractiveStatisticsApi {
      */
     public listFlowsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
         const result = this.api.listFlowsByStatistic2(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get popular tags for a specified info type.
+     * Hot Tags
+     * @param infoType Info type: prompt | flow | plugin | character
+     * @param pageSize Maximum quantity
+     * @param text Key word
+     */
+    public listHotTagsWithHttpInfo(infoType: string, pageSize: number, text?: string, _options?: Configuration): Promise<HttpInfo<Array<HotTagDTO>>> {
+        const result = this.api.listHotTagsWithHttpInfo(infoType, pageSize, text, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get popular tags for a specified info type.
+     * Hot Tags
+     * @param infoType Info type: prompt | flow | plugin | character
+     * @param pageSize Maximum quantity
+     * @param text Key word
+     */
+    public listHotTags(infoType: string, pageSize: number, text?: string, _options?: Configuration): Promise<Array<HotTagDTO>> {
+        const result = this.api.listHotTags(infoType, pageSize, text, _options);
         return result.toPromise();
     }
 

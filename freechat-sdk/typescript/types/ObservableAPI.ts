@@ -33,6 +33,7 @@ import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
 import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
 import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
 import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
+import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
@@ -3218,7 +3219,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -3245,7 +3246,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -3257,7 +3258,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScoreWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Observable<HttpInfo<number>> {
@@ -3282,7 +3283,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScore(infoType: string, infoId: string, _options?: Configuration): Observable<number> {
@@ -3292,7 +3293,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3318,7 +3319,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3329,7 +3330,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatisticsWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Observable<HttpInfo<InteractiveStatsDTO>> {
@@ -3354,7 +3355,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatistics(infoType: string, infoId: string, _options?: Configuration): Observable<InteractiveStatsDTO> {
@@ -3364,7 +3365,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3390,7 +3391,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Resource type: prompt | flow | plugin
+     * @param infoType Info type: prompt | flow | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3618,6 +3619,43 @@ export class ObservableInteractiveStatisticsApi {
      */
     public listFlowsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<FlowSummaryStatsDTO>> {
         return this.listFlowsByStatistic2WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<FlowSummaryStatsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Get popular tags for a specified info type.
+     * Hot Tags
+     * @param infoType Info type: prompt | flow | plugin | character
+     * @param pageSize Maximum quantity
+     * @param text Key word
+     */
+    public listHotTagsWithHttpInfo(infoType: string, pageSize: number, text?: string, _options?: Configuration): Observable<HttpInfo<Array<HotTagDTO>>> {
+        const requestContextPromise = this.requestFactory.listHotTags(infoType, pageSize, text, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listHotTagsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get popular tags for a specified info type.
+     * Hot Tags
+     * @param infoType Info type: prompt | flow | plugin | character
+     * @param pageSize Maximum quantity
+     * @param text Key word
+     */
+    public listHotTags(infoType: string, pageSize: number, text?: string, _options?: Configuration): Observable<Array<HotTagDTO>> {
+        return this.listHotTagsWithHttpInfo(infoType, pageSize, text, _options).pipe(map((apiResponse: HttpInfo<Array<HotTagDTO>>) => apiResponse.data));
     }
 
     /**

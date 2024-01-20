@@ -3,6 +3,7 @@
 Character backend information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **is_default** | **bool** | Whether it is the default backend | [optional] 
@@ -18,7 +19,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_backend_dto import CharacterBackendDTO
+from freechat_sdk.models.character_backend_dto import CharacterBackendDTO
 
 # TODO update the JSON string below
 json = "{}"

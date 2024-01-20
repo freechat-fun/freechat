@@ -3,6 +3,7 @@
 Interactive statistics information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -19,7 +20,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.interactive_stats_dto import InteractiveStatsDTO
+from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
 
 # TODO update the JSON string below
 json = "{}"

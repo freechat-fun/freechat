@@ -32,6 +32,7 @@ import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
 import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
 import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
 import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
+import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
@@ -2659,7 +2660,7 @@ import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiRespons
 
 export interface InteractiveStatisticsApiAddStatisticRequest {
     /**
-     * Resource type: prompt | flow | plugin
+     * Info type: prompt | flow | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApiaddStatistic
      */
@@ -2686,7 +2687,7 @@ export interface InteractiveStatisticsApiAddStatisticRequest {
 
 export interface InteractiveStatisticsApiGetScoreRequest {
     /**
-     * Resource type: prompt | flow | plugin
+     * Info type: prompt | flow | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApigetScore
      */
@@ -2701,7 +2702,7 @@ export interface InteractiveStatisticsApiGetScoreRequest {
 
 export interface InteractiveStatisticsApiGetStatisticRequest {
     /**
-     * Resource type: prompt | flow | plugin
+     * Info type: prompt | flow | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApigetStatistic
      */
@@ -2722,7 +2723,7 @@ export interface InteractiveStatisticsApiGetStatisticRequest {
 
 export interface InteractiveStatisticsApiGetStatisticsRequest {
     /**
-     * Resource type: prompt | flow | plugin
+     * Info type: prompt | flow | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApigetStatistics
      */
@@ -2737,7 +2738,7 @@ export interface InteractiveStatisticsApiGetStatisticsRequest {
 
 export interface InteractiveStatisticsApiIncreaseStatisticRequest {
     /**
-     * Resource type: prompt | flow | plugin
+     * Info type: prompt | flow | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApiincreaseStatistic
      */
@@ -2880,6 +2881,27 @@ export interface InteractiveStatisticsApiListFlowsByStatistic2Request {
      * @memberof InteractiveStatisticsApilistFlowsByStatistic2
      */
     asc?: string
+}
+
+export interface InteractiveStatisticsApiListHotTagsRequest {
+    /**
+     * Info type: prompt | flow | plugin | character
+     * @type string
+     * @memberof InteractiveStatisticsApilistHotTags
+     */
+    infoType: string
+    /**
+     * Maximum quantity
+     * @type number
+     * @memberof InteractiveStatisticsApilistHotTags
+     */
+    pageSize: number
+    /**
+     * Key word
+     * @type string
+     * @memberof InteractiveStatisticsApilistHotTags
+     */
+    text?: string
 }
 
 export interface InteractiveStatisticsApiListPluginsByStatisticRequest {
@@ -3211,6 +3233,24 @@ export class ObjectInteractiveStatisticsApi {
      */
     public listFlowsByStatistic2(param: InteractiveStatisticsApiListFlowsByStatistic2Request, options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
         return this.api.listFlowsByStatistic2(param.statsType, param.pageSize, param.asc,  options).toPromise();
+    }
+
+    /**
+     * Get popular tags for a specified info type.
+     * Hot Tags
+     * @param param the request object
+     */
+    public listHotTagsWithHttpInfo(param: InteractiveStatisticsApiListHotTagsRequest, options?: Configuration): Promise<HttpInfo<Array<HotTagDTO>>> {
+        return this.api.listHotTagsWithHttpInfo(param.infoType, param.pageSize, param.text,  options).toPromise();
+    }
+
+    /**
+     * Get popular tags for a specified info type.
+     * Hot Tags
+     * @param param the request object
+     */
+    public listHotTags(param: InteractiveStatisticsApiListHotTagsRequest, options?: Configuration): Promise<Array<HotTagDTO>> {
+        return this.api.listHotTags(param.infoType, param.pageSize, param.text,  options).toPromise();
     }
 
     /**

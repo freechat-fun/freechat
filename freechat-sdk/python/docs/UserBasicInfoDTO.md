@@ -3,6 +3,7 @@
 User summary information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.user_basic_info_dto import UserBasicInfoDTO
+from freechat_sdk.models.user_basic_info_dto import UserBasicInfoDTO
 
 # TODO update the JSON string below
 json = "{}"

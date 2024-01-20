@@ -3,6 +3,7 @@
 Prompt service result
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -14,7 +15,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.llm_result_dto import LlmResultDTO
+from freechat_sdk.models.llm_result_dto import LlmResultDTO
 
 # TODO update the JSON string below
 json = "{}"

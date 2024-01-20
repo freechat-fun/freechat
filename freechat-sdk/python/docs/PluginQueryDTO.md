@@ -3,6 +3,7 @@
 Plugin information query request
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **where** | [**PluginQueryWhere**](PluginQueryWhere.md) |  | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.plugin_query_dto import PluginQueryDTO
+from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -3,6 +3,7 @@
 Chat content
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **content** | **str** | Chat content. | 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.chat_content_dto import ChatContentDTO
+from freechat_sdk.models.chat_content_dto import ChatContentDTO
 
 # TODO update the JSON string below
 json = "{}"

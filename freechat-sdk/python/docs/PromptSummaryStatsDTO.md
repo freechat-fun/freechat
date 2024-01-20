@@ -3,6 +3,7 @@
 Prompt template summary content, including interactive statistical information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -28,7 +29,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
+from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
 
 # TODO update the JSON string below
 json = "{}"

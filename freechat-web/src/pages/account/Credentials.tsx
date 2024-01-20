@@ -1,20 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { Tab, TabList, TabPanel, Tabs, tabClasses } from "@mui/joy";
-import { Breadcrumbsbar } from "../../components";
 import { ApiTokenPanel, AiApiKeyPanel } from "../../components/account";
 import { providers } from "../../configs/model-providers-config";
+import { LinePlaceholder } from "../../components";
 
 export default function Credentials() {
   const { t } = useTranslation(['account', 'button']);
 
-  const breadcrumbs = {
-    'Home': '/w',
-    'My Credentials': undefined,
-  };
-
   return (
     <>
-      <Breadcrumbsbar breadcrumbs={breadcrumbs} />
+      <LinePlaceholder spacing={6} />
       <Tabs
         defaultValue={0}
         sx={{

@@ -1,4 +1,4 @@
-# freechat-sdk.PromptApi
+# freechat_sdk.PromptApi
 
 All URIs are relative to *http://127.0.0.1:8080*
 
@@ -38,17 +38,18 @@ Apply parameters to prompt record.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_ref_dto import PromptRefDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_ref_dto import PromptRefDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -58,15 +59,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
-    prompt_ref_dto = freechat-sdk.PromptRefDTO() # PromptRefDTO | Prompt record
+    api_instance = freechat_sdk.PromptApi(api_client)
+    prompt_ref_dto = freechat_sdk.PromptRefDTO() # PromptRefDTO | Prompt record
 
     try:
         # Apply Parameters to Prompt Record
@@ -80,6 +81,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -99,6 +101,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/plain
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -115,17 +118,18 @@ Apply parameters to prompt template.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_template_dto import PromptTemplateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_template_dto import PromptTemplateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -135,15 +139,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
-    prompt_template_dto = freechat-sdk.PromptTemplateDTO() # PromptTemplateDTO | String type prompt template
+    api_instance = freechat_sdk.PromptApi(api_client)
+    prompt_template_dto = freechat_sdk.PromptTemplateDTO() # PromptTemplateDTO | String type prompt template
 
     try:
         # Apply Parameters to Prompt Template
@@ -157,6 +161,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -176,6 +181,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/plain
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -192,18 +198,19 @@ Batch call shortcut for /api/v1/prompt/details/search.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_details_dto import PromptDetailsDTO
-from freechat-sdk.models.prompt_query_dto import PromptQueryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_details_dto import PromptDetailsDTO
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -213,14 +220,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_query_dto = [{"where":{"visibility":"public","username":"amin","text":"robot"},"orderBy":["version","modifyTime asc"],"pageNum":1,"pageSize":1},{"where":{"visibility":"private","name":"A Test"}},{"where":{"visibility":"private","tags":["test1"]}},{"where":{"visibility":"public","username":"amin","name":"Second Test","text":"robot","tags":["robot"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1}] # List[PromptQueryDTO] | Query conditions
 
     try:
@@ -235,6 +242,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -254,6 +262,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -270,18 +279,19 @@ Batch call shortcut for /api/v1/prompt/search.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_query_dto import PromptQueryDTO
-from freechat-sdk.models.prompt_summary_dto import PromptSummaryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -291,14 +301,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_query_dto = [{"where":{"visibility":"public","username":"amin","text":"robot"},"orderBy":["version","modifyTime asc"],"pageNum":1,"pageSize":1},{"where":{"visibility":"private","name":"A Test"}},{"where":{"visibility":"private","tags":["test1"]}},{"where":{"visibility":"public","username":"amin","name":"Second Test","text":"robot","tags":["robot"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1}] # List[PromptQueryDTO] | Query conditions
 
     try:
@@ -313,6 +323,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -332,6 +343,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -348,16 +360,17 @@ Enter the promptId, generate a new record, the content is basically the same as 
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -367,14 +380,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_id = 'prompt_id_example' # str | The referenced promptId
 
     try:
@@ -389,6 +402,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -408,6 +422,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/plain
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -424,16 +439,17 @@ Batch clone multiple prompts. Ensure transactionality, return the promptId list 
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -443,14 +459,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     request_body = ['request_body_example'] # List[str] | List of prompt information to be created
 
     try:
@@ -465,6 +481,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -484,6 +501,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -500,17 +518,18 @@ Calculate the number of prompts according to the specified query conditions.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_query_dto import PromptQueryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -520,15 +539,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
-    prompt_query_dto = freechat-sdk.PromptQueryDTO() # PromptQueryDTO | Query conditions
+    api_instance = freechat_sdk.PromptApi(api_client)
+    prompt_query_dto = freechat_sdk.PromptQueryDTO() # PromptQueryDTO | Query conditions
 
     try:
         # Calculate Number of Prompts
@@ -542,6 +561,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -561,6 +581,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -577,17 +598,18 @@ Create a prompt, required fields: - Prompt name - Prompt content - Applicable mo
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_create_dto import PromptCreateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_create_dto import PromptCreateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -597,14 +619,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_create_dto = {"name":"A Test Prompt","description":"A prompt description","template":"Hello world. I'm {name}","inputs":"{\"name\": null}","tags":["test","demo"],"aiModels":["123"]} # PromptCreateDTO | Information of the prompt to be created
 
     try:
@@ -619,6 +641,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -638,6 +661,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/plain
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -654,17 +678,18 @@ Batch create multiple prompts. Ensure transactionality, return the promptId list
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_create_dto import PromptCreateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_create_dto import PromptCreateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -674,14 +699,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_create_dto = [{"name":"First Test Prompt","description":"First prompt description","template":"Hello world. I'm {name}","inputs":"{\"name\": null}","tags":["test1","demo1"],"aiModels":["123"]},{"name":"Second Test Prompt","visibility":"public","description":"Second prompt description","template":"I wanna call you {robot}","inputs":"{\"robot\": null}","tags":["test2","demo2"],"aiModels":["123","456"]}] # List[PromptCreateDTO] | List of prompt information to be created
 
     try:
@@ -696,6 +721,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -715,6 +741,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -731,16 +758,17 @@ Delete prompt. Returns success or failure.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -750,14 +778,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_id = 'prompt_id_example' # str | The promptId to be deleted
 
     try:
@@ -772,6 +800,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -791,6 +820,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -807,16 +837,17 @@ Delete prompt by name. return the list of successfully deleted promptIds.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -826,14 +857,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     name = 'name_example' # str | The prompt name to be deleted
 
     try:
@@ -848,6 +879,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -867,6 +899,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -883,16 +916,17 @@ Delete multiple prompts. Ensure transactionality, return the list of successfull
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -902,14 +936,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     request_body = ['request_body_example'] # List[str] | List of promptIds to be deleted
 
     try:
@@ -924,6 +958,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -943,6 +978,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -959,16 +995,17 @@ Check if the name already exists.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -978,14 +1015,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     name = 'name_example' # str | Name
 
     try:
@@ -1000,6 +1037,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1019,6 +1057,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1035,17 +1074,18 @@ Get prompt detailed information.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_details_dto import PromptDetailsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_details_dto import PromptDetailsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1055,14 +1095,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_id = 'prompt_id_example' # str | PromptId to be obtained
 
     try:
@@ -1077,6 +1117,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1096,6 +1137,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1112,17 +1154,18 @@ Get prompt summary information.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_summary_dto import PromptSummaryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1132,14 +1175,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_id = 'prompt_id_example' # str | PromptId to be obtained
 
     try:
@@ -1154,6 +1197,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1173,6 +1217,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1189,17 +1234,18 @@ List the versions and corresponding promptIds by prompt name.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_item_for_name_dto import PromptItemForNameDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_item_for_name_dto import PromptItemForNameDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1209,14 +1255,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     name = 'name_example' # str | Prompt name
 
     try:
@@ -1231,6 +1277,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1250,6 +1297,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1266,16 +1314,17 @@ Publish prompt, draft content becomes formal content, version number increases b
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1285,14 +1334,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_id = 'prompt_id_example' # str | The promptId to be published
     visibility = 'visibility_example' # str | Visibility: public | private | ...
 
@@ -1308,6 +1357,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1328,6 +1378,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/plain
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1344,18 +1395,19 @@ Same as /api/v1/prompt/search, but returns detailed information of the prompt.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_details_dto import PromptDetailsDTO
-from freechat-sdk.models.prompt_query_dto import PromptQueryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_details_dto import PromptDetailsDTO
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1365,14 +1417,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","text":"(new)","tags":["demo2"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1} # PromptQueryDTO | Query conditions
 
     try:
@@ -1387,6 +1439,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1406,6 +1459,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1422,18 +1476,19 @@ Search prompts: - Specifiable query fields, and relationship:   - Scope: private
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_query_dto import PromptQueryDTO
-from freechat-sdk.models.prompt_summary_dto import PromptSummaryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1443,14 +1498,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","text":"(new)","tags":["demo2"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1} # PromptQueryDTO | Query conditions
 
     try:
@@ -1465,6 +1520,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1484,6 +1540,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1500,18 +1557,19 @@ Send the prompt to the AI service. Note that if the embedding model is called, t
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.llm_result_dto import LlmResultDTO
-from freechat-sdk.models.prompt_ai_param_dto import PromptAiParamDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.llm_result_dto import LlmResultDTO
+from freechat_sdk.models.prompt_ai_param_dto import PromptAiParamDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1521,14 +1579,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_ai_param_dto = {"prompt":"say 'hello'","params":{"apiKey":"","modelId":"[open_ai]gpt-3.5-turbo"}} # PromptAiParamDTO | Call parameters
 
     try:
@@ -1543,6 +1601,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1562,6 +1621,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1578,18 +1638,19 @@ Refer to /api/v1/prompt/send, stream back chunks of the response.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_ai_param_dto import PromptAiParamDTO
-from freechat-sdk.models.sse_emitter import SseEmitter
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_ai_param_dto import PromptAiParamDTO
+from freechat_sdk.models.sse_emitter import SseEmitter
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1599,14 +1660,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_ai_param_dto = {"prompt":"say 'hello'","params":{"apiKey":"","modelId":"[open_ai]gpt-3.5-turbo"}} # PromptAiParamDTO | Call parameters
 
     try:
@@ -1621,6 +1682,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1640,6 +1702,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/event-stream
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1656,17 +1719,18 @@ Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_update_dto import PromptUpdateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_update_dto import PromptUpdateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1676,14 +1740,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PromptApi(api_client)
+    api_instance = freechat_sdk.PromptApi(api_client)
     prompt_id = 'prompt_id_example' # str | The promptId to be updated
     prompt_update_dto = {"version":2,"name":"Second Test Prompt (New)","visibility":"public","description":"Second prompt description (new)","template":"I wanna call you {robot}","inputs":"{\"robot\": null}","tags":["test2","demo2","robot"],"aiModels":["123","456"]} # PromptUpdateDTO | The prompt information to be updated
 
@@ -1699,6 +1763,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1719,6 +1784,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |

@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "openapi-explorer.d.ts", "openapi-explorer-module.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

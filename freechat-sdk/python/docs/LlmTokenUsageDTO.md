@@ -3,6 +3,7 @@
 Token usage information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **input_token_count** | **int** | Input token count | [optional] 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.llm_token_usage_dto import LlmTokenUsageDTO
+from freechat_sdk.models.llm_token_usage_dto import LlmTokenUsageDTO
 
 # TODO update the JSON string below
 json = "{}"

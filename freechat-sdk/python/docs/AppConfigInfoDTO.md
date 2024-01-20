@@ -3,6 +3,7 @@
 Configuration information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -14,7 +15,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.app_config_info_dto import AppConfigInfoDTO
+from freechat_sdk.models.app_config_info_dto import AppConfigInfoDTO
 
 # TODO update the JSON string below
 json = "{}"

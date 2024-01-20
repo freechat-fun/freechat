@@ -3,6 +3,7 @@
 Application metadata
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** | Application name | [optional] 
@@ -16,7 +17,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.app_meta_dto import AppMetaDTO
+from freechat_sdk.models.app_meta_dto import AppMetaDTO
 
 # TODO update the JSON string below
 json = "{}"

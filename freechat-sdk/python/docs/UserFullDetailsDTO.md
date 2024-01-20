@@ -3,6 +3,7 @@
 Account detailed information (including password)
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -33,7 +34,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.user_full_details_dto import UserFullDetailsDTO
+from freechat_sdk.models.user_full_details_dto import UserFullDetailsDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -1,4 +1,4 @@
-# freechat-sdk.InteractiveStatisticsApi
+# freechat_sdk.InteractiveStatisticsApi
 
 All URIs are relative to *http://127.0.0.1:8080*
 
@@ -15,6 +15,7 @@ Method | HTTP request | Description
 [**list_flows_by_statistic**](InteractiveStatisticsApi.md#list_flows_by_statistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics
 [**list_flows_by_statistic1**](InteractiveStatisticsApi.md#list_flows_by_statistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics
 [**list_flows_by_statistic2**](InteractiveStatisticsApi.md#list_flows_by_statistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics
+[**list_hot_tags**](InteractiveStatisticsApi.md#list_hot_tags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
 [**list_plugins_by_statistic**](InteractiveStatisticsApi.md#list_plugins_by_statistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
 [**list_plugins_by_statistic1**](InteractiveStatisticsApi.md#list_plugins_by_statistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
 [**list_plugins_by_statistic2**](InteractiveStatisticsApi.md#list_plugins_by_statistic2) | **GET** /api/v1/stats/plugins/by/{statsType} | List Plugins by Statistics
@@ -33,16 +34,17 @@ Add the statistics of the corresponding metrics of the corresponding resources. 
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -52,15 +54,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Resource type: prompt | flow | plugin
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     delta = 56 # int | Delta in statistical value
@@ -78,9 +80,10 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Resource type: prompt | flow | plugin | 
+ **info_type** | **str**| Info type: prompt | flow | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
  **delta** | **int**| Delta in statistical value | 
@@ -99,6 +102,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -115,16 +119,17 @@ Get the current user's score for the corresponding resource.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -134,15 +139,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Resource type: prompt | flow | plugin
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
 
     try:
@@ -158,9 +163,10 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Resource type: prompt | flow | plugin | 
+ **info_type** | **str**| Info type: prompt | flow | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
 
 ### Return type
@@ -177,6 +183,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -193,16 +200,17 @@ Get the statistics of the corresponding metrics of the corresponding resources.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -212,15 +220,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Resource type: prompt | flow | plugin
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
 
@@ -237,9 +245,10 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Resource type: prompt | flow | plugin | 
+ **info_type** | **str**| Info type: prompt | flow | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
 
@@ -257,6 +266,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -273,17 +283,18 @@ Get all statistics of the corresponding resources.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.interactive_stats_dto import InteractiveStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -293,15 +304,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Resource type: prompt | flow | plugin
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
 
     try:
@@ -317,9 +328,10 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Resource type: prompt | flow | plugin | 
+ **info_type** | **str**| Info type: prompt | flow | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
 
 ### Return type
@@ -336,6 +348,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -352,16 +365,17 @@ Increase the statistics of the corresponding metrics of the corresponding resour
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -371,15 +385,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Resource type: prompt | flow | plugin
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
 
@@ -396,9 +410,10 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Resource type: prompt | flow | plugin | 
+ **info_type** | **str**| Info type: prompt | flow | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
 
@@ -416,6 +431,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -432,17 +448,18 @@ List characters based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -452,14 +469,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
@@ -476,6 +493,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -497,6 +515,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -513,17 +532,18 @@ List characters based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -533,14 +553,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     page_num = 56 # int | Current page number
@@ -559,6 +579,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
@@ -580,6 +601,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -596,17 +618,18 @@ List characters based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -616,14 +639,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
 
@@ -639,6 +662,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -659,6 +683,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -675,17 +700,18 @@ List flows based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -695,14 +721,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     page_num = 56 # int | Current page number
@@ -721,6 +747,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
@@ -742,6 +769,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -758,17 +786,18 @@ List flows based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -778,14 +807,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
 
@@ -801,6 +830,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -821,6 +851,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -837,17 +868,18 @@ List flows based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -857,14 +889,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
@@ -881,6 +913,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -902,6 +935,91 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_hot_tags**
+> List[HotTagDTO] list_hot_tags(info_type, page_size, text=text)
+
+Hot Tags
+
+Get popular tags for a specified info type.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.models.hot_tag_dto import HotTagDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    page_size = 56 # int | Maximum quantity
+    text = 'text_example' # str | Key word (optional)
+
+    try:
+        # Hot Tags
+        api_response = api_instance.list_hot_tags(info_type, page_size, text=text)
+        print("The response of InteractiveStatisticsApi->list_hot_tags:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling InteractiveStatisticsApi->list_hot_tags: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **page_size** | **int**| Maximum quantity | 
+ **text** | **str**| Key word | [optional] 
+
+### Return type
+
+[**List[HotTagDTO]**](HotTagDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -918,17 +1036,18 @@ List plugins based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -938,14 +1057,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     page_num = 56 # int | Current page number
@@ -964,6 +1083,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
@@ -985,6 +1105,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1001,17 +1122,18 @@ List plugins based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1021,14 +1143,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
@@ -1045,6 +1167,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1066,6 +1189,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1082,17 +1206,18 @@ List plugins based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1102,14 +1227,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
 
@@ -1125,6 +1250,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1145,6 +1271,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1161,17 +1288,18 @@ List prompts based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1181,14 +1309,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
@@ -1205,6 +1333,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1226,6 +1355,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1242,17 +1372,18 @@ List prompts based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1262,14 +1393,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     page_size = 56 # int | Maximum quantity
     page_num = 56 # int | Current page number
@@ -1288,6 +1419,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
+
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
@@ -1309,6 +1441,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -1325,17 +1458,18 @@ List prompts based on statistics, including interactive statistical data.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -1345,14 +1479,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.InteractiveStatisticsApi(api_client)
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
 
@@ -1368,6 +1502,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1388,6 +1523,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |

@@ -38,14 +38,14 @@ export default function PromptInfo() {
   }, [handleError, id, promptApi]);
 
   function handleEdit(): void {
-    id && navigate(`/w/console/prompt/edit/${id}`);
+    id && navigate(`/w/prompt/edit/${id}`);
   }
 
   function handleCopy(): void {
     id && promptApi?.clonePrompt(id)
       .then(resp => {
         if (resp) {
-          navigate(`/w/console/prompt/edit/${resp}`);
+          navigate(`/w/prompt/edit/${resp}`);
         }
       })
       .catch(handleError);

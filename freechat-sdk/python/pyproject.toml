@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "freechat-sdk"
-version = "0.2.10"
+name = "freechat_sdk"
+version = "0.2.11"
 description = "FreeChat OpenAPI Definition"
 authors = ["OpenAPI Generator Community <team@openapitools.org>"]
 license = "NoLicense"
 readme = "README.md"
 repository = "https://github.com/freechat-fun/freechat"
 keywords = ["OpenAPI", "OpenAPI-Generator", "FreeChat OpenAPI Definition"]
-include = ["freechat-sdk/py.typed"]
+include = ["freechat_sdk/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.7"

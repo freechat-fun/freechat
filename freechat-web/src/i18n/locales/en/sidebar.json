@@ -1,9 +1,15 @@
 {
+  "Home": "Home",
+  "Chat": "Chat",
   "Characters": "Characters",
   "Prompts": "Prompts",
   "Plugins": "Plugins",
   "Flows": "Flows",
   "Settings": "Settings",
-  "My Profile": "My Profile",
-  "My Credentials": "My Credentials"
+  "Profile": "Profile",
+  "Secrets & API keys": "Secrets & API keys",
+  "Switch Theme": "Switch Theme",
+  "Switch Language": "Switch Language",
+  "Code Repository": "Code Repository",
+  "API reference": "API reference"
 }

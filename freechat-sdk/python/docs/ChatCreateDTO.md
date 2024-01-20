@@ -3,6 +3,7 @@
 Request data for starting a chat session
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **user_nickname** | **str** | User nickname for this session. | [optional] 
@@ -14,7 +15,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.chat_create_dto import ChatCreateDTO
+from freechat_sdk.models.chat_create_dto import ChatCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -3,6 +3,7 @@
 Flow identifier and version information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **flow_id** | **str** | flowId | [optional] 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.flow_item_for_name_dto import FlowItemForNameDTO
+from freechat_sdk.models.flow_item_for_name_dto import FlowItemForNameDTO
 
 # TODO update the JSON string below
 json = "{}"

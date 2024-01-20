@@ -3,6 +3,7 @@
 Prompt template content
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **template** | **str** | Prompt text template content, choose one between this and chatTemplate field, priority: template &gt; chatTemplate | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_template_dto import PromptTemplateDTO
+from freechat_sdk.models.prompt_template_dto import PromptTemplateDTO
 
 # TODO update the JSON string below
 json = "{}"

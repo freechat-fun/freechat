@@ -3,6 +3,7 @@
 Chat message
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **role** | **str** | Chat role: system | assistant | user | function_call | function_result | [optional] 
@@ -14,7 +15,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.chat_message_dto import ChatMessageDTO
+from freechat_sdk.models.chat_message_dto import ChatMessageDTO
 
 # TODO update the JSON string below
 json = "{}"

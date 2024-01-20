@@ -3,6 +3,7 @@
 Request data for creating new prompt information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **parent_id** | **str** | Referenced prompt | [optional] 
@@ -23,7 +24,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_create_dto import PromptCreateDTO
+from freechat_sdk.models.prompt_create_dto import PromptCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

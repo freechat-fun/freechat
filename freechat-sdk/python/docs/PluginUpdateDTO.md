@@ -3,6 +3,7 @@
 Request data for updating plugin information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
@@ -19,7 +20,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.plugin_update_dto import PluginUpdateDTO
+from freechat_sdk.models.plugin_update_dto import PluginUpdateDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -45,7 +45,7 @@ export default function Sidebar() {
   const { pathname } = useLocation();
   
   const normalizePathname = pathname.replace(/\/+$/, "");
-  const relativePathname = normalizePathname.slice('/w/console/'.length);
+  const relativePathname = normalizePathname.slice('/w/'.length);
 
   const isSelected = (path: string): boolean => {
     return relativePathname === path;
@@ -120,11 +120,11 @@ export default function Sidebar() {
           <ListItem>
             <ListItemButton
               component={RouterLink}
-              href="/w/console/characters"
+              href="/w/characters"
               underline="none"
               selected={isSelected('characters')}
               sx={{
-                pl: 1.8
+                pl: 1.5
               }}
             >
               <FoxIcon />
@@ -137,7 +137,7 @@ export default function Sidebar() {
           <ListItem>
             <ListItemButton
               component={RouterLink}
-              href="/w/console/prompts"
+              href="/w/prompts"
               underline="none"
               selected={isSelected('prompts')}
             >
@@ -151,7 +151,7 @@ export default function Sidebar() {
           <ListItem>
             <ListItemButton
               component={RouterLink}
-              href="/w/console/plugins"
+              href="/w/plugins"
               underline="none"
               selected={isSelected('plugins')}
             >
@@ -165,7 +165,7 @@ export default function Sidebar() {
           <ListItem>
             <ListItemButton
               component={RouterLink}
-              href="/w/console/flows"
+              href="/w/flows"
               underline="none"
               selected={isSelected('flows')}
             >
@@ -195,7 +195,7 @@ export default function Sidebar() {
                 <ListItem sx={{ mt: 0.5 }}>
                   <ListItemButton
                     component={RouterLink}
-                    href="/w/console/profile"
+                    href="/w/profile"
                     underline="none"
                     selected={isSelected('profile')}
                   >
@@ -207,7 +207,7 @@ export default function Sidebar() {
                   <ListItemButton
                     selected={isSelected('credentials')}
                     component={RouterLink}
-                    href="/w/console/credentials"
+                    href="/w/credentials"
                     underline="none"
                   >
                     {t('My Credentials')}

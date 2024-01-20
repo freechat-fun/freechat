@@ -12,6 +12,8 @@ export default defineConfig({
           if (id.indexOf('node_modules') !== -1) {
             if (id.indexOf('@mui') !== -1) {
               return 'mui';
+            } else if (id.indexOf('openapi-explorer') !== -1) {
+              return 'openapi-explorer';
             } else {
               return 'modules';
             }

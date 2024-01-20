@@ -1,4 +1,4 @@
-# freechat-sdk.PluginApi
+# freechat_sdk.PluginApi
 
 All URIs are relative to *http://127.0.0.1:8080*
 
@@ -29,18 +29,19 @@ Batch call shortcut for /api/v1/plugin/details/search.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_details_dto import PluginDetailsDTO
-from freechat-sdk.models.plugin_query_dto import PluginQueryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_details_dto import PluginDetailsDTO
+from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -50,14 +51,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_query_dto = [{"where":{"visibility":"public","username":"amin","text":"demo"},"orderBy":["modifyTime asc"],"pageNum":1,"pageSize":1},{"where":{"visibility":"private","name":"Test"}},{"where":{"visibility":"private","tags":["test1"]}},{"where":{"visibility":"public","username":"amin","name":"Test","provider":"freechat.fun","text":"demo","manifestFormat":"dash_scope","apiFormat":"openapi_v3","tags":["test"],"aiModels":["123"]},"orderBy":["modifyTime asc"],"pageNum":0,"pageSize":1}] # List[PluginQueryDTO] | Query conditions
 
     try:
@@ -72,6 +73,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -91,6 +93,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -107,18 +110,19 @@ Batch call shortcut for /api/v1/plugin/search.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_query_dto import PluginQueryDTO
-from freechat-sdk.models.plugin_summary_dto import PluginSummaryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
+from freechat_sdk.models.plugin_summary_dto import PluginSummaryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -128,14 +132,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_query_dto = [{"where":{"visibility":"public","username":"amin","text":"demo"},"orderBy":["modifyTime asc"],"pageNum":1,"pageSize":1},{"where":{"visibility":"private","name":"A Test"}},{"where":{"visibility":"private","tags":["test1"]}},{"where":{"visibility":"public","username":"amin","name":"Test","provider":"freechat.fun","text":"demo","manifestFormat":"dash_scope","apiFormat":"openapi_v3","tags":["test"],"aiModels":["123"]},"orderBy":["modifyTime asc"],"pageNum":0,"pageSize":1}] # List[PluginQueryDTO] | Query conditions
 
     try:
@@ -150,6 +154,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -169,6 +174,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -185,17 +191,18 @@ Calculate the number of plugins according to the specified query conditions.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_query_dto import PluginQueryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -205,15 +212,15 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
-    plugin_query_dto = freechat-sdk.PluginQueryDTO() # PluginQueryDTO | Query conditions
+    api_instance = freechat_sdk.PluginApi(api_client)
+    plugin_query_dto = freechat_sdk.PluginQueryDTO() # PluginQueryDTO | Query conditions
 
     try:
         # Calculate Number of Plugins
@@ -227,6 +234,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -246,6 +254,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -262,17 +271,18 @@ Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JS
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_create_dto import PluginCreateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_create_dto import PluginCreateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -282,14 +292,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_create_dto = {"name":"Test plugin","provider":"freechat.fun NLP Lab","manifestInfo":"http://127.0.0.1:8080/public/test/plugin/demo/.well-known/ai-plugin.json","apiInfo":"http://127.0.0.1:8080/public/test/plugin/demo/.well-known/api-docs.json","tags":["test","demo"]} # PluginCreateDTO | Information of the plugin to be created
 
     try:
@@ -304,6 +314,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -323,6 +334,7 @@ Name | Type | Description  | Notes
  - **Accept**: text/plain
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -339,17 +351,18 @@ Batch create multiple plugins. Ensure transactionality, return the pluginId list
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_create_dto import PluginCreateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_create_dto import PluginCreateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -359,14 +372,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_create_dto = [{"name":"First Test Plugin","provider":"freechat.fun NLP Lab","manifestInfo":"https://freechat.fun/public/test/plugin/demo/.well-known/ai-plugin.json","apiInfo":"https://freechat.fun/public/test/plugin/demo/.well-known/api-docs.json","tags":["test1","demo1"]},{"name":"Second Test Plugin","visibility":"private","manifestInfo":"https://freechat.fun/public/test/plugin/demo/.well-known/ai-plugin.json","apiInfo":"https://freechat.fun/public/test/plugin/demo/.well-known/api-docs.json","tags":["test2","demo2"],"aiModels":["123","456"]}] # List[PluginCreateDTO] | List of plugin information to be created
 
     try:
@@ -381,6 +394,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -400,6 +414,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -416,16 +431,17 @@ Delete plugin. Returns success or failure.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -435,14 +451,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_id = 'plugin_id_example' # str | The pluginId to be deleted
 
     try:
@@ -457,6 +473,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -476,6 +493,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -492,16 +510,17 @@ Delete multiple plugins. Ensure transactionality, return the list of successfull
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -511,14 +530,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     request_body = ['request_body_example'] # List[str] | List of pluginIds to be deleted
 
     try:
@@ -533,6 +552,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -552,6 +572,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -568,17 +589,18 @@ Get plugin detailed information.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_details_dto import PluginDetailsDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_details_dto import PluginDetailsDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -588,14 +610,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_id = 'plugin_id_example' # str | PluginId to be obtained
 
     try:
@@ -610,6 +632,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -629,6 +652,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -645,17 +669,18 @@ Get plugin summary information.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_summary_dto import PluginSummaryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_summary_dto import PluginSummaryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -665,14 +690,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_id = 'plugin_id_example' # str | PluginId to be obtained
 
     try:
@@ -687,6 +712,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -706,6 +732,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -722,16 +749,17 @@ For online manifest, api-docs information provided at the time of entry, this in
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -741,14 +769,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_id = 'plugin_id_example' # str | The pluginId to be fetched
 
     try:
@@ -761,6 +789,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -780,6 +809,7 @@ void (empty response body)
  - **Accept**: Not defined
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -796,18 +826,19 @@ Same as /api/v1/plugin/search, but returns detailed information of the plugin.
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_details_dto import PluginDetailsDTO
-from freechat-sdk.models.plugin_query_dto import PluginQueryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_details_dto import PluginDetailsDTO
+from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -817,14 +848,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","provider":"freechat.fun","tags":["test2"]},"orderBy":["modifyTime asc"],"pageNum":0,"pageSize":1} # PluginQueryDTO | Query conditions
 
     try:
@@ -839,6 +870,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -858,6 +890,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -874,18 +907,19 @@ Search plugins: - Specifiable query fields, and relationship:   - Scope: private
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_query_dto import PluginQueryDTO
-from freechat-sdk.models.plugin_summary_dto import PluginSummaryDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
+from freechat_sdk.models.plugin_summary_dto import PluginSummaryDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -895,14 +929,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","provider":"freechat.fun","text":"demo","tags":["test2"]},"orderBy":["modifyTime asc"],"pageNum":0,"pageSize":1} # PluginQueryDTO | Query conditions
 
     try:
@@ -917,6 +951,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -936,6 +971,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |
@@ -952,17 +988,18 @@ Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns
 ### Example
 
 * Bearer Authentication (bearerAuth):
+
 ```python
 import time
 import os
-import freechat-sdk
-from freechat-sdk.models.plugin_update_dto import PluginUpdateDTO
-from freechat-sdk.rest import ApiException
+import freechat_sdk
+from freechat_sdk.models.plugin_update_dto import PluginUpdateDTO
+from freechat_sdk.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://127.0.0.1:8080
 # See configuration.py for a list of all supported configuration parameters.
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     host = "http://127.0.0.1:8080"
 )
 
@@ -972,14 +1009,14 @@ configuration = freechat-sdk.Configuration(
 # satisfies your auth use case.
 
 # Configure Bearer authorization: bearerAuth
-configuration = freechat-sdk.Configuration(
+configuration = freechat_sdk.Configuration(
     access_token = os.environ["BEARER_TOKEN"]
 )
 
 # Enter a context with an instance of the API client
-with freechat-sdk.ApiClient(configuration) as api_client:
+with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = freechat-sdk.PluginApi(api_client)
+    api_instance = freechat_sdk.PluginApi(api_client)
     plugin_id = 'plugin_id_example' # str | The pluginId to be updated
     plugin_update_dto = {"name":"Second Test Plugin (New)","visibility":"public","tags":["test2","demo2","business"]} # PluginUpdateDTO | The plugin information to be updated
 
@@ -995,6 +1032,7 @@ with freechat-sdk.ApiClient(configuration) as api_client:
 
 
 ### Parameters
+
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1015,6 +1053,7 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | OK |  -  |

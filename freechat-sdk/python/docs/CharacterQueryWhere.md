@@ -3,6 +3,7 @@
 Query condition
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **visibility** | **str** | Visibility: public, public_org (search this organization), private (default) | [optional] 
@@ -16,7 +17,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_query_where import CharacterQueryWhere
+from freechat_sdk.models.character_query_where import CharacterQueryWhere
 
 # TODO update the JSON string below
 json = "{}"

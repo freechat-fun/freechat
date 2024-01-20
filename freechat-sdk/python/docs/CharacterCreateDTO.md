@@ -3,6 +3,7 @@
 Request data for creating new character information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **parent_id** | **str** | Referenced character | [optional] 
@@ -25,7 +26,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_create_dto import CharacterCreateDTO
+from freechat_sdk.models.character_create_dto import CharacterCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -3,6 +3,7 @@
 Prompt task information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) |  | 
@@ -15,7 +16,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_task_dto import PromptTaskDTO
+from freechat_sdk.models.prompt_task_dto import PromptTaskDTO
 
 # TODO update the JSON string below
 json = "{}"

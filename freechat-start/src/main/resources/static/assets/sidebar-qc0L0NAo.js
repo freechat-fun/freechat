@@ -1,1 +1,0 @@
-const s="角色",t="提示词",o="插件",n="工作流",e="设置",r={Characters:s,Prompts:t,Plugins:o,Flows:n,Settings:e,"My Profile":"个人信息","My Credentials":"凭证管理"};export{s as Characters,n as Flows,o as Plugins,t as Prompts,e as Settings,r as default};

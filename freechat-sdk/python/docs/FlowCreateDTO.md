@@ -3,6 +3,7 @@
 Request data for creating new flow information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **parent_id** | **str** | Referenced flow | [optional] 
@@ -21,7 +22,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.flow_create_dto import FlowCreateDTO
+from freechat_sdk.models.flow_create_dto import FlowCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

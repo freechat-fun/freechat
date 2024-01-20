@@ -3,6 +3,7 @@
 Configuration creation information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **str** | Configuration name | 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.app_config_create_dto import AppConfigCreateDTO
+from freechat_sdk.models.app_config_create_dto import AppConfigCreateDTO
 
 # TODO update the JSON string below
 json = "{}"

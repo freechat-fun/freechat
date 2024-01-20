@@ -455,7 +455,7 @@ export default function PromptEditor() {
           if (!resp) {
             return;
           }
-          navigator(`/w/console/prompt/${resp}`);
+          navigator(`/w/prompt/${resp}`);
         })
         .catch(handleError);
     };

@@ -3,6 +3,7 @@
 Prompt AI service information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **prompt** | **str** | Complete input content, priority: prompt &gt; promptTemplate &gt; promptRef | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_ai_param_dto import PromptAiParamDTO
+from freechat_sdk.models.prompt_ai_param_dto import PromptAiParamDTO
 
 # TODO update the JSON string below
 json = "{}"

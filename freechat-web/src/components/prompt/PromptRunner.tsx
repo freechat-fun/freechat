@@ -19,10 +19,10 @@ function AiApiKeySetting(props: {
   onConfirm: (keyName: string | undefined, keyValue: string | undefined) => void;
 }) {
   const { defaultKeyName, defaultKeyValue, keyNames, open, onClose, onConfirm } = props;
-  const { t } = useTranslation(['prompt']);
+  const { t } = useTranslation('prompt');
 
-  const [apiKeyName, setApiKeyName] = useState<string | undefined>(defaultKeyName);
-  const [apiKeyValue, setApiKeyValue] = useState<string | undefined>(defaultKeyValue);
+  const [apiKeyName, setApiKeyName] = useState(defaultKeyName ?? '');
+  const [apiKeyValue, setApiKeyValue] = useState(defaultKeyValue ?? '');
 
   const action: SelectStaticProps['action'] = useRef(null);
 
@@ -39,7 +39,7 @@ function AiApiKeySetting(props: {
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
     if (newValue !== apiKeyName && newValue !== 'No API Key') {
-      setApiKeyName(newValue ?? undefined);
+      setApiKeyName(newValue ?? '');
     }
   }
 
@@ -87,7 +87,7 @@ function AiApiKeySetting(props: {
                       event.stopPropagation();
                     }}
                     onClick={() => {
-                      setApiKeyName(undefined);
+                      setApiKeyName('');
                       action.current?.focusVisible();
                     }}
                   >
@@ -377,7 +377,7 @@ export default function PromptRunner(props: {
             </IconButton>
           )}
         </Box>
-        <TextareaTypography>
+        <TextareaTypography component="span">
           <ChatContent
             disabled={!playing}
             url={getServiceUrl()}

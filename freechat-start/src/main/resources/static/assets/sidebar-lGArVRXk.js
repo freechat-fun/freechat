@@ -1,1 +1,0 @@
-const s="Characters",t="Prompts",e="Plugins",o="Flows",r="Settings",n={Characters:s,Prompts:t,Plugins:e,Flows:o,Settings:r,"My Profile":"My Profile","My Credentials":"My Credentials"};export{s as Characters,o as Flows,e as Plugins,t as Prompts,r as Settings,n as default};

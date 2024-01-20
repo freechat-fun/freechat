@@ -3,6 +3,7 @@
 Tool call information during the conversation
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** | Tool id | [optional] 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.chat_tool_call_dto import ChatToolCallDTO
+from freechat_sdk.models.chat_tool_call_dto import ChatToolCallDTO
 
 # TODO update the JSON string below
 json = "{}"

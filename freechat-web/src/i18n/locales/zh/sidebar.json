@@ -1,9 +1,15 @@
 {
+  "Home": "主页",
+  "Chat": "聊天",
   "Characters": "角色",
   "Prompts": "提示词",
   "Plugins": "插件",
   "Flows": "工作流",
   "Settings": "设置",
-  "My Profile": "个人信息",
-  "My Credentials": "凭证管理"
+  "Profile": "个人信息",
+  "Secrets & API keys": "凭证管理",
+  "Switch Theme": "切换主题",
+  "Switch Language": "切换语言",
+  "Code Repository": "代码仓库",
+  "API reference": "API 文档"
 }

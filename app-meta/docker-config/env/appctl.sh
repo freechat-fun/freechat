@@ -63,7 +63,7 @@ check_start() {
     local time=300
     while true
     do
-        ret=`(/usr/sbin/ss -ln4 sport = :${SERVER_PORT}; /usr/sbin/ss -ln6 sport = :${SERVER_PORT}) | grep -c ":${SERVER_PORT}"`
+        ret=`(ss -ln4 sport = :${SERVER_PORT}; ss -ln6 sport = :${SERVER_PORT}) | grep -c ":${SERVER_PORT}"`
         if [ $ret -eq 0 ]; then
             sleep 1
             ((exptime++))
@@ -81,25 +81,6 @@ check_start() {
                     echo "Application appears exit, start failed."
                     exit 4
                 fi
-            fi
-        else
-            ## ret=`fgrep "Tomcat started on port(s)" $SERVICE_OUT`
-            ret=`(/usr/sbin/ss -ln4 sport = :7001; /usr/sbin/ss -ln6 sport = :7001) | grep -c ":7001"`
-            if [ $ret -ne 0 ]; then
-                echo "Detected 7001, so start nginx later. STATUSROOT_HOME: ${STATUSROOT_HOME}"
-                mkdir -p ${STATUSROOT_HOME}
-                touch -m ${STATUSROOT_HOME}/status.taobao || exit1
-            else
-                echo "WARN: not detected 7001, nginx will not start"
-            fi
-
-            . "$APP_HOME/bin/preload.sh" ${SERVER_PORT}
-            if [ $? -gt 0 ]; then
-                echo "preload.sh check failed."
-                exit 5
-            else
-                echo "INFO: Application ${APP_NAME} start success and service start up."
-                break
             fi
         fi
     done

@@ -25,6 +25,8 @@
     "i18next-resources-to-backend": "^1.2.0",
     "markdown-to-jsx": "^7.3.2",
     "mustache": "^4.2.0",
+    "openapi-explorer": "^2.1.660",
+    "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.5.0",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@types/mustache": "^4.2.5",
+    "@types/prismjs": "^1.26.3",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",

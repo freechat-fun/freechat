@@ -1,19 +1,24 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Portal from './pages/Portal';
+import Home from './pages/Home';
 import SignIn from './pages/account/SignIn';
 import MyProfile from './pages/account/MyProfile';
 import Credentials from './pages/account/Credentials';
-import Console from './pages/Console';
+import SidebarFrame from './pages/SidebarFrame';
 import ComingSoon from './pages/ComingSoon';
 import NotFound from './pages/NotFound';
 import Prompts from './pages/prompt/Prompts';
 import PromptInfo from './pages/prompt/PromptInfo';
 import PromptEditor from './pages/prompt/PromptEditor';
+import OpenApi from './pages/docs/OpenApi';
 
-const consoleRoutes = [
+const sidebarRoutes = [
   {
     index: true,
-    element: <MyProfile />,
+    element: <Home />,
+  },
+  {
+    path: 'login',
+    element: <SignIn />,
   },
   {
     path: 'prompts',
@@ -36,6 +41,10 @@ const consoleRoutes = [
     element: <ComingSoon />,
   },
   {
+    path: 'docs',
+    element: <OpenApi />,
+  },
+  {
     path: 'profile',
     element: <MyProfile />,
   },
@@ -51,17 +60,9 @@ const consoleRoutes = [
 
 const routes = [
   {
-    path: '/w',
-    element: <Portal />,
-  },
-  {
-    path: '/w/login',
-    element: <SignIn />,
-  },
-  {
-    path: '/w/console/*',
-    element: <Console />,
-    children: consoleRoutes,
+    path: '/w/*',
+    element: <SidebarFrame />,
+    children: sidebarRoutes,
   },
   {
     path: '*',

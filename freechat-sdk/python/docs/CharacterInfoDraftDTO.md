@@ -3,6 +3,7 @@
 Character draft information (for prompt)
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **profile** | **str** | Character profile | [optional] 
@@ -14,7 +15,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_info_draft_dto import CharacterInfoDraftDTO
+from freechat_sdk.models.character_info_draft_dto import CharacterInfoDraftDTO
 
 # TODO update the JSON string below
 json = "{}"

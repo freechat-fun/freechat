@@ -1,6 +1,7 @@
 import React from 'react';
 import { SxProps } from '@mui/joy/styles/types';
 import { Link, Skeleton, Table, styled } from '@mui/joy';
+import { CodeContainer } from '.';
 
 const Markdown = React.lazy(async () => import('markdown-to-jsx'));
 
@@ -51,14 +52,6 @@ const MarkdownContainer = styled('div')(({ theme }) => ({
   '& *:last-child': {
     marginBottom: 0,
   },
-}));
-
-const CodeContainer = styled('pre')(({ theme }) => ({
-  backgroundColor: theme.palette.background.level2,
-  marginLeft: theme.spacing(1),
-  marginRight: theme.spacing(1),
-  padding: theme.spacing(1),
-  overflow: 'auto',
 }));
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {

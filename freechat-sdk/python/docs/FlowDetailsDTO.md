@@ -3,6 +3,7 @@
 Flow detailed content
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -27,7 +28,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.flow_details_dto import FlowDetailsDTO
+from freechat_sdk.models.flow_details_dto import FlowDetailsDTO
 
 # TODO update the JSON string below
 json = "{}"

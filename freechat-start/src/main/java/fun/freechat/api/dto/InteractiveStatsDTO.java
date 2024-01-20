@@ -34,7 +34,7 @@ public class InteractiveStatsDTO extends TraceableDTO {
 
     public static InteractiveStatsDTO from(InteractiveStats stats) {
         if (Objects.isNull(stats)) {
-            return null;
+            return new InteractiveStatsDTO();
         }
         return CommonUtils.convert(stats, InteractiveStatsDTO.class);
     }

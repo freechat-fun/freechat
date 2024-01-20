@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.2.6
+- API version: 0.2.11
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.10</version>
+  <version>0.2.11</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.10"
+     implementation "fun.freechat:freechat-sdk:0.2.11"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.10.jar`
+* `target/freechat-sdk-0.2.11.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -218,6 +218,7 @@ Class | Method | HTTP request | Description
 *InteractiveStatisticsApi* | [**listFlowsByStatistic**](docs/InteractiveStatisticsApi.md#listFlowsByStatistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics
 *InteractiveStatisticsApi* | [**listFlowsByStatistic1**](docs/InteractiveStatisticsApi.md#listFlowsByStatistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics
 *InteractiveStatisticsApi* | [**listFlowsByStatistic2**](docs/InteractiveStatisticsApi.md#listFlowsByStatistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics
+*InteractiveStatisticsApi* | [**listHotTags**](docs/InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
 *InteractiveStatisticsApi* | [**listPluginsByStatistic**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
 *InteractiveStatisticsApi* | [**listPluginsByStatistic1**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
 *InteractiveStatisticsApi* | [**listPluginsByStatistic2**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/stats/plugins/by/{statsType} | List Plugins by Statistics
@@ -309,6 +310,7 @@ Class | Method | HTTP request | Description
  - [FlowSummaryDTO](docs/FlowSummaryDTO.md)
  - [FlowSummaryStatsDTO](docs/FlowSummaryStatsDTO.md)
  - [FlowUpdateDTO](docs/FlowUpdateDTO.md)
+ - [HotTagDTO](docs/HotTagDTO.md)
  - [InteractiveStatsDTO](docs/InteractiveStatsDTO.md)
  - [LlmResultDTO](docs/LlmResultDTO.md)
  - [LlmTokenUsageDTO](docs/LlmTokenUsageDTO.md)

@@ -1,10 +1,9 @@
 import { RouterProvider } from 'react-router-dom';
 import { ContextsProvider } from './contexts';
-import { CssVarsProvider as JoyCssVarsProvider, GlobalStyles, CssBaseline, Box } from '@mui/joy';
+import { CssVarsProvider as JoyCssVarsProvider, GlobalStyles, CssBaseline } from '@mui/joy';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { UnauthorizedDialog, ErrorMessageSnackbar } from './components';
-import { Header } from './components';
 import router from './router';
 
 import {
@@ -22,31 +21,21 @@ function App() {
         <JoyCssVarsProvider defaultMode="system">
           <CssBaseline enableColorScheme />
           <GlobalStyles
-            styles={(theme) => ({
+            styles={() => ({
               ':root': {
                 '--Collapsed-breakpoint': '769px', // form will stretch when viewport is below `769px`
                 '--Cover-width': '50vw', // must be `vw` only
                 '--Form-maxWidth': '800px',
                 '--Transition-duration': '0.4s', // set to `none` to disable transition
-                '--Sidebar-width': '220px',
-                [theme.breakpoints.up('lg')]: {
-                  '--Sidebar-width': '240px',
-                },
-                '--ThinSidebar-width': '80px',
-                '--Header-height': '40px',
+                '--Sidebar-width': '240px',
+                '--Header-height': '40px'
               },
             })}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <UnauthorizedDialog />
             <ErrorMessageSnackbar />
-            {/* <Box sx={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}>
-              <Header /> */}
-              <RouterProvider router={router} />
-            {/* </Box> */}
+            <RouterProvider router={router} />
           </LocalizationProvider>
         </JoyCssVarsProvider>
       </MaterialCssVarsProvider>

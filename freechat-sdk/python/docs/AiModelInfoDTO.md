@@ -3,6 +3,7 @@
 Model information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
@@ -15,7 +16,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
 
 # TODO update the JSON string below
 json = "{}"

@@ -3,6 +3,7 @@
 Request data for updating prompt information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **parent_id** | **str** | Referenced prompt | [optional] 
@@ -23,7 +24,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_update_dto import PromptUpdateDTO
+from freechat_sdk.models.prompt_update_dto import PromptUpdateDTO
 
 # TODO update the JSON string below
 json = "{}"

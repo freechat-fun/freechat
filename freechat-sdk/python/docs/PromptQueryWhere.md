@@ -3,6 +3,7 @@
 Query condition
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **visibility** | **str** | Visibility: public, public_org (search this organization), private (default) | [optional] 
@@ -19,7 +20,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_query_where import PromptQueryWhere
+from freechat_sdk.models.prompt_query_where import PromptQueryWhere
 
 # TODO update the JSON string below
 json = "{}"

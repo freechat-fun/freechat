@@ -91,7 +91,7 @@ export default function PromptMeta(props: {
               );
             } else {
               return (
-                <RouterLink href={`/w/console/prompt/${id}`} key={`history-${id}`}>
+                <RouterLink href={`/w/prompt/${id}`} key={`history-${id}`}>
                   <HistoryTypography level="body-sm">
                     {id}
                   </HistoryTypography>

@@ -3,6 +3,7 @@
 Prompt identifier and version information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **prompt_id** | **str** | promptId | [optional] 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_item_for_name_dto import PromptItemForNameDTO
+from freechat_sdk.models.prompt_item_for_name_dto import PromptItemForNameDTO
 
 # TODO update the JSON string below
 json = "{}"

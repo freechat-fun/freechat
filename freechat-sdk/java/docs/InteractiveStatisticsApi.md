@@ -15,6 +15,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**listFlowsByStatistic**](InteractiveStatisticsApi.md#listFlowsByStatistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics |
 | [**listFlowsByStatistic1**](InteractiveStatisticsApi.md#listFlowsByStatistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics |
 | [**listFlowsByStatistic2**](InteractiveStatisticsApi.md#listFlowsByStatistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics |
+| [**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags |
 | [**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics |
 | [**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics |
 | [**listPluginsByStatistic2**](InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/stats/plugins/by/{statsType} | List Plugins by Statistics |
@@ -51,7 +52,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Resource type: prompt | flow | plugin
+    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     Long delta = 56L; // Long | Delta in statistical value
@@ -73,7 +74,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Resource type: prompt | flow | plugin | |
+| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 | **delta** | **Long**| Delta in statistical value | |
@@ -124,7 +125,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Resource type: prompt | flow | plugin
+    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     try {
       Long result = apiInstance.getScore(infoType, infoId);
@@ -144,7 +145,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Resource type: prompt | flow | plugin | |
+| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 
 ### Return type
@@ -193,7 +194,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Resource type: prompt | flow | plugin
+    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     try {
@@ -214,7 +215,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Resource type: prompt | flow | plugin | |
+| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 
@@ -264,7 +265,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Resource type: prompt | flow | plugin
+    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     try {
       InteractiveStatsDTO result = apiInstance.getStatistics(infoType, infoId);
@@ -284,7 +285,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Resource type: prompt | flow | plugin | |
+| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 
 ### Return type
@@ -333,7 +334,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Resource type: prompt | flow | plugin
+    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     try {
@@ -354,7 +355,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Resource type: prompt | flow | plugin | |
+| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 
@@ -787,6 +788,77 @@ public class Example {
 ### Return type
 
 [**List&lt;FlowSummaryStatsDTO&gt;**](FlowSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listHotTags"></a>
+# **listHotTags**
+> List&lt;HotTagDTO&gt; listHotTags(infoType, pageSize, text)
+
+Hot Tags
+
+Get popular tags for a specified info type.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.InteractiveStatisticsApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
+    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    Long pageSize = 56L; // Long | Maximum quantity
+    String text = "text_example"; // String | Key word
+    try {
+      List<HotTagDTO> result = apiInstance.listHotTags(infoType, pageSize, text);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling InteractiveStatisticsApi#listHotTags");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **pageSize** | **Long**| Maximum quantity | |
+| **text** | **String**| Key word | [optional] |
+
+### Return type
+
+[**List&lt;HotTagDTO&gt;**](HotTagDTO.md)
 
 ### Authorization
 

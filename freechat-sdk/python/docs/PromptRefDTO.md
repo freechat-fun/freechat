@@ -3,6 +3,7 @@
 Prompt reference information
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **prompt_id** | **str** | Prompt identifier | 
@@ -12,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.prompt_ref_dto import PromptRefDTO
+from freechat_sdk.models.prompt_ref_dto import PromptRefDTO
 
 # TODO update the JSON string below
 json = "{}"

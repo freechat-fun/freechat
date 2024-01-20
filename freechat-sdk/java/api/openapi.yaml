@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.2.6
+  version: 0.2.11
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -1081,7 +1081,7 @@ paths:
         resources.
       operationId: getStatistic
       parameters:
-      - description: "Resource type: prompt | flow | plugin"
+      - description: "Info type: prompt | flow | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -1123,7 +1123,7 @@ paths:
         resources by one. Return the latest statistics.
       operationId: increaseStatistic
       parameters:
-      - description: "Resource type: prompt | flow | plugin"
+      - description: "Info type: prompt | flow | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -1166,7 +1166,7 @@ paths:
         resources. The increment can be negative. Return the latest statistics.
       operationId: addStatistic
       parameters:
-      - description: "Resource type: prompt | flow | plugin"
+      - description: "Info type: prompt | flow | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -3352,12 +3352,55 @@ paths:
       - Account
       x-content-type: multipart/form-data
       x-accepts: text/plain
+  /api/v1/tags/hot/{infoType}/{pageSize}:
+    get:
+      description: Get popular tags for a specified info type.
+      operationId: listHotTags
+      parameters:
+      - description: "Info type: prompt | flow | plugin | character"
+        explode: false
+        in: path
+        name: infoType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Key word
+        explode: true
+        in: query
+        name: text
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/HotTagDTO'
+                type: array
+          description: OK
+      summary: Hot Tags
+      tags:
+      - Interactive Statistics
+      x-accepts: application/json
   /api/v1/stats/{infoType}/{infoId}:
     get:
       description: Get all statistics of the corresponding resources.
       operationId: getStatistics
       parameters:
-      - description: "Resource type: prompt | flow | plugin"
+      - description: "Info type: prompt | flow | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -3933,7 +3976,7 @@ paths:
       description: Get the current user's score for the corresponding resource.
       operationId: getScore
       parameters:
-      - description: "Resource type: prompt | flow | plugin"
+      - description: "Info type: prompt | flow | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -6282,6 +6325,7 @@ components:
             - version
             - modifyTime
             - createTime
+            - (interactive statistical fields)
 
             Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
           items:
@@ -6290,6 +6334,7 @@ components:
               - version
               - modifyTime
               - createTime
+              - (interactive statistical fields)
 
               Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
             type: string
@@ -7809,6 +7854,20 @@ components:
           type: string
       required:
       - name
+      type: object
+    HotTagDTO:
+      description: Hot tag
+      example:
+        count: 0
+        content: content
+      properties:
+        content:
+          description: Tag content
+          type: string
+        count:
+          description: Tag count
+          format: int64
+          type: integer
       type: object
     PromptSummaryStatsDTO:
       description: "Prompt template summary content, including interactive statistical\

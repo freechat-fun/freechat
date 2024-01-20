@@ -3,6 +3,7 @@
 Character query request
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **where** | [**CharacterQueryWhere**](CharacterQueryWhere.md) |  | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.character_query_dto import CharacterQueryDTO
+from freechat_sdk.models.character_query_dto import CharacterQueryDTO
 
 # TODO update the JSON string below
 json = "{}"

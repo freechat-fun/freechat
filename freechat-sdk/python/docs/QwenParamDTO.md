@@ -3,6 +3,7 @@
 Qwen series model parameters
 
 ## Properties
+
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **api_key** | **str** | API-KEY, higher priority than apiKeyName. Either apiKey or apiKeyName must be specified. | [optional] 
@@ -20,7 +21,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from freechat-sdk.models.qwen_param_dto import QwenParamDTO
+from freechat_sdk.models.qwen_param_dto import QwenParamDTO
 
 # TODO update the JSON string below
 json = "{}"
