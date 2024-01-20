@@ -46,7 +46,7 @@ public class TagTest extends AbstractIntegrationTest {
 
     @Test
     public void testHotTags() {
-        testClient.get().uri("/api/tags/hot/prompt/10")
+        testClient.get().uri("/api/v1/tags/hot/prompt/10")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()

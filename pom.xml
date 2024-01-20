@@ -15,21 +15,21 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!--dependency versions-->
-    <spring-boot.version>3.1.4</spring-boot.version>
-    <springdoc.version>2.2.0</springdoc.version>
-    <mybatis.version>3.5.13</mybatis.version>
-    <mybatis-dynamic-sql.version>1.4.1</mybatis-dynamic-sql.version>
-    <mybatis-spring-boot-starter.version>2.3.0</mybatis-spring-boot-starter.version>
+    <spring-boot.version>3.2.2</spring-boot.version>
+    <springdoc.version>2.3.0</springdoc.version>
+    <mybatis.version>3.5.15</mybatis.version>
+    <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
+    <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
     <commons-collections4.version>4.4</commons-collections4.version>
-    <commons-io.version>2.13.0</commons-io.version>
-    <redisson.version>3.23.5</redisson.version>
+    <commons-io.version>2.15.1</commons-io.version>
+    <redisson.version>3.26.0</redisson.version>
     <objenesis.version>3.3</objenesis.version>
-    <swagger-parser.version>2.1.18</swagger-parser.version>
+    <swagger-parser.version>2.1.19</swagger-parser.version>
     <langchain4j.version>0.25.0</langchain4j.version>
 
     <!--plugin versions-->
-    <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
-    <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+    <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
+    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <mybatis-generator-maven-plugin.version>1.4.2</mybatis-generator-maven-plugin.version>
   </properties>
 
@@ -109,8 +109,8 @@
 
       <dependency>
         <groupId>org.redisson</groupId>
-        <!-- for Spring Data Redis v.3.1.x -->
-        <artifactId>redisson-spring-data-31</artifactId>
+        <!-- for Spring Data Redis v.3.2.x -->
+        <artifactId>redisson-spring-data-32</artifactId>
         <version>${redisson.version}</version>
       </dependency>
 
