@@ -210,16 +210,16 @@ public class PromptApiTest {
     }
 
     /**
-     * Check If Name Exists
+     * Check If Prompt Name Exists
      *
-     * Check if the name already exists.
+     * Check if the prompt name already exists.
      *
      * @throws ApiException if the Api call fails
      */
     @Test
-    public void existsNameTest() throws ApiException {
+    public void existsPromptNameTest() throws ApiException {
         String name = null;
-        Boolean response = api.existsName(name);
+        Boolean response = api.existsPromptName(name);
         // TODO: test validations
     }
 

@@ -172,6 +172,20 @@ public class CharacterApiTest {
     }
 
     /**
+     * Check If Character Name Exists
+     *
+     * Check if the character name already exists.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void existsCharacterNameTest() throws ApiException {
+        String name = null;
+        Boolean response = api.existsCharacterName(name);
+        // TODO: test validations
+    }
+
+    /**
      * Get Character Details
      *
      * Get character detailed information.

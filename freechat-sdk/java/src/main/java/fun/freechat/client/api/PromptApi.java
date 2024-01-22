@@ -1559,7 +1559,7 @@ public class PromptApi {
         return localVarCall;
     }
     /**
-     * Build call for existsName
+     * Build call for existsPromptName
      * @param name Name (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -1570,7 +1570,7 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call existsNameCall(String name, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call existsPromptNameCall(String name, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1616,19 +1616,19 @@ public class PromptApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call existsNameValidateBeforeCall(String name, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call existsPromptNameValidateBeforeCall(String name, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'name' is set
         if (name == null) {
-            throw new ApiException("Missing the required parameter 'name' when calling existsName(Async)");
+            throw new ApiException("Missing the required parameter 'name' when calling existsPromptName(Async)");
         }
 
-        return existsNameCall(name, _callback);
+        return existsPromptNameCall(name, _callback);
 
     }
 
     /**
-     * Check If Name Exists
-     * Check if the name already exists.
+     * Check If Prompt Name Exists
+     * Check if the prompt name already exists.
      * @param name Name (required)
      * @return Boolean
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -1638,14 +1638,14 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Boolean existsName(String name) throws ApiException {
-        ApiResponse<Boolean> localVarResp = existsNameWithHttpInfo(name);
+    public Boolean existsPromptName(String name) throws ApiException {
+        ApiResponse<Boolean> localVarResp = existsPromptNameWithHttpInfo(name);
         return localVarResp.getData();
     }
 
     /**
-     * Check If Name Exists
-     * Check if the name already exists.
+     * Check If Prompt Name Exists
+     * Check if the prompt name already exists.
      * @param name Name (required)
      * @return ApiResponse&lt;Boolean&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -1655,15 +1655,15 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Boolean> existsNameWithHttpInfo(String name) throws ApiException {
-        okhttp3.Call localVarCall = existsNameValidateBeforeCall(name, null);
+    public ApiResponse<Boolean> existsPromptNameWithHttpInfo(String name) throws ApiException {
+        okhttp3.Call localVarCall = existsPromptNameValidateBeforeCall(name, null);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
-     * Check If Name Exists (asynchronously)
-     * Check if the name already exists.
+     * Check If Prompt Name Exists (asynchronously)
+     * Check if the prompt name already exists.
      * @param name Name (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -1674,9 +1674,9 @@ public class PromptApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call existsNameAsync(String name, final ApiCallback<Boolean> _callback) throws ApiException {
+    public okhttp3.Call existsPromptNameAsync(String name, final ApiCallback<Boolean> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = existsNameValidateBeforeCall(name, _callback);
+        okhttp3.Call localVarCall = existsPromptNameValidateBeforeCall(name, _callback);
         Type localVarReturnType = new TypeToken<Boolean>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;

@@ -88,7 +88,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if not args.input or len(args.input) != 2:
-        print(sys.stderr, 'Oops...should be 2 input files')
+        print(sys.stderr, 'Oops...should have 2 input files')
         exit(-1)
 
     main(args.input[0], args.input[1], args.output)

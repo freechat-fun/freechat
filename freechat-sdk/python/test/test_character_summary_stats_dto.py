@@ -46,6 +46,7 @@ class TestCharacterSummaryStatsDTO(unittest.TestCase):
                 description = '',
                 avatar = '',
                 picture = '',
+                gender = '',
                 lang = '',
                 username = '',
                 tags = [

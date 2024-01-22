@@ -4030,8 +4030,8 @@ paths:
       x-accepts: application/json
   /api/v1/prompt/exists/name/{name}:
     get:
-      description: Check if the name already exists.
-      operationId: existsName
+      description: Check if the prompt name already exists.
+      operationId: existsPromptName
       parameters:
       - description: Name
         explode: false
@@ -4048,7 +4048,7 @@ paths:
               schema:
                 type: boolean
           description: OK
-      summary: Check If Name Exists
+      summary: Check If Prompt Name Exists
       tags:
       - Prompt
       x-accepts: application/json
@@ -4303,6 +4303,30 @@ paths:
                 $ref: '#/components/schemas/CharacterSummaryDTO'
           description: OK
       summary: Get Character Summary
+      tags:
+      - Character
+      x-accepts: application/json
+  /api/v1/character/exists/name/{name}:
+    get:
+      description: Check if the character name already exists.
+      operationId: existsCharacterName
+      parameters:
+      - description: Name
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Check If Character Name Exists
       tags:
       - Character
       x-accepts: application/json
@@ -5536,31 +5560,6 @@ components:
       required:
       - name
       type: object
-    CharacterInfoDraftDTO:
-      description: Character draft information (for prompt)
-      example:
-        profile: profile
-        greeting: greeting
-        chatExample: chatExample
-        experience: experience
-        chatStyle: chatStyle
-      properties:
-        profile:
-          description: Character profile
-          type: string
-        greeting:
-          description: Character greeting
-          type: string
-        chatStyle:
-          description: Character chat-style
-          type: string
-        chatExample:
-          description: Character chat-example
-          type: string
-        experience:
-          description: Character experience
-          type: string
-      type: object
     CharacterUpdateDTO:
       description: Request data for updating character information
       example:
@@ -5578,12 +5577,7 @@ components:
         tags:
         - tags
         - tags
-        draft:
-          profile: profile
-          greeting: greeting
-          chatExample: chatExample
-          experience: experience
-          chatStyle: chatStyle
+        draft: draft
         name: name
         lang: lang
         chatStyle: chatStyle
@@ -5631,7 +5625,8 @@ components:
           description: "Additional information, JSON format"
           type: string
         draft:
-          $ref: '#/components/schemas/CharacterInfoDraftDTO'
+          description: Character draft information
+          type: string
         tags:
           description: Tag set
           items:
@@ -7343,12 +7338,7 @@ components:
         tags:
         - tags
         - tags
-        draft:
-          profile: profile
-          greeting: greeting
-          chatExample: chatExample
-          experience: experience
-          chatStyle: chatStyle
+        draft: draft
         name: name
         lang: lang
         chatStyle: chatStyle
@@ -7396,7 +7386,8 @@ components:
           description: "Additional information, JSON format"
           type: string
         draft:
-          $ref: '#/components/schemas/CharacterInfoDraftDTO'
+          description: Character draft information
+          type: string
         tags:
           description: Tag set
           items:
@@ -7528,6 +7519,7 @@ components:
       example:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
+        gender: gender
         description: description
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -7574,6 +7566,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        gender:
+          description: "Character gender: male | female | other"
           type: string
         lang:
           description: "Character language: English | Chinese (Simplified) | ..."
@@ -7644,6 +7639,7 @@ components:
         ext: ext
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
+        gender: gender
         profile: profile
         greeting: greeting
         description: description
@@ -7678,12 +7674,7 @@ components:
         - tags
         - tags
         requestId: requestId
-        draft:
-          profile: profile
-          greeting: greeting
-          chatExample: chatExample
-          experience: experience
-          chatStyle: chatStyle
+        draft: draft
         name: name
         lang: lang
         characterId: characterId
@@ -7723,6 +7714,9 @@ components:
         picture:
           description: Character picture url
           type: string
+        gender:
+          description: "Character gender: male | female | other"
+          type: string
         lang:
           description: "Character language: English | Chinese (Simplified) | ..."
           type: string
@@ -7754,7 +7748,8 @@ components:
           description: "Additional information, JSON format"
           type: string
         draft:
-          $ref: '#/components/schemas/CharacterInfoDraftDTO'
+          description: Character draft information
+          type: string
         backends:
           description: Character backends information
           items:
@@ -8190,6 +8185,7 @@ components:
         referCount: 1
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
+        gender: gender
         scoreCount: 5
         description: description
         avatar: avatar
@@ -8240,6 +8236,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        gender:
+          description: "Character gender: male | female | other"
           type: string
         lang:
           description: "Character language: English | Chinese (Simplified) | ..."

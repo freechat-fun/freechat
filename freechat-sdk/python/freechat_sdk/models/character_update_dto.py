@@ -21,7 +21,6 @@ import json
 from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, StrictStr
 from pydantic import Field
-from freechat_sdk.models.character_info_draft_dto import CharacterInfoDraftDTO
 try:
     from typing import Self
 except ImportError:
@@ -45,7 +44,7 @@ class CharacterUpdateDTO(BaseModel):
     experience: Optional[StrictStr] = Field(default=None, description="Character experience")
     lang: Optional[StrictStr] = Field(default=None, description="Character language: English | Chinese (Simplified) | ...")
     ext: Optional[StrictStr] = Field(default=None, description="Additional information, JSON format")
-    draft: Optional[CharacterInfoDraftDTO] = None
+    draft: Optional[StrictStr] = Field(default=None, description="Character draft information")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tag set")
     additional_properties: Dict[str, Any] = {}
     __properties: ClassVar[List[str]] = ["parentId", "visibility", "name", "description", "avatar", "picture", "gender", "profile", "greeting", "chatStyle", "chatExample", "experience", "lang", "ext", "draft", "tags"]
@@ -89,9 +88,6 @@ class CharacterUpdateDTO(BaseModel):
             },
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of draft
-        if self.draft:
-            _dict['draft'] = self.draft.to_dict()
         # puts key-value pairs in additional_properties in the top level
         if self.additional_properties is not None:
             for _key, _value in self.additional_properties.items():
@@ -123,7 +119,7 @@ class CharacterUpdateDTO(BaseModel):
             "experience": obj.get("experience"),
             "lang": obj.get("lang"),
             "ext": obj.get("ext"),
-            "draft": CharacterInfoDraftDTO.from_dict(obj.get("draft")) if obj.get("draft") is not None else None,
+            "draft": obj.get("draft"),
             "tags": obj.get("tags")
         })
         # store additional fields in additional_properties

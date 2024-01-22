@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
-import { CommonBox, CommonContainer, ConfirmModal, LinePlaceholder, TinyInput } from "../../components";
+import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, LinePlaceholder, TinyInput } from "../../components";
 import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
@@ -101,35 +101,45 @@ export default function PromptEditor() {
     aiServiceApi?.listAiModelInfo1()
       .then(setModelInfos)
       .catch(handleError);
-  }, [handleError, id, username, promptApi, aiServiceApi]);
+  }, [handleError, id, promptApi, aiServiceApi]);
 
   useEffect(() => {
     if (origRecord) {
       if (origRecord.username !== username) {
         return;
       }
-      
-      setOriginName(origRecord.name);
-
-      setDescription(origRecord.description);
-      setStringTemplate(origRecord.template);
-      setInputs(extractVariables(origRecord));
-      setStringTemplate(origRecord.template);
-      setSystem(origRecord.chatTemplate?.system);
-      setUserName(origRecord.chatTemplate?.messageToSend?.name ?? 'user');
-      setUserMessage(origRecord.chatTemplate?.messageToSend?.content ||
-        (origRecord.format === 'f_string' ? '{input}' : '{{input}}'));
-      setMessages(origRecord.chatTemplate?.messages ?? []);
-      setExample(origRecord.example);
-
-      setVisibility(origRecord.visibility ?? 'private');
-      setFormat(origRecord.format ?? 'mustache');
-      setLang(origRecord.lang ? origRecord.lang.split('_')[0] : 'en');
-      setTags(origRecord.tags ?? []);
-      setModels(origRecord.aiModels ?? []);
-      if (origRecord.ext) {
+      let draft: PromptDetailsDTO = {};
+      if (origRecord.draft) {
         try {
-          const persistentParameters = JSON.parse(origRecord.ext) as { [key: string]: any };
+          draft = (JSON.parse(origRecord.draft) as PromptDetailsDTO) ?? {};
+        } catch (error) {
+          console.log(`[WARNING] Invalid draft content: ${origRecord.draft}`);
+        }
+      }
+
+      const draftRecord = {...origRecord, ...draft};
+      
+      setOriginName(draftRecord.name);
+
+      setDescription(draftRecord.description);
+      setStringTemplate(draftRecord.template);
+      setInputs(extractVariables(draftRecord));
+      setStringTemplate(draftRecord.template);
+      setSystem(draftRecord.chatTemplate?.system);
+      setUserName(draftRecord.chatTemplate?.messageToSend?.name ?? 'user');
+      setUserMessage(draftRecord.chatTemplate?.messageToSend?.content ||
+        (draftRecord.format === 'f_string' ? '{input}' : '{{input}}'));
+      setMessages(draftRecord.chatTemplate?.messages ?? []);
+      setExample(draftRecord.example);
+
+      setVisibility(draftRecord.visibility ?? 'private');
+      setFormat(draftRecord.format ?? 'mustache');
+      setLang(draftRecord.lang ? draftRecord.lang.split('_')[0] : 'en');
+      setTags(draftRecord.tags ?? []);
+      setModels(draftRecord.aiModels ?? []);
+      if (draftRecord.ext) {
+        try {
+          const persistentParameters = JSON.parse(draftRecord.ext) as { [key: string]: any };
           setDefaultParameters(persistentParameters);
         } catch (error) {
           // ignore
@@ -302,7 +312,7 @@ export default function PromptEditor() {
         setEditRecord(newRecord);
         setEditRecordName(undefined);
       } else {
-        promptApi?.existsName(editRecordName)
+        promptApi?.existsPromptName(editRecordName)
           .then(resp => {
             if (!resp) {
               const newRecord = { ...editRecord };
@@ -352,7 +362,7 @@ export default function PromptEditor() {
     setEditRound(false);
   }
 
-  function handleInputChange(k: string, v: string): void {
+  function handleInputsChange(k: string, v: string): void {
     const currentInputs = {...inputs ?? {}};
     currentInputs[k] = v;
     setInputs(currentInputs);
@@ -439,7 +449,12 @@ export default function PromptEditor() {
     if (!editRecord.promptId) {
       return;
     }
-    const request = recordToUpdateRequest(editRecord);
+    const draftRecord = {...editRecord};
+    draftRecord.promptId = undefined;
+
+    const request = new PromptUpdateDTO();
+    request.draft = JSON.stringify(draftRecord);
+
     promptApi?.updatePrompt(editRecord.promptId, request)
       .then(setSaved)
       .catch(handleError);
@@ -466,12 +481,12 @@ export default function PromptEditor() {
           .then(resp => {
             setSaved(resp);
             if (resp) {
-              onSaved(editRecord.promptId as string, editRecord.visibility ?? 'public');
+              onSaved(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
             }
           })
           .catch(handleError);
     } else {
-      onSaved(editRecord.promptId as string, editRecord.visibility ?? 'public');
+      onSaved(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
     }
   }
 
@@ -530,7 +545,6 @@ export default function PromptEditor() {
     request.aiModels = record.aiModels?.map(modelInfo => modelInfo.modelId as string);
     request.chatTemplate = record.chatTemplate;
     request.description = record.description;
-    request.draft = record.draft;
     request.example = record.example;
     request.ext = record.ext;
     request.format = record.format;
@@ -539,8 +553,9 @@ export default function PromptEditor() {
     request.name = record.name ?? `untitiled-${formatDate(new Date())}`;
     request.tags = record.tags;
     request.template = record.template;
+    request.draft = '';
     request.ext = JSON.stringify(defaultParameters ?? {});
-    request.visibility = record.visibility;
+    request.visibility = record.visibility === 'private' ? 'private' : 'public';
 
     return request;
   }
@@ -609,7 +624,9 @@ export default function PromptEditor() {
           )}
         </ButtonGroup>
       </Box>
+
       <Divider />
+
       <CommonContainer sx={{ alignItems: 'flex-start' }}>
         <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
           <Stack spacing={3} sx={{
@@ -628,7 +645,7 @@ export default function PromptEditor() {
                   <HelpOutlineRounded fontSize="small" />
                 </Tooltip>
               </CommonBox>
-              <Textarea
+              <ContentTextarea
                 name="info-description"
                 minRows={3}
                 value={description}
@@ -643,10 +660,9 @@ export default function PromptEditor() {
                   minWidth: { sm: '12rem' },
                 }}>
                   <Chip variant="soft" color="primary">SYSTEM</Chip>
-                  <Textarea
+                  <ContentTextarea
                     name="system"
                     minRows={3}
-                    sx={contentStyle}
                     value={system}
                     onChange={(event) => setSystem(event.target.value)}
                   />
@@ -722,9 +738,8 @@ export default function PromptEditor() {
                             onChange={(event) => setEditUserName(event.target.value)}
                           />
                         )}
-                        <Textarea
+                        <ContentTextarea
                           name="editUserMessage"
-                          sx={contentStyle}
                           value={editUserContent}
                           onChange={(event) => setEditUserContent(event.target.value)}
                         />
@@ -737,9 +752,8 @@ export default function PromptEditor() {
                             onChange={(event) => setEditAssistantName(event.target.value)}
                           />
                         )}
-                        <Textarea
+                        <ContentTextarea
                           name="editAssistantMessage"
-                          sx={contentStyle}
                           value={editAssistantContent}
                           onChange={(event) => setEditAssistantContent(event.target.value)}
                         />
@@ -768,9 +782,8 @@ export default function PromptEditor() {
                   minWidth: { sm: '12rem' },
                 }}>
                   <Chip variant="soft" color="success">{userName?.toUpperCase() ?? 'USER'}</Chip>
-                  <Textarea
+                  <ContentTextarea
                     name="user"
-                    sx={contentStyle}
                     value={userMessage}
                     onChange={(event) => setUserMessage(event.target.value)}
                   />
@@ -784,10 +797,9 @@ export default function PromptEditor() {
                 <Typography level="title-lg" color="primary">
                   {t('Template')}
                 </Typography>
-                <Textarea
+                <ContentTextarea
                   name="string-template"
                   minRows={3}
-                  sx={contentStyle}
                   value={stringTemplate}
                   onChange={(event) => setStringTemplate(event.target.value)}
                 />
@@ -819,7 +831,7 @@ export default function PromptEditor() {
                       <Textarea
                         name={`input-value-${k}`}
                         value={v}
-                        onChange={(event) => handleInputChange(k, event.target.value)}
+                        onChange={(event) => handleInputsChange(k, event.target.value)}
                       />
                       </td>
                     </tr>
@@ -839,10 +851,9 @@ export default function PromptEditor() {
                   <HelpOutlineRounded fontSize="small" />
                 </Tooltip>
               </CommonBox>
-              <Textarea
+              <ContentTextarea
                 name="example"
                 minRows={3}
-                sx={contentStyle}
                 value={example}
                 onChange={(event) => setExample(event.target.value)}
               />

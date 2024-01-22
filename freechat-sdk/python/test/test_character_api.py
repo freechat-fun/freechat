@@ -89,6 +89,13 @@ class TestCharacterApi(unittest.TestCase):
         """
         pass
 
+    def test_exists_character_name(self) -> None:
+        """Test case for exists_character_name
+
+        Check If Character Name Exists
+        """
+        pass
+
     def test_get_character_details(self) -> None:
         """Test case for get_character_details
 

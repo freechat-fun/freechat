@@ -104,7 +104,6 @@ public class JSON {
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterBackendDetailsDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterCreateDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterDetailsDTO.CustomTypeAdapterFactory());
-        gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterInfoDraftDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterItemForNameDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterQueryDTO.CustomTypeAdapterFactory());
         gsonBuilder.registerTypeAdapterFactory(new fun.freechat.client.model.CharacterQueryWhere.CustomTypeAdapterFactory());

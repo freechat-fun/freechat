@@ -19,7 +19,6 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import fun.freechat.client.model.CharacterInfoDraftDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,7 +111,7 @@ public class CharacterUpdateDTO {
 
   public static final String SERIALIZED_NAME_DRAFT = "draft";
   @SerializedName(SERIALIZED_NAME_DRAFT)
-  private CharacterInfoDraftDTO draft;
+  private String draft;
 
   public static final String SERIALIZED_NAME_TAGS = "tags";
   @SerializedName(SERIALIZED_NAME_TAGS)
@@ -387,21 +386,21 @@ public class CharacterUpdateDTO {
   }
 
 
-  public CharacterUpdateDTO draft(CharacterInfoDraftDTO draft) {
+  public CharacterUpdateDTO draft(String draft) {
     this.draft = draft;
     return this;
   }
 
    /**
-   * Get draft
+   * Character draft information
    * @return draft
   **/
   @javax.annotation.Nullable
-  public CharacterInfoDraftDTO getDraft() {
+  public String getDraft() {
     return draft;
   }
 
-  public void setDraft(CharacterInfoDraftDTO draft) {
+  public void setDraft(String draft) {
     this.draft = draft;
   }
 
@@ -638,9 +637,8 @@ public class CharacterUpdateDTO {
       if ((jsonObj.get("ext") != null && !jsonObj.get("ext").isJsonNull()) && !jsonObj.get("ext").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `ext` to be a primitive type in the JSON string but got `%s`", jsonObj.get("ext").toString()));
       }
-      // validate the optional field `draft`
-      if (jsonObj.get("draft") != null && !jsonObj.get("draft").isJsonNull()) {
-        CharacterInfoDraftDTO.validateJsonElement(jsonObj.get("draft"));
+      if ((jsonObj.get("draft") != null && !jsonObj.get("draft").isJsonNull()) && !jsonObj.get("draft").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `draft` to be a primitive type in the JSON string but got `%s`", jsonObj.get("draft").toString()));
       }
       // ensure the optional json data is an array if present
       if (jsonObj.get("tags") != null && !jsonObj.get("tags").isJsonNull() && !jsonObj.get("tags").isJsonArray()) {

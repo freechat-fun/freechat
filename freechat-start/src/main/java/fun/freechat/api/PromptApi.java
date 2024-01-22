@@ -658,9 +658,9 @@ public class PromptApi {
     }
 
     @Operation(
-            operationId = "existsName",
-            summary = "Check If Name Exists",
-            description = "Check if the name already exists."
+            operationId = "existsPromptName",
+            summary = "Check If Prompt Name Exists",
+            description = "Check if the prompt name already exists."
     )
     @GetMapping("/exists/name/{name}")
     public Boolean existsName(

@@ -14,7 +14,7 @@
 """  # noqa: E501
 
 
-__version__ = "0.2.11"
+__version__ = "0.2.14"
 
 # import apis into sdk package
 from freechat_sdk.api.ai_service_api import AIServiceApi
@@ -54,7 +54,6 @@ from freechat_sdk.models.character_backend_dto import CharacterBackendDTO
 from freechat_sdk.models.character_backend_details_dto import CharacterBackendDetailsDTO
 from freechat_sdk.models.character_create_dto import CharacterCreateDTO
 from freechat_sdk.models.character_details_dto import CharacterDetailsDTO
-from freechat_sdk.models.character_info_draft_dto import CharacterInfoDraftDTO
 from freechat_sdk.models.character_item_for_name_dto import CharacterItemForNameDTO
 from freechat_sdk.models.character_query_dto import CharacterQueryDTO
 from freechat_sdk.models.character_query_where import CharacterQueryWhere

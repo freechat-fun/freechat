@@ -16,7 +16,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**deletePrompt**](PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt |
 | [**deletePromptByName**](PromptApi.md#deletePromptByName) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name |
 | [**deletePrompts**](PromptApi.md#deletePrompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts |
-| [**existsName**](PromptApi.md#existsName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists |
+| [**existsPromptName**](PromptApi.md#existsPromptName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Prompt Name Exists |
 | [**getPromptDetails**](PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details |
 | [**getPromptSummary**](PromptApi.md#getPromptSummary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary |
 | [**listPromptVersionsByName**](PromptApi.md#listPromptVersionsByName) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name |
@@ -832,13 +832,13 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
-<a id="existsName"></a>
-# **existsName**
-> Boolean existsName(name)
+<a id="existsPromptName"></a>
+# **existsPromptName**
+> Boolean existsPromptName(name)
 
-Check If Name Exists
+Check If Prompt Name Exists
 
-Check if the name already exists.
+Check if the prompt name already exists.
 
 ### Example
 ```java
@@ -862,10 +862,10 @@ public class Example {
     PromptApi apiInstance = new PromptApi(defaultClient);
     String name = "name_example"; // String | Name
     try {
-      Boolean result = apiInstance.existsName(name);
+      Boolean result = apiInstance.existsPromptName(name);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling PromptApi#existsName");
+      System.err.println("Exception when calling PromptApi#existsPromptName");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());

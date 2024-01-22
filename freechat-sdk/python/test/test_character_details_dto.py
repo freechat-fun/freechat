@@ -46,6 +46,7 @@ class TestCharacterDetailsDTO(unittest.TestCase):
                 description = '',
                 avatar = '',
                 picture = '',
+                gender = '',
                 lang = '',
                 username = '',
                 tags = [
@@ -57,12 +58,7 @@ class TestCharacterDetailsDTO(unittest.TestCase):
                 chat_example = '',
                 experience = '',
                 ext = '',
-                draft = freechat_sdk.models.character_info_draft_dto.CharacterInfoDraftDTO(
-                    profile = '', 
-                    greeting = '', 
-                    chat_style = '', 
-                    chat_example = '', 
-                    experience = '', ),
+                draft = '',
                 backends = [
                     freechat_sdk.models.character_backend_details_dto.CharacterBackendDetailsDTO(
                         request_id = '', 

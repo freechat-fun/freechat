@@ -12,7 +12,6 @@ import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
 import { CharacterCreateDTO } from '../models/CharacterCreateDTO.js';
 import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
 import { CharacterQueryWhere } from '../models/CharacterQueryWhere.js';
@@ -1190,6 +1189,26 @@ export class PromiseCharacterApi {
      */
     public deleteChat(chatId: string, _options?: Configuration): Promise<boolean> {
         const result = this.api.deleteChat(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Check if the character name already exists.
+     * Check If Character Name Exists
+     * @param name Name
+     */
+    public existsCharacterNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.existsCharacterNameWithHttpInfo(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Check if the character name already exists.
+     * Check If Character Name Exists
+     * @param name Name
+     */
+    public existsCharacterName(name: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.existsCharacterName(name, _options);
         return result.toPromise();
     }
 
@@ -3270,22 +3289,22 @@ export class PromisePromptApi {
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param name Name
      */
-    public existsNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.existsNameWithHttpInfo(name, _options);
+    public existsPromptNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.existsPromptNameWithHttpInfo(name, _options);
         return result.toPromise();
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param name Name
      */
-    public existsName(name: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.existsName(name, _options);
+    public existsPromptName(name: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.existsPromptName(name, _options);
         return result.toPromise();
     }
 

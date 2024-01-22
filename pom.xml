@@ -8,7 +8,7 @@
   <name>${project.artifactId}</name>
 
   <properties>
-    <revision>0.2.11</revision>
+    <revision>0.2.14</revision>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

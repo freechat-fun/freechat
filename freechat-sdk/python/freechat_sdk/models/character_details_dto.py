@@ -22,7 +22,6 @@ from typing import Any, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, StrictInt, StrictStr
 from pydantic import Field
 from freechat_sdk.models.character_backend_details_dto import CharacterBackendDetailsDTO
-from freechat_sdk.models.character_info_draft_dto import CharacterInfoDraftDTO
 try:
     from typing import Self
 except ImportError:
@@ -42,6 +41,7 @@ class CharacterDetailsDTO(BaseModel):
     description: Optional[StrictStr] = Field(default=None, description="Character description")
     avatar: Optional[StrictStr] = Field(default=None, description="Character avatar url")
     picture: Optional[StrictStr] = Field(default=None, description="Character picture url")
+    gender: Optional[StrictStr] = Field(default=None, description="Character gender: male | female | other")
     lang: Optional[StrictStr] = Field(default=None, description="Character language: English | Chinese (Simplified) | ...")
     username: Optional[StrictStr] = Field(default=None, description="Character owner")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tag set")
@@ -51,10 +51,10 @@ class CharacterDetailsDTO(BaseModel):
     chat_example: Optional[StrictStr] = Field(default=None, description="Character chat-example", alias="chatExample")
     experience: Optional[StrictStr] = Field(default=None, description="Character experience")
     ext: Optional[StrictStr] = Field(default=None, description="Additional information, JSON format")
-    draft: Optional[CharacterInfoDraftDTO] = None
+    draft: Optional[StrictStr] = Field(default=None, description="Character draft information")
     backends: Optional[List[CharacterBackendDetailsDTO]] = Field(default=None, description="Character backends information")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["requestId", "characterId", "gmtCreate", "gmtModified", "visibility", "version", "name", "description", "avatar", "picture", "lang", "username", "tags", "profile", "greeting", "chatStyle", "chatExample", "experience", "ext", "draft", "backends"]
+    __properties: ClassVar[List[str]] = ["requestId", "characterId", "gmtCreate", "gmtModified", "visibility", "version", "name", "description", "avatar", "picture", "gender", "lang", "username", "tags", "profile", "greeting", "chatStyle", "chatExample", "experience", "ext", "draft", "backends"]
 
     model_config = {
         "populate_by_name": True,
@@ -95,9 +95,6 @@ class CharacterDetailsDTO(BaseModel):
             },
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of draft
-        if self.draft:
-            _dict['draft'] = self.draft.to_dict()
         # override the default output from pydantic by calling `to_dict()` of each item in backends (list)
         _items = []
         if self.backends:
@@ -132,6 +129,7 @@ class CharacterDetailsDTO(BaseModel):
             "description": obj.get("description"),
             "avatar": obj.get("avatar"),
             "picture": obj.get("picture"),
+            "gender": obj.get("gender"),
             "lang": obj.get("lang"),
             "username": obj.get("username"),
             "tags": obj.get("tags"),
@@ -141,7 +139,7 @@ class CharacterDetailsDTO(BaseModel):
             "chatExample": obj.get("chatExample"),
             "experience": obj.get("experience"),
             "ext": obj.get("ext"),
-            "draft": CharacterInfoDraftDTO.from_dict(obj.get("draft")) if obj.get("draft") is not None else None,
+            "draft": obj.get("draft"),
             "backends": [CharacterBackendDetailsDTO.from_dict(_item) for _item in obj.get("backends")] if obj.get("backends") is not None else None
         })
         # store additional fields in additional_properties

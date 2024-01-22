@@ -13,6 +13,7 @@ Method | HTTP request | Description
 [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
 [**deleteChat**](CharacterApi.md#deleteChat) | **DELETE** /api/v1/character/chat/{chatId} | Delete Chat Session
+[**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
 [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 [**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 [**getCharacterSummary**](CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
@@ -407,13 +408,7 @@ let body:.CharacterApiCreateCharacterRequest = {
     experience: "experience_example",
     lang: "lang_example",
     ext: "ext_example",
-    draft: {
-      profile: "profile_example",
-      greeting: "greeting_example",
-      chatStyle: "chatStyle_example",
-      chatExample: "chatExample_example",
-      experience: "experience_example",
-    },
+    draft: "draft_example",
     tags: [
       "tags_example",
     ],
@@ -593,6 +588,60 @@ apiInstance.deleteChat(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chatId** | [**string**] | Chat session identifier | defaults to undefined
+
+
+### Return type
+
+**boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **existsCharacterName**
+> boolean existsCharacterName()
+
+Check if the character name already exists.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .CharacterApi(configuration);
+
+let body:.CharacterApiExistsCharacterNameRequest = {
+  // string | Name
+  name: "name_example",
+};
+
+apiInstance.existsCharacterName(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | [**string**] | Name | defaults to undefined
 
 
 ### Return type
@@ -1688,13 +1737,7 @@ let body:.CharacterApiUpdateCharacterRequest = {
     experience: "experience_example",
     lang: "lang_example",
     ext: "ext_example",
-    draft: {
-      profile: "profile_example",
-      greeting: "greeting_example",
-      chatStyle: "chatStyle_example",
-      chatExample: "chatExample_example",
-      experience: "experience_example",
-    },
+    draft: "draft_example",
     tags: [
       "tags_example",
     ],

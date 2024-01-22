@@ -1,18 +1,13 @@
 package fun.freechat.api.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterInfo;
-import fun.freechat.service.character.CharacterInfoDraft;
 import fun.freechat.service.enums.GenderType;
-import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,15 +23,6 @@ public class CharacterUpdateDTO extends CharacterCreateDTO {
                 Objects.requireNonNull(AccountUtils.currentUser()).getUserId());
         if (Objects.nonNull(getGender())) {
             characterInfo.setGender(GenderType.of(getGender()).text());
-        }
-        if (Objects.nonNull(getDraft())) {
-            CharacterInfoDraft draft = getDraft().toCharacterInfoDraft();
-            try {
-                String draftText = InfoUtils.defaultMapper().writeValueAsString(draft);
-                characterInfo.setDraft(draftText);
-            } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-            }
         }
         return Pair.of(characterInfo, getTags());
     }

@@ -15,6 +15,7 @@ import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
+import fun.freechat.service.util.PromptUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -161,27 +162,6 @@ public class PromptServiceImpl implements PromptService {
             case "score" -> InteractiveStatsDynamicSqlSupport.score;
             default -> null;
         };
-    }
-
-    private Pair<Integer, InteractiveStats> getLastVersionAndStatsByName(String name, User user) {
-        var statement = select(Info.promptId, Info.version)
-                .from(Info.table)
-                .where(Info.name, isEqualTo(name))
-                .and(Info.userId, isEqualTo(user.getUserId()))
-                .orderBy(Info.version.descending())
-                .limit(1)
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        return promptInfoMapper.selectOne(statement)
-                .map(info -> {
-                    InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
-                                    c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getPromptId())))
-                            .orElse(null);
-                    return Pair.of(info.getVersion(), stats);
-                })
-                .orElse(null);
     }
 
     private void doCreate(Triple<PromptInfo, List<String>, List<String>> infoTriple) {
@@ -695,27 +675,30 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             }
             PromptInfo info = infoTriple.getLeft();
 
-            Pair<Integer, InteractiveStats> versionInfo = getLastVersionAndStatsByName(info.getName(), user);
-            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getLeft() : info.getVersion();
+            List<Triple<String, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
+            Triple<String, Integer, InteractiveStats> versionInfo =
+                    CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
+            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
 
             info.setVisibility(visibility.text());
             info.setPromptId(null);
             info.setVersion(version + 1);
 
             if (StringUtils.isNotBlank(info.getDraft())) {
-                info.setTemplate(info.getDraft());
+                info.setTemplate(PromptUtils.getDraftTemplate(info.getDraft()));
                 info.setDraft(null);
             }
 
             doCreate(infoTriple);
             publishedInfoId = info.getPromptId();
 
-            info = new PromptInfo()
-                    .withPromptId(promptId)
-                    .withVisibility(Visibility.HIDDEN.text())
-                    .withGmtModified(new Date());
-
-            promptInfoMapper.updateByPrimaryKeySelective(info);
+            for (var prevVersionInfo : versionInfoList) {
+                info = new PromptInfo()
+                        .withPromptId(prevVersionInfo.getLeft())
+                        .withVisibility(Visibility.HIDDEN.text())
+                        .withGmtModified(new Date());
+                promptInfoMapper.updateByPrimaryKeySelective(info);
+            }
 
             if (Objects.nonNull(versionInfo) && Objects.nonNull(versionInfo.getRight())) {
                 Date now = new Date();
@@ -821,7 +804,8 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             }
 
         }
-        String promptTemplate = BooleanUtils.isTrue(draft) ? promptInfo.getDraft() : promptInfo.getTemplate();
+        String promptTemplate = BooleanUtils.isTrue(draft) && StringUtils.isNotBlank(promptInfo.getDraft()) ?
+                PromptUtils.getDraftTemplate(promptInfo.getDraft()) : promptInfo.getTemplate();
         PromptFormat format = PromptFormat.of(promptInfo.getFormat());
         PromptType type = PromptType.of(promptInfo.getType());
         if (type == PromptType.CHAT) {

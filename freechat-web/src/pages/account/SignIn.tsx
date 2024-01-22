@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { GitHub, Google } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/joy";
+import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon  }from '../../components';
 
 export default function SignIn() {
@@ -8,7 +8,9 @@ export default function SignIn() {
   const protocol = window.location.protocol;
   const host = window.location.hostname;
   const port = window.location.port;
-  // const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const guestUsername = 'guest';
+  const guestPassword = 'guest';
 
   function toUrl(path: string) {
     return `${protocol}//${host}${port ? `:${port}` : ''}${path}`;
@@ -79,16 +81,6 @@ export default function SignIn() {
                   </Link>
                 </Typography> */}
               </Stack>
-              
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<GitHub />}
-                onClick={() => handleClick('/oauth2/authorization/github')}
-              >
-                {t('Continue with GitHub')}
-              </Button>
               <Button
                 variant="soft"
                 color="neutral"
@@ -97,6 +89,15 @@ export default function SignIn() {
                 onClick={() => handleClick('/oauth2/authorization/aliyun')}
               >
                 {t('Continue with Aliyun')}
+              </Button>
+              <Button
+                variant="soft"
+                color="neutral"
+                fullWidth
+                startDecorator={<GitHub />}
+                onClick={() => handleClick('/oauth2/authorization/github')}
+              >
+                {t('Continue with GitHub')}
               </Button>
               <Button
                 disabled
@@ -108,6 +109,26 @@ export default function SignIn() {
               >
                 {t('Continue with Google')}
               </Button>
+              <Box sx={{ display: 'flex', justifyContent: 'center', }}>
+                <form method="post" action="/login">
+                  <input type="hidden" value={guestUsername} id="username" name="username" />
+                  <input type="hidden" value={guestPassword} id="password" name="password" />
+                  <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
+                  <Button
+                    type="submit"
+                    variant="plain"
+                    color="primary"
+                    sx={{
+                      textDecoration: 'underline',
+                      p: 0,
+                      '&:hover': {
+                        backgroundColor: 'Background'
+                      }
+                  }}>
+                    {t('I\'m a guest')}
+                  </Button>
+                </form>
+              </Box>
             </Stack>
             {/* <Divider
               sx={(theme) => ({
@@ -155,28 +176,6 @@ export default function SignIn() {
           </Box>
         </Box>
       </Box>
-      <Box
-        sx={(theme) => ({
-          flexBasis: '50%',
-          right: 0,
-          top: 0,
-          bottom: 0,
-          left: 'clamp(0px, (100vw - var(--Collapsed-breakpoint)) * 999, 100vw - var(--Cover-width))',
-          transition:
-            'background-image var(--Transition-duration), left var(--Transition-duration) !important',
-          transitionDelay: 'calc(var(--Transition-duration) + 0.1s)',
-          backgroundColor: 'background.level1',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundImage:
-            'url(https://images.unsplash.com/photo-1527181152855-fc03fc7949c8?auto=format&w=1000&dpr=2)',
-          [theme.getColorSchemeSelector('dark')]: {
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1572072393749-3ca9c8ea0831?auto=format&w=1000&dpr=2)',
-          },
-        })}
-      />
     </Stack>
   );
 }

@@ -13,7 +13,6 @@ import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
 import { CharacterCreateDTO } from '../models/CharacterCreateDTO.js';
 import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
 import { CharacterQueryWhere } from '../models/CharacterQueryWhere.js';
@@ -1853,6 +1852,39 @@ export class ObservableCharacterApi {
      */
     public deleteChat(chatId: string, _options?: Configuration): Observable<boolean> {
         return this.deleteChatWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Check if the character name already exists.
+     * Check If Character Name Exists
+     * @param name Name
+     */
+    public existsCharacterNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.existsCharacterName(name, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.existsCharacterNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Check if the character name already exists.
+     * Check If Character Name Exists
+     * @param name Name
+     */
+    public existsCharacterName(name: string, _options?: Configuration): Observable<boolean> {
+        return this.existsCharacterNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
     /**
@@ -5135,12 +5167,12 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param name Name
      */
-    public existsNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
-        const requestContextPromise = this.requestFactory.existsName(name, _options);
+    public existsPromptNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.existsPromptName(name, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -5154,17 +5186,17 @@ export class ObservablePromptApi {
                 for (let middleware of this.configuration.middleware) {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.existsNameWithHttpInfo(rsp)));
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.existsPromptNameWithHttpInfo(rsp)));
             }));
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param name Name
      */
-    public existsName(name: string, _options?: Configuration): Observable<boolean> {
-        return this.existsNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    public existsPromptName(name: string, _options?: Configuration): Observable<boolean> {
+        return this.existsPromptNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
     /**

@@ -703,4 +703,15 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         }
     }
+
+    @Operation(
+            operationId = "existsCharacterName",
+            summary = "Check If Character Name Exists",
+            description = "Check if the character name already exists."
+    )
+    @GetMapping("/exists/name/{name}")
+    public Boolean existsName(
+            @Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
+        return characterService.existsName(name, AccountUtils.currentUser());
+    }
 }

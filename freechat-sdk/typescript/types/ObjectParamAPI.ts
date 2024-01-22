@@ -12,7 +12,6 @@ import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
 import { CharacterCreateDTO } from '../models/CharacterCreateDTO.js';
 import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
 import { CharacterQueryWhere } from '../models/CharacterQueryWhere.js';
@@ -1347,6 +1346,15 @@ export interface CharacterApiDeleteChatRequest {
     chatId: string
 }
 
+export interface CharacterApiExistsCharacterNameRequest {
+    /**
+     * Name
+     * @type string
+     * @memberof CharacterApiexistsCharacterName
+     */
+    name: string
+}
+
 export interface CharacterApiGetCharacterDetailsRequest {
     /**
      * CharacterId to be obtained
@@ -1760,6 +1768,24 @@ export class ObjectCharacterApi {
      */
     public deleteChat(param: CharacterApiDeleteChatRequest, options?: Configuration): Promise<boolean> {
         return this.api.deleteChat(param.chatId,  options).toPromise();
+    }
+
+    /**
+     * Check if the character name already exists.
+     * Check If Character Name Exists
+     * @param param the request object
+     */
+    public existsCharacterNameWithHttpInfo(param: CharacterApiExistsCharacterNameRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.existsCharacterNameWithHttpInfo(param.name,  options).toPromise();
+    }
+
+    /**
+     * Check if the character name already exists.
+     * Check If Character Name Exists
+     * @param param the request object
+     */
+    public existsCharacterName(param: CharacterApiExistsCharacterNameRequest, options?: Configuration): Promise<boolean> {
+        return this.api.existsCharacterName(param.name,  options).toPromise();
     }
 
     /**
@@ -4182,11 +4208,11 @@ export interface PromptApiDeletePromptsRequest {
     requestBody: Array<string>
 }
 
-export interface PromptApiExistsNameRequest {
+export interface PromptApiExistsPromptNameRequest {
     /**
      * Name
      * @type string
-     * @memberof PromptApiexistsName
+     * @memberof PromptApiexistsPromptName
      */
     name: string
 }
@@ -4508,21 +4534,21 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param param the request object
      */
-    public existsNameWithHttpInfo(param: PromptApiExistsNameRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
-        return this.api.existsNameWithHttpInfo(param.name,  options).toPromise();
+    public existsPromptNameWithHttpInfo(param: PromptApiExistsPromptNameRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.existsPromptNameWithHttpInfo(param.name,  options).toPromise();
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param param the request object
      */
-    public existsName(param: PromptApiExistsNameRequest, options?: Configuration): Promise<boolean> {
-        return this.api.existsName(param.name,  options).toPromise();
+    public existsPromptName(param: PromptApiExistsPromptNameRequest, options?: Configuration): Promise<boolean> {
+        return this.api.existsPromptName(param.name,  options).toPromise();
     }
 
     /**

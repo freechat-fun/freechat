@@ -376,7 +376,7 @@ class Configuration:
                "OS: {env}\n"\
                "Python Version: {pyversion}\n"\
                "Version of the API: 0.2.11\n"\
-               "SDK Package Version: 0.2.11".\
+               "SDK Package Version: 0.2.14".\
                format(env=sys.platform, pyversion=sys.version)
 
     def get_host_settings(self):

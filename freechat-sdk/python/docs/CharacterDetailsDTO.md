@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **description** | **str** | Character description | [optional] 
 **avatar** | **str** | Character avatar url | [optional] 
 **picture** | **str** | Character picture url | [optional] 
+**gender** | **str** | Character gender: male | female | other | [optional] 
 **lang** | **str** | Character language: English | Chinese (Simplified) | ... | [optional] 
 **username** | **str** | Character owner | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 
@@ -25,7 +26,7 @@ Name | Type | Description | Notes
 **chat_example** | **str** | Character chat-example | [optional] 
 **experience** | **str** | Character experience | [optional] 
 **ext** | **str** | Additional information, JSON format | [optional] 
-**draft** | [**CharacterInfoDraftDTO**](CharacterInfoDraftDTO.md) |  | [optional] 
+**draft** | **str** | Character draft information | [optional] 
 **backends** | [**List[CharacterBackendDetailsDTO]**](CharacterBackendDetailsDTO.md) | Character backends information | [optional] 
 
 ## Example

@@ -121,6 +121,14 @@ public class CharacterSummaryDTOTest {
     }
 
     /**
+     * Test the property 'gender'
+     */
+    @Test
+    public void genderTest() {
+        // TODO: test gender
+    }
+
+    /**
      * Test the property 'lang'
      */
     @Test

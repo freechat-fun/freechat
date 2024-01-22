@@ -20,7 +20,7 @@ Name | Type | Description | Notes
 **experience** | **str** | Character experience | [optional] 
 **lang** | **str** | Character language: English | Chinese (Simplified) | ... | [optional] 
 **ext** | **str** | Additional information, JSON format | [optional] 
-**draft** | [**CharacterInfoDraftDTO**](CharacterInfoDraftDTO.md) |  | [optional] 
+**draft** | **str** | Character draft information | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 
 
 ## Example

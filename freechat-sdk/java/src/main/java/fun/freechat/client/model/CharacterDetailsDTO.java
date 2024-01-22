@@ -20,7 +20,6 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import fun.freechat.client.model.CharacterBackendDetailsDTO;
-import fun.freechat.client.model.CharacterInfoDraftDTO;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -96,6 +95,10 @@ public class CharacterDetailsDTO {
   @SerializedName(SERIALIZED_NAME_PICTURE)
   private String picture;
 
+  public static final String SERIALIZED_NAME_GENDER = "gender";
+  @SerializedName(SERIALIZED_NAME_GENDER)
+  private String gender;
+
   public static final String SERIALIZED_NAME_LANG = "lang";
   @SerializedName(SERIALIZED_NAME_LANG)
   private String lang;
@@ -134,7 +137,7 @@ public class CharacterDetailsDTO {
 
   public static final String SERIALIZED_NAME_DRAFT = "draft";
   @SerializedName(SERIALIZED_NAME_DRAFT)
-  private CharacterInfoDraftDTO draft;
+  private String draft;
 
   public static final String SERIALIZED_NAME_BACKENDS = "backends";
   @SerializedName(SERIALIZED_NAME_BACKENDS)
@@ -333,6 +336,25 @@ public class CharacterDetailsDTO {
   }
 
 
+  public CharacterDetailsDTO gender(String gender) {
+    this.gender = gender;
+    return this;
+  }
+
+   /**
+   * Character gender: male | female | other
+   * @return gender
+  **/
+  @javax.annotation.Nullable
+  public String getGender() {
+    return gender;
+  }
+
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
+
+
   public CharacterDetailsDTO lang(String lang) {
     this.lang = lang;
     return this;
@@ -512,21 +534,21 @@ public class CharacterDetailsDTO {
   }
 
 
-  public CharacterDetailsDTO draft(CharacterInfoDraftDTO draft) {
+  public CharacterDetailsDTO draft(String draft) {
     this.draft = draft;
     return this;
   }
 
    /**
-   * Get draft
+   * Character draft information
    * @return draft
   **/
   @javax.annotation.Nullable
-  public CharacterInfoDraftDTO getDraft() {
+  public String getDraft() {
     return draft;
   }
 
-  public void setDraft(CharacterInfoDraftDTO draft) {
+  public void setDraft(String draft) {
     this.draft = draft;
   }
 
@@ -622,6 +644,7 @@ public class CharacterDetailsDTO {
         Objects.equals(this.description, characterDetailsDTO.description) &&
         Objects.equals(this.avatar, characterDetailsDTO.avatar) &&
         Objects.equals(this.picture, characterDetailsDTO.picture) &&
+        Objects.equals(this.gender, characterDetailsDTO.gender) &&
         Objects.equals(this.lang, characterDetailsDTO.lang) &&
         Objects.equals(this.username, characterDetailsDTO.username) &&
         Objects.equals(this.tags, characterDetailsDTO.tags) &&
@@ -638,7 +661,7 @@ public class CharacterDetailsDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, characterId, gmtCreate, gmtModified, visibility, version, name, description, avatar, picture, lang, username, tags, profile, greeting, chatStyle, chatExample, experience, ext, draft, backends, additionalProperties);
+    return Objects.hash(requestId, characterId, gmtCreate, gmtModified, visibility, version, name, description, avatar, picture, gender, lang, username, tags, profile, greeting, chatStyle, chatExample, experience, ext, draft, backends, additionalProperties);
   }
 
   @Override
@@ -655,6 +678,7 @@ public class CharacterDetailsDTO {
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    avatar: ").append(toIndentedString(avatar)).append("\n");
     sb.append("    picture: ").append(toIndentedString(picture)).append("\n");
+    sb.append("    gender: ").append(toIndentedString(gender)).append("\n");
     sb.append("    lang: ").append(toIndentedString(lang)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
@@ -699,6 +723,7 @@ public class CharacterDetailsDTO {
     openapiFields.add("description");
     openapiFields.add("avatar");
     openapiFields.add("picture");
+    openapiFields.add("gender");
     openapiFields.add("lang");
     openapiFields.add("username");
     openapiFields.add("tags");
@@ -757,6 +782,9 @@ public class CharacterDetailsDTO {
       if ((jsonObj.get("picture") != null && !jsonObj.get("picture").isJsonNull()) && !jsonObj.get("picture").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `picture` to be a primitive type in the JSON string but got `%s`", jsonObj.get("picture").toString()));
       }
+      if ((jsonObj.get("gender") != null && !jsonObj.get("gender").isJsonNull()) && !jsonObj.get("gender").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `gender` to be a primitive type in the JSON string but got `%s`", jsonObj.get("gender").toString()));
+      }
       if ((jsonObj.get("lang") != null && !jsonObj.get("lang").isJsonNull()) && !jsonObj.get("lang").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `lang` to be a primitive type in the JSON string but got `%s`", jsonObj.get("lang").toString()));
       }
@@ -785,9 +813,8 @@ public class CharacterDetailsDTO {
       if ((jsonObj.get("ext") != null && !jsonObj.get("ext").isJsonNull()) && !jsonObj.get("ext").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `ext` to be a primitive type in the JSON string but got `%s`", jsonObj.get("ext").toString()));
       }
-      // validate the optional field `draft`
-      if (jsonObj.get("draft") != null && !jsonObj.get("draft").isJsonNull()) {
-        CharacterInfoDraftDTO.validateJsonElement(jsonObj.get("draft"));
+      if ((jsonObj.get("draft") != null && !jsonObj.get("draft").isJsonNull()) && !jsonObj.get("draft").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `draft` to be a primitive type in the JSON string but got `%s`", jsonObj.get("draft").toString()));
       }
       if (jsonObj.get("backends") != null && !jsonObj.get("backends").isJsonNull()) {
         JsonArray jsonArraybackends = jsonObj.getAsJsonArray("backends");

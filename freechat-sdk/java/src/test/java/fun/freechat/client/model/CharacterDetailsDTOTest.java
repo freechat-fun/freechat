@@ -19,7 +19,6 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import fun.freechat.client.model.CharacterBackendDetailsDTO;
-import fun.freechat.client.model.CharacterInfoDraftDTO;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -120,6 +119,14 @@ public class CharacterDetailsDTOTest {
     @Test
     public void pictureTest() {
         // TODO: test picture
+    }
+
+    /**
+     * Test the property 'gender'
+     */
+    @Test
+    public void genderTest() {
+        // TODO: test gender
     }
 
     /**

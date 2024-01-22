@@ -572,16 +572,16 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Check if the name already exists.
-     * Check If Name Exists
+     * Check if the prompt name already exists.
+     * Check If Prompt Name Exists
      * @param name Name
      */
-    public async existsName(name: string, _options?: Configuration): Promise<RequestContext> {
+    public async existsPromptName(name: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'name' is not null or undefined
         if (name === null || name === undefined) {
-            throw new RequiredError("PromptApi", "existsName", "name");
+            throw new RequiredError("PromptApi", "existsPromptName", "name");
         }
 
 
@@ -1373,10 +1373,10 @@ export class PromptApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to existsName
+     * @params response Response returned by the server for a request to existsPromptName
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async existsNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<boolean >> {
+     public async existsPromptNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<boolean >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: boolean = ObjectSerializer.deserialize(

@@ -57,6 +57,10 @@ export class CharacterSummaryDTO {
     */
     'picture'?: string;
     /**
+    * Character gender: male | female | other
+    */
+    'gender'?: string;
+    /**
     * Character language: English | Chinese (Simplified) | ...
     */
     'lang'?: string;
@@ -129,6 +133,12 @@ export class CharacterSummaryDTO {
         {
             "name": "picture",
             "baseName": "picture",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "gender",
+            "baseName": "gender",
             "type": "string",
             "format": ""
         },

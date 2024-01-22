@@ -10,7 +10,6 @@
  * Do not edit the class manually.
  */
 
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { HttpFile } from '../http/http.js';
 
 /**
@@ -73,7 +72,10 @@ export class CharacterUpdateDTO {
     * Additional information, JSON format
     */
     'ext'?: string;
-    'draft'?: CharacterInfoDraftDTO;
+    /**
+    * Character draft information
+    */
+    'draft'?: string;
     /**
     * Tag set
     */
@@ -169,7 +171,7 @@ export class CharacterUpdateDTO {
         {
             "name": "draft",
             "baseName": "draft",
-            "type": "CharacterInfoDraftDTO",
+            "type": "string",
             "format": ""
         },
         {

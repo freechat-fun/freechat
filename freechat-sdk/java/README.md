@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.11</version>
+  <version>0.2.14</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.11"
+     implementation "fun.freechat:freechat-sdk:0.2.14"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.11.jar`
+* `target/freechat-sdk-0.2.14.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -168,6 +168,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 *CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
 *CharacterApi* | [**deleteChat**](docs/CharacterApi.md#deleteChat) | **DELETE** /api/v1/character/chat/{chatId} | Delete Chat Session
+*CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 *CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 *CharacterApi* | [**getCharacterSummary**](docs/CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
@@ -261,7 +262,7 @@ Class | Method | HTTP request | Description
 *PromptApi* | [**deletePrompt**](docs/PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
 *PromptApi* | [**deletePromptByName**](docs/PromptApi.md#deletePromptByName) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
 *PromptApi* | [**deletePrompts**](docs/PromptApi.md#deletePrompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
-*PromptApi* | [**existsName**](docs/PromptApi.md#existsName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists
+*PromptApi* | [**existsPromptName**](docs/PromptApi.md#existsPromptName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Prompt Name Exists
 *PromptApi* | [**getPromptDetails**](docs/PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
 *PromptApi* | [**getPromptSummary**](docs/PromptApi.md#getPromptSummary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
 *PromptApi* | [**listPromptVersionsByName**](docs/PromptApi.md#listPromptVersionsByName) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
@@ -290,7 +291,6 @@ Class | Method | HTTP request | Description
  - [CharacterBackendDetailsDTO](docs/CharacterBackendDetailsDTO.md)
  - [CharacterCreateDTO](docs/CharacterCreateDTO.md)
  - [CharacterDetailsDTO](docs/CharacterDetailsDTO.md)
- - [CharacterInfoDraftDTO](docs/CharacterInfoDraftDTO.md)
  - [CharacterItemForNameDTO](docs/CharacterItemForNameDTO.md)
  - [CharacterQueryDTO](docs/CharacterQueryDTO.md)
  - [CharacterQueryWhere](docs/CharacterQueryWhere.md)

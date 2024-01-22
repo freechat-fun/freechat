@@ -110,10 +110,10 @@ class TestPromptApi(unittest.TestCase):
         """
         pass
 
-    def test_exists_name(self) -> None:
-        """Test case for exists_name
+    def test_exists_prompt_name(self) -> None:
+        """Test case for exists_prompt_name
 
-        Check If Name Exists
+        Check If Prompt Name Exists
         """
         pass
 

@@ -50,12 +50,7 @@ class TestCharacterCreateDTO(unittest.TestCase):
                 experience = '',
                 lang = '',
                 ext = '',
-                draft = freechat_sdk.models.character_info_draft_dto.CharacterInfoDraftDTO(
-                    profile = '', 
-                    greeting = '', 
-                    chat_style = '', 
-                    chat_example = '', 
-                    experience = '', ),
+                draft = '',
                 tags = [
                     ''
                     ]

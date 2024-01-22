@@ -46,6 +46,8 @@ spec:
           env:
             - name: SERVICE_OPTS
               value: -Dspring.config.location=classpath:/application.yml,/home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config/application-private.yml
+            - name: TEE_JAVA_LOG
+              value: "1"
             {{- if .Values.debug.jpda.enabled }}
             - name: JPDA_ENABLE
               value: "true"

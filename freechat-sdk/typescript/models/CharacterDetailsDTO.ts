@@ -11,7 +11,6 @@
  */
 
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { HttpFile } from '../http/http.js';
 
 /**
@@ -59,6 +58,10 @@ export class CharacterDetailsDTO {
     */
     'picture'?: string;
     /**
+    * Character gender: male | female | other
+    */
+    'gender'?: string;
+    /**
     * Character language: English | Chinese (Simplified) | ...
     */
     'lang'?: string;
@@ -94,7 +97,10 @@ export class CharacterDetailsDTO {
     * Additional information, JSON format
     */
     'ext'?: string;
-    'draft'?: CharacterInfoDraftDTO;
+    /**
+    * Character draft information
+    */
+    'draft'?: string;
     /**
     * Character backends information
     */
@@ -164,6 +170,12 @@ export class CharacterDetailsDTO {
             "format": ""
         },
         {
+            "name": "gender",
+            "baseName": "gender",
+            "type": "string",
+            "format": ""
+        },
+        {
             "name": "lang",
             "baseName": "lang",
             "type": "string",
@@ -220,7 +232,7 @@ export class CharacterDetailsDTO {
         {
             "name": "draft",
             "baseName": "draft",
-            "type": "CharacterInfoDraftDTO",
+            "type": "string",
             "format": ""
         },
         {

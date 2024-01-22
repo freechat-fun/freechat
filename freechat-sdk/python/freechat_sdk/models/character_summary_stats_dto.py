@@ -40,6 +40,7 @@ class CharacterSummaryStatsDTO(BaseModel):
     description: Optional[StrictStr] = Field(default=None, description="Character description")
     avatar: Optional[StrictStr] = Field(default=None, description="Character avatar url")
     picture: Optional[StrictStr] = Field(default=None, description="Character picture url")
+    gender: Optional[StrictStr] = Field(default=None, description="Character gender: male | female | other")
     lang: Optional[StrictStr] = Field(default=None, description="Character language: English | Chinese (Simplified) | ...")
     username: Optional[StrictStr] = Field(default=None, description="Character owner")
     tags: Optional[List[StrictStr]] = Field(default=None, description="Tag set")
@@ -49,7 +50,7 @@ class CharacterSummaryStatsDTO(BaseModel):
     score_count: Optional[StrictInt] = Field(default=None, description="Score count", alias="scoreCount")
     score: Optional[StrictInt] = Field(default=None, description="Average score")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["requestId", "characterId", "gmtCreate", "gmtModified", "visibility", "version", "name", "description", "avatar", "picture", "lang", "username", "tags", "viewCount", "referCount", "recommendCount", "scoreCount", "score"]
+    __properties: ClassVar[List[str]] = ["requestId", "characterId", "gmtCreate", "gmtModified", "visibility", "version", "name", "description", "avatar", "picture", "gender", "lang", "username", "tags", "viewCount", "referCount", "recommendCount", "scoreCount", "score"]
 
     model_config = {
         "populate_by_name": True,
@@ -117,6 +118,7 @@ class CharacterSummaryStatsDTO(BaseModel):
             "description": obj.get("description"),
             "avatar": obj.get("avatar"),
             "picture": obj.get("picture"),
+            "gender": obj.get("gender"),
             "lang": obj.get("lang"),
             "username": obj.get("username"),
             "tags": obj.get("tags"),

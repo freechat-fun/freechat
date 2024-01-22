@@ -157,26 +157,6 @@ public class FlowServiceImpl implements FlowService {
         };
     }
 
-    private Pair<Integer, InteractiveStats> getLastVersionAndStatsByName(String name, User user) {
-        var statement = select(Info.flowId, Info.version)
-                .from(Info.table)
-                .where(Info.name, isEqualTo(name))
-                .and(Info.userId, isEqualTo(user.getUserId()))
-                .orderBy(Info.version.descending())
-                .limit(1)
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        return flowInfoMapper.selectOne(statement)
-                .map(info -> {
-                    InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
-                                    c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.FLOW.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getFlowId())))
-                            .orElse(null);
-                    return Pair.of(info.getVersion(), stats);
-                }).orElse(null);
-    }
-
     private void doCreate(Triple<FlowInfo, List<String>, List<String>> infoTriple) {
         FlowInfo info = infoTriple.getLeft();
         Date now = new Date();
@@ -654,8 +634,10 @@ select distinct f.user_id, f.flow_id, f.visibility... \
             }
             FlowInfo info = infoTriple.getLeft();
 
-            Pair<Integer, InteractiveStats> versionInfo = getLastVersionAndStatsByName(info.getName(), user);
-            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getLeft() : info.getVersion();
+            List<Triple<String, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
+            Triple<String, Integer, InteractiveStats> versionInfo =
+                    CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
+            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
 
             info.setVisibility(visibility.text());
             info.setFlowId(null);
@@ -669,10 +651,13 @@ select distinct f.user_id, f.flow_id, f.visibility... \
             doCreate(infoTriple);
             publishedInfoId = info.getFlowId();
 
-            info = new FlowInfo()
-                    .withFlowId(flowId)
-                    .withVisibility(Visibility.HIDDEN.text())
-                    .withGmtModified(new Date());
+            for (var prevVersionInfo : versionInfoList) {
+                info = new FlowInfo()
+                        .withFlowId(prevVersionInfo.getLeft())
+                        .withVisibility(Visibility.HIDDEN.text())
+                        .withGmtModified(new Date());
+                flowInfoMapper.updateByPrimaryKeySelective(info);
+            }
 
             flowInfoMapper.updateByPrimaryKeySelective(info);
 

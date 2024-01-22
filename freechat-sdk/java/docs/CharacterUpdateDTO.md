@@ -22,7 +22,7 @@ Request data for updating character information
 |**experience** | **String** | Character experience |  [optional] |
 |**lang** | **String** | Character language: English | Chinese (Simplified) | ... |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |
-|**draft** | [**CharacterInfoDraftDTO**](CharacterInfoDraftDTO.md) |  |  [optional] |
+|**draft** | **String** | Character draft information |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
 
 

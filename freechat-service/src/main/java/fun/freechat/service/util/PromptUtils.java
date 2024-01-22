@@ -1,5 +1,7 @@
 package fun.freechat.service.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
@@ -8,6 +10,8 @@ import dev.langchain4j.model.output.Response;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.ai.message.ChatToolCall;
+import fun.freechat.service.enums.PromptType;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static fun.freechat.service.enums.PromptRole.*;
 
+@Slf4j
 public class PromptUtils {
     private static final String SYSTEM_PREFIX = "<|system|>:";
     private static final String ASSISTANT_PREFIX = "<|assistant|>:";
@@ -151,5 +156,33 @@ public class PromptUtils {
             messages.add(convertChatMessage(promptTemplate.getMessageToSend()));
         }
         return messages;
+    }
+
+    public static String getDraftTemplate(String draft) {
+        if (StringUtils.isBlank(draft)) {
+            return null;
+        }
+        String template = null;
+        try {
+            JsonNode rootNode = InfoUtils.defaultMapper().readTree(draft);
+            JsonNode typeNode = rootNode.get("type");
+            if (Objects.nonNull(typeNode)) {
+                PromptType type = PromptType.of(typeNode.asText());
+                if (type == PromptType.STRING) {
+                    JsonNode templateNode = rootNode.get("template");
+                    if (Objects.nonNull(templateNode) && templateNode.isTextual()) {
+                        template = templateNode.asText();
+                    }
+                } else if (type == PromptType.CHAT) {
+                    JsonNode templateNode = rootNode.get("chatTemplate");
+                    if (Objects.nonNull(templateNode) && templateNode.isObject()) {
+                        template = templateNode.toString();
+                    }
+                }
+            }
+        } catch (JsonProcessingException e) {
+            log.warn("Failed to parse draft: {}", draft);
+        }
+        return template;
     }
 }

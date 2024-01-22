@@ -3278,7 +3278,7 @@ class PromptApi:
 
 
     @validate_call
-    def exists_name(
+    def exists_prompt_name(
         self,
         name: Annotated[StrictStr, Field(description="Name")],
         _request_timeout: Union[
@@ -3294,9 +3294,9 @@ class PromptApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> bool:
-        """Check If Name Exists
+        """Check If Prompt Name Exists
 
-        Check if the name already exists.
+        Check if the prompt name already exists.
 
         :param name: Name (required)
         :type name: str
@@ -3322,7 +3322,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._exists_name_serialize(
+        _param = self._exists_prompt_name_serialize(
             name=name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -3345,7 +3345,7 @@ class PromptApi:
 
 
     @validate_call
-    def exists_name_with_http_info(
+    def exists_prompt_name_with_http_info(
         self,
         name: Annotated[StrictStr, Field(description="Name")],
         _request_timeout: Union[
@@ -3361,9 +3361,9 @@ class PromptApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[bool]:
-        """Check If Name Exists
+        """Check If Prompt Name Exists
 
-        Check if the name already exists.
+        Check if the prompt name already exists.
 
         :param name: Name (required)
         :type name: str
@@ -3389,7 +3389,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._exists_name_serialize(
+        _param = self._exists_prompt_name_serialize(
             name=name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -3412,7 +3412,7 @@ class PromptApi:
 
 
     @validate_call
-    def exists_name_without_preload_content(
+    def exists_prompt_name_without_preload_content(
         self,
         name: Annotated[StrictStr, Field(description="Name")],
         _request_timeout: Union[
@@ -3428,9 +3428,9 @@ class PromptApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """Check If Name Exists
+        """Check If Prompt Name Exists
 
-        Check if the name already exists.
+        Check if the prompt name already exists.
 
         :param name: Name (required)
         :type name: str
@@ -3456,7 +3456,7 @@ class PromptApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._exists_name_serialize(
+        _param = self._exists_prompt_name_serialize(
             name=name,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -3474,7 +3474,7 @@ class PromptApi:
         return response_data.response
 
 
-    def _exists_name_serialize(
+    def _exists_prompt_name_serialize(
         self,
         name,
         _request_auth,

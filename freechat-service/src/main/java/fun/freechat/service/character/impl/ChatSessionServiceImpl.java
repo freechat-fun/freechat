@@ -139,7 +139,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             PromptInfo promptInfo = promptService.details(promptTask.getPromptId(), owner).getLeft();
             String promptTemplate = promptTask.getDraft() == (byte) 1 && StringUtils.isNotBlank(promptInfo.getDraft()) ?
-                    promptInfo.getDraft() :
+                    PromptUtils.getDraftTemplate(promptInfo.getDraft()) :
                     promptInfo.getTemplate();
             ChatPromptContent prompt = InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
 

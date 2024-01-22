@@ -1,18 +1,13 @@
 package fun.freechat.api.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
-import fun.freechat.service.character.CharacterInfoDraft;
-import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,8 +28,8 @@ public class CharacterDetailsDTO extends CharacterSummaryDTO {
     private String experience;
     @Schema(description = "Additional information, JSON format")
     private String ext;
-    @Schema(description = "Character draft information (for prompt)")
-    private CharacterInfoDraftDTO draft;
+    @Schema(description = "Character draft information")
+    private String draft;
     @Schema(description = "Character backends information")
     private List<CharacterBackendDetailsDTO> backends;
 
@@ -47,13 +42,6 @@ public class CharacterDetailsDTO extends CharacterSummaryDTO {
         CharacterDetailsDTO dto =
                 CommonUtils.convert(info, CharacterDetailsDTO.class);
         dto.setUsername(AccountUtils.userIdToName(characterInfoTriple.getLeft().getUserId()));
-        try {
-            CharacterInfoDraft draft = InfoUtils.defaultMapper().readValue(
-                    info.getDraft(), CharacterInfoDraft.class);
-            dto.setDraft(CharacterInfoDraftDTO.from(draft));
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
         dto.setTags(characterInfoTriple.getMiddle());
         dto.setBackends(characterInfoTriple.getRight()
                 .stream()

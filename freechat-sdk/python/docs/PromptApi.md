@@ -16,7 +16,7 @@ Method | HTTP request | Description
 [**delete_prompt**](PromptApi.md#delete_prompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
 [**delete_prompt_by_name**](PromptApi.md#delete_prompt_by_name) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
 [**delete_prompts**](PromptApi.md#delete_prompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
-[**exists_name**](PromptApi.md#exists_name) | **GET** /api/v1/prompt/exists/name/{name} | Check If Name Exists
+[**exists_prompt_name**](PromptApi.md#exists_prompt_name) | **GET** /api/v1/prompt/exists/name/{name} | Check If Prompt Name Exists
 [**get_prompt_details**](PromptApi.md#get_prompt_details) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
 [**get_prompt_summary**](PromptApi.md#get_prompt_summary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
 [**list_prompt_versions_by_name**](PromptApi.md#list_prompt_versions_by_name) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
@@ -985,12 +985,12 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **exists_name**
-> bool exists_name(name)
+# **exists_prompt_name**
+> bool exists_prompt_name(name)
 
-Check If Name Exists
+Check If Prompt Name Exists
 
-Check if the name already exists.
+Check if the prompt name already exists.
 
 ### Example
 
@@ -1026,12 +1026,12 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     name = 'name_example' # str | Name
 
     try:
-        # Check If Name Exists
-        api_response = api_instance.exists_name(name)
-        print("The response of PromptApi->exists_name:\n")
+        # Check If Prompt Name Exists
+        api_response = api_instance.exists_prompt_name(name)
+        print("The response of PromptApi->exists_prompt_name:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling PromptApi->exists_name: %s\n" % e)
+        print("Exception when calling PromptApi->exists_prompt_name: %s\n" % e)
 ```
 
 

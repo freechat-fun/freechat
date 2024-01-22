@@ -94,6 +94,10 @@ public class CharacterSummaryStatsDTO {
   @SerializedName(SERIALIZED_NAME_PICTURE)
   private String picture;
 
+  public static final String SERIALIZED_NAME_GENDER = "gender";
+  @SerializedName(SERIALIZED_NAME_GENDER)
+  private String gender;
+
   public static final String SERIALIZED_NAME_LANG = "lang";
   @SerializedName(SERIALIZED_NAME_LANG)
   private String lang;
@@ -316,6 +320,25 @@ public class CharacterSummaryStatsDTO {
 
   public void setPicture(String picture) {
     this.picture = picture;
+  }
+
+
+  public CharacterSummaryStatsDTO gender(String gender) {
+    this.gender = gender;
+    return this;
+  }
+
+   /**
+   * Character gender: male | female | other
+   * @return gender
+  **/
+  @javax.annotation.Nullable
+  public String getGender() {
+    return gender;
+  }
+
+  public void setGender(String gender) {
+    this.gender = gender;
   }
 
 
@@ -543,6 +566,7 @@ public class CharacterSummaryStatsDTO {
         Objects.equals(this.description, characterSummaryStatsDTO.description) &&
         Objects.equals(this.avatar, characterSummaryStatsDTO.avatar) &&
         Objects.equals(this.picture, characterSummaryStatsDTO.picture) &&
+        Objects.equals(this.gender, characterSummaryStatsDTO.gender) &&
         Objects.equals(this.lang, characterSummaryStatsDTO.lang) &&
         Objects.equals(this.username, characterSummaryStatsDTO.username) &&
         Objects.equals(this.tags, characterSummaryStatsDTO.tags) &&
@@ -556,7 +580,7 @@ public class CharacterSummaryStatsDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, characterId, gmtCreate, gmtModified, visibility, version, name, description, avatar, picture, lang, username, tags, viewCount, referCount, recommendCount, scoreCount, score, additionalProperties);
+    return Objects.hash(requestId, characterId, gmtCreate, gmtModified, visibility, version, name, description, avatar, picture, gender, lang, username, tags, viewCount, referCount, recommendCount, scoreCount, score, additionalProperties);
   }
 
   @Override
@@ -573,6 +597,7 @@ public class CharacterSummaryStatsDTO {
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    avatar: ").append(toIndentedString(avatar)).append("\n");
     sb.append("    picture: ").append(toIndentedString(picture)).append("\n");
+    sb.append("    gender: ").append(toIndentedString(gender)).append("\n");
     sb.append("    lang: ").append(toIndentedString(lang)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
@@ -614,6 +639,7 @@ public class CharacterSummaryStatsDTO {
     openapiFields.add("description");
     openapiFields.add("avatar");
     openapiFields.add("picture");
+    openapiFields.add("gender");
     openapiFields.add("lang");
     openapiFields.add("username");
     openapiFields.add("tags");
@@ -668,6 +694,9 @@ public class CharacterSummaryStatsDTO {
       }
       if ((jsonObj.get("picture") != null && !jsonObj.get("picture").isJsonNull()) && !jsonObj.get("picture").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `picture` to be a primitive type in the JSON string but got `%s`", jsonObj.get("picture").toString()));
+      }
+      if ((jsonObj.get("gender") != null && !jsonObj.get("gender").isJsonNull()) && !jsonObj.get("gender").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `gender` to be a primitive type in the JSON string but got `%s`", jsonObj.get("gender").toString()));
       }
       if ((jsonObj.get("lang") != null && !jsonObj.get("lang").isJsonNull()) && !jsonObj.get("lang").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `lang` to be a primitive type in the JSON string but got `%s`", jsonObj.get("lang").toString()));

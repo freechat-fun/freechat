@@ -12,6 +12,7 @@ import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.util.CacheUtils;
+import fun.freechat.service.util.CharacterUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
@@ -172,27 +173,6 @@ public class CharacterServiceImpl implements CharacterService {
         PojoUtils.mapWhenExists(draft::getExperience, info::setExperience);
         PojoUtils.mapWhenExists(draft::getGreeting, info::setGreeting);
         PojoUtils.mapWhenExists(draft::getProfile, info::setProfile);
-    }
-
-    private Pair<Integer, InteractiveStats> getLatestVersionAndStatsByName(String name, User user) {
-        var statement = select(Info.characterId, Info.version)
-                .from(Info.table)
-                .where(Info.name, isEqualTo(name))
-                .and(Info.userId, isEqualTo(user.getUserId()))
-                .orderBy(Info.version.descending())
-                .limit(1)
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        return characterInfoMapper.selectOne(statement)
-                .map(info -> {
-                    InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
-                                    c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterId())))
-                            .orElse(null);
-                    return Pair.of(info.getVersion(), stats);
-                })
-                .orElse(null);
     }
 
     private void doCreate(Pair<CharacterInfo, List<String>> infoPair) {
@@ -658,15 +638,16 @@ select distinct c.user_id, c.character_id, c.visibility... \
             }
             CharacterInfo info = infoTriple.getLeft();
 
-            Pair<Integer, InteractiveStats> versionInfo = getLatestVersionAndStatsByName(info.getName(), user);
-            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getLeft() : info.getVersion();
+            List<Triple<String, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
+            Triple<String, Integer, InteractiveStats> versionInfo =
+                    CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
+            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
 
             info.setVisibility(visibility.text());
             info.setVersion(version + 1);
 
             if (StringUtils.isNotBlank(info.getDraft())) {
-                CharacterInfoDraft draft = InfoUtils.defaultMapper().readValue(
-                        info.getDraft(), CharacterInfoDraft.class);
+                CharacterInfoDraft draft = CharacterUtils.getDraftInfo(info.getDraft());
                 overrideByDraft(draft, info);
                 info.setDraft(null);
             }
@@ -693,10 +674,13 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 CacheUtils.longPeriodCacheEvict(cacheKeys);
             }
 
-            info = new CharacterInfo()
-                    .withCharacterId(characterId)
-                    .withVisibility(Visibility.HIDDEN.text())
-                    .withGmtModified(new Date());
+            for (var prevVersionInfo : versionInfoList) {
+                info = new CharacterInfo()
+                        .withCharacterId(prevVersionInfo.getLeft())
+                        .withVisibility(Visibility.HIDDEN.text())
+                        .withGmtModified(new Date());
+                characterInfoMapper.updateByPrimaryKeySelective(info);
+            }
 
             characterInfoMapper.updateByPrimaryKeySelective(info);
 

@@ -9,7 +9,6 @@ export * from '../models/CharacterBackendDTO.js';
 export * from '../models/CharacterBackendDetailsDTO.js';
 export * from '../models/CharacterCreateDTO.js';
 export * from '../models/CharacterDetailsDTO.js';
-export * from '../models/CharacterInfoDraftDTO.js';
 export * from '../models/CharacterItemForNameDTO.js';
 export * from '../models/CharacterQueryDTO.js';
 export * from '../models/CharacterQueryWhere.js';
@@ -71,7 +70,6 @@ import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
 import { CharacterCreateDTO } from '../models/CharacterCreateDTO.js';
 import { CharacterDetailsDTO } from '../models/CharacterDetailsDTO.js';
-import { CharacterInfoDraftDTO } from '../models/CharacterInfoDraftDTO.js';
 import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
 import { CharacterQueryWhere } from '../models/CharacterQueryWhere.js';
@@ -149,7 +147,6 @@ let typeMap: {[index: string]: any} = {
     "CharacterBackendDetailsDTO": CharacterBackendDetailsDTO,
     "CharacterCreateDTO": CharacterCreateDTO,
     "CharacterDetailsDTO": CharacterDetailsDTO,
-    "CharacterInfoDraftDTO": CharacterInfoDraftDTO,
     "CharacterItemForNameDTO": CharacterItemForNameDTO,
     "CharacterQueryDTO": CharacterQueryDTO,
     "CharacterQueryWhere": CharacterQueryWhere,
