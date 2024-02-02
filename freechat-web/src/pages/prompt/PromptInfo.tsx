@@ -9,6 +9,7 @@ import { CommonContainer, LinePlaceholder } from "../../components";
 import { PromptDetailsDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt";
+import { getMessageText } from "../../libs/template_utils";
 
 export default function PromptInfo() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function PromptInfo() {
           <Tooltip title={record?.visibility} size="sm">
             {record?.visibility === 'public' ?
               <PublicRounded color="info" fontSize="small" /> :
-              <PublicOffRounded color="info" />}
+              <PublicOffRounded color="info" fontSize="small" />}
           </Tooltip>
         </Box>
         <Typography level="body-sm">
@@ -147,7 +148,7 @@ export default function PromptInfo() {
                 setDefaultVariables(undefined);
               }
 
-              setDefaultOutputText(response?.message?.content ?? response?.text);
+              setDefaultOutputText(getMessageText(response?.message) ?? response?.text);
             }}
           /> :
           <PromptMeta record={record} history={history} />}

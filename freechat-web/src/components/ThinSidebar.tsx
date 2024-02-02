@@ -1,7 +1,7 @@
 import { forwardRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps } from "@mui/joy";
+import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
 import { AccountTreeRounded, AndroidRounded, ArticleRounded, Diversity1Rounded, ExtensionRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded } from "@mui/icons-material";
 import { ColorSchemeToggle, LanguageToggle } from ".";
 import { useUserInfoContext } from "../contexts";
@@ -58,6 +58,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
 });
 
 export default function ThinSidebar() {
+  const theme = useTheme();
   const { t } = useTranslation('sidebar');
   const { csrfToken, isAuthorized } = useUserInfoContext();
   
@@ -87,6 +88,9 @@ export default function ThinSidebar() {
             bgcolor: 'transparent',
             borderRadius: 'md',
             boxShadow: 'lg',
+            borderRight: 1,
+            borderBottom: 1,
+            borderColor: theme.palette.background.level2,
             py: 3,
             px: 0.5,
             gap: 0.5,

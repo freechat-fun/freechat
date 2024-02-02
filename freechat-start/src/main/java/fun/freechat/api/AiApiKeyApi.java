@@ -8,6 +8,7 @@ import fun.freechat.service.enums.ModelProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +110,7 @@ public class AiApiKeyApi {
     )
     @GetMapping("/apikeys/{provider}")
     List<AiApiKeyInfoDTO> list(
-            @Parameter(description = "Model provider") @PathVariable("provider") @Positive String provider) {
+            @Parameter(description = "Model provider") @PathVariable("provider") @NotBlank String provider) {
         return aiApiKeyService.list(AccountUtils.currentUser(), ModelProvider.of(provider))
                 .stream()
                 .map(AiApiKeyInfoDTO::from)

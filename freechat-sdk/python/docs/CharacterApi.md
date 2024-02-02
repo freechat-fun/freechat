@@ -1963,7 +1963,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **send_message**
-> LlmResultDTO send_message(chat_id, chat_content_dto)
+> LlmResultDTO send_message(chat_id, chat_message_dto)
 
 Send Chat Message
 
@@ -1977,7 +1977,7 @@ Send a chat message to character.
 import time
 import os
 import freechat_sdk
-from freechat_sdk.models.chat_content_dto import ChatContentDTO
+from freechat_sdk.models.chat_message_dto import ChatMessageDTO
 from freechat_sdk.models.llm_result_dto import LlmResultDTO
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -2003,11 +2003,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     chat_id = 'chat_id_example' # str | Chat session identifier
-    chat_content_dto = freechat_sdk.ChatContentDTO() # ChatContentDTO | Chat content
+    chat_message_dto = freechat_sdk.ChatMessageDTO() # ChatMessageDTO | Chat message
 
     try:
         # Send Chat Message
-        api_response = api_instance.send_message(chat_id, chat_content_dto)
+        api_response = api_instance.send_message(chat_id, chat_message_dto)
         print("The response of CharacterApi->send_message:\n")
         pprint(api_response)
     except Exception as e:
@@ -2022,7 +2022,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chat_id** | **str**| Chat session identifier | 
- **chat_content_dto** | [**ChatContentDTO**](ChatContentDTO.md)| Chat content | 
+ **chat_message_dto** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message | 
 
 ### Return type
 
@@ -2205,7 +2205,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **stream_send_message**
-> SseEmitter stream_send_message(chat_id, chat_content_dto)
+> SseEmitter stream_send_message(chat_id, chat_message_dto)
 
 Send Chat Message by Streaming Back
 
@@ -2219,7 +2219,7 @@ Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
 import time
 import os
 import freechat_sdk
-from freechat_sdk.models.chat_content_dto import ChatContentDTO
+from freechat_sdk.models.chat_message_dto import ChatMessageDTO
 from freechat_sdk.models.sse_emitter import SseEmitter
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -2245,11 +2245,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
     chat_id = 'chat_id_example' # str | Chat session identifier
-    chat_content_dto = freechat_sdk.ChatContentDTO() # ChatContentDTO | Chat content
+    chat_message_dto = freechat_sdk.ChatMessageDTO() # ChatMessageDTO | Chat message
 
     try:
         # Send Chat Message by Streaming Back
-        api_response = api_instance.stream_send_message(chat_id, chat_content_dto)
+        api_response = api_instance.stream_send_message(chat_id, chat_message_dto)
         print("The response of CharacterApi->stream_send_message:\n")
         pprint(api_response)
     except Exception as e:
@@ -2264,7 +2264,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chat_id** | **str**| Chat session identifier | 
- **chat_content_dto** | [**ChatContentDTO**](ChatContentDTO.md)| Chat content | 
+ **chat_message_dto** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message | 
 
 ### Return type
 

@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { CharacterDetailsDTO, CharacterUpdateDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
-import { CommonBox, CommonContainer, ContentTextarea, LinePlaceholder } from "../../components";
-import { Box, Button, ButtonGroup, Divider, IconButton, Stack, Textarea, Tooltip, Typography } from "@mui/joy";
-import { CheckRounded, EditRounded, HelpOutlineRounded, IosShareRounded, SaveAltRounded } from "@mui/icons-material";
+import { locales } from "../../configs/i18n-config";
+import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, TinyInput } from "../../components";
+import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Tooltip, Typography, switchClasses } from "@mui/joy";
+import { AddCircleRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, SaveAltRounded } from "@mui/icons-material";
+import { CharacterGuide } from "../../components/character";
 
 export default function CharacterEditor () {
   const navigator = useNavigate();
   const { id } = useParams();
-  const { t, i18n } = useTranslation(['character', 'button']);
+  const { t, i18n } = useTranslation(['character', 'account', 'button']);
   const { characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username } = useUserInfoContext();
@@ -22,6 +24,7 @@ export default function CharacterEditor () {
   const [editRecordName, setEditRecordName] = useState<string>();
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
+  const [nickname, setNickname] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [avatar, setAvatar] = useState<string>();
   const [picture, setPicture] = useState<string>();
@@ -31,12 +34,12 @@ export default function CharacterEditor () {
   const [greeting, setGreeting] = useState<string>();
   const [chatStyle, setChatStyle] = useState<string>();
   const [chatExample, setChatExample] = useState<string>();
-  const [experience, setExperience] = useState<string>();
 
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
   const [tag, setTag] = useState<string>();
 
+  const [editEnabled, setEditEnabled] = useState(false);
   const [saved, setSaved] = useState(false);
   
   useEffect(() => {
@@ -68,6 +71,7 @@ export default function CharacterEditor () {
       
       setOriginName(draftRecord.name);
 
+      setNickname(draftRecord.nickname);
       setDescription(draftRecord.description);
       setAvatar(draftRecord.avatar);
       setPicture(draftRecord.picture);
@@ -77,15 +81,23 @@ export default function CharacterEditor () {
       setGreeting(draftRecord.greeting);
       setChatStyle(draftRecord.chatStyle);
       setChatExample(draftRecord.chatExample);
-      setExperience(draftRecord.experience);
       setVisibility(draftRecord.visibility ?? 'private');
       setTags(draftRecord.tags ?? []);
+      setEditEnabled(true);
     }
   }, [origRecord, username]);
 
   useEffect(() => {
     setSaved(() => false);
   }, [editRecord]);
+
+  useEffect(() => {
+    setEditRecord(prevRecord => {
+      const newRecord = { ...prevRecord };
+      newRecord.nickname = nickname;
+      return newRecord;
+    });
+  }, [nickname]);
   
   useEffect(() => {
     setEditRecord(prevRecord => {
@@ -170,14 +182,6 @@ export default function CharacterEditor () {
   useEffect(() => {
     setEditRecord(prevRecord => {
       const newRecord = { ...prevRecord };
-      newRecord.experience = experience;
-      return newRecord;
-    });
-  }, [experience]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
       newRecord.visibility = visibility;
       return newRecord;
     });
@@ -232,6 +236,13 @@ export default function CharacterEditor () {
     setTag(undefined);
   }
 
+  function handleImageSelect(file: Blob, name: string) {
+    const request = new File([file], name);
+    characterApi?.uploadCharacterAvatar(request)
+      .then(url => setAvatar(url))
+      .catch(handleError);
+  }
+
   function handleRecordSave(): void {
     if (!editRecord.characterId) {
       return;
@@ -262,19 +273,15 @@ export default function CharacterEditor () {
         .catch(handleError);
     };
 
-    if (!saved) {
-      const request = recordToUpdateRequest(editRecord);
-      characterApi?.updateCharacter(editRecord.characterId, request)
-          .then(resp => {
-            setSaved(resp);
-            if (resp) {
-              onSaved(editRecord.characterId as string, editRecord.visibility === 'private' ? 'private' : 'public');
-            }
-          })
-          .catch(handleError);
-    } else {
-      onSaved(editRecord.characterId as string, editRecord.visibility === 'private' ? 'private' : 'public');
-    }
+    const request = recordToUpdateRequest(editRecord);
+    characterApi?.updateCharacter(editRecord.characterId, request)
+      .then(resp => {
+        setSaved(resp);
+        if (resp) {
+          onSaved(editRecord.characterId as string, editRecord.visibility === 'private' ? 'private' : 'public');
+        }
+      })
+      .catch(handleError);
   }
 
   function recordToUpdateRequest(record: CharacterDetailsDTO): CharacterUpdateDTO {
@@ -288,7 +295,6 @@ export default function CharacterEditor () {
     request.greeting = record.greeting;
     request.chatStyle = record.chatStyle;
     request.chatExample = record.chatExample;
-    request.experience = record.experience;
     request.name = record.name ?? `untitiled-${formatDate(new Date())}`;
     request.draft = '';
     request.tags = record.tags;
@@ -345,42 +351,262 @@ export default function CharacterEditor () {
             {t('button:Publish')}
           </Button>
         </ButtonGroup>
-
-        <Divider />
-
-        <CommonContainer sx={{ alignItems: 'flex-start' }}>
-          <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
-          <Stack spacing={3} sx={{
-            minWidth: { sm: '16rem' },
-            mt: 2,
-            flex: 1,
-          }}>
-            <Stack spacing={1} sx={{
-              minWidth: { sm: '12rem' },
-            }}>
-              <CommonBox>
-                <Typography level="title-lg" color="primary">
-                  {t('Description')}
-                </Typography>
-                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
-                  <HelpOutlineRounded fontSize="small" />
-                </Tooltip>
-              </CommonBox>
-              <ContentTextarea
-                name="info-description"
-                minRows={3}
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-              />
-            </Stack>
-            <LinePlaceholder />
-
-            <Divider>{t('Character\'s information, significantly influences chat feedback')}</Divider>
-
-          </Stack>
-          </CommonContainer>
-        </CommonContainer>
       </Box>
+
+      <Divider />
+
+      <CommonContainer sx={{ alignItems: 'flex-start' }}>
+        <Stack spacing={3} sx={{
+          minWidth: { sm: '16rem' },
+          mt: 2,
+          flex: 1,
+        }}>
+          <CommonBox sx={{gap: 2}}>
+            <Typography level="title-lg" color="primary">
+              {t('Public')}
+            </Typography>
+            <Switch
+              checked={visibility==='public' || visibility==='hidden'}
+              sx={{
+                [`&.${switchClasses.checked}`]: {
+                  '--Switch-trackBackground': '#4CA176',
+                  '&:hover': {
+                    '--Switch-trackBackground': '#5CB186',
+                  },
+                },
+              }}
+              onChange={(event) => event.target.checked ? setVisibility('public') : setVisibility('private')}
+            />
+          </CommonBox>
+          <Stack spacing={1} sx={{
+            minWidth: { sm: '12rem' },
+          }}>
+            <CommonBox>
+              <Typography level="title-lg" color="primary">
+                {t('Description')}
+              </Typography>
+              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
+                <HelpOutlineRounded fontSize="small" />
+              </Tooltip>
+            </CommonBox>
+            <ContentTextarea
+              name="info-description"
+              minRows={3}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </Stack>
+
+          <LinePlaceholder />
+
+          <CommonBox>
+            <Typography level="title-lg" color="primary">
+              {t('Tags')}
+            </Typography>
+            {(!tags || tags.length < 5) && (tag === undefined) && (
+              <IconButton
+                size="sm"
+                color="primary"
+                onClick={() => setTag('')}
+              >
+                <AddCircleRounded />
+              </IconButton>
+            )}
+            {(tag !== undefined) && (
+              <form onSubmit={handleTagSubmit}>
+                <TinyInput
+                  type="text"
+                  value={tag}
+                  onChange={(event => setTag(event.target.value))}
+                />
+              </form>
+            )}
+          </CommonBox>
+          <CommonBox>
+            {tags.length > 0 && (
+              <Fragment>
+                {tags.map((tag, index) => (
+                  <Chip
+                    variant="outlined"
+                    color="success"
+                    key={`tag-${tag}-${index}`}
+                    endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
+                  >
+                    {tag}
+                  </Chip>
+                ))}
+              </Fragment>
+          )}
+          </CommonBox>
+
+          <Divider>{t('Character\'s information, significantly influences chat feedback')}</Divider>
+
+          <Card sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            mx: 'auto',
+            gap: 2,
+          }}>
+            <Stack
+              direction="row"
+              spacing={3}
+              sx={{ display: 'flex', my: 1 }}
+            >
+              <Box alignItems="center" sx={{
+                flex: 1,
+                display: 'grid',
+                gridTemplateColumns: 'auto 1fr',
+                gap: 1,
+              }}>
+                <LabelTypography>
+                  {t('account:Nickname')}
+                </LabelTypography>
+                <Input
+                  disabled={!editEnabled}
+                  name="nickname"
+                  placeholder={nickname}
+                  value={nickname}
+                  onChange={(event) => setNickname(event.target.value)}
+                />
+                <LabelTypography>
+                  {t('account:Gender')}
+                </LabelTypography>
+                <RadioGroup
+                  name="genderGroup"
+                  orientation="horizontal"
+                  value={gender}
+                  onChange={(event) => setGender(event.target.value)}
+                  sx={{ my: 1 }}
+                >
+                  <Radio value="male" label={t('account:Male')} disabled={!editEnabled} />
+                  <Radio value="female" label={t('account:Female')} disabled={!editEnabled} />
+                  <Radio value="other" label={t('account:Other')} disabled={!editEnabled} />
+                </RadioGroup>
+
+                <LabelTypography>
+                  {t('Language')}
+                </LabelTypography>
+                <Select
+                  size="sm"
+                  variant="outlined"
+                  value={lang}
+                  onChange={(_event, value) => value && setLang(value)}
+                  sx={{mr: 'auto'}}
+                >
+                  {Object.keys(locales).map((locale) => (
+                    <Option key={`locale-${locale}`} value={locale}>
+                      {locales[locale]}
+                    </Option>
+                  ))}
+                </Select>
+              </Box>
+                
+              <Stack direction="column" spacing={1} sx={{ minWidth: 120 }}>
+                <AspectRatio
+                  ratio="1"
+                  maxHeight={200}
+                  sx={{ flex: 1, borderRadius: '50%' }}
+                >
+                  <Avatar variant="soft" src={avatar} />
+                </AspectRatio>
+                <ImagePicker
+                  onImageSelect={handleImageSelect}
+                  disabled={!editEnabled}
+                  aria-label="upload new picture"
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  sx={{
+                    bgcolor: 'background.body',
+                    position: 'absolute',
+                    zIndex: 2,
+                    borderRadius: '50%',
+                    right: 20,
+                    top: 110,
+                    boxShadow: 'sm',
+                  }}
+                />
+              </Stack>
+            </Stack>
+
+            <LabelTypography>
+              {t('Profile')}
+            </LabelTypography>
+            <ContentTextarea
+              name="info-profile"
+              minRows={3}
+              value={profile}
+              onChange={(event) => setProfile(event.target.value)}
+            />
+
+            <LabelTypography>
+              {t('Chat Style')}
+            </LabelTypography>
+            <ContentTextarea
+              name="info-chat-style"
+              minRows={3}
+              value={chatStyle}
+              onChange={(event) => setChatStyle(event.target.value)}
+            />
+
+            <LabelTypography>
+              {t('Chat Example')}
+            </LabelTypography>
+            <ContentTextarea
+              name="info-chat-example"
+              minRows={3}
+              value={chatExample}
+              onChange={(event) => setChatExample(event.target.value)}
+            />
+
+            <LabelTypography>
+              {t('Greeting')}
+            </LabelTypography>
+            <ContentTextarea
+              name="info-greeting"
+              minRows={1}
+              value={greeting}
+              onChange={(event) => setGreeting(event.target.value)}
+            />
+          </Card>
+
+        </Stack>
+        
+        <CharacterGuide />
+
+      </CommonContainer>
+
+      <ConfirmModal
+        open={editRecordName !== undefined}
+        onClose={() => setEditRecordName(undefined)}
+        dialog={{
+          title: t('Please enter a new name'),
+        }}
+        button={{
+          text: t('button:Save'),
+          startDecorator: <SaveAltRounded />
+        }}
+        onConfirm={handleNameChange}
+      >
+        <FormControl error={editRecordNameError}>
+          <Input
+            name="RecordName"
+            value={editRecordName}
+            onChange={(event) => {
+              setEditRecordName(event.target.value);
+              setEditRecordNameError(false);
+          }}
+          />
+          {editRecordNameError && (
+            <FormHelperText>
+              <InfoOutlined />
+              {t('Name already exists!')}
+            </FormHelperText>
+          )}
+        </FormControl>
+      </ConfirmModal>
     </>
   );
 }

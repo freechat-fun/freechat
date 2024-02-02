@@ -4,12 +4,11 @@ import dev.langchain4j.agent.tool.DefaultToolExecutor;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolExecutor;
 import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.moderation.ModerationModel;
-import dev.langchain4j.retriever.Retriever;
+import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServiceContext;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import lombok.Builder;
@@ -68,8 +67,8 @@ public class ChatSession {
     }
 
     @SuppressWarnings("unused")
-    public ChatSession retriever(Retriever<TextSegment> retriever) {
-        aiServiceContext.retriever = retriever;
+    public ChatSession retrievalAugmentor(RetrievalAugmentor retriever) {
+        aiServiceContext.retrievalAugmentor = retriever;
         return this;
     }
 
@@ -97,7 +96,7 @@ public class ChatSession {
         return aiServiceContext.toolExecutors;
     }
 
-    public Retriever<TextSegment> getRetriever() {
-        return aiServiceContext.retriever;
+    public RetrievalAugmentor getRetrieverAugmentor() {
+        return aiServiceContext.retrievalAugmentor;
     }
 }

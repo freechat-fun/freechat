@@ -170,7 +170,6 @@ public class CharacterServiceImpl implements CharacterService {
         }
         PojoUtils.mapWhenExists(draft::getChatExample, info::setChatExample);
         PojoUtils.mapWhenExists(draft::getChatStyle, info::setChatStyle);
-        PojoUtils.mapWhenExists(draft::getExperience, info::setExperience);
         PojoUtils.mapWhenExists(draft::getGreeting, info::setGreeting);
         PojoUtils.mapWhenExists(draft::getProfile, info::setProfile);
     }
@@ -225,7 +224,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
 
         // conditions
-        var conditions = table.where();
+        var conditions = table.where(Info.priority, isGreaterThan(0));
         // visibility
         String visibilityStr = query.getWhere().getVisibility();
         String userIdStr = query.getWhere().getUserId();
@@ -267,8 +266,7 @@ public class CharacterServiceImpl implements CharacterService {
             conditions.and(Info.name, commonTextCondition,
                     or(Info.description, commonTextCondition),
                     or(Info.profile, commonTextCondition),
-                    or(Info.chatStyle, commonTextCondition),
-                    or(Info.experience, commonTextCondition));
+                    or(Info.chatStyle, commonTextCondition));
         }
         // tags
         if (CollectionUtils.isNotEmpty(tags)) {
@@ -277,6 +275,7 @@ public class CharacterServiceImpl implements CharacterService {
 
         // order by
         LinkedList<SortSpecification> orderByFields = new LinkedList<>();
+        orderByFields.add(Info.priority.descending());
         for (String orderBy : InfoUtils.trimListElements(query.getOrderBy())) {
             String[] orderByInfo = orderBy.split(" ");
             SortSpecification orderByField = nameToColumn(orderByInfo[0]);
@@ -339,8 +338,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
   and (c.name like '%{text}%' or \
     c.description like '%{text}%' or \
     c.profile like '%{text}%' or \
-    c.chat_style like '%{text}%' or \
-    c.experience like '%{text}%' \
+    c.chat_style like '%{text}%' \
   ) \
   order by c.{orderBy[0]}, p.{orderBy[1]}... \
   limit {limit} offset {offset} \
@@ -924,9 +922,9 @@ select distinct c.user_id, c.character_id, c.visibility... \
         public static final SqlColumn<String> greeting = CharacterInfoDynamicSqlSupport.greeting;
         public static final SqlColumn<String> chatStyle = CharacterInfoDynamicSqlSupport.chatStyle;
         public static final SqlColumn<String> chatExample = CharacterInfoDynamicSqlSupport.chatExample;
-        public static final SqlColumn<String> experience = CharacterInfoDynamicSqlSupport.experience;
         public static final SqlColumn<String> ext = CharacterInfoDynamicSqlSupport.ext;
         public static final SqlColumn<String> draft = CharacterInfoDynamicSqlSupport.draft;
+        public static final SqlColumn<Integer> priority = CharacterInfoDynamicSqlSupport.priority;
 
         public static List<BasicColumn> summaryColumns() {
             return List.of(
@@ -941,7 +939,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.picture,
                     Info.gender,
                     Info.description,
-                    Info.lang
+                    Info.lang,
+                    Info.priority
             );
         }
     }

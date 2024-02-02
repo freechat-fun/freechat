@@ -17,18 +17,24 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Data
 @JsonInclude(NON_NULL)
 public class ChatMessageDTO {
-    @Schema(description = "Chat role: system | assistant | user | function_call | function_result")
+    @Schema(description = "Chat role: system | assistant | user | tool_call | tool_result")
     private String role;
-    @Schema(description = "user: Name of the user role; function_call: Name of the called tool")
+    @Schema(description = "user: Name of the user role; tool_call: Name of the called tool")
     private String name;
-    @Schema(description = "default: Dialogue content; function_result: function call result, serialized as json")
-    private String content;
+    @Schema(description = "default: Dialogue content; tool_result: tool call result, serialized as json")
+    private List<ChatContentDTO> contents;
     @Schema(description = "Tool calls information during the conversation")
     private List<ChatToolCallDTO> toolCalls;
     @Schema(description = "Creation time")
     private Date gmtCreate;
+    @Schema(description = "Contextual information in this round of conversation")
+    private String context;
 
     public static ChatMessageDTO from(ChatMessage message) {
+        return from(message, null);
+    }
+
+    public static ChatMessageDTO from(ChatMessage message, String context) {
         if (Objects.isNull(message)) {
             return null;
         }
@@ -36,7 +42,12 @@ public class ChatMessageDTO {
         ChatMessageDTO dto = new ChatMessageDTO();
         dto.setRole(message.getRole().text());
         dto.setName(message.getName());
-        dto.setContent(message.getContent());
+        dto.setContext(context);
+        if (CollectionUtils.isNotEmpty(message.getContents())) {
+            dto.setContents(message.getContents().stream()
+                    .map(ChatContentDTO::from)
+                    .toList());
+        }
         dto.setGmtCreate(message.getGmtCreate());
         if (CollectionUtils.isNotEmpty(message.getToolCalls())) {
             dto.setToolCalls(message.getToolCalls().stream()
@@ -50,7 +61,11 @@ public class ChatMessageDTO {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRole(PromptRole.of(getRole()));
         chatMessage.setName(getName());
-        chatMessage.setContent(getContent());
+        if (CollectionUtils.isNotEmpty(getContents())) {
+            chatMessage.setContents(getContents().stream()
+                    .map(ChatContentDTO::toChatContent)
+                    .toList());
+        }
         if (CollectionUtils.isNotEmpty(getToolCalls())) {
             chatMessage.setToolCalls(getToolCalls().stream()
                     .map(ChatToolCallDTO::toChatToolCall)

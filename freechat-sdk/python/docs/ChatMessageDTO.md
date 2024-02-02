@@ -6,11 +6,12 @@ Chat message
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**role** | **str** | Chat role: system | assistant | user | function_call | function_result | [optional] 
-**name** | **str** | user: Name of the user role; function_call: Name of the called tool | [optional] 
-**content** | **str** | default: Dialogue content; function_result: function call result, serialized as json | [optional] 
+**role** | **str** | Chat role: system | assistant | user | tool_call | tool_result | [optional] 
+**name** | **str** | user: Name of the user role; tool_call: Name of the called tool | [optional] 
+**contents** | [**List[ChatContentDTO]**](ChatContentDTO.md) | default: Dialogue content; tool_result: tool call result, serialized as json | [optional] 
 **tool_calls** | [**List[ChatToolCallDTO]**](ChatToolCallDTO.md) | Tool calls information during the conversation | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
+**context** | **str** | Contextual information in this round of conversation | [optional] 
 
 ## Example
 

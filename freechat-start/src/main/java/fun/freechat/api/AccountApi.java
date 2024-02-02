@@ -120,7 +120,7 @@ public class AccountApi {
     )
     @PostMapping(value = {"/token", "/token/{duration}"}, produces = MediaType.TEXT_PLAIN_VALUE)
     public String createToken(
-            @Parameter(description = "Token validity duration (seconds)") @PathVariable("duration") @Positive
+            @Parameter(description = "Token validity duration (seconds)") @PathVariable("duration")
             Optional<Long> duration) {
         String token = apiTokenService.create(AccountUtils.currentUser(),
                     duration.map(Duration::ofSeconds).orElse(null));
@@ -183,7 +183,7 @@ public class AccountApi {
     @GetMapping(value = "/token/id/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0, 'apiTokenByIdDefaultOp')")
     public String getTokenById(
-            @Parameter(description = "Token id") @PathVariable("id") @NotNull @Positive
+            @Parameter(description = "Token id") @PathVariable("id") @Positive
             Long id) {
         return apiTokenService.getById(id);
     }
@@ -196,7 +196,7 @@ public class AccountApi {
     @DeleteMapping("/token/id/{id}")
     @PreAuthorize("hasPermission(#p0, 'apiTokenByIdDefaultOp')")
     public Boolean deleteTokenById(
-            @Parameter(description = "Token id") @PathVariable("id") @NotNull @Positive
+            @Parameter(description = "Token id") @PathVariable("id") @Positive
             Long id) {
         return apiTokenService.deleteById(id);
     }
@@ -209,7 +209,7 @@ public class AccountApi {
     @PutMapping("/token/id/{id}")
     @PreAuthorize("hasPermission(#p0, 'apiTokenByIdDefaultOp')")
     public Boolean disableTokenById(
-            @Parameter(description = "Token id") @PathVariable("id") @NotNull @Positive
+            @Parameter(description = "Token id") @PathVariable("id") @Positive
             Long id) {
         return apiTokenService.deleteById(id);
     }
@@ -238,7 +238,7 @@ public class AccountApi {
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {
-                shareUrl = FileUtils.getDefaultShareUrlForImage(request, dstPath);
+                shareUrl = FileUtils.getDefaultPublicUrlForImage(request, dstPath);
             }
             return shareUrl;
         } catch (IOException e) {

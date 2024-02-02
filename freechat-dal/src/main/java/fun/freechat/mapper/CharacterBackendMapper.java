@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterId, isDefault, chatPromptTaskId, greetingPromptTaskId, experiencePromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterId, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -44,7 +44,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="is_default", property="isDefault", jdbcType=JdbcType.TINYINT),
         @Result(column="chat_prompt_task_id", property="chatPromptTaskId", jdbcType=JdbcType.VARCHAR),
         @Result(column="greeting_prompt_task_id", property="greetingPromptTaskId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="experience_prompt_task_id", property="experiencePromptTaskId", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_model_id", property="moderationModelId", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_api_key_name", property="moderationApiKeyName", jdbcType=JdbcType.VARCHAR),
         @Result(column="forward_to_user", property="forwardToUser", jdbcType=JdbcType.TINYINT),
@@ -85,7 +84,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(isDefault).toProperty("isDefault")
             .map(chatPromptTaskId).toProperty("chatPromptTaskId")
             .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
-            .map(experiencePromptTaskId).toProperty("experiencePromptTaskId")
             .map(moderationModelId).toProperty("moderationModelId")
             .map(moderationApiKeyName).toProperty("moderationApiKeyName")
             .map(forwardToUser).toProperty("forwardToUser")
@@ -104,7 +102,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(isDefault).toProperty("isDefault")
             .map(chatPromptTaskId).toProperty("chatPromptTaskId")
             .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
-            .map(experiencePromptTaskId).toProperty("experiencePromptTaskId")
             .map(moderationModelId).toProperty("moderationModelId")
             .map(moderationApiKeyName).toProperty("moderationApiKeyName")
             .map(forwardToUser).toProperty("forwardToUser")
@@ -123,7 +120,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(isDefault).toPropertyWhenPresent("isDefault", row::getIsDefault)
             .map(chatPromptTaskId).toPropertyWhenPresent("chatPromptTaskId", row::getChatPromptTaskId)
             .map(greetingPromptTaskId).toPropertyWhenPresent("greetingPromptTaskId", row::getGreetingPromptTaskId)
-            .map(experiencePromptTaskId).toPropertyWhenPresent("experiencePromptTaskId", row::getExperiencePromptTaskId)
             .map(moderationModelId).toPropertyWhenPresent("moderationModelId", row::getModerationModelId)
             .map(moderationApiKeyName).toPropertyWhenPresent("moderationApiKeyName", row::getModerationApiKeyName)
             .map(forwardToUser).toPropertyWhenPresent("forwardToUser", row::getForwardToUser)
@@ -168,7 +164,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(isDefault).equalTo(row::getIsDefault)
                 .set(chatPromptTaskId).equalTo(row::getChatPromptTaskId)
                 .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
-                .set(experiencePromptTaskId).equalTo(row::getExperiencePromptTaskId)
                 .set(moderationModelId).equalTo(row::getModerationModelId)
                 .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
                 .set(forwardToUser).equalTo(row::getForwardToUser)
@@ -185,7 +180,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(isDefault).equalToWhenPresent(row::getIsDefault)
                 .set(chatPromptTaskId).equalToWhenPresent(row::getChatPromptTaskId)
                 .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
-                .set(experiencePromptTaskId).equalToWhenPresent(row::getExperiencePromptTaskId)
                 .set(moderationModelId).equalToWhenPresent(row::getModerationModelId)
                 .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
                 .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
@@ -202,7 +196,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(isDefault).equalTo(row::getIsDefault)
             .set(chatPromptTaskId).equalTo(row::getChatPromptTaskId)
             .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
-            .set(experiencePromptTaskId).equalTo(row::getExperiencePromptTaskId)
             .set(moderationModelId).equalTo(row::getModerationModelId)
             .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
             .set(forwardToUser).equalTo(row::getForwardToUser)
@@ -221,7 +214,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(isDefault).equalToWhenPresent(row::getIsDefault)
             .set(chatPromptTaskId).equalToWhenPresent(row::getChatPromptTaskId)
             .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
-            .set(experiencePromptTaskId).equalToWhenPresent(row::getExperiencePromptTaskId)
             .set(moderationModelId).equalToWhenPresent(row::getModerationModelId)
             .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
             .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)

@@ -17,8 +17,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
@@ -138,8 +136,8 @@ public class InteractiveStatsApi {
             "/stats/prompts/by/{statsType}"})
     public List<PromptSummaryStatsDTO> listPrompts(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
         long limit = pageSize.filter(size -> size > 0).orElse(10L);
@@ -174,8 +172,8 @@ public class InteractiveStatsApi {
             "/stats/flows/by/{statsType}"})
     public List<FlowSummaryStatsDTO> listFlows(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
         long limit = pageSize.filter(size -> size > 0).orElse(10L);
@@ -210,8 +208,8 @@ public class InteractiveStatsApi {
             "/stats/plugins/by/{statsType}"})
     public List<PluginSummaryStatsDTO> listPlugins(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
         long limit = pageSize.filter(size -> size > 0).orElse(10L);
@@ -246,8 +244,8 @@ public class InteractiveStatsApi {
             "/stats/characters/by/{statsType}"})
     public List<CharacterSummaryStatsDTO> listCharacters(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum,
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") Optional<Long> pageNum,
             @Parameter(description = "Default is descending order, set asc=1 for ascending order") @RequestParam("asc") @Nullable String asc) {
         boolean desc = !"1".equals(asc);
         long limit = pageSize.filter(size -> size > 0).orElse(10L);

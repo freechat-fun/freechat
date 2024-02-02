@@ -4,12 +4,13 @@ import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolExecutor;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
+import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.model.ChatContext;
@@ -22,7 +23,6 @@ import fun.freechat.service.enums.PromptRole;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.util.PromptUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,6 @@ import java.util.concurrent.Future;
 
 import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
 import static fun.freechat.service.enums.ChatVar.*;
-import static java.util.stream.Collectors.joining;
 
 @Service
 @Slf4j
@@ -60,6 +59,7 @@ public class CharacterAiServiceImpl implements CharacterAiService {
                         String userNickname,
                         String userProfile,
                         String characterNickname,
+                        String about,
                         String backendId,
                         String ext) {
         ChatContext context = new ChatContext()
@@ -67,18 +67,19 @@ public class CharacterAiServiceImpl implements CharacterAiService {
                 .withUserNickname(userNickname)
                 .withUserProfile(userProfile)
                 .withCharacterNickname(characterNickname)
+                .withAbout(about)
                 .withBackendId(backendId)
                 .withExt(ext);
-        String chatId = chatContextService.create(context);
-        if (StringUtils.isBlank(chatId)) {
+        ChatContext persistentContext = chatContextService.create(context);
+        if (Objects.isNull(persistentContext)) {
             return null;
         }
-        ChatSession session = chatSessionService.get(chatId);
+        ChatSession session = chatSessionService.get(persistentContext);
         if (Objects.isNull(session)) {
-            chatContextService.delete(chatId);
+            chatContextService.delete(persistentContext.getChatId());
             return null;
         }
-        return chatId;
+        return persistentContext.getChatId();
     }
 
     @Override
@@ -88,16 +89,16 @@ public class CharacterAiServiceImpl implements CharacterAiService {
     }
 
     @Override
-    public Response<ChatMessage> send(String chatId, String text, String context, String attachment) {
+    public Response<ChatMessage> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
-        if (Objects.isNull(session) || StringUtils.isBlank(text)) {
+        if (Objects.isNull(session) || Objects.isNull(message)) {
             return null;
         }
 
         Object memoryId = asMemoryId(chatId);
         ChatMemory chatMemory = session.getChatMemory(memoryId);
 
-        var messages = handleMessages(text, context, attachment, session, chatMemory);
+        var messages = handleMessages(message, context, memoryId, session, chatMemory);
 
         Future<Moderation> moderationFuture = Objects.nonNull(session.getModerationModel()) ?
                 chatSessionService.triggerModerationIfNeeded(session, messages) : null;
@@ -141,36 +142,34 @@ public class CharacterAiServiceImpl implements CharacterAiService {
     }
 
     @Override
-    public TokenStream streamSend(String chatId, String text, String context, String attachment) {
+    public TokenStream streamSend(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
-        if (Objects.isNull(session) || StringUtils.isBlank(text)) {
+        if (Objects.isNull(session) || Objects.isNull(message)) {
             return null;
         }
 
         Object memoryId = asMemoryId(chatId);
         ChatMemory chatMemory = session.getChatMemory(memoryId);
 
-        var messages = handleMessages(text, context, attachment, session, chatMemory);
+        var messages = handleMessages(message, context, memoryId, session, chatMemory);
         return new AiServiceTokenStream(messages, session.getAiServiceContext(), memoryId);
     }
 
     private List<dev.langchain4j.data.message.ChatMessage> handleMessages(
-            String text, String context, String attachment,
+            ChatMessage message, String context, Object memoryId,
             ChatSession session, ChatMemory chatMemory) {
         Map<String, Object> variables = session.getVariables();
-        variables.put(INPUT.text(), text);
-        variables.put(CHAT_CONTEXT.text(), getOrBlank(context));
+        variables.put(INPUT.text(), message.getContentText());
+        variables.put(MESSAGE_CONTEXT.text(), getOrBlank(context));
 
+        dev.langchain4j.data.message.ChatMessage l4jMessage = PromptUtils.convertChatMessage(message);
         String relevantConcatenated = null;
-        if (Objects.nonNull(session.getRetriever())) {
-            List<TextSegment> relevant = session.getRetriever().findRelevant(text);
-
-            if (CollectionUtils.isNotEmpty(relevant)) {
-                relevantConcatenated = relevant.stream()
-                        .map(TextSegment::text)
-                        .collect(joining("\n\n"));
-                log.debug("Retrieved relevant information:\n" + relevantConcatenated + "\n");
-            }
+        if (l4jMessage.type() == dev.langchain4j.data.message.ChatMessageType.USER &&
+                Objects.nonNull(session.getRetrieverAugmentor())) {
+            Metadata metadata = Metadata.from((UserMessage) l4jMessage, memoryId, chatMemory.messages());
+            dev.langchain4j.data.message.UserMessage relevantMessage =
+                    session.getRetrieverAugmentor().augment(UserMessage.from(""), metadata);
+            relevantConcatenated = PromptUtils.convertL4jMessage(relevantMessage).getContentText();
         }
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
@@ -182,7 +181,7 @@ public class CharacterAiServiceImpl implements CharacterAiService {
         ChatMessage userMessage = Optional.ofNullable(prompt.getMessageToSend())
                 .map(userPrompt ->
                         promptService.apply(userPrompt, variables, PromptFormat.of(prompt.getFormat())))
-                .orElse(ChatMessage.from(PromptRole.USER, text));
+                .orElse(message);
         userMessage.setName((String) variables.get(USER_NICKNAME.text()));
 
         chatMemory.add(PromptUtils.convertChatMessage(systemMessage));

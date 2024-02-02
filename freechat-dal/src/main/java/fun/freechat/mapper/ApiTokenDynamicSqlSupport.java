@@ -23,6 +23,9 @@ public final class ApiTokenDynamicSqlSupport {
     public static final SqlColumn<String> userId = apiToken.userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> token = apiToken.token;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> type = apiToken.type;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -30,9 +33,6 @@ public final class ApiTokenDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Date> expiresAt = apiToken.expiresAt;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> token = apiToken.token;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> policy = apiToken.policy;
@@ -47,13 +47,13 @@ public final class ApiTokenDynamicSqlSupport {
 
         public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
 
+        public final SqlColumn<String> token = column("token", JDBCType.VARCHAR);
+
         public final SqlColumn<String> type = column("type", JDBCType.VARCHAR);
 
         public final SqlColumn<Date> issuedAt = column("issued_at", JDBCType.TIMESTAMP);
 
         public final SqlColumn<Date> expiresAt = column("expires_at", JDBCType.TIMESTAMP);
-
-        public final SqlColumn<String> token = column("token", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> policy = column("policy", JDBCType.LONGVARCHAR);
 

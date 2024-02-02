@@ -6,6 +6,7 @@ import dev.langchain4j.model.input.PromptTemplate;
 import fun.freechat.langchain4j.model.input.FStringPromptTemplate;
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
+import fun.freechat.service.ai.message.ChatContent;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.cache.LongPeriodCache;
@@ -39,9 +40,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static fun.freechat.service.enums.PromptFormat.F_STRING;
+import static fun.freechat.service.enums.ChatContentType.TEXT;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.countDistinct;
 
 @Service
 @Slf4j
@@ -751,8 +751,14 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         message.setRole(original.getRole());
         message.setName(original.getName());
         message.setToolCalls(original.getToolCalls());
-        message.setContent(apply(original.getContent(), variables, format));
         message.setGmtCreate(original.getGmtCreate());
+
+        if (Objects.nonNull(original.getContents())) {
+            message.setContents(original.getContents().stream()
+                    .map(content -> content.getType() == TEXT ?
+                        ChatContent.fromText(apply(content.getContent(), variables, format)) : content)
+                    .toList());
+        }
         return message;
     }
 
@@ -762,9 +768,14 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         applied.setFormat(format.text());
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
-        if (Objects.nonNull(promptContent.getMessageToSend())) {
+        if (hasValidUserMessagePrompt(promptContent)) {
             ChatMessage original = promptContent.getMessageToSend();
             applied.setMessageToSend(apply(original, variables, format));
+        } else {
+            String input = MapUtils.getString(variables, "input");
+            if (Objects.nonNull(input)) {
+                applied.setMessageToSend(ChatMessage.from(PromptRole.USER, input));
+            }
         }
 
         if (CollectionUtils.isNotEmpty(promptContent.getMessages())) {
@@ -812,15 +823,6 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             try {
                 ChatPromptContent promptContent =
                         InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
-                if (Objects.isNull(promptContent.getMessageToSend()) &&
-                        MapUtils.isNotEmpty(variables) &&
-                        variables.containsKey("input")) {
-                    ChatMessage chatMessage = new ChatMessage();
-                    chatMessage.setRole(PromptRole.USER);
-                    chatMessage.setGmtCreate(new Date());
-                    chatMessage.setContent(format == F_STRING ? "{input}" : "{{input}}");
-                    promptContent.setMessageToSend(chatMessage);
-                }
                 ChatPromptContent applied = apply(promptContent, variables, format);
                 return Pair.of(InfoUtils.defaultMapper().writeValueAsString(applied), type);
             } catch (JsonProcessingException e) {
@@ -842,6 +844,12 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .render(RenderingStrategies.MYBATIS3);
 
         return !promptInfoMapper.selectMany(statement).isEmpty();
+    }
+
+    private boolean hasValidUserMessagePrompt(ChatPromptContent promptContent) {
+        return Objects.nonNull(promptContent.getMessageToSend()) &&
+                CollectionUtils.isNotEmpty(promptContent.getMessageToSend().getContents()) &&
+                StringUtils.isNotBlank(promptContent.getMessageToSend().getContentText());
     }
 
     private static class Info {

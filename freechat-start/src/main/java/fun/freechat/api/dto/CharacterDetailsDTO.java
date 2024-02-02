@@ -24,8 +24,6 @@ public class CharacterDetailsDTO extends CharacterSummaryDTO {
     private String chatStyle;
     @Schema(description = "Character chat-example")
     private String chatExample;
-    @Schema(description = "Character experience")
-    private String experience;
     @Schema(description = "Additional information, JSON format")
     private String ext;
     @Schema(description = "Character draft information")

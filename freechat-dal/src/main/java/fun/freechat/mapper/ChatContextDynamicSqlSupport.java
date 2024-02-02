@@ -35,6 +35,9 @@ public final class ChatContextDynamicSqlSupport {
     public static final SqlColumn<String> userProfile = chatContext.userProfile;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> about = chatContext.about;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = chatContext.ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -54,6 +57,8 @@ public final class ChatContextDynamicSqlSupport {
         public final SqlColumn<String> backendId = column("backend_id", JDBCType.VARCHAR);
 
         public final SqlColumn<String> userProfile = column("user_profile", JDBCType.LONGVARCHAR);
+
+        public final SqlColumn<String> about = column("about", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
 

@@ -6,9 +6,9 @@ Chat content
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**content** | **str** | Chat content. | 
-**attachment** | **str** | Chat attachment. | [optional] 
-**context** | **str** | Contextual information the character should know in this round of conversation | [optional] 
+**type** | **str** | Chat type: text (default) | image | [optional] 
+**content** | **str** | Chat content(for image, it might be an url or base64 encoded string) | 
+**mime_type** | **str** | Mime-type of content | [optional] 
 
 ## Example
 

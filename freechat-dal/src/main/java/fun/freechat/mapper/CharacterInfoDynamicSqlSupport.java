@@ -32,6 +32,9 @@ public final class CharacterInfoDynamicSqlSupport {
     public static final SqlColumn<String> name = characterInfo.name;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> nickname = characterInfo.nickname;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> avatar = characterInfo.avatar;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -47,6 +50,9 @@ public final class CharacterInfoDynamicSqlSupport {
     public static final SqlColumn<Integer> version = characterInfo.version;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> priority = characterInfo.priority;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> description = characterInfo.description;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -60,9 +66,6 @@ public final class CharacterInfoDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> chatExample = characterInfo.chatExample;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> experience = characterInfo.experience;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = characterInfo.ext;
@@ -86,6 +89,8 @@ public final class CharacterInfoDynamicSqlSupport {
 
         public final SqlColumn<String> name = column("name", JDBCType.VARCHAR);
 
+        public final SqlColumn<String> nickname = column("nickname", JDBCType.VARCHAR);
+
         public final SqlColumn<String> avatar = column("avatar", JDBCType.VARCHAR);
 
         public final SqlColumn<String> picture = column("picture", JDBCType.VARCHAR);
@@ -96,6 +101,8 @@ public final class CharacterInfoDynamicSqlSupport {
 
         public final SqlColumn<Integer> version = column("version", JDBCType.INTEGER);
 
+        public final SqlColumn<Integer> priority = column("priority", JDBCType.INTEGER);
+
         public final SqlColumn<String> description = column("description", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> profile = column("profile", JDBCType.LONGVARCHAR);
@@ -105,8 +112,6 @@ public final class CharacterInfoDynamicSqlSupport {
         public final SqlColumn<String> chatStyle = column("chat_style", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> chatExample = column("chat_example", JDBCType.LONGVARCHAR);
-
-        public final SqlColumn<String> experience = column("experience", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
 

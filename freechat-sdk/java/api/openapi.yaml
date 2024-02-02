@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.2.11
+  version: 0.2.15
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -2972,8 +2972,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChatContentDTO'
-        description: Chat content
+              $ref: '#/components/schemas/ChatMessageDTO'
+        description: Chat message
         required: true
       responses:
         "200":
@@ -3005,8 +3005,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChatContentDTO'
-        description: Chat content
+              $ref: '#/components/schemas/ChatMessageDTO'
+        description: Chat message
         required: true
       responses:
         "200":
@@ -3503,7 +3503,6 @@ paths:
         required: true
         schema:
           format: int64
-          minimum: 0
           type: integer
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -3594,7 +3593,6 @@ paths:
         required: true
         schema:
           format: int64
-          minimum: 0
           type: integer
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -3730,7 +3728,6 @@ paths:
         required: true
         schema:
           format: int64
-          minimum: 0
           type: integer
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -3911,7 +3908,6 @@ paths:
         required: true
         schema:
           format: int64
-          minimum: 0
           type: integer
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -4418,7 +4414,6 @@ paths:
         required: true
         schema:
           format: int32
-          minimum: 0
           type: integer
         style: simple
       responses:
@@ -4579,7 +4574,6 @@ paths:
         required: true
         schema:
           format: int64
-          minimum: 0
           type: integer
         style: simple
       responses:
@@ -4716,7 +4710,6 @@ paths:
         required: true
         schema:
           format: int64
-          minimum: 0
           type: integer
         style: simple
       responses:
@@ -5162,11 +5155,39 @@ paths:
       x-accepts: application/json
 components:
   schemas:
+    ChatContentDTO:
+      description: Chat content
+      example:
+        mimeType: mimeType
+        type: type
+        content: content
+      properties:
+        type:
+          description: "Chat type: text (default) | image"
+          type: string
+        content:
+          description: "Chat content(for image, it might be an url or base64 encoded\
+            \ string)"
+          type: string
+        mimeType:
+          description: Mime-type of content
+          type: string
+      required:
+      - content
+      type: object
     ChatMessageDTO:
       description: Chat message
       example:
         role: role
+        contents:
+        - mimeType: mimeType
+          type: type
+          content: content
+        - mimeType: mimeType
+          type: type
+          content: content
         name: name
+        context: context
         toolCalls:
         - name: name
           arguments: arguments
@@ -5175,19 +5196,20 @@ components:
           arguments: arguments
           id: id
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        content: content
       properties:
         role:
-          description: "Chat role: system | assistant | user | function_call | function_result"
+          description: "Chat role: system | assistant | user | tool_call | tool_result"
           type: string
         name:
-          description: "user: Name of the user role; function_call: Name of the called\
+          description: "user: Name of the user role; tool_call: Name of the called\
             \ tool"
           type: string
-        content:
-          description: "default: Dialogue content; function_result: function call\
-            \ result, serialized as json"
-          type: string
+        contents:
+          description: "default: Dialogue content; tool_result: tool call result,\
+            \ serialized as json"
+          items:
+            $ref: '#/components/schemas/ChatContentDTO'
+          type: array
         toolCalls:
           description: Tool calls information during the conversation
           items:
@@ -5197,6 +5219,9 @@ components:
           description: Creation time
           format: date-time
           type: string
+        context:
+          description: Contextual information in this round of conversation
+          type: string
       type: object
     ChatPromptContentDTO:
       description: Prompt chat template content
@@ -5204,7 +5229,15 @@ components:
         system: system
         messages:
         - role: role
+          contents:
+          - mimeType: mimeType
+            type: type
+            content: content
+          - mimeType: mimeType
+            type: type
+            content: content
           name: name
+          context: context
           toolCalls:
           - name: name
             arguments: arguments
@@ -5213,9 +5246,16 @@ components:
             arguments: arguments
             id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
-          content: content
         - role: role
+          contents:
+          - mimeType: mimeType
+            type: type
+            content: content
+          - mimeType: mimeType
+            type: type
+            content: content
           name: name
+          context: context
           toolCalls:
           - name: name
             arguments: arguments
@@ -5224,10 +5264,17 @@ components:
             arguments: arguments
             id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
-          content: content
         messageToSend:
           role: role
+          contents:
+          - mimeType: mimeType
+            type: type
+            content: content
+          - mimeType: mimeType
+            type: type
+            content: content
           name: name
+          context: context
           toolCalls:
           - name: name
             arguments: arguments
@@ -5236,7 +5283,6 @@ components:
             arguments: arguments
             id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
-          content: content
       properties:
         system:
           description: Prompt system template
@@ -5287,7 +5333,15 @@ components:
           system: system
           messages:
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -5296,9 +5350,16 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -5307,10 +5368,17 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           messageToSend:
             role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -5319,7 +5387,6 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
         draft: draft
         name: name
         lang: lang
@@ -5571,7 +5638,6 @@ components:
         description: description
         chatExample: chatExample
         avatar: avatar
-        experience: experience
         parentId: parentId
         picture: picture
         tags:
@@ -5579,6 +5645,7 @@ components:
         - tags
         draft: draft
         name: name
+        nickname: nickname
         lang: lang
         chatStyle: chatStyle
       properties:
@@ -5593,6 +5660,9 @@ components:
           type: string
         description:
           description: Character description
+          type: string
+        nickname:
+          description: Character nickname
           type: string
         avatar:
           description: Character avatar url
@@ -5614,9 +5684,6 @@ components:
           type: string
         chatExample:
           description: Character chat-example
-          type: string
-        experience:
-          description: Character experience
           type: string
         lang:
           description: "Character language: English | Chinese (Simplified) | ..."
@@ -5642,7 +5709,6 @@ components:
         moderationApiKeyName: moderationApiKeyName
         isDefault: true
         moderationParams: moderationParams
-        experiencePromptTaskId: experiencePromptTaskId
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
         chatPromptTaskId: chatPromptTaskId
@@ -5657,9 +5723,6 @@ components:
           type: string
         greetingPromptTaskId:
           description: Prompt task identifier for greeting
-          type: string
-        experiencePromptTaskId:
-          description: Prompt task identifier for experience
           type: string
         moderationModelId:
           description: Moderation model for the character's response
@@ -5860,7 +5923,15 @@ components:
           system: system
           messages:
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -5869,9 +5940,16 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -5880,10 +5958,17 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           messageToSend:
             role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -5892,7 +5977,6 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
         draft: draft
         name: name
         lang: lang
@@ -6046,7 +6130,15 @@ components:
             system: system
             messages:
             - role: role
+              contents:
+              - mimeType: mimeType
+                type: type
+                content: content
+              - mimeType: mimeType
+                type: type
+                content: content
               name: name
+              context: context
               toolCalls:
               - name: name
                 arguments: arguments
@@ -6055,9 +6147,16 @@ components:
                 arguments: arguments
                 id: id
               gmtCreate: 2000-01-23T04:56:07.000+00:00
-              content: content
             - role: role
+              contents:
+              - mimeType: mimeType
+                type: type
+                content: content
+              - mimeType: mimeType
+                type: type
+                content: content
               name: name
+              context: context
               toolCalls:
               - name: name
                 arguments: arguments
@@ -6066,10 +6165,17 @@ components:
                 arguments: arguments
                 id: id
               gmtCreate: 2000-01-23T04:56:07.000+00:00
-              content: content
             messageToSend:
               role: role
+              contents:
+              - mimeType: mimeType
+                type: type
+                content: content
+              - mimeType: mimeType
+                type: type
+                content: content
               name: name
+              context: context
               toolCalls:
               - name: name
                 arguments: arguments
@@ -6078,7 +6184,6 @@ components:
                 arguments: arguments
                 id: id
               gmtCreate: 2000-01-23T04:56:07.000+00:00
-              content: content
           format: format
       properties:
         prompt:
@@ -6112,7 +6217,15 @@ components:
           system: system
           messages:
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -6121,9 +6234,16 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -6132,10 +6252,17 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           messageToSend:
             role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -6144,7 +6271,6 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
         format: format
       properties:
         template:
@@ -6175,7 +6301,15 @@ components:
         text: text
         message:
           role: role
+          contents:
+          - mimeType: mimeType
+            type: type
+            content: content
+          - mimeType: mimeType
+            type: type
+            content: content
           name: name
+          context: context
           toolCalls:
           - name: name
             arguments: arguments
@@ -6184,7 +6318,6 @@ components:
             arguments: arguments
             id: id
           gmtCreate: 2000-01-23T04:56:07.000+00:00
-          content: content
       properties:
         requestId:
           description: Request identifier
@@ -6492,7 +6625,15 @@ components:
           system: system
           messages:
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -6501,9 +6642,16 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           - role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -6512,10 +6660,17 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
           messageToSend:
             role: role
+            contents:
+            - mimeType: mimeType
+              type: type
+              content: content
+            - mimeType: mimeType
+              type: type
+              content: content
             name: name
+            context: context
             toolCalls:
             - name: name
               arguments: arguments
@@ -6524,7 +6679,6 @@ components:
               arguments: arguments
               id: id
             gmtCreate: 2000-01-23T04:56:07.000+00:00
-            content: content
         requestId: requestId
         promptId: promptId
         draft: draft
@@ -7332,7 +7486,6 @@ components:
         description: description
         chatExample: chatExample
         avatar: avatar
-        experience: experience
         parentId: parentId
         picture: picture
         tags:
@@ -7340,6 +7493,7 @@ components:
         - tags
         draft: draft
         name: name
+        nickname: nickname
         lang: lang
         chatStyle: chatStyle
       properties:
@@ -7354,6 +7508,9 @@ components:
           type: string
         description:
           description: Character description
+          type: string
+        nickname:
+          description: Character nickname
           type: string
         avatar:
           description: Character avatar url
@@ -7375,9 +7532,6 @@ components:
           type: string
         chatExample:
           description: Character chat-example
-          type: string
-        experience:
-          description: Character experience
           type: string
         lang:
           description: "Character language: English | Chinese (Simplified) | ..."
@@ -7461,9 +7615,9 @@ components:
           description: "Language, exact match"
           type: string
         text:
-          description: "Name, description, profile, chat style, experience, fuzzy\
-            \ match, any one match is sufficient; public scope + general search for\
-            \ all users does not guarantee real-time."
+          description: "Name, description, profile, chat style, fuzzy match, any one\
+            \ match is sufficient; public scope + general search for all users does\
+            \ not guarantee real-time."
           type: string
       type: object
     CharacterQueryDTO:
@@ -7530,6 +7684,7 @@ components:
         - tags
         requestId: requestId
         name: name
+        nickname: nickname
         lang: lang
         characterId: characterId
         username: username
@@ -7561,6 +7716,9 @@ components:
         description:
           description: Character description
           type: string
+        nickname:
+          description: Character nickname
+          type: string
         avatar:
           description: Character avatar url
           type: string
@@ -7590,7 +7748,6 @@ components:
       example:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         isDefault: true
-        experiencePromptTaskId: experiencePromptTaskId
         requestId: requestId
         greetingPromptTaskId: greetingPromptTaskId
         backendId: backendId
@@ -7622,9 +7779,6 @@ components:
         greetingPromptTaskId:
           description: Prompt task identifier for greeting
           type: string
-        experiencePromptTaskId:
-          description: Prompt task identifier for experience
-          type: string
         messageWindowSize:
           description: Max messages in the character's memory
           format: int32
@@ -7646,12 +7800,10 @@ components:
         chatExample: chatExample
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        experience: experience
         version: 0
         backends:
         - gmtModified: 2000-01-23T04:56:07.000+00:00
           isDefault: true
-          experiencePromptTaskId: experiencePromptTaskId
           requestId: requestId
           greetingPromptTaskId: greetingPromptTaskId
           backendId: backendId
@@ -7661,7 +7813,6 @@ components:
           forwardToUser: true
         - gmtModified: 2000-01-23T04:56:07.000+00:00
           isDefault: true
-          experiencePromptTaskId: experiencePromptTaskId
           requestId: requestId
           greetingPromptTaskId: greetingPromptTaskId
           backendId: backendId
@@ -7676,6 +7827,7 @@ components:
         requestId: requestId
         draft: draft
         name: name
+        nickname: nickname
         lang: lang
         characterId: characterId
         chatStyle: chatStyle
@@ -7707,6 +7859,9 @@ components:
           type: string
         description:
           description: Character description
+          type: string
+        nickname:
+          description: Character nickname
           type: string
         avatar:
           description: Character avatar url
@@ -7741,9 +7896,6 @@ components:
         chatExample:
           description: Character chat-example
           type: string
-        experience:
-          description: Character experience
-          type: string
         ext:
           description: "Additional information, JSON format"
           type: string
@@ -7763,6 +7915,7 @@ components:
       example:
         characterNickname: characterNickname
         ext: ext
+        about: about
         userNickname: userNickname
         backendId: backendId
         userProfile: userProfile
@@ -7776,6 +7929,9 @@ components:
         characterNickname:
           description: Character nickname for this session.
           type: string
+        about:
+          description: Anything about this session.
+          type: string
         backendId:
           description: Character backend for this session.
           type: string
@@ -7784,26 +7940,6 @@ components:
           type: string
       required:
       - backendId
-      type: object
-    ChatContentDTO:
-      description: Chat content
-      example:
-        attachment: attachment
-        context: context
-        content: content
-      properties:
-        content:
-          description: Chat content.
-          type: string
-        attachment:
-          description: Chat attachment.
-          type: string
-        context:
-          description: Contextual information the character should know in this round
-            of conversation
-          type: string
-      required:
-      - content
       type: object
     AiApiKeyCreateDTO:
       description: Request data for adding new model credential information
@@ -8199,6 +8335,7 @@ components:
         recommendCount: 5
         requestId: requestId
         name: name
+        nickname: nickname
         viewCount: 6
         lang: lang
         characterId: characterId
@@ -8230,6 +8367,9 @@ components:
           type: string
         description:
           description: Character description
+          type: string
+        nickname:
+          description: Character nickname
           type: string
         avatar:
           description: Character avatar url

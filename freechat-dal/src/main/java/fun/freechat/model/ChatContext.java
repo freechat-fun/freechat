@@ -30,6 +30,9 @@ public class ChatContext implements Serializable {
     private String userProfile;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String about;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -164,6 +167,22 @@ public class ChatContext implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getAbout() {
+        return about;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withAbout(String about) {
+        this.setAbout(about);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setAbout(String about) {
+        this.about = about == null ? null : about.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
@@ -231,6 +250,7 @@ public class ChatContext implements Serializable {
         sb.append(", characterNickname=").append(characterNickname);
         sb.append(", backendId=").append(backendId);
         sb.append(", userProfile=").append(userProfile);
+        sb.append(", about=").append(about);
         sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

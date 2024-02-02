@@ -520,7 +520,7 @@ let body:.AIServiceApiListAiModelInfo2Request = {
   // number | Maximum quantity
   pageSize: 1,
   // number | Current page number
-  pageNum: 0,
+  pageNum: 1,
 };
 
 apiInstance.listAiModelInfo2(body).then((data:any) => {

@@ -1658,7 +1658,7 @@ public class Example {
 
 <a id="sendMessage"></a>
 # **sendMessage**
-> LlmResultDTO sendMessage(chatId, chatContentDTO)
+> LlmResultDTO sendMessage(chatId, chatMessageDTO)
 
 Send Chat Message
 
@@ -1685,9 +1685,9 @@ public class Example {
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
     String chatId = "chatId_example"; // String | Chat session identifier
-    ChatContentDTO chatContentDTO = new ChatContentDTO(); // ChatContentDTO | Chat content
+    ChatMessageDTO chatMessageDTO = new ChatMessageDTO(); // ChatMessageDTO | Chat message
     try {
-      LlmResultDTO result = apiInstance.sendMessage(chatId, chatContentDTO);
+      LlmResultDTO result = apiInstance.sendMessage(chatId, chatMessageDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#sendMessage");
@@ -1705,7 +1705,7 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **chatId** | **String**| Chat session identifier | |
-| **chatContentDTO** | [**ChatContentDTO**](ChatContentDTO.md)| Chat content | |
+| **chatMessageDTO** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message | |
 
 ### Return type
 
@@ -1861,7 +1861,7 @@ public class Example {
 
 <a id="streamSendMessage"></a>
 # **streamSendMessage**
-> SseEmitter streamSendMessage(chatId, chatContentDTO)
+> SseEmitter streamSendMessage(chatId, chatMessageDTO)
 
 Send Chat Message by Streaming Back
 
@@ -1888,9 +1888,9 @@ public class Example {
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
     String chatId = "chatId_example"; // String | Chat session identifier
-    ChatContentDTO chatContentDTO = new ChatContentDTO(); // ChatContentDTO | Chat content
+    ChatMessageDTO chatMessageDTO = new ChatMessageDTO(); // ChatMessageDTO | Chat message
     try {
-      SseEmitter result = apiInstance.streamSendMessage(chatId, chatContentDTO);
+      SseEmitter result = apiInstance.streamSendMessage(chatId, chatMessageDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#streamSendMessage");
@@ -1908,7 +1908,7 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **chatId** | **String**| Chat session identifier | |
-| **chatContentDTO** | [**ChatContentDTO**](ChatContentDTO.md)| Chat content | |
+| **chatMessageDTO** | [**ChatMessageDTO**](ChatMessageDTO.md)| Chat message | |
 
 ### Return type
 

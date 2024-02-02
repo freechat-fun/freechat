@@ -14,7 +14,7 @@ Query condition
 |**tagsOp** | **String** | Relationship between tags: and | or (default) |  [optional] |
 |**name** | **String** | Name, left match |  [optional] |
 |**lang** | **String** | Language, exact match |  [optional] |
-|**text** | **String** | Name, description, profile, chat style, experience, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time. |  [optional] |
+|**text** | **String** | Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time. |  [optional] |
 
 
 

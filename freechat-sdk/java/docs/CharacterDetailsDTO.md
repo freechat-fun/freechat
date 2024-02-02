@@ -16,6 +16,7 @@ Character detailed content
 |**version** | **Integer** | Version |  [optional] |
 |**name** | **String** | Character name |  |
 |**description** | **String** | Character description |  [optional] |
+|**nickname** | **String** | Character nickname |  [optional] |
 |**avatar** | **String** | Character avatar url |  [optional] |
 |**picture** | **String** | Character picture url |  [optional] |
 |**gender** | **String** | Character gender: male | female | other |  [optional] |
@@ -26,7 +27,6 @@ Character detailed content
 |**greeting** | **String** | Character greeting |  [optional] |
 |**chatStyle** | **String** | Character chat-style |  [optional] |
 |**chatExample** | **String** | Character chat-example |  [optional] |
-|**experience** | **String** | Character experience |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |
 |**draft** | **String** | Character draft information |  [optional] |
 |**backends** | [**List&lt;CharacterBackendDetailsDTO&gt;**](CharacterBackendDetailsDTO.md) | Character backends information |  [optional] |

@@ -52,7 +52,7 @@ public class ChatContextServiceImpl implements ChatContextService {
     }
 
     @Override
-    public String create(@NotNull ChatContext context) {
+    public ChatContext create(@NotNull ChatContext context) {
         if (StringUtils.isBlank(context.getUserId()) || StringUtils.isBlank(context.getBackendId())) {
             return null;
         }
@@ -62,7 +62,7 @@ public class ChatContextServiceImpl implements ChatContextService {
                 .withGmtCreate(now)
                 .withGmtModified(now)
                 .withChatId(id));
-        return rows > 0 ? id : null;
+        return rows > 0 ? context : null;
     }
 
     @Override

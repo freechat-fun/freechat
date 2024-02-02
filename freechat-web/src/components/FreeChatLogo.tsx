@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { Box, Link } from "@mui/joy";
-import logoUrl from '../resources/freechat_s.png';
 
 export default function FreeChatLogo() {
   const { t } = useTranslation();
@@ -23,7 +22,7 @@ export default function FreeChatLogo() {
         alignItems: 'center',
         pb: 0.3,
       }}>
-        <img alt={t('FreeChat')} src={logoUrl} style={{ height: '100%' }} />
+        <img alt={t('FreeChat')} src="/w/freechat_small.png" style={{ height: '100%' }} />
       </Box>
       <Box sx={{ pl: 1 }}>
         {t('FreeChat')}

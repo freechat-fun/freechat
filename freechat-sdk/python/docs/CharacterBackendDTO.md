@@ -9,7 +9,6 @@ Name | Type | Description | Notes
 **is_default** | **bool** | Whether it is the default backend | [optional] 
 **chat_prompt_task_id** | **str** | Prompt task identifier for chat | [optional] 
 **greeting_prompt_task_id** | **str** | Prompt task identifier for greeting | [optional] 
-**experience_prompt_task_id** | **str** | Prompt task identifier for experience | [optional] 
 **moderation_model_id** | **str** | Moderation model for the character&#39;s response | [optional] 
 **moderation_api_key_name** | **str** | Api key name for moderation model | [optional] 
 **moderation_params** | **str** | Parameters for moderation model | [optional] 

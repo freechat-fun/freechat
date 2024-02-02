@@ -8,5 +8,4 @@ public class CharacterInfoDraft {
     private String greeting;
     private String chatStyle;
     private String chatExample;
-    private String experience;
 }

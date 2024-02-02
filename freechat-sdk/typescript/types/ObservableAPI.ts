@@ -2361,10 +2361,10 @@ export class ObservableCharacterApi {
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public sendMessageWithHttpInfo(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Observable<HttpInfo<LlmResultDTO>> {
-        const requestContextPromise = this.requestFactory.sendMessage(chatId, chatContentDTO, _options);
+    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<HttpInfo<LlmResultDTO>> {
+        const requestContextPromise = this.requestFactory.sendMessage(chatId, chatMessageDTO, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2386,10 +2386,10 @@ export class ObservableCharacterApi {
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public sendMessage(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Observable<LlmResultDTO> {
-        return this.sendMessageWithHttpInfo(chatId, chatContentDTO, _options).pipe(map((apiResponse: HttpInfo<LlmResultDTO>) => apiResponse.data));
+    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<LlmResultDTO> {
+        return this.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options).pipe(map((apiResponse: HttpInfo<LlmResultDTO>) => apiResponse.data));
     }
 
     /**
@@ -2462,10 +2462,10 @@ export class ObservableCharacterApi {
      * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public streamSendMessageWithHttpInfo(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Observable<HttpInfo<SseEmitter>> {
-        const requestContextPromise = this.requestFactory.streamSendMessage(chatId, chatContentDTO, _options);
+    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<HttpInfo<SseEmitter>> {
+        const requestContextPromise = this.requestFactory.streamSendMessage(chatId, chatMessageDTO, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2487,10 +2487,10 @@ export class ObservableCharacterApi {
      * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public streamSendMessage(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Observable<SseEmitter> {
-        return this.streamSendMessageWithHttpInfo(chatId, chatContentDTO, _options).pipe(map((apiResponse: HttpInfo<SseEmitter>) => apiResponse.data));
+    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<SseEmitter> {
+        return this.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options).pipe(map((apiResponse: HttpInfo<SseEmitter>) => apiResponse.data));
     }
 
     /**

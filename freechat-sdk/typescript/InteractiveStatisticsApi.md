@@ -402,7 +402,7 @@ let body:.InteractiveStatisticsApiListCharactersByStatistic1Request = {
   // number | Maximum quantity
   pageSize: 1,
   // number | Current page number
-  pageNum: 0,
+  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -522,7 +522,7 @@ let body:.InteractiveStatisticsApiListFlowsByStatisticRequest = {
   // number | Maximum quantity
   pageSize: 1,
   // number | Current page number
-  pageNum: 0,
+  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -762,7 +762,7 @@ let body:.InteractiveStatisticsApiListPluginsByStatisticRequest = {
   // number | Maximum quantity
   pageSize: 1,
   // number | Current page number
-  pageNum: 0,
+  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -1002,7 +1002,7 @@ let body:.InteractiveStatisticsApiListPromptsByStatistic1Request = {
   // number | Maximum quantity
   pageSize: 1,
   // number | Current page number
-  pageNum: 0,
+  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };

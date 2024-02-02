@@ -55,8 +55,8 @@ public class AccountManagerApi {
             "/users/{pageSize}",
             "/users"})
     public List<UserBasicInfoDTO> listUsers(
-            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") @Positive Optional<Long> pageSize,
-            @Parameter(description = "Current page number") @PathVariable("pageNum") @PositiveOrZero Optional<Long> pageNum) {
+            @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
+            @Parameter(description = "Current page number") @PathVariable("pageNum") Optional<Long> pageNum) {
         long limit = pageSize.filter(size -> size > 0).orElse(10L);
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         return userService.list(limit, offset)
@@ -192,7 +192,7 @@ public class AccountManagerApi {
     public String createToken(
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username,
-            @Parameter(description = "Validity period (seconds)") @PathVariable("duration") @NotNull @PositiveOrZero
+            @Parameter(description = "Validity period (seconds)") @PathVariable("duration") @PositiveOrZero
             Long duration) {
         User user = userService.loadByUsername(username);
         if (Objects.isNull(user)) {

@@ -25,6 +25,8 @@ public class CharacterCreateDTO {
     private String name;
     @Schema(description = "Character description")
     private String description;
+    @Schema(description = "Character nickname")
+    private String nickname;
     @Schema(description = "Character avatar url")
     private String avatar;
     @Schema(description = "Character picture url")
@@ -39,8 +41,6 @@ public class CharacterCreateDTO {
     private String chatStyle;
     @Schema(description = "Character chat-example")
     private String chatExample;
-    @Schema(description = "Character experience")
-    private String experience;
     @Schema(description = "Character language: English | Chinese (Simplified) | ...")
     private String lang;
     @Schema(description = "Additional information, JSON format")

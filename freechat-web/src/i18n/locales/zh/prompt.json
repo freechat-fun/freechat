@@ -1,5 +1,5 @@
 {
-  "Do you really want to delete this prompt?": "你真的想删除这个 prompt 吗？",
+  "Do you really want to delete this prompt?": "你真的想删除这个提示词吗？",
   "Template": "模版",
   "Example": "示例",
   "Set API Key": "设置 API Key",
@@ -7,7 +7,6 @@
   "or you can use a temporary key": "或者你可以使用一个临时凭证",
   "Choose a model": "选择模型",
   "Model Parameters": "模型参数",
-  "Supports Markdown format": "支持 Markdown 格式",
   "If an input's value is not specified at runtime, the default value set here will be used": "如果运行时未指定输入值，则将使用此处设置的默认值",
   "These messages will always be used as the starting message in the chat history": "这些消息将始终用作聊天记录中的起始消息",
   "Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.": "生成过程中核采样方法概率阈值，例如，取值为0.8时，仅保留概率加起来大于等于0.8的最可能token的最小集合作为候选集。取值范围为（0,1.0)，取值越大，生成的随机性越高；取值越低，生成的确定性越高。",

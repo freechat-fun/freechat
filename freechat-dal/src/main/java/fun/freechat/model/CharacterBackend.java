@@ -27,9 +27,6 @@ public class CharacterBackend implements Serializable {
     private String greetingPromptTaskId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String experiencePromptTaskId;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String moderationModelId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -160,22 +157,6 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getExperiencePromptTaskId() {
-        return experiencePromptTaskId;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterBackend withExperiencePromptTaskId(String experiencePromptTaskId) {
-        this.setExperiencePromptTaskId(experiencePromptTaskId);
-        return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setExperiencePromptTaskId(String experiencePromptTaskId) {
-        this.experiencePromptTaskId = experiencePromptTaskId == null ? null : experiencePromptTaskId.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModerationModelId() {
         return moderationModelId;
     }
@@ -275,7 +256,6 @@ public class CharacterBackend implements Serializable {
             && (this.getIsDefault() == null ? other.getIsDefault() == null : this.getIsDefault().equals(other.getIsDefault()))
             && (this.getChatPromptTaskId() == null ? other.getChatPromptTaskId() == null : this.getChatPromptTaskId().equals(other.getChatPromptTaskId()))
             && (this.getGreetingPromptTaskId() == null ? other.getGreetingPromptTaskId() == null : this.getGreetingPromptTaskId().equals(other.getGreetingPromptTaskId()))
-            && (this.getExperiencePromptTaskId() == null ? other.getExperiencePromptTaskId() == null : this.getExperiencePromptTaskId().equals(other.getExperiencePromptTaskId()))
             && (this.getModerationModelId() == null ? other.getModerationModelId() == null : this.getModerationModelId().equals(other.getModerationModelId()))
             && (this.getModerationApiKeyName() == null ? other.getModerationApiKeyName() == null : this.getModerationApiKeyName().equals(other.getModerationApiKeyName()))
             && (this.getForwardToUser() == null ? other.getForwardToUser() == null : this.getForwardToUser().equals(other.getForwardToUser()))
@@ -295,7 +275,6 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getIsDefault() == null) ? 0 : getIsDefault().hashCode());
         result = prime * result + ((getChatPromptTaskId() == null) ? 0 : getChatPromptTaskId().hashCode());
         result = prime * result + ((getGreetingPromptTaskId() == null) ? 0 : getGreetingPromptTaskId().hashCode());
-        result = prime * result + ((getExperiencePromptTaskId() == null) ? 0 : getExperiencePromptTaskId().hashCode());
         result = prime * result + ((getModerationModelId() == null) ? 0 : getModerationModelId().hashCode());
         result = prime * result + ((getModerationApiKeyName() == null) ? 0 : getModerationApiKeyName().hashCode());
         result = prime * result + ((getForwardToUser() == null) ? 0 : getForwardToUser().hashCode());
@@ -318,7 +297,6 @@ public class CharacterBackend implements Serializable {
         sb.append(", isDefault=").append(isDefault);
         sb.append(", chatPromptTaskId=").append(chatPromptTaskId);
         sb.append(", greetingPromptTaskId=").append(greetingPromptTaskId);
-        sb.append(", experiencePromptTaskId=").append(experiencePromptTaskId);
         sb.append(", moderationModelId=").append(moderationModelId);
         sb.append(", moderationApiKeyName=").append(moderationApiKeyName);
         sb.append(", forwardToUser=").append(forwardToUser);

@@ -8,9 +8,9 @@ Chat content
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**content** | **String** | Chat content. |  |
-|**attachment** | **String** | Chat attachment. |  [optional] |
-|**context** | **String** | Contextual information the character should know in this round of conversation |  [optional] |
+|**type** | **String** | Chat type: text (default) | image |  [optional] |
+|**content** | **String** | Chat content(for image, it might be an url or base64 encoded string) |  |
+|**mimeType** | **String** | Mime-type of content |  [optional] |
 
 
 

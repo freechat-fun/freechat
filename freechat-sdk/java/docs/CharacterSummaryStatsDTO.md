@@ -16,6 +16,7 @@ Character summary content, including interactive statistical information
 |**version** | **Integer** | Version |  [optional] |
 |**name** | **String** | Character name |  |
 |**description** | **String** | Character description |  [optional] |
+|**nickname** | **String** | Character nickname |  [optional] |
 |**avatar** | **String** | Character avatar url |  [optional] |
 |**picture** | **String** | Character picture url |  [optional] |
 |**gender** | **String** | Character gender: male | female | other |  [optional] |

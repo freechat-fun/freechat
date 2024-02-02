@@ -112,7 +112,13 @@ let body:.PromptApiApplyPromptTemplateRequest = {
       messageToSend: {
         role: "role_example",
         name: "name_example",
-        content: "content_example",
+        contents: [
+          {
+            type: "type_example",
+            content: "content_example",
+            mimeType: "mimeType_example",
+          },
+        ],
         toolCalls: [
           {
             id: "id_example",
@@ -121,12 +127,19 @@ let body:.PromptApiApplyPromptTemplateRequest = {
           },
         ],
         gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+        context: "context_example",
       },
       messages: [
         {
           role: "role_example",
           name: "name_example",
-          content: "content_example",
+          contents: [
+            {
+              type: "type_example",
+              content: "content_example",
+              mimeType: "mimeType_example",
+            },
+          ],
           toolCalls: [
             {
               id: "id_example",
@@ -135,6 +148,7 @@ let body:.PromptApiApplyPromptTemplateRequest = {
             },
           ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+          context: "context_example",
         },
       ],
     },
@@ -549,7 +563,13 @@ let body:.PromptApiCreatePromptRequest = {
       messageToSend: {
         role: "role_example",
         name: "name_example",
-        content: "content_example",
+        contents: [
+          {
+            type: "type_example",
+            content: "content_example",
+            mimeType: "mimeType_example",
+          },
+        ],
         toolCalls: [
           {
             id: "id_example",
@@ -558,12 +578,19 @@ let body:.PromptApiCreatePromptRequest = {
           },
         ],
         gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+        context: "context_example",
       },
       messages: [
         {
           role: "role_example",
           name: "name_example",
-          content: "content_example",
+          contents: [
+            {
+              type: "type_example",
+              content: "content_example",
+              mimeType: "mimeType_example",
+            },
+          ],
           toolCalls: [
             {
               id: "id_example",
@@ -572,6 +599,7 @@ let body:.PromptApiCreatePromptRequest = {
             },
           ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+          context: "context_example",
         },
       ],
     },
@@ -653,7 +681,13 @@ let body:.PromptApiCreatePromptsRequest = {
         messageToSend: {
           role: "role_example",
           name: "name_example",
-          content: "content_example",
+          contents: [
+            {
+              type: "type_example",
+              content: "content_example",
+              mimeType: "mimeType_example",
+            },
+          ],
           toolCalls: [
             {
               id: "id_example",
@@ -662,12 +696,19 @@ let body:.PromptApiCreatePromptsRequest = {
             },
           ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+          context: "context_example",
         },
         messages: [
           {
             role: "role_example",
             name: "name_example",
-            content: "content_example",
+            contents: [
+              {
+                type: "type_example",
+                content: "content_example",
+                mimeType: "mimeType_example",
+              },
+            ],
             toolCalls: [
               {
                 id: "id_example",
@@ -676,6 +717,7 @@ let body:.PromptApiCreatePromptsRequest = {
               },
             ],
             gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+            context: "context_example",
           },
         ],
       },
@@ -1344,7 +1386,13 @@ let body:.PromptApiSendPromptRequest = {
         messageToSend: {
           role: "role_example",
           name: "name_example",
-          content: "content_example",
+          contents: [
+            {
+              type: "type_example",
+              content: "content_example",
+              mimeType: "mimeType_example",
+            },
+          ],
           toolCalls: [
             {
               id: "id_example",
@@ -1353,12 +1401,19 @@ let body:.PromptApiSendPromptRequest = {
             },
           ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+          context: "context_example",
         },
         messages: [
           {
             role: "role_example",
             name: "name_example",
-            content: "content_example",
+            contents: [
+              {
+                type: "type_example",
+                content: "content_example",
+                mimeType: "mimeType_example",
+              },
+            ],
             toolCalls: [
               {
                 id: "id_example",
@@ -1367,6 +1422,7 @@ let body:.PromptApiSendPromptRequest = {
               },
             ],
             gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+            context: "context_example",
           },
         ],
       },
@@ -1448,7 +1504,13 @@ let body:.PromptApiStreamSendPromptRequest = {
         messageToSend: {
           role: "role_example",
           name: "name_example",
-          content: "content_example",
+          contents: [
+            {
+              type: "type_example",
+              content: "content_example",
+              mimeType: "mimeType_example",
+            },
+          ],
           toolCalls: [
             {
               id: "id_example",
@@ -1457,12 +1519,19 @@ let body:.PromptApiStreamSendPromptRequest = {
             },
           ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+          context: "context_example",
         },
         messages: [
           {
             role: "role_example",
             name: "name_example",
-            content: "content_example",
+            contents: [
+              {
+                type: "type_example",
+                content: "content_example",
+                mimeType: "mimeType_example",
+              },
+            ],
             toolCalls: [
               {
                 id: "id_example",
@@ -1471,6 +1540,7 @@ let body:.PromptApiStreamSendPromptRequest = {
               },
             ],
             gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+            context: "context_example",
           },
         ],
       },
@@ -1556,7 +1626,13 @@ let body:.PromptApiUpdatePromptRequest = {
       messageToSend: {
         role: "role_example",
         name: "name_example",
-        content: "content_example",
+        contents: [
+          {
+            type: "type_example",
+            content: "content_example",
+            mimeType: "mimeType_example",
+          },
+        ],
         toolCalls: [
           {
             id: "id_example",
@@ -1565,12 +1641,19 @@ let body:.PromptApiUpdatePromptRequest = {
           },
         ],
         gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+        context: "context_example",
       },
       messages: [
         {
           role: "role_example",
           name: "name_example",
-          content: "content_example",
+          contents: [
+            {
+              type: "type_example",
+              content: "content_example",
+              mimeType: "mimeType_example",
+            },
+          ],
           toolCalls: [
             {
               id: "id_example",
@@ -1579,6 +1662,7 @@ let body:.PromptApiUpdatePromptRequest = {
             },
           ],
           gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
+          context: "context_example",
         },
       ],
     },

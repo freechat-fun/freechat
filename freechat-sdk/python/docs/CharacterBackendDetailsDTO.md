@@ -13,7 +13,6 @@ Name | Type | Description | Notes
 **character_id** | **str** | Character identifier | [optional] 
 **is_default** | **bool** | Whether it is the default backend | [optional] 
 **greeting_prompt_task_id** | **str** | Prompt task identifier for greeting | [optional] 
-**experience_prompt_task_id** | **str** | Prompt task identifier for experience | [optional] 
 **message_window_size** | **int** | Max messages in the character&#39;s memory | [optional] 
 **forward_to_user** | **bool** | Whether to forward messages to the character owner | [optional] 
 

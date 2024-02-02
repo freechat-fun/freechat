@@ -2,7 +2,6 @@ package fun.freechat.api;
 
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
-import fun.freechat.api.dto.ChatContentDTO;
 import fun.freechat.api.dto.ChatCreateDTO;
 import fun.freechat.api.dto.ChatMessageDTO;
 import fun.freechat.api.dto.LlmResultDTO;
@@ -15,8 +14,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +61,7 @@ public class CharacterAiApi {
                 chatCreateParams.getUserNickname(),
                 chatCreateParams.getUserProfile(),
                 chatCreateParams.getCharacterNickname(),
+                chatCreateParams.getAbout(),
                 chatCreateParams.getBackendId(),
                 chatCreateParams.getExt());
         if (StringUtils.isBlank(chatId)) {
@@ -93,9 +91,9 @@ public class CharacterAiApi {
     @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
     public LlmResultDTO send(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat content") @RequestBody @NotNull ChatContentDTO chatContent) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         Response<ChatMessage> response = characterAiService.send(
-                chatId, chatContent.getContent(), chatContent.getContext(), chatContent.getAttachment());
+                chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
         if (Objects.isNull(response)) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
@@ -113,10 +111,10 @@ public class CharacterAiApi {
     @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
     public SseEmitter streamSend(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat content") @RequestBody @NotNull ChatContentDTO chatContent) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         SseEmitter sseEmitter = new SseEmitter();
         TokenStream tokenStream = characterAiService.streamSend(
-                chatId, chatContent.getContent(), chatContent.getContext(), chatContent.getAttachment());
+                chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
         if (Objects.isNull(tokenStream)) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
@@ -158,8 +156,8 @@ public class CharacterAiApi {
     @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
     public List<ChatMessageDTO> messages(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @Parameter(description = "Messages limit") @PathVariable("limit") @Positive Optional<Integer> limit,
-            @Parameter(description = "Messages offset (from new to old)") @PathVariable("offset") @PositiveOrZero Optional<Integer> offset) {
+            @Parameter(description = "Messages limit") @PathVariable("limit") Optional<Integer> limit,
+            @Parameter(description = "Messages offset (from new to old)") @PathVariable("offset") Optional<Integer> offset) {
         int messagesLimit = limit.orElse(Integer.MAX_VALUE);
         int messagesOffset = offset.orElse(0);
 

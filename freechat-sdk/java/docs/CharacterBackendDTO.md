@@ -11,7 +11,6 @@ Character backend information
 |**isDefault** | **Boolean** | Whether it is the default backend |  [optional] |
 |**chatPromptTaskId** | **String** | Prompt task identifier for chat |  [optional] |
 |**greetingPromptTaskId** | **String** | Prompt task identifier for greeting |  [optional] |
-|**experiencePromptTaskId** | **String** | Prompt task identifier for experience |  [optional] |
 |**moderationModelId** | **String** | Moderation model for the character&#39;s response |  [optional] |
 |**moderationApiKeyName** | **String** | Api key name for moderation model |  [optional] |
 |**moderationParams** | **String** | Parameters for moderation model |  [optional] |

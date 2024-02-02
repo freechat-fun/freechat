@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Mustache from 'mustache';
-import { ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
+import { ChatContentDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
 import { i18nConfig } from "../configs/i18n-config";
 
 export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
@@ -67,9 +67,9 @@ export function getTemplateContent(record: PromptDetailsDTO | undefined): string
 
     const messages = chatTemplate.messages ?? [];
     messages.forEach(message => 
-      templates.push(`${message.content}`));
+      templates.push(`${getMessageText(message)}`));
     
-    templates.push(`${chatTemplate.messageToSend?.content ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}`);
+    templates.push(`${getMessageText(chatTemplate.messageToSend) ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}`);
   } else {
     templates.push(record?.template || '');
   }
@@ -176,13 +176,13 @@ function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | unde
   if (chatTemplate.messages && chatTemplate.messages.length > 0) {
     markdownContent += '**[MESSAGES]**<br>';
     chatTemplate.messages.forEach(message => {
-      markdownContent += `**${message.role?.toUpperCase()}: **${message.content}<br>`;
+      markdownContent += `**${message.role?.toUpperCase()}: **${getMessageText(message)}<br>`;
     });
     markdownContent += '<br>';
   }
 
   markdownContent += '**[USER]**<br>';
-  markdownContent += `${chatTemplate.messageToSend?.content ?? (format === 'f_string' ? '{input}' : '{{input}}')}`;
+  markdownContent += `${getMessageText(chatTemplate.messageToSend) ?? (format === 'f_string' ? '{input}' : '{{input}}')}`;
 
   return markdownContent;
 }
@@ -199,7 +199,7 @@ export function generateExample(request: PromptAiParamDTO | undefined, response:
   const prompt = request.prompt ?? chatTemplateToMarkdownContent(request.promptTemplate?.chatTemplate, request.promptTemplate?.format);
   const model = modelId as string;
   const parameters =  objectToMarkdownTable(modelParameters, 'Parameters');
-  const output = response.message?.content ?? response.text;
+  const output = getMessageText(response.message) ?? response.text;
 
   const markdownContext = {
     variables: variables,
@@ -225,7 +225,7 @@ export function createRecord(type: string | undefined): PromptDetailsDTO {
     newRecord.chatTemplate.system = '';
     newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
     newRecord.chatTemplate.messageToSend.role = 'user';
-    newRecord.chatTemplate.messageToSend.content = '{{input}}';
+    setMessageText(newRecord.chatTemplate.messageToSend, '{{input}}');
     newRecord.inputs = JSON.stringify({'input': ''});
   }
   newRecord.lang = i18nConfig.defaultLocale;
@@ -234,4 +234,23 @@ export function createRecord(type: string | undefined): PromptDetailsDTO {
   newRecord.username = undefined;
 
   return newRecord;
+}
+
+export function getMessageText(message: ChatMessageDTO | undefined): string | undefined {
+  return message?.contents
+    ?.filter(content => content.type === 'text')
+    .map(content => content.content)
+    .join('\n');
+}
+
+export function setMessageText(message: ChatMessageDTO | undefined, text: string | undefined): void {
+  if (!message) {
+    return;
+  }
+
+  const content = new ChatContentDTO();
+  content.type = 'text';
+  content.content = text ?? '';
+
+  (message.contents ??= [])[0] = content;
 }

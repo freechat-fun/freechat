@@ -17,8 +17,8 @@ const materialTheme = materialExtendTheme();
 function App() {
   return (
     <ContextsProvider>
-      <MaterialCssVarsProvider defaultMode="system" theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
-        <JoyCssVarsProvider defaultMode="system">
+      <MaterialCssVarsProvider defaultMode="dark" theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
+        <JoyCssVarsProvider defaultMode="dark">
           <CssBaseline enableColorScheme />
           <GlobalStyles
             styles={() => ({

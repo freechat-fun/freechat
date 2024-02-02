@@ -664,7 +664,7 @@ public class CharacterApi {
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {
-                shareUrl = FileUtils.getDefaultShareUrlForImage(request, dstPath);
+                shareUrl = FileUtils.getDefaultPublicUrlForImage(request, dstPath);
             }
             return shareUrl;
         } catch (IOException e) {
@@ -696,7 +696,7 @@ public class CharacterApi {
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {
-                shareUrl = FileUtils.getDefaultShareUrlForImage(request, dstPath);
+                shareUrl = FileUtils.getDefaultPublicUrlForImage(request, dstPath);
             }
             return shareUrl;
         } catch (IOException e) {

@@ -10,6 +10,8 @@ import Prompts from './pages/prompt/Prompts';
 import PromptInfo from './pages/prompt/PromptInfo';
 import PromptEditor from './pages/prompt/PromptEditor';
 import OpenApi from './pages/docs/OpenApi';
+import CharacterEditor from './pages/character/CharacterEditor';
+import Characters from './pages/character/Characters';
 
 const sidebarRoutes = [
   {
@@ -31,6 +33,14 @@ const sidebarRoutes = [
   {
     path: 'prompt/edit/:id',
     element: <PromptEditor />,
+  },
+  {
+    path: 'characters',
+    element: <Characters />,
+  },
+  {
+    path: 'character/edit/:id',
+    element: <CharacterEditor />,
   },
   {
     path: 'plugins',

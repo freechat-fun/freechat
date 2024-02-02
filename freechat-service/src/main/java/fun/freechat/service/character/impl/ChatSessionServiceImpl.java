@@ -88,8 +88,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             key = CACHE_KEY_SPEL_PREFIX + "#p0",
             unless="#result == null")
     public ChatSession get(String chatId) {
+        ChatContext context = chatContextService.get(chatId);
+        return get(context);
+    }
+
+    @Override
+    public ChatSession get(ChatContext context) {
+        String chatId = context.getChatId();
         try {
-            ChatContext context = chatContextService.get(chatId);
             CharacterBackend backend = characterService.getBackend(context.getBackendId());
             String characterId = backend.getCharacterId();
             String ownerId = characterService.getOwner(characterId);
@@ -192,10 +198,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             variables.put(CHARACTER_CHAT_STYLE.text(), getOrBlank(characterInfo.getChatStyle()));
             variables.put(CHARACTER_CHAT_EXAMPLE.text(), getOrBlank(characterInfo.getChatExample()));
             variables.put(CHARACTER_GREETING.text(), getOrBlank(characterInfo.getChatStyle()));
-            variables.put(CHARACTER_EXPERIENCE.text(), getOrBlank(characterInfo.getExperience()));
             variables.put(CHARACTER_PROFILE.text(), getOrBlank(characterInfo.getProfile()));
             variables.put(USER_PROFILE.text(), getOrBlank(userProfile));
             variables.put(USER_NICKNAME.text(), userNickname);
+            variables.put(CHAT_CONTEXT.text(), getOrBlank(context.getAbout()));
 
             ChatMemoryStore chatMemoryStore = StoreUtils.defaultMemoryStore();
             Integer windowSize = backend.getMessageWindowSize();

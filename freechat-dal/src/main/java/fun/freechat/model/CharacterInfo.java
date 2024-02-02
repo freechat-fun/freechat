@@ -27,6 +27,9 @@ public class CharacterInfo implements Serializable {
     private String name;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String nickname;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String avatar;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -42,6 +45,9 @@ public class CharacterInfo implements Serializable {
     private Integer version;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer priority;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String description;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -55,9 +61,6 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String chatExample;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String experience;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
@@ -181,6 +184,22 @@ public class CharacterInfo implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getNickname() {
+        return nickname;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterInfo withNickname(String nickname) {
+        this.setNickname(nickname);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setNickname(String nickname) {
+        this.nickname = nickname == null ? null : nickname.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getAvatar() {
         return avatar;
     }
@@ -258,6 +277,22 @@ public class CharacterInfo implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getPriority() {
+        return priority;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterInfo withPriority(Integer priority) {
+        this.setPriority(priority);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -341,22 +376,6 @@ public class CharacterInfo implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getExperience() {
-        return experience;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterInfo withExperience(String experience) {
-        this.setExperience(experience);
-        return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setExperience(String experience) {
-        this.experience = experience == null ? null : experience.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
@@ -408,11 +427,13 @@ public class CharacterInfo implements Serializable {
             && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
             && (this.getVisibility() == null ? other.getVisibility() == null : this.getVisibility().equals(other.getVisibility()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getNickname() == null ? other.getNickname() == null : this.getNickname().equals(other.getNickname()))
             && (this.getAvatar() == null ? other.getAvatar() == null : this.getAvatar().equals(other.getAvatar()))
             && (this.getPicture() == null ? other.getPicture() == null : this.getPicture().equals(other.getPicture()))
             && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
             && (this.getLang() == null ? other.getLang() == null : this.getLang().equals(other.getLang()))
-            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()));
+            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+            && (this.getPriority() == null ? other.getPriority() == null : this.getPriority().equals(other.getPriority()));
     }
 
     @Override
@@ -427,11 +448,13 @@ public class CharacterInfo implements Serializable {
         result = prime * result + ((getParentId() == null) ? 0 : getParentId().hashCode());
         result = prime * result + ((getVisibility() == null) ? 0 : getVisibility().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getNickname() == null) ? 0 : getNickname().hashCode());
         result = prime * result + ((getAvatar() == null) ? 0 : getAvatar().hashCode());
         result = prime * result + ((getPicture() == null) ? 0 : getPicture().hashCode());
         result = prime * result + ((getGender() == null) ? 0 : getGender().hashCode());
         result = prime * result + ((getLang() == null) ? 0 : getLang().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
+        result = prime * result + ((getPriority() == null) ? 0 : getPriority().hashCode());
         return result;
     }
 
@@ -449,17 +472,18 @@ public class CharacterInfo implements Serializable {
         sb.append(", parentId=").append(parentId);
         sb.append(", visibility=").append(visibility);
         sb.append(", name=").append(name);
+        sb.append(", nickname=").append(nickname);
         sb.append(", avatar=").append(avatar);
         sb.append(", picture=").append(picture);
         sb.append(", gender=").append(gender);
         sb.append(", lang=").append(lang);
         sb.append(", version=").append(version);
+        sb.append(", priority=").append(priority);
         sb.append(", description=").append(description);
         sb.append(", profile=").append(profile);
         sb.append(", greeting=").append(greeting);
         sb.append(", chatStyle=").append(chatStyle);
         sb.append(", chatExample=").append(chatExample);
-        sb.append(", experience=").append(experience);
         sb.append(", ext=").append(ext);
         sb.append(", draft=").append(draft);
         sb.append(", serialVersionUID=").append(serialVersionUID);

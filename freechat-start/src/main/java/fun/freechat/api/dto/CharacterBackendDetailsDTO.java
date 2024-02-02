@@ -25,8 +25,6 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private Boolean isDefault;
     @Schema(description = "Prompt task identifier for greeting")
     private String greetingPromptTaskId;
-    @Schema(description = "Prompt task identifier for experience")
-    private String experiencePromptTaskId;
     @Schema(description = "Max messages in the character's memory")
     private Integer messageWindowSize;
     @Schema(description = "Whether to forward messages to the character owner")

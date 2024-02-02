@@ -151,7 +151,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                 }
             } else if (type == ModelType.EMBEDDING) {
                 var result = send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
-                handler.onNext(result.content().getContent());
+                handler.onNext(result.content().getContentText());
                 handler.onComplete((Response<T>) result);
             } else {
                 throw new NotImplementedException("Not implemented.");

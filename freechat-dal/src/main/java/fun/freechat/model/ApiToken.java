@@ -18,6 +18,9 @@ public class ApiToken implements Serializable {
     private String userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String token;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String type;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -25,9 +28,6 @@ public class ApiToken implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date expiresAt;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String token;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String policy;
@@ -100,6 +100,22 @@ public class ApiToken implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getToken() {
+        return token;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ApiToken withToken(String token) {
+        this.setToken(token);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setToken(String token) {
+        this.token = token == null ? null : token.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getType() {
         return type;
     }
@@ -148,22 +164,6 @@ public class ApiToken implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getToken() {
-        return token;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ApiToken withToken(String token) {
-        this.setToken(token);
-        return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setToken(String token) {
-        this.token = token == null ? null : token.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getPolicy() {
         return policy;
     }
@@ -196,9 +196,11 @@ public class ApiToken implements Serializable {
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+            && (this.getToken() == null ? other.getToken() == null : this.getToken().equals(other.getToken()))
             && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
             && (this.getIssuedAt() == null ? other.getIssuedAt() == null : this.getIssuedAt().equals(other.getIssuedAt()))
-            && (this.getExpiresAt() == null ? other.getExpiresAt() == null : this.getExpiresAt().equals(other.getExpiresAt()));
+            && (this.getExpiresAt() == null ? other.getExpiresAt() == null : this.getExpiresAt().equals(other.getExpiresAt()))
+            && (this.getPolicy() == null ? other.getPolicy() == null : this.getPolicy().equals(other.getPolicy()));
     }
 
     @Override
@@ -210,9 +212,11 @@ public class ApiToken implements Serializable {
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+        result = prime * result + ((getToken() == null) ? 0 : getToken().hashCode());
         result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
         result = prime * result + ((getIssuedAt() == null) ? 0 : getIssuedAt().hashCode());
         result = prime * result + ((getExpiresAt() == null) ? 0 : getExpiresAt().hashCode());
+        result = prime * result + ((getPolicy() == null) ? 0 : getPolicy().hashCode());
         return result;
     }
 
@@ -227,10 +231,10 @@ public class ApiToken implements Serializable {
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", userId=").append(userId);
+        sb.append(", token=").append(token);
         sb.append(", type=").append(type);
         sb.append(", issuedAt=").append(issuedAt);
         sb.append(", expiresAt=").append(expiresAt);
-        sb.append(", token=").append(token);
         sb.append(", policy=").append(policy);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

@@ -16,7 +16,6 @@ import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
 import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
 import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
-import { ChatContentDTO } from '../models/ChatContentDTO.js';
 import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -1053,9 +1052,9 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public async sendMessage(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Promise<RequestContext> {
+    public async sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'chatId' is not null or undefined
@@ -1064,9 +1063,9 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
         }
 
 
-        // verify required parameter 'chatContentDTO' is not null or undefined
-        if (chatContentDTO === null || chatContentDTO === undefined) {
-            throw new RequiredError("CharacterApi", "sendMessage", "chatContentDTO");
+        // verify required parameter 'chatMessageDTO' is not null or undefined
+        if (chatMessageDTO === null || chatMessageDTO === undefined) {
+            throw new RequiredError("CharacterApi", "sendMessage", "chatMessageDTO");
         }
 
 
@@ -1085,7 +1084,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(chatContentDTO, "ChatContentDTO", ""),
+            ObjectSerializer.serialize(chatMessageDTO, "ChatMessageDTO", ""),
             contentType
         );
         requestContext.setBody(serializedBody);
@@ -1195,9 +1194,9 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public async streamSendMessage(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Promise<RequestContext> {
+    public async streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'chatId' is not null or undefined
@@ -1206,9 +1205,9 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
         }
 
 
-        // verify required parameter 'chatContentDTO' is not null or undefined
-        if (chatContentDTO === null || chatContentDTO === undefined) {
-            throw new RequiredError("CharacterApi", "streamSendMessage", "chatContentDTO");
+        // verify required parameter 'chatMessageDTO' is not null or undefined
+        if (chatMessageDTO === null || chatMessageDTO === undefined) {
+            throw new RequiredError("CharacterApi", "streamSendMessage", "chatMessageDTO");
         }
 
 
@@ -1227,7 +1226,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(chatContentDTO, "ChatContentDTO", ""),
+            ObjectSerializer.serialize(chatMessageDTO, "ChatMessageDTO", ""),
             contentType
         );
         requestContext.setBody(serializedBody);

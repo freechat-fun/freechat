@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, PropsWithChildren } from 'react';
 import Prism from 'prismjs';
-import 'prismjs/themes/prism.css';
+import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-jsx';
 import 'prismjs/components/prism-typescript';

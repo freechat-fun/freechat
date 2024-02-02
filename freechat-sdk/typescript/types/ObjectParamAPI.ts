@@ -1513,11 +1513,11 @@ export interface CharacterApiSendMessageRequest {
      */
     chatId: string
     /**
-     * Chat content
-     * @type ChatContentDTO
+     * Chat message
+     * @type ChatMessageDTO
      * @memberof CharacterApisendMessage
      */
-    chatContentDTO: ChatContentDTO
+    chatMessageDTO: ChatMessageDTO
 }
 
 export interface CharacterApiSetDefaultCharacterBackendRequest {
@@ -1546,11 +1546,11 @@ export interface CharacterApiStreamSendMessageRequest {
      */
     chatId: string
     /**
-     * Chat content
-     * @type ChatContentDTO
+     * Chat message
+     * @type ChatMessageDTO
      * @memberof CharacterApistreamSendMessage
      */
-    chatContentDTO: ChatContentDTO
+    chatMessageDTO: ChatMessageDTO
 }
 
 export interface CharacterApiUpdateCharacterRequest {
@@ -2046,7 +2046,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public sendMessageWithHttpInfo(param: CharacterApiSendMessageRequest, options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
-        return this.api.sendMessageWithHttpInfo(param.chatId, param.chatContentDTO,  options).toPromise();
+        return this.api.sendMessageWithHttpInfo(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
     /**
@@ -2055,7 +2055,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public sendMessage(param: CharacterApiSendMessageRequest, options?: Configuration): Promise<LlmResultDTO> {
-        return this.api.sendMessage(param.chatId, param.chatContentDTO,  options).toPromise();
+        return this.api.sendMessage(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
     /**
@@ -2100,7 +2100,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public streamSendMessageWithHttpInfo(param: CharacterApiStreamSendMessageRequest, options?: Configuration): Promise<HttpInfo<SseEmitter>> {
-        return this.api.streamSendMessageWithHttpInfo(param.chatId, param.chatContentDTO,  options).toPromise();
+        return this.api.streamSendMessageWithHttpInfo(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
     /**
@@ -2109,7 +2109,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public streamSendMessage(param: CharacterApiStreamSendMessageRequest, options?: Configuration): Promise<SseEmitter> {
-        return this.api.streamSendMessage(param.chatId, param.chatContentDTO,  options).toPromise();
+        return this.api.streamSendMessage(param.chatId, param.chatMessageDTO,  options).toPromise();
     }
 
     /**

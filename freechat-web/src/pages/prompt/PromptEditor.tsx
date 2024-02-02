@@ -10,7 +10,7 @@ import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, Pro
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
 import { locales } from "../../configs/i18n-config";
-import { extractVariables, generateExample } from "../../libs/template_utils";
+import { extractVariables, generateExample, getMessageText, setMessageText } from "../../libs/template_utils";
 import { providers } from "../../configs/model-providers-config";
 
 interface MessageRound {
@@ -127,7 +127,7 @@ export default function PromptEditor() {
       setStringTemplate(draftRecord.template);
       setSystem(draftRecord.chatTemplate?.system);
       setUserName(draftRecord.chatTemplate?.messageToSend?.name ?? 'user');
-      setUserMessage(draftRecord.chatTemplate?.messageToSend?.content ||
+      setUserMessage(draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
         (draftRecord.format === 'f_string' ? '{input}' : '{{input}}'));
       setMessages(draftRecord.chatTemplate?.messages ?? []);
       setExample(draftRecord.example);
@@ -195,7 +195,7 @@ export default function PromptEditor() {
         newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
         newRecord.chatTemplate.messageToSend.role = 'user';
       }
-      newRecord.chatTemplate.messageToSend.content = userMessage;
+      setMessageText(newRecord.chatTemplate.messageToSend, userMessage);
       setInputs(extractVariables(newRecord));
       return newRecord;
     });
@@ -297,7 +297,7 @@ export default function PromptEditor() {
       setDefaultVariables(undefined);
     }
 
-    setDefaultOutputText(response?.message?.content ?? response?.text);
+    setDefaultOutputText(getMessageText(response?.message) ?? response?.text);
   }
 
   function handleNameChange(): void {
@@ -349,13 +349,13 @@ export default function PromptEditor() {
     const currentUserMessage = new ChatMessageDTO();
     currentUserMessage.role = 'user',
     currentUserMessage.name = editUserName;
-    currentUserMessage.content = editUserContent;
+    setMessageText(currentUserMessage, editUserContent);
     currentUserMessage.gmtCreate = new Date();
 
     const currentAssistantMessage = new ChatMessageDTO();
     currentAssistantMessage.role = 'assistant',
     currentAssistantMessage.name = editAssistantName;
-    currentAssistantMessage.content = editAssistantContent;
+    setMessageText(currentAssistantMessage, editAssistantContent);
     currentAssistantMessage.gmtCreate = new Date();
 
     setMessages([...messages, currentUserMessage, currentAssistantMessage]);
@@ -475,19 +475,16 @@ export default function PromptEditor() {
         .catch(handleError);
     };
 
-    if (!saved) {
-      const request = recordToUpdateRequest(editRecord);
-        promptApi?.updatePrompt(editRecord.promptId, request)
-          .then(resp => {
-            setSaved(resp);
-            if (resp) {
-              onSaved(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
-            }
-          })
-          .catch(handleError);
-    } else {
-      onSaved(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
-    }
+    const request = recordToUpdateRequest(editRecord);
+    promptApi?.updatePrompt(editRecord.promptId, request)
+      .then(resp => {
+        setSaved(resp);
+        if (resp) {
+          onSaved(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
+        }
+      })
+      .catch(handleError);
+
   }
 
   function filterModels(provider?: string): (AiModelInfoDTO)[] {
@@ -699,13 +696,13 @@ export default function PromptEditor() {
                                 {(round.user.name || round.user.role || 'user').toUpperCase()}
                               </Chip>
                               <Typography level="body-md" sx={contentStyle}>
-                                {round.user.content}
+                                {getMessageText(round.user)}
                               </Typography>
                               <Chip variant="soft" color="warning" sx={{ "--Chip-radius": "2px"}}>
                                 {(round.assistant.name || round.assistant.role || 'assistant').toUpperCase()}
                               </Chip>
                               <Typography level="body-md" sx={contentStyle}>
-                                {round.assistant.content}
+                                {getMessageText(round.assistant)}
                               </Typography>
                             </Box>
                             <IconButton
@@ -937,13 +934,7 @@ export default function PromptEditor() {
             </CommonBox>
             <LinePlaceholder spacing={2} />
 
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 2,
-            }}>
+            <CommonBox>
               <Typography level="title-sm" textColor="neutral">
                 {t('Language')}
               </Typography>
@@ -960,7 +951,7 @@ export default function PromptEditor() {
                 ))}
               </Select>
               <LinePlaceholder spacing={2} />
-            </Box>
+            </CommonBox>
             <LinePlaceholder spacing={2} />
 
             <CommonBox>
@@ -975,6 +966,15 @@ export default function PromptEditor() {
                 >
                   <AddCircleRounded />
                 </IconButton>
+              )}
+              {(tag !== undefined) && (
+                <form onSubmit={handleTagSubmit}>
+                  <TinyInput
+                    type="text"
+                    value={tag}
+                    onChange={(event => setTag(event.target.value))}
+                  />
+                </form>
               )}
             </CommonBox>
             <CommonBox>
@@ -991,15 +991,6 @@ export default function PromptEditor() {
                     </Chip>
                   ))}
                 </Fragment>
-            )}
-              {(tag !== undefined) && (
-                <form onSubmit={handleTagSubmit}>
-                  <TinyInput
-                    type="text"
-                    value={tag}
-                    onChange={(event => setTag(event.target.value))}
-                  />
-                </form>
               )}
             </CommonBox>
             <LinePlaceholder spacing={2} />
@@ -1124,7 +1115,7 @@ export default function PromptEditor() {
           <PromptRunner
             minWidth="16rem"
             maxWidth="40%"
-            apiPath="/api/prompt/send"
+            apiPath="/api/v1/prompt/send/stream"
             record={editRecord}
             defaultVariables={defaultVariables}
             defaultParameters={defaultParameters}

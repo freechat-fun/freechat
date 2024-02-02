@@ -3,14 +3,15 @@ package fun.freechat.service.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.ToolExecutionResultMessage;
-import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.data.image.Image;
+import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.output.Response;
+import fun.freechat.service.ai.message.ChatContent;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.ai.message.ChatToolCall;
 import fun.freechat.service.enums.PromptType;
+import fun.freechat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fun.freechat.service.enums.ChatContentType.IMAGE;
 import static fun.freechat.service.enums.PromptRole.*;
 
 @Slf4j
@@ -58,27 +60,28 @@ public class PromptUtils {
 
     public static dev.langchain4j.data.message.ChatMessage convertChatMessage(ChatMessage message) {
         return switch (message.getRole()) {
-            case SYSTEM -> dev.langchain4j.data.message.SystemMessage.from(message.getContent());
-            case ASSISTANT -> dev.langchain4j.data.message.AiMessage.from(message.getContent());
-            case USER -> dev.langchain4j.data.message.UserMessage.from(message.getName(), message.getContent());
-            case FUNCTION_CALL -> {
-                List<ChatToolCall> toolCalls = message.getToolCalls();
-                if (CollectionUtils.isNotEmpty(toolCalls)) {
-                    yield dev.langchain4j.data.message.AiMessage.from(toolCalls.stream()
-                            .map(toolCall ->
-                                    ToolExecutionRequest.builder()
-                                    .id(toolCall.getId())
-                                    .name(toolCall.getName())
-                                    .arguments(toolCall.getArguments()).build())
-                            .toList());
-                } else {
-                    yield null;
-                }
+            case SYSTEM -> dev.langchain4j.data.message.SystemMessage.from(message.getContentText());
+            case ASSISTANT -> dev.langchain4j.data.message.AiMessage.from(message.getContentText());
+            case USER -> {
+                List<Content> contents = message.getContents().stream()
+                        .map(PromptUtils::convertChatContent)
+                        .toList();
+                yield StringUtils.isBlank(message.getName()) ?
+                        UserMessage.from(contents) :
+                        UserMessage.from(message.getName(), contents);
+
             }
+            case FUNCTION_CALL -> AiMessage.from( message.getToolCalls().stream()
+                    .map(toolCall ->
+                            ToolExecutionRequest.builder()
+                            .id(toolCall.getId())
+                            .name(toolCall.getName())
+                            .arguments(toolCall.getArguments()).build())
+                    .toList());
             case FUNCTION_RESULT -> {
                 String id = null;
                 String name = message.getName();
-                String result = message.getContent();
+                String result = message.getContentText();
                 List<ChatToolCall> toolCalls = message.getToolCalls();
                 if (CollectionUtils.isNotEmpty(toolCalls)) {
                     ChatToolCall toolCall = toolCalls.getFirst();
@@ -94,11 +97,15 @@ public class PromptUtils {
             dev.langchain4j.data.message.ChatMessage l4jMessage) {
         ChatMessage message = new ChatMessage();
         message.setGmtCreate(new Date());
-        message.setContent(l4jMessage.text());
         switch (l4jMessage.type()) {
-            case SYSTEM -> message.setRole(SYSTEM);
+            case SYSTEM -> {
+                message.setRole(SYSTEM);
+                message.setContentText(((SystemMessage) l4jMessage).text());
+            }
             case AI -> {
-                List<ToolExecutionRequest> requests = ((AiMessage) l4jMessage).toolExecutionRequests();
+                AiMessage aiMessage = (AiMessage) l4jMessage;
+                message.setContentText(aiMessage.text());
+                List<ToolExecutionRequest> requests = aiMessage.toolExecutionRequests();
                 if (Objects.isNull(requests)) {
                     message.setRole(ASSISTANT);
                 } else {
@@ -116,8 +123,12 @@ public class PromptUtils {
                 }
             }
             case USER -> {
+                UserMessage userMessage = (UserMessage) l4jMessage;
                 message.setRole(USER);
-                message.setName(((UserMessage) l4jMessage).name());
+                message.setName(userMessage.name());
+                message.setContents(userMessage.contents().stream()
+                        .map(PromptUtils::convertL4jContent)
+                        .toList());
             }
             case TOOL_EXECUTION_RESULT -> {
                 ToolExecutionResultMessage resultMessage = (ToolExecutionResultMessage) l4jMessage;
@@ -126,7 +137,7 @@ public class PromptUtils {
                 toolCall.setName(resultMessage.toolName());
                 message.setRole(FUNCTION_RESULT);
                 message.setName((resultMessage).toolName());
-                message.setContent(resultMessage.text());
+                message.setContentText(resultMessage.text());
                 message.setToolCalls(Collections.singletonList(toolCall));
             }
         }
@@ -136,6 +147,32 @@ public class PromptUtils {
     public static Response<ChatMessage> convertL4jMessageResponse(
             Response<? extends dev.langchain4j.data.message.ChatMessage> response) {
         return Response.from(convertL4jMessage(response.content()), response.tokenUsage(), response.finishReason());
+    }
+
+    public static dev.langchain4j.data.message.Content convertChatContent(ChatContent content) {
+        if (content.getType() == IMAGE) {
+            String imageInfo = content.getContent();
+            if (HttpUtils.isValidUrl(imageInfo)) {
+                return ImageContent.from(imageInfo);
+            } else {
+                return ImageContent.from(imageInfo, content.getMimeType());
+            }
+        } else {
+            return TextContent.from(content.getContent());
+        }
+    }
+
+    public static ChatContent convertL4jContent(dev.langchain4j.data.message.Content l4jContent) {
+        if (l4jContent.type() == ContentType.IMAGE) {
+            Image l4jImage = ((ImageContent) l4jContent).image();
+            if (Objects.nonNull(l4jImage.url())) {
+                return ChatContent.fromImage(l4jImage.url().toString(), l4jImage.mimeType());
+            } else {
+                return ChatContent.fromImage(l4jImage.base64Data(), l4jImage.mimeType());
+            }
+        } else {
+            return ChatContent.fromText(((TextContent) l4jContent).text());
+        }
     }
 
     public static List<dev.langchain4j.data.message.ChatMessage> toL4jMessages(ChatPromptContent promptTemplate) {

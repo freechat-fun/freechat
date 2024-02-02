@@ -32,9 +32,6 @@ public final class CharacterBackendDynamicSqlSupport {
     public static final SqlColumn<String> greetingPromptTaskId = characterBackend.greetingPromptTaskId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> experiencePromptTaskId = characterBackend.experiencePromptTaskId;
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> moderationModelId = characterBackend.moderationModelId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -64,8 +61,6 @@ public final class CharacterBackendDynamicSqlSupport {
         public final SqlColumn<String> chatPromptTaskId = column("chat_prompt_task_id", JDBCType.VARCHAR);
 
         public final SqlColumn<String> greetingPromptTaskId = column("greeting_prompt_task_id", JDBCType.VARCHAR);
-
-        public final SqlColumn<String> experiencePromptTaskId = column("experience_prompt_task_id", JDBCType.VARCHAR);
 
         public final SqlColumn<String> moderationModelId = column("moderation_model_id", JDBCType.VARCHAR);
 

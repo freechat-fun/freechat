@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.2.11
+- API version: 0.2.15
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.14</version>
+  <version>0.2.17</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.14"
+     implementation "fun.freechat:freechat-sdk:0.2.17"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.14.jar`
+* `target/freechat-sdk-0.2.17.jar`
 * `target/lib/*.jar`
 
 ## Getting Started

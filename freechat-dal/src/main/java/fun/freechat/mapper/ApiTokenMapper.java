@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, userId, type, issuedAt, expiresAt, token, policy);
+    BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, userId, token, type, issuedAt, expiresAt, policy);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
@@ -47,10 +47,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="token", property="token", jdbcType=JdbcType.VARCHAR),
         @Result(column="type", property="type", jdbcType=JdbcType.VARCHAR),
         @Result(column="issued_at", property="issuedAt", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="expires_at", property="expiresAt", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="token", property="token", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="policy", property="policy", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<ApiToken> selectMany(SelectStatementProvider selectStatement);
@@ -83,10 +83,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
             c.map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
             .map(userId).toProperty("userId")
+            .map(token).toProperty("token")
             .map(type).toProperty("type")
             .map(issuedAt).toProperty("issuedAt")
             .map(expiresAt).toProperty("expiresAt")
-            .map(token).toProperty("token")
             .map(policy).toProperty("policy")
         );
     }
@@ -97,10 +97,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
             c.map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
             .map(userId).toPropertyWhenPresent("userId", row::getUserId)
+            .map(token).toPropertyWhenPresent("token", row::getToken)
             .map(type).toPropertyWhenPresent("type", row::getType)
             .map(issuedAt).toPropertyWhenPresent("issuedAt", row::getIssuedAt)
             .map(expiresAt).toPropertyWhenPresent("expiresAt", row::getExpiresAt)
-            .map(token).toPropertyWhenPresent("token", row::getToken)
             .map(policy).toPropertyWhenPresent("policy", row::getPolicy)
         );
     }
@@ -137,10 +137,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
         return dsl.set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
+                .set(token).equalTo(row::getToken)
                 .set(type).equalTo(row::getType)
                 .set(issuedAt).equalTo(row::getIssuedAt)
                 .set(expiresAt).equalTo(row::getExpiresAt)
-                .set(token).equalTo(row::getToken)
                 .set(policy).equalTo(row::getPolicy);
     }
 
@@ -149,10 +149,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
         return dsl.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
+                .set(token).equalToWhenPresent(row::getToken)
                 .set(type).equalToWhenPresent(row::getType)
                 .set(issuedAt).equalToWhenPresent(row::getIssuedAt)
                 .set(expiresAt).equalToWhenPresent(row::getExpiresAt)
-                .set(token).equalToWhenPresent(row::getToken)
                 .set(policy).equalToWhenPresent(row::getPolicy);
     }
 
@@ -162,10 +162,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(userId).equalTo(row::getUserId)
+            .set(token).equalTo(row::getToken)
             .set(type).equalTo(row::getType)
             .set(issuedAt).equalTo(row::getIssuedAt)
             .set(expiresAt).equalTo(row::getExpiresAt)
-            .set(token).equalTo(row::getToken)
             .set(policy).equalTo(row::getPolicy)
             .where(id, isEqualTo(row::getId))
         );
@@ -177,10 +177,10 @@ public interface ApiTokenMapper extends CommonCountMapper, CommonDeleteMapper, C
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(userId).equalToWhenPresent(row::getUserId)
+            .set(token).equalToWhenPresent(row::getToken)
             .set(type).equalToWhenPresent(row::getType)
             .set(issuedAt).equalToWhenPresent(row::getIssuedAt)
             .set(expiresAt).equalToWhenPresent(row::getExpiresAt)
-            .set(token).equalToWhenPresent(row::getToken)
             .set(policy).equalToWhenPresent(row::getPolicy)
             .where(id, isEqualTo(row::getId))
         );

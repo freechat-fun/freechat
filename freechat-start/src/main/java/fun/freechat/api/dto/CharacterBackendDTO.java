@@ -16,8 +16,6 @@ public class CharacterBackendDTO {
     private String chatPromptTaskId;
     @Schema(description = "Prompt task identifier for greeting")
     private String greetingPromptTaskId;
-    @Schema(description = "Prompt task identifier for experience")
-    private String experiencePromptTaskId;
     @Schema(description = "Moderation model for the character's response")
     private String moderationModelId;
     @Schema(description = "Api key name for moderation model")

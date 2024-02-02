@@ -5,7 +5,7 @@ import fun.freechat.model.ChatContext;
 import java.util.List;
 
 public interface ChatContextService {
-    String create(ChatContext context);
+    ChatContext create(ChatContext context);
     boolean update(ChatContext context);
     boolean delete(String chatId);
     ChatContext get(String chatId);

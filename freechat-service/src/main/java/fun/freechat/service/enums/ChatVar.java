@@ -8,7 +8,6 @@ public enum ChatVar {
     CHARACTER_GENDER,
     CHARACTER_LANG,
     CHARACTER_PROFILE,
-    CHARACTER_EXPERIENCE,
     CHARACTER_CHAT_STYLE,
     CHARACTER_CHAT_EXAMPLE,
     CHARACTER_GREETING,
@@ -16,6 +15,7 @@ public enum ChatVar {
     USER_PROFILE,
     RELEVANT_INFORMATION,
     CHAT_CONTEXT,
+    MESSAGE_CONTEXT,
     INPUT,
     UNKNOWN;
     public static ChatVar of(String text) {

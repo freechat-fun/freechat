@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { Card, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses } from "@mui/joy";
+import { AspectRatio, Box, Card, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses, useColorScheme } from "@mui/joy";
 import { LinePlaceholder } from "../components";
 import { PromptGallery } from "../components/prompt";
 
 export default function Home() {
   const { t } = useTranslation(['sidebar']);
+  const { mode } = useColorScheme();
 
   return (
     <>
@@ -12,12 +13,28 @@ export default function Home() {
       <Stack>
         <Card sx={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           alignItems: 'center',
           boxShadow: 'lg',
         }}>
-          <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
-          <Typography level="title-md">{t('Create your friends here!')}</Typography>
+          <Box sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
+            <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
+            <Typography level="title-md">{t('Create your friends here!')}</Typography>
+          </Box>
+          <AspectRatio
+            variant="plain"
+            ratio={1}
+            sx={{
+              width: 240,
+            }}
+          >
+            <img src={mode === 'dark' ? '/w/freechat_dark.png' : '/w/freechat_light.png'} />
+          </AspectRatio>
         </Card>
         <LinePlaceholder spacing={6} />
         <Tabs

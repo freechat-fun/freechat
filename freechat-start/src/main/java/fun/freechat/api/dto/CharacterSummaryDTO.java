@@ -32,6 +32,8 @@ public class CharacterSummaryDTO extends TraceableDTO {
     private String name;
     @Schema(description = "Character description")
     private String description;
+    @Schema(description = "Character nickname")
+    private String nickname;
     @Schema(description = "Character avatar url")
     private String avatar;
     @Schema(description = "Character picture url")

@@ -553,7 +553,7 @@ let body:.AccountManagerForAdminApiListUsersRequest = {
   // number | Maximum quantity
   pageSize: 1,
   // number | Current page number
-  pageNum: 0,
+  pageNum: 1,
 };
 
 apiInstance.listUsers(body).then((data:any) => {

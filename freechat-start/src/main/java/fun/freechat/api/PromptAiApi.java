@@ -11,7 +11,6 @@ import fun.freechat.model.User;
 import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
-import fun.freechat.service.enums.PromptRole;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.prompt.PromptAiService;
 import fun.freechat.service.prompt.PromptService;
@@ -23,7 +22,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -185,15 +182,7 @@ public class PromptAiApi {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
-                if (Objects.isNull(chatTemplate.getMessageToSend()) &&
-                        MapUtils.isNotEmpty(variables) &&
-                        variables.containsKey("input")) {
-                    ChatMessageDTO chatMessage = new ChatMessageDTO();
-                    chatMessage.setRole(PromptRole.USER.text());
-                    chatMessage.setGmtCreate(new Date());
-                    chatMessage.setContent(format == PromptFormat.F_STRING ? "{input}" : "{{input}}");
-                    chatTemplate.setMessageToSend(chatMessage);
-                }
+
                 try {
                     ChatPromptContent promptContent = promptService.apply(
                             chatTemplate.toChatPromptContent(), variables, format);

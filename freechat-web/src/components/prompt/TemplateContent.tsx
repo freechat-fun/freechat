@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Box, Card, Chip, Divider, Typography } from "@mui/joy";
 import { PromptDetailsDTO, ChatMessageDTO } from "freechat-sdk";
+import { getMessageText } from "../../libs/template_utils";
 
 export default function TemplateContent(props: { record: PromptDetailsDTO | undefined }) {
   const { record } = props;
@@ -14,7 +15,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
     const template = record?.chatTemplate;
     const system = template?.system;
     const userName = template?.messageToSend?.name || 'user';
-    const userMessage = template?.messageToSend?.content || defaultInput;
+    const userMessage = getMessageText(template?.messageToSend) || defaultInput;
     const messages: ChatMessageDTO[] = template?.messages ?? [];
     
     return (
@@ -36,7 +37,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
               messages?.map((message, index) => {
                 const isAssistant = message.role === 'assistant';
                 const name = (message.name || message.role || 'user').toUpperCase();
-                const content = message.content || '';
+                const content = getMessageText(message) || '';
 
                 return (
                   <Fragment key={`message-${index}`}>

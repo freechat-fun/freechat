@@ -8,11 +8,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 @Slf4j
 public class FileUtils {
     public static final String PUBLIC_DIR = "public/";
+    public static final String PRIVATE_DIR = "private/";
     
     public static String transfer(MultipartFile file, FileStore fileStore, String dstDir, int maxCount)
             throws IOException {
@@ -31,10 +34,20 @@ public class FileUtils {
         return dstPath;
     }
 
-    public static String getDefaultShareUrlForImage(HttpServletRequest request, String path) {
+    public static String getDefaultPublicUrlForImage(HttpServletRequest request, String path) {
         String sharePath = path.substring(PUBLIC_DIR.length());
         return ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath("/public/image?key=" + sharePath)
+                .replacePath("/public/image/" +
+                        Base64.getUrlEncoder().encodeToString(sharePath.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .toString();
+    }
+
+    public static String getDefaultPrivateUrlForImage(HttpServletRequest request, String path, String userId) {
+        String sharePath = path.substring(PRIVATE_DIR.length() + userId.length() + 1);
+        return ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath("/my/image/" +
+                        Base64.getUrlEncoder().encodeToString(sharePath.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .toString();
     }

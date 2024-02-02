@@ -26,7 +26,7 @@ public class CharacterQueryDTO {
         private String name;
         @Schema(description = "Language, exact match")
         private String lang;
-        @Schema(description = "Name, description, profile, chat style, experience, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.")
+        @Schema(description = "Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.")
         private String text;
     }
 

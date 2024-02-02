@@ -1504,10 +1504,10 @@ export class PromiseCharacterApi {
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public sendMessageWithHttpInfo(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
-        const result = this.api.sendMessageWithHttpInfo(chatId, chatContentDTO, _options);
+    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+        const result = this.api.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
         return result.toPromise();
     }
 
@@ -1515,10 +1515,10 @@ export class PromiseCharacterApi {
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public sendMessage(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Promise<LlmResultDTO> {
-        const result = this.api.sendMessage(chatId, chatContentDTO, _options);
+    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<LlmResultDTO> {
+        const result = this.api.sendMessage(chatId, chatMessageDTO, _options);
         return result.toPromise();
     }
 
@@ -1566,10 +1566,10 @@ export class PromiseCharacterApi {
      * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public streamSendMessageWithHttpInfo(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
-        const result = this.api.streamSendMessageWithHttpInfo(chatId, chatContentDTO, _options);
+    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+        const result = this.api.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
         return result.toPromise();
     }
 
@@ -1577,10 +1577,10 @@ export class PromiseCharacterApi {
      * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
-     * @param chatContentDTO Chat content
+     * @param chatMessageDTO Chat message
      */
-    public streamSendMessage(chatId: string, chatContentDTO: ChatContentDTO, _options?: Configuration): Promise<SseEmitter> {
-        const result = this.api.streamSendMessage(chatId, chatContentDTO, _options);
+    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<SseEmitter> {
+        const result = this.api.streamSendMessage(chatId, chatMessageDTO, _options);
         return result.toPromise();
     }
 

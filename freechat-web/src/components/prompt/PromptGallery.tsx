@@ -206,7 +206,7 @@ export default function PromptGallery() {
       .catch(handleError);
   }
 
-  function handleSearch(text: string | undefined, modelIds: string[]): void {
+  function handleSearch(text: string | undefined, modelIds: string[] | undefined): void {
     const where = new PromptQueryWhere();
     where.text = text;
     where.aiModels = modelIds;

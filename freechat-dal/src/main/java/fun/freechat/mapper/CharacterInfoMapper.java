@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterInfo>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(characterId, gmtCreate, gmtModified, userId, parentId, visibility, name, avatar, picture, gender, lang, version, description, profile, greeting, chatStyle, chatExample, experience, ext, draft);
+    BasicColumn[] selectList = BasicColumn.columnList(characterId, gmtCreate, gmtModified, userId, parentId, visibility, name, nickname, avatar, picture, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, ext, draft);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -44,17 +44,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
         @Result(column="parent_id", property="parentId", jdbcType=JdbcType.VARCHAR),
         @Result(column="visibility", property="visibility", jdbcType=JdbcType.VARCHAR),
         @Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
+        @Result(column="nickname", property="nickname", jdbcType=JdbcType.VARCHAR),
         @Result(column="avatar", property="avatar", jdbcType=JdbcType.VARCHAR),
         @Result(column="picture", property="picture", jdbcType=JdbcType.VARCHAR),
         @Result(column="gender", property="gender", jdbcType=JdbcType.VARCHAR),
         @Result(column="lang", property="lang", jdbcType=JdbcType.VARCHAR),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
+        @Result(column="priority", property="priority", jdbcType=JdbcType.INTEGER),
         @Result(column="description", property="description", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="profile", property="profile", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="greeting", property="greeting", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="chat_style", property="chatStyle", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="chat_example", property="chatExample", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="experience", property="experience", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="draft", property="draft", jdbcType=JdbcType.LONGVARCHAR)
     })
@@ -92,17 +93,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(parentId).toProperty("parentId")
             .map(visibility).toProperty("visibility")
             .map(name).toProperty("name")
+            .map(nickname).toProperty("nickname")
             .map(avatar).toProperty("avatar")
             .map(picture).toProperty("picture")
             .map(gender).toProperty("gender")
             .map(lang).toProperty("lang")
             .map(version).toProperty("version")
+            .map(priority).toProperty("priority")
             .map(description).toProperty("description")
             .map(profile).toProperty("profile")
             .map(greeting).toProperty("greeting")
             .map(chatStyle).toProperty("chatStyle")
             .map(chatExample).toProperty("chatExample")
-            .map(experience).toProperty("experience")
             .map(ext).toProperty("ext")
             .map(draft).toProperty("draft")
         );
@@ -118,17 +120,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(parentId).toProperty("parentId")
             .map(visibility).toProperty("visibility")
             .map(name).toProperty("name")
+            .map(nickname).toProperty("nickname")
             .map(avatar).toProperty("avatar")
             .map(picture).toProperty("picture")
             .map(gender).toProperty("gender")
             .map(lang).toProperty("lang")
             .map(version).toProperty("version")
+            .map(priority).toProperty("priority")
             .map(description).toProperty("description")
             .map(profile).toProperty("profile")
             .map(greeting).toProperty("greeting")
             .map(chatStyle).toProperty("chatStyle")
             .map(chatExample).toProperty("chatExample")
-            .map(experience).toProperty("experience")
             .map(ext).toProperty("ext")
             .map(draft).toProperty("draft")
         );
@@ -144,17 +147,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(parentId).toPropertyWhenPresent("parentId", row::getParentId)
             .map(visibility).toPropertyWhenPresent("visibility", row::getVisibility)
             .map(name).toPropertyWhenPresent("name", row::getName)
+            .map(nickname).toPropertyWhenPresent("nickname", row::getNickname)
             .map(avatar).toPropertyWhenPresent("avatar", row::getAvatar)
             .map(picture).toPropertyWhenPresent("picture", row::getPicture)
             .map(gender).toPropertyWhenPresent("gender", row::getGender)
             .map(lang).toPropertyWhenPresent("lang", row::getLang)
             .map(version).toPropertyWhenPresent("version", row::getVersion)
+            .map(priority).toPropertyWhenPresent("priority", row::getPriority)
             .map(description).toPropertyWhenPresent("description", row::getDescription)
             .map(profile).toPropertyWhenPresent("profile", row::getProfile)
             .map(greeting).toPropertyWhenPresent("greeting", row::getGreeting)
             .map(chatStyle).toPropertyWhenPresent("chatStyle", row::getChatStyle)
             .map(chatExample).toPropertyWhenPresent("chatExample", row::getChatExample)
-            .map(experience).toPropertyWhenPresent("experience", row::getExperience)
             .map(ext).toPropertyWhenPresent("ext", row::getExt)
             .map(draft).toPropertyWhenPresent("draft", row::getDraft)
         );
@@ -196,17 +200,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(parentId).equalTo(row::getParentId)
                 .set(visibility).equalTo(row::getVisibility)
                 .set(name).equalTo(row::getName)
+                .set(nickname).equalTo(row::getNickname)
                 .set(avatar).equalTo(row::getAvatar)
                 .set(picture).equalTo(row::getPicture)
                 .set(gender).equalTo(row::getGender)
                 .set(lang).equalTo(row::getLang)
                 .set(version).equalTo(row::getVersion)
+                .set(priority).equalTo(row::getPriority)
                 .set(description).equalTo(row::getDescription)
                 .set(profile).equalTo(row::getProfile)
                 .set(greeting).equalTo(row::getGreeting)
                 .set(chatStyle).equalTo(row::getChatStyle)
                 .set(chatExample).equalTo(row::getChatExample)
-                .set(experience).equalTo(row::getExperience)
                 .set(ext).equalTo(row::getExt)
                 .set(draft).equalTo(row::getDraft);
     }
@@ -220,17 +225,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(parentId).equalToWhenPresent(row::getParentId)
                 .set(visibility).equalToWhenPresent(row::getVisibility)
                 .set(name).equalToWhenPresent(row::getName)
+                .set(nickname).equalToWhenPresent(row::getNickname)
                 .set(avatar).equalToWhenPresent(row::getAvatar)
                 .set(picture).equalToWhenPresent(row::getPicture)
                 .set(gender).equalToWhenPresent(row::getGender)
                 .set(lang).equalToWhenPresent(row::getLang)
                 .set(version).equalToWhenPresent(row::getVersion)
+                .set(priority).equalToWhenPresent(row::getPriority)
                 .set(description).equalToWhenPresent(row::getDescription)
                 .set(profile).equalToWhenPresent(row::getProfile)
                 .set(greeting).equalToWhenPresent(row::getGreeting)
                 .set(chatStyle).equalToWhenPresent(row::getChatStyle)
                 .set(chatExample).equalToWhenPresent(row::getChatExample)
-                .set(experience).equalToWhenPresent(row::getExperience)
                 .set(ext).equalToWhenPresent(row::getExt)
                 .set(draft).equalToWhenPresent(row::getDraft);
     }
@@ -244,17 +250,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(parentId).equalTo(row::getParentId)
             .set(visibility).equalTo(row::getVisibility)
             .set(name).equalTo(row::getName)
+            .set(nickname).equalTo(row::getNickname)
             .set(avatar).equalTo(row::getAvatar)
             .set(picture).equalTo(row::getPicture)
             .set(gender).equalTo(row::getGender)
             .set(lang).equalTo(row::getLang)
             .set(version).equalTo(row::getVersion)
+            .set(priority).equalTo(row::getPriority)
             .set(description).equalTo(row::getDescription)
             .set(profile).equalTo(row::getProfile)
             .set(greeting).equalTo(row::getGreeting)
             .set(chatStyle).equalTo(row::getChatStyle)
             .set(chatExample).equalTo(row::getChatExample)
-            .set(experience).equalTo(row::getExperience)
             .set(ext).equalTo(row::getExt)
             .set(draft).equalTo(row::getDraft)
             .where(characterId, isEqualTo(row::getCharacterId))
@@ -270,17 +277,18 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(parentId).equalToWhenPresent(row::getParentId)
             .set(visibility).equalToWhenPresent(row::getVisibility)
             .set(name).equalToWhenPresent(row::getName)
+            .set(nickname).equalToWhenPresent(row::getNickname)
             .set(avatar).equalToWhenPresent(row::getAvatar)
             .set(picture).equalToWhenPresent(row::getPicture)
             .set(gender).equalToWhenPresent(row::getGender)
             .set(lang).equalToWhenPresent(row::getLang)
             .set(version).equalToWhenPresent(row::getVersion)
+            .set(priority).equalToWhenPresent(row::getPriority)
             .set(description).equalToWhenPresent(row::getDescription)
             .set(profile).equalToWhenPresent(row::getProfile)
             .set(greeting).equalToWhenPresent(row::getGreeting)
             .set(chatStyle).equalToWhenPresent(row::getChatStyle)
             .set(chatExample).equalToWhenPresent(row::getChatExample)
-            .set(experience).equalToWhenPresent(row::getExperience)
             .set(ext).equalToWhenPresent(row::getExt)
             .set(draft).equalToWhenPresent(row::getDraft)
             .where(characterId, isEqualTo(row::getCharacterId))

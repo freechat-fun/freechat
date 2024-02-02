@@ -7,7 +7,6 @@
   "or you can use a temporary key": "or you can use a temporary key",
   "Choose a model": "Choose a model",
   "Model Parameters": "Model Parameters",
-  "Supports Markdown format": "Supports Markdown format",
   "If an input's value is not specified at runtime, the default value set here will be used": "If an input's value is not specified at runtime, the default value set here will be used",
   "These messages will always be used as the starting message in the chat history": "These messages will always be used as the starting message in the chat history",
   "Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.": "Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.",

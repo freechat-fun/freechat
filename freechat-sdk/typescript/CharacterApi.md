@@ -61,7 +61,6 @@ let body:.CharacterApiAddCharacterBackendRequest = {
     isDefault: true,
     chatPromptTaskId: "chatPromptTaskId_example",
     greetingPromptTaskId: "greetingPromptTaskId_example",
-    experiencePromptTaskId: "experiencePromptTaskId_example",
     moderationModelId: "moderationModelId_example",
     moderationApiKeyName: "moderationApiKeyName_example",
     moderationParams: "moderationParams_example",
@@ -398,6 +397,7 @@ let body:.CharacterApiCreateCharacterRequest = {
     visibility: "visibility_example",
     name: "name_example",
     description: "description_example",
+    nickname: "nickname_example",
     avatar: "avatar_example",
     picture: "picture_example",
     gender: "gender_example",
@@ -405,7 +405,6 @@ let body:.CharacterApiCreateCharacterRequest = {
     greeting: "greeting_example",
     chatStyle: "chatStyle_example",
     chatExample: "chatExample_example",
-    experience: "experience_example",
     lang: "lang_example",
     ext: "ext_example",
     draft: "draft_example",
@@ -1067,7 +1066,7 @@ let body:.CharacterApiListMessages1Request = {
   // number | Messages limit
   limit: 1,
   // number | Messages offset (from new to old)
-  offset: 0,
+  offset: 1,
 };
 
 apiInstance.listMessages1(body).then((data:any) => {
@@ -1468,7 +1467,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **sendMessage**
-> LlmResultDTO sendMessage(chatContentDTO)
+> LlmResultDTO sendMessage(chatMessageDTO)
 
 Send a chat message to character.
 
@@ -1485,10 +1484,25 @@ const apiInstance = new .CharacterApi(configuration);
 let body:.CharacterApiSendMessageRequest = {
   // string | Chat session identifier
   chatId: "chatId_example",
-  // ChatContentDTO | Chat content
-  chatContentDTO: {
-    content: "content_example",
-    attachment: "attachment_example",
+  // ChatMessageDTO | Chat message
+  chatMessageDTO: {
+    role: "role_example",
+    name: "name_example",
+    contents: [
+      {
+        type: "type_example",
+        content: "content_example",
+        mimeType: "mimeType_example",
+      },
+    ],
+    toolCalls: [
+      {
+        id: "id_example",
+        name: "name_example",
+        arguments: "arguments_example",
+      },
+    ],
+    gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
     context: "context_example",
   },
 };
@@ -1503,7 +1517,7 @@ apiInstance.sendMessage(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chatContentDTO** | **ChatContentDTO**| Chat content |
+ **chatMessageDTO** | **ChatMessageDTO**| Chat message |
  **chatId** | [**string**] | Chat session identifier | defaults to undefined
 
 
@@ -1603,6 +1617,7 @@ let body:.CharacterApiStartChatRequest = {
     userNickname: "userNickname_example",
     userProfile: "userProfile_example",
     characterNickname: "characterNickname_example",
+    about: "about_example",
     backendId: "backendId_example",
     ext: "ext_example",
   },
@@ -1643,7 +1658,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **streamSendMessage**
-> SseEmitter streamSendMessage(chatContentDTO)
+> SseEmitter streamSendMessage(chatMessageDTO)
 
 Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
 
@@ -1660,10 +1675,25 @@ const apiInstance = new .CharacterApi(configuration);
 let body:.CharacterApiStreamSendMessageRequest = {
   // string | Chat session identifier
   chatId: "chatId_example",
-  // ChatContentDTO | Chat content
-  chatContentDTO: {
-    content: "content_example",
-    attachment: "attachment_example",
+  // ChatMessageDTO | Chat message
+  chatMessageDTO: {
+    role: "role_example",
+    name: "name_example",
+    contents: [
+      {
+        type: "type_example",
+        content: "content_example",
+        mimeType: "mimeType_example",
+      },
+    ],
+    toolCalls: [
+      {
+        id: "id_example",
+        name: "name_example",
+        arguments: "arguments_example",
+      },
+    ],
+    gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
     context: "context_example",
   },
 };
@@ -1678,7 +1708,7 @@ apiInstance.streamSendMessage(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **chatContentDTO** | **ChatContentDTO**| Chat content |
+ **chatMessageDTO** | **ChatMessageDTO**| Chat message |
  **chatId** | [**string**] | Chat session identifier | defaults to undefined
 
 
@@ -1727,6 +1757,7 @@ let body:.CharacterApiUpdateCharacterRequest = {
     visibility: "visibility_example",
     name: "name_example",
     description: "description_example",
+    nickname: "nickname_example",
     avatar: "avatar_example",
     picture: "picture_example",
     gender: "gender_example",
@@ -1734,7 +1765,6 @@ let body:.CharacterApiUpdateCharacterRequest = {
     greeting: "greeting_example",
     chatStyle: "chatStyle_example",
     chatExample: "chatExample_example",
-    experience: "experience_example",
     lang: "lang_example",
     ext: "ext_example",
     draft: "draft_example",
@@ -1802,7 +1832,6 @@ let body:.CharacterApiUpdateCharacterBackendRequest = {
     isDefault: true,
     chatPromptTaskId: "chatPromptTaskId_example",
     greetingPromptTaskId: "greetingPromptTaskId_example",
-    experiencePromptTaskId: "experiencePromptTaskId_example",
     moderationModelId: "moderationModelId_example",
     moderationApiKeyName: "moderationApiKeyName_example",
     moderationParams: "moderationParams_example",

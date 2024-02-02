@@ -11,6 +11,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.util.Base64;
+
 @Component
 @Slf4j
 public class StoreUtils implements ApplicationContextAware {
@@ -54,5 +60,14 @@ public class StoreUtils implements ApplicationContextAware {
 
     public static FileStore defaultFileStore() {
         return fileStore;
+    }
+
+    public static String guessMimeTypeOfBase64Data(String base64Data) {
+        try (InputStream in = new ByteArrayInputStream(
+                Base64.getDecoder().decode(base64Data))) {
+            return URLConnection.guessContentTypeFromStream(in);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

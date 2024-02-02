@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 public class LlmResultDTO extends TraceableDTO {
     @Schema(description = "Model response content, the complete content is included in non-streaming responses; only the delta content is included in streaming responses (the complete content of streaming responses is in the content of the last frame message field)")
     private String text;
-    @Schema(description = "Chat response message (usually as assistant, sometimes function_call)")
+    @Schema(description = "Chat response message (usually as assistant, sometimes tool_call)")
     private ChatMessageDTO message;
     @Schema(description = "Model end reason: stop | length | tool_execution | content_filter")
     private String finishReason;
@@ -47,11 +48,15 @@ public class LlmResultDTO extends TraceableDTO {
 
         switch (content) {
             case ChatMessage origMessage -> {
-                text = origMessage.getContent();
-                message.setContent(text);
+                text = origMessage.getContentText();
                 message.setGmtCreate(origMessage.getGmtCreate());
                 message.setName(origMessage.getName());
                 message.setRole(origMessage.getRole().text());
+                if (CollectionUtils.isNotEmpty(origMessage.getContents())) {
+                    message.setContents(origMessage.getContents().stream()
+                            .map(ChatContentDTO::from)
+                            .toList());
+                }
                 if (CollectionUtils.isNotEmpty(origMessage.getToolCalls())) {
                     message.setToolCalls(origMessage.getToolCalls().stream()
                             .map(ChatToolCallDTO::from)
@@ -60,13 +65,13 @@ public class LlmResultDTO extends TraceableDTO {
             }
             case String textMessage -> {
                 text = textMessage;
-                message.setContent(text);
+                message.setContents(Collections.singletonList(ChatContentDTO.fromText(text)));
                 message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }
             case dev.langchain4j.data.message.AiMessage aiMessage -> {
                 text = aiMessage.text();
-                message.setContent(text);
+                message.setContents(Collections.singletonList(ChatContentDTO.fromText(text)));
                 message.setGmtCreate(new Date());
                 if (aiMessage.hasToolExecutionRequests()) {
                     message.setToolCalls(aiMessage.toolExecutionRequests().stream()
@@ -86,7 +91,7 @@ public class LlmResultDTO extends TraceableDTO {
             }
             case null, default -> {
                 text = Objects.nonNull(content) ? content.toString() : "";
-                message.setContent(text);
+                message.setContents(Collections.singletonList(ChatContentDTO.fromText(text)));
                 message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }

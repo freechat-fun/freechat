@@ -30,8 +30,6 @@ public class CharacterAiTest extends AbstractIntegrationTest{
             You are a very successful businessman.
             You have a wife named Rose.
             You like to begin your answers to people's questions with "It's easy".
-            """;
-    private static final String CHARACTER_EXPERIENCE = """
             It's rainy today.
             """;
     private static final String CHARACTER_CHAT_STYLE = "confident, overbearing";
@@ -52,9 +50,6 @@ public class CharacterAiTest extends AbstractIntegrationTest{
             Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
             {{{CHARACTER_PROFILE}}}
             
-            [[[Your experience]]]
-            {{{CHARACTER_EXPERIENCE}}}
-            
             [[[Your chat examples]]]
             {{{CHARACTER_CHAT_EXAMPLE}}}
             
@@ -64,6 +59,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
             
             [[[Some information you may need to know about this conversation]]]
             {{{CHAT_CONTEXT}}}
+            {{{MESSAGE_CONTEXT}}}
             {{{RELEVANT_INFORMATION}}}
             """;
 
@@ -185,7 +181,6 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         dto.setProfile(CHARACTER_PROFILE);
         dto.setChatStyle(CHARACTER_CHAT_STYLE);
         dto.setChatExample(CHARACTER_CHAT_EXAMPLE);
-        dto.setExperience(CHARACTER_EXPERIENCE);
         dto.setVisibility(Visibility.PRIVATE.text());
 
         characterId = testClient.post().uri("/api/v1/character")
@@ -285,7 +280,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         assertNotNull(result);
         assertNotNull(result.getMessage());
         System.out.println(USER_NICKNAME + ": " + dto.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContent() +
+        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().toChatMessage().getContentText() +
                 " (" + result.getTokenUsage() + ")");
 
         dto.setContent("How about the weather today?");
@@ -303,7 +298,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         assertNotNull(result);
         assertNotNull(result.getMessage());
         System.out.println(USER_NICKNAME + ": " + dto.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContent() +
+        System.out.println(CHARACTER_NICKNAME + ": " +result.getMessage().toChatMessage().getContentText() +
                 " (" + result.getTokenUsage() + ")");
     }
 
@@ -364,7 +359,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         System.out.println("Messages history:");
         messages.stream()
                 .map(message ->
-                    "[" + message.getRole().toUpperCase() + "]: " + message.getContent())
+                    "[" + message.getRole().toUpperCase() + "]: " + message.toChatMessage().getContentText())
                 .forEach(System.out::println);
     }
 

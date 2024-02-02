@@ -18,7 +18,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -620,15 +619,6 @@ public class PromptApi {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
-                if (Objects.isNull(chatTemplate.getMessageToSend()) &&
-                        MapUtils.isNotEmpty(variables) &&
-                        variables.containsKey("input")) {
-                    ChatMessageDTO chatMessage = new ChatMessageDTO();
-                    chatMessage.setRole(PromptRole.USER.text());
-                    chatMessage.setGmtCreate(new Date());
-                    chatMessage.setContent(format == PromptFormat.F_STRING ? "{input}" : "{{input}}");
-                    chatTemplate.setMessageToSend(chatMessage);
-                }
                 ChatPromptContent applied = promptService.apply(
                         chatTemplate.toChatPromptContent(),variables, format);
                 return InfoUtils.defaultMapper().writeValueAsString(ChatPromptContentDTO.from(applied));

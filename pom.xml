@@ -8,7 +8,7 @@
   <name>${project.artifactId}</name>
 
   <properties>
-    <revision>0.2.14</revision>
+    <revision>0.2.17</revision>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,7 +25,7 @@
     <redisson.version>3.26.0</redisson.version>
     <objenesis.version>3.3</objenesis.version>
     <swagger-parser.version>2.1.19</swagger-parser.version>
-    <langchain4j.version>0.25.0</langchain4j.version>
+    <langchain4j.version>0.26.1</langchain4j.version>
 
     <!--plugin versions-->
     <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>

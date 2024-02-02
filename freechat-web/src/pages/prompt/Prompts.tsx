@@ -1,4 +1,4 @@
-import { createRef, forwardRef, useEffect, useRef, useState } from "react";
+import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
@@ -11,6 +11,7 @@ import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
 import { i18nConfig } from "../../configs/i18n-config";
+import { setMessageText } from "../../libs/template_utils";
 
 interface RecordCardProps {
   record: PromptSummaryDTO,
@@ -103,7 +104,7 @@ export default function Prompts() {
   const pageSize = 6;
 
   const [records, setRecords] = useState<PromptSummaryDTO[]>([]);
-  const [query, setQuery] = useState<PromptQueryDTO>(defaultQuery());
+  const [query, setQuery] = useState<PromptQueryDTO>(defaultQuery(pageSize));
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [recordDeleted, setRecordDeleted] = useState<PromptSummaryDTO>();
@@ -114,38 +115,39 @@ export default function Prompts() {
 
   const [showCards, setShowCards] = useState(false);
   const [showCardsFinish, setShowCardsFinish] = useState(false);
+
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
-  useEffect(() => {
-    doSearch(query);
-    return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [promptApi, query]);
+  const doSearch = useCallback(() => {
+    promptApi?.searchPromptSummary(query)
+    .then(resp => {
+      setRecords(resp);
+      if (page === 0) {
+        promptApi?.countPrompts(query)
+          .then(setTotal)
+          .catch(handleError);
+      }
+    })
+    .catch(handleError);
+  }, [handleError, page, promptApi, query]);
 
-  function defaultQuery(): PromptQueryDTO {
+
+  useEffect(() => {
+    doSearch();
+    return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
+  }, [doSearch]);
+
+  function defaultQuery(limit: number): PromptQueryDTO {
     const newQuery = new PromptQueryDTO();
     newQuery.where = new PromptQueryWhere();
-    newQuery.pageSize = pageSize;
+    newQuery.pageSize = limit;
     newQuery.pageNum = 0;
     newQuery.orderBy = ['modifyTime'];
 
     return newQuery;
   }
 
-  function doSearch(query: PromptQueryDTO): void {
-    promptApi?.searchPromptSummary(query)
-      .then(resp => {
-        setRecords(resp);
-        if (page === 0) {
-          promptApi?.countPrompts(query)
-            .then(setTotal)
-            .catch(handleError);
-        }
-      })
-      .catch(handleError);
-  }
-
-  function handleSearch(text: string | undefined, modelIds: string[]): void {
+  function handleSearch(text: string | undefined, modelIds: string[] | undefined): void {
     const where = new PromptQueryWhere();
     where.text = text;
     where.aiModels = modelIds;
@@ -173,7 +175,7 @@ export default function Prompts() {
 
   function handleDelete(record: PromptSummaryDTO | undefined): void {
     record?.name && promptApi?.deletePromptByName(record.name)
-      .then(() =>doSearch(query))
+      .then(() =>doSearch())
       .catch(handleError);
 
     setRecordDeleted(undefined);
@@ -196,7 +198,7 @@ export default function Prompts() {
       return;
     }
       
-    promptApi?.existsName(editRecordName)
+    promptApi?.existsPromptName(editRecordName)
       .then(resp => {
         if (!resp) {
           const request = new PromptCreateDTO();
@@ -205,7 +207,7 @@ export default function Prompts() {
             request.chatTemplate.system = '';
             request.chatTemplate.messageToSend = new ChatMessageDTO();
             request.chatTemplate.messageToSend.role = 'user';
-            request.chatTemplate.messageToSend.content = '{{input}}';
+            setMessageText(request.chatTemplate.messageToSend, '{{input}}');
             request.inputs = JSON.stringify({'input': ''});
           } else if (editRecordType === 'string') {
             request.template = '';
@@ -241,117 +243,117 @@ export default function Prompts() {
   }
 
   return(
-  <>
-    <LinePlaceholder />
-    <Box sx={{
-      display: 'flex',
-      flexDirection: { xs: 'column', lg: 'row' },
-      justifyContent: 'space-between',
-      alignItems: { xs: 'start', lg: 'center' },
-    }}>
-      <InfoSearchbar onSearch={handleSearch} />
-      <Button
-        startDecorator={<AddCircleRounded />}
-        sx={{ borderRadius: '20px' }}
-        onClick={() => setEditRecordName('untitled-1')}
-      >
-        {t('Create new')}
-      </Button>
-    </Box>
-    <LinePlaceholder />
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-        gap: 3,
-      }}
-    >
-      {records.map((record, index) => (
-        <Transition
-          in={showCards}
-          timeout={index * defaultTransitionInterval}
-          unmountOnExit
-          key={record.promptId || `transition-${index}`}
-          nodeRef={cardRefs.current[index]}
+    <>
+      <LinePlaceholder />
+      <Box sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', lg: 'row' },
+        justifyContent: 'space-between',
+        alignItems: { xs: 'start', lg: 'center' },
+      }}>
+        <InfoSearchbar onSearch={handleSearch} />
+        <Button
+          startDecorator={<AddCircleRounded />}
+          sx={{ borderRadius: '20px' }}
+          onClick={() => setEditRecordName('untitled-1')}
         >
-          {(state) => (
-            <RecordCard
-              key={record.promptId}
-              ref={cardRefs.current[index]}
-              record={record}
-              onView={handleView}
-              onEdit={handleEdit}
-              onDelete={handleTryDelete}
-              sx={{
-                transition: defaultTransitionSetting,
-                ...transitionStyles[state],
-              }}
-            />
+          {t('Create new')}
+        </Button>
+      </Box>
+      <LinePlaceholder />
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: 3,
+        }}
+      >
+        {records.map((record, index) => (
+          <Transition
+            in={showCards}
+            timeout={index * defaultTransitionInterval}
+            unmountOnExit
+            key={record.promptId || `transition-${index}`}
+            nodeRef={cardRefs.current[index]}
+          >
+            {(state) => (
+              <RecordCard
+                key={record.promptId}
+                ref={cardRefs.current[index]}
+                record={record}
+                onView={handleView}
+                onEdit={handleEdit}
+                onDelete={handleTryDelete}
+                sx={{
+                  transition: defaultTransitionSetting,
+                  ...transitionStyles[state],
+                }}
+              />
+            )}
+          </Transition>
+          
+        ))}
+      </Box>
+      <Box sx={{
+        opacity: showCardsFinish ? 1 : 0,
+        display: 'flex',
+        justifyContent: 'end',
+        alignItems: 'center',
+        gap: 1,
+        mt: 2,
+      }}>
+        <Chip variant="outlined" sx={{ mr: 1.5 }}>
+          {labelDisplayedRows(
+            records.length === 0 ? 0 : page * pageSize + 1,
+            getLabelDisplayedRowsTo(),
+            total,
           )}
-        </Transition>
-        
-      ))}
-    </Box>
-    <Box sx={{
-      opacity: showCardsFinish ? 1 : 0,
-      display: 'flex',
-      justifyContent: 'end',
-      alignItems: 'center',
-      gap: 1,
-      mt: 2,
-    }}>
-      <Chip variant="outlined" sx={{ mr: 1.5 }}>
-        {labelDisplayedRows(
-          records.length === 0 ? 0 : page * pageSize + 1,
-          getLabelDisplayedRowsTo(),
-          total,
-        )}
-      </Chip>
-      <IconButton
-        size="sm"
-        color="neutral"
-        variant="outlined"
-        disabled={page === 0}
-        onClick={() => handleChangePage(page - 1)}
-        sx={{ bgcolor: 'background.surface' }}
-      >
-        <KeyboardArrowLeftRounded />
-      </IconButton>
-      <IconButton
-        size="sm"
-        color="neutral"
-        variant="outlined"
-        disabled={
-          records.length !== -1
-            ? (1 + page) * pageSize >= total
-            : false
-        }
-        onClick={() => handleChangePage(page + 1)}
-        sx={{ bgcolor: 'background.surface' }}
-      >
-        <KeyboardArrowRightRounded />
-      </IconButton>
-    </Box>
+        </Chip>
+        <IconButton
+          size="sm"
+          color="neutral"
+          variant="outlined"
+          disabled={page === 0}
+          onClick={() => handleChangePage(page - 1)}
+          sx={{ bgcolor: 'background.surface' }}
+        >
+          <KeyboardArrowLeftRounded />
+        </IconButton>
+        <IconButton
+          size="sm"
+          color="neutral"
+          variant="outlined"
+          disabled={
+            records.length !== -1
+              ? (1 + page) * pageSize >= total
+              : false
+          }
+          onClick={() => handleChangePage(page + 1)}
+          sx={{ bgcolor: 'background.surface' }}
+        >
+          <KeyboardArrowRightRounded />
+        </IconButton>
+      </Box>
 
-    <ConfirmModal
-      open={!!recordDeleted}
-      onClose={() => setRecordDeleted(undefined)}
-      obj={recordDeleted}
-      dialog={{
-        color: 'danger',
-        title: t('Do you really want to delete this prompt?'),
-      }}
-      button={{
-        color: 'danger',
-        text: t('button:Delete'),
-        startDecorator: <DeleteForeverRounded />
-      }}
-      onConfirm={handleDelete}
-    >
-      <Typography>{recordDeleted?.name}</Typography>
-    </ConfirmModal>
+      <ConfirmModal
+        open={!!recordDeleted}
+        onClose={() => setRecordDeleted(undefined)}
+        obj={recordDeleted}
+        dialog={{
+          color: 'danger',
+          title: t('Do you really want to delete this prompt?'),
+        }}
+        button={{
+          color: 'danger',
+          text: t('button:Delete'),
+          startDecorator: <DeleteForeverRounded />
+        }}
+        onConfirm={handleDelete}
+      >
+        <Typography>{recordDeleted?.name}</Typography>
+      </ConfirmModal>
 
-    <ConfirmModal
+      <ConfirmModal
         open={editRecordName !== undefined}
         onClose={() => {
           setEditRecordNameError(false);
@@ -426,6 +428,5 @@ export default function Prompts() {
           </Box>
         </Box>
       </ConfirmModal>
-  </>
-  );
+  </>);
 }
