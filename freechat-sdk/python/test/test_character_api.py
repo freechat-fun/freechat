@@ -131,6 +131,13 @@ class TestCharacterApi(unittest.TestCase):
         """
         pass
 
+    def test_list_character_backends(self) -> None:
+        """Test case for list_character_backends
+
+        List Character Backends
+        """
+        pass
+
     def test_list_character_versions_by_name(self) -> None:
         """Test case for list_character_versions_by_name
 
@@ -156,6 +163,13 @@ class TestCharacterApi(unittest.TestCase):
         """Test case for list_messages2
 
         List Chat Messages
+        """
+        pass
+
+    def test_new_character_name(self) -> None:
+        """Test case for new_character_name
+
+        Create New Character Name
         """
         pass
 

@@ -70,6 +70,7 @@ public interface CharacterService {
     CharacterBackend getDefaultBackend(String characterId);
     CharacterBackend getBackend(String characterBackendId);
     List<String> listBackendIds(String characterId);
+    List<CharacterBackend> listBackends(String characterId);
     String getBackendOwner(String characterBackendId);
     String getBackendCharacterId(String characterBackendId);
 }

@@ -1,8 +1,12 @@
 package fun.freechat.config;
 
+import com.esotericsoftware.kryo.Kryo;
+import fun.freechat.config.util.UnmodifiableCollectionsSerializer;
 import fun.freechat.service.common.EncryptionService;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
+import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +30,7 @@ public class RedissonConfig {
 
     @Bean(destroyMethod="shutdown")
     public RedissonClient redissonClient() {
-        Config config = new Config();
+        Config config = new Config().setCodec(codec());
 
         if ("single".equalsIgnoreCase(mode)) {
             config.useSingleServer()
@@ -40,5 +44,15 @@ public class RedissonConfig {
                     .setTimeout(timeout);
         }
         return Redisson.create(config);
+    }
+
+    private Codec codec() {
+        return new Kryo5Codec() {
+            protected Kryo createKryo(ClassLoader classLoader) {
+                Kryo kryo = super.createKryo(classLoader);
+                UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+                return kryo;
+            }
+        };
     }
 }

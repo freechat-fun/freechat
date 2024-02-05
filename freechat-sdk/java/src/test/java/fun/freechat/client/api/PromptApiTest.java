@@ -266,6 +266,20 @@ public class PromptApiTest {
     }
 
     /**
+     * Create New Prompt Name
+     *
+     * Create a new prompt name starting with a desired name.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void newPromptNameTest() throws ApiException {
+        String desired = null;
+        String response = api.newPromptName(desired);
+        // TODO: test validations
+    }
+
+    /**
      * Publish Prompt
      *
      * Publish prompt, draft content becomes formal content, version number increases by 1. After successful publication, a new promptId will be generated and returned. You need to specify the visibility for publication.

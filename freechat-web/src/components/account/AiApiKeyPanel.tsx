@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, FormLabel, IconButton, Input, Stack, Table, Typography } from "@mui/joy";
@@ -16,21 +16,20 @@ export default function AiApiKeyPanel(props: {
   const { handleError } = useErrorMessageBusContext();
 
   const [keys, setKeys] = useState<Array<AiApiKeyInfoDTO>>([]);
-  const [keyIdToConfirm, setKeyIdToConfirm] = useState<number | undefined>();
-  const [keyNameToAdd, setKeyNameToAdd] = useState<string | undefined>();
-  const [keyTextToAdd, setKeyTextToAdd] = useState<string | undefined>();
+  const [keyIdToConfirm, setKeyIdToConfirm] = useState<number>();
+  const [keyNameToAdd, setKeyNameToAdd] = useState<string>();
+  const [keyTextToAdd, setKeyTextToAdd] = useState<string>();
   const [addingKey, setAddingKey] = useState(false);
 
-  useEffect(() => {
-    getKeys();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiServiceApi]);
-
-  function getKeys(): void {
+  const getKeys = useCallback(() => {
     aiServiceApi?.listAiApiKeys(provider)
       .then(resp => setKeys(resp.filter(key => !!key.id && key.enabled)))
       .catch(handleError);
-  }
+  }, [aiServiceApi, handleError, provider]);
+
+  useEffect(() => {
+    getKeys();
+  }, [getKeys]);
 
   function handleKeyNameChange(event: React.ChangeEvent<HTMLInputElement>): void {
     if (event.target.value !== keyNameToAdd) {

@@ -138,6 +138,13 @@ class TestPromptApi(unittest.TestCase):
         """
         pass
 
+    def test_new_prompt_name(self) -> None:
+        """Test case for new_prompt_name
+
+        Create New Prompt Name
+        """
+        pass
+
     def test_publish_prompt(self) -> None:
         """Test case for publish_prompt
 

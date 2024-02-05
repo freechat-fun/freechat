@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, Checkbox, Chip, IconButton, Stack, Table, Typography } from "@mui/joy";
@@ -15,24 +15,22 @@ export default function ApiTokenPanel() {
   const { handleError } = useErrorMessageBusContext();
 
   const [tokens, setTokens] = useState<Array<ApiTokenInfoDTO>>([]);
-  const [tokenText, setTokenText] = useState<string | undefined>();
+  const [tokenText, setTokenText] = useState<string>();
   const [tokenTextCopied, setTokenTextCopied] = useState(false);
-  const [tokenIdToConfirm, setTokenIdToConfirm] = useState<number | undefined>();
-  const [tokenExpiresTime, setTokenExpiresTime] = useState<Date | undefined | null>();
+  const [tokenIdToConfirm, setTokenIdToConfirm] = useState<number>();
+  const [tokenExpiresTime, setTokenExpiresTime] = useState<Date | null>();
   const [tokenNeverExpires, setTokenNeverExpires] = useState(false);
   const [creatingToken, setCreatingToken] = useState(false);
 
-
-  useEffect(() => {
-    getTokens();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountApi]);
-
-  function getTokens(): void {
+  const getTokens = useCallback(() => {
     accountApi?.listTokens()
       .then(setTokens)
       .catch(handleError);
-  }
+  }, [accountApi, handleError]);
+
+  useEffect(() => {
+    getTokens();
+  }, [getTokens]);
 
   function handleCreate(): void {
     const duration = getSecondsBetweenDates(new Date(), tokenExpiresTime);

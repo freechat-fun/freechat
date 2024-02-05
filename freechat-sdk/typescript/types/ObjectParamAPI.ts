@@ -1400,6 +1400,15 @@ export interface CharacterApiListCharacterBackendIdsRequest {
     characterId: string
 }
 
+export interface CharacterApiListCharacterBackendsRequest {
+    /**
+     * The characterId to be queried
+     * @type string
+     * @memberof CharacterApilistCharacterBackends
+     */
+    characterId: string
+}
+
 export interface CharacterApiListCharacterVersionsByNameRequest {
     /**
      * Character name
@@ -1452,6 +1461,15 @@ export interface CharacterApiListMessages2Request {
      * @memberof CharacterApilistMessages2
      */
     chatId: string
+}
+
+export interface CharacterApiNewCharacterNameRequest {
+    /**
+     * Desired name
+     * @type string
+     * @memberof CharacterApinewCharacterName
+     */
+    desired: string
 }
 
 export interface CharacterApiPublishCharacterRequest {
@@ -1861,7 +1879,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      * List Character Backend ids
      * @param param the request object
      */
@@ -1870,12 +1888,30 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      * List Character Backend ids
      * @param param the request object
      */
     public listCharacterBackendIds(param: CharacterApiListCharacterBackendIdsRequest, options?: Configuration): Promise<Array<string>> {
         return this.api.listCharacterBackendIds(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * List character backends.
+     * List Character Backends
+     * @param param the request object
+     */
+    public listCharacterBackendsWithHttpInfo(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+        return this.api.listCharacterBackendsWithHttpInfo(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * List character backends.
+     * List Character Backends
+     * @param param the request object
+     */
+    public listCharacterBackends(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
+        return this.api.listCharacterBackends(param.characterId,  options).toPromise();
     }
 
     /**
@@ -1948,6 +1984,24 @@ export class ObjectCharacterApi {
      */
     public listMessages2(param: CharacterApiListMessages2Request, options?: Configuration): Promise<Array<ChatMessageDTO>> {
         return this.api.listMessages2(param.chatId,  options).toPromise();
+    }
+
+    /**
+     * Create a new character name starting with a desired name.
+     * Create New Character Name
+     * @param param the request object
+     */
+    public newCharacterNameWithHttpInfo(param: CharacterApiNewCharacterNameRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.newCharacterNameWithHttpInfo(param.desired,  options).toPromise();
+    }
+
+    /**
+     * Create a new character name starting with a desired name.
+     * Create New Character Name
+     * @param param the request object
+     */
+    public newCharacterName(param: CharacterApiNewCharacterNameRequest, options?: Configuration): Promise<string> {
+        return this.api.newCharacterName(param.desired,  options).toPromise();
     }
 
     /**
@@ -4244,6 +4298,15 @@ export interface PromptApiListPromptVersionsByNameRequest {
     name: string
 }
 
+export interface PromptApiNewPromptNameRequest {
+    /**
+     * Desired name
+     * @type string
+     * @memberof PromptApinewPromptName
+     */
+    desired: string
+}
+
 export interface PromptApiPublishPromptRequest {
     /**
      * The promptId to be published
@@ -4603,6 +4666,24 @@ export class ObjectPromptApi {
      */
     public listPromptVersionsByName(param: PromptApiListPromptVersionsByNameRequest, options?: Configuration): Promise<Array<PromptItemForNameDTO>> {
         return this.api.listPromptVersionsByName(param.name,  options).toPromise();
+    }
+
+    /**
+     * Create a new prompt name starting with a desired name.
+     * Create New Prompt Name
+     * @param param the request object
+     */
+    public newPromptNameWithHttpInfo(param: PromptApiNewPromptNameRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.newPromptNameWithHttpInfo(param.desired,  options).toPromise();
+    }
+
+    /**
+     * Create a new prompt name starting with a desired name.
+     * Create New Prompt Name
+     * @param param the request object
+     */
+    public newPromptName(param: PromptApiNewPromptNameRequest, options?: Configuration): Promise<string> {
+        return this.api.newPromptName(param.desired,  options).toPromise();
     }
 
     /**

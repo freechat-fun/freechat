@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { Typography, TypographyProps } from "@mui/joy";
 
 const LabelTypography = forwardRef<HTMLDivElement, TypographyProps>((props, ref) => {
-  const { sx, children, ...others } = props; 
+  const { sx, children, ...others } = props;
   return (
     <Typography
       ref={ref}

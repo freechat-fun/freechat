@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
-import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
+import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, LinePlaceholder, TinyInput } from "../../components";
 import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
@@ -12,23 +12,33 @@ import { PromptRunner } from "../../components/prompt";
 import { locales } from "../../configs/i18n-config";
 import { extractVariables, generateExample, getMessageText, setMessageText } from "../../libs/template_utils";
 import { providers } from "../../configs/model-providers-config";
+import { HelpIcon } from "../../components/icon";
 
 interface MessageRound {
   user: ChatMessageDTO;
   assistant: ChatMessageDTO;
 }
 
-export default function PromptEditor() {
+interface PromptEditorProps {
+  id: string | undefined;
+  parameters?: { [key: string]: any };
+  variables?: { [key: string]: any };
+}
+
+export default function PromptEditor({
+  id,
+  parameters,
+  variables,
+}: PromptEditorProps) {
   const navigator = useNavigate();
-  const { id } = useParams();
   const { t, i18n } = useTranslation(['prompt', 'button']);
   const { promptApi, aiServiceApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username } = useUserInfoContext();
 
   const [play, setPlay] = useState(false);
-  const [defaultParameters, setDefaultParameters] = useState<{ [key: string]: any }>()
-  const [defaultVariables, setDefaultVariables] = useState<{ [key: string]: any }>()
+  const [defaultParameters, setDefaultParameters] = useState(parameters ? {...parameters} : undefined)
+  const [defaultVariables, setDefaultVariables] = useState(variables ? {...variables} : undefined)
   const [defaultOutputText, setDefaultOutputText] = useState<string>();
   const [origRecord, setOrigRecord] = useState(new PromptDetailsDTO());
   const [editRecord, setEditRecord] = useState(new PromptDetailsDTO());
@@ -464,7 +474,7 @@ export default function PromptEditor() {
     if (!editRecord.promptId) {
       return;
     }
-    const onSaved = (id: string, visibility: string) => {
+    const onUpdated = (id: string, visibility: string) => {
       promptApi?.publishPrompt(id, visibility)
         .then(resp => {
           if (!resp) {
@@ -480,7 +490,7 @@ export default function PromptEditor() {
       .then(resp => {
         setSaved(resp);
         if (resp) {
-          onSaved(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
+          onUpdated(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
         }
       })
       .catch(handleError);
@@ -639,7 +649,7 @@ export default function PromptEditor() {
                   {t('Description')}
                 </Typography>
                 <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
-                  <HelpOutlineRounded fontSize="small" />
+                  <HelpIcon />
                 </Tooltip>
               </CommonBox>
               <ContentTextarea
@@ -670,7 +680,7 @@ export default function PromptEditor() {
                   <CommonBox>
                     <Chip variant="soft" color="primary">MESSAGES</Chip>
                     <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('These messages will always be used as the starting message in the chat history')}>
-                      <HelpOutlineRounded fontSize="small" />
+                      <HelpIcon />
                     </Tooltip>
                     <IconButton
                       disabled={editRound}
@@ -809,7 +819,7 @@ export default function PromptEditor() {
                 {t('Inputs')}
               </Typography>
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('If an input\'s value is not specified at runtime, the default value set here will be used')}>
-                <HelpOutlineRounded fontSize="small" />
+                <HelpIcon />
               </Tooltip>
             </CommonBox>
             {inputs && Object.keys(inputs).length > 0 && (
@@ -845,7 +855,7 @@ export default function PromptEditor() {
                   {t('Example')}
                 </Typography>
                 <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
-                  <HelpOutlineRounded fontSize="small" />
+                  <HelpIcon />
                 </Tooltip>
               </CommonBox>
               <ContentTextarea

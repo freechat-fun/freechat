@@ -41,9 +41,25 @@ export class CharacterBackendDetailsDTO {
     */
     'isDefault'?: boolean;
     /**
+    * Prompt task identifier for chat
+    */
+    'chatPromptTaskId'?: string;
+    /**
     * Prompt task identifier for greeting
     */
     'greetingPromptTaskId'?: string;
+    /**
+    * Moderation model for the character\'s response
+    */
+    'moderationModelId'?: string;
+    /**
+    * Api key name for moderation model
+    */
+    'moderationApiKeyName'?: string;
+    /**
+    * Parameters for moderation model
+    */
+    'moderationParams'?: string;
     /**
     * Max messages in the character\'s memory
     */
@@ -93,8 +109,32 @@ export class CharacterBackendDetailsDTO {
             "format": ""
         },
         {
+            "name": "chatPromptTaskId",
+            "baseName": "chatPromptTaskId",
+            "type": "string",
+            "format": ""
+        },
+        {
             "name": "greetingPromptTaskId",
             "baseName": "greetingPromptTaskId",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "moderationModelId",
+            "baseName": "moderationModelId",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "moderationApiKeyName",
+            "baseName": "moderationApiKeyName",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "moderationParams",
+            "baseName": "moderationParams",
             "type": "string",
             "format": ""
         },

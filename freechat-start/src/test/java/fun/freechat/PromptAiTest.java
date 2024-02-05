@@ -79,7 +79,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
         ChatMessageDTO message = new ChatMessageDTO();
         message.setRole("user");
         message.setName("Rose");
-        message.setContent(content);
+        message.setContents(Collections.singletonList(ChatContentDTO.fromText(content)));
         message.setGmtCreate(new Date());
         return message;
     }
@@ -87,7 +87,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
     private ChatMessageDTO aiMessage(String content) {
         ChatMessageDTO message = new ChatMessageDTO();
         message.setRole("assistant");
-        message.setContent(content);
+        message.setContents(Collections.singletonList(ChatContentDTO.fromText(content)));
         message.setGmtCreate(new Date());
         return message;
     }

@@ -1,20 +1,27 @@
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
-import { CharacterDetailsDTO, CharacterUpdateDTO } from "freechat-sdk";
+import { CharacterBackendDTO, CharacterBackendDetailsDTO, CharacterDetailsDTO, CharacterUpdateDTO, PromptRefDTO, PromptTaskDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { locales } from "../../configs/i18n-config";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, TinyInput } from "../../components";
 import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Tooltip, Typography, switchClasses } from "@mui/joy";
-import { AddCircleRounded, CheckRounded, EditRounded, HelpOutlineRounded, InfoOutlined, IosShareRounded, SaveAltRounded } from "@mui/icons-material";
-import { CharacterGuide } from "../../components/character";
+import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded } from "@mui/icons-material";
+import { CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
+import { HelpIcon } from "../../components/icon";
+import { createPromptForCharacter } from "../../libs/template_utils";
 
-export default function CharacterEditor () {
+interface CharacterEditorProps {
+  id: string | undefined;
+}
+
+export default function CharacterEditor ({
+  id,
+}: CharacterEditorProps) {
   const navigator = useNavigate();
-  const { id } = useParams();
   const { t, i18n } = useTranslation(['character', 'account', 'button']);
-  const { characterApi } = useFreeChatApiContext();
+  const { promptApi, promptTaskApi, characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username } = useUserInfoContext();
 
@@ -38,6 +45,9 @@ export default function CharacterEditor () {
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
   const [tag, setTag] = useState<string>();
+
+  const [editBackend, setEditBackend] = useState<CharacterBackendDetailsDTO>();
+  const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>([]);
 
   const [editEnabled, setEditEnabled] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -262,7 +272,7 @@ export default function CharacterEditor () {
     if (!editRecord.characterId) {
       return;
     }
-    const onSaved = (id: string, visibility: string) => {
+    const onUpdated = (id: string, visibility: string) => {
       characterApi?.publishCharacter1(id, visibility)
         .then(resp => {
           if (!resp) {
@@ -278,7 +288,7 @@ export default function CharacterEditor () {
       .then(resp => {
         setSaved(resp);
         if (resp) {
-          onSaved(editRecord.characterId as string, editRecord.visibility === 'private' ? 'private' : 'public');
+          onUpdated(editRecord.characterId as string, editRecord.visibility === 'private' ? 'private' : 'public');
         }
       })
       .catch(handleError);
@@ -301,6 +311,81 @@ export default function CharacterEditor () {
     request.visibility = record.visibility === 'private' ? 'private' : 'public';
 
     return request;
+  }
+
+  function handleBackendEdit(backend: CharacterBackendDetailsDTO, backends: CharacterBackendDetailsDTO[]) {
+    setEditBackend(backend);
+    setBackends(backends);
+  }
+
+  function handleBackendUpdated(backend: CharacterBackendDetailsDTO, redirectToChatPrompt: boolean) {
+    const request = new CharacterBackendDTO();
+    request.chatPromptTaskId = backend.chatPromptTaskId;
+    request.forwardToUser = backend.forwardToUser;
+    request.greetingPromptTaskId = backend.greetingPromptTaskId;
+    request.isDefault = backend.isDefault;
+    request.messageWindowSize = backend.messageWindowSize;
+    request.moderationApiKeyName = backend.moderationApiKeyName;
+    request.moderationModelId = backend.moderationModelId;
+    request.moderationParams = backend.moderationParams;
+
+    const updateBackend = (backendId: string | undefined, req: CharacterBackendDTO) => {
+      if (backendId) {
+        characterApi?.updateCharacterBackend(backendId, req)
+          .then(() => {
+            if (redirectToChatPrompt && req.chatPromptTaskId) {
+              navigator(`/w/prompt/task/${req.chatPromptTaskId}`);
+            } else {
+              setBackends((prevBackends) => {
+                return [...prevBackends, backend];
+              });
+              setEditBackend(undefined);
+            }
+          })
+          .catch(handleError);
+        } else if (id) {
+          characterApi?.addCharacterBackend(id, req)
+          .then((bId) => {
+            backend.backendId = bId;
+            if (redirectToChatPrompt && req.chatPromptTaskId) {
+              navigator(`/w/prompt/task/${req.chatPromptTaskId}`);
+            } else {
+              setBackends((prevBackends) => {
+                return [...prevBackends, backend];
+              });
+              setEditBackend(undefined);
+            }
+          })
+        }
+      }
+
+    if (backend.chatPromptTaskId) {
+      updateBackend(backend.backendId, request);
+    } else {
+      const promptReq = createPromptForCharacter(editRecord.name, editRecord.lang);
+      promptApi?.newPromptName(editRecord.name)
+        .then(name => {
+          promptReq.name = name;
+          promptApi?.createPrompt(promptReq)
+            .then(promptId => {
+              const promptRef = new PromptRefDTO();
+              promptRef.promptId = promptId;
+
+              const promptTaskReq = new PromptTaskDTO();
+              promptTaskReq.promptRef = promptRef;
+
+              promptTaskApi?.createPromptTask(promptTaskReq)
+                .then(promptTaskId => {
+                  request.chatPromptTaskId = promptTaskId;
+                  backend.chatPromptTaskId = promptTaskId;
+                  updateBackend(backend.backendId, request);
+                })
+                .catch(handleError);
+            })
+            .catch(handleError);
+        })
+        .catch(handleError);
+    }
   }
 
   return (
@@ -386,7 +471,7 @@ export default function CharacterEditor () {
                 {t('Description')}
               </Typography>
               <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
-                <HelpOutlineRounded fontSize="small" />
+                <HelpIcon />
               </Tooltip>
             </CommonBox>
             <ContentTextarea
@@ -572,6 +657,18 @@ export default function CharacterEditor () {
             />
           </Card>
 
+          <CharacterBackends
+            characterId={id}
+            defaultBackends={backends}
+            editMode={true}
+            onEdit={handleBackendEdit}
+          />
+
+          <CharacterBackendSettings
+            open={!!editBackend}
+            backend={{...editBackend}}
+            onClose={handleBackendUpdated}
+          />
         </Stack>
         
         <CharacterGuide />

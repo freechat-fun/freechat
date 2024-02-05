@@ -243,7 +243,7 @@ public class CharacterApiTest {
     /**
      * List Character Backend ids
      *
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      *
      * @throws ApiException if the Api call fails
      */
@@ -251,6 +251,20 @@ public class CharacterApiTest {
     public void listCharacterBackendIdsTest() throws ApiException {
         String characterId = null;
         List<String> response = api.listCharacterBackendIds(characterId);
+        // TODO: test validations
+    }
+
+    /**
+     * List Character Backends
+     *
+     * List character backends.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void listCharacterBackendsTest() throws ApiException {
+        String characterId = null;
+        List<CharacterBackendDetailsDTO> response = api.listCharacterBackends(characterId);
         // TODO: test validations
     }
 
@@ -310,6 +324,20 @@ public class CharacterApiTest {
     public void listMessages2Test() throws ApiException {
         String chatId = null;
         List<ChatMessageDTO> response = api.listMessages2(chatId);
+        // TODO: test validations
+    }
+
+    /**
+     * Create New Character Name
+     *
+     * Create a new character name starting with a desired name.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void newCharacterNameTest() throws ApiException {
+        String desired = null;
+        String response = api.newCharacterName(desired);
         // TODO: test validations
     }
 

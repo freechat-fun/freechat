@@ -24,7 +24,7 @@ public class ChatMessage {
     public static ChatMessage from(PromptRole role, String text) {
         ChatMessage message = new ChatMessage();
         message.setRole(role);
-        message.setContents(Collections.singletonList(ChatContent.fromText(text)));
+        message.setContents(List.of(ChatContent.fromText(text)));
         message.setGmtCreate(new Date());
         return message;
     }

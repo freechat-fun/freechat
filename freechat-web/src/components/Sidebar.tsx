@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { Box, List, ListItem, ListItemButton, ListItemContent, Sheet, Typography, listItemButtonClasses } from "@mui/joy";
-import { AccountTreeRounded, ArticleRounded, ExtensionRounded, KeyboardArrowDownRounded, SettingsRounded } from "@mui/icons-material";
-import { FoxIcon, RouterLink } from ".";
+import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, KeyboardArrowDownRounded, SettingsRounded } from "@mui/icons-material";
+import { RouterLink } from ".";
 import { closeSidebar } from "../libs/sidebar_utils";
 
 interface NestedListToggleProps {
@@ -127,7 +127,7 @@ export default function Sidebar() {
                 pl: 1.5
               }}
             >
-              <FoxIcon />
+              <AndroidRounded />
               <ListItemContent>
                 <Typography level="title-md">{t('Characters')}</Typography>
               </ListItemContent>

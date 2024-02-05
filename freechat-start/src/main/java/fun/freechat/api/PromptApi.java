@@ -46,20 +46,22 @@ public class PromptApi {
     @Autowired
     private InteractiveStatsService interactiveStatsService;
 
+    private String newUniqueName(String desired) {
+        int index = 0;
+        String name =desired;
+        while (promptService.existsName(name, AccountUtils.currentUser())) {
+            index++;
+            name = desired + "-" + index;
+        }
+        return name;
+    }
+
     private void resetPromptInfo(PromptInfo info, String parentId) {
         if (StringUtils.isNotBlank(parentId)) {
             info.setParentId(parentId);
             info.setVisibility(Visibility.PRIVATE.text());
         }
-        int index = 0;
-        String name = info.getName();
-        while (promptService.existsName(name, AccountUtils.currentUser())) {
-            index++;
-            name = info.getName() + "-" + index;
-        }
-        if (index > 0) {
-            info.setName(name);
-        }
+        info.setName(newUniqueName(info.getName()));
         info.setPromptId(null);
         info.setVersion(1);
         info.setUserId(AccountUtils.currentUser().getUserId());
@@ -656,5 +658,16 @@ public class PromptApi {
     public Boolean existsName(
             @Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
         return promptService.existsName(name, AccountUtils.currentUser());
+    }
+
+    @Operation(
+            operationId = "newPromptName",
+            summary = "Create New Prompt Name",
+            description = "Create a new prompt name starting with a desired name."
+    )
+    @GetMapping(value = "/create/name/{desired}", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String createName(
+            @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {
+        return newUniqueName(desired);
     }
 }

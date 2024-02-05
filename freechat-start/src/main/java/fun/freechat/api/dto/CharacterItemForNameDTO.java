@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Objects;
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Schema(description = "Character identifier and version information")
@@ -26,13 +24,11 @@ public class CharacterItemForNameDTO {
         dto.setCharacterId(infoItem.getLeft());
         dto.setVersion(infoItem.getMiddle());
         InteractiveStatsDTO stats = InteractiveStatsDTO.from(infoItem.getRight());
-        if (Objects.nonNull(stats)) {
-            stats.setRequestId(null);
-            stats.setGmtCreate(null);
-            stats.setGmtModified(null);
-            stats.setReferType(null);
-            stats.setReferId(null);
-        }
+        stats.setRequestId(null);
+        stats.setGmtCreate(null);
+        stats.setGmtModified(null);
+        stats.setReferType(null);
+        stats.setReferId(null);
         dto.setStats(stats);
 
         return dto;

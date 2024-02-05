@@ -67,7 +67,11 @@ class TestCharacterDetailsDTO(unittest.TestCase):
                         gmt_modified = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
                         character_id = '', 
                         is_default = True, 
+                        chat_prompt_task_id = '', 
                         greeting_prompt_task_id = '', 
+                        moderation_model_id = '', 
+                        moderation_api_key_name = '', 
+                        moderation_params = '', 
                         message_window_size = 56, 
                         forward_to_user = True, )
                     ]

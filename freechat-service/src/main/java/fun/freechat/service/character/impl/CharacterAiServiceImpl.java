@@ -27,6 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -159,8 +161,10 @@ public class CharacterAiServiceImpl implements CharacterAiService {
             ChatMessage message, String context, Object memoryId,
             ChatSession session, ChatMemory chatMemory) {
         Map<String, Object> variables = session.getVariables();
-        variables.put(INPUT.text(), message.getContentText());
+        variables.put(INPUT.text().toLowerCase(), message.getContentText());
         variables.put(MESSAGE_CONTEXT.text(), getOrBlank(context));
+        variables.put(CURRENT_TIME.text(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         dev.langchain4j.data.message.ChatMessage l4jMessage = PromptUtils.convertChatMessage(message);
         String relevantConcatenated = null;

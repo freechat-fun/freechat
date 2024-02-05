@@ -15,7 +15,7 @@ package fun.freechat.client;
 
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class Configuration {
-    public static final String VERSION = "0.2.17";
+    public static final String VERSION = "0.2.20";
 
     private static ApiClient defaultApiClient = new ApiClient();
 

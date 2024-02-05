@@ -23,8 +23,16 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private String characterId;
     @Schema(description = "Whether it is the default backend")
     private Boolean isDefault;
+    @Schema(description = "Prompt task identifier for chat")
+    private String chatPromptTaskId;
     @Schema(description = "Prompt task identifier for greeting")
     private String greetingPromptTaskId;
+    @Schema(description = "Moderation model for the character's response")
+    private String moderationModelId;
+    @Schema(description = "Api key name for moderation model")
+    private String moderationApiKeyName;
+    @Schema(description = "Parameters for moderation model")
+    private String moderationParams;
     @Schema(description = "Max messages in the character's memory")
     private Integer messageWindowSize;
     @Schema(description = "Whether to forward messages to the character owner")

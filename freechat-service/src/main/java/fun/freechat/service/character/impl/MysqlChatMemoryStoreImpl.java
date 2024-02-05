@@ -67,7 +67,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         var cachedMessages = new LinkedList<>(getMessages(memoryId));
 
         if (firstMessage instanceof dev.langchain4j.data.message.SystemMessage l4jSystemMessage &&
-                Objects.nonNull(firstMessage.text())) {
+                Objects.nonNull(l4jSystemMessage.text())) {
             boolean succeeded = updateSystemMessageIfNecessary(memoryId, cachedMessages, l4jSystemMessage);
             if (lastMessage == firstMessage && succeeded) {
                 lastMessage = null;

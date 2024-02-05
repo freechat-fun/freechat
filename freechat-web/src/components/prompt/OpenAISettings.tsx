@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, Drawer, IconButton, Input, Option, Select, Sheet, Slider, Switch, Tooltip, Typography } from "@mui/joy";
-import { AddCircleRounded, HelpOutlineRounded } from "@mui/icons-material";
-import { CommonContainer, OptionCard, TinyInput } from "..";
+import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, IconButton, Input, Option, Select, Slider, Switch, Typography } from "@mui/joy";
+import { AddCircleRounded } from "@mui/icons-material";
+import { CommonContainer, OptionCard, OptionTooltip, Sidedrawer, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
+import { HelpIcon } from "../icon";
 
 function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
   return !!parameters && Object.keys(parameters).includes(key);
@@ -113,317 +114,288 @@ export default function OpenAISettings(props: {
   }
 
   return (
-    <Drawer
-      size="md"
-      variant="plain"
-      anchor="right"
-      open={open}
-      onClose={() => handleClose()}
-      slotProps={{
-        content: {
-          sx: {
-            mt: 'var(--Header-height)',
-            md: 50,
-            bgcolor: 'transparent',
-            p: { md: 2, sm: 0 },
-            boxShadow: 'none',
-          },
-        },
-      }}
-    >
-      <Sheet
-        sx={{
-          borderRadius: 'md',
-          p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-          height: 'calc(100% - var(--Header-height))',
-          overflow: 'auto',
-        }}
-      >
-        <DialogTitle>{t('Model Parameters')}</DialogTitle>
-        <Divider sx={{ mt: 'auto' }} />
+    <Sidedrawer open={open} onClose={() => handleClose()}>
+      <DialogTitle>{t('Model Parameters')}</DialogTitle>
+      <Divider sx={{ mt: 'auto' }} />
 
-        <DialogContent>
-          <OptionCard>
-            <CommonContainer>
-              <Typography>model</Typography>
-              <Select
-                name="modelName"
-                placeholder={<Typography textColor="gray">No model provided</Typography>}
-                value={model?.modelId}
-                onChange={handleSelectChange}
-                sx={{
-                  ml: 2,
-                  flex: 1,
-              }}>
-                {models && models.length > 0 ? models?.map(modelInfo => modelInfo && (
-                  <Option value={modelInfo.modelId} key={`option-${modelInfo.modelId}`}>{modelInfo.name}</Option>
-                )) : (
-                  <Option value="" key='option-unknown'>--No Model--</Option>
-                )}
-              </Select>
-            </CommonContainer>
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
+      <DialogContent>
+        <OptionCard>
+          <CommonContainer>
+            <Typography>model</Typography>
+            <Select
+              name="modelName"
+              placeholder={<Typography textColor="gray">No model provided</Typography>}
+              value={model?.modelId}
+              onChange={handleSelectChange}
+              sx={{
+                ml: 2,
+                flex: 1,
+            }}>
+              {models && models.length > 0 ? models?.map(modelInfo => modelInfo && (
+                <Option value={modelInfo.modelId} key={`option-${modelInfo.modelId}`}>{modelInfo.name}</Option>
+              )) : (
+                <Option value="" key='option-unknown'>--No Model--</Option>
+              )}
+            </Select>
+          </CommonContainer>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
-          <OptionCard>
-            <CommonContainer>
-              <Typography>baseUrl</Typography>
-              <Input
-                type="text"
-                value={baseUrl}
-                sx={{
-                  ml: 0.5,
-                  flex: 1,
+        <OptionCard>
+          <CommonContainer>
+            <Typography>baseUrl</Typography>
+            <Input
+              type="text"
+              value={baseUrl}
+              sx={{
+                ml: 0.5,
+                flex: 1,
+              }}
+              onChange={(event => setBaseUrl(event.target.value))}
+            />
+          </CommonContainer>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>topP</Typography>
+            <OptionTooltip title={t('Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                disabled={!enableTopP}
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[0],
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                  },
                 }}
-                onChange={(event => setBaseUrl(event.target.value))}
+                value={topP}
+                onChange={(event => setTopP(+event.target.value))}
               />
+              <Switch checked={enableTopP} onChange={() => setEnableTopP(!enableTopP)} />
             </CommonContainer>
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
+          </CommonContainer>
+          <Slider
+            disabled={!enableTopP}
+            value={topP}
+            step={0.01}
+            min={0}
+            max={1}
+            valueLabelDisplay="auto"
+            onChange={(_event: Event, newValue: number | number[]) => setTopP(newValue as number)}
+          />
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
-          <OptionCard>
-            <CommonContainer>
-              <Typography>topP</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
+        <OptionCard>
+          <CommonContainer>
+            <Typography>maxTokens</Typography>
+            <OptionTooltip size="sm" title={t('The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model\'s context length.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                disabled={!enableMaxTokens}
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[2],
+                    min: 1000,
+                    step: 1000,
+                  },
+                }}
+                value={maxTokens}
+                onChange={(event => setMaxTokens(+event.target.value))}
+              />
+              <Switch checked={enableMaxTokens} onChange={() => setEnableMaxTokens(!enableMaxTokens)} />
+            </CommonContainer>
+          </CommonContainer>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>seed</Typography>
+            <OptionTooltip title={t('The random number seed used when generating, the user controls the randomness of the content generated by the model. seed supports unsigned 64-bit integers, with a default value of 1234. When using seed, the model will try its best to generate the same or similar results, but there is currently no guarantee that the results will be exactly the same every time.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                disabled={!enableSeed}
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[3],
+                    min: 1,
+                    step: 1,
+                  },
+                }}
+                value={seed}
+                onChange={(event => setSeed(+event.target.value))}
+              />
+              <Switch checked={enableSeed} onChange={() => setEnableSeed(!enableSeed)} />
+            </CommonContainer>
+          </CommonContainer>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>presencePenalty</Typography>
+            <OptionTooltip title={t('Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model\'s likelihood to talk about new topics.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                disabled={!enablePresencePenalty}
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[4],
+                    min: -2,
+                    max: 2,
+                    step: 0.1,
+                  },
+                }}
+                value={presencePenalty}
+                onChange={(event => setPresencePenalty(+event.target.value))}
+              />
+              <Switch checked={enablePresencePenalty} onChange={() => setEnablePresencePenalty(!enablePresencePenalty)} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            disabled={!enablePresencePenalty}
+            value={presencePenalty}
+            step={0.1}
+            min={-2}
+            max={2}
+            valueLabelDisplay="auto"
+            onChange={(_event: Event, newValue: number | number[]) => setPresencePenalty(newValue as number)}
+          />
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>frequencyPenalty</Typography>
+            <OptionTooltip title={t('Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model\'s likelihood to repeat the same line verbatim.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                disabled={!enableFrequencyPenalty}
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[4],
+                    min: -2,
+                    max: 2,
+                    step: 0.1,
+                  },
+                }}
+                value={frequencyPenalty}
+                onChange={(event => setFrequencyPenalty(+event.target.value))}
+              />
+              <Switch checked={enableFrequencyPenalty} onChange={() => setEnableFrequencyPenalty(!enableFrequencyPenalty)} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            disabled={!enableFrequencyPenalty}
+            value={frequencyPenalty}
+            step={0.1}
+            min={-2}
+            max={2}
+            valueLabelDisplay="auto"
+            onChange={(_event: Event, newValue: number | number[]) => setFrequencyPenalty(newValue as number)}
+          />
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>temperature</Typography>
+            <OptionTooltip title={t('Used to adjust the degree of randomness from sampling in the generated model, the value range is [0, 2), a temperature of 0 will always produce the same output. The higher the temperature, the greater the randomness.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                disabled={!enableTemperature}
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[5],
+                    min: 0,
+                    max: 2,
+                    step: 0.1,
+                  },
+                }}
+                value={temperature}
+                onChange={(event => setTemperature(+event.target.value))}
+              />
+              <Switch checked={enableTemperature} onChange={() => setEnableTemperature(!enableTemperature)} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            disabled={!enableTemperature}
+            value={temperature}
+            step={0.1}
+            min={0}
+            max={2}
+            valueLabelDisplay="auto"
+            onChange={(_event: Event, newValue: number | number[]) => setTemperature(newValue as number)}
+          />
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>stop</Typography>
+            <OptionTooltip title={t('Sequences where the API will stop generating further tokens.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <Switch checked={enableStop} onChange={() => setEnableStop(!enableStop)} />
+            </CommonContainer>
+          </CommonContainer>
+          <CommonContainer sx={{ pt: 1 }}>
+            {stop && stop.length > 0 && stop.map((word, index) => word && (
+              <Chip
+                disabled={!enableStop}
+                variant="outlined"
+                key={`${word}-${index}`}
+                endDecorator={<ChipDelete onDelete={() => handleStopWordDelete(word)} />}
+              >
+                {word}
+              </Chip>
+            ))}
+            {(!stop || stop.length < 4) && (stopWord === undefined) && (
+              <IconButton
+                disabled={!enableStop}
+                color="primary"
+                onClick={() => setStopWord('')}
+              >
+                <AddCircleRounded />
+              </IconButton>
+            )}
+            {(stopWord !== undefined) && (
+              <form onSubmit={handleStopWordSubmit}>
                 <TinyInput
-                  disabled={!enableTopP}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[0],
-                      min: 0,
-                      max: 1,
-                      step: 0.01,
-                    },
-                  }}
-                  value={topP}
-                  onChange={(event => setTopP(+event.target.value))}
-                />
-                <Switch checked={enableTopP} onChange={() => setEnableTopP(!enableTopP)} />
-              </CommonContainer>
-            </CommonContainer>
-            <Slider
-              disabled={!enableTopP}
-              value={topP}
-              step={0.01}
-              min={0}
-              max={1}
-              valueLabelDisplay="auto"
-              onChange={(_event: Event, newValue: number | number[]) => setTopP(newValue as number)}
-            />
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonContainer>
-              <Typography>maxTokens</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model\'s context length.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
-                <TinyInput
-                  disabled={!enableMaxTokens}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[2],
-                      min: 1000,
-                      step: 1000,
-                    },
-                  }}
-                  value={maxTokens}
-                  onChange={(event => setMaxTokens(+event.target.value))}
-                />
-                <Switch checked={enableMaxTokens} onChange={() => setEnableMaxTokens(!enableMaxTokens)} />
-              </CommonContainer>
-            </CommonContainer>
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonContainer>
-              <Typography>seed</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('The random number seed used when generating, the user controls the randomness of the content generated by the model. seed supports unsigned 64-bit integers, with a default value of 1234. When using seed, the model will try its best to generate the same or similar results, but there is currently no guarantee that the results will be exactly the same every time.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
-                <TinyInput
-                  disabled={!enableSeed}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[3],
-                      min: 1,
-                      step: 1,
-                    },
-                  }}
-                  value={seed}
-                  onChange={(event => setSeed(+event.target.value))}
-                />
-                <Switch checked={enableSeed} onChange={() => setEnableSeed(!enableSeed)} />
-              </CommonContainer>
-            </CommonContainer>
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonContainer>
-              <Typography>presencePenalty</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model\'s likelihood to talk about new topics.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
-                <TinyInput
-                  disabled={!enablePresencePenalty}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[4],
-                      min: -2,
-                      max: 2,
-                      step: 0.1,
-                    },
-                  }}
-                  value={presencePenalty}
-                  onChange={(event => setPresencePenalty(+event.target.value))}
-                />
-                <Switch checked={enablePresencePenalty} onChange={() => setEnablePresencePenalty(!enablePresencePenalty)} />
-              </CommonContainer>
-            </CommonContainer>
-            <Slider
-              disabled={!enablePresencePenalty}
-              value={presencePenalty}
-              step={0.1}
-              min={-2}
-              max={2}
-              valueLabelDisplay="auto"
-              onChange={(_event: Event, newValue: number | number[]) => setPresencePenalty(newValue as number)}
-            />
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonContainer>
-              <Typography>frequencyPenalty</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model\'s likelihood to repeat the same line verbatim.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
-                <TinyInput
-                  disabled={!enableFrequencyPenalty}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[4],
-                      min: -2,
-                      max: 2,
-                      step: 0.1,
-                    },
-                  }}
-                  value={frequencyPenalty}
-                  onChange={(event => setFrequencyPenalty(+event.target.value))}
-                />
-                <Switch checked={enableFrequencyPenalty} onChange={() => setEnableFrequencyPenalty(!enableFrequencyPenalty)} />
-              </CommonContainer>
-            </CommonContainer>
-            <Slider
-              disabled={!enableFrequencyPenalty}
-              value={frequencyPenalty}
-              step={0.1}
-              min={-2}
-              max={2}
-              valueLabelDisplay="auto"
-              onChange={(_event: Event, newValue: number | number[]) => setFrequencyPenalty(newValue as number)}
-            />
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonContainer>
-              <Typography>temperature</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('Used to adjust the degree of randomness from sampling in the generated model, the value range is [0, 2), a temperature of 0 will always produce the same output. The higher the temperature, the greater the randomness.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
-                <TinyInput
-                  disabled={!enableTemperature}
-                  type="number"
-                  slotProps={{
-                    input: {
-                      ref: inputRefs.current[5],
-                      min: 0,
-                      max: 2,
-                      step: 0.1,
-                    },
-                  }}
-                  value={temperature}
-                  onChange={(event => setTemperature(+event.target.value))}
-                />
-                <Switch checked={enableTemperature} onChange={() => setEnableTemperature(!enableTemperature)} />
-              </CommonContainer>
-            </CommonContainer>
-            <Slider
-              disabled={!enableTemperature}
-              value={temperature}
-              step={0.1}
-              min={0}
-              max={2}
-              valueLabelDisplay="auto"
-              onChange={(_event: Event, newValue: number | number[]) => setTemperature(newValue as number)}
-            />
-          </OptionCard>
-          <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-          <OptionCard>
-            <CommonContainer>
-              <Typography>stop</Typography>
-              <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={t('Sequences where the API will stop generating further tokens.')}>
-                <HelpOutlineRounded fontSize="small" />
-              </Tooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
-                <Switch checked={enableStop} onChange={() => setEnableStop(!enableStop)} />
-              </CommonContainer>
-            </CommonContainer>
-            <CommonContainer sx={{ pt: 1 }}>
-              {stop && stop.length > 0 && stop.map((word, index) => word && (
-                <Chip
                   disabled={!enableStop}
-                  variant="outlined"
-                  key={`${word}-${index}`}
-                  endDecorator={<ChipDelete onDelete={() => handleStopWordDelete(word)} />}
-                >
-                  {word}
-                </Chip>
-              ))}
-              {(!stop || stop.length < 4) && (stopWord === undefined) && (
-                <IconButton
-                  disabled={!enableStop}
-                  color="primary"
-                  onClick={() => setStopWord('')}
-                >
-                  <AddCircleRounded />
-                </IconButton>
-              )}
-              {(stopWord !== undefined) && (
-                <form onSubmit={handleStopWordSubmit}>
-                  <TinyInput
-                    disabled={!enableStop}
-                    type="text"
-                    value={stopWord}
-                    onChange={(event => setStopWord(event.target.value))}
-                  />
-                </form>
-              )}
-            </CommonContainer>
-          </OptionCard>
-        </DialogContent>
-      </Sheet>
-    </Drawer>
+                  type="text"
+                  value={stopWord}
+                  onChange={(event => setStopWord(event.target.value))}
+                />
+              </form>
+            )}
+          </CommonContainer>
+        </OptionCard>
+      </DialogContent>
+    </Sidedrawer>
   );
 }

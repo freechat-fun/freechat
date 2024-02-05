@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.17</version>
+  <version>0.2.20</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.17"
+     implementation "fun.freechat:freechat-sdk:0.2.20"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.17.jar`
+* `target/freechat-sdk-0.2.20.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -173,11 +173,13 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 *CharacterApi* | [**getCharacterSummary**](docs/CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
 *CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
-*CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backends/{characterId} | List Character Backend ids
+*CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
+*CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
 *CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 *CharacterApi* | [**listMessages**](docs/CharacterApi.md#listMessages) | **GET** /api/v1/character/chat/messages/{chatId}/{limit} | List Chat Messages
 *CharacterApi* | [**listMessages1**](docs/CharacterApi.md#listMessages1) | **GET** /api/v1/character/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 *CharacterApi* | [**listMessages2**](docs/CharacterApi.md#listMessages2) | **GET** /api/v1/character/chat/messages/{chatId} | List Chat Messages
+*CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 *CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
 *CharacterApi* | [**publishCharacter1**](docs/CharacterApi.md#publishCharacter1) | **POST** /api/v1/character/publish/{characterId}/{visibility} | Publish Character
 *CharacterApi* | [**removeCharacterBackend**](docs/CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
@@ -266,6 +268,7 @@ Class | Method | HTTP request | Description
 *PromptApi* | [**getPromptDetails**](docs/PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
 *PromptApi* | [**getPromptSummary**](docs/PromptApi.md#getPromptSummary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
 *PromptApi* | [**listPromptVersionsByName**](docs/PromptApi.md#listPromptVersionsByName) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
+*PromptApi* | [**newPromptName**](docs/PromptApi.md#newPromptName) | **GET** /api/v1/prompt/create/name/{desired} | Create New Prompt Name
 *PromptApi* | [**publishPrompt**](docs/PromptApi.md#publishPrompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
 *PromptApi* | [**searchPromptDetails**](docs/PromptApi.md#searchPromptDetails) | **POST** /api/v1/prompt/details/search | Search Prompt Details
 *PromptApi* | [**searchPromptSummary**](docs/PromptApi.md#searchPromptSummary) | **POST** /api/v1/prompt/search | Search Prompt Summary

@@ -882,6 +882,12 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
+    public List<CharacterBackend> listBackends(String characterId) {
+        return characterBackendMapper.select(c ->
+                c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId)));
+    }
+
+    @Override
     @LongPeriodCache
     public String getBackendOwner(String characterBackendId) {
         String characterId = getBackendCharacterId(characterBackendId);

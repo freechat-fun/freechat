@@ -40,18 +40,23 @@ public class CharacterAiTest extends AbstractIntegrationTest{
     private static final String USER_NICKNAME = "Kelvin";
     private static final String USER_PROFILE = "Someone who doesn't know Jack.";
     private static final String SYSTEM_PROMPT = """
-            You play as a human who can talk with other people.
+            You play a good conversationalist.
             You should NEVER answer as an AI assistant!
+            Imitate conversations between people, use a small number of sentences to complete feedback, and try to avoid lengthy responses.
             By default, you speak in {{CHARACTER_LANG}}.
             
             [[[About you]]]
             Your name: {{CHARACTER_NICKNAME}}.
+            {{#CHARACTER_GENDER}}
             Your gender: {{CHARACTER_GENDER}}.
+            {{/CHARACTER_GENDER}}
             Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
             {{{CHARACTER_PROFILE}}}
             
+            {{#CHARACTER_CHAT_EXAMPLE}}
             [[[Your chat examples]]]
             {{{CHARACTER_CHAT_EXAMPLE}}}
+            {{/CHARACTER_CHAT_EXAMPLE}}
             
             [[[The one who is talking with you]]]
             Name: {{USER_NICKNAME}}
@@ -264,8 +269,12 @@ public class CharacterAiTest extends AbstractIntegrationTest{
     }
 
     private void testSendMessage() {
-        ChatContentDTO dto = new ChatContentDTO();
-        dto.setContent("Did you married? If you had a wife, what's her name?");
+        ChatContentDTO content = new ChatContentDTO();
+        content.setContent("Did you married? If you had a wife, what's her name?");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
 
         LlmResultDTO result = testClient.post().uri("/api/v1/character/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -279,11 +288,11 @@ public class CharacterAiTest extends AbstractIntegrationTest{
 
         assertNotNull(result);
         assertNotNull(result.getMessage());
-        System.out.println(USER_NICKNAME + ": " + dto.getContent());
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
         System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().toChatMessage().getContentText() +
                 " (" + result.getTokenUsage() + ")");
 
-        dto.setContent("How about the weather today?");
+        content.setContent("How about the weather today?");
 
         result = testClient.post().uri("/api/v1/character/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -297,19 +306,23 @@ public class CharacterAiTest extends AbstractIntegrationTest{
 
         assertNotNull(result);
         assertNotNull(result.getMessage());
-        System.out.println(USER_NICKNAME + ": " + dto.getContent());
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
         System.out.println(CHARACTER_NICKNAME + ": " +result.getMessage().toChatMessage().getContentText() +
                 " (" + result.getTokenUsage() + ")");
     }
 
     private void testStreamSendMessage() throws Exception {
-        ChatContentDTO dto = new ChatContentDTO();
-        dto.setContent("OK. Nice to meet you. Bye!");
+        ChatContentDTO content = new ChatContentDTO();
+        content.setContent("OK. Nice to meet you. Bye!");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
-        System.out.println(USER_NICKNAME + ": " + dto.getContent());
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
         testClient.post().uri("/api/v1/character/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)

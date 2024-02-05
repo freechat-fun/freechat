@@ -8,10 +8,11 @@ import ComingSoon from './pages/ComingSoon';
 import NotFound from './pages/NotFound';
 import Prompts from './pages/prompt/Prompts';
 import PromptInfo from './pages/prompt/PromptInfo';
-import PromptEditor from './pages/prompt/PromptEditor';
+import PromptEdit from './pages/prompt/PromptEdit';
 import OpenApi from './pages/docs/OpenApi';
-import CharacterEditor from './pages/character/CharacterEditor';
 import Characters from './pages/character/Characters';
+import PromptTask from './pages/prompt/PromptTask';
+import CharacterEdit from './pages/character/CharacterEdit';
 
 const sidebarRoutes = [
   {
@@ -32,7 +33,11 @@ const sidebarRoutes = [
   },
   {
     path: 'prompt/edit/:id',
-    element: <PromptEditor />,
+    element: <PromptEdit />,
+  },
+  {
+    path: 'prompt/task/:id',
+    element: <PromptTask />,
   },
   {
     path: 'characters',
@@ -40,7 +45,7 @@ const sidebarRoutes = [
   },
   {
     path: 'character/edit/:id',
-    element: <CharacterEditor />,
+    element: <CharacterEdit />,
   },
   {
     path: 'plugins',

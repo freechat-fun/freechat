@@ -76,9 +76,25 @@ public class CharacterBackendDetailsDTO {
   @SerializedName(SERIALIZED_NAME_IS_DEFAULT)
   private Boolean isDefault;
 
+  public static final String SERIALIZED_NAME_CHAT_PROMPT_TASK_ID = "chatPromptTaskId";
+  @SerializedName(SERIALIZED_NAME_CHAT_PROMPT_TASK_ID)
+  private String chatPromptTaskId;
+
   public static final String SERIALIZED_NAME_GREETING_PROMPT_TASK_ID = "greetingPromptTaskId";
   @SerializedName(SERIALIZED_NAME_GREETING_PROMPT_TASK_ID)
   private String greetingPromptTaskId;
+
+  public static final String SERIALIZED_NAME_MODERATION_MODEL_ID = "moderationModelId";
+  @SerializedName(SERIALIZED_NAME_MODERATION_MODEL_ID)
+  private String moderationModelId;
+
+  public static final String SERIALIZED_NAME_MODERATION_API_KEY_NAME = "moderationApiKeyName";
+  @SerializedName(SERIALIZED_NAME_MODERATION_API_KEY_NAME)
+  private String moderationApiKeyName;
+
+  public static final String SERIALIZED_NAME_MODERATION_PARAMS = "moderationParams";
+  @SerializedName(SERIALIZED_NAME_MODERATION_PARAMS)
+  private String moderationParams;
 
   public static final String SERIALIZED_NAME_MESSAGE_WINDOW_SIZE = "messageWindowSize";
   @SerializedName(SERIALIZED_NAME_MESSAGE_WINDOW_SIZE)
@@ -205,6 +221,25 @@ public class CharacterBackendDetailsDTO {
   }
 
 
+  public CharacterBackendDetailsDTO chatPromptTaskId(String chatPromptTaskId) {
+    this.chatPromptTaskId = chatPromptTaskId;
+    return this;
+  }
+
+   /**
+   * Prompt task identifier for chat
+   * @return chatPromptTaskId
+  **/
+  @javax.annotation.Nullable
+  public String getChatPromptTaskId() {
+    return chatPromptTaskId;
+  }
+
+  public void setChatPromptTaskId(String chatPromptTaskId) {
+    this.chatPromptTaskId = chatPromptTaskId;
+  }
+
+
   public CharacterBackendDetailsDTO greetingPromptTaskId(String greetingPromptTaskId) {
     this.greetingPromptTaskId = greetingPromptTaskId;
     return this;
@@ -221,6 +256,63 @@ public class CharacterBackendDetailsDTO {
 
   public void setGreetingPromptTaskId(String greetingPromptTaskId) {
     this.greetingPromptTaskId = greetingPromptTaskId;
+  }
+
+
+  public CharacterBackendDetailsDTO moderationModelId(String moderationModelId) {
+    this.moderationModelId = moderationModelId;
+    return this;
+  }
+
+   /**
+   * Moderation model for the character&#39;s response
+   * @return moderationModelId
+  **/
+  @javax.annotation.Nullable
+  public String getModerationModelId() {
+    return moderationModelId;
+  }
+
+  public void setModerationModelId(String moderationModelId) {
+    this.moderationModelId = moderationModelId;
+  }
+
+
+  public CharacterBackendDetailsDTO moderationApiKeyName(String moderationApiKeyName) {
+    this.moderationApiKeyName = moderationApiKeyName;
+    return this;
+  }
+
+   /**
+   * Api key name for moderation model
+   * @return moderationApiKeyName
+  **/
+  @javax.annotation.Nullable
+  public String getModerationApiKeyName() {
+    return moderationApiKeyName;
+  }
+
+  public void setModerationApiKeyName(String moderationApiKeyName) {
+    this.moderationApiKeyName = moderationApiKeyName;
+  }
+
+
+  public CharacterBackendDetailsDTO moderationParams(String moderationParams) {
+    this.moderationParams = moderationParams;
+    return this;
+  }
+
+   /**
+   * Parameters for moderation model
+   * @return moderationParams
+  **/
+  @javax.annotation.Nullable
+  public String getModerationParams() {
+    return moderationParams;
+  }
+
+  public void setModerationParams(String moderationParams) {
+    this.moderationParams = moderationParams;
   }
 
 
@@ -322,7 +414,11 @@ public class CharacterBackendDetailsDTO {
         Objects.equals(this.gmtModified, characterBackendDetailsDTO.gmtModified) &&
         Objects.equals(this.characterId, characterBackendDetailsDTO.characterId) &&
         Objects.equals(this.isDefault, characterBackendDetailsDTO.isDefault) &&
+        Objects.equals(this.chatPromptTaskId, characterBackendDetailsDTO.chatPromptTaskId) &&
         Objects.equals(this.greetingPromptTaskId, characterBackendDetailsDTO.greetingPromptTaskId) &&
+        Objects.equals(this.moderationModelId, characterBackendDetailsDTO.moderationModelId) &&
+        Objects.equals(this.moderationApiKeyName, characterBackendDetailsDTO.moderationApiKeyName) &&
+        Objects.equals(this.moderationParams, characterBackendDetailsDTO.moderationParams) &&
         Objects.equals(this.messageWindowSize, characterBackendDetailsDTO.messageWindowSize) &&
         Objects.equals(this.forwardToUser, characterBackendDetailsDTO.forwardToUser)&&
         Objects.equals(this.additionalProperties, characterBackendDetailsDTO.additionalProperties);
@@ -330,7 +426,7 @@ public class CharacterBackendDetailsDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, backendId, gmtCreate, gmtModified, characterId, isDefault, greetingPromptTaskId, messageWindowSize, forwardToUser, additionalProperties);
+    return Objects.hash(requestId, backendId, gmtCreate, gmtModified, characterId, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, moderationParams, messageWindowSize, forwardToUser, additionalProperties);
   }
 
   @Override
@@ -343,7 +439,11 @@ public class CharacterBackendDetailsDTO {
     sb.append("    gmtModified: ").append(toIndentedString(gmtModified)).append("\n");
     sb.append("    characterId: ").append(toIndentedString(characterId)).append("\n");
     sb.append("    isDefault: ").append(toIndentedString(isDefault)).append("\n");
+    sb.append("    chatPromptTaskId: ").append(toIndentedString(chatPromptTaskId)).append("\n");
     sb.append("    greetingPromptTaskId: ").append(toIndentedString(greetingPromptTaskId)).append("\n");
+    sb.append("    moderationModelId: ").append(toIndentedString(moderationModelId)).append("\n");
+    sb.append("    moderationApiKeyName: ").append(toIndentedString(moderationApiKeyName)).append("\n");
+    sb.append("    moderationParams: ").append(toIndentedString(moderationParams)).append("\n");
     sb.append("    messageWindowSize: ").append(toIndentedString(messageWindowSize)).append("\n");
     sb.append("    forwardToUser: ").append(toIndentedString(forwardToUser)).append("\n");
     sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
@@ -375,7 +475,11 @@ public class CharacterBackendDetailsDTO {
     openapiFields.add("gmtModified");
     openapiFields.add("characterId");
     openapiFields.add("isDefault");
+    openapiFields.add("chatPromptTaskId");
     openapiFields.add("greetingPromptTaskId");
+    openapiFields.add("moderationModelId");
+    openapiFields.add("moderationApiKeyName");
+    openapiFields.add("moderationParams");
     openapiFields.add("messageWindowSize");
     openapiFields.add("forwardToUser");
 
@@ -405,8 +509,20 @@ public class CharacterBackendDetailsDTO {
       if ((jsonObj.get("characterId") != null && !jsonObj.get("characterId").isJsonNull()) && !jsonObj.get("characterId").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `characterId` to be a primitive type in the JSON string but got `%s`", jsonObj.get("characterId").toString()));
       }
+      if ((jsonObj.get("chatPromptTaskId") != null && !jsonObj.get("chatPromptTaskId").isJsonNull()) && !jsonObj.get("chatPromptTaskId").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `chatPromptTaskId` to be a primitive type in the JSON string but got `%s`", jsonObj.get("chatPromptTaskId").toString()));
+      }
       if ((jsonObj.get("greetingPromptTaskId") != null && !jsonObj.get("greetingPromptTaskId").isJsonNull()) && !jsonObj.get("greetingPromptTaskId").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `greetingPromptTaskId` to be a primitive type in the JSON string but got `%s`", jsonObj.get("greetingPromptTaskId").toString()));
+      }
+      if ((jsonObj.get("moderationModelId") != null && !jsonObj.get("moderationModelId").isJsonNull()) && !jsonObj.get("moderationModelId").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `moderationModelId` to be a primitive type in the JSON string but got `%s`", jsonObj.get("moderationModelId").toString()));
+      }
+      if ((jsonObj.get("moderationApiKeyName") != null && !jsonObj.get("moderationApiKeyName").isJsonNull()) && !jsonObj.get("moderationApiKeyName").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `moderationApiKeyName` to be a primitive type in the JSON string but got `%s`", jsonObj.get("moderationApiKeyName").toString()));
+      }
+      if ((jsonObj.get("moderationParams") != null && !jsonObj.get("moderationParams").isJsonNull()) && !jsonObj.get("moderationParams").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `moderationParams` to be a primitive type in the JSON string but got `%s`", jsonObj.get("moderationParams").toString()));
       }
   }
 

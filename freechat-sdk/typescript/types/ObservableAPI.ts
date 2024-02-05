@@ -2020,7 +2020,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
@@ -2044,12 +2044,45 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
     public listCharacterBackendIds(characterId: string, _options?: Configuration): Observable<Array<string>> {
         return this.listCharacterBackendIdsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
+     * List character backends.
+     * List Character Backends
+     * @param characterId The characterId to be queried
+     */
+    public listCharacterBackendsWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+        const requestContextPromise = this.requestFactory.listCharacterBackends(characterId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listCharacterBackendsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List character backends.
+     * List Character Backends
+     * @param characterId The characterId to be queried
+     */
+    public listCharacterBackends(characterId: string, _options?: Configuration): Observable<Array<CharacterBackendDetailsDTO>> {
+        return this.listCharacterBackendsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterBackendDetailsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -2188,6 +2221,39 @@ export class ObservableCharacterApi {
      */
     public listMessages2(chatId: string, _options?: Configuration): Observable<Array<ChatMessageDTO>> {
         return this.listMessages2WithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Create a new character name starting with a desired name.
+     * Create New Character Name
+     * @param desired Desired name
+     */
+    public newCharacterNameWithHttpInfo(desired: string, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.newCharacterName(desired, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.newCharacterNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Create a new character name starting with a desired name.
+     * Create New Character Name
+     * @param desired Desired name
+     */
+    public newCharacterName(desired: string, _options?: Configuration): Observable<string> {
+        return this.newCharacterNameWithHttpInfo(desired, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -5296,6 +5362,39 @@ export class ObservablePromptApi {
      */
     public listPromptVersionsByName(name: string, _options?: Configuration): Observable<Array<PromptItemForNameDTO>> {
         return this.listPromptVersionsByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<PromptItemForNameDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Create a new prompt name starting with a desired name.
+     * Create New Prompt Name
+     * @param desired Desired name
+     */
+    public newPromptNameWithHttpInfo(desired: string, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.newPromptName(desired, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.newPromptNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Create a new prompt name starting with a desired name.
+     * Create New Prompt Name
+     * @param desired Desired name
+     */
+    public newPromptName(desired: string, _options?: Configuration): Observable<string> {
+        return this.newPromptNameWithHttpInfo(desired, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**

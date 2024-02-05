@@ -36,11 +36,15 @@ class CharacterBackendDetailsDTO(BaseModel):
     gmt_modified: Optional[datetime] = Field(default=None, description="Modification time", alias="gmtModified")
     character_id: Optional[StrictStr] = Field(default=None, description="Character identifier", alias="characterId")
     is_default: Optional[StrictBool] = Field(default=None, description="Whether it is the default backend", alias="isDefault")
+    chat_prompt_task_id: Optional[StrictStr] = Field(default=None, description="Prompt task identifier for chat", alias="chatPromptTaskId")
     greeting_prompt_task_id: Optional[StrictStr] = Field(default=None, description="Prompt task identifier for greeting", alias="greetingPromptTaskId")
+    moderation_model_id: Optional[StrictStr] = Field(default=None, description="Moderation model for the character's response", alias="moderationModelId")
+    moderation_api_key_name: Optional[StrictStr] = Field(default=None, description="Api key name for moderation model", alias="moderationApiKeyName")
+    moderation_params: Optional[StrictStr] = Field(default=None, description="Parameters for moderation model", alias="moderationParams")
     message_window_size: Optional[StrictInt] = Field(default=None, description="Max messages in the character's memory", alias="messageWindowSize")
     forward_to_user: Optional[StrictBool] = Field(default=None, description="Whether to forward messages to the character owner", alias="forwardToUser")
     additional_properties: Dict[str, Any] = {}
-    __properties: ClassVar[List[str]] = ["requestId", "backendId", "gmtCreate", "gmtModified", "characterId", "isDefault", "greetingPromptTaskId", "messageWindowSize", "forwardToUser"]
+    __properties: ClassVar[List[str]] = ["requestId", "backendId", "gmtCreate", "gmtModified", "characterId", "isDefault", "chatPromptTaskId", "greetingPromptTaskId", "moderationModelId", "moderationApiKeyName", "moderationParams", "messageWindowSize", "forwardToUser"]
 
     model_config = {
         "populate_by_name": True,
@@ -104,7 +108,11 @@ class CharacterBackendDetailsDTO(BaseModel):
             "gmtModified": obj.get("gmtModified"),
             "characterId": obj.get("characterId"),
             "isDefault": obj.get("isDefault"),
+            "chatPromptTaskId": obj.get("chatPromptTaskId"),
             "greetingPromptTaskId": obj.get("greetingPromptTaskId"),
+            "moderationModelId": obj.get("moderationModelId"),
+            "moderationApiKeyName": obj.get("moderationApiKeyName"),
+            "moderationParams": obj.get("moderationParams"),
             "messageWindowSize": obj.get("messageWindowSize"),
             "forwardToUser": obj.get("forwardToUser")
         })

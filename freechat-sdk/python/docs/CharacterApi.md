@@ -18,11 +18,13 @@ Method | HTTP request | Description
 [**get_character_latest_id_by_name**](CharacterApi.md#get_character_latest_id_by_name) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 [**get_character_summary**](CharacterApi.md#get_character_summary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
 [**get_default_character_backend**](CharacterApi.md#get_default_character_backend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
-[**list_character_backend_ids**](CharacterApi.md#list_character_backend_ids) | **GET** /api/v1/character/backends/{characterId} | List Character Backend ids
+[**list_character_backend_ids**](CharacterApi.md#list_character_backend_ids) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
+[**list_character_backends**](CharacterApi.md#list_character_backends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
 [**list_character_versions_by_name**](CharacterApi.md#list_character_versions_by_name) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 [**list_messages**](CharacterApi.md#list_messages) | **GET** /api/v1/character/chat/messages/{chatId}/{limit} | List Chat Messages
 [**list_messages1**](CharacterApi.md#list_messages1) | **GET** /api/v1/character/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 [**list_messages2**](CharacterApi.md#list_messages2) | **GET** /api/v1/character/chat/messages/{chatId} | List Chat Messages
+[**new_character_name**](CharacterApi.md#new_character_name) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 [**publish_character**](CharacterApi.md#publish_character) | **POST** /api/v1/character/publish/{characterId} | Publish Character
 [**publish_character1**](CharacterApi.md#publish_character1) | **POST** /api/v1/character/publish/{characterId}/{visibility} | Publish Character
 [**remove_character_backend**](CharacterApi.md#remove_character_backend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
@@ -1161,7 +1163,7 @@ Name | Type | Description  | Notes
 
 List Character Backend ids
 
-List Character Backend identifiers.
+List character backend identifiers.
 
 ### Example
 
@@ -1217,6 +1219,86 @@ Name | Type | Description  | Notes
 ### Return type
 
 **List[str]**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_character_backends**
+> List[CharacterBackendDetailsDTO] list_character_backends(character_id)
+
+List Character Backends
+
+List character backends.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.models.character_backend_details_dto import CharacterBackendDetailsDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_id = 'character_id_example' # str | The characterId to be queried
+
+    try:
+        # List Character Backends
+        api_response = api_instance.list_character_backends(character_id)
+        print("The response of CharacterApi->list_character_backends:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->list_character_backends: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_id** | **str**| The characterId to be queried | 
+
+### Return type
+
+[**List[CharacterBackendDetailsDTO]**](CharacterBackendDetailsDTO.md)
 
 ### Authorization
 
@@ -1552,6 +1634,85 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **new_character_name**
+> str new_character_name(desired)
+
+Create New Character Name
+
+Create a new character name starting with a desired name.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    desired = 'desired_example' # str | Desired name
+
+    try:
+        # Create New Character Name
+        api_response = api_instance.new_character_name(desired)
+        print("The response of CharacterApi->new_character_name:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->new_character_name: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **desired** | **str**| Desired name | 
+
+### Return type
+
+**str**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
 
 ### HTTP response details
 

@@ -14,8 +14,10 @@ public enum ChatVar {
     USER_NICKNAME,
     USER_PROFILE,
     RELEVANT_INFORMATION,
+    LONG_TERM_MEMORY,
     CHAT_CONTEXT,
     MESSAGE_CONTEXT,
+    CURRENT_TIME,
     INPUT,
     UNKNOWN;
     public static ChatVar of(String text) {

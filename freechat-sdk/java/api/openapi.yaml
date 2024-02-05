@@ -4072,6 +4072,30 @@ paths:
       tags:
       - Prompt
       x-accepts: application/json
+  /api/v1/prompt/create/name/{desired}:
+    get:
+      description: Create a new prompt name starting with a desired name.
+      operationId: newPromptName
+      parameters:
+      - description: Desired name
+        explode: false
+        in: path
+        name: desired
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Create New Prompt Name
+      tags:
+      - Prompt
+      x-accepts: text/plain
   /api/v1/plugin/summary/{pluginId}:
     get:
       description: Get plugin summary information.
@@ -4350,6 +4374,30 @@ paths:
       tags:
       - Character
       x-accepts: application/json
+  /api/v1/character/create/name/{desired}:
+    get:
+      description: Create a new character name starting with a desired name.
+      operationId: newCharacterName
+      parameters:
+      - description: Desired name
+        explode: false
+        in: path
+        name: desired
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Create New Character Name
+      tags:
+      - Character
+      x-accepts: text/plain
   /api/v1/character/chat/messages/{chatId}/{limit}:
     get:
       description: List messages of a chat.
@@ -4457,7 +4505,33 @@ paths:
       x-accepts: application/json
   /api/v1/character/backends/{characterId}:
     get:
-      description: List Character Backend identifiers.
+      description: List character backends.
+      operationId: listCharacterBackends
+      parameters:
+      - description: The characterId to be queried
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CharacterBackendDetailsDTO'
+                type: array
+          description: OK
+      summary: List Character Backends
+      tags:
+      - Character
+      x-accepts: application/json
+  /api/v1/character/backend/ids/{characterId}:
+    get:
+      description: List character backend identifiers.
       operationId: listCharacterBackendIds
       parameters:
       - description: The characterId to be queried
@@ -7746,13 +7820,17 @@ components:
     CharacterBackendDetailsDTO:
       description: Character backend detailed information
       example:
+        moderationApiKeyName: moderationApiKeyName
         gmtModified: 2000-01-23T04:56:07.000+00:00
+        moderationParams: moderationParams
+        greetingPromptTaskId: greetingPromptTaskId
+        moderationModelId: moderationModelId
+        backendId: backendId
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
         isDefault: true
         requestId: requestId
-        greetingPromptTaskId: greetingPromptTaskId
-        backendId: backendId
+        chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 6
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
         characterId: characterId
         forwardToUser: true
       properties:
@@ -7776,8 +7854,20 @@ components:
         isDefault:
           description: Whether it is the default backend
           type: boolean
+        chatPromptTaskId:
+          description: Prompt task identifier for chat
+          type: string
         greetingPromptTaskId:
           description: Prompt task identifier for greeting
+          type: string
+        moderationModelId:
+          description: Moderation model for the character's response
+          type: string
+        moderationApiKeyName:
+          description: Api key name for moderation model
+          type: string
+        moderationParams:
+          description: Parameters for moderation model
           type: string
         messageWindowSize:
           description: Max messages in the character's memory
@@ -7802,22 +7892,30 @@ components:
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         version: 0
         backends:
-        - gmtModified: 2000-01-23T04:56:07.000+00:00
+        - moderationApiKeyName: moderationApiKeyName
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          moderationParams: moderationParams
+          greetingPromptTaskId: greetingPromptTaskId
+          moderationModelId: moderationModelId
+          backendId: backendId
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
           isDefault: true
           requestId: requestId
-          greetingPromptTaskId: greetingPromptTaskId
-          backendId: backendId
+          chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 6
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
           characterId: characterId
           forwardToUser: true
-        - gmtModified: 2000-01-23T04:56:07.000+00:00
+        - moderationApiKeyName: moderationApiKeyName
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          moderationParams: moderationParams
+          greetingPromptTaskId: greetingPromptTaskId
+          moderationModelId: moderationModelId
+          backendId: backendId
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
           isDefault: true
           requestId: requestId
-          greetingPromptTaskId: greetingPromptTaskId
-          backendId: backendId
+          chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 6
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
           characterId: characterId
           forwardToUser: true
         picture: picture

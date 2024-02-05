@@ -1293,7 +1293,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
@@ -1303,12 +1303,32 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * List Character Backend identifiers.
+     * List character backend identifiers.
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
     public listCharacterBackendIds(characterId: string, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.listCharacterBackendIds(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List character backends.
+     * List Character Backends
+     * @param characterId The characterId to be queried
+     */
+    public listCharacterBackendsWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+        const result = this.api.listCharacterBackendsWithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List character backends.
+     * List Character Backends
+     * @param characterId The characterId to be queried
+     */
+    public listCharacterBackends(characterId: string, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
+        const result = this.api.listCharacterBackends(characterId, _options);
         return result.toPromise();
     }
 
@@ -1395,6 +1415,26 @@ export class PromiseCharacterApi {
      */
     public listMessages2(chatId: string, _options?: Configuration): Promise<Array<ChatMessageDTO>> {
         const result = this.api.listMessages2(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a new character name starting with a desired name.
+     * Create New Character Name
+     * @param desired Desired name
+     */
+    public newCharacterNameWithHttpInfo(desired: string, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.newCharacterNameWithHttpInfo(desired, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a new character name starting with a desired name.
+     * Create New Character Name
+     * @param desired Desired name
+     */
+    public newCharacterName(desired: string, _options?: Configuration): Promise<string> {
+        const result = this.api.newCharacterName(desired, _options);
         return result.toPromise();
     }
 
@@ -3365,6 +3405,26 @@ export class PromisePromptApi {
      */
     public listPromptVersionsByName(name: string, _options?: Configuration): Promise<Array<PromptItemForNameDTO>> {
         const result = this.api.listPromptVersionsByName(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a new prompt name starting with a desired name.
+     * Create New Prompt Name
+     * @param desired Desired name
+     */
+    public newPromptNameWithHttpInfo(desired: string, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.newPromptNameWithHttpInfo(desired, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a new prompt name starting with a desired name.
+     * Create New Prompt Name
+     * @param desired Desired name
+     */
+    public newPromptName(desired: string, _options?: Configuration): Promise<string> {
+        const result = this.api.newPromptName(desired, _options);
         return result.toPromise();
     }
 

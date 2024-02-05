@@ -14,7 +14,10 @@ rm -rf web
 cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist web
 
 rm -rf ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets
+rm -rf ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/w
 cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/assets ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets
+cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/w ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/w
+
 
 iid=$(docker build --platform=linux/amd64 \
   --build-arg APP_NAME=${WEB_MODULE} \

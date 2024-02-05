@@ -87,11 +87,43 @@ public class CharacterBackendDetailsDTOTest {
     }
 
     /**
+     * Test the property 'chatPromptTaskId'
+     */
+    @Test
+    public void chatPromptTaskIdTest() {
+        // TODO: test chatPromptTaskId
+    }
+
+    /**
      * Test the property 'greetingPromptTaskId'
      */
     @Test
     public void greetingPromptTaskIdTest() {
         // TODO: test greetingPromptTaskId
+    }
+
+    /**
+     * Test the property 'moderationModelId'
+     */
+    @Test
+    public void moderationModelIdTest() {
+        // TODO: test moderationModelId
+    }
+
+    /**
+     * Test the property 'moderationApiKeyName'
+     */
+    @Test
+    public void moderationApiKeyNameTest() {
+        // TODO: test moderationApiKeyName
+    }
+
+    /**
+     * Test the property 'moderationParams'
+     */
+    @Test
+    public void moderationParamsTest() {
+        // TODO: test moderationParams
     }
 
     /**

@@ -85,20 +85,22 @@ public class CharacterApi {
     @Qualifier("mysqlConfigService")
     private ConfigService configService;
 
+    private String newUniqueName(String desired) {
+        int index = 0;
+        String name =desired;
+        while (characterService.existsName(name, AccountUtils.currentUser())) {
+            index++;
+            name = desired + "-" + index;
+        }
+        return name;
+    }
+
     private void resetCharacterInfo(CharacterInfo info, String parentId) {
         if (StringUtils.isNotBlank(parentId)) {
             info.setParentId(parentId);
             info.setVisibility(Visibility.PRIVATE.text());
         }
-        int index = 0;
-        String name = info.getName();
-        while (characterService.existsName(name, AccountUtils.currentUser())) {
-            index++;
-            name = info.getName() + "-" + index;
-        }
-        if (index > 0) {
-            info.setName(name);
-        }
+        info.setName(newUniqueName(info.getName()));
         info.setCharacterId(null);
         info.setVersion(1);
         info.setUserId(AccountUtils.currentUser().getUserId());
@@ -613,14 +615,30 @@ public class CharacterApi {
     @Operation(
             operationId = "listCharacterBackendIds",
             summary = "List Character Backend ids",
-            description = "List Character Backend identifiers."
+            description = "List character backend identifiers."
     )
-    @GetMapping("/backends/{characterId}")
+    @GetMapping("/backend/ids/{characterId}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
     public List<String> listBackendIds(
             @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
             String characterId) {
         return characterService.listBackendIds(characterId);
+    }
+
+    @Operation(
+            operationId = "listCharacterBackends",
+            summary = "List Character Backends",
+            description = "List character backends."
+    )
+    @GetMapping("/backends/{characterId}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    public List<CharacterBackendDetailsDTO> listBackends(
+            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
+            String characterId) {
+        return characterService.listBackends(characterId)
+                .stream()
+                .map(CharacterBackendDetailsDTO::from)
+                .toList();
     }
 
     @Operation(
@@ -713,5 +731,16 @@ public class CharacterApi {
     public Boolean existsName(
             @Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
         return characterService.existsName(name, AccountUtils.currentUser());
+    }
+
+    @Operation(
+            operationId = "newCharacterName",
+            summary = "Create New Character Name",
+            description = "Create a new character name starting with a desired name."
+    )
+    @GetMapping(value = "/create/name/{desired}", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String createName(
+            @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {
+        return newUniqueName(desired);
     }
 }

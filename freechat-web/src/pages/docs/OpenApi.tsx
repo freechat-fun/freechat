@@ -52,9 +52,9 @@ export default function OpenApi() {
         color: ${theme.palette.text.primary};
       }
       openapi-explorer::part(navbar-operations-header) {
-        background: ${theme.palette.neutral[200]};
+        background: ${theme.palette.neutral.softBg};
         border-radius: 6px;
-        color: ${theme.palette.primary[500]};
+        color: ${theme.palette.primary.softColor};
       }
       openapi-explorer::part(btn-fill) {
         background-color: ${theme.palette.background.level3};

@@ -20,6 +20,7 @@ Method | HTTP request | Description
 [**get_prompt_details**](PromptApi.md#get_prompt_details) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
 [**get_prompt_summary**](PromptApi.md#get_prompt_summary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
 [**list_prompt_versions_by_name**](PromptApi.md#list_prompt_versions_by_name) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
+[**new_prompt_name**](PromptApi.md#new_prompt_name) | **GET** /api/v1/prompt/create/name/{desired} | Create New Prompt Name
 [**publish_prompt**](PromptApi.md#publish_prompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
 [**search_prompt_details**](PromptApi.md#search_prompt_details) | **POST** /api/v1/prompt/details/search | Search Prompt Details
 [**search_prompt_summary**](PromptApi.md#search_prompt_summary) | **POST** /api/v1/prompt/search | Search Prompt Summary
@@ -1295,6 +1296,85 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **new_prompt_name**
+> str new_prompt_name(desired)
+
+Create New Prompt Name
+
+Create a new prompt name starting with a desired name.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.PromptApi(api_client)
+    desired = 'desired_example' # str | Desired name
+
+    try:
+        # Create New Prompt Name
+        api_response = api_instance.new_prompt_name(desired)
+        print("The response of PromptApi->new_prompt_name:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling PromptApi->new_prompt_name: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **desired** | **str**| Desired name | 
+
+### Return type
+
+**str**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
 
 ### HTTP response details
 
