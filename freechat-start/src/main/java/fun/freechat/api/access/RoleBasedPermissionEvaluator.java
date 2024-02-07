@@ -10,7 +10,7 @@ import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.character.ChatContextService;
 import fun.freechat.service.enums.Visibility;
-import fun.freechat.service.flow.FlowService;
+import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginService;
 import fun.freechat.service.prompt.PromptService;
@@ -39,7 +39,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
 
     private PromptTaskService promptTaskService;
 
-    private FlowService flowService;
+    private AgentService agentService;
 
     private PluginService pluginService;
 
@@ -118,7 +118,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
-                case "promptCreateOp", "flowCreateOp", "pluginCreateOp", "characterCreateOp" ->
+                case "promptCreateOp", "agentCreateOp", "pluginCreateOp", "characterCreateOp" ->
                         allow = checkVisibility((String) targetObject, currentRole);
                 case "promptUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
@@ -129,12 +129,12 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     allow = currentUser.getUserId().equals(ownerId) &&
                             checkVisibility(targets[1], currentRole);
                 }
-                case "flowUpdateOp" -> {
+                case "agentUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    ownerId = getFlowService().getOwner(targets[0]);
+                    ownerId = getAgentService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId) &&
                             checkVisibility(targets[1], currentRole);
                 }
@@ -173,8 +173,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
-                case "flowDeleteOp" -> {
-                    var info = getFlowService().summary((String) targetObject, currentUser);
+                case "agentDeleteOp" -> {
+                    var info = getAgentService().summary((String) targetObject, currentUser);
                     allow = Objects.nonNull(info) &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
@@ -266,11 +266,11 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
         return promptTaskService;
     }
 
-    private FlowService getFlowService() {
-        if (Objects.isNull(flowService)) {
-            flowService = applicationContext.getBean(FlowService.class);
+    private AgentService getAgentService() {
+        if (Objects.isNull(agentService)) {
+            agentService = applicationContext.getBean(AgentService.class);
         }
-        return flowService;
+        return agentService;
     }
 
     private PluginService getPluginService() {

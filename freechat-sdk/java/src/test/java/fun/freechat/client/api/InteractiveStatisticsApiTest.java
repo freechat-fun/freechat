@@ -14,8 +14,8 @@
 package fun.freechat.client.api;
 
 import fun.freechat.client.ApiException;
+import fun.freechat.client.model.AgentSummaryStatsDTO;
 import fun.freechat.client.model.CharacterSummaryStatsDTO;
-import fun.freechat.client.model.FlowSummaryStatsDTO;
 import fun.freechat.client.model.HotTagDTO;
 import fun.freechat.client.model.InteractiveStatsDTO;
 import fun.freechat.client.model.PluginSummaryStatsDTO;
@@ -116,6 +116,54 @@ public class InteractiveStatisticsApiTest {
     }
 
     /**
+     * List Agents by Statistics
+     *
+     * List agents based on statistics, including interactive statistical data.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void listAgentsByStatisticTest() throws ApiException {
+        String statsType = null;
+        String asc = null;
+        List<AgentSummaryStatsDTO> response = api.listAgentsByStatistic(statsType, asc);
+        // TODO: test validations
+    }
+
+    /**
+     * List Agents by Statistics
+     *
+     * List agents based on statistics, including interactive statistical data.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void listAgentsByStatistic1Test() throws ApiException {
+        String statsType = null;
+        Long pageSize = null;
+        String asc = null;
+        List<AgentSummaryStatsDTO> response = api.listAgentsByStatistic1(statsType, pageSize, asc);
+        // TODO: test validations
+    }
+
+    /**
+     * List Agents by Statistics
+     *
+     * List agents based on statistics, including interactive statistical data.
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void listAgentsByStatistic2Test() throws ApiException {
+        String statsType = null;
+        Long pageSize = null;
+        Long pageNum = null;
+        String asc = null;
+        List<AgentSummaryStatsDTO> response = api.listAgentsByStatistic2(statsType, pageSize, pageNum, asc);
+        // TODO: test validations
+    }
+
+    /**
      * List Characters by Statistics
      *
      * List characters based on statistics, including interactive statistical data.
@@ -160,54 +208,6 @@ public class InteractiveStatisticsApiTest {
         String statsType = null;
         String asc = null;
         List<CharacterSummaryStatsDTO> response = api.listCharactersByStatistic2(statsType, asc);
-        // TODO: test validations
-    }
-
-    /**
-     * List Flows by Statistics
-     *
-     * List flows based on statistics, including interactive statistical data.
-     *
-     * @throws ApiException if the Api call fails
-     */
-    @Test
-    public void listFlowsByStatisticTest() throws ApiException {
-        String statsType = null;
-        Long pageSize = null;
-        Long pageNum = null;
-        String asc = null;
-        List<FlowSummaryStatsDTO> response = api.listFlowsByStatistic(statsType, pageSize, pageNum, asc);
-        // TODO: test validations
-    }
-
-    /**
-     * List Flows by Statistics
-     *
-     * List flows based on statistics, including interactive statistical data.
-     *
-     * @throws ApiException if the Api call fails
-     */
-    @Test
-    public void listFlowsByStatistic1Test() throws ApiException {
-        String statsType = null;
-        String asc = null;
-        List<FlowSummaryStatsDTO> response = api.listFlowsByStatistic1(statsType, asc);
-        // TODO: test validations
-    }
-
-    /**
-     * List Flows by Statistics
-     *
-     * List flows based on statistics, including interactive statistical data.
-     *
-     * @throws ApiException if the Api call fails
-     */
-    @Test
-    public void listFlowsByStatistic2Test() throws ApiException {
-        String statsType = null;
-        Long pageSize = null;
-        String asc = null;
-        List<FlowSummaryStatsDTO> response = api.listFlowsByStatistic2(statsType, pageSize, asc);
         // TODO: test validations
     }
 

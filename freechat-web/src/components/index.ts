@@ -29,4 +29,5 @@ export { default as ContentTextarea } from './ContentTextarea';
 export { default as LabelTypography } from './LabelTypography';
 export { default as TextareaTypography } from './TextareaTypography';
 export { default as HistoryTypography } from './HistoryTypography';
+export { default as SummaryTypography } from './SummaryTypography';
 export { default as HotTags } from './HotTags';

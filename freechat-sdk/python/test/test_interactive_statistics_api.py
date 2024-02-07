@@ -61,6 +61,27 @@ class TestInteractiveStatisticsApi(unittest.TestCase):
         """
         pass
 
+    def test_list_agents_by_statistic(self) -> None:
+        """Test case for list_agents_by_statistic
+
+        List Agents by Statistics
+        """
+        pass
+
+    def test_list_agents_by_statistic1(self) -> None:
+        """Test case for list_agents_by_statistic1
+
+        List Agents by Statistics
+        """
+        pass
+
+    def test_list_agents_by_statistic2(self) -> None:
+        """Test case for list_agents_by_statistic2
+
+        List Agents by Statistics
+        """
+        pass
+
     def test_list_characters_by_statistic(self) -> None:
         """Test case for list_characters_by_statistic
 
@@ -79,27 +100,6 @@ class TestInteractiveStatisticsApi(unittest.TestCase):
         """Test case for list_characters_by_statistic2
 
         List Characters by Statistics
-        """
-        pass
-
-    def test_list_flows_by_statistic(self) -> None:
-        """Test case for list_flows_by_statistic
-
-        List Flows by Statistics
-        """
-        pass
-
-    def test_list_flows_by_statistic1(self) -> None:
-        """Test case for list_flows_by_statistic1
-
-        List Flows by Statistics
-        """
-        pass
-
-    def test_list_flows_by_statistic2(self) -> None:
-        """Test case for list_flows_by_statistic2
-
-        List Flows by Statistics
         """
         pass
 

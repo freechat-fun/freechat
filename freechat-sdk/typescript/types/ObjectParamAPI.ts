@@ -1,6 +1,14 @@
 import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http.js';
 import { Configuration} from '../configuration.js'
 
+import { AgentCreateDTO } from '../models/AgentCreateDTO.js';
+import { AgentDetailsDTO } from '../models/AgentDetailsDTO.js';
+import { AgentItemForNameDTO } from '../models/AgentItemForNameDTO.js';
+import { AgentQueryDTO } from '../models/AgentQueryDTO.js';
+import { AgentQueryWhere } from '../models/AgentQueryWhere.js';
+import { AgentSummaryDTO } from '../models/AgentSummaryDTO.js';
+import { AgentSummaryStatsDTO } from '../models/AgentSummaryStatsDTO.js';
+import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
@@ -23,14 +31,6 @@ import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
-import { FlowCreateDTO } from '../models/FlowCreateDTO.js';
-import { FlowDetailsDTO } from '../models/FlowDetailsDTO.js';
-import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO.js';
-import { FlowQueryDTO } from '../models/FlowQueryDTO.js';
-import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
-import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
-import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -1060,6 +1060,462 @@ export class ObjectAccountManagerForAdminApi {
      */
     public updateUser(param: AccountManagerForAdminApiUpdateUserRequest, options?: Configuration): Promise<boolean> {
         return this.api.updateUser(param.userFullDetailsDTO,  options).toPromise();
+    }
+
+}
+
+import { ObservableAgentApi } from "./ObservableAPI.js";
+import { AgentApiRequestFactory, AgentApiResponseProcessor} from "../apis/AgentApi.js";
+
+export interface AgentApiBatchSearchAgentDetailsRequest {
+    /**
+     * Query conditions
+     * @type Array&lt;AgentQueryDTO&gt;
+     * @memberof AgentApibatchSearchAgentDetails
+     */
+    agentQueryDTO: Array<AgentQueryDTO>
+}
+
+export interface AgentApiBatchSearchAgentSummaryRequest {
+    /**
+     * Query conditions
+     * @type Array&lt;AgentQueryDTO&gt;
+     * @memberof AgentApibatchSearchAgentSummary
+     */
+    agentQueryDTO: Array<AgentQueryDTO>
+}
+
+export interface AgentApiCloneAgentRequest {
+    /**
+     * The referenced agentId
+     * @type string
+     * @memberof AgentApicloneAgent
+     */
+    agentId: string
+}
+
+export interface AgentApiCloneAgentsRequest {
+    /**
+     * List of agent information to be created
+     * @type Array&lt;string&gt;
+     * @memberof AgentApicloneAgents
+     */
+    requestBody: Array<string>
+}
+
+export interface AgentApiCountAgentsRequest {
+    /**
+     * Query conditions
+     * @type AgentQueryDTO
+     * @memberof AgentApicountAgents
+     */
+    agentQueryDTO: AgentQueryDTO
+}
+
+export interface AgentApiCreateAgentRequest {
+    /**
+     * Information of the agent to be created
+     * @type AgentCreateDTO
+     * @memberof AgentApicreateAgent
+     */
+    agentCreateDTO: AgentCreateDTO
+}
+
+export interface AgentApiCreateAgentsRequest {
+    /**
+     * List of agent information to be created
+     * @type Array&lt;AgentCreateDTO&gt;
+     * @memberof AgentApicreateAgents
+     */
+    agentCreateDTO: Array<AgentCreateDTO>
+}
+
+export interface AgentApiDeleteAgentRequest {
+    /**
+     * AgentId to be deleted
+     * @type string
+     * @memberof AgentApideleteAgent
+     */
+    agentId: string
+}
+
+export interface AgentApiDeleteAgentsRequest {
+    /**
+     * List of agentId to be deleted
+     * @type Array&lt;string&gt;
+     * @memberof AgentApideleteAgents
+     */
+    requestBody: Array<string>
+}
+
+export interface AgentApiGetAgentDetailsRequest {
+    /**
+     * AgentId to be obtained
+     * @type string
+     * @memberof AgentApigetAgentDetails
+     */
+    agentId: string
+}
+
+export interface AgentApiGetAgentSummaryRequest {
+    /**
+     * agentId to be obtained
+     * @type string
+     * @memberof AgentApigetAgentSummary
+     */
+    agentId: string
+}
+
+export interface AgentApiListAgentVersionsByNameRequest {
+    /**
+     * Agent name
+     * @type string
+     * @memberof AgentApilistAgentVersionsByName
+     */
+    name: string
+}
+
+export interface AgentApiPublishAgentRequest {
+    /**
+     * The agentId to be published
+     * @type string
+     * @memberof AgentApipublishAgent
+     */
+    agentId: string
+    /**
+     * Visibility: public | private | ...
+     * @type string
+     * @memberof AgentApipublishAgent
+     */
+    visibility: string
+}
+
+export interface AgentApiSearchAgentDetailsRequest {
+    /**
+     * Query conditions
+     * @type AgentQueryDTO
+     * @memberof AgentApisearchAgentDetails
+     */
+    agentQueryDTO: AgentQueryDTO
+}
+
+export interface AgentApiSearchAgentSummaryRequest {
+    /**
+     * Query conditions
+     * @type AgentQueryDTO
+     * @memberof AgentApisearchAgentSummary
+     */
+    agentQueryDTO: AgentQueryDTO
+}
+
+export interface AgentApiUpdateAgentRequest {
+    /**
+     * AgentId to be updated
+     * @type string
+     * @memberof AgentApiupdateAgent
+     */
+    agentId: string
+    /**
+     * Agent information to be updated
+     * @type AgentUpdateDTO
+     * @memberof AgentApiupdateAgent
+     */
+    agentUpdateDTO: AgentUpdateDTO
+}
+
+export class ObjectAgentApi {
+    private api: ObservableAgentApi
+
+    public constructor(configuration: Configuration, requestFactory?: AgentApiRequestFactory, responseProcessor?: AgentApiResponseProcessor) {
+        this.api = new ObservableAgentApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch Search Agent Details
+     * @param param the request object
+     */
+    public batchSearchAgentDetailsWithHttpInfo(param: AgentApiBatchSearchAgentDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
+        return this.api.batchSearchAgentDetailsWithHttpInfo(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch Search Agent Details
+     * @param param the request object
+     */
+    public batchSearchAgentDetails(param: AgentApiBatchSearchAgentDetailsRequest, options?: Configuration): Promise<Array<Array<AgentDetailsDTO>>> {
+        return this.api.batchSearchAgentDetails(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/search.
+     * Batch Search Agent Summaries
+     * @param param the request object
+     */
+    public batchSearchAgentSummaryWithHttpInfo(param: AgentApiBatchSearchAgentSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
+        return this.api.batchSearchAgentSummaryWithHttpInfo(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/search.
+     * Batch Search Agent Summaries
+     * @param param the request object
+     */
+    public batchSearchAgentSummary(param: AgentApiBatchSearchAgentSummaryRequest, options?: Configuration): Promise<Array<Array<AgentSummaryDTO>>> {
+        return this.api.batchSearchAgentSummary(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Clone Agent
+     * @param param the request object
+     */
+    public cloneAgentWithHttpInfo(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.cloneAgentWithHttpInfo(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Clone Agent
+     * @param param the request object
+     */
+    public cloneAgent(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<string> {
+        return this.api.cloneAgent(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Clone Agents
+     * @param param the request object
+     */
+    public cloneAgentsWithHttpInfo(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.cloneAgentsWithHttpInfo(param.requestBody,  options).toPromise();
+    }
+
+    /**
+     * Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Clone Agents
+     * @param param the request object
+     */
+    public cloneAgents(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.cloneAgents(param.requestBody,  options).toPromise();
+    }
+
+    /**
+     * Calculate the number of agents according to the specified query conditions.
+     * Calculate Number of Agents
+     * @param param the request object
+     */
+    public countAgentsWithHttpInfo(param: AgentApiCountAgentsRequest, options?: Configuration): Promise<HttpInfo<number>> {
+        return this.api.countAgentsWithHttpInfo(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Calculate the number of agents according to the specified query conditions.
+     * Calculate Number of Agents
+     * @param param the request object
+     */
+    public countAgents(param: AgentApiCountAgentsRequest, options?: Configuration): Promise<number> {
+        return this.api.countAgents(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create Agent
+     * @param param the request object
+     */
+    public createAgentWithHttpInfo(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.createAgentWithHttpInfo(param.agentCreateDTO,  options).toPromise();
+    }
+
+    /**
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create Agent
+     * @param param the request object
+     */
+    public createAgent(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<string> {
+        return this.api.createAgent(param.agentCreateDTO,  options).toPromise();
+    }
+
+    /**
+     * Batch create multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Create Agents
+     * @param param the request object
+     */
+    public createAgentsWithHttpInfo(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.createAgentsWithHttpInfo(param.agentCreateDTO,  options).toPromise();
+    }
+
+    /**
+     * Batch create multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Create Agents
+     * @param param the request object
+     */
+    public createAgents(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.createAgents(param.agentCreateDTO,  options).toPromise();
+    }
+
+    /**
+     * Delete agent. Return success or failure.
+     * Delete Agent
+     * @param param the request object
+     */
+    public deleteAgentWithHttpInfo(param: AgentApiDeleteAgentRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteAgentWithHttpInfo(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Delete agent. Return success or failure.
+     * Delete Agent
+     * @param param the request object
+     */
+    public deleteAgent(param: AgentApiDeleteAgentRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteAgent(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
+     * Batch Delete Agents
+     * @param param the request object
+     */
+    public deleteAgentsWithHttpInfo(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.deleteAgentsWithHttpInfo(param.requestBody,  options).toPromise();
+    }
+
+    /**
+     * Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
+     * Batch Delete Agents
+     * @param param the request object
+     */
+    public deleteAgents(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.deleteAgents(param.requestBody,  options).toPromise();
+    }
+
+    /**
+     * Get agent detailed information.
+     * Get Agent Details
+     * @param param the request object
+     */
+    public getAgentDetailsWithHttpInfo(param: AgentApiGetAgentDetailsRequest, options?: Configuration): Promise<HttpInfo<AgentDetailsDTO>> {
+        return this.api.getAgentDetailsWithHttpInfo(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Get agent detailed information.
+     * Get Agent Details
+     * @param param the request object
+     */
+    public getAgentDetails(param: AgentApiGetAgentDetailsRequest, options?: Configuration): Promise<AgentDetailsDTO> {
+        return this.api.getAgentDetails(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Get agent summary information.
+     * Get Agent Summary
+     * @param param the request object
+     */
+    public getAgentSummaryWithHttpInfo(param: AgentApiGetAgentSummaryRequest, options?: Configuration): Promise<HttpInfo<AgentSummaryDTO>> {
+        return this.api.getAgentSummaryWithHttpInfo(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * Get agent summary information.
+     * Get Agent Summary
+     * @param param the request object
+     */
+    public getAgentSummary(param: AgentApiGetAgentSummaryRequest, options?: Configuration): Promise<AgentSummaryDTO> {
+        return this.api.getAgentSummary(param.agentId,  options).toPromise();
+    }
+
+    /**
+     * List the versions and corresponding agentIds by agent name.
+     * List Versions by Agent Name
+     * @param param the request object
+     */
+    public listAgentVersionsByNameWithHttpInfo(param: AgentApiListAgentVersionsByNameRequest, options?: Configuration): Promise<HttpInfo<Array<AgentItemForNameDTO>>> {
+        return this.api.listAgentVersionsByNameWithHttpInfo(param.name,  options).toPromise();
+    }
+
+    /**
+     * List the versions and corresponding agentIds by agent name.
+     * List Versions by Agent Name
+     * @param param the request object
+     */
+    public listAgentVersionsByName(param: AgentApiListAgentVersionsByNameRequest, options?: Configuration): Promise<Array<AgentItemForNameDTO>> {
+        return this.api.listAgentVersionsByName(param.name,  options).toPromise();
+    }
+
+    /**
+     * Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Agent
+     * @param param the request object
+     */
+    public publishAgentWithHttpInfo(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.publishAgentWithHttpInfo(param.agentId, param.visibility,  options).toPromise();
+    }
+
+    /**
+     * Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Agent
+     * @param param the request object
+     */
+    public publishAgent(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<string> {
+        return this.api.publishAgent(param.agentId, param.visibility,  options).toPromise();
+    }
+
+    /**
+     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Search Agent Details
+     * @param param the request object
+     */
+    public searchAgentDetailsWithHttpInfo(param: AgentApiSearchAgentDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<AgentDetailsDTO>>> {
+        return this.api.searchAgentDetailsWithHttpInfo(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Search Agent Details
+     * @param param the request object
+     */
+    public searchAgentDetails(param: AgentApiSearchAgentDetailsRequest, options?: Configuration): Promise<Array<AgentDetailsDTO>> {
+        return this.api.searchAgentDetails(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search Agent Summary
+     * @param param the request object
+     */
+    public searchAgentSummaryWithHttpInfo(param: AgentApiSearchAgentSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryDTO>>> {
+        return this.api.searchAgentSummaryWithHttpInfo(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search Agent Summary
+     * @param param the request object
+     */
+    public searchAgentSummary(param: AgentApiSearchAgentSummaryRequest, options?: Configuration): Promise<Array<AgentSummaryDTO>> {
+        return this.api.searchAgentSummary(param.agentQueryDTO,  options).toPromise();
+    }
+
+    /**
+     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update Agent
+     * @param param the request object
+     */
+    public updateAgentWithHttpInfo(param: AgentApiUpdateAgentRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.updateAgentWithHttpInfo(param.agentId, param.agentUpdateDTO,  options).toPromise();
+    }
+
+    /**
+     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update Agent
+     * @param param the request object
+     */
+    public updateAgent(param: AgentApiUpdateAgentRequest, options?: Configuration): Promise<boolean> {
+        return this.api.updateAgent(param.agentId, param.agentUpdateDTO,  options).toPromise();
     }
 
 }
@@ -2279,468 +2735,12 @@ export class ObjectEncryptionManagerForAdminApi {
 
 }
 
-import { ObservableFlowApi } from "./ObservableAPI.js";
-import { FlowApiRequestFactory, FlowApiResponseProcessor} from "../apis/FlowApi.js";
-
-export interface FlowApiBatchSearchFlowDetailsRequest {
-    /**
-     * Query conditions
-     * @type Array&lt;FlowQueryDTO&gt;
-     * @memberof FlowApibatchSearchFlowDetails
-     */
-    flowQueryDTO: Array<FlowQueryDTO>
-}
-
-export interface FlowApiBatchSearchFlowSummaryRequest {
-    /**
-     * Query conditions
-     * @type Array&lt;FlowQueryDTO&gt;
-     * @memberof FlowApibatchSearchFlowSummary
-     */
-    flowQueryDTO: Array<FlowQueryDTO>
-}
-
-export interface FlowApiCloneFlowRequest {
-    /**
-     * The referenced flowId
-     * @type string
-     * @memberof FlowApicloneFlow
-     */
-    flowId: string
-}
-
-export interface FlowApiCloneFlowsRequest {
-    /**
-     * List of flow information to be created
-     * @type Array&lt;string&gt;
-     * @memberof FlowApicloneFlows
-     */
-    requestBody: Array<string>
-}
-
-export interface FlowApiCountFlowsRequest {
-    /**
-     * Query conditions
-     * @type FlowQueryDTO
-     * @memberof FlowApicountFlows
-     */
-    flowQueryDTO: FlowQueryDTO
-}
-
-export interface FlowApiCreateFlowRequest {
-    /**
-     * Information of the flow to be created
-     * @type FlowCreateDTO
-     * @memberof FlowApicreateFlow
-     */
-    flowCreateDTO: FlowCreateDTO
-}
-
-export interface FlowApiCreateFlowsRequest {
-    /**
-     * List of flow information to be created
-     * @type Array&lt;FlowCreateDTO&gt;
-     * @memberof FlowApicreateFlows
-     */
-    flowCreateDTO: Array<FlowCreateDTO>
-}
-
-export interface FlowApiDeleteFlowRequest {
-    /**
-     * FlowId to be deleted
-     * @type string
-     * @memberof FlowApideleteFlow
-     */
-    flowId: string
-}
-
-export interface FlowApiDeleteFlowsRequest {
-    /**
-     * List of flowId to be deleted
-     * @type Array&lt;string&gt;
-     * @memberof FlowApideleteFlows
-     */
-    requestBody: Array<string>
-}
-
-export interface FlowApiGetFlowDetailsRequest {
-    /**
-     * FlowId to be obtained
-     * @type string
-     * @memberof FlowApigetFlowDetails
-     */
-    flowId: string
-}
-
-export interface FlowApiGetFlowSummaryRequest {
-    /**
-     * flowId to be obtained
-     * @type string
-     * @memberof FlowApigetFlowSummary
-     */
-    flowId: string
-}
-
-export interface FlowApiListFlowVersionsByNameRequest {
-    /**
-     * Flow name
-     * @type string
-     * @memberof FlowApilistFlowVersionsByName
-     */
-    name: string
-}
-
-export interface FlowApiPublishFlowRequest {
-    /**
-     * The flowId to be published
-     * @type string
-     * @memberof FlowApipublishFlow
-     */
-    flowId: string
-    /**
-     * Visibility: public | private | ...
-     * @type string
-     * @memberof FlowApipublishFlow
-     */
-    visibility: string
-}
-
-export interface FlowApiSearchFlowDetailsRequest {
-    /**
-     * Query conditions
-     * @type FlowQueryDTO
-     * @memberof FlowApisearchFlowDetails
-     */
-    flowQueryDTO: FlowQueryDTO
-}
-
-export interface FlowApiSearchFlowSummaryRequest {
-    /**
-     * Query conditions
-     * @type FlowQueryDTO
-     * @memberof FlowApisearchFlowSummary
-     */
-    flowQueryDTO: FlowQueryDTO
-}
-
-export interface FlowApiUpdateFlowRequest {
-    /**
-     * FlowId to be updated
-     * @type string
-     * @memberof FlowApiupdateFlow
-     */
-    flowId: string
-    /**
-     * Flow information to be updated
-     * @type FlowUpdateDTO
-     * @memberof FlowApiupdateFlow
-     */
-    flowUpdateDTO: FlowUpdateDTO
-}
-
-export class ObjectFlowApi {
-    private api: ObservableFlowApi
-
-    public constructor(configuration: Configuration, requestFactory?: FlowApiRequestFactory, responseProcessor?: FlowApiResponseProcessor) {
-        this.api = new ObservableFlowApi(configuration, requestFactory, responseProcessor);
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/details/search.
-     * Batch Search Flow Details
-     * @param param the request object
-     */
-    public batchSearchFlowDetailsWithHttpInfo(param: FlowApiBatchSearchFlowDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<Array<FlowDetailsDTO>>>> {
-        return this.api.batchSearchFlowDetailsWithHttpInfo(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/details/search.
-     * Batch Search Flow Details
-     * @param param the request object
-     */
-    public batchSearchFlowDetails(param: FlowApiBatchSearchFlowDetailsRequest, options?: Configuration): Promise<Array<Array<FlowDetailsDTO>>> {
-        return this.api.batchSearchFlowDetails(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/search.
-     * Batch Search Flow Summaries
-     * @param param the request object
-     */
-    public batchSearchFlowSummaryWithHttpInfo(param: FlowApiBatchSearchFlowSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<Array<FlowSummaryDTO>>>> {
-        return this.api.batchSearchFlowSummaryWithHttpInfo(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/search.
-     * Batch Search Flow Summaries
-     * @param param the request object
-     */
-    public batchSearchFlowSummary(param: FlowApiBatchSearchFlowSummaryRequest, options?: Configuration): Promise<Array<Array<FlowSummaryDTO>>> {
-        return this.api.batchSearchFlowSummary(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different: - Version number is 1 - Visibility is private - The parent flow is the source flowId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new flowId. 
-     * Clone Flow
-     * @param param the request object
-     */
-    public cloneFlowWithHttpInfo(param: FlowApiCloneFlowRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.cloneFlowWithHttpInfo(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different: - Version number is 1 - Visibility is private - The parent flow is the source flowId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new flowId. 
-     * Clone Flow
-     * @param param the request object
-     */
-    public cloneFlow(param: FlowApiCloneFlowRequest, options?: Configuration): Promise<string> {
-        return this.api.cloneFlow(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Batch clone multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Clone Flows
-     * @param param the request object
-     */
-    public cloneFlowsWithHttpInfo(param: FlowApiCloneFlowsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.cloneFlowsWithHttpInfo(param.requestBody,  options).toPromise();
-    }
-
-    /**
-     * Batch clone multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Clone Flows
-     * @param param the request object
-     */
-    public cloneFlows(param: FlowApiCloneFlowsRequest, options?: Configuration): Promise<Array<string>> {
-        return this.api.cloneFlows(param.requestBody,  options).toPromise();
-    }
-
-    /**
-     * Calculate the number of flows according to the specified query conditions.
-     * Calculate Number of Flows
-     * @param param the request object
-     */
-    public countFlowsWithHttpInfo(param: FlowApiCountFlowsRequest, options?: Configuration): Promise<HttpInfo<number>> {
-        return this.api.countFlowsWithHttpInfo(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Calculate the number of flows according to the specified query conditions.
-     * Calculate Number of Flows
-     * @param param the request object
-     */
-    public countFlows(param: FlowApiCountFlowsRequest, options?: Configuration): Promise<number> {
-        return this.api.countFlows(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Create a flow, ignore required fields: - Flow name - Flow configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
-     * Create Flow
-     * @param param the request object
-     */
-    public createFlowWithHttpInfo(param: FlowApiCreateFlowRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.createFlowWithHttpInfo(param.flowCreateDTO,  options).toPromise();
-    }
-
-    /**
-     * Create a flow, ignore required fields: - Flow name - Flow configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
-     * Create Flow
-     * @param param the request object
-     */
-    public createFlow(param: FlowApiCreateFlowRequest, options?: Configuration): Promise<string> {
-        return this.api.createFlow(param.flowCreateDTO,  options).toPromise();
-    }
-
-    /**
-     * Batch create multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Create Flows
-     * @param param the request object
-     */
-    public createFlowsWithHttpInfo(param: FlowApiCreateFlowsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.createFlowsWithHttpInfo(param.flowCreateDTO,  options).toPromise();
-    }
-
-    /**
-     * Batch create multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Create Flows
-     * @param param the request object
-     */
-    public createFlows(param: FlowApiCreateFlowsRequest, options?: Configuration): Promise<Array<string>> {
-        return this.api.createFlows(param.flowCreateDTO,  options).toPromise();
-    }
-
-    /**
-     * Delete flow. Return success or failure.
-     * Delete Flow
-     * @param param the request object
-     */
-    public deleteFlowWithHttpInfo(param: FlowApiDeleteFlowRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
-        return this.api.deleteFlowWithHttpInfo(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Delete flow. Return success or failure.
-     * Delete Flow
-     * @param param the request object
-     */
-    public deleteFlow(param: FlowApiDeleteFlowRequest, options?: Configuration): Promise<boolean> {
-        return this.api.deleteFlow(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Delete multiple flows. Ensure transactionality, return the list of successfully deleted flowId.
-     * Batch Delete Flows
-     * @param param the request object
-     */
-    public deleteFlowsWithHttpInfo(param: FlowApiDeleteFlowsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.deleteFlowsWithHttpInfo(param.requestBody,  options).toPromise();
-    }
-
-    /**
-     * Delete multiple flows. Ensure transactionality, return the list of successfully deleted flowId.
-     * Batch Delete Flows
-     * @param param the request object
-     */
-    public deleteFlows(param: FlowApiDeleteFlowsRequest, options?: Configuration): Promise<Array<string>> {
-        return this.api.deleteFlows(param.requestBody,  options).toPromise();
-    }
-
-    /**
-     * Get flow detailed information.
-     * Get Flow Details
-     * @param param the request object
-     */
-    public getFlowDetailsWithHttpInfo(param: FlowApiGetFlowDetailsRequest, options?: Configuration): Promise<HttpInfo<FlowDetailsDTO>> {
-        return this.api.getFlowDetailsWithHttpInfo(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Get flow detailed information.
-     * Get Flow Details
-     * @param param the request object
-     */
-    public getFlowDetails(param: FlowApiGetFlowDetailsRequest, options?: Configuration): Promise<FlowDetailsDTO> {
-        return this.api.getFlowDetails(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Get flow summary information.
-     * Get Flow Summary
-     * @param param the request object
-     */
-    public getFlowSummaryWithHttpInfo(param: FlowApiGetFlowSummaryRequest, options?: Configuration): Promise<HttpInfo<FlowSummaryDTO>> {
-        return this.api.getFlowSummaryWithHttpInfo(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * Get flow summary information.
-     * Get Flow Summary
-     * @param param the request object
-     */
-    public getFlowSummary(param: FlowApiGetFlowSummaryRequest, options?: Configuration): Promise<FlowSummaryDTO> {
-        return this.api.getFlowSummary(param.flowId,  options).toPromise();
-    }
-
-    /**
-     * List the versions and corresponding flowIds by flow name.
-     * List Versions by Flow Name
-     * @param param the request object
-     */
-    public listFlowVersionsByNameWithHttpInfo(param: FlowApiListFlowVersionsByNameRequest, options?: Configuration): Promise<HttpInfo<Array<FlowItemForNameDTO>>> {
-        return this.api.listFlowVersionsByNameWithHttpInfo(param.name,  options).toPromise();
-    }
-
-    /**
-     * List the versions and corresponding flowIds by flow name.
-     * List Versions by Flow Name
-     * @param param the request object
-     */
-    public listFlowVersionsByName(param: FlowApiListFlowVersionsByNameRequest, options?: Configuration): Promise<Array<FlowItemForNameDTO>> {
-        return this.api.listFlowVersionsByName(param.name,  options).toPromise();
-    }
-
-    /**
-     * Publish flow, draft content becomes formal content, version number increases by 1. After successful publication, a new flowId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Flow
-     * @param param the request object
-     */
-    public publishFlowWithHttpInfo(param: FlowApiPublishFlowRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.publishFlowWithHttpInfo(param.flowId, param.visibility,  options).toPromise();
-    }
-
-    /**
-     * Publish flow, draft content becomes formal content, version number increases by 1. After successful publication, a new flowId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Flow
-     * @param param the request object
-     */
-    public publishFlow(param: FlowApiPublishFlowRequest, options?: Configuration): Promise<string> {
-        return this.api.publishFlow(param.flowId, param.visibility,  options).toPromise();
-    }
-
-    /**
-     * Same as /api/v1/flow/search, but returns detailed information of the flow.
-     * Search Flow Details
-     * @param param the request object
-     */
-    public searchFlowDetailsWithHttpInfo(param: FlowApiSearchFlowDetailsRequest, options?: Configuration): Promise<HttpInfo<Array<FlowDetailsDTO>>> {
-        return this.api.searchFlowDetailsWithHttpInfo(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Same as /api/v1/flow/search, but returns detailed information of the flow.
-     * Search Flow Details
-     * @param param the request object
-     */
-    public searchFlowDetails(param: FlowApiSearchFlowDetailsRequest, options?: Configuration): Promise<Array<FlowDetailsDTO>> {
-        return this.api.searchFlowDetails(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Search flows: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the flow summary content. - Support pagination. 
-     * Search Flow Summary
-     * @param param the request object
-     */
-    public searchFlowSummaryWithHttpInfo(param: FlowApiSearchFlowSummaryRequest, options?: Configuration): Promise<HttpInfo<Array<FlowSummaryDTO>>> {
-        return this.api.searchFlowSummaryWithHttpInfo(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Search flows: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the flow summary content. - Support pagination. 
-     * Search Flow Summary
-     * @param param the request object
-     */
-    public searchFlowSummary(param: FlowApiSearchFlowSummaryRequest, options?: Configuration): Promise<Array<FlowSummaryDTO>> {
-        return this.api.searchFlowSummary(param.flowQueryDTO,  options).toPromise();
-    }
-
-    /**
-     * Update flow, refer to /api/v1/flow/create, required field: flowId. Return success or failure.
-     * Update Flow
-     * @param param the request object
-     */
-    public updateFlowWithHttpInfo(param: FlowApiUpdateFlowRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
-        return this.api.updateFlowWithHttpInfo(param.flowId, param.flowUpdateDTO,  options).toPromise();
-    }
-
-    /**
-     * Update flow, refer to /api/v1/flow/create, required field: flowId. Return success or failure.
-     * Update Flow
-     * @param param the request object
-     */
-    public updateFlow(param: FlowApiUpdateFlowRequest, options?: Configuration): Promise<boolean> {
-        return this.api.updateFlow(param.flowId, param.flowUpdateDTO,  options).toPromise();
-    }
-
-}
-
 import { ObservableInteractiveStatisticsApi } from "./ObservableAPI.js";
 import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiResponseProcessor} from "../apis/InteractiveStatisticsApi.js";
 
 export interface InteractiveStatisticsApiAddStatisticRequest {
     /**
-     * Info type: prompt | flow | plugin | character
+     * Info type: prompt | agent | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApiaddStatistic
      */
@@ -2767,7 +2767,7 @@ export interface InteractiveStatisticsApiAddStatisticRequest {
 
 export interface InteractiveStatisticsApiGetScoreRequest {
     /**
-     * Info type: prompt | flow | plugin | character
+     * Info type: prompt | agent | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApigetScore
      */
@@ -2782,7 +2782,7 @@ export interface InteractiveStatisticsApiGetScoreRequest {
 
 export interface InteractiveStatisticsApiGetStatisticRequest {
     /**
-     * Info type: prompt | flow | plugin | character
+     * Info type: prompt | agent | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApigetStatistic
      */
@@ -2803,7 +2803,7 @@ export interface InteractiveStatisticsApiGetStatisticRequest {
 
 export interface InteractiveStatisticsApiGetStatisticsRequest {
     /**
-     * Info type: prompt | flow | plugin | character
+     * Info type: prompt | agent | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApigetStatistics
      */
@@ -2818,7 +2818,7 @@ export interface InteractiveStatisticsApiGetStatisticsRequest {
 
 export interface InteractiveStatisticsApiIncreaseStatisticRequest {
     /**
-     * Info type: prompt | flow | plugin | character
+     * Info type: prompt | agent | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApiincreaseStatistic
      */
@@ -2835,6 +2835,69 @@ export interface InteractiveStatisticsApiIncreaseStatisticRequest {
      * @memberof InteractiveStatisticsApiincreaseStatistic
      */
     statsType: string
+}
+
+export interface InteractiveStatisticsApiListAgentsByStatisticRequest {
+    /**
+     * Statistics type: view_count | refer_count | recommend_count | score
+     * @type string
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic
+     */
+    statsType: string
+    /**
+     * Default is descending order, set asc&#x3D;1 for ascending order
+     * @type string
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic
+     */
+    asc?: string
+}
+
+export interface InteractiveStatisticsApiListAgentsByStatistic1Request {
+    /**
+     * Statistics type: view_count | refer_count | recommend_count | score
+     * @type string
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic1
+     */
+    statsType: string
+    /**
+     * Maximum quantity
+     * @type number
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic1
+     */
+    pageSize: number
+    /**
+     * Default is descending order, set asc&#x3D;1 for ascending order
+     * @type string
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic1
+     */
+    asc?: string
+}
+
+export interface InteractiveStatisticsApiListAgentsByStatistic2Request {
+    /**
+     * Statistics type: view_count | refer_count | recommend_count | score
+     * @type string
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic2
+     */
+    statsType: string
+    /**
+     * Maximum quantity
+     * @type number
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic2
+     */
+    pageSize: number
+    /**
+     * Current page number
+     * @type number
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic2
+     */
+    pageNum: number
+    /**
+     * Default is descending order, set asc&#x3D;1 for ascending order
+     * @type string
+     * @memberof InteractiveStatisticsApilistAgentsByStatistic2
+     */
+    asc?: string
 }
 
 export interface InteractiveStatisticsApiListCharactersByStatisticRequest {
@@ -2900,72 +2963,9 @@ export interface InteractiveStatisticsApiListCharactersByStatistic2Request {
     asc?: string
 }
 
-export interface InteractiveStatisticsApiListFlowsByStatisticRequest {
-    /**
-     * Statistics type: view_count | refer_count | recommend_count | score
-     * @type string
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic
-     */
-    statsType: string
-    /**
-     * Maximum quantity
-     * @type number
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic
-     */
-    pageSize: number
-    /**
-     * Current page number
-     * @type number
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic
-     */
-    pageNum: number
-    /**
-     * Default is descending order, set asc&#x3D;1 for ascending order
-     * @type string
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic
-     */
-    asc?: string
-}
-
-export interface InteractiveStatisticsApiListFlowsByStatistic1Request {
-    /**
-     * Statistics type: view_count | refer_count | recommend_count | score
-     * @type string
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic1
-     */
-    statsType: string
-    /**
-     * Default is descending order, set asc&#x3D;1 for ascending order
-     * @type string
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic1
-     */
-    asc?: string
-}
-
-export interface InteractiveStatisticsApiListFlowsByStatistic2Request {
-    /**
-     * Statistics type: view_count | refer_count | recommend_count | score
-     * @type string
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic2
-     */
-    statsType: string
-    /**
-     * Maximum quantity
-     * @type number
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic2
-     */
-    pageSize: number
-    /**
-     * Default is descending order, set asc&#x3D;1 for ascending order
-     * @type string
-     * @memberof InteractiveStatisticsApilistFlowsByStatistic2
-     */
-    asc?: string
-}
-
 export interface InteractiveStatisticsApiListHotTagsRequest {
     /**
-     * Info type: prompt | flow | plugin | character
+     * Info type: prompt | agent | plugin | character
      * @type string
      * @memberof InteractiveStatisticsApilistHotTags
      */
@@ -3208,6 +3208,60 @@ export class ObjectInteractiveStatisticsApi {
     }
 
     /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param param the request object
+     */
+    public listAgentsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        return this.api.listAgentsByStatisticWithHttpInfo(param.statsType, param.asc,  options).toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param param the request object
+     */
+    public listAgentsByStatistic(param: InteractiveStatisticsApiListAgentsByStatisticRequest, options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        return this.api.listAgentsByStatistic(param.statsType, param.asc,  options).toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param param the request object
+     */
+    public listAgentsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        return this.api.listAgentsByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param param the request object
+     */
+    public listAgentsByStatistic1(param: InteractiveStatisticsApiListAgentsByStatistic1Request, options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        return this.api.listAgentsByStatistic1(param.statsType, param.pageSize, param.asc,  options).toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param param the request object
+     */
+    public listAgentsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListAgentsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        return this.api.listAgentsByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param param the request object
+     */
+    public listAgentsByStatistic2(param: InteractiveStatisticsApiListAgentsByStatistic2Request, options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        return this.api.listAgentsByStatistic2(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+    }
+
+    /**
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param param the request object
@@ -3259,60 +3313,6 @@ export class ObjectInteractiveStatisticsApi {
      */
     public listCharactersByStatistic2(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
         return this.api.listCharactersByStatistic2(param.statsType, param.asc,  options).toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param param the request object
-     */
-    public listFlowsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListFlowsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        return this.api.listFlowsByStatisticWithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param param the request object
-     */
-    public listFlowsByStatistic(param: InteractiveStatisticsApiListFlowsByStatisticRequest, options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
-        return this.api.listFlowsByStatistic(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param param the request object
-     */
-    public listFlowsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListFlowsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        return this.api.listFlowsByStatistic1WithHttpInfo(param.statsType, param.asc,  options).toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param param the request object
-     */
-    public listFlowsByStatistic1(param: InteractiveStatisticsApiListFlowsByStatistic1Request, options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
-        return this.api.listFlowsByStatistic1(param.statsType, param.asc,  options).toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param param the request object
-     */
-    public listFlowsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListFlowsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        return this.api.listFlowsByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param param the request object
-     */
-    public listFlowsByStatistic2(param: InteractiveStatisticsApiListFlowsByStatistic2Request, options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
-        return this.api.listFlowsByStatistic2(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**

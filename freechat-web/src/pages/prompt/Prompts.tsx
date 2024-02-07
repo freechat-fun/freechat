@@ -2,7 +2,7 @@ import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from 
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder } from "../../components";
+import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { ChatMessageDTO, ChatPromptContentDTO, PromptCreateDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
 import { Box, Button, Card, Chip, FormControl, FormHelperText, IconButton, Input, Radio, RadioGroup, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -70,21 +70,9 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         <Chip color="success" variant="soft">v{record.version}</Chip>
         <Chip color={record.type === 'string' ? 'warning' : 'success'} variant="outlined">{record.type}</Chip>
       </Box>
-      <Typography
-        sx={{
-          ...sx,
-          display: '-webkit-box',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: 3,
-          maxHeight: '4.5rem',
-          minHeight: '4.5rem',
-          lineHeight: '1.5rem',
-        }}
-      >
+      <SummaryTypography sx={{...sx}}>
         {record.description}
-      </Typography>
+      </SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
         onView={() => onView(record)}

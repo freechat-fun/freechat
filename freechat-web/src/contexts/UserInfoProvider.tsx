@@ -11,6 +11,7 @@ interface UserInfoContextValue {
     from: string | null | undefined,
   ) => void;
   isAuthorized: () => boolean;
+  isGuest: () => boolean;
 }
 
 const anonymous: UserInfoContextValue = {
@@ -19,6 +20,7 @@ const anonymous: UserInfoContextValue = {
   csrfToken: undefined,
   resetUser: () => {},
   isAuthorized: () => false,
+  isGuest: () => false,
 };
 
 const UserInfoContext = createContext<UserInfoContextValue>(anonymous);
@@ -42,6 +44,10 @@ const UserInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return !!username;
   }
 
+  const isGuest = () => {
+    return username === 'guest';
+  }
+
   return (
     <UserInfoContext.Provider value={{
         username,
@@ -49,6 +55,7 @@ const UserInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
         csrfToken,
         resetUser,
         isAuthorized,
+        isGuest,
     }}> 
       {children}
     </UserInfoContext.Provider>

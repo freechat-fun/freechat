@@ -11,8 +11,9 @@ import PromptInfo from './pages/prompt/PromptInfo';
 import PromptEdit from './pages/prompt/PromptEdit';
 import OpenApi from './pages/docs/OpenApi';
 import Characters from './pages/character/Characters';
-import PromptTask from './pages/prompt/PromptTask';
 import CharacterEdit from './pages/character/CharacterEdit';
+import PromptTaskEdit from './pages/prompt/PromptTaskEdit';
+import PromptTaskInfo from './pages/prompt/PromptTaskInfo';
 
 const sidebarRoutes = [
   {
@@ -37,7 +38,11 @@ const sidebarRoutes = [
   },
   {
     path: 'prompt/task/:id',
-    element: <PromptTask />,
+    element: <PromptTaskInfo />,
+  },
+  {
+    path: 'prompt/task/edit/:id',
+    element: <PromptTaskEdit />,
   },
   {
     path: 'characters',
@@ -52,7 +57,7 @@ const sidebarRoutes = [
     element: <ComingSoon />,
   },
   {
-    path: 'flows',
+    path: 'agents',
     element: <ComingSoon />,
   },
   {

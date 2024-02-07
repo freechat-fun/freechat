@@ -30,7 +30,7 @@ public class TagManagerApi {
     )
     @PostMapping("/{referType}/{referId}/{tag}")
     public Boolean create(
-            @Parameter(description = "Tag type (prompt, flow, plugin...)") @PathVariable("referType") @NotBlank
+            @Parameter(description = "Tag type (prompt, agent, plugin...)") @PathVariable("referType") @NotBlank
             String referType,
             @Parameter(description = "Resource identifier of the tag") @PathVariable("referId") @NotBlank
             String referId,
@@ -47,7 +47,7 @@ public class TagManagerApi {
     )
     @DeleteMapping("/{referType}/{referId}/{tag}")
     public Boolean delete(
-            @Parameter(description = "Tag type (prompt, flow, plugin...)") @PathVariable("referType") @NotBlank
+            @Parameter(description = "Tag type (prompt, agent, plugin...)") @PathVariable("referType") @NotBlank
             String referType,
             @Parameter(description = "Resource identifier of the tag") @PathVariable("referId") @NotBlank
             String referId,

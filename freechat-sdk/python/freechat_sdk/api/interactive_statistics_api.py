@@ -29,8 +29,8 @@ from pydantic import StrictInt, StrictStr
 
 from typing import List, Optional
 
+from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
 from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
-from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
 from freechat_sdk.models.hot_tag_dto import HotTagDTO
 from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
 from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
@@ -57,7 +57,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def add_statistic(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         delta: Annotated[StrictInt, Field(description="Delta in statistical value")],
@@ -78,7 +78,7 @@ class InteractiveStatisticsApi:
 
         Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -136,7 +136,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def add_statistic_with_http_info(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         delta: Annotated[StrictInt, Field(description="Delta in statistical value")],
@@ -157,7 +157,7 @@ class InteractiveStatisticsApi:
 
         Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -215,7 +215,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def add_statistic_without_preload_content(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         delta: Annotated[StrictInt, Field(description="Delta in statistical value")],
@@ -236,7 +236,7 @@ class InteractiveStatisticsApi:
 
         Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -360,7 +360,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_score(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         _request_timeout: Union[
             None,
@@ -379,7 +379,7 @@ class InteractiveStatisticsApi:
 
         Get the current user's score for the corresponding resource.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -431,7 +431,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_score_with_http_info(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         _request_timeout: Union[
             None,
@@ -450,7 +450,7 @@ class InteractiveStatisticsApi:
 
         Get the current user's score for the corresponding resource.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -502,7 +502,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_score_without_preload_content(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         _request_timeout: Union[
             None,
@@ -521,7 +521,7 @@ class InteractiveStatisticsApi:
 
         Get the current user's score for the corresponding resource.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -633,7 +633,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_statistic(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         _request_timeout: Union[
@@ -653,7 +653,7 @@ class InteractiveStatisticsApi:
 
         Get the statistics of the corresponding metrics of the corresponding resources.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -708,7 +708,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_statistic_with_http_info(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         _request_timeout: Union[
@@ -728,7 +728,7 @@ class InteractiveStatisticsApi:
 
         Get the statistics of the corresponding metrics of the corresponding resources.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -783,7 +783,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_statistic_without_preload_content(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         _request_timeout: Union[
@@ -803,7 +803,7 @@ class InteractiveStatisticsApi:
 
         Get the statistics of the corresponding metrics of the corresponding resources.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -921,7 +921,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_statistics(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         _request_timeout: Union[
             None,
@@ -940,7 +940,7 @@ class InteractiveStatisticsApi:
 
         Get all statistics of the corresponding resources.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -992,7 +992,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_statistics_with_http_info(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         _request_timeout: Union[
             None,
@@ -1011,7 +1011,7 @@ class InteractiveStatisticsApi:
 
         Get all statistics of the corresponding resources.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -1063,7 +1063,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def get_statistics_without_preload_content(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         _request_timeout: Union[
             None,
@@ -1082,7 +1082,7 @@ class InteractiveStatisticsApi:
 
         Get all statistics of the corresponding resources.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -1194,7 +1194,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def increase_statistic(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         _request_timeout: Union[
@@ -1214,7 +1214,7 @@ class InteractiveStatisticsApi:
 
         Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -1269,7 +1269,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def increase_statistic_with_http_info(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         _request_timeout: Union[
@@ -1289,7 +1289,7 @@ class InteractiveStatisticsApi:
 
         Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -1344,7 +1344,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def increase_statistic_without_preload_content(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         info_id: Annotated[StrictStr, Field(description="Unique resource identifier")],
         stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
         _request_timeout: Union[
@@ -1364,7 +1364,7 @@ class InteractiveStatisticsApi:
 
         Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param info_id: Unique resource identifier (required)
         :type info_id: str
@@ -1464,6 +1464,876 @@ class InteractiveStatisticsApi:
         return self.api_client.param_serialize(
             method='POST',
             resource_path='/api/v1/stats/{infoType}/{infoId}/{statsType}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def list_agents_by_statistic(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[AgentSummaryStatsDTO]:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic_serialize(
+            stats_type=stats_type,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def list_agents_by_statistic_with_http_info(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[AgentSummaryStatsDTO]]:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic_serialize(
+            stats_type=stats_type,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def list_agents_by_statistic_without_preload_content(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic_serialize(
+            stats_type=stats_type,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _list_agents_by_statistic_serialize(
+        self,
+        stats_type,
+        asc,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> Tuple:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if stats_type is not None:
+            _path_params['statsType'] = stats_type
+        # process the query parameters
+        if asc is not None:
+            
+            _query_params.append(('asc', asc))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'bearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/api/v1/stats/agents/by/{statsType}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def list_agents_by_statistic1(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[AgentSummaryStatsDTO]:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param page_size: Maximum quantity (required)
+        :type page_size: int
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic1_serialize(
+            stats_type=stats_type,
+            page_size=page_size,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def list_agents_by_statistic1_with_http_info(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[AgentSummaryStatsDTO]]:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param page_size: Maximum quantity (required)
+        :type page_size: int
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic1_serialize(
+            stats_type=stats_type,
+            page_size=page_size,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def list_agents_by_statistic1_without_preload_content(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param page_size: Maximum quantity (required)
+        :type page_size: int
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic1_serialize(
+            stats_type=stats_type,
+            page_size=page_size,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _list_agents_by_statistic1_serialize(
+        self,
+        stats_type,
+        page_size,
+        asc,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> Tuple:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if stats_type is not None:
+            _path_params['statsType'] = stats_type
+        if page_size is not None:
+            _path_params['pageSize'] = page_size
+        # process the query parameters
+        if asc is not None:
+            
+            _query_params.append(('asc', asc))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'bearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/api/v1/stats/agents/by/{statsType}/{pageSize}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def list_agents_by_statistic2(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
+        page_num: Annotated[StrictInt, Field(description="Current page number")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[AgentSummaryStatsDTO]:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param page_size: Maximum quantity (required)
+        :type page_size: int
+        :param page_num: Current page number (required)
+        :type page_num: int
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic2_serialize(
+            stats_type=stats_type,
+            page_size=page_size,
+            page_num=page_num,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def list_agents_by_statistic2_with_http_info(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
+        page_num: Annotated[StrictInt, Field(description="Current page number")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[AgentSummaryStatsDTO]]:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param page_size: Maximum quantity (required)
+        :type page_size: int
+        :param page_num: Current page number (required)
+        :type page_num: int
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic2_serialize(
+            stats_type=stats_type,
+            page_size=page_size,
+            page_num=page_num,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def list_agents_by_statistic2_without_preload_content(
+        self,
+        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
+        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
+        page_num: Annotated[StrictInt, Field(description="Current page number")],
+        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """List Agents by Statistics
+
+        List agents based on statistics, including interactive statistical data.
+
+        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
+        :type stats_type: str
+        :param page_size: Maximum quantity (required)
+        :type page_size: int
+        :param page_num: Current page number (required)
+        :type page_num: int
+        :param asc: Default is descending order, set asc=1 for ascending order
+        :type asc: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_agents_by_statistic2_serialize(
+            stats_type=stats_type,
+            page_size=page_size,
+            page_num=page_num,
+            asc=asc,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "List[AgentSummaryStatsDTO]",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _list_agents_by_statistic2_serialize(
+        self,
+        stats_type,
+        page_size,
+        page_num,
+        asc,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> Tuple:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if stats_type is not None:
+            _path_params['statsType'] = stats_type
+        if page_size is not None:
+            _path_params['pageSize'] = page_size
+        if page_num is not None:
+            _path_params['pageNum'] = page_num
+        # process the query parameters
+        if asc is not None:
+            
+            _query_params.append(('asc', asc))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        _header_params['Accept'] = self.api_client.select_header_accept(
+            [
+                'application/json'
+            ]
+        )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'bearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2350,879 +3220,9 @@ class InteractiveStatisticsApi:
 
 
     @validate_call
-    def list_flows_by_statistic(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
-        page_num: Annotated[StrictInt, Field(description="Current page number")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[FlowSummaryStatsDTO]:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param page_size: Maximum quantity (required)
-        :type page_size: int
-        :param page_num: Current page number (required)
-        :type page_num: int
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic_serialize(
-            stats_type=stats_type,
-            page_size=page_size,
-            page_num=page_num,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def list_flows_by_statistic_with_http_info(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
-        page_num: Annotated[StrictInt, Field(description="Current page number")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[FlowSummaryStatsDTO]]:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param page_size: Maximum quantity (required)
-        :type page_size: int
-        :param page_num: Current page number (required)
-        :type page_num: int
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic_serialize(
-            stats_type=stats_type,
-            page_size=page_size,
-            page_num=page_num,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def list_flows_by_statistic_without_preload_content(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
-        page_num: Annotated[StrictInt, Field(description="Current page number")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param page_size: Maximum quantity (required)
-        :type page_size: int
-        :param page_num: Current page number (required)
-        :type page_num: int
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic_serialize(
-            stats_type=stats_type,
-            page_size=page_size,
-            page_num=page_num,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _list_flows_by_statistic_serialize(
-        self,
-        stats_type,
-        page_size,
-        page_num,
-        asc,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> Tuple:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if stats_type is not None:
-            _path_params['statsType'] = stats_type
-        if page_size is not None:
-            _path_params['pageSize'] = page_size
-        if page_num is not None:
-            _path_params['pageNum'] = page_num
-        # process the query parameters
-        if asc is not None:
-            
-            _query_params.append(('asc', asc))
-            
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-
-
-        # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
-
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'bearerAuth'
-        ]
-
-        return self.api_client.param_serialize(
-            method='GET',
-            resource_path='/api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum}',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
-    def list_flows_by_statistic1(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[FlowSummaryStatsDTO]:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic1_serialize(
-            stats_type=stats_type,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def list_flows_by_statistic1_with_http_info(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[FlowSummaryStatsDTO]]:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic1_serialize(
-            stats_type=stats_type,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def list_flows_by_statistic1_without_preload_content(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic1_serialize(
-            stats_type=stats_type,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _list_flows_by_statistic1_serialize(
-        self,
-        stats_type,
-        asc,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> Tuple:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if stats_type is not None:
-            _path_params['statsType'] = stats_type
-        # process the query parameters
-        if asc is not None:
-            
-            _query_params.append(('asc', asc))
-            
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-
-
-        # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
-
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'bearerAuth'
-        ]
-
-        return self.api_client.param_serialize(
-            method='GET',
-            resource_path='/api/v1/stats/flows/by/{statsType}',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
-    def list_flows_by_statistic2(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[FlowSummaryStatsDTO]:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param page_size: Maximum quantity (required)
-        :type page_size: int
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic2_serialize(
-            stats_type=stats_type,
-            page_size=page_size,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def list_flows_by_statistic2_with_http_info(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[FlowSummaryStatsDTO]]:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param page_size: Maximum quantity (required)
-        :type page_size: int
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic2_serialize(
-            stats_type=stats_type,
-            page_size=page_size,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def list_flows_by_statistic2_without_preload_content(
-        self,
-        stats_type: Annotated[StrictStr, Field(description="Statistics type: view_count | refer_count | recommend_count | score")],
-        page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
-        asc: Annotated[Optional[StrictStr], Field(description="Default is descending order, set asc=1 for ascending order")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """List Flows by Statistics
-
-        List flows based on statistics, including interactive statistical data.
-
-        :param stats_type: Statistics type: view_count | refer_count | recommend_count | score (required)
-        :type stats_type: str
-        :param page_size: Maximum quantity (required)
-        :type page_size: int
-        :param asc: Default is descending order, set asc=1 for ascending order
-        :type asc: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-
-        _param = self._list_flows_by_statistic2_serialize(
-            stats_type=stats_type,
-            page_size=page_size,
-            asc=asc,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "List[FlowSummaryStatsDTO]",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _list_flows_by_statistic2_serialize(
-        self,
-        stats_type,
-        page_size,
-        asc,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> Tuple:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if stats_type is not None:
-            _path_params['statsType'] = stats_type
-        if page_size is not None:
-            _path_params['pageSize'] = page_size
-        # process the query parameters
-        if asc is not None:
-            
-            _query_params.append(('asc', asc))
-            
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-
-
-        # set the HTTP header `Accept`
-        _header_params['Accept'] = self.api_client.select_header_accept(
-            [
-                'application/json'
-            ]
-        )
-
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'bearerAuth'
-        ]
-
-        return self.api_client.param_serialize(
-            method='GET',
-            resource_path='/api/v1/stats/flows/by/{statsType}/{pageSize}',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
     def list_hot_tags(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
         text: Annotated[Optional[StrictStr], Field(description="Key word")] = None,
         _request_timeout: Union[
@@ -3242,7 +3242,7 @@ class InteractiveStatisticsApi:
 
         Get popular tags for a specified info type.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param page_size: Maximum quantity (required)
         :type page_size: int
@@ -3297,7 +3297,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def list_hot_tags_with_http_info(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
         text: Annotated[Optional[StrictStr], Field(description="Key word")] = None,
         _request_timeout: Union[
@@ -3317,7 +3317,7 @@ class InteractiveStatisticsApi:
 
         Get popular tags for a specified info type.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param page_size: Maximum quantity (required)
         :type page_size: int
@@ -3372,7 +3372,7 @@ class InteractiveStatisticsApi:
     @validate_call
     def list_hot_tags_without_preload_content(
         self,
-        info_type: Annotated[StrictStr, Field(description="Info type: prompt | flow | plugin | character")],
+        info_type: Annotated[StrictStr, Field(description="Info type: prompt | agent | plugin | character")],
         page_size: Annotated[StrictInt, Field(description="Maximum quantity")],
         text: Annotated[Optional[StrictStr], Field(description="Key word")] = None,
         _request_timeout: Union[
@@ -3392,7 +3392,7 @@ class InteractiveStatisticsApi:
 
         Get popular tags for a specified info type.
 
-        :param info_type: Info type: prompt | flow | plugin | character (required)
+        :param info_type: Info type: prompt | agent | plugin | character (required)
         :type info_type: str
         :param page_size: Maximum quantity (required)
         :type page_size: int

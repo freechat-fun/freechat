@@ -1,6 +1,14 @@
 import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/http.js';
 import { Configuration} from '../configuration.js'
 
+import { AgentCreateDTO } from '../models/AgentCreateDTO.js';
+import { AgentDetailsDTO } from '../models/AgentDetailsDTO.js';
+import { AgentItemForNameDTO } from '../models/AgentItemForNameDTO.js';
+import { AgentQueryDTO } from '../models/AgentQueryDTO.js';
+import { AgentQueryWhere } from '../models/AgentQueryWhere.js';
+import { AgentSummaryDTO } from '../models/AgentSummaryDTO.js';
+import { AgentSummaryStatsDTO } from '../models/AgentSummaryStatsDTO.js';
+import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
@@ -23,14 +31,6 @@ import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
-import { FlowCreateDTO } from '../models/FlowCreateDTO.js';
-import { FlowDetailsDTO } from '../models/FlowDetailsDTO.js';
-import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO.js';
-import { FlowQueryDTO } from '../models/FlowQueryDTO.js';
-import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
-import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
-import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -828,6 +828,349 @@ export class PromiseAccountManagerForAdminApi {
      */
     public updateUser(userFullDetailsDTO: UserFullDetailsDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updateUser(userFullDetailsDTO, _options);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableAgentApi } from './ObservableAPI.js';
+
+import { AgentApiRequestFactory, AgentApiResponseProcessor} from "../apis/AgentApi.js";
+export class PromiseAgentApi {
+    private api: ObservableAgentApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: AgentApiRequestFactory,
+        responseProcessor?: AgentApiResponseProcessor
+    ) {
+        this.api = new ObservableAgentApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentDetailsWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
+        const result = this.api.batchSearchAgentDetailsWithHttpInfo(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentDetails(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<Array<Array<AgentDetailsDTO>>> {
+        const result = this.api.batchSearchAgentDetails(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/search.
+     * Batch Search Agent Summaries
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentSummaryWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
+        const result = this.api.batchSearchAgentSummaryWithHttpInfo(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/search.
+     * Batch Search Agent Summaries
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentSummary(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Promise<Array<Array<AgentSummaryDTO>>> {
+        const result = this.api.batchSearchAgentSummary(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Clone Agent
+     * @param agentId The referenced agentId
+     */
+    public cloneAgentWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.cloneAgentWithHttpInfo(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Clone Agent
+     * @param agentId The referenced agentId
+     */
+    public cloneAgent(agentId: string, _options?: Configuration): Promise<string> {
+        const result = this.api.cloneAgent(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Clone Agents
+     * @param requestBody List of agent information to be created
+     */
+    public cloneAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.cloneAgentsWithHttpInfo(requestBody, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Clone Agents
+     * @param requestBody List of agent information to be created
+     */
+    public cloneAgents(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.cloneAgents(requestBody, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Calculate the number of agents according to the specified query conditions.
+     * Calculate Number of Agents
+     * @param agentQueryDTO Query conditions
+     */
+    public countAgentsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.countAgentsWithHttpInfo(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Calculate the number of agents according to the specified query conditions.
+     * Calculate Number of Agents
+     * @param agentQueryDTO Query conditions
+     */
+    public countAgents(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<number> {
+        const result = this.api.countAgents(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create Agent
+     * @param agentCreateDTO Information of the agent to be created
+     */
+    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.createAgentWithHttpInfo(agentCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create Agent
+     * @param agentCreateDTO Information of the agent to be created
+     */
+    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.createAgent(agentCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch create multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Create Agents
+     * @param agentCreateDTO List of agent information to be created
+     */
+    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.createAgentsWithHttpInfo(agentCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Batch create multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Create Agents
+     * @param agentCreateDTO List of agent information to be created
+     */
+    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.createAgents(agentCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete agent. Return success or failure.
+     * Delete Agent
+     * @param agentId AgentId to be deleted
+     */
+    public deleteAgentWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteAgentWithHttpInfo(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete agent. Return success or failure.
+     * Delete Agent
+     * @param agentId AgentId to be deleted
+     */
+    public deleteAgent(agentId: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteAgent(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
+     * Batch Delete Agents
+     * @param requestBody List of agentId to be deleted
+     */
+    public deleteAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.deleteAgentsWithHttpInfo(requestBody, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
+     * Batch Delete Agents
+     * @param requestBody List of agentId to be deleted
+     */
+    public deleteAgents(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.deleteAgents(requestBody, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get agent detailed information.
+     * Get Agent Details
+     * @param agentId AgentId to be obtained
+     */
+    public getAgentDetailsWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<AgentDetailsDTO>> {
+        const result = this.api.getAgentDetailsWithHttpInfo(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get agent detailed information.
+     * Get Agent Details
+     * @param agentId AgentId to be obtained
+     */
+    public getAgentDetails(agentId: string, _options?: Configuration): Promise<AgentDetailsDTO> {
+        const result = this.api.getAgentDetails(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get agent summary information.
+     * Get Agent Summary
+     * @param agentId agentId to be obtained
+     */
+    public getAgentSummaryWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<AgentSummaryDTO>> {
+        const result = this.api.getAgentSummaryWithHttpInfo(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get agent summary information.
+     * Get Agent Summary
+     * @param agentId agentId to be obtained
+     */
+    public getAgentSummary(agentId: string, _options?: Configuration): Promise<AgentSummaryDTO> {
+        const result = this.api.getAgentSummary(agentId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List the versions and corresponding agentIds by agent name.
+     * List Versions by Agent Name
+     * @param name Agent name
+     */
+    public listAgentVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<AgentItemForNameDTO>>> {
+        const result = this.api.listAgentVersionsByNameWithHttpInfo(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List the versions and corresponding agentIds by agent name.
+     * List Versions by Agent Name
+     * @param name Agent name
+     */
+    public listAgentVersionsByName(name: string, _options?: Configuration): Promise<Array<AgentItemForNameDTO>> {
+        const result = this.api.listAgentVersionsByName(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Agent
+     * @param agentId The agentId to be published
+     * @param visibility Visibility: public | private | ...
+     */
+    public publishAgentWithHttpInfo(agentId: string, visibility: string, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.publishAgentWithHttpInfo(agentId, visibility, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Agent
+     * @param agentId The agentId to be published
+     * @param visibility Visibility: public | private | ...
+     */
+    public publishAgent(agentId: string, visibility: string, _options?: Configuration): Promise<string> {
+        const result = this.api.publishAgent(agentId, visibility, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentDetailsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<AgentDetailsDTO>>> {
+        const result = this.api.searchAgentDetailsWithHttpInfo(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentDetails(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<Array<AgentDetailsDTO>> {
+        const result = this.api.searchAgentDetails(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search Agent Summary
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentSummaryWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryDTO>>> {
+        const result = this.api.searchAgentSummaryWithHttpInfo(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search Agent Summary
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentSummary(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Promise<Array<AgentSummaryDTO>> {
+        const result = this.api.searchAgentSummary(agentQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update Agent
+     * @param agentId AgentId to be updated
+     * @param agentUpdateDTO Agent information to be updated
+     */
+    public updateAgentWithHttpInfo(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.updateAgentWithHttpInfo(agentId, agentUpdateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update Agent
+     * @param agentId AgentId to be updated
+     * @param agentUpdateDTO Agent information to be updated
+     */
+    public updateAgent(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<boolean> {
+        const result = this.api.updateAgent(agentId, agentUpdateDTO, _options);
         return result.toPromise();
     }
 
@@ -1752,349 +2095,6 @@ export class PromiseEncryptionManagerForAdminApi {
 
 
 
-import { ObservableFlowApi } from './ObservableAPI.js';
-
-import { FlowApiRequestFactory, FlowApiResponseProcessor} from "../apis/FlowApi.js";
-export class PromiseFlowApi {
-    private api: ObservableFlowApi
-
-    public constructor(
-        configuration: Configuration,
-        requestFactory?: FlowApiRequestFactory,
-        responseProcessor?: FlowApiResponseProcessor
-    ) {
-        this.api = new ObservableFlowApi(configuration, requestFactory, responseProcessor);
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/details/search.
-     * Batch Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowDetailsWithHttpInfo(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<FlowDetailsDTO>>>> {
-        const result = this.api.batchSearchFlowDetailsWithHttpInfo(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/details/search.
-     * Batch Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowDetails(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Promise<Array<Array<FlowDetailsDTO>>> {
-        const result = this.api.batchSearchFlowDetails(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/search.
-     * Batch Search Flow Summaries
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowSummaryWithHttpInfo(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Promise<HttpInfo<Array<Array<FlowSummaryDTO>>>> {
-        const result = this.api.batchSearchFlowSummaryWithHttpInfo(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/search.
-     * Batch Search Flow Summaries
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowSummary(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Promise<Array<Array<FlowSummaryDTO>>> {
-        const result = this.api.batchSearchFlowSummary(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different: - Version number is 1 - Visibility is private - The parent flow is the source flowId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new flowId. 
-     * Clone Flow
-     * @param flowId The referenced flowId
-     */
-    public cloneFlowWithHttpInfo(flowId: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.cloneFlowWithHttpInfo(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different: - Version number is 1 - Visibility is private - The parent flow is the source flowId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new flowId. 
-     * Clone Flow
-     * @param flowId The referenced flowId
-     */
-    public cloneFlow(flowId: string, _options?: Configuration): Promise<string> {
-        const result = this.api.cloneFlow(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch clone multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Clone Flows
-     * @param requestBody List of flow information to be created
-     */
-    public cloneFlowsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.cloneFlowsWithHttpInfo(requestBody, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch clone multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Clone Flows
-     * @param requestBody List of flow information to be created
-     */
-    public cloneFlows(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.cloneFlows(requestBody, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Calculate the number of flows according to the specified query conditions.
-     * Calculate Number of Flows
-     * @param flowQueryDTO Query conditions
-     */
-    public countFlowsWithHttpInfo(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.countFlowsWithHttpInfo(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Calculate the number of flows according to the specified query conditions.
-     * Calculate Number of Flows
-     * @param flowQueryDTO Query conditions
-     */
-    public countFlows(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.countFlows(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Create a flow, ignore required fields: - Flow name - Flow configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
-     * Create Flow
-     * @param flowCreateDTO Information of the flow to be created
-     */
-    public createFlowWithHttpInfo(flowCreateDTO: FlowCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createFlowWithHttpInfo(flowCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Create a flow, ignore required fields: - Flow name - Flow configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
-     * Create Flow
-     * @param flowCreateDTO Information of the flow to be created
-     */
-    public createFlow(flowCreateDTO: FlowCreateDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.createFlow(flowCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch create multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Create Flows
-     * @param flowCreateDTO List of flow information to be created
-     */
-    public createFlowsWithHttpInfo(flowCreateDTO: Array<FlowCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.createFlowsWithHttpInfo(flowCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Batch create multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Create Flows
-     * @param flowCreateDTO List of flow information to be created
-     */
-    public createFlows(flowCreateDTO: Array<FlowCreateDTO>, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.createFlows(flowCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete flow. Return success or failure.
-     * Delete Flow
-     * @param flowId FlowId to be deleted
-     */
-    public deleteFlowWithHttpInfo(flowId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteFlowWithHttpInfo(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete flow. Return success or failure.
-     * Delete Flow
-     * @param flowId FlowId to be deleted
-     */
-    public deleteFlow(flowId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteFlow(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete multiple flows. Ensure transactionality, return the list of successfully deleted flowId.
-     * Batch Delete Flows
-     * @param requestBody List of flowId to be deleted
-     */
-    public deleteFlowsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.deleteFlowsWithHttpInfo(requestBody, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete multiple flows. Ensure transactionality, return the list of successfully deleted flowId.
-     * Batch Delete Flows
-     * @param requestBody List of flowId to be deleted
-     */
-    public deleteFlows(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.deleteFlows(requestBody, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Get flow detailed information.
-     * Get Flow Details
-     * @param flowId FlowId to be obtained
-     */
-    public getFlowDetailsWithHttpInfo(flowId: string, _options?: Configuration): Promise<HttpInfo<FlowDetailsDTO>> {
-        const result = this.api.getFlowDetailsWithHttpInfo(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Get flow detailed information.
-     * Get Flow Details
-     * @param flowId FlowId to be obtained
-     */
-    public getFlowDetails(flowId: string, _options?: Configuration): Promise<FlowDetailsDTO> {
-        const result = this.api.getFlowDetails(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Get flow summary information.
-     * Get Flow Summary
-     * @param flowId flowId to be obtained
-     */
-    public getFlowSummaryWithHttpInfo(flowId: string, _options?: Configuration): Promise<HttpInfo<FlowSummaryDTO>> {
-        const result = this.api.getFlowSummaryWithHttpInfo(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Get flow summary information.
-     * Get Flow Summary
-     * @param flowId flowId to be obtained
-     */
-    public getFlowSummary(flowId: string, _options?: Configuration): Promise<FlowSummaryDTO> {
-        const result = this.api.getFlowSummary(flowId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List the versions and corresponding flowIds by flow name.
-     * List Versions by Flow Name
-     * @param name Flow name
-     */
-    public listFlowVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<FlowItemForNameDTO>>> {
-        const result = this.api.listFlowVersionsByNameWithHttpInfo(name, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List the versions and corresponding flowIds by flow name.
-     * List Versions by Flow Name
-     * @param name Flow name
-     */
-    public listFlowVersionsByName(name: string, _options?: Configuration): Promise<Array<FlowItemForNameDTO>> {
-        const result = this.api.listFlowVersionsByName(name, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Publish flow, draft content becomes formal content, version number increases by 1. After successful publication, a new flowId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Flow
-     * @param flowId The flowId to be published
-     * @param visibility Visibility: public | private | ...
-     */
-    public publishFlowWithHttpInfo(flowId: string, visibility: string, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.publishFlowWithHttpInfo(flowId, visibility, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Publish flow, draft content becomes formal content, version number increases by 1. After successful publication, a new flowId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Flow
-     * @param flowId The flowId to be published
-     * @param visibility Visibility: public | private | ...
-     */
-    public publishFlow(flowId: string, visibility: string, _options?: Configuration): Promise<string> {
-        const result = this.api.publishFlow(flowId, visibility, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Same as /api/v1/flow/search, but returns detailed information of the flow.
-     * Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowDetailsWithHttpInfo(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<FlowDetailsDTO>>> {
-        const result = this.api.searchFlowDetailsWithHttpInfo(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Same as /api/v1/flow/search, but returns detailed information of the flow.
-     * Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowDetails(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Promise<Array<FlowDetailsDTO>> {
-        const result = this.api.searchFlowDetails(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Search flows: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the flow summary content. - Support pagination. 
-     * Search Flow Summary
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowSummaryWithHttpInfo(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<FlowSummaryDTO>>> {
-        const result = this.api.searchFlowSummaryWithHttpInfo(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Search flows: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the flow summary content. - Support pagination. 
-     * Search Flow Summary
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowSummary(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Promise<Array<FlowSummaryDTO>> {
-        const result = this.api.searchFlowSummary(flowQueryDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Update flow, refer to /api/v1/flow/create, required field: flowId. Return success or failure.
-     * Update Flow
-     * @param flowId FlowId to be updated
-     * @param flowUpdateDTO Flow information to be updated
-     */
-    public updateFlowWithHttpInfo(flowId: string, flowUpdateDTO: FlowUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.updateFlowWithHttpInfo(flowId, flowUpdateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Update flow, refer to /api/v1/flow/create, required field: flowId. Return success or failure.
-     * Update Flow
-     * @param flowId FlowId to be updated
-     * @param flowUpdateDTO Flow information to be updated
-     */
-    public updateFlow(flowId: string, flowUpdateDTO: FlowUpdateDTO, _options?: Configuration): Promise<boolean> {
-        const result = this.api.updateFlow(flowId, flowUpdateDTO, _options);
-        return result.toPromise();
-    }
-
-
-}
-
-
-
 import { ObservableInteractiveStatisticsApi } from './ObservableAPI.js';
 
 import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiResponseProcessor} from "../apis/InteractiveStatisticsApi.js";
@@ -2112,7 +2112,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -2125,7 +2125,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -2138,7 +2138,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScoreWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Promise<HttpInfo<number>> {
@@ -2149,7 +2149,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScore(infoType: string, infoId: string, _options?: Configuration): Promise<number> {
@@ -2160,7 +2160,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2172,7 +2172,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2184,7 +2184,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatisticsWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Promise<HttpInfo<InteractiveStatsDTO>> {
@@ -2195,7 +2195,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatistics(infoType: string, infoId: string, _options?: Configuration): Promise<InteractiveStatsDTO> {
@@ -2206,7 +2206,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -2218,12 +2218,84 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
     public increaseStatistic(infoType: string, infoId: string, statsType: string, _options?: Configuration): Promise<number> {
         const result = this.api.increaseStatistic(infoType, infoId, statsType, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const result = this.api.listAgentsByStatisticWithHttpInfo(statsType, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        const result = this.api.listAgentsByStatistic(statsType, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const result = this.api.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        const result = this.api.listAgentsByStatistic1(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const result = this.api.listAgentsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        const result = this.api.listAgentsByStatistic2(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2300,81 +2372,9 @@ export class PromiseInteractiveStatisticsApi {
     }
 
     /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        const result = this.api.listFlowsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
-        const result = this.api.listFlowsByStatistic(statsType, pageSize, pageNum, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic1WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        const result = this.api.listFlowsByStatistic1WithHttpInfo(statsType, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic1(statsType: string, asc?: string, _options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
-        const result = this.api.listFlowsByStatistic1(statsType, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        const result = this.api.listFlowsByStatistic2WithHttpInfo(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<FlowSummaryStatsDTO>> {
-        const result = this.api.listFlowsByStatistic2(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
      * Get popular tags for a specified info type.
      * Hot Tags
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
      * @param text Key word
      */
@@ -2386,7 +2386,7 @@ export class PromiseInteractiveStatisticsApi {
     /**
      * Get popular tags for a specified info type.
      * Hot Tags
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
      * @param text Key word
      */

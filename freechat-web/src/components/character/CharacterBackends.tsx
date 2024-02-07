@@ -5,7 +5,7 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { CharacterBackendDetailsDTO } from "freechat-sdk";
 import { Box, IconButton, Radio, Stack, Table, Typography } from "@mui/joy";
 import { SxProps } from "@mui/material";
-import { AddCircleRounded, DeleteForeverRounded, DeleteRounded, EditRounded, VisibilityRounded } from "@mui/icons-material";
+import { AddCircleRounded, ArticleRounded, DeleteForeverRounded, DeleteRounded, EditRounded } from "@mui/icons-material";
 import { formatDateTime } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
 
@@ -41,6 +41,10 @@ export default function CharacterBackends({
   useEffect(() => {
     getBackends();
   }, [getBackends]);
+
+  useEffect(() => {
+    setBackends(defaultBackends);
+  }, [defaultBackends]);
 
   function handleView(backend: CharacterBackendDetailsDTO | undefined): void {
     backend?.chatPromptTaskId && navigator(`/w/prompt/task/${backend.chatPromptTaskId}`);
@@ -117,15 +121,15 @@ export default function CharacterBackends({
                   </td>
                   <td>
                     <IconButton disabled={!backend.chatPromptTaskId} onClick={() => handleView(backend)}>
-                      <VisibilityRounded />
+                      <ArticleRounded fontSize="small" />
                     </IconButton>
-                    {editMode ?? (
+                    {editMode && (
                       <Fragment>
                         <IconButton onClick={() => onEdit?.({...backend}, [...backends])}>
-                          <EditRounded />
+                          <EditRounded fontSize="small" />
                         </IconButton>
                         <IconButton onClick={() => handleTryDelete(backend.backendId)}>
-                          <DeleteRounded />
+                          <DeleteRounded fontSize="small" />
                         </IconButton>
                       </Fragment>
                     )}

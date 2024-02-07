@@ -2,9 +2,10 @@ import { forwardRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
-import { AccountTreeRounded, AndroidRounded, ArticleRounded, Diversity1Rounded, ExtensionRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded } from "@mui/icons-material";
+import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded } from "@mui/icons-material";
 import { ColorSchemeToggle, LanguageToggle } from ".";
 import { useUserInfoContext } from "../contexts";
+import { ChatIcon } from "./icon";
 
 
 const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -20,7 +21,13 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       }}
       {...others}
     >
-      <Box component="span" sx={{ display: 'inline-block' }}>
+      <Box
+        component="span"
+        sx={{
+          width: '100%',
+          display: 'inline-block',
+      }}>
+          
         {children}
       </Box>
     </Tooltip>
@@ -60,7 +67,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
 export default function ThinSidebar() {
   const theme = useTheme();
   const { t } = useTranslation('sidebar');
-  const { csrfToken, isAuthorized } = useUserInfoContext();
+  const { csrfToken, isAuthorized, isGuest } = useUserInfoContext();
   
   return (
     <Box
@@ -108,11 +115,13 @@ export default function ThinSidebar() {
           </ListItem>
 
           <ListItem>
+          
             <ItemTooltip title={t('Chat')}>
               <ItemButton href="/w/chat">
-                <Diversity1Rounded />
+                <ChatIcon />
               </ItemButton>
             </ItemTooltip>
+              
           </ListItem>
 
           <ListDivider sx={{my: 2}}/>
@@ -142,8 +151,8 @@ export default function ThinSidebar() {
           </ListItem>
 
           <ListItem>
-            <ItemTooltip title={t('Flows')}>
-              <ItemButton disabled href="/w/flows">
+            <ItemTooltip title={t('Agents')}>
+              <ItemButton disabled href="/w/agents">
                 <AccountTreeRounded />
               </ItemButton>
             </ItemTooltip>
@@ -161,7 +170,7 @@ export default function ThinSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Profile')}>
-              <ItemButton href="/w/profile">
+              <ItemButton href="/w/profile" disabled={!isAuthorized() || isGuest()}>
                 <ManageAccountsRounded />
               </ItemButton>
             </ItemTooltip>
@@ -169,7 +178,7 @@ export default function ThinSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Secrets & API keys')}>
-              <ItemButton href="/w/credentials">
+              <ItemButton href="/w/credentials" disabled={!isAuthorized() || isGuest()}>
                 <KeyRounded />
               </ItemButton>
             </ItemTooltip>
@@ -198,31 +207,29 @@ export default function ThinSidebar() {
 
           <ListDivider sx={{my: 2}}/>
           
-          
-            {isAuthorized() ? (
-              
-              <form method="post" action="/logout">
-                <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
-                  <Tooltip
-                    title={t('Sign out', {ns: 'account'})}
-                    size="sm"
-                    placement="right"
-                    sx={{zIndex: 9999}}
-                  >
-                    <IconButton type="submit" sx={{width: '100%'}}>
-                      <LogoutRounded />
-                    </IconButton>
-                  </Tooltip>
-              </form>
-            ) : (
-              <ListItem>
-                <ItemTooltip title={t('Sign in', {ns: 'account'})}>
-                  <ItemButton href="/w/login" disabled={false}>
-                    <LoginRounded />
-                  </ItemButton>
-                </ItemTooltip>
-              </ListItem>
-            )}
+          {isAuthorized() ? (
+            <form method="post" action="/logout">
+              <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
+                <Tooltip
+                  title={t('Sign out', {ns: 'account'})}
+                  size="sm"
+                  placement="right"
+                  sx={{zIndex: 9999}}
+                >
+                  <IconButton type="submit" sx={{width: '100%'}}>
+                    <LogoutRounded />
+                  </IconButton>
+                </Tooltip>
+            </form>
+          ) : (
+            <ListItem>
+              <ItemTooltip title={t('Sign in', {ns: 'account'})}>
+                <ItemButton href="/w/login" disabled={false}>
+                  <LoginRounded />
+                </ItemButton>
+              </ItemTooltip>
+            </ListItem>
+          )}
 
         </List>
       </div>

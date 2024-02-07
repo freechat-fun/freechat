@@ -2,6 +2,14 @@ import { ResponseContext, RequestContext, HttpFile, HttpInfo } from '../http/htt
 import { Configuration} from '../configuration.js'
 import { Observable, of, from } from '../rxjsStub.js';
 import {mergeMap, map} from  '../rxjsStub.js';
+import { AgentCreateDTO } from '../models/AgentCreateDTO.js';
+import { AgentDetailsDTO } from '../models/AgentDetailsDTO.js';
+import { AgentItemForNameDTO } from '../models/AgentItemForNameDTO.js';
+import { AgentQueryDTO } from '../models/AgentQueryDTO.js';
+import { AgentQueryWhere } from '../models/AgentQueryWhere.js';
+import { AgentSummaryDTO } from '../models/AgentSummaryDTO.js';
+import { AgentSummaryStatsDTO } from '../models/AgentSummaryStatsDTO.js';
+import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
@@ -24,14 +32,6 @@ import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
-import { FlowCreateDTO } from '../models/FlowCreateDTO.js';
-import { FlowDetailsDTO } from '../models/FlowDetailsDTO.js';
-import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO.js';
-import { FlowQueryDTO } from '../models/FlowQueryDTO.js';
-import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
-import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
-import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -1299,6 +1299,556 @@ export class ObservableAccountManagerForAdminApi {
      */
     public updateUser(userFullDetailsDTO: UserFullDetailsDTO, _options?: Configuration): Observable<boolean> {
         return this.updateUserWithHttpInfo(userFullDetailsDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+}
+
+import { AgentApiRequestFactory, AgentApiResponseProcessor} from "../apis/AgentApi.js";
+export class ObservableAgentApi {
+    private requestFactory: AgentApiRequestFactory;
+    private responseProcessor: AgentApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: AgentApiRequestFactory,
+        responseProcessor?: AgentApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new AgentApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new AgentApiResponseProcessor();
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentDetailsWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Observable<HttpInfo<Array<Array<AgentDetailsDTO>>>> {
+        const requestContextPromise = this.requestFactory.batchSearchAgentDetails(agentQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.batchSearchAgentDetailsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentDetails(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Observable<Array<Array<AgentDetailsDTO>>> {
+        return this.batchSearchAgentDetailsWithHttpInfo(agentQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<Array<AgentDetailsDTO>>>) => apiResponse.data));
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/search.
+     * Batch Search Agent Summaries
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentSummaryWithHttpInfo(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Observable<HttpInfo<Array<Array<AgentSummaryDTO>>>> {
+        const requestContextPromise = this.requestFactory.batchSearchAgentSummary(agentQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.batchSearchAgentSummaryWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Batch call shortcut for /api/v1/agent/search.
+     * Batch Search Agent Summaries
+     * @param agentQueryDTO Query conditions
+     */
+    public batchSearchAgentSummary(agentQueryDTO: Array<AgentQueryDTO>, _options?: Configuration): Observable<Array<Array<AgentSummaryDTO>>> {
+        return this.batchSearchAgentSummaryWithHttpInfo(agentQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<Array<AgentSummaryDTO>>>) => apiResponse.data));
+    }
+
+    /**
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Clone Agent
+     * @param agentId The referenced agentId
+     */
+    public cloneAgentWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.cloneAgent(agentId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.cloneAgentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
+     * Clone Agent
+     * @param agentId The referenced agentId
+     */
+    public cloneAgent(agentId: string, _options?: Configuration): Observable<string> {
+        return this.cloneAgentWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Clone Agents
+     * @param requestBody List of agent information to be created
+     */
+    public cloneAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.cloneAgents(requestBody, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.cloneAgentsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Clone Agents
+     * @param requestBody List of agent information to be created
+     */
+    public cloneAgents(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
+        return this.cloneAgentsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
+     * Calculate the number of agents according to the specified query conditions.
+     * Calculate Number of Agents
+     * @param agentQueryDTO Query conditions
+     */
+    public countAgentsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.countAgents(agentQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.countAgentsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Calculate the number of agents according to the specified query conditions.
+     * Calculate Number of Agents
+     * @param agentQueryDTO Query conditions
+     */
+    public countAgents(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Observable<number> {
+        return this.countAgentsWithHttpInfo(agentQueryDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    }
+
+    /**
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create Agent
+     * @param agentCreateDTO Information of the agent to be created
+     */
+    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.createAgent(agentCreateDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createAgentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
+     * Create Agent
+     * @param agentCreateDTO Information of the agent to be created
+     */
+    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Observable<string> {
+        return this.createAgentWithHttpInfo(agentCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Batch create multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Create Agents
+     * @param agentCreateDTO List of agent information to be created
+     */
+    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.createAgents(agentCreateDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createAgentsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Batch create multiple agents. Ensure transactionality, return the agentId list after success.
+     * Batch Create Agents
+     * @param agentCreateDTO List of agent information to be created
+     */
+    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Observable<Array<string>> {
+        return this.createAgentsWithHttpInfo(agentCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
+     * Delete agent. Return success or failure.
+     * Delete Agent
+     * @param agentId AgentId to be deleted
+     */
+    public deleteAgentWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteAgent(agentId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteAgentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete agent. Return success or failure.
+     * Delete Agent
+     * @param agentId AgentId to be deleted
+     */
+    public deleteAgent(agentId: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteAgentWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
+     * Batch Delete Agents
+     * @param requestBody List of agentId to be deleted
+     */
+    public deleteAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.deleteAgents(requestBody, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteAgentsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
+     * Batch Delete Agents
+     * @param requestBody List of agentId to be deleted
+     */
+    public deleteAgents(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
+        return this.deleteAgentsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
+     * Get agent detailed information.
+     * Get Agent Details
+     * @param agentId AgentId to be obtained
+     */
+    public getAgentDetailsWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<AgentDetailsDTO>> {
+        const requestContextPromise = this.requestFactory.getAgentDetails(agentId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAgentDetailsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get agent detailed information.
+     * Get Agent Details
+     * @param agentId AgentId to be obtained
+     */
+    public getAgentDetails(agentId: string, _options?: Configuration): Observable<AgentDetailsDTO> {
+        return this.getAgentDetailsWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<AgentDetailsDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Get agent summary information.
+     * Get Agent Summary
+     * @param agentId agentId to be obtained
+     */
+    public getAgentSummaryWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<AgentSummaryDTO>> {
+        const requestContextPromise = this.requestFactory.getAgentSummary(agentId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAgentSummaryWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get agent summary information.
+     * Get Agent Summary
+     * @param agentId agentId to be obtained
+     */
+    public getAgentSummary(agentId: string, _options?: Configuration): Observable<AgentSummaryDTO> {
+        return this.getAgentSummaryWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<AgentSummaryDTO>) => apiResponse.data));
+    }
+
+    /**
+     * List the versions and corresponding agentIds by agent name.
+     * List Versions by Agent Name
+     * @param name Agent name
+     */
+    public listAgentVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<AgentItemForNameDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentVersionsByName(name, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAgentVersionsByNameWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List the versions and corresponding agentIds by agent name.
+     * List Versions by Agent Name
+     * @param name Agent name
+     */
+    public listAgentVersionsByName(name: string, _options?: Configuration): Observable<Array<AgentItemForNameDTO>> {
+        return this.listAgentVersionsByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<AgentItemForNameDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Agent
+     * @param agentId The agentId to be published
+     * @param visibility Visibility: public | private | ...
+     */
+    public publishAgentWithHttpInfo(agentId: string, visibility: string, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.publishAgent(agentId, visibility, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.publishAgentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Agent
+     * @param agentId The agentId to be published
+     * @param visibility Visibility: public | private | ...
+     */
+    public publishAgent(agentId: string, visibility: string, _options?: Configuration): Observable<string> {
+        return this.publishAgentWithHttpInfo(agentId, visibility, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentDetailsWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Observable<HttpInfo<Array<AgentDetailsDTO>>> {
+        const requestContextPromise = this.requestFactory.searchAgentDetails(agentQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.searchAgentDetailsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Search Agent Details
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentDetails(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Observable<Array<AgentDetailsDTO>> {
+        return this.searchAgentDetailsWithHttpInfo(agentQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<AgentDetailsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search Agent Summary
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentSummaryWithHttpInfo(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryDTO>>> {
+        const requestContextPromise = this.requestFactory.searchAgentSummary(agentQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.searchAgentSummaryWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Search agents: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the agent summary content. - Support pagination. 
+     * Search Agent Summary
+     * @param agentQueryDTO Query conditions
+     */
+    public searchAgentSummary(agentQueryDTO: AgentQueryDTO, _options?: Configuration): Observable<Array<AgentSummaryDTO>> {
+        return this.searchAgentSummaryWithHttpInfo(agentQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update Agent
+     * @param agentId AgentId to be updated
+     * @param agentUpdateDTO Agent information to be updated
+     */
+    public updateAgentWithHttpInfo(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.updateAgent(agentId, agentUpdateDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.updateAgentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update Agent
+     * @param agentId AgentId to be updated
+     * @param agentUpdateDTO Agent information to be updated
+     */
+    public updateAgent(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Observable<boolean> {
+        return this.updateAgentWithHttpInfo(agentId, agentUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
 }
@@ -2748,556 +3298,6 @@ export class ObservableEncryptionManagerForAdminApi {
 
 }
 
-import { FlowApiRequestFactory, FlowApiResponseProcessor} from "../apis/FlowApi.js";
-export class ObservableFlowApi {
-    private requestFactory: FlowApiRequestFactory;
-    private responseProcessor: FlowApiResponseProcessor;
-    private configuration: Configuration;
-
-    public constructor(
-        configuration: Configuration,
-        requestFactory?: FlowApiRequestFactory,
-        responseProcessor?: FlowApiResponseProcessor
-    ) {
-        this.configuration = configuration;
-        this.requestFactory = requestFactory || new FlowApiRequestFactory(configuration);
-        this.responseProcessor = responseProcessor || new FlowApiResponseProcessor();
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/details/search.
-     * Batch Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowDetailsWithHttpInfo(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Observable<HttpInfo<Array<Array<FlowDetailsDTO>>>> {
-        const requestContextPromise = this.requestFactory.batchSearchFlowDetails(flowQueryDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.batchSearchFlowDetailsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/details/search.
-     * Batch Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowDetails(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Observable<Array<Array<FlowDetailsDTO>>> {
-        return this.batchSearchFlowDetailsWithHttpInfo(flowQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<Array<FlowDetailsDTO>>>) => apiResponse.data));
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/search.
-     * Batch Search Flow Summaries
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowSummaryWithHttpInfo(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Observable<HttpInfo<Array<Array<FlowSummaryDTO>>>> {
-        const requestContextPromise = this.requestFactory.batchSearchFlowSummary(flowQueryDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.batchSearchFlowSummaryWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Batch call shortcut for /api/v1/flow/search.
-     * Batch Search Flow Summaries
-     * @param flowQueryDTO Query conditions
-     */
-    public batchSearchFlowSummary(flowQueryDTO: Array<FlowQueryDTO>, _options?: Configuration): Observable<Array<Array<FlowSummaryDTO>>> {
-        return this.batchSearchFlowSummaryWithHttpInfo(flowQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<Array<FlowSummaryDTO>>>) => apiResponse.data));
-    }
-
-    /**
-     * Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different: - Version number is 1 - Visibility is private - The parent flow is the source flowId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new flowId. 
-     * Clone Flow
-     * @param flowId The referenced flowId
-     */
-    public cloneFlowWithHttpInfo(flowId: string, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.cloneFlow(flowId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.cloneFlowWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different: - Version number is 1 - Visibility is private - The parent flow is the source flowId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new flowId. 
-     * Clone Flow
-     * @param flowId The referenced flowId
-     */
-    public cloneFlow(flowId: string, _options?: Configuration): Observable<string> {
-        return this.cloneFlowWithHttpInfo(flowId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
-    }
-
-    /**
-     * Batch clone multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Clone Flows
-     * @param requestBody List of flow information to be created
-     */
-    public cloneFlowsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
-        const requestContextPromise = this.requestFactory.cloneFlows(requestBody, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.cloneFlowsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Batch clone multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Clone Flows
-     * @param requestBody List of flow information to be created
-     */
-    public cloneFlows(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.cloneFlowsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
-    }
-
-    /**
-     * Calculate the number of flows according to the specified query conditions.
-     * Calculate Number of Flows
-     * @param flowQueryDTO Query conditions
-     */
-    public countFlowsWithHttpInfo(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Observable<HttpInfo<number>> {
-        const requestContextPromise = this.requestFactory.countFlows(flowQueryDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.countFlowsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Calculate the number of flows according to the specified query conditions.
-     * Calculate Number of Flows
-     * @param flowQueryDTO Query conditions
-     */
-    public countFlows(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Observable<number> {
-        return this.countFlowsWithHttpInfo(flowQueryDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
-    }
-
-    /**
-     * Create a flow, ignore required fields: - Flow name - Flow configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
-     * Create Flow
-     * @param flowCreateDTO Information of the flow to be created
-     */
-    public createFlowWithHttpInfo(flowCreateDTO: FlowCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.createFlow(flowCreateDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createFlowWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Create a flow, ignore required fields: - Flow name - Flow configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
-     * Create Flow
-     * @param flowCreateDTO Information of the flow to be created
-     */
-    public createFlow(flowCreateDTO: FlowCreateDTO, _options?: Configuration): Observable<string> {
-        return this.createFlowWithHttpInfo(flowCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
-    }
-
-    /**
-     * Batch create multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Create Flows
-     * @param flowCreateDTO List of flow information to be created
-     */
-    public createFlowsWithHttpInfo(flowCreateDTO: Array<FlowCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
-        const requestContextPromise = this.requestFactory.createFlows(flowCreateDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createFlowsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Batch create multiple flows. Ensure transactionality, return the flowId list after success.
-     * Batch Create Flows
-     * @param flowCreateDTO List of flow information to be created
-     */
-    public createFlows(flowCreateDTO: Array<FlowCreateDTO>, _options?: Configuration): Observable<Array<string>> {
-        return this.createFlowsWithHttpInfo(flowCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
-    }
-
-    /**
-     * Delete flow. Return success or failure.
-     * Delete Flow
-     * @param flowId FlowId to be deleted
-     */
-    public deleteFlowWithHttpInfo(flowId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
-        const requestContextPromise = this.requestFactory.deleteFlow(flowId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteFlowWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Delete flow. Return success or failure.
-     * Delete Flow
-     * @param flowId FlowId to be deleted
-     */
-    public deleteFlow(flowId: string, _options?: Configuration): Observable<boolean> {
-        return this.deleteFlowWithHttpInfo(flowId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
-    }
-
-    /**
-     * Delete multiple flows. Ensure transactionality, return the list of successfully deleted flowId.
-     * Batch Delete Flows
-     * @param requestBody List of flowId to be deleted
-     */
-    public deleteFlowsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
-        const requestContextPromise = this.requestFactory.deleteFlows(requestBody, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteFlowsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Delete multiple flows. Ensure transactionality, return the list of successfully deleted flowId.
-     * Batch Delete Flows
-     * @param requestBody List of flowId to be deleted
-     */
-    public deleteFlows(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.deleteFlowsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
-    }
-
-    /**
-     * Get flow detailed information.
-     * Get Flow Details
-     * @param flowId FlowId to be obtained
-     */
-    public getFlowDetailsWithHttpInfo(flowId: string, _options?: Configuration): Observable<HttpInfo<FlowDetailsDTO>> {
-        const requestContextPromise = this.requestFactory.getFlowDetails(flowId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getFlowDetailsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Get flow detailed information.
-     * Get Flow Details
-     * @param flowId FlowId to be obtained
-     */
-    public getFlowDetails(flowId: string, _options?: Configuration): Observable<FlowDetailsDTO> {
-        return this.getFlowDetailsWithHttpInfo(flowId, _options).pipe(map((apiResponse: HttpInfo<FlowDetailsDTO>) => apiResponse.data));
-    }
-
-    /**
-     * Get flow summary information.
-     * Get Flow Summary
-     * @param flowId flowId to be obtained
-     */
-    public getFlowSummaryWithHttpInfo(flowId: string, _options?: Configuration): Observable<HttpInfo<FlowSummaryDTO>> {
-        const requestContextPromise = this.requestFactory.getFlowSummary(flowId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getFlowSummaryWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Get flow summary information.
-     * Get Flow Summary
-     * @param flowId flowId to be obtained
-     */
-    public getFlowSummary(flowId: string, _options?: Configuration): Observable<FlowSummaryDTO> {
-        return this.getFlowSummaryWithHttpInfo(flowId, _options).pipe(map((apiResponse: HttpInfo<FlowSummaryDTO>) => apiResponse.data));
-    }
-
-    /**
-     * List the versions and corresponding flowIds by flow name.
-     * List Versions by Flow Name
-     * @param name Flow name
-     */
-    public listFlowVersionsByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<FlowItemForNameDTO>>> {
-        const requestContextPromise = this.requestFactory.listFlowVersionsByName(name, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listFlowVersionsByNameWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List the versions and corresponding flowIds by flow name.
-     * List Versions by Flow Name
-     * @param name Flow name
-     */
-    public listFlowVersionsByName(name: string, _options?: Configuration): Observable<Array<FlowItemForNameDTO>> {
-        return this.listFlowVersionsByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<FlowItemForNameDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * Publish flow, draft content becomes formal content, version number increases by 1. After successful publication, a new flowId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Flow
-     * @param flowId The flowId to be published
-     * @param visibility Visibility: public | private | ...
-     */
-    public publishFlowWithHttpInfo(flowId: string, visibility: string, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.publishFlow(flowId, visibility, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.publishFlowWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Publish flow, draft content becomes formal content, version number increases by 1. After successful publication, a new flowId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Flow
-     * @param flowId The flowId to be published
-     * @param visibility Visibility: public | private | ...
-     */
-    public publishFlow(flowId: string, visibility: string, _options?: Configuration): Observable<string> {
-        return this.publishFlowWithHttpInfo(flowId, visibility, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
-    }
-
-    /**
-     * Same as /api/v1/flow/search, but returns detailed information of the flow.
-     * Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowDetailsWithHttpInfo(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Observable<HttpInfo<Array<FlowDetailsDTO>>> {
-        const requestContextPromise = this.requestFactory.searchFlowDetails(flowQueryDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.searchFlowDetailsWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Same as /api/v1/flow/search, but returns detailed information of the flow.
-     * Search Flow Details
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowDetails(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Observable<Array<FlowDetailsDTO>> {
-        return this.searchFlowDetailsWithHttpInfo(flowQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<FlowDetailsDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * Search flows: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the flow summary content. - Support pagination. 
-     * Search Flow Summary
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowSummaryWithHttpInfo(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Observable<HttpInfo<Array<FlowSummaryDTO>>> {
-        const requestContextPromise = this.requestFactory.searchFlowSummary(flowQueryDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.searchFlowSummaryWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Search flows: - Specifiable query fields, and relationship:   - Scope: private, public_org or public. Private can only search this account.   - Username: exact match, only valid when searching public, public_org. If not specified, search all users.   - Format: exact match, currently supported: langflow   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - General: name, description, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the flow summary content. - Support pagination. 
-     * Search Flow Summary
-     * @param flowQueryDTO Query conditions
-     */
-    public searchFlowSummary(flowQueryDTO: FlowQueryDTO, _options?: Configuration): Observable<Array<FlowSummaryDTO>> {
-        return this.searchFlowSummaryWithHttpInfo(flowQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<FlowSummaryDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * Update flow, refer to /api/v1/flow/create, required field: flowId. Return success or failure.
-     * Update Flow
-     * @param flowId FlowId to be updated
-     * @param flowUpdateDTO Flow information to be updated
-     */
-    public updateFlowWithHttpInfo(flowId: string, flowUpdateDTO: FlowUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
-        const requestContextPromise = this.requestFactory.updateFlow(flowId, flowUpdateDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.updateFlowWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Update flow, refer to /api/v1/flow/create, required field: flowId. Return success or failure.
-     * Update Flow
-     * @param flowId FlowId to be updated
-     * @param flowUpdateDTO Flow information to be updated
-     */
-    public updateFlow(flowId: string, flowUpdateDTO: FlowUpdateDTO, _options?: Configuration): Observable<boolean> {
-        return this.updateFlowWithHttpInfo(flowId, flowUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
-    }
-
-}
-
 import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiResponseProcessor} from "../apis/InteractiveStatisticsApi.js";
 export class ObservableInteractiveStatisticsApi {
     private requestFactory: InteractiveStatisticsApiRequestFactory;
@@ -3317,7 +3317,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -3344,7 +3344,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -3356,7 +3356,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScoreWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Observable<HttpInfo<number>> {
@@ -3381,7 +3381,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getScore(infoType: string, infoId: string, _options?: Configuration): Observable<number> {
@@ -3391,7 +3391,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3417,7 +3417,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3428,7 +3428,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatisticsWithHttpInfo(infoType: string, infoId: string, _options?: Configuration): Observable<HttpInfo<InteractiveStatsDTO>> {
@@ -3453,7 +3453,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public getStatistics(infoType: string, infoId: string, _options?: Configuration): Observable<InteractiveStatsDTO> {
@@ -3463,7 +3463,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -3489,12 +3489,123 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
     public increaseStatistic(infoType: string, infoId: string, statsType: string, _options?: Configuration): Observable<number> {
         return this.increaseStatisticWithHttpInfo(infoType, infoId, statsType, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentsByStatistic(statsType, asc, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAgentsByStatisticWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic(statsType: string, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
+        return this.listAgentsByStatisticWithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentsByStatistic1(statsType, pageSize, asc, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAgentsByStatistic1WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
+        return this.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentsByStatistic2(statsType, pageSize, pageNum, asc, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAgentsByStatistic2WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
+        return this.listAgentsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -3609,120 +3720,9 @@ export class ObservableInteractiveStatisticsApi {
     }
 
     /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listFlowsByStatistic(statsType, pageSize, pageNum, asc, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listFlowsByStatisticWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<FlowSummaryStatsDTO>> {
-        return this.listFlowsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<FlowSummaryStatsDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic1WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listFlowsByStatistic1(statsType, asc, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listFlowsByStatistic1WithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic1(statsType: string, asc?: string, _options?: Configuration): Observable<Array<FlowSummaryStatsDTO>> {
-        return this.listFlowsByStatistic1WithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<FlowSummaryStatsDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<FlowSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listFlowsByStatistic2(statsType, pageSize, asc, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listFlowsByStatistic2WithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listFlowsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<FlowSummaryStatsDTO>> {
-        return this.listFlowsByStatistic2WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<FlowSummaryStatsDTO>>) => apiResponse.data));
-    }
-
-    /**
      * Get popular tags for a specified info type.
      * Hot Tags
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
      * @param text Key word
      */
@@ -3748,7 +3748,7 @@ export class ObservableInteractiveStatisticsApi {
     /**
      * Get popular tags for a specified info type.
      * Hot Tags
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
      * @param text Key word
      */

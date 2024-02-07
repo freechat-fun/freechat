@@ -238,6 +238,7 @@ Prompt for charater {{characterName}}.
 
 <br>
 **Predefined Variables**
+
 {{{variables}}}
 `;
 
@@ -248,12 +249,13 @@ const CHARACTER_PROMPT_DESCRIPTION_ZH = `
 
 <br>
 **预置变量**
+
 {{{variables}}}
 `;
 
 const CHARACTER_PROMPT_TEMPLATE_EN = `
 You play a good conversationalist.
-Imitate conversations between people, use a small number of sentences to complete feedback, and try to avoid lengthy responses.
+Imitate conversations between people, use 1 to 3 sentences to complete feedback, and try to avoid lengthy responses.
 You should NEVER answer in the tone of an AI assistant!
 By default, you speak in {{CHARACTER_LANG}}. Unless the person you are speaking to speaks a different language, in which case you reply in the same language as the other person.
 
@@ -267,12 +269,21 @@ Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
 
 {{#CHARACTER_CHAT_EXAMPLE}}
 [[[Your chat examples]]]
+"""
 {{{CHARACTER_CHAT_EXAMPLE}}}
+"""
 {{/CHARACTER_CHAT_EXAMPLE}}
 
 [[[The one who is talking with you]]]
 Name: {{USER_NICKNAME}}
 {{{USER_PROFILE}}}
+
+{{#LONG_TERM_MEMORY}}
+[[[Conversations you have had about this topic]]]
+"""
+{{{LONG_TERM_MEMORY}}}
+"""
+{{/LONG_TERM_MEMORY}}
 
 [[[Some information you may need to know about this conversation]]]
 Current time: {{CURRENT_TIME}}
@@ -283,12 +294,12 @@ Current time: {{CURRENT_TIME}}
 
 const CHARACTER_PROMPT_TEMPLATE_ZH = `
 你扮演一个健谈的人。
-模仿人与人之间的对话，用少量的句子来完成反馈，尽量避免冗长的回复。
+模仿人与人之间的对话，用 1 到 3 句话完成反馈，尽量避免冗长的回复。
 你永远不应该用人工智能助手的语气回答！
 默认情况下，您使用 {{CHARACTER_LANG}} 。除非与你谈话的人使用了其它语言，这种情况下，你使用与对方相同的语言进行回复。
 
 【关于你】
-你的姓名：{{CHARACTER_NICKNAME}}。
+你的名字：{{CHARACTER_NICKNAME}}。
 {{#CHARACTER_GENDER}}
 你的性别：{{CHARACTER_GENDER}}。
 {{/CHARACTER_GENDER}}
@@ -297,12 +308,21 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `
 
 {{#CHARACTER_CHAT_EXAMPLE}}
 【你的聊天示例】
+"""
 {{{CHARACTER_CHAT_EXAMPLE}}}
+"""
 {{/CHARACTER_CHAT_EXAMPLE}}
 
 【正在和你说话的人】
 姓名：{{USER_NICKNAME}}
 {{{USER_PROFILE}}}
+
+{{#LONG_TERM_MEMORY}}
+[[[关于这个话题你们曾经发生过的对话]]]
+"""
+{{{LONG_TERM_MEMORY}}}
+"""
+{{/LONG_TERM_MEMORY}}
 
 【关于这次对话你可能需要了解的一些信息】
 当前时间：{{CURRENT_TIME}}
@@ -317,11 +337,10 @@ export function createPromptForCharacter(characterName: string | undefined, lang
   request.chatTemplate.messageToSend = new ChatMessageDTO();
   request.chatTemplate.messageToSend.role = 'user';
   setMessageText(request.chatTemplate.messageToSend, '{{input}}');
-  request.inputs = JSON.stringify({'input': ''});
   request.format = 'mustache';
-  request.lang = i18nConfig.defaultLocale;
-  request.visibility = 'public';
-  request.tags = ['Character', lang ?? 'en'];
+  request.lang = lang ?? i18nConfig.defaultLocale;
+  request.visibility = 'private';
+  request.tags = ['Character'];
   if (characterName) {
     request.tags.push(characterName);
   }
@@ -331,40 +350,40 @@ export function createPromptForCharacter(characterName: string | undefined, lang
   let promptDescription;
   let promptTemplate;
 
-  if (lang === 'zh') {
-    variables['CHARACTER_NICKNAME'] = '（预设的角色名称）';
-    variables['CHARACTER_GENDER'] = '（预设的角色性别）';
-    variables['CHARACTER_LANG'] = '（预设的角色语言）';
-    variables['CHARACTER_PROFILE'] = '（预设的角色档案）';
-    variables['CHARACTER_CHAT_STYLE'] = '（预设的角色聊天风格）';
-    variables['CHARACTER_CHAT_EXAMPLE'] = '（预设的角色聊天示例）';
-    variables['CHARACTER_GREETING'] = '（预设的角色问候语）';
-    variables['USER_NICKNAME'] = '（预设的用户昵称，可在创建聊天时变更此设置）';
-    variables['USER_PROFILE'] = '（预设的用户档案，可在创建聊天时变更此设置）';
-    variables['RELEVANT_INFORMATION'] = '（每轮对话搜索出来的相关性信息）';
-    variables['LONG_TERM_MEMORY'] = '（当前轮次对话中角色回忆出来的长期记忆片段）';
-    variables['CHAT_CONTEXT'] = '（聊天相关信息，可在创建聊天时设置）';
-    variables['MESSAGE_CONTEXT'] = '（注入的当前轮次对话的相关信息）';
-    variables['CURRENT_TIME'] = '（当前时间，格式：yyyy-MM-dd HH:mm:ss）';
-    variables['input'] = '（当前输入）';
+  if (request.lang === 'zh') {
+    variables['CHARACTER_NICKNAME'] = '*（预设的角色名称）*';
+    variables['CHARACTER_GENDER'] = '*（预设的角色性别）*';
+    variables['CHARACTER_LANG'] = '*（预设的角色语言）*';
+    variables['CHARACTER_PROFILE'] = '*（预设的角色档案）*';
+    variables['CHARACTER_CHAT_STYLE'] = '*（预设的角色聊天风格）*';
+    variables['CHARACTER_CHAT_EXAMPLE'] = '*（预设的角色聊天示例）*';
+    variables['CHARACTER_GREETING'] = '*（预设的角色问候语）*';
+    variables['USER_NICKNAME'] = '*（预设的用户昵称，可在创建聊天时变更此设置）*';
+    variables['USER_PROFILE'] = '*（预设的用户档案，可在创建聊天时变更此设置）*';
+    variables['RELEVANT_INFORMATION'] = '*（每轮对话搜索出来的相关性信息）*';
+    variables['LONG_TERM_MEMORY'] = '*（当前轮次对话中角色回忆出来的长期记忆片段）*';
+    variables['CHAT_CONTEXT'] = '*（聊天相关信息，可在创建聊天时设置）*';
+    variables['MESSAGE_CONTEXT'] = '*（注入的当前轮次对话的相关信息）*';
+    variables['CURRENT_TIME'] = '*（当前时间，格式：yyyy-MM-dd HH:mm:ss）*';
+    variables['input'] = '*（用户输入）*';
 
     promptDescription = CHARACTER_PROMPT_DESCRIPTION_ZH;
     promptTemplate = CHARACTER_PROMPT_TEMPLATE_ZH;
   } else {
-    variables['CHARACTER_NICKNAME'] = '(Preset character name)';
-    variables['CHARACTER_GENDER'] = '(Preset character gender)';
-    variables['CHARACTER_LANG'] = '(Preset character language)';
-    variables['CHARACTER_PROFILE'] = '(Preset character profile)';
-    variables['CHARACTER_CHAT_STYLE'] = '(Preset character chat style)';
-    variables['CHARACTER_CHAT_EXAMPLE'] = '(Preset character chat example)';
-    variables['CHARACTER_GREETING'] = '(Preset character greeting)';
-    variables['USER_NICKNAME'] = '(Preset user nickname, can be changed when creating a chat)';
-    variables['USER_PROFILE'] = '(Preset user profile, can be changed when creating a chat)';
-    variables['RELEVANT_INFORMATION'] = '(Relevant information for each round of conversation)';
-    variables['CHAT_CONTEXT'] = '(Chat context information, can be set when creating a chat)';
-    variables['MESSAGE_CONTEXT'] = '(Injected relevant information for the current round of conversation)';
-    variables['CURRENT_TIME'] = '(Current time, format: yyyy-MM-dd HH:mm:ss)';
-    variables['input'] = '(Current input)';
+    variables['CHARACTER_NICKNAME'] = '*(Preset character name)*';
+    variables['CHARACTER_GENDER'] = '*(Preset character gender)*';
+    variables['CHARACTER_LANG'] = '*(Preset character language)*';
+    variables['CHARACTER_PROFILE'] = '*(Preset character profile)*';
+    variables['CHARACTER_CHAT_STYLE'] = '*(Preset character chat style)*';
+    variables['CHARACTER_CHAT_EXAMPLE'] = '*(Preset character chat example)*';
+    variables['CHARACTER_GREETING'] = '*(Preset character greeting)*';
+    variables['USER_NICKNAME'] = '*(Preset user nickname, can be changed when creating a chat)*';
+    variables['USER_PROFILE'] = '*(Preset user profile, can be changed when creating a chat)*';
+    variables['RELEVANT_INFORMATION'] = '*(Relevant information for each round of conversation)*';
+    variables['CHAT_CONTEXT'] = '*(Chat context information, can be set when creating a chat)*';
+    variables['MESSAGE_CONTEXT'] = '*(Injected relevant information for the current round of conversation)*';
+    variables['CURRENT_TIME'] = '*(Current time, format: yyyy-MM-dd HH:mm:ss)*';
+    variables['input'] = '*(User input)*';
 
     promptDescription = CHARACTER_PROMPT_DESCRIPTION_EN;
     promptTemplate = CHARACTER_PROMPT_TEMPLATE_EN;
@@ -372,11 +391,12 @@ export function createPromptForCharacter(characterName: string | undefined, lang
 
   const descriptionContext = {
     characterName: characterName,
-    variables: objectToMarkdownTable(variables, lang === 'zh' ? '占位符' : 'Placeholder'),
+    variables: objectToMarkdownTable(variables, request.lang === 'zh' ? '占位符' : 'Placeholder'),
   };
 
   request.description = Mustache.render(promptDescription, descriptionContext);
   request.chatTemplate.system = promptTemplate;
+  request.inputs = JSON.stringify(variables);
 
   return request;
 }

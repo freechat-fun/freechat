@@ -30,6 +30,7 @@ import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
 import fun.freechat.service.util.StoreUtils;
+import fun.freechat.util.LangUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -194,7 +195,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             variables.put(CHARACTER_NICKNAME.text(), characterNickname);
             variables.put(CHARACTER_GENDER.text(), characterInfo.getGender());
-            variables.put(CHARACTER_LANG.text(), characterInfo.getLang());
+            variables.put(CHARACTER_LANG.text(), LangUtils.codeToLabel(characterInfo.getLang()));
             variables.put(CHARACTER_CHAT_STYLE.text(), getOrBlank(characterInfo.getChatStyle()));
             variables.put(CHARACTER_CHAT_EXAMPLE.text(), getOrBlank(characterInfo.getChatExample()));
             variables.put(CHARACTER_GREETING.text(), getOrBlank(characterInfo.getChatStyle()));

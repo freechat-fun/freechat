@@ -14,6 +14,14 @@
 
 
 # import models into model package
+from freechat_sdk.models.agent_create_dto import AgentCreateDTO
+from freechat_sdk.models.agent_details_dto import AgentDetailsDTO
+from freechat_sdk.models.agent_item_for_name_dto import AgentItemForNameDTO
+from freechat_sdk.models.agent_query_dto import AgentQueryDTO
+from freechat_sdk.models.agent_query_where import AgentQueryWhere
+from freechat_sdk.models.agent_summary_dto import AgentSummaryDTO
+from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
+from freechat_sdk.models.agent_update_dto import AgentUpdateDTO
 from freechat_sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
 from freechat_sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
 from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
@@ -36,14 +44,6 @@ from freechat_sdk.models.chat_create_dto import ChatCreateDTO
 from freechat_sdk.models.chat_message_dto import ChatMessageDTO
 from freechat_sdk.models.chat_prompt_content_dto import ChatPromptContentDTO
 from freechat_sdk.models.chat_tool_call_dto import ChatToolCallDTO
-from freechat_sdk.models.flow_create_dto import FlowCreateDTO
-from freechat_sdk.models.flow_details_dto import FlowDetailsDTO
-from freechat_sdk.models.flow_item_for_name_dto import FlowItemForNameDTO
-from freechat_sdk.models.flow_query_dto import FlowQueryDTO
-from freechat_sdk.models.flow_query_where import FlowQueryWhere
-from freechat_sdk.models.flow_summary_dto import FlowSummaryDTO
-from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat_sdk.models.flow_update_dto import FlowUpdateDTO
 from freechat_sdk.models.hot_tag_dto import HotTagDTO
 from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
 from freechat_sdk.models.llm_result_dto import LlmResultDTO

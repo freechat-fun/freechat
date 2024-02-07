@@ -31,13 +31,16 @@
   "Placeholder": "Placeholder",
   "Default value": "Default value",
   "Inputs": "Inputs",
+  "Input": "Input",
   "Output": "Output",
   "Type": "Type",
   "Please enter a new name": "Please enter a new name",
   "Name already exists!": "Name already exists!",
   "Welcome to FreeChat": "Welcome to FreeChat",
-  "Create your friends here!": "Create your friends here!",
+  "Create your friends here!": "\"Create\" your friends here!",
   "Search tags": "Search tags",
-  "Supports Markdown format": "Supports Markdown format",
+  "Supports markdown format": "Supports markdown format",
+  "Token Usage": "Token Usage",
+  "Total": "Total",
   ".": "."
 }

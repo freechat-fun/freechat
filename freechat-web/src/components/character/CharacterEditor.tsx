@@ -103,7 +103,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.nickname = nickname;
       return newRecord;
     });
@@ -111,7 +111,7 @@ export default function CharacterEditor ({
   
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.description = description;
       return newRecord;
     });
@@ -119,7 +119,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.avatar = avatar;
       return newRecord;
     });
@@ -127,7 +127,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.picture = picture;
       return newRecord;
     });
@@ -135,7 +135,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.gender = gender;
       return newRecord;
     });
@@ -143,7 +143,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.lang = lang;
       return newRecord;
     });
@@ -151,7 +151,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.lang = lang;
       return newRecord;
     });
@@ -159,7 +159,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.profile = profile;
       return newRecord;
     });
@@ -167,7 +167,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.greeting = greeting;
       return newRecord;
     });
@@ -175,7 +175,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.chatStyle = chatStyle;
       return newRecord;
     });
@@ -183,7 +183,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.chatExample = chatExample;
       return newRecord;
     });
@@ -191,7 +191,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.visibility = visibility;
       return newRecord;
     });
@@ -199,7 +199,7 @@ export default function CharacterEditor ({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.tags = tags;
       return newRecord;
     });
@@ -212,7 +212,7 @@ export default function CharacterEditor ({
 
     if (editRecordName && editRecordName !== editRecord?.name) {
       if (editRecordName === originName) {
-        const newRecord = { ...editRecord };
+        const newRecord = {...editRecord};
         newRecord.name = editRecordName;
         setEditRecord(newRecord);
         setEditRecordName(undefined);
@@ -220,7 +220,7 @@ export default function CharacterEditor ({
         characterApi?.existsCharacterName(editRecordName)
           .then(resp => {
             if (!resp) {
-              const newRecord = { ...editRecord };
+              const newRecord = {...editRecord};
               newRecord.name = editRecordName;
               setEditRecord(newRecord);
               setEditRecordName(undefined);
@@ -296,6 +296,7 @@ export default function CharacterEditor ({
 
   function recordToUpdateRequest(record: CharacterDetailsDTO): CharacterUpdateDTO {
     const request = new CharacterUpdateDTO();
+    request.nickname = record.nickname;
     request.description = record.description;
     request.avatar = record.avatar;
     request.picture = record.picture;
@@ -334,7 +335,7 @@ export default function CharacterEditor ({
         characterApi?.updateCharacterBackend(backendId, req)
           .then(() => {
             if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigator(`/w/prompt/task/${req.chatPromptTaskId}`);
+              navigator(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
             } else {
               setBackends((prevBackends) => {
                 return [...prevBackends, backend];
@@ -348,7 +349,7 @@ export default function CharacterEditor ({
           .then((bId) => {
             backend.backendId = bId;
             if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigator(`/w/prompt/task/${req.chatPromptTaskId}`);
+              navigator(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
             } else {
               setBackends((prevBackends) => {
                 return [...prevBackends, backend];
@@ -470,7 +471,7 @@ export default function CharacterEditor ({
               <Typography level="title-lg" color="primary">
                 {t('Description')}
               </Typography>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
+              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports markdown format')}>
                 <HelpIcon />
               </Tooltip>
             </CommonBox>
@@ -551,7 +552,6 @@ export default function CharacterEditor ({
                 <Input
                   disabled={!editEnabled}
                   name="nickname"
-                  placeholder={nickname}
                   value={nickname}
                   onChange={(event) => setNickname(event.target.value)}
                 />
@@ -598,6 +598,7 @@ export default function CharacterEditor ({
                 </AspectRatio>
                 <ImagePicker
                   onImageSelect={handleImageSelect}
+                  previewProps={{borderRadius: '50%'}}
                   disabled={!editEnabled}
                   aria-label="upload new picture"
                   size="sm"
@@ -631,7 +632,7 @@ export default function CharacterEditor ({
             </LabelTypography>
             <ContentTextarea
               name="info-chat-style"
-              minRows={3}
+              minRows={1}
               value={chatStyle}
               onChange={(event) => setChatStyle(event.target.value)}
             />

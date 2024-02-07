@@ -1,5 +1,4 @@
-import { SvgIcon } from '@mui/joy';
-import { useColorScheme } from "@mui/joy";
+import { SvgIcon, useColorScheme } from "@mui/joy";
 
 export default function ZhIcon() {
   const { mode } = useColorScheme();

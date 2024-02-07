@@ -112,9 +112,9 @@ springdoc:
     - group: g-prompt
       displayName: Prompt
       pathsToMatch: /api/v1/prompt/**
-    - group: g-flow
-      displayName: Flow
-      pathsToMatch: /api/v1/flow/**
+    - group: g-agent
+      displayName: Agent
+      pathsToMatch: /api/v1/agent/**
     - group: g-plugin
       displayName: Plugin
       pathsToMatch: /api/v1/plugin/**

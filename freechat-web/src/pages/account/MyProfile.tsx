@@ -199,6 +199,7 @@ export default function MyProfile() {
               </AspectRatio>
               <ImagePicker
                 onImageSelect={handleImageSelect}
+                previewProps={{borderRadius: '50%'}}
                 disabled={!editEnabled}
                 aria-label="upload new picture"
                 size="sm"

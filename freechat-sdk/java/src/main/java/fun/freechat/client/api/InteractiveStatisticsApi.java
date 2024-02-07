@@ -27,8 +27,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
+import fun.freechat.client.model.AgentSummaryStatsDTO;
 import fun.freechat.client.model.CharacterSummaryStatsDTO;
-import fun.freechat.client.model.FlowSummaryStatsDTO;
 import fun.freechat.client.model.HotTagDTO;
 import fun.freechat.client.model.InteractiveStatsDTO;
 import fun.freechat.client.model.PluginSummaryStatsDTO;
@@ -79,7 +79,7 @@ public class InteractiveStatisticsApi {
 
     /**
      * Build call for addStatistic
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param delta Delta in statistical value (required)
@@ -169,7 +169,7 @@ public class InteractiveStatisticsApi {
     /**
      * Add Statistics
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param delta Delta in statistical value (required)
@@ -189,7 +189,7 @@ public class InteractiveStatisticsApi {
     /**
      * Add Statistics
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param delta Delta in statistical value (required)
@@ -210,7 +210,7 @@ public class InteractiveStatisticsApi {
     /**
      * Add Statistics (asynchronously)
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param delta Delta in statistical value (required)
@@ -232,7 +232,7 @@ public class InteractiveStatisticsApi {
     }
     /**
      * Build call for getScore
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -308,7 +308,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get Score for Resource
      * Get the current user&#39;s score for the corresponding resource.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @return Long
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -326,7 +326,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get Score for Resource
      * Get the current user&#39;s score for the corresponding resource.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @return ApiResponse&lt;Long&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -345,7 +345,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get Score for Resource (asynchronously)
      * Get the current user&#39;s score for the corresponding resource.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -365,7 +365,7 @@ public class InteractiveStatisticsApi {
     }
     /**
      * Build call for getStatistic
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param _callback Callback for upload/download progress
@@ -448,7 +448,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get Statistics
      * Get the statistics of the corresponding metrics of the corresponding resources.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @return Long
@@ -467,7 +467,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get Statistics
      * Get the statistics of the corresponding metrics of the corresponding resources.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @return ApiResponse&lt;Long&gt;
@@ -487,7 +487,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get Statistics (asynchronously)
      * Get the statistics of the corresponding metrics of the corresponding resources.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param _callback The callback to be executed when the API call finishes
@@ -508,7 +508,7 @@ public class InteractiveStatisticsApi {
     }
     /**
      * Build call for getStatistics
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -584,7 +584,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get All Statistics
      * Get all statistics of the corresponding resources.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @return InteractiveStatsDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -602,7 +602,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get All Statistics
      * Get all statistics of the corresponding resources.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @return ApiResponse&lt;InteractiveStatsDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -621,7 +621,7 @@ public class InteractiveStatisticsApi {
     /**
      * Get All Statistics (asynchronously)
      * Get all statistics of the corresponding resources.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -641,7 +641,7 @@ public class InteractiveStatisticsApi {
     }
     /**
      * Build call for increaseStatistic
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param _callback Callback for upload/download progress
@@ -724,7 +724,7 @@ public class InteractiveStatisticsApi {
     /**
      * Increase Statistics
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @return Long
@@ -743,7 +743,7 @@ public class InteractiveStatisticsApi {
     /**
      * Increase Statistics
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @return ApiResponse&lt;Long&gt;
@@ -763,7 +763,7 @@ public class InteractiveStatisticsApi {
     /**
      * Increase Statistics (asynchronously)
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param infoId Unique resource identifier (required)
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
      * @param _callback The callback to be executed when the API call finishes
@@ -779,6 +779,429 @@ public class InteractiveStatisticsApi {
 
         okhttp3.Call localVarCall = increaseStatisticValidateBeforeCall(infoType, infoId, statsType, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for listAgentsByStatistic
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAgentsByStatisticCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v1/stats/agents/by/{statsType}"
+            .replace("{" + "statsType" + "}", localVarApiClient.escapeString(statsType.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        if (asc != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("asc", asc));
+        }
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call listAgentsByStatisticValidateBeforeCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'statsType' is set
+        if (statsType == null) {
+            throw new ApiException("Missing the required parameter 'statsType' when calling listAgentsByStatistic(Async)");
+        }
+
+        return listAgentsByStatisticCall(statsType, asc, _callback);
+
+    }
+
+    /**
+     * List Agents by Statistics
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @return List&lt;AgentSummaryStatsDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public List<AgentSummaryStatsDTO> listAgentsByStatistic(String statsType, String asc) throws ApiException {
+        ApiResponse<List<AgentSummaryStatsDTO>> localVarResp = listAgentsByStatisticWithHttpInfo(statsType, asc);
+        return localVarResp.getData();
+    }
+
+    /**
+     * List Agents by Statistics
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @return ApiResponse&lt;List&lt;AgentSummaryStatsDTO&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatisticWithHttpInfo(String statsType, String asc) throws ApiException {
+        okhttp3.Call localVarCall = listAgentsByStatisticValidateBeforeCall(statsType, asc, null);
+        Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * List Agents by Statistics (asynchronously)
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAgentsByStatisticAsync(String statsType, String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = listAgentsByStatisticValidateBeforeCall(statsType, asc, _callback);
+        Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for listAgentsByStatistic1
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAgentsByStatistic1Call(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v1/stats/agents/by/{statsType}/{pageSize}"
+            .replace("{" + "statsType" + "}", localVarApiClient.escapeString(statsType.toString()))
+            .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        if (asc != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("asc", asc));
+        }
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call listAgentsByStatistic1ValidateBeforeCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'statsType' is set
+        if (statsType == null) {
+            throw new ApiException("Missing the required parameter 'statsType' when calling listAgentsByStatistic1(Async)");
+        }
+
+        // verify the required parameter 'pageSize' is set
+        if (pageSize == null) {
+            throw new ApiException("Missing the required parameter 'pageSize' when calling listAgentsByStatistic1(Async)");
+        }
+
+        return listAgentsByStatistic1Call(statsType, pageSize, asc, _callback);
+
+    }
+
+    /**
+     * List Agents by Statistics
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @return List&lt;AgentSummaryStatsDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public List<AgentSummaryStatsDTO> listAgentsByStatistic1(String statsType, Long pageSize, String asc) throws ApiException {
+        ApiResponse<List<AgentSummaryStatsDTO>> localVarResp = listAgentsByStatistic1WithHttpInfo(statsType, pageSize, asc);
+        return localVarResp.getData();
+    }
+
+    /**
+     * List Agents by Statistics
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @return ApiResponse&lt;List&lt;AgentSummaryStatsDTO&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatistic1WithHttpInfo(String statsType, Long pageSize, String asc) throws ApiException {
+        okhttp3.Call localVarCall = listAgentsByStatistic1ValidateBeforeCall(statsType, pageSize, asc, null);
+        Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * List Agents by Statistics (asynchronously)
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAgentsByStatistic1Async(String statsType, Long pageSize, String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = listAgentsByStatistic1ValidateBeforeCall(statsType, pageSize, asc, _callback);
+        Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for listAgentsByStatistic2
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param pageNum Current page number (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAgentsByStatistic2Call(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}"
+            .replace("{" + "statsType" + "}", localVarApiClient.escapeString(statsType.toString()))
+            .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()))
+            .replace("{" + "pageNum" + "}", localVarApiClient.escapeString(pageNum.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        if (asc != null) {
+            localVarQueryParams.addAll(localVarApiClient.parameterToPair("asc", asc));
+        }
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call listAgentsByStatistic2ValidateBeforeCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'statsType' is set
+        if (statsType == null) {
+            throw new ApiException("Missing the required parameter 'statsType' when calling listAgentsByStatistic2(Async)");
+        }
+
+        // verify the required parameter 'pageSize' is set
+        if (pageSize == null) {
+            throw new ApiException("Missing the required parameter 'pageSize' when calling listAgentsByStatistic2(Async)");
+        }
+
+        // verify the required parameter 'pageNum' is set
+        if (pageNum == null) {
+            throw new ApiException("Missing the required parameter 'pageNum' when calling listAgentsByStatistic2(Async)");
+        }
+
+        return listAgentsByStatistic2Call(statsType, pageSize, pageNum, asc, _callback);
+
+    }
+
+    /**
+     * List Agents by Statistics
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param pageNum Current page number (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @return List&lt;AgentSummaryStatsDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public List<AgentSummaryStatsDTO> listAgentsByStatistic2(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+        ApiResponse<List<AgentSummaryStatsDTO>> localVarResp = listAgentsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc);
+        return localVarResp.getData();
+    }
+
+    /**
+     * List Agents by Statistics
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param pageNum Current page number (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @return ApiResponse&lt;List&lt;AgentSummaryStatsDTO&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<AgentSummaryStatsDTO>> listAgentsByStatistic2WithHttpInfo(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
+        okhttp3.Call localVarCall = listAgentsByStatistic2ValidateBeforeCall(statsType, pageSize, pageNum, asc, null);
+        Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * List Agents by Statistics (asynchronously)
+     * List agents based on statistics, including interactive statistical data.
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
+     * @param pageSize Maximum quantity (required)
+     * @param pageNum Current page number (required)
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAgentsByStatistic2Async(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback<List<AgentSummaryStatsDTO>> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = listAgentsByStatistic2ValidateBeforeCall(statsType, pageSize, pageNum, asc, _callback);
+        Type localVarReturnType = new TypeToken<List<AgentSummaryStatsDTO>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
@@ -1206,431 +1629,8 @@ public class InteractiveStatisticsApi {
         return localVarCall;
     }
     /**
-     * Build call for listFlowsByStatistic
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param pageNum Current page number (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listFlowsByStatisticCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
-        String basePath = null;
-        // Operation Servers
-        String[] localBasePaths = new String[] {  };
-
-        // Determine Base Path to Use
-        if (localCustomBaseUrl != null){
-            basePath = localCustomBaseUrl;
-        } else if ( localBasePaths.length > 0 ) {
-            basePath = localBasePaths[localHostIndex];
-        } else {
-            basePath = null;
-        }
-
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum}"
-            .replace("{" + "statsType" + "}", localVarApiClient.escapeString(statsType.toString()))
-            .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()))
-            .replace("{" + "pageNum" + "}", localVarApiClient.escapeString(pageNum.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        if (asc != null) {
-            localVarQueryParams.addAll(localVarApiClient.parameterToPair("asc", asc));
-        }
-
-        final String[] localVarAccepts = {
-            "application/json"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        if (localVarContentType != null) {
-            localVarHeaderParams.put("Content-Type", localVarContentType);
-        }
-
-        String[] localVarAuthNames = new String[] { "bearerAuth" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call listFlowsByStatisticValidateBeforeCall(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'statsType' is set
-        if (statsType == null) {
-            throw new ApiException("Missing the required parameter 'statsType' when calling listFlowsByStatistic(Async)");
-        }
-
-        // verify the required parameter 'pageSize' is set
-        if (pageSize == null) {
-            throw new ApiException("Missing the required parameter 'pageSize' when calling listFlowsByStatistic(Async)");
-        }
-
-        // verify the required parameter 'pageNum' is set
-        if (pageNum == null) {
-            throw new ApiException("Missing the required parameter 'pageNum' when calling listFlowsByStatistic(Async)");
-        }
-
-        return listFlowsByStatisticCall(statsType, pageSize, pageNum, asc, _callback);
-
-    }
-
-    /**
-     * List Flows by Statistics
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param pageNum Current page number (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @return List&lt;FlowSummaryStatsDTO&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public List<FlowSummaryStatsDTO> listFlowsByStatistic(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
-        ApiResponse<List<FlowSummaryStatsDTO>> localVarResp = listFlowsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc);
-        return localVarResp.getData();
-    }
-
-    /**
-     * List Flows by Statistics
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param pageNum Current page number (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @return ApiResponse&lt;List&lt;FlowSummaryStatsDTO&gt;&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<List<FlowSummaryStatsDTO>> listFlowsByStatisticWithHttpInfo(String statsType, Long pageSize, Long pageNum, String asc) throws ApiException {
-        okhttp3.Call localVarCall = listFlowsByStatisticValidateBeforeCall(statsType, pageSize, pageNum, asc, null);
-        Type localVarReturnType = new TypeToken<List<FlowSummaryStatsDTO>>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * List Flows by Statistics (asynchronously)
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param pageNum Current page number (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listFlowsByStatisticAsync(String statsType, Long pageSize, Long pageNum, String asc, final ApiCallback<List<FlowSummaryStatsDTO>> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = listFlowsByStatisticValidateBeforeCall(statsType, pageSize, pageNum, asc, _callback);
-        Type localVarReturnType = new TypeToken<List<FlowSummaryStatsDTO>>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for listFlowsByStatistic1
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listFlowsByStatistic1Call(String statsType, String asc, final ApiCallback _callback) throws ApiException {
-        String basePath = null;
-        // Operation Servers
-        String[] localBasePaths = new String[] {  };
-
-        // Determine Base Path to Use
-        if (localCustomBaseUrl != null){
-            basePath = localCustomBaseUrl;
-        } else if ( localBasePaths.length > 0 ) {
-            basePath = localBasePaths[localHostIndex];
-        } else {
-            basePath = null;
-        }
-
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/api/v1/stats/flows/by/{statsType}"
-            .replace("{" + "statsType" + "}", localVarApiClient.escapeString(statsType.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        if (asc != null) {
-            localVarQueryParams.addAll(localVarApiClient.parameterToPair("asc", asc));
-        }
-
-        final String[] localVarAccepts = {
-            "application/json"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        if (localVarContentType != null) {
-            localVarHeaderParams.put("Content-Type", localVarContentType);
-        }
-
-        String[] localVarAuthNames = new String[] { "bearerAuth" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call listFlowsByStatistic1ValidateBeforeCall(String statsType, String asc, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'statsType' is set
-        if (statsType == null) {
-            throw new ApiException("Missing the required parameter 'statsType' when calling listFlowsByStatistic1(Async)");
-        }
-
-        return listFlowsByStatistic1Call(statsType, asc, _callback);
-
-    }
-
-    /**
-     * List Flows by Statistics
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @return List&lt;FlowSummaryStatsDTO&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public List<FlowSummaryStatsDTO> listFlowsByStatistic1(String statsType, String asc) throws ApiException {
-        ApiResponse<List<FlowSummaryStatsDTO>> localVarResp = listFlowsByStatistic1WithHttpInfo(statsType, asc);
-        return localVarResp.getData();
-    }
-
-    /**
-     * List Flows by Statistics
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @return ApiResponse&lt;List&lt;FlowSummaryStatsDTO&gt;&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<List<FlowSummaryStatsDTO>> listFlowsByStatistic1WithHttpInfo(String statsType, String asc) throws ApiException {
-        okhttp3.Call localVarCall = listFlowsByStatistic1ValidateBeforeCall(statsType, asc, null);
-        Type localVarReturnType = new TypeToken<List<FlowSummaryStatsDTO>>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * List Flows by Statistics (asynchronously)
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listFlowsByStatistic1Async(String statsType, String asc, final ApiCallback<List<FlowSummaryStatsDTO>> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = listFlowsByStatistic1ValidateBeforeCall(statsType, asc, _callback);
-        Type localVarReturnType = new TypeToken<List<FlowSummaryStatsDTO>>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for listFlowsByStatistic2
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listFlowsByStatistic2Call(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
-        String basePath = null;
-        // Operation Servers
-        String[] localBasePaths = new String[] {  };
-
-        // Determine Base Path to Use
-        if (localCustomBaseUrl != null){
-            basePath = localCustomBaseUrl;
-        } else if ( localBasePaths.length > 0 ) {
-            basePath = localBasePaths[localHostIndex];
-        } else {
-            basePath = null;
-        }
-
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/api/v1/stats/flows/by/{statsType}/{pageSize}"
-            .replace("{" + "statsType" + "}", localVarApiClient.escapeString(statsType.toString()))
-            .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        if (asc != null) {
-            localVarQueryParams.addAll(localVarApiClient.parameterToPair("asc", asc));
-        }
-
-        final String[] localVarAccepts = {
-            "application/json"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        if (localVarContentType != null) {
-            localVarHeaderParams.put("Content-Type", localVarContentType);
-        }
-
-        String[] localVarAuthNames = new String[] { "bearerAuth" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call listFlowsByStatistic2ValidateBeforeCall(String statsType, Long pageSize, String asc, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'statsType' is set
-        if (statsType == null) {
-            throw new ApiException("Missing the required parameter 'statsType' when calling listFlowsByStatistic2(Async)");
-        }
-
-        // verify the required parameter 'pageSize' is set
-        if (pageSize == null) {
-            throw new ApiException("Missing the required parameter 'pageSize' when calling listFlowsByStatistic2(Async)");
-        }
-
-        return listFlowsByStatistic2Call(statsType, pageSize, asc, _callback);
-
-    }
-
-    /**
-     * List Flows by Statistics
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @return List&lt;FlowSummaryStatsDTO&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public List<FlowSummaryStatsDTO> listFlowsByStatistic2(String statsType, Long pageSize, String asc) throws ApiException {
-        ApiResponse<List<FlowSummaryStatsDTO>> localVarResp = listFlowsByStatistic2WithHttpInfo(statsType, pageSize, asc);
-        return localVarResp.getData();
-    }
-
-    /**
-     * List Flows by Statistics
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @return ApiResponse&lt;List&lt;FlowSummaryStatsDTO&gt;&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<List<FlowSummaryStatsDTO>> listFlowsByStatistic2WithHttpInfo(String statsType, Long pageSize, String asc) throws ApiException {
-        okhttp3.Call localVarCall = listFlowsByStatistic2ValidateBeforeCall(statsType, pageSize, asc, null);
-        Type localVarReturnType = new TypeToken<List<FlowSummaryStatsDTO>>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * List Flows by Statistics (asynchronously)
-     * List flows based on statistics, including interactive statistical data.
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score (required)
-     * @param pageSize Maximum quantity (required)
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order (optional)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listFlowsByStatistic2Async(String statsType, Long pageSize, String asc, final ApiCallback<List<FlowSummaryStatsDTO>> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = listFlowsByStatistic2ValidateBeforeCall(statsType, pageSize, asc, _callback);
-        Type localVarReturnType = new TypeToken<List<FlowSummaryStatsDTO>>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
      * Build call for listHotTags
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param pageSize Maximum quantity (required)
      * @param text Key word (optional)
      * @param _callback Callback for upload/download progress
@@ -1711,7 +1711,7 @@ public class InteractiveStatisticsApi {
     /**
      * Hot Tags
      * Get popular tags for a specified info type.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param pageSize Maximum quantity (required)
      * @param text Key word (optional)
      * @return List&lt;HotTagDTO&gt;
@@ -1730,7 +1730,7 @@ public class InteractiveStatisticsApi {
     /**
      * Hot Tags
      * Get popular tags for a specified info type.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param pageSize Maximum quantity (required)
      * @param text Key word (optional)
      * @return ApiResponse&lt;List&lt;HotTagDTO&gt;&gt;
@@ -1750,7 +1750,7 @@ public class InteractiveStatisticsApi {
     /**
      * Hot Tags (asynchronously)
      * Get popular tags for a specified info type.
-     * @param infoType Info type: prompt | flow | plugin | character (required)
+     * @param infoType Info type: prompt | agent | plugin | character (required)
      * @param pageSize Maximum quantity (required)
      * @param text Key word (optional)
      * @param _callback The callback to be executed when the API call finishes

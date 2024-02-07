@@ -45,7 +45,7 @@
 
         <table tableName="prompt_info" />
 
-        <table tableName="flow_info" />
+        <table tableName="agent_info" />
 
         <table tableName="plugin_info" />
 

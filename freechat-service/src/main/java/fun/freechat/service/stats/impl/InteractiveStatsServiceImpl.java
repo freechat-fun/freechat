@@ -198,8 +198,8 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         var table = switch (infoType) {
             case PROMPT -> fields.join(PromptInfoDynamicSqlSupport.promptInfo, "i")
                         .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptId));
-            case FLOW -> fields.join(FlowInfoDynamicSqlSupport.flowInfo, "i")
-                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(FlowInfoDynamicSqlSupport.flowId));
+            case AGENT -> fields.join(AgentInfoDynamicSqlSupport.agentInfo, "i")
+                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentId));
             case PLUGIN -> fields.join(PluginInfoDynamicSqlSupport.pluginInfo, "i")
                     .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginId));
             default -> throw new IllegalStateException("Unexpected value: " + infoType);
@@ -212,8 +212,8 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         conditions = switch (infoType) {
             case PROMPT -> conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
                     .and(PromptInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
-            case FLOW ->  conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.FLOW.text()))
-                    .and(FlowInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
+            case AGENT ->  conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
+                    .and(AgentInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
             case PLUGIN ->  conditions.and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
                     .and(PluginInfoDynamicSqlSupport.visibility, isEqualTo(Visibility.PUBLIC.text()));
             default -> throw new IllegalStateException("Unexpected value: " + infoType);

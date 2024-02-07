@@ -4,5 +4,6 @@ export { default as PromptMeta } from './PromptMeta';
 export { default as PromptRunner } from './PromptRunner';
 export { default as PromptGallery } from './PromptGallery';
 export { default as PromptEditor } from './PromptEditor';
+export { default as PromptViewer } from './PromptViewer';
 export { default as DashScopeSettings } from './DashScopeSettings';
 export { default as OpenAISettings } from './OpenAISettings';

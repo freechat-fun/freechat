@@ -83,10 +83,10 @@ public class TagServiceImpl implements TagService {
                         .on(TagDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptId));
                 visibilityColumn = PromptInfoDynamicSqlSupport.visibility;
             }
-            case FLOW -> {
-                statement.leftJoin(FlowInfoDynamicSqlSupport.flowInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(FlowInfoDynamicSqlSupport.flowId));
-                visibilityColumn = FlowInfoDynamicSqlSupport.visibility;
+            case AGENT -> {
+                statement.leftJoin(AgentInfoDynamicSqlSupport.agentInfo, "i")
+                        .on(TagDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentId));
+                visibilityColumn = AgentInfoDynamicSqlSupport.visibility;
             }
             case PLUGIN -> {
                 statement.leftJoin(PluginInfoDynamicSqlSupport.pluginInfo, "i")

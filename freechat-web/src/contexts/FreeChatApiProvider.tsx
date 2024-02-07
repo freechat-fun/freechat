@@ -12,7 +12,7 @@ import {
   AppMetaForAdminApi,
   CharacterApi,
   EncryptionManagerForAdminApi,
-  FlowApi,
+  AgentApi,
   InteractiveStatisticsApi,
   OrganizationApi,
   PluginApi,
@@ -34,7 +34,7 @@ interface FreeChatApiContextValue {
   appMetaForAdminApi: AppMetaForAdminApi | undefined;
   characterApi: CharacterApi | undefined;
   encryptionManagerForAdminApi: EncryptionManagerForAdminApi | undefined;
-  flowApi: FlowApi | undefined;
+  agentApi: AgentApi | undefined;
   interactiveStatisticsApi: InteractiveStatisticsApi | undefined;
   organizationApi: OrganizationApi | undefined;
   pluginApi: PluginApi | undefined;
@@ -52,7 +52,7 @@ const undefinedContext: FreeChatApiContextValue = {
   appMetaForAdminApi: undefined,
   characterApi: undefined,
   encryptionManagerForAdminApi: undefined,
-  flowApi: undefined,
+  agentApi: undefined,
   interactiveStatisticsApi: undefined,
   organizationApi: undefined,
   pluginApi: undefined,
@@ -76,7 +76,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
   const appMetaForAdminApi = new AppMetaForAdminApi(configuration);
   const characterApi = new CharacterApi(configuration);
   const encryptionManagerForAdminApi = new EncryptionManagerForAdminApi(configuration);
-  const flowApi = new FlowApi(configuration);
+  const agentApi = new AgentApi(configuration);
   const interactiveStatisticsApi = new InteractiveStatisticsApi(configuration);
   const organizationApi = new OrganizationApi(configuration);
   const pluginApi = new PluginApi(configuration);
@@ -94,7 +94,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
       appMetaForAdminApi,
       characterApi,
       encryptionManagerForAdminApi,
-      flowApi,
+      agentApi: agentApi,
       interactiveStatisticsApi,
       organizationApi,
       pluginApi,

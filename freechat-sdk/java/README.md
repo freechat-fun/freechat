@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.2.20</version>
+  <version>0.3.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.2.20"
+     implementation "fun.freechat:freechat-sdk:0.3.0"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.2.20.jar`
+* `target/freechat-sdk-0.3.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -143,6 +143,22 @@ Class | Method | HTTP request | Description
 *AccountManagerForAdminApi* | [**listUsers2**](docs/AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v1/admin/users | List User Information
 *AccountManagerForAdminApi* | [**updateAuthoritiesOfUser**](docs/AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v1/admin/authority/{username} | Update User Permissions
 *AccountManagerForAdminApi* | [**updateUser**](docs/AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v1/admin/user | Update User
+*AgentApi* | [**batchSearchAgentDetails**](docs/AgentApi.md#batchSearchAgentDetails) | **POST** /api/v1/agent/batch/details/search | Batch Search Agent Details
+*AgentApi* | [**batchSearchAgentSummary**](docs/AgentApi.md#batchSearchAgentSummary) | **POST** /api/v1/agent/batch/search | Batch Search Agent Summaries
+*AgentApi* | [**cloneAgent**](docs/AgentApi.md#cloneAgent) | **POST** /api/v1/agent/clone/{agentId} | Clone Agent
+*AgentApi* | [**cloneAgents**](docs/AgentApi.md#cloneAgents) | **POST** /api/v1/agent/batch/clone | Batch Clone Agents
+*AgentApi* | [**countAgents**](docs/AgentApi.md#countAgents) | **POST** /api/v1/agent/count | Calculate Number of Agents
+*AgentApi* | [**createAgent**](docs/AgentApi.md#createAgent) | **POST** /api/v1/agent | Create Agent
+*AgentApi* | [**createAgents**](docs/AgentApi.md#createAgents) | **POST** /api/v1/agent/batch | Batch Create Agents
+*AgentApi* | [**deleteAgent**](docs/AgentApi.md#deleteAgent) | **DELETE** /api/v1/agent/{agentId} | Delete Agent
+*AgentApi* | [**deleteAgents**](docs/AgentApi.md#deleteAgents) | **DELETE** /api/v1/agent/batch/delete | Batch Delete Agents
+*AgentApi* | [**getAgentDetails**](docs/AgentApi.md#getAgentDetails) | **GET** /api/v1/agent/details/{agentId} | Get Agent Details
+*AgentApi* | [**getAgentSummary**](docs/AgentApi.md#getAgentSummary) | **GET** /api/v1/agent/summary/{agentId} | Get Agent Summary
+*AgentApi* | [**listAgentVersionsByName**](docs/AgentApi.md#listAgentVersionsByName) | **POST** /api/v1/agent/versions/{name} | List Versions by Agent Name
+*AgentApi* | [**publishAgent**](docs/AgentApi.md#publishAgent) | **POST** /api/v1/agent/publish/{agentId}/{visibility} | Publish Agent
+*AgentApi* | [**searchAgentDetails**](docs/AgentApi.md#searchAgentDetails) | **POST** /api/v1/agent/details/search | Search Agent Details
+*AgentApi* | [**searchAgentSummary**](docs/AgentApi.md#searchAgentSummary) | **POST** /api/v1/agent/search | Search Agent Summary
+*AgentApi* | [**updateAgent**](docs/AgentApi.md#updateAgent) | **PUT** /api/v1/agent/{agentId} | Update Agent
 *AiServiceApi* | [**addAiApiKey**](docs/AiServiceApi.md#addAiApiKey) | **POST** /api/v1/ai/apikey | Add Model Provider Credential
 *AiServiceApi* | [**deleteAiApiKey**](docs/AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v1/ai/apikey/{id} | Delete Credential of Model Provider
 *AiServiceApi* | [**disableAiApiKey**](docs/AiServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
@@ -194,33 +210,17 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar | Upload Character Avatar
 *CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture | Upload Character Picture
 *EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v1/admin/encryption/encrypt/{text} | Encrypt Text
-*FlowApi* | [**batchSearchFlowDetails**](docs/FlowApi.md#batchSearchFlowDetails) | **POST** /api/v1/flow/batch/details/search | Batch Search Flow Details
-*FlowApi* | [**batchSearchFlowSummary**](docs/FlowApi.md#batchSearchFlowSummary) | **POST** /api/v1/flow/batch/search | Batch Search Flow Summaries
-*FlowApi* | [**cloneFlow**](docs/FlowApi.md#cloneFlow) | **POST** /api/v1/flow/clone/{flowId} | Clone Flow
-*FlowApi* | [**cloneFlows**](docs/FlowApi.md#cloneFlows) | **POST** /api/v1/flow/batch/clone | Batch Clone Flows
-*FlowApi* | [**countFlows**](docs/FlowApi.md#countFlows) | **POST** /api/v1/flow/count | Calculate Number of Flows
-*FlowApi* | [**createFlow**](docs/FlowApi.md#createFlow) | **POST** /api/v1/flow | Create Flow
-*FlowApi* | [**createFlows**](docs/FlowApi.md#createFlows) | **POST** /api/v1/flow/batch | Batch Create Flows
-*FlowApi* | [**deleteFlow**](docs/FlowApi.md#deleteFlow) | **DELETE** /api/v1/flow/{flowId} | Delete Flow
-*FlowApi* | [**deleteFlows**](docs/FlowApi.md#deleteFlows) | **DELETE** /api/v1/flow/batch/delete | Batch Delete Flows
-*FlowApi* | [**getFlowDetails**](docs/FlowApi.md#getFlowDetails) | **GET** /api/v1/flow/details/{flowId} | Get Flow Details
-*FlowApi* | [**getFlowSummary**](docs/FlowApi.md#getFlowSummary) | **GET** /api/v1/flow/summary/{flowId} | Get Flow Summary
-*FlowApi* | [**listFlowVersionsByName**](docs/FlowApi.md#listFlowVersionsByName) | **POST** /api/v1/flow/versions/{name} | List Versions by Flow Name
-*FlowApi* | [**publishFlow**](docs/FlowApi.md#publishFlow) | **POST** /api/v1/flow/publish/{flowId}/{visibility} | Publish Flow
-*FlowApi* | [**searchFlowDetails**](docs/FlowApi.md#searchFlowDetails) | **POST** /api/v1/flow/details/search | Search Flow Details
-*FlowApi* | [**searchFlowSummary**](docs/FlowApi.md#searchFlowSummary) | **POST** /api/v1/flow/search | Search Flow Summary
-*FlowApi* | [**updateFlow**](docs/FlowApi.md#updateFlow) | **PUT** /api/v1/flow/{flowId} | Update Flow
 *InteractiveStatisticsApi* | [**addStatistic**](docs/InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
 *InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/score/{infoType}/{infoId} | Get Score for Resource
 *InteractiveStatisticsApi* | [**getStatistic**](docs/InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/stats/{infoType}/{infoId}/{statsType} | Get Statistics
 *InteractiveStatisticsApi* | [**getStatistics**](docs/InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/stats/{infoType}/{infoId} | Get All Statistics
 *InteractiveStatisticsApi* | [**increaseStatistic**](docs/InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/stats/agents/by/{statsType} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic1**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic2**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
 *InteractiveStatisticsApi* | [**listCharactersByStatistic**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
 *InteractiveStatisticsApi* | [**listCharactersByStatistic1**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
 *InteractiveStatisticsApi* | [**listCharactersByStatistic2**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/stats/characters/by/{statsType} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listFlowsByStatistic**](docs/InteractiveStatisticsApi.md#listFlowsByStatistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics
-*InteractiveStatisticsApi* | [**listFlowsByStatistic1**](docs/InteractiveStatisticsApi.md#listFlowsByStatistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics
-*InteractiveStatisticsApi* | [**listFlowsByStatistic2**](docs/InteractiveStatisticsApi.md#listFlowsByStatistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics
 *InteractiveStatisticsApi* | [**listHotTags**](docs/InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
 *InteractiveStatisticsApi* | [**listPluginsByStatistic**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
 *InteractiveStatisticsApi* | [**listPluginsByStatistic1**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
@@ -283,6 +283,14 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
+ - [AgentCreateDTO](docs/AgentCreateDTO.md)
+ - [AgentDetailsDTO](docs/AgentDetailsDTO.md)
+ - [AgentItemForNameDTO](docs/AgentItemForNameDTO.md)
+ - [AgentQueryDTO](docs/AgentQueryDTO.md)
+ - [AgentQueryWhere](docs/AgentQueryWhere.md)
+ - [AgentSummaryDTO](docs/AgentSummaryDTO.md)
+ - [AgentSummaryStatsDTO](docs/AgentSummaryStatsDTO.md)
+ - [AgentUpdateDTO](docs/AgentUpdateDTO.md)
  - [AiApiKeyCreateDTO](docs/AiApiKeyCreateDTO.md)
  - [AiApiKeyInfoDTO](docs/AiApiKeyInfoDTO.md)
  - [AiModelInfoDTO](docs/AiModelInfoDTO.md)
@@ -305,14 +313,6 @@ Class | Method | HTTP request | Description
  - [ChatMessageDTO](docs/ChatMessageDTO.md)
  - [ChatPromptContentDTO](docs/ChatPromptContentDTO.md)
  - [ChatToolCallDTO](docs/ChatToolCallDTO.md)
- - [FlowCreateDTO](docs/FlowCreateDTO.md)
- - [FlowDetailsDTO](docs/FlowDetailsDTO.md)
- - [FlowItemForNameDTO](docs/FlowItemForNameDTO.md)
- - [FlowQueryDTO](docs/FlowQueryDTO.md)
- - [FlowQueryWhere](docs/FlowQueryWhere.md)
- - [FlowSummaryDTO](docs/FlowSummaryDTO.md)
- - [FlowSummaryStatsDTO](docs/FlowSummaryStatsDTO.md)
- - [FlowUpdateDTO](docs/FlowUpdateDTO.md)
  - [HotTagDTO](docs/HotTagDTO.md)
  - [InteractiveStatsDTO](docs/InteractiveStatsDTO.md)
  - [LlmResultDTO](docs/LlmResultDTO.md)

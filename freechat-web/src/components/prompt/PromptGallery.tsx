@@ -2,7 +2,7 @@ import { createRef, forwardRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CommonBox, HotTags, InfoSearchbar, LinePlaceholder } from "../../components";
+import { CommonBox, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { InteractiveStatsDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO, PromptSummaryStatsDTO, UserBasicInfoDTO } from "freechat-sdk";
 import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Tooltip, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -84,21 +84,9 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       </Box>
       <Divider />
 
-      <Typography
-        sx={{
-          ...sx,
-          display: '-webkit-box',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: 3,
-          maxHeight: '4.5rem',
-          minHeight: '4.5rem',
-          lineHeight: '1.5rem',
-        }}
-      >
+      <SummaryTypography sx={{...sx}}>
         {record.description}
-      </Typography>
+      </SummaryTypography>
       <Divider />
 
       {tags.length > 0 && (

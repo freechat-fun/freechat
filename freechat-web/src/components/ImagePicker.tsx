@@ -8,23 +8,36 @@ interface ImagePreviewProps {
   src: string;
   width: string | number;
   height: string | number;
+  borderRadius: string | number;
 }
 
-const ImagePreview = styled('div')<ImagePreviewProps>(({ src, width, height }) => ({
+const ImagePreview = styled('div')<ImagePreviewProps>(({ src, width, height, borderRadius }) => ({
   width: width,
   height: height,
   backgroundImage: `url(${src})`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  borderRadius: '50%',
+  borderRadius: borderRadius,
 }));
 
-export default function ImagePicker(props: IconButtonProps & { onImageSelect: (file: Blob, name: string) => void }) {
-  const {onImageSelect, ...iconButtonProps } = props;
+interface ImagePickerProps extends IconButtonProps{
+  onImageSelect: (file: Blob, name: string) => void;
+  previewProps?: {
+    width?: string | number;
+    height?: string | number;
+    borderRadius?: string | number;
+  };
+}
+
+export default function ImagePicker(props: ImagePickerProps) {
+  const {onImageSelect, previewProps, ...iconButtonProps } = props;
+
   const { t } = useTranslation('button');
   const [image, setImage] = useState<string | undefined>();
   const [file, setFile] = useState<Blob | null>(null);
   const [open, setOpen] = useState(false);
+
+  const preview = { width: '200px', height: '200px', borderRadius: '5%', ...{previewProps} };
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const filePath = event.target.files && event.target.files[0];
@@ -86,7 +99,12 @@ export default function ImagePicker(props: IconButtonProps & { onImageSelect: (f
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-              {image && <ImagePreview src={image} width='200px' height='200px' />}
+              {image && <ImagePreview
+                src={image}
+                width={preview.width}
+                height={preview.height}
+                borderRadius={preview.borderRadius}
+              />}
             </Stack>
           </DialogContent>
           <DialogActions>

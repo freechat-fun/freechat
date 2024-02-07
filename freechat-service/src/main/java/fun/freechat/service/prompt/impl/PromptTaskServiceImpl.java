@@ -20,7 +20,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @Service
 @SuppressWarnings("unused")
 public class PromptTaskServiceImpl implements PromptTaskService {
-    final static String CACHE_KEY_PREFIX = "'PromptTaskService_task_' + ";
+    final static String CACHE_KEY_PREFIX = "PromptTaskService_task_";
+    final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private PromptTaskMapper promptTaskMapper;
@@ -47,14 +48,14 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     }
 
     @Override
-    @LongPeriodCacheEvict(keyBy = CACHE_KEY_PREFIX + "#p0.taskId")
+    @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0.taskId")
     public boolean update(PromptTask task) {
         int rows = promptTaskMapper.updateByPrimaryKey(task.withGmtModified(new Date()));
         return rows > 0;
     }
 
     @Override
-    @LongPeriodCacheEvict(keyBy = CACHE_KEY_PREFIX + "#p0")
+    @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean delete(String taskId) {
         int rows = promptTaskMapper.deleteByPrimaryKey(taskId);
         return rows > 0;
@@ -68,7 +69,7 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     }
 
     @Override
-    @LongPeriodCacheEvict(keyBy = CACHE_KEY_PREFIX + "#p0")
+    @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public PromptTask get(String taskId) {
         return promptTaskMapper.selectByPrimaryKey(taskId).orElse(null);
     }

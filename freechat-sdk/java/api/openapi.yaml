@@ -494,76 +494,6 @@ paths:
       - Organization
       x-content-type: application/json
       x-accepts: application/json
-  /api/v1/flow/{flowId}:
-    delete:
-      description: Delete flow. Return success or failure.
-      operationId: deleteFlow
-      parameters:
-      - description: FlowId to be deleted
-        explode: false
-        in: path
-        name: flowId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: OK
-      summary: Delete Flow
-      tags:
-      - Flow
-      x-accepts: application/json
-    put:
-      description: "Update flow, refer to /api/v1/flow/create, required field: flowId.\
-        \ Return success or failure."
-      operationId: updateFlow
-      parameters:
-      - description: FlowId to be updated
-        explode: false
-        in: path
-        name: flowId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            example:
-              version: 2
-              name: Second Test Flow (New)
-              visibility: public
-              description: Second flow description (new)
-              config: "{}"
-              inputs: "{\"robot\": null}"
-              tags:
-              - test2
-              - demo2
-              - robot
-              aiModels:
-              - "123"
-              - "456"
-            schema:
-              $ref: '#/components/schemas/FlowUpdateDTO'
-        description: Flow information to be updated
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: OK
-      summary: Update Flow
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
   /api/v1/character/{characterId}:
     delete:
       description: Delete character. Returns success or failure.
@@ -758,6 +688,76 @@ paths:
       summary: Disable Model Provider Credential
       tags:
       - AI Service
+      x-accepts: application/json
+  /api/v1/agent/{agentId}:
+    delete:
+      description: Delete agent. Return success or failure.
+      operationId: deleteAgent
+      parameters:
+      - description: AgentId to be deleted
+        explode: false
+        in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Agent
+      tags:
+      - Agent
+      x-accepts: application/json
+    put:
+      description: "Update agent, refer to /api/v1/agent/create, required field: agentId.\
+        \ Return success or failure."
+      operationId: updateAgent
+      parameters:
+      - description: AgentId to be updated
+        explode: false
+        in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            example:
+              version: 2
+              name: Second Test Agent (New)
+              visibility: public
+              description: Second agent description (new)
+              config: "{}"
+              inputs: "{\"robot\": null}"
+              tags:
+              - test2
+              - demo2
+              - robot
+              aiModels:
+              - "123"
+              - "456"
+            schema:
+              $ref: '#/components/schemas/AgentUpdateDTO'
+        description: Agent information to be updated
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Update Agent
+      tags:
+      - Agent
+      x-content-type: application/json
       x-accepts: application/json
   /api/v1/admin/user:
     post:
@@ -1081,7 +1081,7 @@ paths:
         resources.
       operationId: getStatistic
       parameters:
-      - description: "Info type: prompt | flow | plugin | character"
+      - description: "Info type: prompt | agent | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -1123,7 +1123,7 @@ paths:
         resources by one. Return the latest statistics.
       operationId: increaseStatistic
       parameters:
-      - description: "Info type: prompt | flow | plugin | character"
+      - description: "Info type: prompt | agent | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -1166,7 +1166,7 @@ paths:
         resources. The increment can be negative. Return the latest statistics.
       operationId: addStatistic
       parameters:
-      - description: "Info type: prompt | flow | plugin | character"
+      - description: "Info type: prompt | agent | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -2168,463 +2168,6 @@ paths:
       - Plugin
       x-content-type: application/json
       x-accepts: application/json
-  /api/v1/flow:
-    post:
-      description: |
-        Create a flow, ignore required fields:
-        - Flow name
-        - Flow configuration
-
-        Limitations:
-        - Description: 300 characters
-        - Configuration: 2000 characters
-        - Example: 2000 characters
-        - Tags: 5
-        - Parameters: 10
-      operationId: createFlow
-      requestBody:
-        content:
-          application/json:
-            example:
-              name: A Test Flow
-              description: A flow description
-              format: langflow
-              config: "{}"
-              parameters: "{\"name\": null}"
-              tags:
-              - test
-              - demo
-              aiModels:
-              - "123"
-            schema:
-              $ref: '#/components/schemas/FlowCreateDTO'
-        description: Information of the flow to be created
-        required: true
-      responses:
-        "200":
-          content:
-            text/plain:
-              schema:
-                type: string
-          description: OK
-      summary: Create Flow
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: text/plain
-  /api/v1/flow/versions/{name}:
-    post:
-      description: List the versions and corresponding flowIds by flow name.
-      operationId: listFlowVersionsByName
-      parameters:
-      - description: Flow name
-        explode: false
-        in: path
-        name: name
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/FlowItemForNameDTO'
-                type: array
-          description: OK
-      summary: List Versions by Flow Name
-      tags:
-      - Flow
-      x-accepts: application/json
-  /api/v1/flow/search:
-    post:
-      description: |
-        Search flows:
-        - Specifiable query fields, and relationship:
-          - Scope: private, public_org or public. Private can only search this account.
-          - Username: exact match, only valid when searching public, public_org. If not specified, search all users.
-          - Format: exact match, currently supported: langflow
-          - Tags: exact match (support and, or logic).
-          - Model type: exact match (support and, or logic).
-          - Name: left match.
-          - General: name, description, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
-        - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
-        - The search result is the flow summary content.
-        - Support pagination.
-      operationId: searchFlowSummary
-      requestBody:
-        content:
-          application/json:
-            example:
-              where:
-                format: langflow
-                visibility: public
-                username: amin
-                name: Second Test
-                text: (new)
-                tags:
-                - demo2
-                aiModels:
-                - "123"
-              orderBy:
-              - version
-              - modifyTime asc
-              pageNum: 0
-              pageSize: 1
-            schema:
-              $ref: '#/components/schemas/FlowQueryDTO'
-        description: Query conditions
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/FlowSummaryDTO'
-                type: array
-          description: OK
-      summary: Search Flow Summary
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/flow/publish/{flowId}/{visibility}:
-    post:
-      description: "Publish flow, draft content becomes formal content, version number\
-        \ increases by 1. After successful publication, a new flowId will be generated\
-        \ and returned. You need to specify the visibility for publication."
-      operationId: publishFlow
-      parameters:
-      - description: The flowId to be published
-        explode: false
-        in: path
-        name: flowId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Visibility: public | private | ..."
-        explode: false
-        in: path
-        name: visibility
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            text/plain:
-              schema:
-                type: string
-          description: OK
-      summary: Publish Flow
-      tags:
-      - Flow
-      x-accepts: text/plain
-  /api/v1/flow/details/search:
-    post:
-      description: "Same as /api/v1/flow/search, but returns detailed information\
-        \ of the flow."
-      operationId: searchFlowDetails
-      requestBody:
-        content:
-          application/json:
-            example:
-              where:
-                format: langflow
-                visibility: public
-                username: amin
-                name: Second Test
-                text: (new)
-                tags:
-                - demo2
-                aiModels:
-                - "123"
-              orderBy:
-              - version
-              - modifyTime asc
-              pageNum: 0
-              pageSize: 1
-            schema:
-              $ref: '#/components/schemas/FlowQueryDTO'
-        description: Query conditions
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/FlowDetailsDTO'
-                type: array
-          description: OK
-      summary: Search Flow Details
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/flow/count:
-    post:
-      description: Calculate the number of flows according to the specified query
-        conditions.
-      operationId: countFlows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FlowQueryDTO'
-        description: Query conditions
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                format: int64
-                type: integer
-          description: OK
-      summary: Calculate Number of Flows
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/flow/clone/{flowId}:
-    post:
-      description: |
-        Enter the flowId, generate a new record, the content is basically the same as the original flow, but the following fields are different:
-        - Version number is 1
-        - Visibility is private
-        - The parent flow is the source flowId
-        - The creation time is the current moment.
-         - All statistical indicators are zeroed.
-
-        Return the new flowId.
-      operationId: cloneFlow
-      parameters:
-      - description: The referenced flowId
-        explode: false
-        in: path
-        name: flowId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            text/plain:
-              schema:
-                type: string
-          description: OK
-      summary: Clone Flow
-      tags:
-      - Flow
-      x-accepts: text/plain
-  /api/v1/flow/batch:
-    post:
-      description: "Batch create multiple flows. Ensure transactionality, return the\
-        \ flowId list after success."
-      operationId: createFlows
-      requestBody:
-        content:
-          application/json:
-            example:
-            - name: First Test Flow
-              description: First flow description
-              format: langflow
-              config: "{}"
-              parameters: "{\"name\": null}"
-              tags:
-              - test1
-              - demo1
-              aiModels:
-              - "123"
-            - name: Second Test Flow
-              visibility: public
-              description: Second flow description
-              format: langflow
-              config: "{}"
-              parameters: "{\"robot\": null}"
-              tags:
-              - test2
-              - demo2
-              aiModels:
-              - "123"
-              - "456"
-            schema:
-              items:
-                $ref: '#/components/schemas/FlowCreateDTO'
-              type: array
-        description: List of flow information to be created
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  type: string
-                type: array
-          description: OK
-      summary: Batch Create Flows
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/flow/batch/search:
-    post:
-      description: Batch call shortcut for /api/v1/flow/search.
-      operationId: batchSearchFlowSummary
-      requestBody:
-        content:
-          application/json:
-            example:
-            - where:
-                visibility: public
-                username: amin
-                text: robot
-              orderBy:
-              - version
-              - modifyTime asc
-              pageNum: 1
-              pageSize: 1
-            - where:
-                visibility: private
-                name: A Test
-            - where:
-                visibility: private
-                tags:
-                - test1
-            - where:
-                format: langflow
-                visibility: public
-                username: amin
-                name: Second Test
-                text: robot
-                tags:
-                - robot
-                aiModels:
-                - "123"
-              orderBy:
-              - version
-              - modifyTime asc
-              pageNum: 0
-              pageSize: 1
-            schema:
-              items:
-                $ref: '#/components/schemas/FlowQueryDTO'
-              type: array
-        description: Query conditions
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  items:
-                    $ref: '#/components/schemas/FlowSummaryDTO'
-                  type: array
-                type: array
-          description: OK
-      summary: Batch Search Flow Summaries
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/flow/batch/details/search:
-    post:
-      description: Batch call shortcut for /api/v1/flow/details/search.
-      operationId: batchSearchFlowDetails
-      requestBody:
-        content:
-          application/json:
-            example:
-            - where:
-                visibility: public
-                username: amin
-                text: robot
-              orderBy:
-              - version
-              - modifyTime asc
-              pageNum: 1
-              pageSize: 1
-            - where:
-                visibility: private
-                name: A Test
-            - where:
-                visibility: private
-                tags:
-                - test1
-            - where:
-                format: langflow
-                visibility: public
-                username: amin
-                name: Second Test
-                text: robot
-                tags:
-                - robot
-                aiModels:
-                - "123"
-              orderBy:
-              - version
-              - modifyTime asc
-              pageNum: 0
-              pageSize: 1
-            schema:
-              items:
-                $ref: '#/components/schemas/FlowQueryDTO'
-              type: array
-        description: Query conditions
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  items:
-                    $ref: '#/components/schemas/FlowDetailsDTO'
-                  type: array
-                type: array
-          description: OK
-      summary: Batch Search Flow Details
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/flow/batch/clone:
-    post:
-      description: "Batch clone multiple flows. Ensure transactionality, return the\
-        \ flowId list after success."
-      operationId: cloneFlows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              items:
-                type: string
-              type: array
-        description: List of flow information to be created
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  type: string
-                type: array
-          description: OK
-      summary: Batch Clone Flows
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
   /api/v1/character:
     post:
       description: Create a character.
@@ -3214,6 +2757,463 @@ paths:
       - AI Service
       x-content-type: application/json
       x-accepts: application/json
+  /api/v1/agent:
+    post:
+      description: |
+        Create a agent, ignore required fields:
+        - Agent name
+        - Agent configuration
+
+        Limitations:
+        - Description: 300 characters
+        - Configuration: 2000 characters
+        - Example: 2000 characters
+        - Tags: 5
+        - Parameters: 10
+      operationId: createAgent
+      requestBody:
+        content:
+          application/json:
+            example:
+              name: A Test Agent
+              description: A agent description
+              format: langflow
+              config: "{}"
+              parameters: "{\"name\": null}"
+              tags:
+              - test
+              - demo
+              aiModels:
+              - "123"
+            schema:
+              $ref: '#/components/schemas/AgentCreateDTO'
+        description: Information of the agent to be created
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Create Agent
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: text/plain
+  /api/v1/agent/versions/{name}:
+    post:
+      description: List the versions and corresponding agentIds by agent name.
+      operationId: listAgentVersionsByName
+      parameters:
+      - description: Agent name
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentItemForNameDTO'
+                type: array
+          description: OK
+      summary: List Versions by Agent Name
+      tags:
+      - Agent
+      x-accepts: application/json
+  /api/v1/agent/search:
+    post:
+      description: |
+        Search agents:
+        - Specifiable query fields, and relationship:
+          - Scope: private, public_org or public. Private can only search this account.
+          - Username: exact match, only valid when searching public, public_org. If not specified, search all users.
+          - Format: exact match, currently supported: langflow
+          - Tags: exact match (support and, or logic).
+          - Model type: exact match (support and, or logic).
+          - Name: left match.
+          - General: name, description, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+        - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+        - The search result is the agent summary content.
+        - Support pagination.
+      operationId: searchAgentSummary
+      requestBody:
+        content:
+          application/json:
+            example:
+              where:
+                format: langflow
+                visibility: public
+                username: amin
+                name: Second Test
+                text: (new)
+                tags:
+                - demo2
+                aiModels:
+                - "123"
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 0
+              pageSize: 1
+            schema:
+              $ref: '#/components/schemas/AgentQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryDTO'
+                type: array
+          description: OK
+      summary: Search Agent Summary
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/agent/publish/{agentId}/{visibility}:
+    post:
+      description: "Publish agent, draft content becomes formal content, version number\
+        \ increases by 1. After successful publication, a new agentId will be generated\
+        \ and returned. You need to specify the visibility for publication."
+      operationId: publishAgent
+      parameters:
+      - description: The agentId to be published
+        explode: false
+        in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Visibility: public | private | ..."
+        explode: false
+        in: path
+        name: visibility
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Publish Agent
+      tags:
+      - Agent
+      x-accepts: text/plain
+  /api/v1/agent/details/search:
+    post:
+      description: "Same as /api/v1/agent/search, but returns detailed information\
+        \ of the agent."
+      operationId: searchAgentDetails
+      requestBody:
+        content:
+          application/json:
+            example:
+              where:
+                format: langflow
+                visibility: public
+                username: amin
+                name: Second Test
+                text: (new)
+                tags:
+                - demo2
+                aiModels:
+                - "123"
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 0
+              pageSize: 1
+            schema:
+              $ref: '#/components/schemas/AgentQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentDetailsDTO'
+                type: array
+          description: OK
+      summary: Search Agent Details
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/agent/count:
+    post:
+      description: Calculate the number of agents according to the specified query
+        conditions.
+      operationId: countAgents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Calculate Number of Agents
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/agent/clone/{agentId}:
+    post:
+      description: |
+        Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different:
+        - Version number is 1
+        - Visibility is private
+        - The parent agent is the source agentId
+        - The creation time is the current moment.
+         - All statistical indicators are zeroed.
+
+        Return the new agentId.
+      operationId: cloneAgent
+      parameters:
+      - description: The referenced agentId
+        explode: false
+        in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Clone Agent
+      tags:
+      - Agent
+      x-accepts: text/plain
+  /api/v1/agent/batch:
+    post:
+      description: "Batch create multiple agents. Ensure transactionality, return\
+        \ the agentId list after success."
+      operationId: createAgents
+      requestBody:
+        content:
+          application/json:
+            example:
+            - name: First Test Agent
+              description: First agent description
+              format: langflow
+              config: "{}"
+              parameters: "{\"name\": null}"
+              tags:
+              - test1
+              - demo1
+              aiModels:
+              - "123"
+            - name: Second Test Agent
+              visibility: public
+              description: Second agent description
+              format: langflow
+              config: "{}"
+              parameters: "{\"robot\": null}"
+              tags:
+              - test2
+              - demo2
+              aiModels:
+              - "123"
+              - "456"
+            schema:
+              items:
+                $ref: '#/components/schemas/AgentCreateDTO'
+              type: array
+        description: List of agent information to be created
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: Batch Create Agents
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/agent/batch/search:
+    post:
+      description: Batch call shortcut for /api/v1/agent/search.
+      operationId: batchSearchAgentSummary
+      requestBody:
+        content:
+          application/json:
+            example:
+            - where:
+                visibility: public
+                username: amin
+                text: robot
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 1
+              pageSize: 1
+            - where:
+                visibility: private
+                name: A Test
+            - where:
+                visibility: private
+                tags:
+                - test1
+            - where:
+                format: langflow
+                visibility: public
+                username: amin
+                name: Second Test
+                text: robot
+                tags:
+                - robot
+                aiModels:
+                - "123"
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 0
+              pageSize: 1
+            schema:
+              items:
+                $ref: '#/components/schemas/AgentQueryDTO'
+              type: array
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  items:
+                    $ref: '#/components/schemas/AgentSummaryDTO'
+                  type: array
+                type: array
+          description: OK
+      summary: Batch Search Agent Summaries
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/agent/batch/details/search:
+    post:
+      description: Batch call shortcut for /api/v1/agent/details/search.
+      operationId: batchSearchAgentDetails
+      requestBody:
+        content:
+          application/json:
+            example:
+            - where:
+                visibility: public
+                username: amin
+                text: robot
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 1
+              pageSize: 1
+            - where:
+                visibility: private
+                name: A Test
+            - where:
+                visibility: private
+                tags:
+                - test1
+            - where:
+                format: langflow
+                visibility: public
+                username: amin
+                name: Second Test
+                text: robot
+                tags:
+                - robot
+                aiModels:
+                - "123"
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 0
+              pageSize: 1
+            schema:
+              items:
+                $ref: '#/components/schemas/AgentQueryDTO'
+              type: array
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  items:
+                    $ref: '#/components/schemas/AgentDetailsDTO'
+                  type: array
+                type: array
+          description: OK
+      summary: Batch Search Agent Details
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/agent/batch/clone:
+    post:
+      description: "Batch clone multiple agents. Ensure transactionality, return the\
+        \ agentId list after success."
+      operationId: cloneAgents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                type: string
+              type: array
+        description: List of agent information to be created
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: Batch Clone Agents
+      tags:
+      - Agent
+      x-content-type: application/json
+      x-accepts: application/json
   /api/v1/admin/token/{username}/{duration}:
     post:
       description: "Create an API Token for a specified user, valid for duration seconds."
@@ -3357,7 +3357,7 @@ paths:
       description: Get popular tags for a specified info type.
       operationId: listHotTags
       parameters:
-      - description: "Info type: prompt | flow | plugin | character"
+      - description: "Info type: prompt | agent | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -3400,7 +3400,7 @@ paths:
       description: Get all statistics of the corresponding resources.
       operationId: getStatistics
       parameters:
-      - description: "Info type: prompt | flow | plugin | character"
+      - description: "Info type: prompt | agent | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -3697,141 +3697,6 @@ paths:
       tags:
       - Interactive Statistics
       x-accepts: application/json
-  /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum}:
-    get:
-      description: "List flows based on statistics, including interactive statistical\
-        \ data."
-      operationId: listFlowsByStatistic
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/FlowSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Flows by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts: application/json
-  /api/v1/stats/flows/by/{statsType}:
-    get:
-      description: "List flows based on statistics, including interactive statistical\
-        \ data."
-      operationId: listFlowsByStatistic_1
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/FlowSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Flows by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts: application/json
-  /api/v1/stats/flows/by/{statsType}/{pageSize}:
-    get:
-      description: "List flows based on statistics, including interactive statistical\
-        \ data."
-      operationId: listFlowsByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/FlowSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Flows by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts: application/json
   /api/v1/stats/characters/by/{statsType}/{pageSize}:
     get:
       description: "List characters based on statistics, including interactive statistical\
@@ -3967,12 +3832,147 @@ paths:
       tags:
       - Interactive Statistics
       x-accepts: application/json
+  /api/v1/stats/agents/by/{statsType}:
+    get:
+      description: "List agents based on statistics, including interactive statistical\
+        \ data."
+      operationId: listAgentsByStatistic
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Agents by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts: application/json
+  /api/v1/stats/agents/by/{statsType}/{pageSize}:
+    get:
+      description: "List agents based on statistics, including interactive statistical\
+        \ data."
+      operationId: listAgentsByStatistic_1
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Agents by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts: application/json
+  /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List agents based on statistics, including interactive statistical\
+        \ data."
+      operationId: listAgentsByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Current page number
+        explode: false
+        in: path
+        name: pageNum
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Agents by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts: application/json
   /api/v1/score/{infoType}/{infoId}:
     get:
       description: Get the current user's score for the corresponding resource.
       operationId: getScore
       parameters:
-      - description: "Info type: prompt | flow | plugin | character"
+      - description: "Info type: prompt | agent | plugin | character"
         explode: false
         in: path
         name: infoType
@@ -4253,54 +4253,6 @@ paths:
       summary: Get DOT of Superior Relationship
       tags:
       - Organization
-      x-accepts: application/json
-  /api/v1/flow/summary/{flowId}:
-    get:
-      description: Get flow summary information.
-      operationId: getFlowSummary
-      parameters:
-      - description: flowId to be obtained
-        explode: false
-        in: path
-        name: flowId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowSummaryDTO'
-          description: OK
-      summary: Get Flow Summary
-      tags:
-      - Flow
-      x-accepts: application/json
-  /api/v1/flow/details/{flowId}:
-    get:
-      description: Get flow detailed information.
-      operationId: getFlowDetails
-      parameters:
-      - description: FlowId to be obtained
-        explode: false
-        in: path
-        name: flowId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowDetailsDTO'
-          description: OK
-      summary: Get Flow Details
-      tags:
-      - Flow
       x-accepts: application/json
   /api/v1/character/summary/{characterId}:
     get:
@@ -4762,6 +4714,54 @@ paths:
       tags:
       - AI Service
       x-accepts: application/json
+  /api/v1/agent/summary/{agentId}:
+    get:
+      description: Get agent summary information.
+      operationId: getAgentSummary
+      parameters:
+      - description: agentId to be obtained
+        explode: false
+        in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentSummaryDTO'
+          description: OK
+      summary: Get Agent Summary
+      tags:
+      - Agent
+      x-accepts: application/json
+  /api/v1/agent/details/{agentId}:
+    get:
+      description: Get agent detailed information.
+      operationId: getAgentDetails
+      parameters:
+      - description: AgentId to be obtained
+        explode: false
+        in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentDetailsDTO'
+          description: OK
+      summary: Get Agent Details
+      tags:
+      - Agent
+      x-accepts: application/json
   /api/v1/admin/users/{pageSize}/{pageNum}:
     get:
       description: "Return user information by page, return the pageNum page, up to\
@@ -5148,34 +5148,6 @@ paths:
       tags:
       - Prompt
       x-accepts: application/json
-  /api/v1/flow/batch/delete:
-    delete:
-      description: "Delete multiple flows. Ensure transactionality, return the list\
-        \ of successfully deleted flowId."
-      operationId: deleteFlows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              items:
-                type: string
-              type: array
-        description: List of flowId to be deleted
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  type: string
-                type: array
-          description: OK
-      summary: Batch Delete Flows
-      tags:
-      - Flow
-      x-content-type: application/json
-      x-accepts: application/json
   /api/v1/character/name/{name}:
     delete:
       description: Delete character by name. return the list of successfully deleted
@@ -5226,6 +5198,34 @@ paths:
       summary: Delete Chat Session
       tags:
       - Character
+      x-accepts: application/json
+  /api/v1/agent/batch/delete:
+    delete:
+      description: "Delete multiple agents. Ensure transactionality, return the list\
+        \ of successfully deleted agentId."
+      operationId: deleteAgents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                type: string
+              type: array
+        description: List of agentId to be deleted
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: Batch Delete Agents
+      tags:
+      - Agent
+      x-content-type: application/json
       x-accepts: application/json
 components:
   schemas:
@@ -5636,71 +5636,6 @@ components:
       required:
       - name
       type: object
-    FlowUpdateDTO:
-      description: Request data for updating flow information
-      example:
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
-        visibility: visibility
-        draft: draft
-        format: format
-        name: name
-        description: description
-        config: config
-        parameters: parameters
-        parentId: parentId
-        example: example
-        tags:
-        - tags
-        - tags
-      properties:
-        parentId:
-          description: Referenced flow
-          type: string
-        visibility:
-          description: "Visibility: private (default), public, public_org, hidden"
-          type: string
-        format:
-          description: "Flow format, currently supported: langflow"
-          type: string
-        name:
-          description: Flow name
-          type: string
-        description:
-          description: Flow description
-          type: string
-        config:
-          description: Flow configuration
-          type: string
-        example:
-          description: Flow example
-          type: string
-        parameters:
-          description: "Flow parameters, JSON format"
-          type: string
-        ext:
-          description: "Additional information, JSON format"
-          type: string
-        draft:
-          description: Draft content
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-        aiModels:
-          description: "Supported model set, empty means no model limit"
-          items:
-            description: "Supported model set, empty means no model limit"
-            type: string
-          type: array
-      required:
-      - name
-      type: object
     CharacterUpdateDTO:
       description: Request data for updating character information
       example:
@@ -5814,6 +5749,71 @@ components:
         forwardToUser:
           description: Weather to forward messages to the character owner
           type: boolean
+      type: object
+    AgentUpdateDTO:
+      description: Request data for updating agent information
+      example:
+        ext: ext
+        aiModels:
+        - aiModels
+        - aiModels
+        visibility: visibility
+        draft: draft
+        format: format
+        name: name
+        description: description
+        config: config
+        parameters: parameters
+        parentId: parentId
+        example: example
+        tags:
+        - tags
+        - tags
+      properties:
+        parentId:
+          description: Referenced agent
+          type: string
+        visibility:
+          description: "Visibility: private (default), public, public_org, hidden"
+          type: string
+        format:
+          description: "Agent format, currently supported: langflow"
+          type: string
+        name:
+          description: Agent name
+          type: string
+        description:
+          description: Agent description
+          type: string
+        config:
+          description: Agent configuration
+          type: string
+        example:
+          description: Agent example
+          type: string
+        parameters:
+          description: "Agent parameters, JSON format"
+          type: string
+        ext:
+          description: "Additional information, JSON format"
+          type: string
+        draft:
+          description: Draft content
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+        aiModels:
+          description: "Supported model set, empty means no model limit"
+          items:
+            description: "Supported model set, empty means no model limit"
+            type: string
+          type: array
+      required:
+      - name
       type: object
     UserFullDetailsDTO:
       description: Account detailed information (including password)
@@ -7172,383 +7172,6 @@ components:
           description: "Additional information, JSON format"
           type: string
       type: object
-    FlowCreateDTO:
-      description: Request data for creating new flow information
-      example:
-        ext: ext
-        aiModels:
-        - aiModels
-        - aiModels
-        visibility: visibility
-        draft: draft
-        format: format
-        name: name
-        description: description
-        config: config
-        parameters: parameters
-        parentId: parentId
-        example: example
-        tags:
-        - tags
-        - tags
-      properties:
-        parentId:
-          description: Referenced flow
-          type: string
-        visibility:
-          description: "Visibility: private (default), public, public_org, hidden"
-          type: string
-        format:
-          description: "Flow format, currently supported: langflow"
-          type: string
-        name:
-          description: Flow name
-          type: string
-        description:
-          description: Flow description
-          type: string
-        config:
-          description: Flow configuration
-          type: string
-        example:
-          description: Flow example
-          type: string
-        parameters:
-          description: "Flow parameters, JSON format"
-          type: string
-        ext:
-          description: "Additional information, JSON format"
-          type: string
-        draft:
-          description: Draft content
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-        aiModels:
-          description: "Supported model set, empty means no model limit"
-          items:
-            description: "Supported model set, empty means no model limit"
-            type: string
-          type: array
-      required:
-      - name
-      type: object
-    FlowItemForNameDTO:
-      description: Flow identifier and version information
-      example:
-        stats:
-          referCount: 1
-          score: 2
-          gmtModified: 2000-01-23T04:56:07.000+00:00
-          recommendCount: 5
-          requestId: requestId
-          scoreCount: 5
-          referId: referId
-          referType: referType
-          viewCount: 6
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
-        flowId: flowId
-        version: 0
-      properties:
-        flowId:
-          description: flowId
-          type: string
-        version:
-          description: version
-          format: int32
-          type: integer
-        stats:
-          $ref: '#/components/schemas/InteractiveStatsDTO'
-      type: object
-    FlowQuery.Where:
-      description: Query condition
-      example:
-        aiModels:
-        - aiModels
-        - aiModels
-        tagsOp: tagsOp
-        visibility: visibility
-        format: format
-        name: name
-        aiModelsOp: aiModelsOp
-        text: text
-        username: username
-        tags:
-        - tags
-        - tags
-      properties:
-        visibility:
-          description: "Visibility: public, public_org (search this organization),\
-            \ private (default)"
-          type: string
-        username:
-          description: "Effective when searching public, public_org prompts, if not\
-            \ specified, search all users"
-          type: string
-        format:
-          description: "Flow configuration format, currently supported: langflow."
-          type: string
-        tags:
-          description: Tags
-          items:
-            description: Tags
-            type: string
-          type: array
-        tagsOp:
-          description: "Relationship between tags: and | or (default)"
-          type: string
-        aiModels:
-          description: Model set
-          items:
-            description: Model set
-            type: string
-          type: array
-        aiModelsOp:
-          description: "Relationship between model sets: and | or (default)"
-          type: string
-        name:
-          description: "Name, left match"
-          type: string
-        text:
-          description: "Name, description, example, fuzzy matching, any one match\
-            \ is sufficient; public scope + general search for all users does not\
-            \ guarantee real-time."
-          type: string
-      type: object
-    FlowQueryDTO:
-      description: Flow information query request
-      example:
-        orderBy:
-        - orderBy
-        - orderBy
-        pageSize: 6
-        where:
-          aiModels:
-          - aiModels
-          - aiModels
-          tagsOp: tagsOp
-          visibility: visibility
-          format: format
-          name: name
-          aiModelsOp: aiModelsOp
-          text: text
-          username: username
-          tags:
-          - tags
-          - tags
-        pageNum: 0
-      properties:
-        where:
-          $ref: '#/components/schemas/FlowQuery.Where'
-        orderBy:
-          description: |
-            Sorting condition, supported sorting fields are:
-            - version
-            - modifyTime
-            - createTime
-
-            Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-          items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-
-              Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-            type: string
-          type: array
-        pageNum:
-          description: "Page number, default is 0"
-          format: int64
-          type: integer
-        pageSize:
-          description: "Number of items per page, 1~50, default is 10"
-          format: int64
-          type: integer
-      type: object
-    FlowSummaryDTO:
-      description: Flow summary information
-      example:
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
-        format: format
-        description: description
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        version: 0
-        parentId: parentId
-        tags:
-        - tags
-        - tags
-        requestId: requestId
-        name: name
-        flowId: flowId
-        username: username
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        flowId:
-          description: Flow identifier
-          type: string
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
-        gmtModified:
-          description: Modification time
-          format: date-time
-          type: string
-        parentId:
-          description: Referenced flow
-          type: string
-        visibility:
-          description: "Visibility: private, public, public_org, hidden"
-          type: string
-        format:
-          description: "Flow format, currently supported: langflow"
-          type: string
-        version:
-          description: Version
-          format: int32
-          type: integer
-        name:
-          description: Flow name
-          type: string
-        description:
-          description: Flow description
-          type: string
-        username:
-          description: Flow owner
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-        aiModels:
-          description: Supported model set
-          items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
-          type: array
-      type: object
-    FlowDetailsDTO:
-      description: Flow detailed content
-      example:
-        ext: ext
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
-        format: format
-        description: description
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        version: 0
-        parentId: parentId
-        tags:
-        - tags
-        - tags
-        example: example
-        requestId: requestId
-        draft: draft
-        name: name
-        flowId: flowId
-        config: config
-        parameters: parameters
-        username: username
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        flowId:
-          description: Flow identifier
-          type: string
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
-        gmtModified:
-          description: Modification time
-          format: date-time
-          type: string
-        parentId:
-          description: Referenced flow
-          type: string
-        visibility:
-          description: "Visibility: private, public, public_org, hidden"
-          type: string
-        format:
-          description: "Flow format, currently supported: langflow"
-          type: string
-        version:
-          description: Version
-          format: int32
-          type: integer
-        name:
-          description: Flow name
-          type: string
-        description:
-          description: Flow description
-          type: string
-        username:
-          description: Flow owner
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-        aiModels:
-          description: Supported model set
-          items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
-          type: array
-        config:
-          description: Flow configuration
-          type: string
-        example:
-          description: Flow example
-          type: string
-        parameters:
-          description: "Flow parameters, JSON format"
-          type: string
-        ext:
-          description: "Additional information, JSON format"
-          type: string
-        draft:
-          description: Draft content
-          type: string
-      type: object
     CharacterCreateDTO:
       description: Request data for creating new character information
       example:
@@ -8065,6 +7688,383 @@ components:
       - provider
       - token
       type: object
+    AgentCreateDTO:
+      description: Request data for creating new agent information
+      example:
+        ext: ext
+        aiModels:
+        - aiModels
+        - aiModels
+        visibility: visibility
+        draft: draft
+        format: format
+        name: name
+        description: description
+        config: config
+        parameters: parameters
+        parentId: parentId
+        example: example
+        tags:
+        - tags
+        - tags
+      properties:
+        parentId:
+          description: Referenced agent
+          type: string
+        visibility:
+          description: "Visibility: private (default), public, public_org, hidden"
+          type: string
+        format:
+          description: "Agent format, currently supported: langflow"
+          type: string
+        name:
+          description: Agent name
+          type: string
+        description:
+          description: Agent description
+          type: string
+        config:
+          description: Agent configuration
+          type: string
+        example:
+          description: Agent example
+          type: string
+        parameters:
+          description: "Agent parameters, JSON format"
+          type: string
+        ext:
+          description: "Additional information, JSON format"
+          type: string
+        draft:
+          description: Draft content
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+        aiModels:
+          description: "Supported model set, empty means no model limit"
+          items:
+            description: "Supported model set, empty means no model limit"
+            type: string
+          type: array
+      required:
+      - name
+      type: object
+    AgentItemForNameDTO:
+      description: Agent identifier and version information
+      example:
+        agentId: agentId
+        stats:
+          referCount: 1
+          score: 2
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          recommendCount: 5
+          requestId: requestId
+          scoreCount: 5
+          referId: referId
+          referType: referType
+          viewCount: 6
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
+        version: 0
+      properties:
+        agentId:
+          description: agentId
+          type: string
+        version:
+          description: version
+          format: int32
+          type: integer
+        stats:
+          $ref: '#/components/schemas/InteractiveStatsDTO'
+      type: object
+    AgentQuery.Where:
+      description: Query condition
+      example:
+        aiModels:
+        - aiModels
+        - aiModels
+        tagsOp: tagsOp
+        visibility: visibility
+        format: format
+        name: name
+        aiModelsOp: aiModelsOp
+        text: text
+        username: username
+        tags:
+        - tags
+        - tags
+      properties:
+        visibility:
+          description: "Visibility: public, public_org (search this organization),\
+            \ private (default)"
+          type: string
+        username:
+          description: "Effective when searching public, public_org prompts, if not\
+            \ specified, search all users"
+          type: string
+        format:
+          description: "Agent configuration format, currently supported: langflow."
+          type: string
+        tags:
+          description: Tags
+          items:
+            description: Tags
+            type: string
+          type: array
+        tagsOp:
+          description: "Relationship between tags: and | or (default)"
+          type: string
+        aiModels:
+          description: Model set
+          items:
+            description: Model set
+            type: string
+          type: array
+        aiModelsOp:
+          description: "Relationship between model sets: and | or (default)"
+          type: string
+        name:
+          description: "Name, left match"
+          type: string
+        text:
+          description: "Name, description, example, fuzzy matching, any one match\
+            \ is sufficient; public scope + general search for all users does not\
+            \ guarantee real-time."
+          type: string
+      type: object
+    AgentQueryDTO:
+      description: Agent information query request
+      example:
+        orderBy:
+        - orderBy
+        - orderBy
+        pageSize: 6
+        where:
+          aiModels:
+          - aiModels
+          - aiModels
+          tagsOp: tagsOp
+          visibility: visibility
+          format: format
+          name: name
+          aiModelsOp: aiModelsOp
+          text: text
+          username: username
+          tags:
+          - tags
+          - tags
+        pageNum: 0
+      properties:
+        where:
+          $ref: '#/components/schemas/AgentQuery.Where'
+        orderBy:
+          description: |
+            Sorting condition, supported sorting fields are:
+            - version
+            - modifyTime
+            - createTime
+
+            Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+          items:
+            description: |
+              Sorting condition, supported sorting fields are:
+              - version
+              - modifyTime
+              - createTime
+
+              Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+            type: string
+          type: array
+        pageNum:
+          description: "Page number, default is 0"
+          format: int64
+          type: integer
+        pageSize:
+          description: "Number of items per page, 1~50, default is 10"
+          format: int64
+          type: integer
+      type: object
+    AgentSummaryDTO:
+      description: Agent summary information
+      example:
+        agentId: agentId
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        aiModels:
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        visibility: visibility
+        format: format
+        description: description
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        version: 0
+        parentId: parentId
+        tags:
+        - tags
+        - tags
+        requestId: requestId
+        name: name
+        username: username
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        agentId:
+          description: Agent identifier
+          type: string
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        parentId:
+          description: Referenced agent
+          type: string
+        visibility:
+          description: "Visibility: private, public, public_org, hidden"
+          type: string
+        format:
+          description: "Agent format, currently supported: langflow"
+          type: string
+        version:
+          description: Version
+          format: int32
+          type: integer
+        name:
+          description: Agent name
+          type: string
+        description:
+          description: Agent description
+          type: string
+        username:
+          description: Agent owner
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+        aiModels:
+          description: Supported model set
+          items:
+            $ref: '#/components/schemas/AiModelInfoDTO'
+          type: array
+      type: object
+    AgentDetailsDTO:
+      description: Agent detailed content
+      example:
+        ext: ext
+        agentId: agentId
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        aiModels:
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        visibility: visibility
+        format: format
+        description: description
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        version: 0
+        parentId: parentId
+        tags:
+        - tags
+        - tags
+        example: example
+        requestId: requestId
+        draft: draft
+        name: name
+        config: config
+        parameters: parameters
+        username: username
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        agentId:
+          description: Agent identifier
+          type: string
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        parentId:
+          description: Referenced agent
+          type: string
+        visibility:
+          description: "Visibility: private, public, public_org, hidden"
+          type: string
+        format:
+          description: "Agent format, currently supported: langflow"
+          type: string
+        version:
+          description: Version
+          format: int32
+          type: integer
+        name:
+          description: Agent name
+          type: string
+        description:
+          description: Agent description
+          type: string
+        username:
+          description: Agent owner
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+        aiModels:
+          description: Supported model set
+          items:
+            $ref: '#/components/schemas/AiModelInfoDTO'
+          type: array
+        config:
+          description: Agent configuration
+          type: string
+        example:
+          description: Agent example
+          type: string
+        parameters:
+          description: "Agent parameters, JSON format"
+          type: string
+        ext:
+          description: "Additional information, JSON format"
+          type: string
+        draft:
+          description: Draft content
+          type: string
+      type: object
     AppConfigCreateDTO:
       description: Configuration creation information
       example:
@@ -8308,111 +8308,6 @@ components:
           format: int64
           type: integer
       type: object
-    FlowSummaryStatsDTO:
-      description: "Flow template summary content, including interactive statistical\
-        \ information"
-      example:
-        referCount: 1
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
-        scoreCount: 5
-        format: format
-        description: description
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        version: 0
-        parentId: parentId
-        tags:
-        - tags
-        - tags
-        score: 2
-        recommendCount: 5
-        requestId: requestId
-        name: name
-        viewCount: 6
-        flowId: flowId
-        username: username
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        flowId:
-          description: Flow identifier
-          type: string
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
-        gmtModified:
-          description: Modification time
-          format: date-time
-          type: string
-        parentId:
-          description: Referenced flow
-          type: string
-        visibility:
-          description: "Visibility: private, public, public_org, hidden"
-          type: string
-        format:
-          description: "Flow format, currently supported: langflow"
-          type: string
-        version:
-          description: Version
-          format: int32
-          type: integer
-        name:
-          description: Flow name
-          type: string
-        description:
-          description: Flow description
-          type: string
-        username:
-          description: Flow owner
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-        aiModels:
-          description: Supported model set
-          items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
-          type: array
-        viewCount:
-          description: View count
-          format: int64
-          type: integer
-        referCount:
-          description: Reference count
-          format: int64
-          type: integer
-        recommendCount:
-          description: Recommendation count
-          format: int64
-          type: integer
-        scoreCount:
-          description: Score count
-          format: int64
-          type: integer
-        score:
-          description: Average score
-          format: int64
-          type: integer
-      type: object
     CharacterSummaryStatsDTO:
       description: "Character summary content, including interactive statistical information"
       example:
@@ -8512,6 +8407,111 @@ components:
           type: integer
       required:
       - name
+      type: object
+    AgentSummaryStatsDTO:
+      description: "Agent template summary content, including interactive statistical\
+        \ information"
+      example:
+        referCount: 1
+        agentId: agentId
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        aiModels:
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        visibility: visibility
+        scoreCount: 5
+        format: format
+        description: description
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        version: 0
+        parentId: parentId
+        tags:
+        - tags
+        - tags
+        score: 2
+        recommendCount: 5
+        requestId: requestId
+        name: name
+        viewCount: 6
+        username: username
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        agentId:
+          description: Agent identifier
+          type: string
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        parentId:
+          description: Referenced agent
+          type: string
+        visibility:
+          description: "Visibility: private, public, public_org, hidden"
+          type: string
+        format:
+          description: "Agent format, currently supported: langflow"
+          type: string
+        version:
+          description: Version
+          format: int32
+          type: integer
+        name:
+          description: Agent name
+          type: string
+        description:
+          description: Agent description
+          type: string
+        username:
+          description: Agent owner
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+        aiModels:
+          description: Supported model set
+          items:
+            $ref: '#/components/schemas/AiModelInfoDTO'
+          type: array
+        viewCount:
+          description: View count
+          format: int64
+          type: integer
+        referCount:
+          description: Reference count
+          format: int64
+          type: integer
+        recommendCount:
+          description: Recommendation count
+          format: int64
+          type: integer
+        scoreCount:
+          description: Score count
+          format: int64
+          type: integer
+        score:
+          description: Average score
+          format: int64
+          type: integer
       type: object
     PromptTaskDetailsDTO:
       description: Prompt task detailed information

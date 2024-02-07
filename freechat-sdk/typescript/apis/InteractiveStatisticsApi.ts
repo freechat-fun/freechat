@@ -8,8 +8,8 @@ import {canConsumeForm, isCodeInRange} from '../util.js';
 import {SecurityAuthentication} from '../auth/auth.js';
 
 
+import { AgentSummaryStatsDTO } from '../models/AgentSummaryStatsDTO.js';
 import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { PluginSummaryStatsDTO } from '../models/PluginSummaryStatsDTO.js';
@@ -23,7 +23,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     /**
      * Add the statistics of the corresponding metrics of the corresponding resources. The increment can be negative. Return the latest statistics.
      * Add Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param delta Delta in statistical value
@@ -85,7 +85,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     /**
      * Get the current user\'s score for the corresponding resource.
      * Get Score for Resource
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public async getScore(infoType: string, infoId: string, _options?: Configuration): Promise<RequestContext> {
@@ -131,7 +131,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     /**
      * Get the statistics of the corresponding metrics of the corresponding resources.
      * Get Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -185,7 +185,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     /**
      * Get all statistics of the corresponding resources.
      * Get All Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      */
     public async getStatistics(infoType: string, infoId: string, _options?: Configuration): Promise<RequestContext> {
@@ -231,7 +231,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     /**
      * Increase the statistics of the corresponding metrics of the corresponding resources by one. Return the latest statistics.
      * Increase Statistics
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param infoId Unique resource identifier
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      */
@@ -265,6 +265,165 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
         requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public async listAgentsByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'statsType' is not null or undefined
+        if (statsType === null || statsType === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic", "statsType");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/stats/agents/by/{statsType}'
+            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (asc !== undefined) {
+            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public async listAgentsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'statsType' is not null or undefined
+        if (statsType === null || statsType === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "statsType");
+        }
+
+
+        // verify required parameter 'pageSize' is not null or undefined
+        if (pageSize === null || pageSize === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "pageSize");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/stats/agents/by/{statsType}/{pageSize}'
+            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (asc !== undefined) {
+            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public async listAgentsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'statsType' is not null or undefined
+        if (statsType === null || statsType === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "statsType");
+        }
+
+
+        // verify required parameter 'pageSize' is not null or undefined
+        if (pageSize === null || pageSize === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "pageSize");
+        }
+
+
+        // verify required parameter 'pageNum' is not null or undefined
+        if (pageNum === null || pageNum === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "pageNum");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}'
+            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
+            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (asc !== undefined) {
+            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
+        }
 
 
         let authMethod: SecurityAuthentication | undefined;
@@ -442,168 +601,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     }
 
     /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public async listFlowsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'statsType' is not null or undefined
-        if (statsType === null || statsType === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listFlowsByStatistic", "statsType");
-        }
-
-
-        // verify required parameter 'pageSize' is not null or undefined
-        if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listFlowsByStatistic", "pageSize");
-        }
-
-
-        // verify required parameter 'pageNum' is not null or undefined
-        if (pageNum === null || pageNum === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listFlowsByStatistic", "pageNum");
-        }
-
-
-
-        // Path Params
-        const localVarPath = '/api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-        // Query Params
-        if (asc !== undefined) {
-            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
-        }
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public async listFlowsByStatistic1(statsType: string, asc?: string, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'statsType' is not null or undefined
-        if (statsType === null || statsType === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listFlowsByStatistic1", "statsType");
-        }
-
-
-
-        // Path Params
-        const localVarPath = '/api/v1/stats/flows/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-        // Query Params
-        if (asc !== undefined) {
-            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
-        }
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * List flows based on statistics, including interactive statistical data.
-     * List Flows by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public async listFlowsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'statsType' is not null or undefined
-        if (statsType === null || statsType === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listFlowsByStatistic2", "statsType");
-        }
-
-
-        // verify required parameter 'pageSize' is not null or undefined
-        if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listFlowsByStatistic2", "pageSize");
-        }
-
-
-
-        // Path Params
-        const localVarPath = '/api/v1/stats/flows/by/{statsType}/{pageSize}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-        // Query Params
-        if (asc !== undefined) {
-            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
-        }
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
      * Get popular tags for a specified info type.
      * Hot Tags
-     * @param infoType Info type: prompt | flow | plugin | character
+     * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
      * @param text Key word
      */
@@ -1124,6 +1124,93 @@ export class InteractiveStatisticsApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
+     * @params response Response returned by the server for a request to listAgentsByStatistic
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async listAgentsByStatisticWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<AgentSummaryStatsDTO> >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<AgentSummaryStatsDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AgentSummaryStatsDTO>", ""
+            ) as Array<AgentSummaryStatsDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<AgentSummaryStatsDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AgentSummaryStatsDTO>", ""
+            ) as Array<AgentSummaryStatsDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to listAgentsByStatistic1
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async listAgentsByStatistic1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<AgentSummaryStatsDTO> >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<AgentSummaryStatsDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AgentSummaryStatsDTO>", ""
+            ) as Array<AgentSummaryStatsDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<AgentSummaryStatsDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AgentSummaryStatsDTO>", ""
+            ) as Array<AgentSummaryStatsDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to listAgentsByStatistic2
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async listAgentsByStatistic2WithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<AgentSummaryStatsDTO> >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<AgentSummaryStatsDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AgentSummaryStatsDTO>", ""
+            ) as Array<AgentSummaryStatsDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<AgentSummaryStatsDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<AgentSummaryStatsDTO>", ""
+            ) as Array<AgentSummaryStatsDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
      * @params response Response returned by the server for a request to listCharactersByStatistic
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -1201,93 +1288,6 @@ export class InteractiveStatisticsApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "Array<CharacterSummaryStatsDTO>", ""
             ) as Array<CharacterSummaryStatsDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to listFlowsByStatistic
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async listFlowsByStatisticWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<FlowSummaryStatsDTO> >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<FlowSummaryStatsDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<FlowSummaryStatsDTO>", ""
-            ) as Array<FlowSummaryStatsDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<FlowSummaryStatsDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<FlowSummaryStatsDTO>", ""
-            ) as Array<FlowSummaryStatsDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to listFlowsByStatistic1
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async listFlowsByStatistic1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<FlowSummaryStatsDTO> >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<FlowSummaryStatsDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<FlowSummaryStatsDTO>", ""
-            ) as Array<FlowSummaryStatsDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<FlowSummaryStatsDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<FlowSummaryStatsDTO>", ""
-            ) as Array<FlowSummaryStatsDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to listFlowsByStatistic2
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async listFlowsByStatistic2WithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<FlowSummaryStatsDTO> >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<FlowSummaryStatsDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<FlowSummaryStatsDTO>", ""
-            ) as Array<FlowSummaryStatsDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<FlowSummaryStatsDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<FlowSummaryStatsDTO>", ""
-            ) as Array<FlowSummaryStatsDTO>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

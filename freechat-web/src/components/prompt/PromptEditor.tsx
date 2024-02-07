@@ -164,7 +164,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.description = description;
       return newRecord;
     });
@@ -172,7 +172,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       if (!newRecord.chatTemplate) {
         newRecord.chatTemplate = new ChatPromptContentDTO();
       }
@@ -185,7 +185,7 @@ export default function PromptEditor({
   useEffect(() => {
     setRounds(messagesToRounds(messages));
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       if (!newRecord.chatTemplate) {
         newRecord.chatTemplate = new ChatPromptContentDTO();
       }
@@ -197,7 +197,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       if (!newRecord.chatTemplate) {
         newRecord.chatTemplate = new ChatPromptContentDTO();
       }
@@ -213,7 +213,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.template = stringTemplate;
       setInputs(extractVariables(newRecord));
       return newRecord;
@@ -222,7 +222,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.example = example;
       return newRecord;
     });
@@ -230,7 +230,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.inputs = JSON.stringify(inputs);
       return newRecord;
     });
@@ -247,7 +247,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.visibility = visibility;
       return newRecord;
     });
@@ -255,7 +255,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.format = format;
       setUserMessage(prevUserMessage => {
         if (format === 'mustache' && prevUserMessage === '{input}') {
@@ -273,7 +273,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.lang = lang;
       return newRecord;
     });
@@ -281,7 +281,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.tags = tags;
       return newRecord;
     });
@@ -289,7 +289,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     setEditRecord(prevRecord => {
-      const newRecord = { ...prevRecord };
+      const newRecord = {...prevRecord};
       newRecord.aiModels = models;
       return newRecord;
     });
@@ -317,7 +317,7 @@ export default function PromptEditor({
 
     if (editRecordName && editRecordName !== editRecord?.name) {
       if (editRecordName === originName) {
-        const newRecord = { ...editRecord };
+        const newRecord = {...editRecord};
         newRecord.name = editRecordName;
         setEditRecord(newRecord);
         setEditRecordName(undefined);
@@ -325,7 +325,7 @@ export default function PromptEditor({
         promptApi?.existsPromptName(editRecordName)
           .then(resp => {
             if (!resp) {
-              const newRecord = { ...editRecord };
+              const newRecord = {...editRecord};
               newRecord.name = editRecordName;
               setEditRecord(newRecord);
               setEditRecordName(undefined);
@@ -648,7 +648,7 @@ export default function PromptEditor({
                 <Typography level="title-lg" color="primary">
                   {t('Description')}
                 </Typography>
-                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
+                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports markdown format')}>
                   <HelpIcon />
                 </Tooltip>
               </CommonBox>
@@ -854,7 +854,7 @@ export default function PromptEditor({
                 <Typography level="title-lg" color="primary">
                   {t('Example')}
                 </Typography>
-                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports Markdown format')}>
+                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports markdown format')}>
                   <HelpIcon />
                 </Tooltip>
               </CommonBox>

@@ -72,6 +72,9 @@ public class PromptServiceImpl implements PromptService {
     @Autowired
     private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
 
+    @Autowired
+    private PromptTaskMapper promptTaskMapper;
+
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
         return c.where(Info.visibility,
@@ -692,13 +695,27 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             doCreate(infoTriple);
             publishedInfoId = info.getPromptId();
 
+            final PromptInfo updatedInfo = info;
+            List<String> cacheKeys = new LinkedList<>();
             for (var prevVersionInfo : versionInfoList) {
+                promptTaskMapper.select(c -> c.where(PromptTaskDynamicSqlSupport.promptId, isEqualTo(prevVersionInfo.getLeft())))
+                        .forEach(promptTask -> {
+                            int rows = promptTaskMapper.updateByPrimaryKey(promptTask
+                                    .withPromptId(updatedInfo.getPromptId())
+                                    .withGmtModified(updatedInfo.getGmtModified()));
+                            if (rows > 0) {
+                                cacheKeys.add(PromptTaskServiceImpl.CACHE_KEY_PREFIX + promptTask.getTaskId());
+                            }
+                        });
+
                 info = new PromptInfo()
                         .withPromptId(prevVersionInfo.getLeft())
                         .withVisibility(Visibility.HIDDEN.text())
                         .withGmtModified(new Date());
                 promptInfoMapper.updateByPrimaryKeySelective(info);
             }
+
+            CacheUtils.longPeriodCacheEvict(cacheKeys);
 
             if (Objects.nonNull(versionInfo) && Objects.nonNull(versionInfo.getRight())) {
                 Date now = new Date();

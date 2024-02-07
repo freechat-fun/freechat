@@ -24,6 +24,7 @@ export default function Home() {
             alignItems: 'center',
           }}>
             <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
+            <LinePlaceholder spacing={1} />
             <Typography level="title-md">{t('Create your friends here!')}</Typography>
           </Box>
           <AspectRatio

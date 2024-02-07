@@ -14,17 +14,17 @@
 """  # noqa: E501
 
 
-__version__ = "0.2.20"
+__version__ = "0.3.0"
 
 # import apis into sdk package
 from freechat_sdk.api.ai_service_api import AIServiceApi
 from freechat_sdk.api.account_api import AccountApi
 from freechat_sdk.api.account_manager_for_admin_api import AccountManagerForAdminApi
+from freechat_sdk.api.agent_api import AgentApi
 from freechat_sdk.api.app_config_for_admin_api import AppConfigForAdminApi
 from freechat_sdk.api.app_meta_for_admin_api import AppMetaForAdminApi
 from freechat_sdk.api.character_api import CharacterApi
 from freechat_sdk.api.encryption_manager_for_admin_api import EncryptionManagerForAdminApi
-from freechat_sdk.api.flow_api import FlowApi
 from freechat_sdk.api.interactive_statistics_api import InteractiveStatisticsApi
 from freechat_sdk.api.organization_api import OrganizationApi
 from freechat_sdk.api.plugin_api import PluginApi
@@ -43,6 +43,14 @@ from freechat_sdk.exceptions import ApiAttributeError
 from freechat_sdk.exceptions import ApiException
 
 # import models into sdk package
+from freechat_sdk.models.agent_create_dto import AgentCreateDTO
+from freechat_sdk.models.agent_details_dto import AgentDetailsDTO
+from freechat_sdk.models.agent_item_for_name_dto import AgentItemForNameDTO
+from freechat_sdk.models.agent_query_dto import AgentQueryDTO
+from freechat_sdk.models.agent_query_where import AgentQueryWhere
+from freechat_sdk.models.agent_summary_dto import AgentSummaryDTO
+from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
+from freechat_sdk.models.agent_update_dto import AgentUpdateDTO
 from freechat_sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
 from freechat_sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
 from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
@@ -65,14 +73,6 @@ from freechat_sdk.models.chat_create_dto import ChatCreateDTO
 from freechat_sdk.models.chat_message_dto import ChatMessageDTO
 from freechat_sdk.models.chat_prompt_content_dto import ChatPromptContentDTO
 from freechat_sdk.models.chat_tool_call_dto import ChatToolCallDTO
-from freechat_sdk.models.flow_create_dto import FlowCreateDTO
-from freechat_sdk.models.flow_details_dto import FlowDetailsDTO
-from freechat_sdk.models.flow_item_for_name_dto import FlowItemForNameDTO
-from freechat_sdk.models.flow_query_dto import FlowQueryDTO
-from freechat_sdk.models.flow_query_where import FlowQueryWhere
-from freechat_sdk.models.flow_summary_dto import FlowSummaryDTO
-from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat_sdk.models.flow_update_dto import FlowUpdateDTO
 from freechat_sdk.models.hot_tag_dto import HotTagDTO
 from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
 from freechat_sdk.models.llm_result_dto import LlmResultDTO

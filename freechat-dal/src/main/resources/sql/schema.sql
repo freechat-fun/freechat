@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS `prompt_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='prompt info table'
 ;
 
-CREATE TABLE IF NOT EXISTS `flow_info` (
-  `flow_id` varchar(32) NOT NULL,
+CREATE TABLE IF NOT EXISTS `agent_info` (
+  `agent_id` varchar(32) NOT NULL,
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `user_id` varchar(32) NOT NULL,
@@ -142,13 +142,13 @@ CREATE TABLE IF NOT EXISTS `flow_info` (
   `version` int unsigned DEFAULT 1,
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
-  PRIMARY KEY (`flow_id`),
+  PRIMARY KEY (`agent_id`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
   INDEX `idx_user` (`user_id`),
   INDEX `idx_user_name` (`user_id`, `name`),
   INDEX `idx_modified` (`gmt_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='flow info table'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='agent info table'
 ;
 
 CREATE TABLE IF NOT EXISTS `plugin_info` (
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `avatar` varchar(256) DEFAULT NULL,
   `picture` varchar(256) DEFAULT NULL,
   `gender` varchar(16) DEFAULT 'other' COMMENT 'male | female | other',
-  `lang` varchar(64) DEFAULT 'English' COMMENT 'English | Chinese (Simplified) | ...',
+  `lang` varchar(64) DEFAULT 'en' COMMENT 'en | zh | ...',
   `profile` text DEFAULT NULL,
   `greeting` text DEFAULT NULL,
   `chat_style` text DEFAULT NULL,

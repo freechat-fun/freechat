@@ -9,12 +9,12 @@ Method | HTTP request | Description
 [**getStatistic**](InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/stats/{infoType}/{infoId}/{statsType} | Get Statistics
 [**getStatistics**](InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/stats/{infoType}/{infoId} | Get All Statistics
 [**increaseStatistic**](InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
+[**listAgentsByStatistic**](InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/stats/agents/by/{statsType} | List Agents by Statistics
+[**listAgentsByStatistic1**](InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
+[**listAgentsByStatistic2**](InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
 [**listCharactersByStatistic**](InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
 [**listCharactersByStatistic1**](InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
 [**listCharactersByStatistic2**](InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/stats/characters/by/{statsType} | List Characters by Statistics
-[**listFlowsByStatistic**](InteractiveStatisticsApi.md#listFlowsByStatistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics
-[**listFlowsByStatistic1**](InteractiveStatisticsApi.md#listFlowsByStatistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics
-[**listFlowsByStatistic2**](InteractiveStatisticsApi.md#listFlowsByStatistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics
 [**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
 [**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
 [**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
@@ -40,7 +40,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiAddStatisticRequest = {
-  // string | Info type: prompt | flow | plugin | character
+  // string | Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -60,7 +60,7 @@ apiInstance.addStatistic(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | agent | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
  **delta** | [**number**] | Delta in statistical value | defaults to undefined
@@ -103,7 +103,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiGetScoreRequest = {
-  // string | Info type: prompt | flow | plugin | character
+  // string | Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -119,7 +119,7 @@ apiInstance.getScore(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | agent | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
 
 
@@ -160,7 +160,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiGetStatisticRequest = {
-  // string | Info type: prompt | flow | plugin | character
+  // string | Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -178,7 +178,7 @@ apiInstance.getStatistic(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | agent | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
 
@@ -220,7 +220,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiGetStatisticsRequest = {
-  // string | Info type: prompt | flow | plugin | character
+  // string | Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -236,7 +236,7 @@ apiInstance.getStatistics(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | agent | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
 
 
@@ -277,7 +277,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiIncreaseStatisticRequest = {
-  // string | Info type: prompt | flow | plugin | character
+  // string | Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
   // string | Unique resource identifier
   infoId: "infoId_example",
@@ -295,7 +295,7 @@ apiInstance.increaseStatistic(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | agent | plugin | character | defaults to undefined
  **infoId** | [**string**] | Unique resource identifier | defaults to undefined
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
 
@@ -303,6 +303,186 @@ Name | Type | Description  | Notes
 ### Return type
 
 **number**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listAgentsByStatistic**
+> Array<AgentSummaryStatsDTO> listAgentsByStatistic()
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .InteractiveStatisticsApi(configuration);
+
+let body:.InteractiveStatisticsApiListAgentsByStatisticRequest = {
+  // string | Statistics type: view_count | refer_count | recommend_count | score
+  statsType: "statsType_example",
+  // string | Default is descending order, set asc=1 for ascending order (optional)
+  asc: "asc_example",
+};
+
+apiInstance.listAgentsByStatistic(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
+ **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
+
+
+### Return type
+
+**Array<AgentSummaryStatsDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listAgentsByStatistic1**
+> Array<AgentSummaryStatsDTO> listAgentsByStatistic1()
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .InteractiveStatisticsApi(configuration);
+
+let body:.InteractiveStatisticsApiListAgentsByStatistic1Request = {
+  // string | Statistics type: view_count | refer_count | recommend_count | score
+  statsType: "statsType_example",
+  // number | Maximum quantity
+  pageSize: 1,
+  // string | Default is descending order, set asc=1 for ascending order (optional)
+  asc: "asc_example",
+};
+
+apiInstance.listAgentsByStatistic1(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
+
+
+### Return type
+
+**Array<AgentSummaryStatsDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listAgentsByStatistic2**
+> Array<AgentSummaryStatsDTO> listAgentsByStatistic2()
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .InteractiveStatisticsApi(configuration);
+
+let body:.InteractiveStatisticsApiListAgentsByStatistic2Request = {
+  // string | Statistics type: view_count | refer_count | recommend_count | score
+  statsType: "statsType_example",
+  // number | Maximum quantity
+  pageSize: 1,
+  // number | Current page number
+  pageNum: 1,
+  // string | Default is descending order, set asc=1 for ascending order (optional)
+  asc: "asc_example",
+};
+
+apiInstance.listAgentsByStatistic2(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **pageNum** | [**number**] | Current page number | defaults to undefined
+ **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
+
+
+### Return type
+
+**Array<AgentSummaryStatsDTO>**
 
 ### Authorization
 
@@ -501,186 +681,6 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
-# **listFlowsByStatistic**
-> Array<FlowSummaryStatsDTO> listFlowsByStatistic()
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-
-
-```typescript
-import {  } from '';
-import * as fs from 'fs';
-
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
-
-let body:.InteractiveStatisticsApiListFlowsByStatisticRequest = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
-  statsType: "statsType_example",
-  // number | Maximum quantity
-  pageSize: 1,
-  // number | Current page number
-  pageNum: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
-  asc: "asc_example",
-};
-
-apiInstance.listFlowsByStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
- **pageNum** | [**number**] | Current page number | defaults to undefined
- **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
-
-
-### Return type
-
-**Array<FlowSummaryStatsDTO>**
-
-### Authorization
-
-[bearerAuth](README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
-
-# **listFlowsByStatistic1**
-> Array<FlowSummaryStatsDTO> listFlowsByStatistic1()
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-
-
-```typescript
-import {  } from '';
-import * as fs from 'fs';
-
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
-
-let body:.InteractiveStatisticsApiListFlowsByStatistic1Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
-  statsType: "statsType_example",
-  // string | Default is descending order, set asc=1 for ascending order (optional)
-  asc: "asc_example",
-};
-
-apiInstance.listFlowsByStatistic1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
- **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
-
-
-### Return type
-
-**Array<FlowSummaryStatsDTO>**
-
-### Authorization
-
-[bearerAuth](README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
-
-# **listFlowsByStatistic2**
-> Array<FlowSummaryStatsDTO> listFlowsByStatistic2()
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-
-
-```typescript
-import {  } from '';
-import * as fs from 'fs';
-
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
-
-let body:.InteractiveStatisticsApiListFlowsByStatistic2Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
-  statsType: "statsType_example",
-  // number | Maximum quantity
-  pageSize: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
-  asc: "asc_example",
-};
-
-apiInstance.listFlowsByStatistic2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
-```
-
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
- **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
-
-
-### Return type
-
-**Array<FlowSummaryStatsDTO>**
-
-### Authorization
-
-[bearerAuth](README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
-
 # **listHotTags**
 > Array<HotTagDTO> listHotTags()
 
@@ -697,7 +697,7 @@ const configuration = .createConfiguration();
 const apiInstance = new .InteractiveStatisticsApi(configuration);
 
 let body:.InteractiveStatisticsApiListHotTagsRequest = {
-  // string | Info type: prompt | flow | plugin | character
+  // string | Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
   // number | Maximum quantity
   pageSize: 1,
@@ -715,7 +715,7 @@ apiInstance.listHotTags(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **infoType** | [**string**] | Info type: prompt | flow | plugin | character | defaults to undefined
+ **infoType** | [**string**] | Info type: prompt | agent | plugin | character | defaults to undefined
  **pageSize** | [**number**] | Maximum quantity | defaults to undefined
  **text** | [**string**] | Key word | (optional) defaults to undefined
 

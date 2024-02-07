@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack, Divider } from "@mui/joy";
+import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack } from "@mui/joy";
 import { CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
 import { CommonContainer, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
 import { DashScopeSettings, OpenAISettings } from ".";
@@ -397,8 +397,7 @@ export default function PromptRunner(props: {
           />
         </TextareaTypography>
         <CommonContainer sx={{
-          justifyContent: onExampleSave ? 'space-between' : 'flex-end',
-          alignItems: 'flex-start',
+          justifyContent: 'flex-end',
         }}>
           {onExampleSave && output.current && (
             <Button
@@ -410,33 +409,6 @@ export default function PromptRunner(props: {
             >
               {t('Save as Example', {ns: 'button'})}
             </Button>
-          )}
-          {!playing && output.current?.tokenUsage && (
-            <Fragment>
-              <Box sx={{
-                width: '50%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-              }}>
-                <Typography fontWeight="bold">Token Usage</Typography>
-                <Divider sx={{ backgroundColor: 'black' }}/>
-                <Box sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'auto 1fr',
-                }}>
-                  <FormLabel>Input: </FormLabel>
-                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.current?.tokenUsage.inputTokenCount}</Typography>
-                  <FormLabel>Output: </FormLabel>
-                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.current?.tokenUsage.outputTokenCount}</Typography>
-                  <Box sx={{ gridColumn: '1 / -1' }}>
-                    <Divider />
-                  </Box>
-                  <FormLabel>Total: </FormLabel>
-                  <Typography sx={{ justifySelf: 'flex-end' }} level="body-xs">{output.current?.tokenUsage.totalTokenCount}</Typography>
-                </Box>
-              </Box>
-            </Fragment>
           )}
         </CommonContainer>
       </Card>

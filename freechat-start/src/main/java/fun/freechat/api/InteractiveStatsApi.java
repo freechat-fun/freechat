@@ -8,7 +8,7 @@ import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.common.TagService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
-import fun.freechat.service.flow.FlowService;
+import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.plugin.PluginService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.stats.InteractiveStatsService;
@@ -39,7 +39,7 @@ public class InteractiveStatsApi {
     private PromptService promptService;
 
     @Autowired
-    private FlowService flowService;
+    private AgentService agentService;
 
     @Autowired
     private PluginService pluginService;
@@ -57,7 +57,7 @@ public class InteractiveStatsApi {
     )
     @PostMapping("/stats/{infoType}/{infoId}/{statsType}/{delta}")
     public Long add(
-            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Delta in statistical value") @PathVariable("delta") @NotEmpty Long delta) {
@@ -78,7 +78,7 @@ public class InteractiveStatsApi {
     )
     @PostMapping("/stats/{infoType}/{infoId}/{statsType}")
     public Long increase(
-            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType) {
         return add(infoType, infoId, statsType, 1L);
@@ -91,7 +91,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/stats/{infoType}/{infoId}/{statsType}")
     public Long get(
-            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType) {
         return add(infoType, infoId, statsType, 0L);
@@ -104,7 +104,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/stats/{infoType}/{infoId}")
     public InteractiveStatsDTO get(
-            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
         return InteractiveStatsDTO.from(
                 interactiveStatsService.get(InfoType.of(infoType), infoId));
@@ -117,7 +117,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/score/{infoType}/{infoId}")
     public Long getScore(
-            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
         return Optional.ofNullable(interactiveStatsService.getScore(
                     AccountUtils.currentUser().getUserId(), InfoType.of(infoType), infoId))
@@ -162,15 +162,15 @@ public class InteractiveStatsApi {
     }
 
     @Operation(
-            operationId = "listFlowsByStatistic",
-            summary = "List Flows by Statistics",
-            description = "List flows based on statistics, including interactive statistical data."
+            operationId = "listAgentsByStatistic",
+            summary = "List Agents by Statistics",
+            description = "List agents based on statistics, including interactive statistical data."
     )
     @GetMapping(value = {
-            "/stats/flows/by/{statsType}/{pageSize}/{pageNum}",
-            "/stats/flows/by/{statsType}/{pageSize}",
-            "/stats/flows/by/{statsType}"})
-    public List<FlowSummaryStatsDTO> listFlows(
+            "/stats/agents/by/{statsType}/{pageSize}/{pageNum}",
+            "/stats/agents/by/{statsType}/{pageSize}",
+            "/stats/agents/by/{statsType}"})
+    public List<AgentSummaryStatsDTO> listAgents(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
             @Parameter(description = "Current page number") @PathVariable("pageNum") Optional<Long> pageNum,
@@ -179,16 +179,16 @@ public class InteractiveStatsApi {
         long limit = pageSize.filter(size -> size > 0).orElse(10L);
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
-                InfoType.FLOW, StatsType.of(statsType), limit, offset, desc);
+                InfoType.AGENT, StatsType.of(statsType), limit, offset, desc);
         HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
         for (InteractiveStats stats : statsList) {
             statsMap.put(stats.getReferId(), stats);
         }
-        var summaries = flowService.summary(statsMap.keySet(), AccountUtils.currentUser());
-        List<FlowSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
+        var summaries = agentService.summary(statsMap.keySet(), AccountUtils.currentUser());
+        List<AgentSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
-            InteractiveStats stats = statsMap.get(summary.getLeft().getFlowId());
-            FlowSummaryStatsDTO dto = FlowSummaryStatsDTO.from(summary, stats);
+            InteractiveStats stats = statsMap.get(summary.getLeft().getAgentId());
+            AgentSummaryStatsDTO dto = AgentSummaryStatsDTO.from(summary, stats);
             if (Objects.nonNull(dto)) {
                 dtoList.add(dto);
             }
@@ -276,7 +276,7 @@ public class InteractiveStatsApi {
     )
     @GetMapping("/tags/hot/{infoType}/{pageSize}")
     public List<HotTagDTO> getHotTags(
-            @Parameter(description = "Info type: prompt | flow | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
+            @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Long pageSize,
             @Parameter(description = "Key word") @RequestParam("text") Optional<String> text) {
         return tagService.listHot(InfoType.of(infoType),  text.orElse(null), pageSize)

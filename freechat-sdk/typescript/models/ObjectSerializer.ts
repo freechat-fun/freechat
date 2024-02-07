@@ -1,3 +1,11 @@
+export * from '../models/AgentCreateDTO.js';
+export * from '../models/AgentDetailsDTO.js';
+export * from '../models/AgentItemForNameDTO.js';
+export * from '../models/AgentQueryDTO.js';
+export * from '../models/AgentQueryWhere.js';
+export * from '../models/AgentSummaryDTO.js';
+export * from '../models/AgentSummaryStatsDTO.js';
+export * from '../models/AgentUpdateDTO.js';
 export * from '../models/AiApiKeyCreateDTO.js';
 export * from '../models/AiApiKeyInfoDTO.js';
 export * from '../models/AiModelInfoDTO.js';
@@ -20,14 +28,6 @@ export * from '../models/ChatCreateDTO.js';
 export * from '../models/ChatMessageDTO.js';
 export * from '../models/ChatPromptContentDTO.js';
 export * from '../models/ChatToolCallDTO.js';
-export * from '../models/FlowCreateDTO.js';
-export * from '../models/FlowDetailsDTO.js';
-export * from '../models/FlowItemForNameDTO.js';
-export * from '../models/FlowQueryDTO.js';
-export * from '../models/FlowQueryWhere.js';
-export * from '../models/FlowSummaryDTO.js';
-export * from '../models/FlowSummaryStatsDTO.js';
-export * from '../models/FlowUpdateDTO.js';
 export * from '../models/HotTagDTO.js';
 export * from '../models/InteractiveStatsDTO.js';
 export * from '../models/LlmResultDTO.js';
@@ -59,6 +59,14 @@ export * from '../models/UserBasicInfoDTO.js';
 export * from '../models/UserDetailsDTO.js';
 export * from '../models/UserFullDetailsDTO.js';
 
+import { AgentCreateDTO } from '../models/AgentCreateDTO.js';
+import { AgentDetailsDTO } from '../models/AgentDetailsDTO.js';
+import { AgentItemForNameDTO } from '../models/AgentItemForNameDTO.js';
+import { AgentQueryDTO } from '../models/AgentQueryDTO.js';
+import { AgentQueryWhere } from '../models/AgentQueryWhere.js';
+import { AgentSummaryDTO } from '../models/AgentSummaryDTO.js';
+import { AgentSummaryStatsDTO } from '../models/AgentSummaryStatsDTO.js';
+import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
@@ -81,14 +89,6 @@ import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
-import { FlowCreateDTO } from '../models/FlowCreateDTO.js';
-import { FlowDetailsDTO } from '../models/FlowDetailsDTO.js';
-import { FlowItemForNameDTO } from '../models/FlowItemForNameDTO.js';
-import { FlowQueryDTO } from '../models/FlowQueryDTO.js';
-import { FlowQueryWhere } from '../models/FlowQueryWhere.js';
-import { FlowSummaryDTO } from '../models/FlowSummaryDTO.js';
-import { FlowSummaryStatsDTO } from '../models/FlowSummaryStatsDTO.js';
-import { FlowUpdateDTO } from '../models/FlowUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -136,6 +136,14 @@ let enumsMap: Set<string> = new Set<string>([
 ]);
 
 let typeMap: {[index: string]: any} = {
+    "AgentCreateDTO": AgentCreateDTO,
+    "AgentDetailsDTO": AgentDetailsDTO,
+    "AgentItemForNameDTO": AgentItemForNameDTO,
+    "AgentQueryDTO": AgentQueryDTO,
+    "AgentQueryWhere": AgentQueryWhere,
+    "AgentSummaryDTO": AgentSummaryDTO,
+    "AgentSummaryStatsDTO": AgentSummaryStatsDTO,
+    "AgentUpdateDTO": AgentUpdateDTO,
     "AiApiKeyCreateDTO": AiApiKeyCreateDTO,
     "AiApiKeyInfoDTO": AiApiKeyInfoDTO,
     "AiModelInfoDTO": AiModelInfoDTO,
@@ -158,14 +166,6 @@ let typeMap: {[index: string]: any} = {
     "ChatMessageDTO": ChatMessageDTO,
     "ChatPromptContentDTO": ChatPromptContentDTO,
     "ChatToolCallDTO": ChatToolCallDTO,
-    "FlowCreateDTO": FlowCreateDTO,
-    "FlowDetailsDTO": FlowDetailsDTO,
-    "FlowItemForNameDTO": FlowItemForNameDTO,
-    "FlowQueryDTO": FlowQueryDTO,
-    "FlowQueryWhere": FlowQueryWhere,
-    "FlowSummaryDTO": FlowSummaryDTO,
-    "FlowSummaryStatsDTO": FlowSummaryStatsDTO,
-    "FlowUpdateDTO": FlowUpdateDTO,
     "HotTagDTO": HotTagDTO,
     "InteractiveStatsDTO": InteractiveStatsDTO,
     "LlmResultDTO": LlmResultDTO,

@@ -9,12 +9,12 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**getStatistic**](InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/stats/{infoType}/{infoId}/{statsType} | Get Statistics |
 | [**getStatistics**](InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/stats/{infoType}/{infoId} | Get All Statistics |
 | [**increaseStatistic**](InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics |
+| [**listAgentsByStatistic**](InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/stats/agents/by/{statsType} | List Agents by Statistics |
+| [**listAgentsByStatistic1**](InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics |
+| [**listAgentsByStatistic2**](InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics |
 | [**listCharactersByStatistic**](InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics |
 | [**listCharactersByStatistic1**](InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics |
 | [**listCharactersByStatistic2**](InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/stats/characters/by/{statsType} | List Characters by Statistics |
-| [**listFlowsByStatistic**](InteractiveStatisticsApi.md#listFlowsByStatistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics |
-| [**listFlowsByStatistic1**](InteractiveStatisticsApi.md#listFlowsByStatistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics |
-| [**listFlowsByStatistic2**](InteractiveStatisticsApi.md#listFlowsByStatistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics |
 | [**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags |
 | [**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics |
 | [**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics |
@@ -52,7 +52,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    String infoType = "infoType_example"; // String | Info type: prompt | agent | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     Long delta = 56L; // Long | Delta in statistical value
@@ -74,7 +74,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **infoType** | **String**| Info type: prompt | agent | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 | **delta** | **Long**| Delta in statistical value | |
@@ -125,7 +125,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    String infoType = "infoType_example"; // String | Info type: prompt | agent | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     try {
       Long result = apiInstance.getScore(infoType, infoId);
@@ -145,7 +145,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **infoType** | **String**| Info type: prompt | agent | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 
 ### Return type
@@ -194,7 +194,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    String infoType = "infoType_example"; // String | Info type: prompt | agent | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     try {
@@ -215,7 +215,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **infoType** | **String**| Info type: prompt | agent | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 
@@ -265,7 +265,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    String infoType = "infoType_example"; // String | Info type: prompt | agent | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     try {
       InteractiveStatsDTO result = apiInstance.getStatistics(infoType, infoId);
@@ -285,7 +285,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **infoType** | **String**| Info type: prompt | agent | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 
 ### Return type
@@ -334,7 +334,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    String infoType = "infoType_example"; // String | Info type: prompt | agent | plugin | character
     String infoId = "infoId_example"; // String | Unique resource identifier
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     try {
@@ -355,13 +355,226 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **infoType** | **String**| Info type: prompt | agent | plugin | character | |
 | **infoId** | **String**| Unique resource identifier | |
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 
 ### Return type
 
 **Long**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listAgentsByStatistic"></a>
+# **listAgentsByStatistic**
+> List&lt;AgentSummaryStatsDTO&gt; listAgentsByStatistic(statsType, asc)
+
+List Agents by Statistics
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.InteractiveStatisticsApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
+    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
+    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
+    try {
+      List<AgentSummaryStatsDTO> result = apiInstance.listAgentsByStatistic(statsType, asc);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling InteractiveStatisticsApi#listAgentsByStatistic");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
+
+### Return type
+
+[**List&lt;AgentSummaryStatsDTO&gt;**](AgentSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listAgentsByStatistic1"></a>
+# **listAgentsByStatistic1**
+> List&lt;AgentSummaryStatsDTO&gt; listAgentsByStatistic1(statsType, pageSize, asc)
+
+List Agents by Statistics
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.InteractiveStatisticsApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
+    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
+    Long pageSize = 56L; // Long | Maximum quantity
+    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
+    try {
+      List<AgentSummaryStatsDTO> result = apiInstance.listAgentsByStatistic1(statsType, pageSize, asc);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling InteractiveStatisticsApi#listAgentsByStatistic1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **pageSize** | **Long**| Maximum quantity | |
+| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
+
+### Return type
+
+[**List&lt;AgentSummaryStatsDTO&gt;**](AgentSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listAgentsByStatistic2"></a>
+# **listAgentsByStatistic2**
+> List&lt;AgentSummaryStatsDTO&gt; listAgentsByStatistic2(statsType, pageSize, pageNum, asc)
+
+List Agents by Statistics
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.InteractiveStatisticsApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
+    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
+    Long pageSize = 56L; // Long | Maximum quantity
+    Long pageNum = 56L; // Long | Current page number
+    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
+    try {
+      List<AgentSummaryStatsDTO> result = apiInstance.listAgentsByStatistic2(statsType, pageSize, pageNum, asc);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling InteractiveStatisticsApi#listAgentsByStatistic2");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **pageSize** | **Long**| Maximum quantity | |
+| **pageNum** | **Long**| Current page number | |
+| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
+
+### Return type
+
+[**List&lt;AgentSummaryStatsDTO&gt;**](AgentSummaryStatsDTO.md)
 
 ### Authorization
 
@@ -590,219 +803,6 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
-<a id="listFlowsByStatistic"></a>
-# **listFlowsByStatistic**
-> List&lt;FlowSummaryStatsDTO&gt; listFlowsByStatistic(statsType, pageSize, pageNum, asc)
-
-List Flows by Statistics
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.InteractiveStatisticsApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
-    Long pageSize = 56L; // Long | Maximum quantity
-    Long pageNum = 56L; // Long | Current page number
-    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
-    try {
-      List<FlowSummaryStatsDTO> result = apiInstance.listFlowsByStatistic(statsType, pageSize, pageNum, asc);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling InteractiveStatisticsApi#listFlowsByStatistic");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
-| **pageSize** | **Long**| Maximum quantity | |
-| **pageNum** | **Long**| Current page number | |
-| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
-
-### Return type
-
-[**List&lt;FlowSummaryStatsDTO&gt;**](FlowSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listFlowsByStatistic1"></a>
-# **listFlowsByStatistic1**
-> List&lt;FlowSummaryStatsDTO&gt; listFlowsByStatistic1(statsType, asc)
-
-List Flows by Statistics
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.InteractiveStatisticsApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
-    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
-    try {
-      List<FlowSummaryStatsDTO> result = apiInstance.listFlowsByStatistic1(statsType, asc);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling InteractiveStatisticsApi#listFlowsByStatistic1");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
-| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
-
-### Return type
-
-[**List&lt;FlowSummaryStatsDTO&gt;**](FlowSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listFlowsByStatistic2"></a>
-# **listFlowsByStatistic2**
-> List&lt;FlowSummaryStatsDTO&gt; listFlowsByStatistic2(statsType, pageSize, asc)
-
-List Flows by Statistics
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.InteractiveStatisticsApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
-    Long pageSize = 56L; // Long | Maximum quantity
-    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
-    try {
-      List<FlowSummaryStatsDTO> result = apiInstance.listFlowsByStatistic2(statsType, pageSize, asc);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling InteractiveStatisticsApi#listFlowsByStatistic2");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
-| **pageSize** | **Long**| Maximum quantity | |
-| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
-
-### Return type
-
-[**List&lt;FlowSummaryStatsDTO&gt;**](FlowSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
 <a id="listHotTags"></a>
 # **listHotTags**
 > List&lt;HotTagDTO&gt; listHotTags(infoType, pageSize, text)
@@ -831,7 +831,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String infoType = "infoType_example"; // String | Info type: prompt | flow | plugin | character
+    String infoType = "infoType_example"; // String | Info type: prompt | agent | plugin | character
     Long pageSize = 56L; // Long | Maximum quantity
     String text = "text_example"; // String | Key word
     try {
@@ -852,7 +852,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **infoType** | **String**| Info type: prompt | flow | plugin | character | |
+| **infoType** | **String**| Info type: prompt | agent | plugin | character | |
 | **pageSize** | **Long**| Maximum quantity | |
 | **text** | **String**| Key word | [optional] |
 

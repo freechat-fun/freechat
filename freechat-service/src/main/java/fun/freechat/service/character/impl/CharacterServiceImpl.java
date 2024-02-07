@@ -680,8 +680,6 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 characterInfoMapper.updateByPrimaryKeySelective(info);
             }
 
-            characterInfoMapper.updateByPrimaryKeySelective(info);
-
             if (Objects.nonNull(versionInfo) && Objects.nonNull(versionInfo.getRight())) {
                 Date now = new Date();
                 InteractiveStats stats = versionInfo.getRight();

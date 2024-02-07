@@ -9,12 +9,12 @@ Method | HTTP request | Description
 [**get_statistic**](InteractiveStatisticsApi.md#get_statistic) | **GET** /api/v1/stats/{infoType}/{infoId}/{statsType} | Get Statistics
 [**get_statistics**](InteractiveStatisticsApi.md#get_statistics) | **GET** /api/v1/stats/{infoType}/{infoId} | Get All Statistics
 [**increase_statistic**](InteractiveStatisticsApi.md#increase_statistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
+[**list_agents_by_statistic**](InteractiveStatisticsApi.md#list_agents_by_statistic) | **GET** /api/v1/stats/agents/by/{statsType} | List Agents by Statistics
+[**list_agents_by_statistic1**](InteractiveStatisticsApi.md#list_agents_by_statistic1) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
+[**list_agents_by_statistic2**](InteractiveStatisticsApi.md#list_agents_by_statistic2) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
 [**list_characters_by_statistic**](InteractiveStatisticsApi.md#list_characters_by_statistic) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
 [**list_characters_by_statistic1**](InteractiveStatisticsApi.md#list_characters_by_statistic1) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
 [**list_characters_by_statistic2**](InteractiveStatisticsApi.md#list_characters_by_statistic2) | **GET** /api/v1/stats/characters/by/{statsType} | List Characters by Statistics
-[**list_flows_by_statistic**](InteractiveStatisticsApi.md#list_flows_by_statistic) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize}/{pageNum} | List Flows by Statistics
-[**list_flows_by_statistic1**](InteractiveStatisticsApi.md#list_flows_by_statistic1) | **GET** /api/v1/stats/flows/by/{statsType} | List Flows by Statistics
-[**list_flows_by_statistic2**](InteractiveStatisticsApi.md#list_flows_by_statistic2) | **GET** /api/v1/stats/flows/by/{statsType}/{pageSize} | List Flows by Statistics
 [**list_hot_tags**](InteractiveStatisticsApi.md#list_hot_tags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
 [**list_plugins_by_statistic**](InteractiveStatisticsApi.md#list_plugins_by_statistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
 [**list_plugins_by_statistic1**](InteractiveStatisticsApi.md#list_plugins_by_statistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
@@ -62,7 +62,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    info_type = 'info_type_example' # str | Info type: prompt | agent | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
     delta = 56 # int | Delta in statistical value
@@ -83,7 +83,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
  **delta** | **int**| Delta in statistical value | 
@@ -147,7 +147,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    info_type = 'info_type_example' # str | Info type: prompt | agent | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
 
     try:
@@ -166,7 +166,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
 
 ### Return type
@@ -228,7 +228,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    info_type = 'info_type_example' # str | Info type: prompt | agent | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
 
@@ -248,7 +248,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
 
@@ -312,7 +312,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    info_type = 'info_type_example' # str | Info type: prompt | agent | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
 
     try:
@@ -331,7 +331,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
 
 ### Return type
@@ -393,7 +393,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    info_type = 'info_type_example' # str | Info type: prompt | agent | plugin | character
     info_id = 'info_id_example' # str | Unique resource identifier
     stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
 
@@ -413,13 +413,265 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character | 
  **info_id** | **str**| Unique resource identifier | 
  **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
 
 ### Return type
 
 **int**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_agents_by_statistic**
+> List[AgentSummaryStatsDTO] list_agents_by_statistic(stats_type, asc=asc)
+
+List Agents by Statistics
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
+    asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
+
+    try:
+        # List Agents by Statistics
+        api_response = api_instance.list_agents_by_statistic(stats_type, asc=asc)
+        print("The response of InteractiveStatisticsApi->list_agents_by_statistic:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling InteractiveStatisticsApi->list_agents_by_statistic: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+
+### Return type
+
+[**List[AgentSummaryStatsDTO]**](AgentSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_agents_by_statistic1**
+> List[AgentSummaryStatsDTO] list_agents_by_statistic1(stats_type, page_size, asc=asc)
+
+List Agents by Statistics
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
+    page_size = 56 # int | Maximum quantity
+    asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
+
+    try:
+        # List Agents by Statistics
+        api_response = api_instance.list_agents_by_statistic1(stats_type, page_size, asc=asc)
+        print("The response of InteractiveStatisticsApi->list_agents_by_statistic1:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling InteractiveStatisticsApi->list_agents_by_statistic1: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
+ **page_size** | **int**| Maximum quantity | 
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+
+### Return type
+
+[**List[AgentSummaryStatsDTO]**](AgentSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_agents_by_statistic2**
+> List[AgentSummaryStatsDTO] list_agents_by_statistic2(stats_type, page_size, page_num, asc=asc)
+
+List Agents by Statistics
+
+List agents based on statistics, including interactive statistical data.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import time
+import os
+import freechat_sdk
+from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
+    stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
+    page_size = 56 # int | Maximum quantity
+    page_num = 56 # int | Current page number
+    asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
+
+    try:
+        # List Agents by Statistics
+        api_response = api_instance.list_agents_by_statistic2(stats_type, page_size, page_num, asc=asc)
+        print("The response of InteractiveStatisticsApi->list_agents_by_statistic2:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling InteractiveStatisticsApi->list_agents_by_statistic2: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
+ **page_size** | **int**| Maximum quantity | 
+ **page_num** | **int**| Current page number | 
+ **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
+
+### Return type
+
+[**List[AgentSummaryStatsDTO]**](AgentSummaryStatsDTO.md)
 
 ### Authorization
 
@@ -690,258 +942,6 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **list_flows_by_statistic**
-> List[FlowSummaryStatsDTO] list_flows_by_statistic(stats_type, page_size, page_num, asc=asc)
-
-List Flows by Statistics
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-
-* Bearer Authentication (bearerAuth):
-
-```python
-import time
-import os
-import freechat_sdk
-from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://127.0.0.1:8080
-# See configuration.py for a list of all supported configuration parameters.
-configuration = freechat_sdk.Configuration(
-    host = "http://127.0.0.1:8080"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization: bearerAuth
-configuration = freechat_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with freechat_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
-    page_size = 56 # int | Maximum quantity
-    page_num = 56 # int | Current page number
-    asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
-
-    try:
-        # List Flows by Statistics
-        api_response = api_instance.list_flows_by_statistic(stats_type, page_size, page_num, asc=asc)
-        print("The response of InteractiveStatisticsApi->list_flows_by_statistic:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling InteractiveStatisticsApi->list_flows_by_statistic: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
-
-### Return type
-
-[**List[FlowSummaryStatsDTO]**](FlowSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **list_flows_by_statistic1**
-> List[FlowSummaryStatsDTO] list_flows_by_statistic1(stats_type, asc=asc)
-
-List Flows by Statistics
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-
-* Bearer Authentication (bearerAuth):
-
-```python
-import time
-import os
-import freechat_sdk
-from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://127.0.0.1:8080
-# See configuration.py for a list of all supported configuration parameters.
-configuration = freechat_sdk.Configuration(
-    host = "http://127.0.0.1:8080"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization: bearerAuth
-configuration = freechat_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with freechat_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
-    asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
-
-    try:
-        # List Flows by Statistics
-        api_response = api_instance.list_flows_by_statistic1(stats_type, asc=asc)
-        print("The response of InteractiveStatisticsApi->list_flows_by_statistic1:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling InteractiveStatisticsApi->list_flows_by_statistic1: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
-
-### Return type
-
-[**List[FlowSummaryStatsDTO]**](FlowSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **list_flows_by_statistic2**
-> List[FlowSummaryStatsDTO] list_flows_by_statistic2(stats_type, page_size, asc=asc)
-
-List Flows by Statistics
-
-List flows based on statistics, including interactive statistical data.
-
-### Example
-
-* Bearer Authentication (bearerAuth):
-
-```python
-import time
-import os
-import freechat_sdk
-from freechat_sdk.models.flow_summary_stats_dto import FlowSummaryStatsDTO
-from freechat_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://127.0.0.1:8080
-# See configuration.py for a list of all supported configuration parameters.
-configuration = freechat_sdk.Configuration(
-    host = "http://127.0.0.1:8080"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization: bearerAuth
-configuration = freechat_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with freechat_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    stats_type = 'stats_type_example' # str | Statistics type: view_count | refer_count | recommend_count | score
-    page_size = 56 # int | Maximum quantity
-    asc = 'asc_example' # str | Default is descending order, set asc=1 for ascending order (optional)
-
-    try:
-        # List Flows by Statistics
-        api_response = api_instance.list_flows_by_statistic2(stats_type, page_size, asc=asc)
-        print("The response of InteractiveStatisticsApi->list_flows_by_statistic2:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling InteractiveStatisticsApi->list_flows_by_statistic2: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **stats_type** | **str**| Statistics type: view_count | refer_count | recommend_count | score | 
- **page_size** | **int**| Maximum quantity | 
- **asc** | **str**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] 
-
-### Return type
-
-[**List[FlowSummaryStatsDTO]**](FlowSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **list_hot_tags**
 > List[HotTagDTO] list_hot_tags(info_type, page_size, text=text)
 
@@ -981,7 +981,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.InteractiveStatisticsApi(api_client)
-    info_type = 'info_type_example' # str | Info type: prompt | flow | plugin | character
+    info_type = 'info_type_example' # str | Info type: prompt | agent | plugin | character
     page_size = 56 # int | Maximum quantity
     text = 'text_example' # str | Key word (optional)
 
@@ -1001,7 +1001,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **info_type** | **str**| Info type: prompt | flow | plugin | character | 
+ **info_type** | **str**| Info type: prompt | agent | plugin | character | 
  **page_size** | **int**| Maximum quantity | 
  **text** | **str**| Key word | [optional] 
 

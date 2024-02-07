@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 @SuppressWarnings("unused")
 public enum InfoType {
     PROMPT,
-    FLOW,
+    AGENT,
     PLUGIN,
     CHARACTER,
     UNKNOWN;
