@@ -1,6 +1,7 @@
 package fun.freechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.output.Response;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
@@ -8,7 +9,6 @@ import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
-import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
@@ -96,7 +96,7 @@ public class PromptAiApi {
         AiModelInfo modelInfo = promptAiParam.getModelInfo();
         Map<String, Object> parameters = promptAiParam.getParameters();
 
-        Response<ChatMessage> response =
+        Response<AiMessage> response =
                 promptAiService.send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
         if (Objects.isNull(response)) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, prompt);

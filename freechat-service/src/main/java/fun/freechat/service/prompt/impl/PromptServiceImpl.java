@@ -2,12 +2,11 @@ package fun.freechat.service.prompt.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.input.PromptTemplate;
 import fun.freechat.langchain4j.model.input.FStringPromptTemplate;
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
-import fun.freechat.service.ai.message.ChatContent;
-import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
@@ -21,7 +20,6 @@ import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,7 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static fun.freechat.service.enums.ChatContentType.TEXT;
+import static dev.langchain4j.data.message.ContentType.TEXT;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Service
@@ -762,21 +760,38 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         };
     }
 
+    private AiMessage apply(AiMessage original, Map<String, Object> variables, PromptFormat format) {
+        String text = original.text();
+        if (StringUtils.isBlank(text)) {
+            return original;
+        }
+        return AiMessage.from(apply(text, variables, format));
+    }
+
+    private SystemMessage apply(SystemMessage original, Map<String, Object> variables, PromptFormat format) {
+        String text = original.text();
+        if (StringUtils.isBlank(text)) {
+            return original;
+        }
+        return SystemMessage.from(apply(text, variables, format));
+    }
+
+    private UserMessage apply(UserMessage original, Map<String, Object> variables, PromptFormat format) {
+        return UserMessage.from(original.name(), original.contents().stream()
+                .map(content -> content.type() == TEXT ?
+                        TextContent.from(apply(((TextContent) content).text(), variables, format)) :
+                        content)
+                .toList());
+    }
+
     @Override
     public ChatMessage apply(ChatMessage original, Map<String, Object> variables, PromptFormat format) {
-        ChatMessage message = new ChatMessage();
-        message.setRole(original.getRole());
-        message.setName(original.getName());
-        message.setToolCalls(original.getToolCalls());
-        message.setGmtCreate(original.getGmtCreate());
-
-        if (Objects.nonNull(original.getContents())) {
-            message.setContents(original.getContents().stream()
-                    .map(content -> content.getType() == TEXT ?
-                        ChatContent.fromText(apply(content.getContent(), variables, format)) : content)
-                    .toList());
-        }
-        return message;
+        return switch (original.type()) {
+            case SYSTEM -> apply((SystemMessage) original, variables, format);
+            case AI -> apply((AiMessage) original, variables, format);
+            case USER -> apply((UserMessage) original, variables, format);
+            default -> original;
+        };
     }
 
     @Override
@@ -786,12 +801,12 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
         if (hasValidUserMessagePrompt(promptContent)) {
-            ChatMessage original = promptContent.getMessageToSend();
+            UserMessage original = promptContent.getMessageToSend();
             applied.setMessageToSend(apply(original, variables, format));
         } else {
-            String input = MapUtils.getString(variables, "input");
+            String input = PromptUtils.getDefaultInput(variables);
             if (Objects.nonNull(input)) {
-                applied.setMessageToSend(ChatMessage.from(PromptRole.USER, input));
+                applied.setMessageToSend(UserMessage.from(input));
             }
         }
 
@@ -864,9 +879,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     private boolean hasValidUserMessagePrompt(ChatPromptContent promptContent) {
-        return Objects.nonNull(promptContent.getMessageToSend()) &&
-                CollectionUtils.isNotEmpty(promptContent.getMessageToSend().getContents()) &&
-                StringUtils.isNotBlank(promptContent.getMessageToSend().getContentText());
+        return Objects.nonNull(promptContent.getMessageToSend());
     }
 
     private static class Info {

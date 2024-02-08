@@ -2,6 +2,8 @@ package fun.freechat.service.character.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -15,7 +17,6 @@ import fun.freechat.model.*;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.AiModelInfoService;
-import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.character.ChatContextService;
@@ -24,7 +25,6 @@ import fun.freechat.service.character.ChatSessionService;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.PromptFormat;
-import fun.freechat.service.enums.PromptRole;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.service.util.InfoUtils;
@@ -213,25 +213,12 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .build();
 
             if (CollectionUtils.isEmpty(chatMemory.messages())) {
-                Optional.of(prompt.getSystem())
-                        .map(system -> ChatMessage.from(
-                                PromptRole.SYSTEM,
-                                promptService.apply(system, variables, PromptFormat.of(prompt.getFormat()))))
-                        .map(PromptUtils::convertChatMessage)
-                        .ifPresent(chatMemory::add);
+                chatMemory.add(SystemMessage.from(promptService.apply(
+                        prompt.getSystem(), variables, PromptFormat.of(prompt.getFormat()))));
 
-                Optional.ofNullable(prompt.getMessages())
-                        .orElse(Collections.emptyList())
-                        .stream()
-                        .map(PromptUtils::convertChatMessage)
-                        .forEach(chatMemory::add);
-
-                Optional.ofNullable(characterInfo.getGreeting())
-                        .map(greeting -> ChatMessage.from(
-                                PromptRole.ASSISTANT,
-                                promptService.apply(greeting, variables, PromptFormat.of(prompt.getFormat()))))
-                        .map(PromptUtils::convertChatMessage)
-                        .ifPresent(chatMemory::add);
+                if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
+                    prompt.getMessages().forEach(chatMemory::add);
+                }
             }
 
             return ChatSession.builder()
@@ -263,7 +250,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         if (Objects.isNull(moderationModel)) {
             return null;
         }
-        List<dev.langchain4j.data.message.ChatMessage> messagesToModerate = removeToolMessages(messages);
+        List<ChatMessage> messagesToModerate = removeToolMessages(messages);
         return CompletableFuture.completedFuture(moderationModel.moderate(messagesToModerate).content());
     }
 
@@ -282,8 +269,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         }
     }
 
-    private List<dev.langchain4j.data.message.ChatMessage> removeToolMessages(
-            List<dev.langchain4j.data.message.ChatMessage> messages) {
+    private List<ChatMessage> removeToolMessages(List<ChatMessage> messages) {
         return messages.stream()
                 .filter(it -> !(it instanceof ToolExecutionResultMessage))
                 .filter(it -> !(it instanceof AiMessage aiMessage && CollectionUtils.isNotEmpty(aiMessage.toolExecutionRequests())))

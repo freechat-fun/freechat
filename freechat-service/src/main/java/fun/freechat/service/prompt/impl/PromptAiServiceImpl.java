@@ -14,11 +14,9 @@ import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.CloseableAiApiKey;
-import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.ModelType;
-import fun.freechat.service.enums.PromptRole;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.prompt.PromptAiService;
 import fun.freechat.service.util.InfoUtils;
@@ -52,12 +50,12 @@ public class PromptAiServiceImpl implements PromptAiService {
 
     @Override
     @Trace(ignoreArgs = true, extInfo = "'prompt:[' + #p0 + '],model:' + #p4.modelId + ',parameters:' + #p5")
-    public Response<ChatMessage> send(String prompt,
-                                      PromptType promptType,
-                                      User user,
-                                      String apiKeyInfo,
-                                      AiModelInfo modelInfo,
-                                      Map<String, Object> parameters) {
+    public Response<AiMessage> send(String prompt,
+                                    PromptType promptType,
+                                    User user,
+                                    String apiKeyInfo,
+                                    AiModelInfo modelInfo,
+                                    Map<String, Object> parameters) {
         ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
         ModelType type  = ModelType.of(modelInfo.getType());
         try (var apiKeyClient = getCloseableAiApiKey(user, apiKeyInfo)) {
@@ -69,12 +67,12 @@ public class PromptAiServiceImpl implements PromptAiService {
                 };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
-                    var messages = PromptUtils.toL4jMessages(promptTemplate);
+                    var messages = PromptUtils.toMessages(promptTemplate);
                     prompt = PromptUtils.toPrompt(messages);
                 }
                 return Optional.ofNullable(model.generate(prompt))
                         .map(resp -> new Response<>(
-                                ChatMessage.from(PromptRole.ASSISTANT, resp.content()),
+                                AiMessage.from(resp.content()),
                                 resp.tokenUsage(),
                                 resp.finishReason()))
                         .orElse(null);
@@ -86,10 +84,10 @@ public class PromptAiServiceImpl implements PromptAiService {
                 };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
-                    var messages = PromptUtils.toL4jMessages(promptTemplate);
-                    return PromptUtils.convertL4jMessageResponse(model.generate(messages));
+                    var messages = PromptUtils.toMessages(promptTemplate);
+                    return model.generate(messages);
                 } else {
-                    return PromptUtils.convertL4jMessageResponse(model.generate(UserMessage.from(prompt)));
+                    return model.generate(UserMessage.from(prompt));
                 }
             } else if (type == ModelType.EMBEDDING) {
                 EmbeddingModel model = switch (provider) {
@@ -99,8 +97,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                 };
                 return Optional.ofNullable(model.embed(prompt))
                         .map(resp -> new Response<>(
-                                ChatMessage.from(PromptRole.ASSISTANT,
-                                        PojoUtils.object2JsonString(resp.content().vector())),
+                                AiMessage.from(PojoUtils.object2JsonString(resp.content().vector())),
                                 resp.tokenUsage(),
                                 resp.finishReason()))
                         .orElse(null);
@@ -132,7 +129,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                 };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
-                    var messages = PromptUtils.toL4jMessages(promptTemplate);
+                    var messages = PromptUtils.toMessages(promptTemplate);
                     prompt = PromptUtils.toPrompt(messages);
                 }
                 model.generate(prompt, (StreamingResponseHandler<String>) handler);
@@ -144,14 +141,14 @@ public class PromptAiServiceImpl implements PromptAiService {
                 };
                 if (promptType == PromptType.CHAT) {
                     var promptTemplate = InfoUtils.defaultMapper().readValue(prompt, ChatPromptContent.class);
-                    var messages = PromptUtils.toL4jMessages(promptTemplate);
+                    var messages = PromptUtils.toMessages(promptTemplate);
                     model.generate(messages, (StreamingResponseHandler<AiMessage>) handler);
                 } else {
                     model.generate(prompt, (StreamingResponseHandler<AiMessage>) handler);
                 }
             } else if (type == ModelType.EMBEDDING) {
                 var result = send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
-                handler.onNext(result.content().getContentText());
+                handler.onNext(result.content().text());
                 handler.onComplete((Response<T>) result);
             } else {
                 throw new NotImplementedException("Not implemented.");

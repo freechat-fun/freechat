@@ -230,7 +230,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
     private Collection<String> getAud(OAuth2User oAuth2User, OAuth2AuthorizedClient oAuth2Client, String platform) {
         Collection<String> audSet = oAuth2User.getAttribute(IdTokenClaimNames.AUD);
         if (CollectionUtils.isEmpty(audSet)) {
-            audSet = Collections.singleton(oAuth2Client.getClientRegistration().getClientId());
+            audSet = List.of(oAuth2Client.getClientRegistration().getClientId());
         }
         return audSet;
     }

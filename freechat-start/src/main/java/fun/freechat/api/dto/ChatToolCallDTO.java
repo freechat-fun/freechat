@@ -1,10 +1,11 @@
 package fun.freechat.api.dto;
 
-import fun.freechat.service.ai.message.ChatToolCall;
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Objects;
+import static fun.freechat.api.util.ValidationUtils.ensureNotNull;
+
 
 @Schema(description = "Tool call information during the conversation")
 @Data
@@ -16,23 +17,20 @@ public class ChatToolCallDTO {
     @Schema(description = "Tool parameters")
     private String arguments;
 
-    public static ChatToolCallDTO from(ChatToolCall toolCall) {
-        if (Objects.isNull(toolCall)) {
-            return null;
-        }
-
+    public static ChatToolCallDTO from(ToolExecutionRequest request) {
+        ensureNotNull(request, "tool");
         ChatToolCallDTO dto = new ChatToolCallDTO();
-        dto.setId(toolCall.getId());
-        dto.setName(toolCall.getName());
-        dto.setArguments(toolCall.getArguments());
+        dto.setId(request.id());
+        dto.setName(request.name());
+        dto.setArguments(request.arguments());
         return dto;
     }
 
-    public ChatToolCall toChatToolCall() {
-        ChatToolCall toolCall = new ChatToolCall();
-        toolCall.setId(getId());
-        toolCall.setName(getName());
-        toolCall.setArguments(getArguments());
-        return toolCall;
+    public ToolExecutionRequest toToolExecutionRequest() {
+        return ToolExecutionRequest.builder()
+                .id(getId())
+                .name(getName())
+                .arguments(getArguments())
+                .build();
     }
 }

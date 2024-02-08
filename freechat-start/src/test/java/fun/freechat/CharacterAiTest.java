@@ -271,8 +271,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
     }
 
     private void testSendMessage() {
-        ChatContentDTO content = new ChatContentDTO();
-        content.setContent("Did you married? If you had a wife, what's her name?");
+        ChatContentDTO content = ChatContentDTO.fromText("Did you married? If you had a wife, what's her name?");
 
         ChatMessageDTO dto = new ChatMessageDTO();
         dto.setContents(List.of(content));
@@ -291,7 +290,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         assertNotNull(result);
         assertNotNull(result.getMessage());
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().toChatMessage().getContentText() +
+        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContentText() +
                 " (" + result.getTokenUsage() + ")");
 
         content.setContent("How about the weather today?");
@@ -309,13 +308,12 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         assertNotNull(result);
         assertNotNull(result.getMessage());
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " +result.getMessage().toChatMessage().getContentText() +
+        System.out.println(CHARACTER_NICKNAME + ": " +result.getMessage().getContentText() +
                 " (" + result.getTokenUsage() + ")");
     }
 
     private void testStreamSendMessage() throws Exception {
-        ChatContentDTO content = new ChatContentDTO();
-        content.setContent("OK. Nice to meet you. Bye!");
+        ChatContentDTO content = ChatContentDTO.fromText("OK. Nice to meet you. Bye!");
 
         ChatMessageDTO dto = new ChatMessageDTO();
         dto.setContents(List.of(content));
@@ -374,7 +372,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
         System.out.println("Messages history:");
         messages.stream()
                 .map(message ->
-                    "[" + message.getRole().toUpperCase() + "]: " + message.toChatMessage().getContentText())
+                    "[" + message.getRole().toUpperCase() + "]: " + message.getContentText())
                 .forEach(System.out::println);
     }
 

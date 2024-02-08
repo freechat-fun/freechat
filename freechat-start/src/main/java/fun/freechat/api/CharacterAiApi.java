@@ -1,12 +1,12 @@
 package fun.freechat.api;
 
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.ChatCreateDTO;
 import fun.freechat.api.dto.ChatMessageDTO;
 import fun.freechat.api.dto.LlmResultDTO;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.character.CharacterAiService;
 import fun.freechat.service.character.ChatMemoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -92,7 +92,7 @@ public class CharacterAiApi {
     public LlmResultDTO send(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
-        Response<ChatMessage> response = characterAiService.send(
+        Response<AiMessage> response = characterAiService.send(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
         if (Objects.isNull(response)) {

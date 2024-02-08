@@ -4,7 +4,7 @@ import fun.freechat.util.TraceUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.task.TaskExecutorBuilder;
+import org.springframework.boot.task.ThreadPoolTaskExecutorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -53,10 +53,10 @@ public class AsyncConfig {
     // other executors...
 
     // --------
-    private static TaskExecutorBuilder builderFor(TaskExecutionProperties properties) {
+    private static ThreadPoolTaskExecutorBuilder builderFor(TaskExecutionProperties properties) {
         // pool properties
         TaskExecutionProperties.Pool pool = properties.getPool();
-        TaskExecutorBuilder builder = new TaskExecutorBuilder();
+        ThreadPoolTaskExecutorBuilder builder = new ThreadPoolTaskExecutorBuilder();
         builder = builder.queueCapacity(pool.getQueueCapacity());
         builder = builder.corePoolSize(pool.getCoreSize());
         builder = builder.maxPoolSize(pool.getMaxSize());

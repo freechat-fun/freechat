@@ -1,15 +1,14 @@
 package fun.freechat.api.dto;
 
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.output.Response;
-import fun.freechat.service.ai.message.ChatMessage;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Schema(description = "Prompt service result")
@@ -47,31 +46,15 @@ public class LlmResultDTO extends TraceableDTO {
         ChatMessageDTO message = new ChatMessageDTO();
 
         switch (content) {
-            case ChatMessage origMessage -> {
-                text = origMessage.getContentText();
-                message.setGmtCreate(origMessage.getGmtCreate());
-                message.setName(origMessage.getName());
-                message.setRole(origMessage.getRole().text());
-                if (CollectionUtils.isNotEmpty(origMessage.getContents())) {
-                    message.setContents(origMessage.getContents().stream()
-                            .map(ChatContentDTO::from)
-                            .toList());
-                }
-                if (CollectionUtils.isNotEmpty(origMessage.getToolCalls())) {
-                    message.setToolCalls(origMessage.getToolCalls().stream()
-                            .map(ChatToolCallDTO::from)
-                            .toList());
-                }
-            }
             case String textMessage -> {
                 text = textMessage;
-                message.setContents(Collections.singletonList(ChatContentDTO.fromText(text)));
+                message.setContents(List.of(ChatContentDTO.fromText(text)));
                 message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }
-            case dev.langchain4j.data.message.AiMessage aiMessage -> {
+            case AiMessage aiMessage -> {
                 text = aiMessage.text();
-                message.setContents(Collections.singletonList(ChatContentDTO.fromText(text)));
+                message.setContents(List.of(ChatContentDTO.fromText(text)));
                 message.setGmtCreate(new Date());
                 if (aiMessage.hasToolExecutionRequests()) {
                     message.setToolCalls(aiMessage.toolExecutionRequests().stream()
@@ -91,7 +74,7 @@ public class LlmResultDTO extends TraceableDTO {
             }
             case null, default -> {
                 text = Objects.nonNull(content) ? content.toString() : "";
-                message.setContents(Collections.singletonList(ChatContentDTO.fromText(text)));
+                message.setContents(List.of(ChatContentDTO.fromText(text)));
                 message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }

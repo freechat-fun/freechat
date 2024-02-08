@@ -24,6 +24,9 @@ public class ChatHistory implements Serializable {
     private String message;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String systemMessage;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,6 +125,22 @@ public class ChatHistory implements Serializable {
         this.message = message == null ? null : message.trim();
     }
 
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getSystemMessage() {
+        return systemMessage;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatHistory withSystemMessage(String systemMessage) {
+        this.setSystemMessage(systemMessage);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setSystemMessage(String systemMessage) {
+        this.systemMessage = systemMessage == null ? null : systemMessage.trim();
+    }
+
     @Override
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
@@ -139,8 +158,7 @@ public class ChatHistory implements Serializable {
             && (this.getMemoryId() == null ? other.getMemoryId() == null : this.getMemoryId().equals(other.getMemoryId()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-            && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()))
-            && (this.getMessage() == null ? other.getMessage() == null : this.getMessage().equals(other.getMessage()));
+            && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()));
     }
 
     @Override
@@ -153,7 +171,6 @@ public class ChatHistory implements Serializable {
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getEnabled() == null) ? 0 : getEnabled().hashCode());
-        result = prime * result + ((getMessage() == null) ? 0 : getMessage().hashCode());
         return result;
     }
 
@@ -170,6 +187,7 @@ public class ChatHistory implements Serializable {
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", enabled=").append(enabled);
         sb.append(", message=").append(message);
+        sb.append(", systemMessage=").append(systemMessage);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

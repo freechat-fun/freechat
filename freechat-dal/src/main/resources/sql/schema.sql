@@ -262,6 +262,7 @@ CREATE TABLE IF NOT EXISTS `chat_history` (
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `message` json DEFAULT NULL,
+  `system_message` json DEFAULT NULL,
   `enabled` tinyint NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   INDEX `idx_memory_enabled` (`memory_id`, `enabled`)

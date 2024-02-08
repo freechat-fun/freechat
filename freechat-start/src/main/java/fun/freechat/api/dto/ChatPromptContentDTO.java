@@ -1,6 +1,7 @@
 package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.langchain4j.data.message.UserMessage;
 import fun.freechat.service.ai.message.ChatPromptContent;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -8,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -41,9 +43,12 @@ public class ChatPromptContentDTO {
     public ChatPromptContent toChatPromptContent() {
         ChatPromptContent chatPrompt = new ChatPromptContent();
         chatPrompt.setSystem(getSystem());
-        if (Objects.nonNull(getMessageToSend())) {
-            chatPrompt.setMessageToSend(getMessageToSend().toChatMessage());
-        }
+
+        Optional.ofNullable(getMessageToSend())
+                .map(ChatMessageDTO::toChatMessage)
+                .filter(UserMessage.class::isInstance)
+                .map(UserMessage.class::cast)
+                .ifPresent(chatPrompt::setMessageToSend);
 
         if (CollectionUtils.isNotEmpty(getMessages())) {
             chatPrompt.setMessages(getMessages().stream()

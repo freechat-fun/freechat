@@ -1,17 +1,24 @@
 package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fun.freechat.service.ai.message.ChatMessage;
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.data.message.*;
+import dev.langchain4j.internal.ValidationUtils;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static dev.langchain4j.data.message.ContentType.TEXT;
+import static fun.freechat.api.util.ChatUtils.contentTypeOf;
+import static fun.freechat.service.enums.PromptRole.*;
 
 @Schema(description = "Chat message")
 @Data
@@ -30,48 +37,90 @@ public class ChatMessageDTO {
     @Schema(description = "Contextual information in this round of conversation")
     private String context;
 
-    public static ChatMessageDTO from(ChatMessage message) {
-        return from(message, null);
+    public String getContentText() {
+        return ValidationUtils.ensureNotEmpty(contents, "contents")
+                .stream()
+                .filter(content -> contentTypeOf(content.getType()) == TEXT)
+                .map(ChatContentDTO::getContent)
+                .collect(Collectors.joining("\n"));
     }
 
-    public static ChatMessageDTO from(ChatMessage message, String context) {
-        if (Objects.isNull(message)) {
-            return null;
-        }
+    public void setContentText(String text) {
+        setContents(List.of(ChatContentDTO.fromText(text)));
+    }
 
+    public static ChatMessageDTO from(ChatMessage message) {
         ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setRole(message.getRole().text());
-        dto.setName(message.getName());
-        dto.setContext(context);
-        if (CollectionUtils.isNotEmpty(message.getContents())) {
-            dto.setContents(message.getContents().stream()
-                    .map(ChatContentDTO::from)
-                    .toList());
-        }
-        dto.setGmtCreate(message.getGmtCreate());
-        if (CollectionUtils.isNotEmpty(message.getToolCalls())) {
-            dto.setToolCalls(message.getToolCalls().stream()
-                    .map(ChatToolCallDTO::from)
-                    .toList());
+        dto.setGmtCreate(new Date());
+        switch (message.type()) {
+            case SYSTEM -> {
+                dto.setRole(SYSTEM.text());
+                dto.setContentText(((SystemMessage) message).text());
+            }
+            case AI -> {
+                AiMessage aiMessage = (AiMessage) message;
+                dto.setContentText(aiMessage.text());
+                List<ToolExecutionRequest> requests = aiMessage.toolExecutionRequests();
+                if (Objects.isNull(requests)) {
+                    dto.setRole(ASSISTANT.text());
+                } else {
+                    dto.setRole(FUNCTION_CALL.text());
+                    dto.setToolCalls(requests.stream()
+                            .map(ChatToolCallDTO::from)
+                            .toList()
+                    );
+                }
+            }
+            case USER -> {
+                UserMessage userMessage = (UserMessage) message;
+                dto.setRole(USER.text());
+                dto.setName(userMessage.name());
+                dto.setContents(userMessage.contents().stream()
+                        .map(ChatContentDTO::from)
+                        .toList());
+            }
+            case TOOL_EXECUTION_RESULT -> {
+                ToolExecutionResultMessage resultMessage = (ToolExecutionResultMessage) message;
+                ChatToolCallDTO toolCall = new ChatToolCallDTO();
+                toolCall.setId(resultMessage.id());
+                toolCall.setName(resultMessage.toolName());
+                dto.setRole(FUNCTION_RESULT.text());
+                dto.setName((resultMessage).toolName());
+                dto.setContentText(resultMessage.text());
+                dto.setToolCalls(List.of(toolCall));
+            }
         }
         return dto;
     }
 
     public ChatMessage toChatMessage() {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setRole(PromptRole.of(getRole()));
-        chatMessage.setName(getName());
-        if (CollectionUtils.isNotEmpty(getContents())) {
-            chatMessage.setContents(getContents().stream()
-                    .map(ChatContentDTO::toChatContent)
+        return switch (PromptRole.of(getRole())) {
+            case SYSTEM -> SystemMessage.from(getContentText());
+            case ASSISTANT -> AiMessage.from(getContentText());
+            case USER -> {
+                List<Content> contents = getContents().stream()
+                        .map(ChatContentDTO::toContent)
+                        .toList();
+                yield StringUtils.isBlank(getName()) ?
+                        UserMessage.from(contents) :
+                        UserMessage.from(getName(), contents);
+
+            }
+            case FUNCTION_CALL -> AiMessage.from(getToolCalls().stream()
+                    .map(ChatToolCallDTO::toToolExecutionRequest)
                     .toList());
-        }
-        if (CollectionUtils.isNotEmpty(getToolCalls())) {
-            chatMessage.setToolCalls(getToolCalls().stream()
-                    .map(ChatToolCallDTO::toChatToolCall)
-                    .toList());
-        }
-        chatMessage.setGmtCreate(getGmtCreate());
-        return chatMessage;
+            case FUNCTION_RESULT -> {
+                String id = null;
+                String name =getName();
+                String result =getContentText();
+                List<ChatToolCallDTO> toolCalls = getToolCalls();
+                if (CollectionUtils.isNotEmpty(toolCalls)) {
+                    ChatToolCallDTO toolCall = toolCalls.getFirst();
+                    id = toolCall.getId();
+                    name = toolCall.getName();
+                }
+                yield ToolExecutionResultMessage.from(id, name, result);
+            }
+        };
     }
 }
