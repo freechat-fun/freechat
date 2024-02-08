@@ -109,6 +109,7 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
                         c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
                                 .and(AiApiKeyDynamicSqlSupport.provider, isEqualTo(provider.text())))
                 .stream()
+                .filter(aiApiKey -> aiApiKey.getEnabled() == (byte)1)
                 .map(aiApiKey -> MaskedAiApiKey.of(aiApiKey, encryptionService))
                 .toList();
     }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,15 +27,15 @@ public class AiApiKeyTest extends AbstractIntegrationTest{
 
     private String apiToken;
 
-    private List<AiApiKeyCreateDTO> apiKeys;
+    private LinkedList<AiApiKeyCreateDTO> apiKeys;
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(AiApiKeyTest.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
-        apiKeys = new ArrayList<>(maxCount + 1);
-        for (int i = 0; i < maxCount + 1; ++i) {
+        apiKeys = new LinkedList<>();
+        for (int i = 0; i < maxCount * 2; ++i) {
             AiApiKeyCreateDTO apiKey = new AiApiKeyCreateDTO();
             apiKey.setName("test_api_key_" + i);
             apiKey.setProvider(ModelProvider.DASH_SCOPE.text());
@@ -54,7 +55,7 @@ public class AiApiKeyTest extends AbstractIntegrationTest{
     @Test
     public void testAll() {
         List<Long> ids = new ArrayList<>(maxCount);
-        for (int i = 0; i < maxCount; ++i) {
+        for (int i = 0; i < apiKeys.size() - 1; ++i) {
             testClient.post().uri("/api/v1/ai/apikey")
                     .accept(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -71,7 +72,7 @@ public class AiApiKeyTest extends AbstractIntegrationTest{
         testClient.post().uri("/api/v1/ai/apikey")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
-                .bodyValue(apiKeys.get(maxCount))
+                .bodyValue(apiKeys.getLast())
                 .exchange()
                 .expectStatus().is4xxClientError();
 

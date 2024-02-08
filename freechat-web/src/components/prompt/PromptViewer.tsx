@@ -101,7 +101,7 @@ export default function PromptViewer({
           borderRadius: '16px',
         }}>
           <Button
-            startDecorator={<ContentCopyRounded />}
+            startDecorator={<ContentCopyRounded fontSize="small" />}
             onClick={handleCopy}
           >
             {t('button:Copy')}

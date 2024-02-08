@@ -37,7 +37,7 @@ export default function ImagePicker(props: ImagePickerProps) {
   const [file, setFile] = useState<Blob | null>(null);
   const [open, setOpen] = useState(false);
 
-  const preview = { width: '200px', height: '200px', borderRadius: '5%', ...{previewProps} };
+  const preview = { width: '200px', height: '200px', borderRadius: '5%', ...previewProps };
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const filePath = event.target.files && event.target.files[0];

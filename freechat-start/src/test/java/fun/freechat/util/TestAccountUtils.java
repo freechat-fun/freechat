@@ -1,6 +1,7 @@
 package fun.freechat.util;
 
 import fun.freechat.model.User;
+import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysUserService;
@@ -27,14 +28,26 @@ public class TestAccountUtils implements ApplicationContextAware {
     }
 
     public static Pair<String, String> createUserAndToken(String username, Set<String> roles) {
-        String randomInfo = IdUtils.newId();
-        User user = new User().withUsername(username).withPassword("test-" + randomInfo);
-        userService.create(user);
+        User user = userService.loadByUsername(username);
+        if (Objects.isNull(user)) {
+            String randomInfo = IdUtils.newId();
+            user = new User().withUsername(username).withPassword("test-" + randomInfo);
+            userService.create(user);
+        }
+
         if (CollectionUtils.isNotEmpty(roles)) {
             authorityService.update(user.getUserId(),
                     roles.stream().map(AuthorityUtils::fromRole).collect(Collectors.toSet()));
         }
-        return Pair.of(user.getUserId(), apiTokenService.create(user));
+
+        final User activeUser = user;
+        String apiToken = apiTokenService.list(activeUser)
+                .stream()
+                .findAny()
+                .map(MaskedApiToken::getToken)
+                .orElseGet(() -> apiTokenService.create(activeUser));
+
+        return Pair.of(activeUser.getUserId(), apiToken);
     }
 
     public static void deleteUserAndToken(String userId) {

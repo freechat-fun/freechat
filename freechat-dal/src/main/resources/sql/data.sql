@@ -4,8 +4,9 @@ INSERT IGNORE INTO `user` (`gmt_create`, `gmt_modified`, `user_id`, `username`, 
 INSERT IGNORE INTO `api_token` (`gmt_create`, `gmt_modified`, `user_id`, `token`, `policy`, `issued_at`) VALUE ('2023-08-20 19:11:32', '2023-08-20 19:11:32', '2', 'fc-guest', '*', '2023-08-20 19:11:32');
 
 INSERT IGNORE INTO `ai_model_info` (`model_id`, `gmt_create`, `gmt_modified`, `name`, `description`, `provider`, `type`) VALUES
-('[dash_scope]qwen-turbo', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-turbo', 'qwen base model, 4k context', 'dash_scope', 'text2chat'),
-('[dash_scope]qwen-plus', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-plus', 'qwen plus model, 8k context', 'dash_scope', 'text2chat'),
+('[dash_scope]qwen-turbo', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-turbo', 'qwen base model, 8k context', 'dash_scope', 'text2chat'),
+('[dash_scope]qwen-plus', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-plus', 'qwen plus model, 32k context', 'dash_scope', 'text2chat'),
+('[dash_scope]qwen-max', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-max', 'qwen max model, 8k context', 'dash_scope', 'text2chat'),
 ('[dash_scope]qwen-7b-chat', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-7b-chat', 'qwen open sourced 7-billion-parameters version, 8k context', 'dash_scope', 'text2chat'),
 ('[dash_scope]qwen-14b-chat', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-14b-chat', 'qwen open sourced 14-billion-parameters version, 8k context', 'dash_scope', 'text2chat'),
 ('[dash_scope]qwen-vl-plus', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'qwen-vl-plus', 'qwen multi-modal model, supports image and text information', 'dash_scope', 'text2chat'),

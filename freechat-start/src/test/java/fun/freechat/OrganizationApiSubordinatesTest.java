@@ -18,7 +18,7 @@ public class OrganizationApiSubordinatesTest extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(OrganizationApiSubordinatesTest.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         TestOrgUtils.addSubordinates(userId);

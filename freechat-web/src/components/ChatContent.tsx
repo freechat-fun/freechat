@@ -4,8 +4,9 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useErrorMessageBusContext } from "../contexts";
 import { LlmResultDTO, LlmTokenUsageDTO } from 'freechat-sdk';
 import { SxProps } from '@mui/joy/styles/types';
-import { MarkdownContent } from '.';
-import { Box, Divider, Typography } from '@mui/joy';
+import { LinePlaceholder, MarkdownContent } from '.';
+import { Box, Chip, Divider, IconButton, Typography } from '@mui/joy';
+import { ContentCopyRounded } from '@mui/icons-material';
 
 interface ChatContentProps {
   disabled?: boolean;
@@ -36,6 +37,7 @@ export default function ChatContent({
 
   const [data, setData] = useState(initialData || '');
   const [usage, setUsage] = useState<LlmTokenUsageDTO>();
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const hasBody = body !== undefined;
@@ -57,6 +59,7 @@ export default function ChatContent({
           onopen() {
             setData('');
             setUsage(undefined);
+            setCopied(false);
             return Promise.resolve();
           },
           onmessage(event) {
@@ -94,7 +97,23 @@ export default function ChatContent({
       </MarkdownContent>
       {usage && (
         <Fragment>
-          <Divider sx={{ mt: 3, mb: 1 }}>{t('Token Usage')}</Divider>
+          <LinePlaceholder spacing={2} />
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+          }}>
+            {copied ? (<Chip variant='outlined'>{t('Copied!')}</Chip>) : (
+              <IconButton onClick={() => {
+                data && navigator?.clipboard?.writeText(data)
+                  .then(() => setCopied(true))
+                  .catch(handleError);
+              }}>
+                <ContentCopyRounded fontSize='small'/>
+              </IconButton>
+            )}
+          </Box>
+          <Divider sx={{ mt: 1, mb: 1 }}>{t('Token Usage')}</Divider>
           <Box sx={{
             display: 'flex',
             justifyContent: 'space-between',

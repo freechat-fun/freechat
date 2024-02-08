@@ -11,6 +11,7 @@ import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
 import { i18nConfig } from "../../configs/i18n-config";
+import { ChatIcon } from "../../components/icon";
 
 interface RecordCardProps {
   record: CharacterSummaryDTO,
@@ -78,6 +79,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       </SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
+        icons={{view: ChatIcon}}
         onView={() => onView(record)}
         onEdit={() => onEdit(record)}
         onDelete={() => onDelete(record)}
@@ -232,7 +234,7 @@ export default function Characters() {
         <Button
           startDecorator={<AddCircleRounded />}
           sx={{ borderRadius: '20px' }}
-          onClick={() => setEditRecordName('untitled-1')}
+          onClick={() => setEditRecordName('untitled')}
         >
           {t('Create new')}
         </Button>

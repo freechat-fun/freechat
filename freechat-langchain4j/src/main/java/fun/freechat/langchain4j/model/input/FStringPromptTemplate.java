@@ -27,7 +27,7 @@ public class FStringPromptTemplate extends PromptTemplate {
     }
 
     public FStringPromptTemplate(String template) {
-        super(null);
+        super(template);
         this.template = template;
     }
 

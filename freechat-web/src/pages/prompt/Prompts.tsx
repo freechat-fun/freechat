@@ -243,7 +243,7 @@ export default function Prompts() {
         <Button
           startDecorator={<AddCircleRounded />}
           sx={{ borderRadius: '20px' }}
-          onClick={() => setEditRecordName('untitled-1')}
+          onClick={() => setEditRecordName('untitled')}
         >
           {t('Create new')}
         </Button>

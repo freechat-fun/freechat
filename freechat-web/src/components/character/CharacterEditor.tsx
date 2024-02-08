@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
@@ -26,11 +26,11 @@ export default function CharacterEditor ({
   const { username } = useUserInfoContext();
 
   const [origRecord, setOrigRecord] = useState(new CharacterDetailsDTO());
-  const [editRecord, setEditRecord] = useState(new CharacterDetailsDTO());
   const [originName, setOriginName] = useState<string>();
   const [editRecordName, setEditRecordName] = useState<string>();
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
+  const [recordName, setRecordName] = useState<string>();
   const [nickname, setNickname] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [avatar, setAvatar] = useState<string>();
@@ -51,13 +51,32 @@ export default function CharacterEditor ({
 
   const [editEnabled, setEditEnabled] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const getEditRecord = useCallback(() => {
+    const newRecord = new CharacterDetailsDTO();
+    newRecord.characterId = id;
+    newRecord.name = recordName ??'';
+    newRecord.nickname = nickname;
+    newRecord.description = description;
+    newRecord.avatar = avatar;
+    newRecord.picture = picture;
+    newRecord.gender = gender;
+    newRecord.lang = lang;
+    newRecord.profile = profile;
+    newRecord.greeting = greeting;
+    newRecord.chatStyle = chatStyle;
+    newRecord.chatExample = chatExample;
+    newRecord.visibility = visibility;
+    newRecord.tags = [...tags];
+
+    return newRecord;
+  }, [avatar, chatExample, chatStyle, description, gender, greeting, id, lang, nickname, picture, profile, recordName, tags, visibility]);
   
   useEffect(() => {
     if (id) {
       characterApi?.getCharacterDetails(id)
         .then(resp => {
           setOrigRecord(resp);
-          setEditRecord(resp);
         })
         .catch(handleError);
     }
@@ -98,131 +117,25 @@ export default function CharacterEditor ({
   }, [origRecord, username]);
 
   useEffect(() => {
-    setSaved(() => false);
-  }, [editRecord]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.nickname = nickname;
-      return newRecord;
-    });
-  }, [nickname]);
-  
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.description = description;
-      return newRecord;
-    });
-  }, [description]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.avatar = avatar;
-      return newRecord;
-    });
-  }, [avatar]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.picture = picture;
-      return newRecord;
-    });
-  }, [picture]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.gender = gender;
-      return newRecord;
-    });
-  }, [gender]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.lang = lang;
-      return newRecord;
-    });
-  }, [lang]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.lang = lang;
-      return newRecord;
-    });
-  }, [lang]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.profile = profile;
-      return newRecord;
-    });
-  }, [profile]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.greeting = greeting;
-      return newRecord;
-    });
-  }, [greeting]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.chatStyle = chatStyle;
-      return newRecord;
-    });
-  }, [chatStyle]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.chatExample = chatExample;
-      return newRecord;
-    });
-  }, [chatExample]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.visibility = visibility;
-      return newRecord;
-    });
-  }, [visibility]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.tags = tags;
-      return newRecord;
-    });
-  }, [tags]);
+    if (editEnabled) {
+      setSaved(false);
+    }
+  }, [editEnabled, nickname, description, avatar, picture, gender, lang, greeting, chatStyle, chatExample, visibility, tags]);
 
   function handleNameChange(): void {
     if (editRecordNameError) {
       return;
     }
 
-    if (editRecordName && editRecordName !== editRecord?.name) {
+    if (editRecordName && editRecordName !== recordName) {
       if (editRecordName === originName) {
-        const newRecord = {...editRecord};
-        newRecord.name = editRecordName;
-        setEditRecord(newRecord);
+        setRecordName(editRecordName);
         setEditRecordName(undefined);
       } else {
         characterApi?.existsCharacterName(editRecordName)
           .then(resp => {
             if (!resp) {
-              const newRecord = {...editRecord};
-              newRecord.name = editRecordName;
-              setEditRecord(newRecord);
+              setRecordName(editRecordName);
               setEditRecordName(undefined);
             } else {
               setEditRecordNameError(true);
@@ -254,22 +167,23 @@ export default function CharacterEditor ({
   }
 
   function handleRecordSave(): void {
-    if (!editRecord.characterId) {
+    if (!id) {
       return;
     }
-    const draftRecord = {...editRecord};
+    const draftRecord = getEditRecord();
     draftRecord.characterId = undefined;
+    draftRecord.draft = undefined;
 
     const request = new CharacterUpdateDTO();
     request.draft = JSON.stringify(draftRecord);
 
-    characterApi?.updateCharacter(editRecord.characterId, request)
+    characterApi?.updateCharacter(id, request)
       .then(setSaved)
       .catch(handleError);
   }
 
   function handleRecordPublish(): void {
-    if (!editRecord.characterId) {
+    if (!id) {
       return;
     }
     const onUpdated = (id: string, visibility: string) => {
@@ -283,8 +197,9 @@ export default function CharacterEditor ({
         .catch(handleError);
     };
 
+    const editRecord = getEditRecord();
     const request = recordToUpdateRequest(editRecord);
-    characterApi?.updateCharacter(editRecord.characterId, request)
+    characterApi?.updateCharacter(id, request)
       .then(resp => {
         setSaved(resp);
         if (resp) {
@@ -363,8 +278,8 @@ export default function CharacterEditor ({
     if (backend.chatPromptTaskId) {
       updateBackend(backend.backendId, request);
     } else {
-      const promptReq = createPromptForCharacter(editRecord.name, editRecord.lang);
-      promptApi?.newPromptName(editRecord.name)
+      const promptReq = createPromptForCharacter(recordName, lang);
+      promptApi?.newPromptName(recordName ?? 'untitled')
         .then(name => {
           promptReq.name = name;
           promptApi?.createPrompt(promptReq)
@@ -403,17 +318,17 @@ export default function CharacterEditor ({
           alignItems: 'center',
           flex: 1,
         }}>
-          <Typography level="h3">{editRecord?.name}</Typography>
+          <Typography level="h3">{recordName}</Typography>
           <IconButton
             disabled={!!editRecordName}
             size="sm"
-            onClick={() => setEditRecordName(editRecord?.name || 'untitled-1')}
+            onClick={() => setEditRecordName(recordName || 'untitled')}
           >
             <EditRounded fontSize="small" />
           </IconButton>
         </CommonContainer>
         <Typography level="body-sm">
-          {t('Updated on')} {getDateLabel(editRecord?.gmtModified || new Date(0), i18n.language, true)}
+          {t('Updated on')} {getDateLabel(origRecord?.gmtModified || new Date(0), i18n.language, true)}
         </Typography>
         
         <ButtonGroup

@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,9 +26,11 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@EnabledIfEnvironmentVariable(named = "DASHSCOPE_API_KEY", matches = ".+")
+@EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
 public class PromptAiTest extends AbstractIntegrationTest {
     private static final String PROMPT = "say 'hello'";
-    private static final String PROMPT_DRAFT = "say 'goodbye'";
+    private static final String PROMPT_DRAFT = "{\"template\":\"say 'goodbye'\",\"type\":\"string\"}";
     private static final String PROMPT_TEMPLATE_FSTRING = "say '{greeting}'";
     private static final String PROMPT_TEMPLATE_MUSTACHE = "say '{{greeting}}'";
 
@@ -39,7 +42,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(PromptAiTest.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         promptId = TestPromptUtils.createPrompt(userId, PROMPT, PROMPT_DRAFT);
@@ -113,7 +116,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
     static Stream<Arguments> testPromptWithApiKey() {
         return Stream.of(
-                Arguments.of("[dash_scope]qwen-plus", TestAiApiKeyUtils.apiKeyOfDashScope()),
+                Arguments.of("[dash_scope]qwen-vl-max", TestAiApiKeyUtils.apiKeyOfDashScope()),
                 Arguments.of("[open_ai]gpt-3.5-turbo-instruct", TestAiApiKeyUtils.apiKeyOfOpenAI()),
                 Arguments.of("[open_ai]gpt-3.5-turbo", TestAiApiKeyUtils.apiKeyOfOpenAI())
         );
@@ -140,7 +143,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
     static Stream<Arguments> testPromptWithApiKeyName() {
         return Stream.of(
-                Arguments.of("[dash_scope]qwen-plus", "test_api_key_dash_scope"),
+                Arguments.of("[dash_scope]qwen-vl-max", "test_api_key_dash_scope"),
                 Arguments.of("[open_ai]gpt-3.5-turbo-instruct", "test_api_key_open_ai"),
                 Arguments.of("[open_ai]gpt-3.5-turbo", "test_api_key_open_ai")
         );
@@ -154,7 +157,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
         promptTemplate.setFormat(format);
         promptTemplate.setVariables(variables);
 
-        PromptAiParamDTO aiRequest = createRequest("[dash_scope]qwen-plus");
+        PromptAiParamDTO aiRequest = createRequest("[dash_scope]qwen-vl-max");
         aiRequest.getParams().put("apiKey", TestAiApiKeyUtils.apiKeyOfDashScope());
         aiRequest.setPromptTemplate(promptTemplate);
 
@@ -185,7 +188,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
         promptRef.setPromptId(promptId);
         promptRef.setDraft(false);
 
-        PromptAiParamDTO aiRequest = createRequest("[dash_scope]qwen-plus");
+        PromptAiParamDTO aiRequest = createRequest("[dash_scope]qwen-vl-max");
         aiRequest.getParams().put("apiKey", TestAiApiKeyUtils.apiKeyOfDashScope());
         aiRequest.setPromptRef(promptRef);
 
@@ -248,7 +251,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
     @Test
     public void testPromptOpForbidden() {
-        PromptAiParamDTO aiRequest = createRequest("[dash_scope]qwen-plus");
+        PromptAiParamDTO aiRequest = createRequest("[dash_scope]qwen-vl-max");
         aiRequest.getParams().put("apiKeyName", "No Key");
         aiRequest.setPrompt(PROMPT);
 
@@ -261,7 +264,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
         PromptRefDTO promptRef = new PromptRefDTO();
         promptRef.setPromptId("No Id");
-        aiRequest = createRequest("[dash_scope]qwen-plus");
+        aiRequest = createRequest("[dash_scope]qwen-vl-max");
         aiRequest.getParams().put("apiKey", TestAiApiKeyUtils.apiKeyOfDashScope());
         aiRequest.setPromptRef(promptRef);
 
@@ -316,7 +319,7 @@ public class PromptAiTest extends AbstractIntegrationTest {
 
     static Stream<Arguments> testChatPrompt() {
         return Stream.of(
-                Arguments.of("[dash_scope]qwen-plus", TestAiApiKeyUtils.apiKeyOfDashScope()),
+                Arguments.of("[dash_scope]qwen-vl-max", TestAiApiKeyUtils.apiKeyOfDashScope()),
                 Arguments.of("[open_ai]gpt-3.5-turbo", TestAiApiKeyUtils.apiKeyOfOpenAI())
         );
     }

@@ -25,7 +25,7 @@ public class TagTest extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(TagTest.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         promptId1 = TestPromptUtils.createPrompt(userId, "Hello unit-test 1", null);
@@ -41,7 +41,7 @@ public class TagTest extends AbstractIntegrationTest {
         TestPromptUtils.deletePrompt(userId, promptId1);
         TestPromptUtils.deletePrompt(userId, promptId2);
         TestTagUtils.cleanTags(userId);
-        TestAccountUtils.deleteUserAndToken("31");
+        TestAccountUtils.deleteUserAndToken(userId);
     }
 
     @Test

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ElementType } from "react";
 import { Box, CardCover, IconButton } from "@mui/joy";
 import { VisibilityRounded, EditRounded, DeleteRounded } from "@mui/icons-material";
 
@@ -12,17 +14,24 @@ function CardIconButton({ Icon, onClick }: {
       sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
       onClick={onClick}
     >
-      <Icon />
+      <Icon fill="e0e0e0" />
     </IconButton>
   );
 }
 
 export default function InfoCardCover(props: {
+  icons?: {
+    view?: ElementType<any>,
+    edit?: ElementType<any>,
+    delete?: ElementType<any>,
+  }
   onView: () => void,
   onEdit: () => void,
   onDelete: () => void,
 }) {
-  const { onView, onEdit, onDelete } = props;
+  const { icons, onView, onEdit, onDelete } = props;
+
+  const iconSet = { view: VisibilityRounded, edit: EditRounded, delete: DeleteRounded, ...icons };
 
   return (
     <CardCover
@@ -46,9 +55,9 @@ export default function InfoCardCover(props: {
             gap: 1,
             width: '100%',
           }}>
-            <CardIconButton Icon={VisibilityRounded} onClick={onView} />
-            <CardIconButton Icon={EditRounded} onClick={onEdit} />
-            <CardIconButton Icon={DeleteRounded} onClick={onDelete} />
+            <CardIconButton Icon={iconSet.view} onClick={onView} />
+            <CardIconButton Icon={iconSet.edit} onClick={onEdit} />
+            <CardIconButton Icon={iconSet.delete} onClick={onDelete} />
           </Box>
       </div>
       </CardCover>

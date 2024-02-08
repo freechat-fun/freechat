@@ -23,13 +23,17 @@ public class SwitchUserTest extends AbstractIntegrationTest {
 
     private String orgApiToken;
 
+    private String usernameOf(String sn) {
+        return SwitchUserTest.class.getName() + "-" + sn;
+    }
+
     @BeforeEach
     public void setUp() {
         Pair<String, String> adminAndToken = TestAccountUtils.createUserAndToken(
-                "11", Set.of(AuthorityUtils.bizRole()));
+                usernameOf("11"), Set.of(AuthorityUtils.bizRole()));
         Pair<String, String> orgAndToken = TestAccountUtils.createUserAndToken(
-                "21", Set.of(AuthorityUtils.orgRole()));
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+                usernameOf("21"), Set.of(AuthorityUtils.orgRole()));
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(usernameOf("31"));
         adminApiToken = adminAndToken.getRight();
         orgApiToken = orgAndToken.getRight();
         TestOrgUtils.addOwners(userAndToken.getLeft());
@@ -39,10 +43,10 @@ public class SwitchUserTest extends AbstractIntegrationTest {
     @AfterEach
     public void cleanUp() {
         TestOrgUtils.cleanTestTree();
-        TestAccountUtils.deleteUserAndTokenByUsername("51");
-        TestAccountUtils.deleteUserAndTokenByUsername("31");
-        TestAccountUtils.deleteUserAndTokenByUsername("21");
-        TestAccountUtils.deleteUserAndTokenByUsername("11");
+        TestAccountUtils.deleteUserAndTokenByUsername(usernameOf("51"));
+        TestAccountUtils.deleteUserAndTokenByUsername(usernameOf("31"));
+        TestAccountUtils.deleteUserAndTokenByUsername(usernameOf("21"));
+        TestAccountUtils.deleteUserAndTokenByUsername(usernameOf("11"));
         TestCommonUtils.waitAWhile();
     }
 
@@ -51,12 +55,12 @@ public class SwitchUserTest extends AbstractIntegrationTest {
         testClient.get().uri("/api/v1/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + adminApiToken)
-                .header(impersonateHeaderName, "31")
+                .header(impersonateHeaderName, usernameOf("31"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.username").isEqualTo("31");
+                    .jsonPath("$.username").isEqualTo(usernameOf("31"));
     }
 
     @Test
@@ -64,12 +68,12 @@ public class SwitchUserTest extends AbstractIntegrationTest {
         testClient.get().uri("/api/v1/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + adminApiToken)
-                .header(impersonateHeaderName, "51")
+                .header(impersonateHeaderName, usernameOf("51"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.username").isEqualTo("51");
+                    .jsonPath("$.username").isEqualTo(usernameOf("51"));
     }
 
     @Test
@@ -77,7 +81,7 @@ public class SwitchUserTest extends AbstractIntegrationTest {
         testClient.get().uri("/api/v1/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + orgApiToken)
-                .header(impersonateHeaderName, "31")
+                .header(impersonateHeaderName, usernameOf("31"))
                 .exchange()
                 .expectStatus().isForbidden();
     }

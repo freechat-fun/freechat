@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.http.MediaType;
 
 import java.util.*;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
 public class CharacterAiTest extends AbstractIntegrationTest{
     private static final String MODEL_ID = "[open_ai]gpt-4";
     private static final String API_KEY_NAME = "test_api_key_open_ai";
@@ -126,7 +128,7 @@ public class CharacterAiTest extends AbstractIntegrationTest{
     }
 
     private void createUser() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(CharacterAiTest.class.getName());
         userId = userAndToken.getLeft();
         userApiKey = userAndToken.getRight();
     }

@@ -4,11 +4,11 @@ import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.InteractiveStatsScoreDetails;
+import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.common.TagService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
-import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.plugin.PluginService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.stats.InteractiveStatsService;
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
@@ -60,7 +60,7 @@ public class InteractiveStatsApi {
             @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
-            @Parameter(description = "Delta in statistical value") @PathVariable("delta") @NotEmpty Long delta) {
+            @Parameter(description = "Delta in statistical value") @PathVariable("delta") @NotNull Long delta) {
         StatsType statsTypeEnum = StatsType.of(statsType);
         if (statsTypeEnum == StatsType.SCORE) {
             delta = Math.max(0L, delta);

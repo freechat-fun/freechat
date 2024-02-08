@@ -20,7 +20,7 @@ public class InteractiveStatsApiTest extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(InteractiveStatsApiTest.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         promptId = TestPromptUtils.createPrompt(userId, "Hello unit-test", null);

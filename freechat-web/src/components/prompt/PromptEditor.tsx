@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
@@ -41,11 +41,10 @@ export default function PromptEditor({
   const [defaultVariables, setDefaultVariables] = useState(variables ? {...variables} : undefined)
   const [defaultOutputText, setDefaultOutputText] = useState<string>();
   const [origRecord, setOrigRecord] = useState(new PromptDetailsDTO());
-  const [editRecord, setEditRecord] = useState(new PromptDetailsDTO());
-  const [originName, setOriginName] = useState<string>();
   const [editRecordName, setEditRecordName] = useState<string>();
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
+  const [recordName, setRecordName] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [inputs, setInputs] = useState<{ [key: string]: any }>();
   const [stringTemplate, setStringTemplate] = useState<string>();
@@ -71,6 +70,8 @@ export default function PromptEditor({
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
   const [saved, setSaved] = useState(false);
+
+  const originName = useRef<string>();
 
   const FORMATS = [
     {
@@ -98,12 +99,35 @@ export default function PromptEditor({
     borderRadius: '12px',
   });
 
+  const getEditRecord = useCallback((inputsJson: string | undefined) => {
+    const newRecord = new PromptDetailsDTO();
+    newRecord.promptId = id;
+    newRecord.name = recordName;
+    newRecord.description = description;
+    newRecord.type = origRecord.type;
+    newRecord.chatTemplate = new ChatPromptContentDTO();
+    newRecord.chatTemplate.system = system;
+    newRecord.chatTemplate.messages = [...messages];
+    newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
+    newRecord.chatTemplate.messageToSend.role = 'user';
+    setMessageText(newRecord.chatTemplate.messageToSend, userMessage);
+    newRecord.template = stringTemplate;
+    newRecord.example = example;
+    newRecord.inputs = inputsJson;
+    newRecord.visibility = visibility;
+    newRecord.format = format;
+    newRecord.lang = lang;
+    newRecord.tags = [...tags];
+    newRecord.aiModels = [...models];
+
+    return newRecord;
+  }, [description, example, format, id, lang, messages, models, origRecord.type, recordName, stringTemplate, system, tags, userMessage, visibility]);
+
   useEffect(() => {
     if (id) {
       promptApi?.getPromptDetails(id)
         .then(resp => {
           setOrigRecord(resp);
-          setEditRecord(resp);
         })
         .catch(handleError);
     }
@@ -128,12 +152,9 @@ export default function PromptEditor({
       }
 
       const draftRecord = {...origRecord, ...draft};
-      
-      setOriginName(draftRecord.name);
 
+      setRecordName(draftRecord.name);
       setDescription(draftRecord.description);
-      setStringTemplate(draftRecord.template);
-      setInputs(extractVariables(draftRecord));
       setStringTemplate(draftRecord.template);
       setSystem(draftRecord.chatTemplate?.system);
       setUserName(draftRecord.chatTemplate?.messageToSend?.name ?? 'user');
@@ -155,108 +176,50 @@ export default function PromptEditor({
           // ignore
         }
       }
+      setInputs(extractVariables(draftRecord));
+
+      originName.current = draftRecord.name;
     }
   }, [origRecord, username]);
 
   useEffect(() => {
-    setSaved(() => false);
-  }, [editRecord]);
+    if (originName.current) {
+      setSaved(false);
+    }
+  }, [description, system, example, visibility, lang, tags, models]);
 
   useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.description = description;
-      return newRecord;
-    });
-  }, [description]);
+    if (originName.current) {
+      setInputs((prevInputs => extractVariables(getEditRecord(JSON.stringify(prevInputs)))));
+      setSaved(false);
+    }
+  }, [getEditRecord, userMessage, stringTemplate]);
 
   useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      if (!newRecord.chatTemplate) {
-        newRecord.chatTemplate = new ChatPromptContentDTO();
-      }
-      newRecord.chatTemplate.system = system;
-      setInputs(extractVariables(newRecord));
-      return newRecord;
-    });
-  }, [system]);
+    if (originName.current) {
+      setRounds(messagesToRounds(messages));
+      setInputs((prevInputs => extractVariables(getEditRecord(JSON.stringify(prevInputs)))));
+      setSaved(false);
+    }
+  }, [getEditRecord, messages]);
 
   useEffect(() => {
-    setRounds(messagesToRounds(messages));
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      if (!newRecord.chatTemplate) {
-        newRecord.chatTemplate = new ChatPromptContentDTO();
-      }
-      newRecord.chatTemplate.messages = messages;
-      setInputs(extractVariables(newRecord));
-      return newRecord;
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      if (!newRecord.chatTemplate) {
-        newRecord.chatTemplate = new ChatPromptContentDTO();
-      }
-      if (!newRecord.chatTemplate.messageToSend) {
-        newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
-        newRecord.chatTemplate.messageToSend.role = 'user';
-      }
-      setMessageText(newRecord.chatTemplate.messageToSend, userMessage);
-      setInputs(extractVariables(newRecord));
-      return newRecord;
-    });
-  }, [userMessage]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.template = stringTemplate;
-      setInputs(extractVariables(newRecord));
-      return newRecord;
-    });
-  }, [stringTemplate]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.example = example;
-      return newRecord;
-    });
-  }, [example]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.inputs = JSON.stringify(inputs);
-      return newRecord;
-    });
-    setDefaultVariables(prevVariables => {
-      const filteredInputs: { [key: string]: any; } = {};
-      Object.keys(prevVariables ?? {}).forEach(k => {
-        if (k in (inputs ?? {}) && prevVariables?.k) {
-          filteredInputs[k] = prevVariables.k;
-        }
-      })
-      return {...inputs, ...filteredInputs};
-    });
+    if (originName.current) {
+      setDefaultVariables(prevVariables => {
+        const filteredInputs: { [key: string]: any; } = {};
+        Object.keys(prevVariables ?? {}).forEach(k => {
+          if (k in (inputs ?? {}) && prevVariables?.k) {
+            filteredInputs[k] = prevVariables.k;
+          }
+        });
+        return {...inputs, ...filteredInputs};
+      });
+      setSaved(false);
+    }
   }, [inputs]);
 
   useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.visibility = visibility;
-      return newRecord;
-    });
-  }, [visibility]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.format = format;
+    if (originName.current) {
       setUserMessage(prevUserMessage => {
         if (format === 'mustache' && prevUserMessage === '{input}') {
           return '{{input}}';
@@ -266,34 +229,8 @@ export default function PromptEditor({
           return prevUserMessage;
         }
       });
-      setInputs(extractVariables(newRecord));
-      return newRecord;
-    });
+    }
   }, [format]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.lang = lang;
-      return newRecord;
-    });
-  }, [lang]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.tags = tags;
-      return newRecord;
-    });
-  }, [tags]);
-
-  useEffect(() => {
-    setEditRecord(prevRecord => {
-      const newRecord = {...prevRecord};
-      newRecord.aiModels = models;
-      return newRecord;
-    });
-  }, [models]);
 
   function handlePlaySuccess(request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined): void {
     request?.params && Object.keys(request?.params).length > 0 ?
@@ -315,19 +252,15 @@ export default function PromptEditor({
       return;
     }
 
-    if (editRecordName && editRecordName !== editRecord?.name) {
-      if (editRecordName === originName) {
-        const newRecord = {...editRecord};
-        newRecord.name = editRecordName;
-        setEditRecord(newRecord);
+    if (editRecordName && editRecordName !== recordName) {
+      if (editRecordName === originName.current) {
+        setRecordName(editRecordName);
         setEditRecordName(undefined);
       } else {
         promptApi?.existsPromptName(editRecordName)
           .then(resp => {
             if (!resp) {
-              const newRecord = {...editRecord};
-              newRecord.name = editRecordName;
-              setEditRecord(newRecord);
+              setRecordName(editRecordName);
               setEditRecordName(undefined);
             } else {
               setEditRecordNameError(true);
@@ -360,13 +293,11 @@ export default function PromptEditor({
     currentUserMessage.role = 'user',
     currentUserMessage.name = editUserName;
     setMessageText(currentUserMessage, editUserContent);
-    currentUserMessage.gmtCreate = new Date();
 
     const currentAssistantMessage = new ChatMessageDTO();
     currentAssistantMessage.role = 'assistant',
     currentAssistantMessage.name = editAssistantName;
     setMessageText(currentAssistantMessage, editAssistantContent);
-    currentAssistantMessage.gmtCreate = new Date();
 
     setMessages([...messages, currentUserMessage, currentAssistantMessage]);
     setEditRound(false);
@@ -456,22 +387,23 @@ export default function PromptEditor({
   }
 
   function handleRecordSave(): void {
-    if (!editRecord.promptId) {
+    if (!id) {
       return;
     }
-    const draftRecord = {...editRecord};
+    const draftRecord = getEditRecord(JSON.stringify(inputs));
     draftRecord.promptId = undefined;
+    draftRecord.draft = undefined;
 
     const request = new PromptUpdateDTO();
     request.draft = JSON.stringify(draftRecord);
 
-    promptApi?.updatePrompt(editRecord.promptId, request)
+    promptApi?.updatePrompt(id, request)
       .then(setSaved)
       .catch(handleError);
   }
 
   function handleRecordPublish(): void {
-    if (!editRecord.promptId) {
+    if (!id) {
       return;
     }
     const onUpdated = (id: string, visibility: string) => {
@@ -485,12 +417,14 @@ export default function PromptEditor({
         .catch(handleError);
     };
 
+    const editRecord = getEditRecord(JSON.stringify(inputs));
+
     const request = recordToUpdateRequest(editRecord);
-    promptApi?.updatePrompt(editRecord.promptId, request)
+    promptApi?.updatePrompt(id, request)
       .then(resp => {
         setSaved(resp);
         if (resp) {
-          onUpdated(editRecord.promptId as string, editRecord.visibility === 'private' ? 'private' : 'public');
+          onUpdated(id as string, editRecord.visibility === 'private' ? 'private' : 'public');
         }
       })
       .catch(handleError);
@@ -498,11 +432,11 @@ export default function PromptEditor({
   }
 
   function filterModels(provider?: string): (AiModelInfoDTO)[] {
-    return editRecord && modelInfos ? modelInfos.filter(modelInfo => {
+    return modelInfos ? modelInfos.filter(modelInfo => {
       if (!modelInfo || (provider && modelInfo.provider !== provider)) {
         return false;
       }
-      switch(editRecord.type) {
+      switch(origRecord.type) {
         case 'chat': {
           return modelInfo.type === 'text2chat';
         }
@@ -550,7 +484,7 @@ export default function PromptEditor({
   function recordToUpdateRequest(record: PromptDetailsDTO): PromptUpdateDTO {
     const request = new PromptUpdateDTO();
     request.aiModels = record.aiModels?.map(modelInfo => modelInfo.modelId as string);
-    request.chatTemplate = record.chatTemplate;
+    request.chatTemplate = {...record.chatTemplate};
     request.description = record.description;
     request.example = record.example;
     request.ext = record.ext;
@@ -581,17 +515,17 @@ export default function PromptEditor({
           alignItems: 'center',
           flex: 1,
         }}>
-          <Typography level="h3">{editRecord?.name}</Typography>
+          <Typography level="h3">{recordName}</Typography>
           <IconButton
             disabled={!!editRecordName}
             size="sm"
-            onClick={() => setEditRecordName(editRecord?.name || 'untitled-1')}
+            onClick={() => setEditRecordName(recordName || 'untitled')}
           >
             <EditRounded fontSize="small" />
           </IconButton>
         </CommonContainer>
         <Typography level="body-sm">
-          {t('Updated on')} {getDateLabel(editRecord?.gmtModified || new Date(0), i18n.language, true)}
+          {t('Updated on')} {getDateLabel(origRecord?.gmtModified || new Date(0), i18n.language, true)}
         </Typography>
 
         <ButtonGroup
@@ -1126,7 +1060,7 @@ export default function PromptEditor({
             minWidth="16rem"
             maxWidth="40%"
             apiPath="/api/v1/prompt/send/stream"
-            record={editRecord}
+            record={getEditRecord(JSON.stringify(inputs))}
             defaultVariables={defaultVariables}
             defaultParameters={defaultParameters}
             defaultOutputText={defaultOutputText}

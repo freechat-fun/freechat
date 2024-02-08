@@ -8,6 +8,7 @@ import fun.freechat.util.AuthorityUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
@@ -16,6 +17,9 @@ public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
     private final SysUserDetails sysUser;
 
     private static List<GrantedAuthority> getAuthorities(SysUserDetails sysUser) {
+        if (Objects.isNull(sysUser)) {
+            return null;
+        }
         List<GrantedAuthority> authorities = new LinkedList<>(sysUser.getAuthorities());
         authorities.add(new SimpleGrantedAuthority(AuthorityUtils.CLIENT));
         return authorities;

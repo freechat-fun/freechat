@@ -18,7 +18,7 @@ public class OrganizationApiOwnersTest extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken("31");
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(OrganizationApiOwnersTest.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         TestOrgUtils.addOwners(userId);
