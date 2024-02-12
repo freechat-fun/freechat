@@ -770,6 +770,7 @@ export default function PromptEditor({
                       <td>{k}</td>
                       <td>
                       <Textarea
+                        disabled={k === 'input'}
                         name={`input-value-${k}`}
                         value={v}
                         onChange={(event) => handleInputsChange(k, event.target.value)}
@@ -802,263 +803,265 @@ export default function PromptEditor({
           </Stack>
 
           {/* Meta Settings */}
-          <Card sx={{
-            width: { xs: '100%', sm: '16rem' },
-            my: 2,
-            mx: { xs: 0, sm: 2 },
-            p: 2,
-            boxShadow: 'sm',
-          }}>
-            <CommonBox sx={{gap: 2}}>
-              <Typography level="title-sm" textColor="neutral">
-                {t('Public')}
-              </Typography>
-              <Switch
-                checked={visibility==='public' || visibility==='hidden'}
-                sx={{
-                  [`&.${switchClasses.checked}`]: {
-                    '--Switch-trackBackground': '#4CA176',
-                    '&:hover': {
-                      '--Switch-trackBackground': '#5CB186',
+          {!play && (
+            <Card sx={{
+              width: { xs: '100%', sm: '16rem' },
+              my: 2,
+              mx: { xs: 0, sm: 2 },
+              p: 2,
+              boxShadow: 'sm',
+            }}>
+              <CommonBox sx={{gap: 2}}>
+                <Typography level="title-sm" textColor="neutral">
+                  {t('Public')}
+                </Typography>
+                <Switch
+                  checked={visibility==='public' || visibility==='hidden'}
+                  sx={{
+                    [`&.${switchClasses.checked}`]: {
+                      '--Switch-trackBackground': '#4CA176',
+                      '&:hover': {
+                        '--Switch-trackBackground': '#5CB186',
+                      },
                     },
-                  },
-                }}
-                onChange={(event) => event.target.checked ? setVisibility('public') : setVisibility('private')}
-              />
-            </CommonBox>
-            <LinePlaceholder spacing={2} />
+                  }}
+                  onChange={(event) => event.target.checked ? setVisibility('public') : setVisibility('private')}
+                />
+              </CommonBox>
+              <LinePlaceholder spacing={2} />
 
-            <CommonBox sx={{gap: 2}}>
-              <Typography level="title-sm" textColor="neutral">
-                {t('Format')}
-              </Typography>
-              <RadioGroup
-                orientation="horizontal"
-                name="format"
-                size="sm"
-                value={format}
-                onChange={(event) => setFormat(event.target.value)}
-                sx={{
-                  p: 0.5,
-                  borderRadius: '12px',
-                  bgcolor: 'neutral.softBg',
-                  '--RadioGroup-gap': '4px',
-                  '--Radio-actionRadius': '8px',
-                }}
-              >
-                {FORMATS.map((item) => (
-                  <Radio
-                    key={`format-${item.value}`}
-                    color="neutral"
-                    size="sm"
-                    value={item.value}
-                    disableIcon
-                    label={(<Typography noWrap level="body-xs">{item.label}</Typography>)}
-                    variant="plain"
-                    sx={{
-                      p: 0.5,
-                      alignItems: 'center',
-                    }}
-                    slotProps={{
-                      action: ({ checked }) => ({
-                        sx: (theme) => ({
-                          ...(checked && {
-                            backgroundColor: theme.palette.primary.softHoverBg,
-                            boxShadow: 'sm',
-                            '&:hover': {
-                              bgcolor: theme.palette.primary.softActiveBg,
-                            },
+              <CommonBox sx={{gap: 2}}>
+                <Typography level="title-sm" textColor="neutral">
+                  {t('Format')}
+                </Typography>
+                <RadioGroup
+                  orientation="horizontal"
+                  name="format"
+                  size="sm"
+                  value={format}
+                  onChange={(event) => setFormat(event.target.value)}
+                  sx={{
+                    p: 0.5,
+                    borderRadius: '12px',
+                    bgcolor: 'neutral.softBg',
+                    '--RadioGroup-gap': '4px',
+                    '--Radio-actionRadius': '8px',
+                  }}
+                >
+                  {FORMATS.map((item) => (
+                    <Radio
+                      key={`format-${item.value}`}
+                      color="neutral"
+                      size="sm"
+                      value={item.value}
+                      disableIcon
+                      label={(<Typography noWrap level="body-xs">{item.label}</Typography>)}
+                      variant="plain"
+                      sx={{
+                        p: 0.5,
+                        alignItems: 'center',
+                      }}
+                      slotProps={{
+                        action: ({ checked }) => ({
+                          sx: (theme) => ({
+                            ...(checked && {
+                              backgroundColor: theme.palette.primary.softHoverBg,
+                              boxShadow: 'sm',
+                              '&:hover': {
+                                bgcolor: theme.palette.primary.softActiveBg,
+                              },
+                            }),
                           }),
                         }),
-                      }),
-                    }}
-                  />
-                ))}
-              </RadioGroup>
-            </CommonBox>
-            <LinePlaceholder spacing={2} />
-
-            <CommonBox>
-              <Typography level="title-sm" textColor="neutral">
-                {t('Language')}
-              </Typography>
-              <Select
-                size="sm"
-                variant="outlined"
-                value={lang}
-                onChange={(_event, value) => value && setLang(value)}
-              >
-                {Object.keys(locales).map((locale) => (
-                  <Option key={`locale-${locale}`} value={locale}>
-                    {locales[locale]}
-                  </Option>
-                ))}
-              </Select>
+                      }}
+                    />
+                  ))}
+                </RadioGroup>
+              </CommonBox>
               <LinePlaceholder spacing={2} />
-            </CommonBox>
-            <LinePlaceholder spacing={2} />
 
-            <CommonBox>
-              <Typography level="title-sm" textColor="neutral">
-                {t('Tags')}
-              </Typography>
-              {(!tags || tags.length < 5) && (tag === undefined) && (
-                <IconButton
+              <CommonBox>
+                <Typography level="title-sm" textColor="neutral">
+                  {t('Language')}
+                </Typography>
+                <Select
                   size="sm"
-                  color="primary"
-                  onClick={() => setTag('')}
+                  variant="outlined"
+                  value={lang}
+                  onChange={(_event, value) => value && setLang(value)}
                 >
-                  <AddCircleRounded />
-                </IconButton>
-              )}
-              {(tag !== undefined) && (
-                <form onSubmit={handleTagSubmit}>
-                  <TinyInput
-                    type="text"
-                    value={tag}
-                    onChange={(event => setTag(event.target.value))}
-                  />
-                </form>
-              )}
-            </CommonBox>
-            <CommonBox>
-              {tags.length > 0 && (
-                <Fragment>
-                  {tags.map((tag, index) => (
+                  {Object.keys(locales).map((locale) => (
+                    <Option key={`locale-${locale}`} value={locale}>
+                      {locales[locale]}
+                    </Option>
+                  ))}
+                </Select>
+                <LinePlaceholder spacing={2} />
+              </CommonBox>
+              <LinePlaceholder spacing={2} />
+
+              <CommonBox>
+                <Typography level="title-sm" textColor="neutral">
+                  {t('Tags')}
+                </Typography>
+                {(!tags || tags.length < 5) && (tag === undefined) && (
+                  <IconButton
+                    size="sm"
+                    color="primary"
+                    onClick={() => setTag('')}
+                  >
+                    <AddCircleRounded />
+                  </IconButton>
+                )}
+                {(tag !== undefined) && (
+                  <form onSubmit={handleTagSubmit}>
+                    <TinyInput
+                      type="text"
+                      value={tag}
+                      onChange={(event => setTag(event.target.value))}
+                    />
+                  </form>
+                )}
+              </CommonBox>
+              <CommonBox>
+                {tags.length > 0 && (
+                  <Fragment>
+                    {tags.map((tag, index) => (
+                      <Chip
+                        variant="outlined"
+                        color="success"
+                        key={`tag-${tag}-${index}`}
+                        endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
+                      >
+                        {tag}
+                      </Chip>
+                    ))}
+                  </Fragment>
+                )}
+              </CommonBox>
+              <LinePlaceholder spacing={2} />
+
+              <CommonBox>
+                <Typography level="title-sm" textColor="neutral">
+                  {t('Models')}
+                </Typography>
+                {modelId === undefined && (
+                  <IconButton
+                    size="sm"
+                    color="primary"
+                    onClick={() => setModelId('')}
+                  >
+                    <AddCircleRounded />
+                  </IconButton>
+                )}
+              </CommonBox>
+              {models.length > 0 && (
+                <CommonBox>
+                  {models.map((model, index) => (
                     <Chip
                       variant="outlined"
-                      color="success"
-                      key={`tag-${tag}-${index}`}
-                      endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
+                      color="warning"
+                      key={`model-${model.modelId}-${index}`}
+                      endDecorator={<ChipDelete onDelete={() => model.modelId && handleModelDelete(model.modelId)} />}
                     >
-                      {tag}
+                      {model.name}
                     </Chip>
                   ))}
+                </CommonBox>
+              )}
+              {(modelId !== undefined) && (
+                <Fragment>
+                  <CommonBox>
+                    <Select
+                      placeholder={<Typography textColor="gray">{t('Choose a model')}</Typography>}
+                      size="sm"
+                      variant="outlined"
+                      value={modelId}
+                      sx={{
+                        flex: 1,
+                      }}
+                      slotProps={{
+                        listbox: {
+                          component: 'div',
+                          sx: {
+                            overflow: 'auto',
+                            '--List-padding': '0px',
+                            '--ListItem-radius': '0px',
+                          },
+                        },
+                      }}
+                      onChange={(_event, value) => value && setModelId(value)}
+                    >
+                      {providers.map((provider, index) => (
+                        <Fragment key={`select-${provider.provider}`}>
+                          {index !== 0 && <ListDivider role="none" />}
+                          <List
+                            aria-labelledby={`select-group-${provider.provider}`}
+                            sx={{ '--ListItemDecorator-size': '28px' }}
+                          >
+                            <ListItem id={`select-group-${provider.provider}`} sticky>
+                              <Typography level="body-xs">
+                                {provider.label}
+                              </Typography>
+                            </ListItem>
+                            {filterModels(provider.provider).map((modelInfo) => (
+                              <Option
+                                key={`option-${modelInfo.modelId}`}
+                                value={modelInfo.modelId}
+                                label={
+                                  <Fragment>
+                                    <Chip
+                                      color="warning"
+                                      size="sm"
+                                      sx={{ borderRadius: 'xs', mr: 1 }}
+                                    >
+                                      {provider.label}
+                                    </Chip>{' '}
+                                    {modelInfo.name}
+                                  </Fragment>
+                                }
+                                sx={{
+                                  [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
+                                    {
+                                      opacity: 1,
+                                    },
+                                }}
+                              >
+                                <ListItemDecorator sx={{ opacity: 0 }}>
+                                  <CheckRounded />
+                                </ListItemDecorator>
+                                {modelInfo.name}
+                              </Option>
+                            ))}
+                          </List>
+                        </Fragment>
+                      ))}
+                    </Select>
+                  </CommonBox>
+                  <CommonBox sx={{ justifyContent: 'flex-end' }}>
+                    <IconButton
+                        size="sm"
+                        onClick={handleModelSubmit}
+                      >
+                        <CheckCircleOutlineRounded fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="sm"
+                        onClick={() => setModelId(undefined)}
+                      >
+                        <CancelOutlined fontSize="small" />
+                      </IconButton>
+                  </CommonBox>
                 </Fragment>
               )}
-            </CommonBox>
-            <LinePlaceholder spacing={2} />
-
-            <CommonBox>
-              <Typography level="title-sm" textColor="neutral">
-                {t('Models')}
-              </Typography>
-              {modelId === undefined && (
-                <IconButton
-                  size="sm"
-                  color="primary"
-                  onClick={() => setModelId('')}
-                >
-                  <AddCircleRounded />
-                </IconButton>
-              )}
-            </CommonBox>
-            {models.length > 0 && (
-              <CommonBox>
-                {models.map((model, index) => (
-                  <Chip
-                    variant="outlined"
-                    color="warning"
-                    key={`model-${model.modelId}-${index}`}
-                    endDecorator={<ChipDelete onDelete={() => model.modelId && handleModelDelete(model.modelId)} />}
-                  >
-                    {model.name}
-                  </Chip>
-                ))}
-              </CommonBox>
-            )}
-            {(modelId !== undefined) && (
-              <Fragment>
-                <CommonBox>
-                  <Select
-                    placeholder={<Typography textColor="gray">{t('Choose a model')}</Typography>}
-                    size="sm"
-                    variant="outlined"
-                    value={modelId}
-                    sx={{
-                      flex: 1,
-                    }}
-                    slotProps={{
-                      listbox: {
-                        component: 'div',
-                        sx: {
-                          overflow: 'auto',
-                          '--List-padding': '0px',
-                          '--ListItem-radius': '0px',
-                        },
-                      },
-                    }}
-                    onChange={(_event, value) => value && setModelId(value)}
-                  >
-                    {providers.map((provider, index) => (
-                      <Fragment key={`select-${provider.provider}`}>
-                        {index !== 0 && <ListDivider role="none" />}
-                        <List
-                          aria-labelledby={`select-group-${provider.provider}`}
-                          sx={{ '--ListItemDecorator-size': '28px' }}
-                        >
-                          <ListItem id={`select-group-${provider.provider}`} sticky>
-                            <Typography level="body-xs">
-                              {provider.label}
-                            </Typography>
-                          </ListItem>
-                          {filterModels(provider.provider).map((modelInfo) => (
-                            <Option
-                              key={`option-${modelInfo.modelId}`}
-                              value={modelInfo.modelId}
-                              label={
-                                <Fragment>
-                                  <Chip
-                                    color="warning"
-                                    size="sm"
-                                    sx={{ borderRadius: 'xs', mr: 1 }}
-                                  >
-                                    {provider.label}
-                                  </Chip>{' '}
-                                  {modelInfo.name}
-                                </Fragment>
-                              }
-                              sx={{
-                                [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
-                                  {
-                                    opacity: 1,
-                                  },
-                              }}
-                            >
-                              <ListItemDecorator sx={{ opacity: 0 }}>
-                                <CheckRounded />
-                              </ListItemDecorator>
-                              {modelInfo.name}
-                            </Option>
-                          ))}
-                        </List>
-                      </Fragment>
-                    ))}
-                  </Select>
-                </CommonBox>
-                <CommonBox sx={{ justifyContent: 'flex-end' }}>
-                  <IconButton
-                      size="sm"
-                      onClick={handleModelSubmit}
-                    >
-                      <CheckCircleOutlineRounded fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      size="sm"
-                      onClick={() => setModelId(undefined)}
-                    >
-                      <CancelOutlined fontSize="small" />
-                    </IconButton>
-                </CommonBox>
-              </Fragment>
-            )}
-          </Card>
+            </Card>
+          )}
         </CommonContainer>
         
         {play && 
           <PromptRunner
             minWidth="16rem"
-            maxWidth="40%"
+            maxWidth="50%"
             apiPath="/api/v1/prompt/send/stream"
             record={getEditRecord(JSON.stringify(inputs))}
             defaultVariables={defaultVariables}

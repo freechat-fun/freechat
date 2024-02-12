@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCameraRounded, SvgIconComponent } from "@mui/icons-material";
 import { Button, DialogActions, DialogContent, DialogTitle, IconButton, IconButtonProps, Input, Modal, ModalClose, ModalDialog, Stack, styled } from "@mui/joy";
 import { extractFilenameFromUrl } from "../libs/url_utils";
+import { DEFAULT_IMAGE_MAX_WIDTH } from "../libs/ui_utils";
 
 interface ImagePreviewProps {
   src: string;
@@ -27,26 +28,47 @@ interface ImagePickerProps extends IconButtonProps{
     height?: string | number;
     borderRadius?: string | number;
   };
+  Icon?: SvgIconComponent;
 }
 
 export default function ImagePicker(props: ImagePickerProps) {
-  const {onImageSelect, previewProps, ...iconButtonProps } = props;
+  const {onImageSelect, previewProps, Icon = PhotoCameraRounded, ...iconButtonProps } = props;
 
   const { t } = useTranslation('button');
   const [image, setImage] = useState<string | undefined>();
+  const [imageSize, setImageSize] = useState<{width: number, height: number} | null>(null);
   const [file, setFile] = useState<Blob | null>(null);
   const [open, setOpen] = useState(false);
 
-  const preview = { width: '200px', height: '200px', borderRadius: '5%', ...previewProps };
+  const preview = { width: 'auto', height: 'auto', borderRadius: 0, ...previewProps };
+
+  useEffect(() => {
+    if (image) {
+      const img = new Image();
+      img.onload = () => {
+        let newWidth = img.width;
+        let newHeight = img.height;
+        if (newWidth > DEFAULT_IMAGE_MAX_WIDTH) {
+          newWidth = DEFAULT_IMAGE_MAX_WIDTH;
+          newHeight = img.height * DEFAULT_IMAGE_MAX_WIDTH / img.width;
+        }
+        setImageSize({ width: newWidth, height: newHeight });
+      };
+      img.src = image;
+    }
+  }, [image]);
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const filePath = event.target.files && event.target.files[0];
     if (filePath) {
       setFile(filePath);
       setImage(URL.createObjectURL(filePath));
+      // getCompressedImageDataURL(filePath)
+      //   .then(setImage);
       setOpen(true);
     }
   }
+
 
   function handleClose(_event: React.MouseEvent<HTMLButtonElement>, reason: string): void {
     if (reason !== 'backdropClick') {
@@ -82,7 +104,7 @@ export default function ImagePicker(props: ImagePickerProps) {
           onClick={handleModify}
           {...iconButtonProps}
         >
-          <PhotoCamera />
+          <Icon />
         </IconButton>
       </label>
 
@@ -101,8 +123,8 @@ export default function ImagePicker(props: ImagePickerProps) {
             }}>
               {image && <ImagePreview
                 src={image}
-                width={preview.width}
-                height={preview.height}
+                width={preview.width === 'auto' ? imageSize?.width ?? '200px' : preview.width}
+                height={preview.height === 'auto' ? imageSize?.height ?? '200px' : preview.height}
                 borderRadius={preview.borderRadius}
               />}
             </Stack>

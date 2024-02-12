@@ -17,7 +17,7 @@ export default function CharacterBackendSettings({
   backend,
   onClose,
 }: CharacterBackendSettingsProps) {
-  const [messageWindowSize, setMessageWindowSize] = useState(backend?.messageWindowSize ?? 100);
+  const [messageWindowSize, setMessageWindowSize] = useState(backend?.messageWindowSize ?? 50);
 
   const inputRefs = useRef(Array(1).fill(createRef<HTMLInputElement | null>()));
 

@@ -20,7 +20,7 @@ import 'prismjs/components/prism-python';
 
 
 
-const CodeContainer: React.FC<PropsWithChildren> = ({ children }) => {
+const CodeContent: React.FC<PropsWithChildren> = ({ children }) => {
   const codeRef = useRef<HTMLPreElement>(null);
 
   const className = typeof children === 'object' && children !== null &&('props' in children) ?
@@ -58,4 +58,5 @@ const CodeContainer: React.FC<PropsWithChildren> = ({ children }) => {
     </pre>
   );
 };
-export default CodeContainer;
+
+export default CodeContent;

@@ -19,6 +19,7 @@ public enum ChatVar {
     MESSAGE_CONTEXT,
     CURRENT_TIME,
     INPUT,
+    ATTACHMENT,
     UNKNOWN;
     public static ChatVar of(String text) {
         if (StringUtils.isBlank(text)) {

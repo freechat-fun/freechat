@@ -1,5 +1,6 @@
 package fun.freechat.api.util;
 
+import dev.langchain4j.model.output.FinishReason;
 import fun.freechat.api.dto.LlmResultDTO;
 import dev.langchain4j.model.StreamingResponseHandler;
 import dev.langchain4j.model.output.Response;
@@ -66,7 +67,19 @@ public class CommonUtils {
 
             @Override
             public void onError(Throwable throwable) {
-                sseEmitter.completeWithError(throwable);
+                if (abort) {
+                    return;
+                }
+                try {
+                    LlmResultDTO result = LlmResultDTO.from(
+                            throwable.getMessage(), null, null, null);
+                    result.setFinishReason(FinishReason.OTHER.name().toLowerCase());
+                    result.setRequestId(null);
+                    sseEmitter.send(result);
+                    sseEmitter.complete();
+                } catch (IOException e) {
+                    sseEmitter.completeWithError(e);
+                }
                 abort = true;
             }
         };

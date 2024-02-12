@@ -2,13 +2,15 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack } from "@mui/joy";
-import { CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
-import { CommonContainer, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent } from "../../components"
+import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack, Tooltip, Chip, ChipDelete } from "@mui/joy";
+import { AttachmentRounded, CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
+import { CommonContainer, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
 import { DashScopeSettings, OpenAISettings } from ".";
 import { providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
 import { extractModelProvider, extractVariables } from "../../libs/template_utils";
+import { HelpIcon } from "../icon";
+import { getCompressedImageDataURL } from "../../libs/ui_utils";
 
 function AiApiKeySetting(props: {
   defaultKeyName: string | undefined,
@@ -141,6 +143,7 @@ export default function PromptRunner(props: {
 
   const [provider, setProvider] = useState<string | undefined>(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
   const [inputs, setInputs] = useState(defaultVariables ?? extractVariables(record));
+  const [attachment, setAttachment] = useState<string>();
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
   const [apiKeyName, setApiKeyName] = useState<string | undefined>(defaultParameters?.apiKeyName);
   const [apiKeyValue, setApiKeyValue] = useState<string | undefined>(defaultParameters?.apiKey);
@@ -178,7 +181,7 @@ export default function PromptRunner(props: {
   }, [defaultParameters]);
 
   useEffect(() => {
-    defaultVariables && setInputs(defaultVariables);
+    setInputs({...defaultVariables});
   }, [defaultVariables]);
 
   useEffect(() => {
@@ -196,8 +199,10 @@ export default function PromptRunner(props: {
   function handleInputChange(key: string, value: string | undefined): void {
     if (inputs && value !== inputs[key]) {
       const newInputs: { [key: string]: any } = {};
-      Object.entries(inputs).forEach(([k, v]) => newInputs[k] = v);
-      newInputs[key] = value;
+      Object.entries(inputs).filter(([k]) => k !== key).forEach(([k, v]) => newInputs[k] = v);
+      if (value) {
+        newInputs[key] = value;
+      }
       setInputs(newInputs);
     }
   }
@@ -212,6 +217,20 @@ export default function PromptRunner(props: {
   function handleModelSettings(parameters: { [key: string]: any }) {
     setParameters(parameters);
     setModelSetting(false);
+  }
+
+  function handleImageSelect(file: Blob, name: string) {
+    getCompressedImageDataURL(file)
+      .then(base64 => {
+        handleInputChange('attachment', base64);
+        setAttachment(name);
+      })
+      .catch(handleError);
+  }
+
+  function handleImageDelete() {
+    handleInputChange('attachment', undefined);
+    setAttachment(undefined);
   }
 
   function handlePlay() {
@@ -238,6 +257,13 @@ export default function PromptRunner(props: {
 
     setPlaying(true);
     setAiRequest(request);
+  }
+
+  function isPlayable(): boolean {
+    return !!parameters && (
+      !inputs ||
+      !Object.keys(inputs).includes('input') ||
+      !!inputs.input);
   }
 
   function initParameters(initialProvider: string): { [key: string]: any } | undefined {
@@ -305,16 +331,45 @@ export default function PromptRunner(props: {
             gridTemplateColumns: 'auto 1fr',
             gap: 1,
           }}>
-            {Object.entries(inputs).map(([k, v]) => (
+            {Object.entries(inputs).filter(([k]) => k !== 'attachment').map(([k, v]) => (
               <Fragment key={`input-${k}`}>
                 <FormLabel>{k}</FormLabel>
                 <Textarea
                   name={`input-${k}`}
                   value={v}
+                  required={k === 'input'}
+                  color={(k === 'input' && !v) ? 'danger' : "neutral"}
                   onChange={(event) => handleInputChange(k, event.target.value)}
                 />
               </Fragment>
             ))}
+            <FormLabel>
+              <Typography endDecorator={(
+                <Tooltip title={t('Only image attachment is supported for now.')}>
+                  <HelpIcon />
+                </Tooltip>
+              )}>
+                {t('attachment')}
+              </Typography>
+            </FormLabel>
+            <CommonBox>
+              <ImagePicker
+                onImageSelect={handleImageSelect}
+                aria-label="upload attachment"
+                size="sm"
+                color="neutral"
+                Icon={AttachmentRounded}
+              />
+              {attachment && (
+                <Chip
+                  variant="outlined"
+                  color="success"
+                  endDecorator={<ChipDelete onDelete={handleImageDelete} />}
+                >
+                  {attachment}
+                </Chip>
+              )}
+            </CommonBox>
           </Box>
         )}
         <LinePlaceholder />
@@ -366,7 +421,7 @@ export default function PromptRunner(props: {
             <Button loading variant="plain" />
           ) : (
             <IconButton
-              disabled={!parameters}
+              disabled={!isPlayable()}
               color="primary"
               onClick={handlePlay}
             >

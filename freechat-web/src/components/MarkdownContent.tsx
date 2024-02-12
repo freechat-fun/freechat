@@ -1,7 +1,7 @@
 import React from 'react';
 import { SxProps } from '@mui/joy/styles/types';
 import { Link, Skeleton, Table, styled } from '@mui/joy';
-import { CodeContainer } from '.';
+import { BlockquoteContent, CodeContent } from '.';
 
 const Markdown = React.lazy(async () => import('markdown-to-jsx'));
 
@@ -113,7 +113,7 @@ export default function MarkdownContent({ loading, sx, children = '' }: Markdown
                   },
                 },
                 pre: {
-                  component: CodeContainer,
+                  component: CodeContent,
                 },
                 img: {
                   component: ImageContainer,
@@ -121,6 +121,9 @@ export default function MarkdownContent({ loading, sx, children = '' }: Markdown
                 table: {
                   component: Table,
                 },
+                blockquote: {
+                  component: BlockquoteContent,
+                }
               },
               slugify: () => '',
             }}

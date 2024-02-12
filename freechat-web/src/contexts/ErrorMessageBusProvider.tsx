@@ -3,7 +3,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useReducer } from "react";
 
-const MAX_ERRORS = 3;
+const MAX_ERRORS = 1;
 
 type ErrorMessage = {
   code: number | undefined;

@@ -18,8 +18,8 @@ export function extractMustacheTemplateVariableNames(templateContents: string[])
 
   templateContents.forEach(templateContent => variables.push(
     ...Mustache.parse(templateContent)
-      .filter(function(v) { return v[0] === 'name' || v[0] === '#' || v[0] === '&' })
-      .map(function(v) { return v[1]; })
+      .filter((v) => v[0] === 'name' || v[0] === '#' || v[0] === '&')
+      .map((v) => v[1])
     ));
 
   return [...new Set(variables)];
@@ -240,6 +240,10 @@ Prompt for charater {{characterName}}.
 **Predefined Variables**
 
 {{{variables}}}
+
+
+<br>
+> This default prompt has only been tested under OpenAI GPT-4.
 `;
 
 const CHARACTER_PROMPT_DESCRIPTION_ZH = `
@@ -251,6 +255,10 @@ const CHARACTER_PROMPT_DESCRIPTION_ZH = `
 **预置变量**
 
 {{{variables}}}
+
+
+<br>
+> 此默认提示词仅在 OpenAI GPT-4 下做过测试。
 `;
 
 const CHARACTER_PROMPT_TEMPLATE_EN = `
@@ -260,11 +268,9 @@ Imitate conversations between people, which means:
 - NEVER answer in the tone of an AI assistant! Do not use any templated response formats.
 - If you need to display images, use markdown format "![img]({the image url})". Do not use markdown format under other circumstances.
 - When you have a thought, apply sentiment analysis to your thought. If there's a clear emotional slant, add an appropriate emoji to your final reply. If the emotion tends to be neutral, do not add any emoji.
-- Put your thought at the beginning of your reply, in a block starting with "\`\`\`thought" and ending with "\`\`\`", such as:
+- Put your thought at the beginning of your reply, starting with "> ". Such as:
 """
-\`\`\`thought
-I have to tell my name.
-\`\`\`
+> I have to tell my name.
 
 My name is Jack.
 """
@@ -272,9 +278,9 @@ My name is Jack.
 By default, you speak in {{CHARACTER_LANG}}. Unless the person you are speaking to speaks a different language, in which case you reply in the same language as the other person.
 
 [[[About you]]]
-Your name: {{CHARACTER_NICKNAME}}.
+Your name: {{CHARACTER_NICKNAME}}
 {{#CHARACTER_GENDER}}
-Your gender: {{CHARACTER_GENDER}}.
+Your gender: {{CHARACTER_GENDER}}
 {{/CHARACTER_GENDER}}
 Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
 {{{CHARACTER_PROFILE}}}
@@ -311,19 +317,17 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `
 - 不要以人工智能助手的语气回答！ 不要使用任何模板化的响应格式。
 - 如果需要显示图片，请使用 markdown 格式 “![img]({the image url})”。 其他情况下不要使用 markdown 格式。
 - 当你产生回复的想法时，对于你的想法应用情感分析。 如果有明显的情绪倾向，请在您的最终回复中添加适当的表情符号。 如果情绪趋于中性，请不要添加任何表情符号。
-- 将您的想法放在回复的开始，以 “\`\`\`thought” 开头并以 “\`\`\`” 结尾的块中，例如：
+- 把你的想法放在回复的开头，以“> ”开始，例如：
 """
-\`\`\`thought
-我必须说出我的名字。
-\`\`\`
+> 我必须说出我的名字。
 
 我的名字叫杰克。
 """
 
 【关于你】
-你的名字：{{CHARACTER_NICKNAME}}。
+你的名字：{{CHARACTER_NICKNAME}}
 {{#CHARACTER_GENDER}}
-你的性别：{{CHARACTER_GENDER}}。
+你的性别：{{CHARACTER_GENDER}}
 {{/CHARACTER_GENDER}}
 你的聊天风格：{{{CHARACTER_CHAT_STYLE}}}。
 {{{CHARACTER_PROFILE}}}
@@ -388,6 +392,7 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['MESSAGE_CONTEXT'] = '*（注入的当前轮次对话的相关信息）*';
     variables['CURRENT_TIME'] = '*（当前时间，格式：yyyy-MM-dd HH:mm:ss）*';
     variables['input'] = '*（用户输入）*';
+    variables['attachment'] = '*（附件，目前只支持图片）*';
 
     promptDescription = CHARACTER_PROMPT_DESCRIPTION_ZH;
     promptTemplate = CHARACTER_PROMPT_TEMPLATE_ZH;
@@ -406,6 +411,7 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['MESSAGE_CONTEXT'] = '*(Injected relevant information for the current round of conversation)*';
     variables['CURRENT_TIME'] = '*(Current time, format: yyyy-MM-dd HH:mm:ss)*';
     variables['input'] = '*(User input)*';
+    variables['attachment'] = '*(Attachment, only image is supported for now.)*';
 
     promptDescription = CHARACTER_PROMPT_DESCRIPTION_EN;
     promptTemplate = CHARACTER_PROMPT_TEMPLATE_EN;

@@ -42,5 +42,7 @@
   "Supports markdown format": "支持 Markdown 格式",
   "Token Usage": "Token 用量",
   "Total": "总数",
+  "attachment": "附件",
+  "Only image attachment is supported for now.": "目前只支持图片附件。",
   ".": "。"
 }

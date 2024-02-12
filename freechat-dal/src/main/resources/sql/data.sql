@@ -16,6 +16,7 @@ INSERT IGNORE INTO `ai_model_info` (`model_id`, `gmt_create`, `gmt_modified`, `n
 ('[open_ai]gpt-3.5-turbo-16k', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'gpt-3.5-turbo-16k', 'alias for the ChatGPT 16k latest model', 'open_ai', 'text2chat'),
 ('[open_ai]gpt-4', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'gpt-4', 'alias for the GPT-4 8k latest model', 'open_ai', 'text2chat'),
 ('[open_ai]gpt-4-32k', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'gpt-4-32k', 'alias for the GPT-4 32k latest model', 'open_ai', 'text2chat'),
+('[open_ai]gpt-4-vision-preview', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'gpt-4-vision-preview', '128k context, vision', 'open_ai', 'text2chat'),
 ('[open_ai]text-davinci-003', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'text-davinci-003', 'davinci fine-tuning model', 'open_ai', 'text2text'),
 ('[open_ai]gpt-3.5-turbo-instruct', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'gpt-3.5-turbo-instruct', 'trained similarly as the text-davinci series while maintaining the same speed as the turbo models.', 'open_ai', 'text2text'),
 ('[open_ai]text-embedding-ada-002', '2023-08-20 19:11:32', '2023-08-20 19:11:32', 'text-embedding-ada-002', 'embedding model', 'open_ai', 'embedding'),

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -168,7 +167,8 @@ public class HttpUtils {
                 "SCOPE_xxx",
                 "[https://freechat.fun]",
                 "{}",
-                "{\"a\": \"https://freechat.fun\"}"
+                "{\"a\": \"https://freechat.fun\"}",
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNby"
         );
         for (var url : urls) {
             System.out.println(url + ": " + isValidUrl(url));

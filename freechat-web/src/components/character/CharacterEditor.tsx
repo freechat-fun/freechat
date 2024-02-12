@@ -513,7 +513,11 @@ export default function CharacterEditor ({
                 </AspectRatio>
                 <ImagePicker
                   onImageSelect={handleImageSelect}
-                  previewProps={{borderRadius: '50%'}}
+                  previewProps={{
+                    width: '200px',
+                    height: '200px',
+                    borderRadius: '50%',
+                  }}
                   disabled={!editEnabled}
                   aria-label="upload new picture"
                   size="sm"

@@ -64,13 +64,14 @@ export default function ChatContent({
           },
           onmessage(event) {
             const result = JSON.parse(event.data) as LlmResultDTO;
-            if (result.finishReason) {
-              setUsage(result.tokenUsage);
-              onFinish?.(result);
-            } else {
+            if (result.text) {
               if (onMessage === undefined || onMessage(result)) {
                 setData((currentData) => currentData + result.text);
               }
+            }
+            if (result.finishReason) {
+              setUsage(result.tokenUsage);
+              onFinish?.(result);
             }
           },
           onerror(error) {

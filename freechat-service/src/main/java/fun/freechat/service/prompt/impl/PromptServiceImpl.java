@@ -13,10 +13,7 @@ import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.enums.*;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.PromptService;
-import fun.freechat.service.util.CacheUtils;
-import fun.freechat.service.util.InfoUtils;
-import fun.freechat.service.util.PromptUtils;
-import fun.freechat.service.util.SortSpecificationWrapper;
+import fun.freechat.service.util.*;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -777,11 +774,15 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     private UserMessage apply(UserMessage original, Map<String, Object> variables, PromptFormat format) {
-        return UserMessage.from(original.name(), original.contents().stream()
+        List<Content> contents = original.contents().stream()
                 .map(content -> content.type() == TEXT ?
                         TextContent.from(apply(((TextContent) content).text(), variables, format)) :
                         content)
-                .toList());
+                .toList();
+
+        return StringUtils.isBlank(original.name()) ?
+                UserMessage.from(contents) :
+                UserMessage.from(original.name(), contents);
     }
 
     @Override
@@ -800,13 +801,25 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         applied.setFormat(format.text());
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
-        if (hasValidUserMessagePrompt(promptContent)) {
+        if (hasValidUserMessagePrompt(promptContent, format)) {
             UserMessage original = promptContent.getMessageToSend();
             applied.setMessageToSend(apply(original, variables, format));
         } else {
-            String input = PromptUtils.getDefaultInput(variables);
-            if (Objects.nonNull(input)) {
-                applied.setMessageToSend(UserMessage.from(input));
+            Pair<String, String> inputs = PromptUtils.getDefaultInput(variables);
+            UserMessage messageToSend;
+            if (Objects.nonNull(inputs.getLeft())) {
+                String textInput = inputs.getLeft();
+                if (Objects.nonNull(inputs.getRight())) {
+                    Pair<String, String> imageInfo = PromptUtils.parseDataMimeType(inputs.getRight());
+                    ImageContent imageContent = StringUtils.isBlank(imageInfo.getRight()) ?
+                            ImageContent.from(imageInfo.getLeft()) :
+                            ImageContent.from(imageInfo.getLeft(), imageInfo.getRight());
+                    messageToSend = UserMessage.from(List.of(TextContent.from(textInput), imageContent));
+                } else {
+                    messageToSend = UserMessage.from(textInput);
+                }
+
+                applied.setMessageToSend(messageToSend);
             }
         }
 
@@ -878,8 +891,16 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         return !promptInfoMapper.selectMany(statement).isEmpty();
     }
 
-    private boolean hasValidUserMessagePrompt(ChatPromptContent promptContent) {
-        return Objects.nonNull(promptContent.getMessageToSend());
+    private boolean hasValidUserMessagePrompt(ChatPromptContent promptContent, PromptFormat format) {
+        if (Objects.nonNull(promptContent.getMessageToSend())) {
+            String textTemplate = PromptUtils.toSingleText(promptContent.getMessageToSend());
+            return switch (format) {
+                case F_STRING -> !textTemplate.equals("{input}");
+                case MUSTACHE -> !textTemplate.equals("{{input}}");
+                case null -> false;
+            };
+        }
+        return false;
     }
 
     private static class Info {
