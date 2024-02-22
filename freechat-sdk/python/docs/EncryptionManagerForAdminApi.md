@@ -19,8 +19,6 @@ Encrypt a piece of text with the built-in key.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint

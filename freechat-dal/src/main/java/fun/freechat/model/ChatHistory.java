@@ -24,7 +24,7 @@ public class ChatHistory implements Serializable {
     private String message;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String systemMessage;
+    private String ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
@@ -126,19 +126,19 @@ public class ChatHistory implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getSystemMessage() {
-        return systemMessage;
+    public String getExt() {
+        return ext;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ChatHistory withSystemMessage(String systemMessage) {
-        this.setSystemMessage(systemMessage);
+    public ChatHistory withExt(String ext) {
+        this.setExt(ext);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setSystemMessage(String systemMessage) {
-        this.systemMessage = systemMessage == null ? null : systemMessage.trim();
+    public void setExt(String ext) {
+        this.ext = ext == null ? null : ext.trim();
     }
 
     @Override
@@ -187,7 +187,7 @@ public class ChatHistory implements Serializable {
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", enabled=").append(enabled);
         sb.append(", message=").append(message);
-        sb.append(", systemMessage=").append(systemMessage);
+        sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

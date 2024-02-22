@@ -6,7 +6,7 @@ import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, K
 import { RouterLink } from ".";
 import { closeSidebar } from "../libs/sidebar_utils";
 
-interface NestedListToggleProps {
+type NestedListToggleProps = {
   defaultExpanded?: boolean;
   children: React.ReactNode;
   renderToggle: (params: {
@@ -66,7 +66,7 @@ export default function Sidebar() {
         },
         transition: 'transform 0.4s, width 0.4s',
         zIndex: 9999,
-        height: '100vh',
+        height: '100dvh',
         width: 'var(--Sidebar-width)',
         top: 'var(--Header-height)',
         p: 2,
@@ -86,7 +86,7 @@ export default function Sidebar() {
           top: 0,
           left: 0,
           width: '100vw',
-          height: '100vh',
+          height: '100dvh',
           opacity: 'var(--SideNavigation-slideIn)',
           backgroundColor: 'var(--joy-palette-background-backdrop)',
           transition: 'opacity 0.4s',

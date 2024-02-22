@@ -1,8 +1,8 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
-import { CharacterBackendDTO, CharacterBackendDetailsDTO, CharacterDetailsDTO, CharacterUpdateDTO, PromptRefDTO, PromptTaskDTO } from "freechat-sdk";
+import { CharacterBackendDTO, CharacterBackendDetailsDTO, CharacterDetailsDTO, CharacterUpdateDTO, ChatCreateDTO, PromptRefDTO, PromptTaskDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { locales } from "../../configs/i18n-config";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, TinyInput } from "../../components";
@@ -11,23 +11,23 @@ import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRoun
 import { CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
 import { createPromptForCharacter } from "../../libs/template_utils";
+import { getCompressedImage } from "../../libs/ui_utils";
 
-interface CharacterEditorProps {
+type CharacterEditorProps = {
   id: string | undefined;
 }
 
 export default function CharacterEditor ({
   id,
 }: CharacterEditorProps) {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation(['character', 'account', 'button']);
-  const { promptApi, promptTaskApi, characterApi } = useFreeChatApiContext();
+  const { accountApi, promptApi, promptTaskApi, characterApi, chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username } = useUserInfoContext();
 
   const [origRecord, setOrigRecord] = useState(new CharacterDetailsDTO());
-  const [originName, setOriginName] = useState<string>();
-  const [editRecordName, setEditRecordName] = useState<string>();
+  const [editRecordName, setEditRecordName] = useState('');
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
   const [recordName, setRecordName] = useState<string>();
@@ -52,10 +52,12 @@ export default function CharacterEditor ({
   const [editEnabled, setEditEnabled] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const originName = useRef('');
+
   const getEditRecord = useCallback(() => {
     const newRecord = new CharacterDetailsDTO();
     newRecord.characterId = id;
-    newRecord.name = recordName ??'';
+    newRecord.name = recordName ?? '';
     newRecord.nickname = nickname;
     newRecord.description = description;
     newRecord.avatar = avatar;
@@ -98,8 +100,9 @@ export default function CharacterEditor ({
 
       const draftRecord = {...origRecord, ...draft};
       
-      setOriginName(draftRecord.name);
+      originName.current = draftRecord.name;
 
+      setRecordName(draftRecord.name);
       setNickname(draftRecord.nickname);
       setDescription(draftRecord.description);
       setAvatar(draftRecord.avatar);
@@ -128,15 +131,15 @@ export default function CharacterEditor ({
     }
 
     if (editRecordName && editRecordName !== recordName) {
-      if (editRecordName === originName) {
+      if (editRecordName === originName.current) {
         setRecordName(editRecordName);
-        setEditRecordName(undefined);
+        setEditRecordName('');
       } else {
         characterApi?.existsCharacterName(editRecordName)
           .then(resp => {
             if (!resp) {
               setRecordName(editRecordName);
-              setEditRecordName(undefined);
+              setEditRecordName('');
             } else {
               setEditRecordNameError(true);
             }
@@ -145,7 +148,7 @@ export default function CharacterEditor ({
       }
     } else {
       setEditRecordNameError(false);
-      setEditRecordName(undefined);
+      setEditRecordName('');
     }
   }
 
@@ -160,11 +163,16 @@ export default function CharacterEditor ({
   }
 
   function handleImageSelect(file: Blob, name: string) {
-    const request = new File([file], name);
-    characterApi?.uploadCharacterAvatar(request)
-      .then(url => setAvatar(url))
+    getCompressedImage(file, 1024 * 1024)
+      .then(imageInfo => {
+        const request = new File([imageInfo.blob], name);
+        characterApi?.uploadCharacterAvatar(request)
+          .then(url => setAvatar(url))
+          .catch(handleError);
+      })
       .catch(handleError);
   }
+    
 
   function handleRecordSave(): void {
     if (!id) {
@@ -186,13 +194,36 @@ export default function CharacterEditor ({
     if (!id) {
       return;
     }
-    const onUpdated = (id: string, visibility: string) => {
+    const onUpdated = (id: string, visibility: string, nickname: string) => {
       characterApi?.publishCharacter1(id, visibility)
-        .then(resp => {
-          if (!resp) {
-            return;
-          }
-          navigator(`/w/character/${resp}`);
+        .then(characterId => {
+          chatApi?.getDefaultChatId(characterId)
+            .then(resp => {
+              navigate(`/w/chat/${resp}/debug`);
+            })
+            .catch(() => {
+              accountApi?.getUserDetails()
+                .then(userDetails => {
+                  characterApi?.getDefaultCharacterBackend(characterId as string)
+                    .then(backend => {
+                      if (backend.backendId) {
+                        const request = new ChatCreateDTO();
+                        request.userNickname = userDetails.nickname ?? userDetails.username;
+                        request.userProfile = userDetails.profile;
+                        request.characterNickname = nickname;
+                        request.backendId = backend.backendId;
+
+                        chatApi.startChat(request)
+                          .then(chatId => {
+                            navigate(`/w/chat/${chatId}/debug`);
+                          })
+                          .catch(handleError);
+                      }
+                    })
+                    .catch(handleError);
+                })
+                .catch(handleError);
+            });
         })
         .catch(handleError);
     };
@@ -203,7 +234,11 @@ export default function CharacterEditor ({
       .then(resp => {
         setSaved(resp);
         if (resp) {
-          onUpdated(editRecord.characterId as string, editRecord.visibility === 'private' ? 'private' : 'public');
+          onUpdated(
+            editRecord.characterId as string,
+            editRecord.visibility === 'private' ? 'private' : 'public',
+            editRecord.nickname ?? editRecord.name,
+          );
         }
       })
       .catch(handleError);
@@ -230,11 +265,18 @@ export default function CharacterEditor ({
   }
 
   function handleBackendEdit(backend: CharacterBackendDetailsDTO, backends: CharacterBackendDetailsDTO[]) {
+    if (backends.length === 0) {
+      backend.isDefault = true;
+    }
     setEditBackend(backend);
     setBackends(backends);
   }
 
-  function handleBackendUpdated(backend: CharacterBackendDetailsDTO, redirectToChatPrompt: boolean) {
+  function handleBackendUpdated(
+    backend: CharacterBackendDetailsDTO,
+    promptTask?: PromptTaskDTO,
+    redirectToChatPrompt?: boolean,
+  ) {
     const request = new CharacterBackendDTO();
     request.chatPromptTaskId = backend.chatPromptTaskId;
     request.forwardToUser = backend.forwardToUser;
@@ -250,10 +292,11 @@ export default function CharacterEditor ({
         characterApi?.updateCharacterBackend(backendId, req)
           .then(() => {
             if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigator(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
+              navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
             } else {
               setBackends((prevBackends) => {
-                return [...prevBackends, backend];
+                const others = prevBackends.filter(prevBackend => prevBackend.backendId !== backendId);
+                return [...others, {...backend, backendId: backendId, chatPromptTaskId: req.chatPromptTaskId}];
               });
               setEditBackend(undefined);
             }
@@ -262,12 +305,11 @@ export default function CharacterEditor ({
         } else if (id) {
           characterApi?.addCharacterBackend(id, req)
           .then((bId) => {
-            backend.backendId = bId;
             if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigator(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
+              navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
             } else {
               setBackends((prevBackends) => {
-                return [...prevBackends, backend];
+                return [...prevBackends, {...backend, backendId: bId, chatPromptTaskId: req.chatPromptTaskId}];
               });
               setEditBackend(undefined);
             }
@@ -276,7 +318,13 @@ export default function CharacterEditor ({
       }
 
     if (backend.chatPromptTaskId) {
-      updateBackend(backend.backendId, request);
+      if (promptTask) {
+        promptTaskApi?.updatePromptTask(backend.chatPromptTaskId, promptTask)
+          .then(() => updateBackend(backend.backendId, request))
+          .catch(handleError);
+      } else {
+        updateBackend(backend.backendId, request);
+      }
     } else {
       const promptReq = createPromptForCharacter(recordName, lang);
       promptApi?.newPromptName(recordName ?? 'untitled')
@@ -287,13 +335,12 @@ export default function CharacterEditor ({
               const promptRef = new PromptRefDTO();
               promptRef.promptId = promptId;
 
-              const promptTaskReq = new PromptTaskDTO();
+              const promptTaskReq = promptTask ?? new PromptTaskDTO();
               promptTaskReq.promptRef = promptRef;
 
               promptTaskApi?.createPromptTask(promptTaskReq)
                 .then(promptTaskId => {
                   request.chatPromptTaskId = promptTaskId;
-                  backend.chatPromptTaskId = promptTaskId;
                   updateBackend(backend.backendId, request);
                 })
                 .catch(handleError);
@@ -583,21 +630,27 @@ export default function CharacterEditor ({
             editMode={true}
             onEdit={handleBackendEdit}
           />
-
-          <CharacterBackendSettings
-            open={!!editBackend}
-            backend={{...editBackend}}
-            onClose={handleBackendUpdated}
-          />
         </Stack>
-        
-        <CharacterGuide />
+
+        {editBackend ? (
+          <CharacterBackendSettings
+            backend={{...editBackend}}
+            onSave={handleBackendUpdated}
+            onCancel={() => setEditBackend(undefined)}
+            sx={{
+              width: { xs: '100%', sm: '21rem' }
+          }}/>
+        ) : (
+          <CharacterGuide sx={{
+            width: { xs: '100%', sm: '21rem' }
+          }}/>
+        )}
 
       </CommonContainer>
 
       <ConfirmModal
-        open={editRecordName !== undefined}
-        onClose={() => setEditRecordName(undefined)}
+        open={!!editRecordName}
+        onClose={() => setEditRecordName('')}
         dialog={{
           title: t('Please enter a new name'),
         }}

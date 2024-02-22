@@ -1,130 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Input, FormControl, IconButton, SelectStaticProps, Stack, Tooltip, Chip, ChipDelete } from "@mui/joy";
-import { AttachmentRounded, CheckRounded, CloseRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
-import { CommonContainer, ConfirmModal, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
-import { DashScopeSettings, OpenAISettings } from ".";
+import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, IconButton, Tooltip, Chip, ChipDelete } from "@mui/joy";
+import { AttachmentRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
+import { CommonContainer, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
+import { AiApiKeySettings, DashScopeSettings, OpenAISettings } from ".";
 import { providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
 import { extractModelProvider, extractVariables } from "../../libs/template_utils";
 import { HelpIcon } from "../icon";
-import { getCompressedImageDataURL } from "../../libs/ui_utils";
+import { getCompressedImage } from "../../libs/ui_utils";
 
-function AiApiKeySetting(props: {
-  defaultKeyName: string | undefined,
-  defaultKeyValue: string | undefined,
-  keyNames: (string | undefined)[] | undefined,
-  open: boolean,
-  onClose: () => void,
-  onConfirm: (keyName: string | undefined, keyValue: string | undefined) => void;
-}) {
-  const { defaultKeyName, defaultKeyValue, keyNames, open, onClose, onConfirm } = props;
-  const { t } = useTranslation('prompt');
-
-  const [apiKeyName, setApiKeyName] = useState(defaultKeyName ?? '');
-  const [apiKeyValue, setApiKeyValue] = useState(defaultKeyValue ?? '');
-
-  const action: SelectStaticProps['action'] = useRef(null);
-
-  function handleClose(_event: React.MouseEvent<HTMLButtonElement>, reason: string): void {
-    if (reason === 'backdropClick') {
-      return;
-    }
-    onClose();
-  }
-
-  function handleConfirm(): void {
-    onConfirm(apiKeyName, apiKeyValue);
-  }
-
-  function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
-    if (newValue !== apiKeyName && newValue !== 'No API Key') {
-      setApiKeyName(newValue ?? '');
-    }
-  }
-
-  function handleValueChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    if (event.target.value !== apiKeyValue) {
-      setApiKeyValue(event.target.value);
-    }
-  }
-
-  return (
-    <ConfirmModal
-        open={open}
-        onClose={handleClose}
-        dialog={{
-          title: t('Set API Key'),
-        }}
-        button={{
-          text: t('button:Confirm'),
-          startDecorator: <CheckRounded />
-        }}
-        onConfirm={handleConfirm}
-      >
-        <Stack spacing={2}>
-          <FormControl>
-            <FormLabel>{t('Select a key')}</FormLabel>
-            <Select
-              action={action}
-              name="apiKeyName"
-              placeholder={<Typography textColor="gray">No API Key</Typography>}
-              value={apiKeyName || 'No API Key'}
-              onChange={handleSelectChange}
-              sx={{
-                flex: 1,
-              }}
-              {...(apiKeyName && {
-                // display the button and remove select indicator
-                // when user has selected a value
-                endDecorator: (
-                  <IconButton
-                    size="sm"
-                    variant="plain"
-                    color="neutral"
-                    onMouseDown={(event) => {
-                      // don't open the popup when clicking on this button
-                      event.stopPropagation();
-                    }}
-                    onClick={() => {
-                      setApiKeyName('');
-                      action.current?.focusVisible();
-                    }}
-                  >
-                    <CloseRounded fontSize="small"/>
-                  </IconButton>
-                ),
-                indicator: null,
-              })}
-            >
-              {keyNames && keyNames.length > 0 ? keyNames?.map(keyName => keyName && (
-                <Option value={keyName} key={`option-${keyName}`}>{keyName}</Option>
-              )) : (
-                <Option value="No API Key" key='option-unknown'>--No API Key--</Option>
-              )}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <FormLabel>{t('or you can use a temporary key')}</FormLabel>
-            <Input
-              type="password"
-              placeholder="Paste a key here..."
-              startDecorator={<KeyRounded />}
-              value={apiKeyValue}
-              onChange={handleValueChange}
-              sx={{
-                minWidth: '20rem',
-              }}
-            />
-          </FormControl>
-        </Stack>
-      </ConfirmModal>
-  );
-}
-
-export default function PromptRunner(props: {
+type PromptRunnerProps = {
   apiPath: string,
   record: PromptDetailsDTO | undefined,
   defaultVariables?: { [key: string]: any },
@@ -135,7 +23,9 @@ export default function PromptRunner(props: {
   onPlayFailure?: (request: PromptAiParamDTO | undefined, error: any) => void,
   onPlaySuccess?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
   onExampleSave?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
-}) {
+};
+
+export default function PromptRunner(props: PromptRunnerProps) {
   const { apiPath, record, defaultVariables, defaultParameters, defaultOutputText, minWidth, maxWidth, onPlayFailure, onPlaySuccess, onExampleSave } = props;
   const { t } = useTranslation();
   const { aiServiceApi, serverUrl } = useFreeChatApiContext();
@@ -158,16 +48,38 @@ export default function PromptRunner(props: {
 
   const [width, setWidth] = useState(minWidth || '30%');
 
+  const matchingModels = useMemo(() => {
+    return record && provider && models ? models.filter(model => {
+      if (!model || model.provider !== provider) {
+        return false;
+      }
+      switch(record.type) {
+        case 'chat': {
+          return model.type === 'text2chat';
+        }
+        case 'string': {
+          return model.type === 'text2text';
+        }
+        default: {
+          return false;
+        }
+      }
+    }) : [];
+  }, [models, provider, record]);
+
   useEffect(() => {
     aiServiceApi?.listAiModelInfo1()
       .then(setModels)
       .catch(handleError);
+  }, [aiServiceApi, handleError]);
+
+  useEffect(() => {
     provider && aiServiceApi?.listAiApiKeys(provider)
       .then(resp => setApiKeyNames(resp
         .filter(key => !!key.name && key.enabled)
         .map(key => key.name)))
       .catch(handleError);
-  }, [record, provider, aiServiceApi, handleError]);
+  }, [aiServiceApi, handleError, provider]);
 
   useEffect(() => {
     setProvider(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
@@ -220,9 +132,9 @@ export default function PromptRunner(props: {
   }
 
   function handleImageSelect(file: Blob, name: string) {
-    getCompressedImageDataURL(file)
-      .then(base64 => {
-        handleInputChange('attachment', base64);
+    getCompressedImage(file)
+      .then(imageInfo => {
+        handleInputChange('attachment', imageInfo.dataUrl);
         setAttachment(name);
       })
       .catch(handleError);
@@ -284,30 +196,9 @@ export default function PromptRunner(props: {
     return undefined;
   }
 
-  function filterModels(): (AiModelInfoDTO | undefined)[] {
-    return record && provider && models ? models.filter(model => {
-      if (!model || model.provider !== provider) {
-        return false;
-      }
-      switch(record.type) {
-        case 'chat': {
-          return model.type === 'text2chat';
-        }
-        case 'string': {
-          return model.type === 'text2text';
-        }
-        default: {
-          return false;
-        }
-      }
-    }) : [];
-  }
-
   function getServiceUrl(): string {
     return serverUrl + apiPath;
   }
-
-  const sx = {};
 
   return (
     <Fragment>
@@ -320,7 +211,6 @@ export default function PromptRunner(props: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         transition: 'width 0.3s',
-        ...sx
       }}>
         <Typography level="title-sm" textColor="neutral">
           {t('Inputs')}
@@ -395,7 +285,7 @@ export default function PromptRunner(props: {
           </Select>
           <Button
             variant="soft"
-            color={!apiKeyName && !apiKeyValue ? 'danger' : 'neutral'}
+            color={apiKeyName || apiKeyValue ? 'neutral' : 'danger'}
             disabled={!provider}
             startDecorator={<KeyRounded />}
             onClick={() => setOpenApiKeySetting(true)}
@@ -404,7 +294,7 @@ export default function PromptRunner(props: {
           </Button>
           <Button
             variant="soft"
-            color={!parameters?.modelId ? 'danger' : 'primary'}
+            color={parameters?.modelId ? 'primary' : 'danger'}
             disabled={!provider}
             startDecorator={<TuneRounded />}
             onClick={() => setModelSetting(true)}
@@ -467,7 +357,7 @@ export default function PromptRunner(props: {
           )}
         </CommonContainer>
       </Card>
-      <AiApiKeySetting
+      <AiApiKeySettings
         defaultKeyName={apiKeyName}
         defaultKeyValue={apiKeyValue}
         keyNames={apiKeyNames}
@@ -481,13 +371,13 @@ export default function PromptRunner(props: {
       />
       <OpenAISettings
         open={modelSetting && provider === 'open_ai'}
-        models={filterModels()}
+        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
-        models={filterModels()}
+        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />

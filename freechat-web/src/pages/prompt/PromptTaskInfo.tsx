@@ -4,12 +4,34 @@ import { PromptTaskDetailsDTO } from "freechat-sdk";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { PromptViewer } from "../../components/prompt";
 
-export default function PromptTaskEdit() {
+export default function PromptTaskInfo() {
   const { id } = useParams();
   const { promptTaskApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>()
+  const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
+  const [promptId, setPromptId] = useState(promptTask?.promptRef?.promptId);
+  const [parameters, setParameters] = useState({...promptTask?.params, modelId: promptTask?.modelId, apiKeyName: promptTask?.apiKeyName, apiKey: promptTask?.apiKeyValue});
+  const [variables, setVariables] = useState({...promptTask?.promptRef?.variables});
+  
+  useEffect(() => {
+    if (id) {
+      promptTaskApi?.getPromptTask(id)
+        .then(setPromptTask)
+        .catch(handleError);
+    }
+  }, [promptTaskApi, handleError, id]);
+
+  useEffect(() => {
+    setPromptId(promptTask?.promptRef?.promptId);
+    setParameters({
+      ...promptTask?.params,
+      modelId: promptTask?.modelId,
+      apiKeyName: promptTask?.apiKeyName,
+      apiKey: promptTask?.apiKeyValue
+    });
+    setVariables({...promptTask?.promptRef?.variables});
+  }, [promptTask]);
   
   useEffect(() => {
     if (id) {
@@ -20,9 +42,9 @@ export default function PromptTaskEdit() {
   }, [promptTaskApi, handleError, id]);
   return (
     <PromptViewer 
-      id={promptTask?.promptRef?.promptId}
-      parameters={promptTask?.params}
-      variables={promptTask?.promptRef?.variables}
+      id={promptId}
+      parameters={parameters}
+      variables={variables}
     />
   );
 }

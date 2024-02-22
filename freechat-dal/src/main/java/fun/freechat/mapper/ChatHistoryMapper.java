@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, memoryId, gmtCreate, gmtModified, enabled, message, systemMessage);
+    BasicColumn[] selectList = BasicColumn.columnList(id, memoryId, gmtCreate, gmtModified, enabled, message, ext);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
@@ -49,7 +49,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="enabled", property="enabled", jdbcType=JdbcType.TINYINT),
         @Result(column="message", property="message", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="system_message", property="systemMessage", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<ChatHistory> selectMany(SelectStatementProvider selectStatement);
 
@@ -83,7 +83,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .map(gmtModified).toProperty("gmtModified")
             .map(enabled).toProperty("enabled")
             .map(message).toProperty("message")
-            .map(systemMessage).toProperty("systemMessage")
+            .map(ext).toProperty("ext")
         );
     }
 
@@ -95,7 +95,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
             .map(enabled).toPropertyWhenPresent("enabled", row::getEnabled)
             .map(message).toPropertyWhenPresent("message", row::getMessage)
-            .map(systemMessage).toPropertyWhenPresent("systemMessage", row::getSystemMessage)
+            .map(ext).toPropertyWhenPresent("ext", row::getExt)
         );
     }
 
@@ -133,7 +133,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(enabled).equalTo(row::getEnabled)
                 .set(message).equalTo(row::getMessage)
-                .set(systemMessage).equalTo(row::getSystemMessage);
+                .set(ext).equalTo(row::getExt);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -143,7 +143,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(enabled).equalToWhenPresent(row::getEnabled)
                 .set(message).equalToWhenPresent(row::getMessage)
-                .set(systemMessage).equalToWhenPresent(row::getSystemMessage);
+                .set(ext).equalToWhenPresent(row::getExt);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -154,7 +154,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(enabled).equalTo(row::getEnabled)
             .set(message).equalTo(row::getMessage)
-            .set(systemMessage).equalTo(row::getSystemMessage)
+            .set(ext).equalTo(row::getExt)
             .where(id, isEqualTo(row::getId))
         );
     }
@@ -167,7 +167,7 @@ public interface ChatHistoryMapper extends CommonCountMapper, CommonDeleteMapper
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(enabled).equalToWhenPresent(row::getEnabled)
             .set(message).equalToWhenPresent(row::getMessage)
-            .set(systemMessage).equalToWhenPresent(row::getSystemMessage)
+            .set(ext).equalToWhenPresent(row::getExt)
             .where(id, isEqualTo(row::getId))
         );
     }

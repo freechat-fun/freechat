@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.PromptInfo;
-import fun.freechat.service.ai.message.ChatPromptContent;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.*;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.stats.InteractiveStatsService;

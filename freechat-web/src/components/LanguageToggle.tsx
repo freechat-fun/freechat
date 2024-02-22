@@ -6,12 +6,13 @@ import { LanguageRounded } from "@mui/icons-material";
 import { EnIcon, ZhIcon } from "./icon";
 
 export default function LanguageToggle(props: IconButtonProps) {
-  const { sx, ...other } = props;
   const [mounted, setMounted] = useState(false);
 
   const { i18n } = useTranslation();
 
   const language = i18n.language || i18nConfig.defaultLocale;
+
+  const Icon = language === 'en' ? ZhIcon : (language == 'zh' ? EnIcon : LanguageRounded);
 
   useEffect(() => {
     setMounted(true);
@@ -23,8 +24,7 @@ export default function LanguageToggle(props: IconButtonProps) {
         size="sm"
         variant="plain"
         color="neutral"
-        {...other}
-        sx={sx}
+        {...props}
         disabled
       />
     );
@@ -42,24 +42,8 @@ export default function LanguageToggle(props: IconButtonProps) {
         const nextIndex = (index + 1) % languages.length;
         i18n.changeLanguage(languages[nextIndex]);
       }}
-      sx={[
-        {
-          '& > *:first-of-type': {
-            display: language === 'en' ? 'none' : 'initial',
-          },
-          '& > *:nth-of-type(2)': {
-            display: language === 'zh' ? 'none' : 'initial',
-          },
-          '& > *:last-of-type': {
-            display: language === 'zh' || language === 'en' ? 'none' : 'initial',
-          },
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
     >
-      <EnIcon />
-      <ZhIcon />
-      <LanguageRounded />
+      <Icon />
     </IconButton>
   );
 }

@@ -3,7 +3,7 @@ package fun.freechat.service.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.data.message.*;
-import fun.freechat.service.ai.message.ChatPromptContent;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.PromptType;
 import lombok.extern.slf4j.Slf4j;

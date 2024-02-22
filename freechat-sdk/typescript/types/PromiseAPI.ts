@@ -27,10 +27,14 @@ import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
 import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
 import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
 import { ChatContentDTO } from '../models/ChatContentDTO.js';
+import { ChatContextDTO } from '../models/ChatContextDTO.js';
 import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
+import { ChatMessageRecordDTO } from '../models/ChatMessageRecordDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
+import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
+import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -1516,26 +1520,6 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Delete the chat session.
-     * Delete Chat Session
-     * @param chatId Chat session identifier
-     */
-    public deleteChatWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteChatWithHttpInfo(chatId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete the chat session.
-     * Delete Chat Session
-     * @param chatId Chat session identifier
-     */
-    public deleteChat(chatId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteChat(chatId, _options);
-        return result.toPromise();
-    }
-
-    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name
@@ -1696,72 +1680,6 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     */
-    public listMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageDTO>>> {
-        const result = this.api.listMessagesWithHttpInfo(chatId, limit, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     */
-    public listMessages(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageDTO>> {
-        const result = this.api.listMessages(chatId, limit, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     * @param offset Messages offset (from new to old)
-     */
-    public listMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageDTO>>> {
-        const result = this.api.listMessages1WithHttpInfo(chatId, limit, offset, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     * @param offset Messages offset (from new to old)
-     */
-    public listMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<Array<ChatMessageDTO>> {
-        const result = this.api.listMessages1(chatId, limit, offset, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     */
-    public listMessages2WithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageDTO>>> {
-        const result = this.api.listMessages2WithHttpInfo(chatId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     */
-    public listMessages2(chatId: string, _options?: Configuration): Promise<Array<ChatMessageDTO>> {
-        const result = this.api.listMessages2(chatId, _options);
-        return result.toPromise();
-    }
-
-    /**
      * Create a new character name starting with a desired name.
      * Create New Character Name
      * @param desired Desired name
@@ -1884,28 +1802,6 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Send a chat message to character.
-     * Send Chat Message
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
-        const result = this.api.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Send a chat message to character.
-     * Send Chat Message
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<LlmResultDTO> {
-        const result = this.api.sendMessage(chatId, chatMessageDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
      * Set the default backend configuration.
      * Set Default Character Backend
      * @param characterBackendId The characterBackendId to be set to default
@@ -1922,48 +1818,6 @@ export class PromiseCharacterApi {
      */
     public setDefaultCharacterBackend(characterBackendId: string, _options?: Configuration): Promise<boolean> {
         const result = this.api.setDefaultCharacterBackend(characterBackendId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Start a chat session.
-     * Start Chat Session
-     * @param chatCreateDTO Parameters for starting a chat session
-     */
-    public startChatWithHttpInfo(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.startChatWithHttpInfo(chatCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Start a chat session.
-     * Start Chat Session
-     * @param chatCreateDTO Parameters for starting a chat session
-     */
-    public startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.startChat(chatCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
-     * Send Chat Message by Streaming Back
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
-        const result = this.api.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
-     * Send Chat Message by Streaming Back
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<SseEmitter> {
-        const result = this.api.streamSendMessage(chatId, chatMessageDTO, _options);
         return result.toPromise();
     }
 
@@ -2048,6 +1902,255 @@ export class PromiseCharacterApi {
      */
     public uploadCharacterPicture(file: HttpFile, _options?: Configuration): Promise<string> {
         const result = this.api.uploadCharacterPicture(file, _options);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableChatApi } from './ObservableAPI.js';
+
+import { ChatApiRequestFactory, ChatApiResponseProcessor} from "../apis/ChatApi.js";
+export class PromiseChatApi {
+    private api: ObservableChatApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: ChatApiRequestFactory,
+        responseProcessor?: ChatApiResponseProcessor
+    ) {
+        this.api = new ObservableChatApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Clear memory of the chat session.
+     * Clear Memory
+     * @param chatId Chat session identifier
+     */
+    public clearMemoryWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.clearMemoryWithHttpInfo(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Clear memory of the chat session.
+     * Clear Memory
+     * @param chatId Chat session identifier
+     */
+    public clearMemory(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.clearMemory(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete the chat session.
+     * Delete Chat Session
+     * @param chatId Chat session identifier
+     */
+    public deleteChatWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteChatWithHttpInfo(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete the chat session.
+     * Delete Chat Session
+     * @param chatId Chat session identifier
+     */
+    public deleteChat(chatId: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteChat(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get default chat id of current user and the character.
+     * Get Default Chat
+     * @param characterId Character identifier
+     */
+    public getDefaultChatIdWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.getDefaultChatIdWithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get default chat id of current user and the character.
+     * Get Default Chat
+     * @param characterId Character identifier
+     */
+    public getDefaultChatId(characterId: string, _options?: Configuration): Promise<string> {
+        const result = this.api.getDefaultChatId(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List chats of current user.
+     * List Chats
+     */
+    public listChatsWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<ChatSessionDTO>>> {
+        const result = this.api.listChatsWithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * List chats of current user.
+     * List Chats
+     */
+    public listChats(_options?: Configuration): Promise<Array<ChatSessionDTO>> {
+        const result = this.api.listChats(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     */
+    public listMessagesWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listMessagesWithHttpInfo(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     */
+    public listMessages(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listMessages(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listMessages1WithHttpInfo(chatId, limit, offset, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listMessages1(chatId, limit, offset, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listMessages2WithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listMessages2WithHttpInfo(chatId, limit, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listMessages2(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listMessages2(chatId, limit, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Send a chat message to character.
+     * Send Chat Message
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+        const result = this.api.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Send a chat message to character.
+     * Send Chat Message
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<LlmResultDTO> {
+        const result = this.api.sendMessage(chatId, chatMessageDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Start a chat session.
+     * Start Chat Session
+     * @param chatCreateDTO Parameters for starting a chat session
+     */
+    public startChatWithHttpInfo(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.startChatWithHttpInfo(chatCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Start a chat session.
+     * Start Chat Session
+     * @param chatCreateDTO Parameters for starting a chat session
+     */
+    public startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.startChat(chatCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Send Chat Message by Streaming Back
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+        const result = this.api.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Send Chat Message by Streaming Back
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<SseEmitter> {
+        const result = this.api.streamSendMessage(chatId, chatMessageDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Update the chat session.
+     * Update Chat Session
+     * @param chatId Chat session identifier
+     * @param chatUpdateDTO The chat session information to be updated
+     */
+    public updateChatWithHttpInfo(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.updateChatWithHttpInfo(chatId, chatUpdateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Update the chat session.
+     * Update Chat Session
+     * @param chatId Chat session identifier
+     * @param chatUpdateDTO The chat session information to be updated
+     */
+    public updateChat(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: Configuration): Promise<boolean> {
+        const result = this.api.updateChat(chatId, chatUpdateDTO, _options);
         return result.toPromise();
     }
 

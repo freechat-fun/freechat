@@ -54,7 +54,7 @@ const MarkdownContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   alt: string;
 }
 
@@ -87,7 +87,7 @@ const ImageContainer: React.FC<ImageProps> = ({ alt, ...props }) => {
   return <img alt={alt} {...props} style={style} />;
 };
 
-interface MarkdownContentProps {
+type MarkdownContentProps = {
   loading?: boolean;
   sx?: SxProps;
   children: React.ReactNode | undefined;

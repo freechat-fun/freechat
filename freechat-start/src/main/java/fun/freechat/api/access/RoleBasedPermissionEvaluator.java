@@ -8,7 +8,7 @@ import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.character.ChatContextService;
+import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.organization.OrgService;
@@ -53,6 +53,10 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
 
     private SysApiTokenService sysApiTokenService;
 
+    private boolean targetNotBlank(String target) {
+        return StringUtils.isNotBlank(target) && !"null".equals(target);
+    }
+
     @Override
     public boolean hasPermission(Authentication authentication, Object targetObject, Object permission) {
         if (!(permission instanceof String)) {
@@ -78,7 +82,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "characterBackendDefaultOp" -> allow = targetObject instanceof String backendId &&
                         currentUser.getUserId().equals(getCharacterService().getBackendOwner(backendId));
                 case "chatDefaultOp" -> allow = targetObject instanceof String chatId &&
-                        currentUser.getUserId().equals(getChatContextService().getOwner(chatId));
+                        currentUser.getUserId().equals(getChatContextService().getChatOwner(chatId));
                 case "chatCreateOp" -> {
                     String characterId  = getCharacterService().getBackendCharacterId((String) targetObject);
                     if (StringUtils.isBlank(characterId)) {
@@ -103,7 +107,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     }
                     ownerId = getCharacterService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
-                    if (StringUtils.isNotBlank(targets[1])) {
+                    if (targetNotBlank(targets[1])) {
                         allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
@@ -114,7 +118,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     }
                     ownerId = getCharacterService().getBackendOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
-                    if (StringUtils.isNotBlank(targets[1])) {
+                    if (targetNotBlank(targets[1])) {
                         allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
@@ -163,7 +167,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     }
                     ownerId = getPromptTaskService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
-                    if (StringUtils.isNotBlank(targets[1])) {
+                    if (targetNotBlank(targets[1])) {
                         allow = allow && currentUser.getUserId().equals(getPromptService().getOwner(targets[1]));
                     }
                 }
@@ -247,8 +251,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
     private boolean checkVisibility(String visibility, String role) {
         return switch (Visibility.of(visibility)) {
             case HIDDEN, PRIVATE, PUBLIC -> true;
-            case PUBLIC_ORG ->
-                    AuthorityUtils.getPriorityOfRole(role) >= AuthorityUtils.getPriority(AuthorityUtils.RES_ADMIN);
+            case PUBLIC_ORG -> AccountUtils.hasSufficientPermission(AuthorityUtils.RES_ADMIN);
         };
     }
 

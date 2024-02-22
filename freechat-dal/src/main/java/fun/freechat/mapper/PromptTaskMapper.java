@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PromptTask>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(taskId, gmtCreate, gmtModified, gmtExecuted, promptId, draft, modelId, apiKeyName, cron, status, variables, params);
+    BasicColumn[] selectList = BasicColumn.columnList(taskId, gmtCreate, gmtModified, gmtExecuted, promptId, draft, modelId, apiKeyName, cron, status, variables, apiKeyValue, params);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -48,6 +48,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         @Result(column="cron", property="cron", jdbcType=JdbcType.VARCHAR),
         @Result(column="status", property="status", jdbcType=JdbcType.VARCHAR),
         @Result(column="variables", property="variables", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="api_key_value", property="apiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="params", property="params", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<PromptTask> selectMany(SelectStatementProvider selectStatement);
@@ -88,6 +89,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .map(cron).toProperty("cron")
             .map(status).toProperty("status")
             .map(variables).toProperty("variables")
+            .map(apiKeyValue).toProperty("apiKeyValue")
             .map(params).toProperty("params")
         );
     }
@@ -106,6 +108,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .map(cron).toProperty("cron")
             .map(status).toProperty("status")
             .map(variables).toProperty("variables")
+            .map(apiKeyValue).toProperty("apiKeyValue")
             .map(params).toProperty("params")
         );
     }
@@ -124,6 +127,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .map(cron).toPropertyWhenPresent("cron", row::getCron)
             .map(status).toPropertyWhenPresent("status", row::getStatus)
             .map(variables).toPropertyWhenPresent("variables", row::getVariables)
+            .map(apiKeyValue).toPropertyWhenPresent("apiKeyValue", row::getApiKeyValue)
             .map(params).toPropertyWhenPresent("params", row::getParams)
         );
     }
@@ -168,6 +172,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
                 .set(cron).equalTo(row::getCron)
                 .set(status).equalTo(row::getStatus)
                 .set(variables).equalTo(row::getVariables)
+                .set(apiKeyValue).equalTo(row::getApiKeyValue)
                 .set(params).equalTo(row::getParams);
     }
 
@@ -184,6 +189,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
                 .set(cron).equalToWhenPresent(row::getCron)
                 .set(status).equalToWhenPresent(row::getStatus)
                 .set(variables).equalToWhenPresent(row::getVariables)
+                .set(apiKeyValue).equalToWhenPresent(row::getApiKeyValue)
                 .set(params).equalToWhenPresent(row::getParams);
     }
 
@@ -200,6 +206,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .set(cron).equalTo(row::getCron)
             .set(status).equalTo(row::getStatus)
             .set(variables).equalTo(row::getVariables)
+            .set(apiKeyValue).equalTo(row::getApiKeyValue)
             .set(params).equalTo(row::getParams)
             .where(taskId, isEqualTo(row::getTaskId))
         );
@@ -218,6 +225,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .set(cron).equalToWhenPresent(row::getCron)
             .set(status).equalToWhenPresent(row::getStatus)
             .set(variables).equalToWhenPresent(row::getVariables)
+            .set(apiKeyValue).equalToWhenPresent(row::getApiKeyValue)
             .set(params).equalToWhenPresent(row::getParams)
             .where(taskId, isEqualTo(row::getTaskId))
         );

@@ -7,7 +7,7 @@ import dev.langchain4j.model.input.PromptTemplate;
 import fun.freechat.langchain4j.model.input.FStringPromptTemplate;
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
-import fun.freechat.service.ai.message.ChatPromptContent;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.enums.*;
@@ -695,7 +695,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             for (var prevVersionInfo : versionInfoList) {
                 promptTaskMapper.select(c -> c.where(PromptTaskDynamicSqlSupport.promptId, isEqualTo(prevVersionInfo.getLeft())))
                         .forEach(promptTask -> {
-                            int rows = promptTaskMapper.updateByPrimaryKey(promptTask
+                            int rows = promptTaskMapper.updateByPrimaryKeySelective(promptTask
                                     .withPromptId(updatedInfo.getPromptId())
                                     .withGmtModified(updatedInfo.getGmtModified()));
                             if (rows > 0) {
@@ -798,7 +798,6 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     @Override
     public ChatPromptContent apply(ChatPromptContent promptContent, Map<String, Object> variables, PromptFormat format) {
         ChatPromptContent applied = new ChatPromptContent();
-        applied.setFormat(format.text());
         applied.setSystem(apply(promptContent.getSystem(), variables, format));
 
         if (hasValidUserMessagePrompt(promptContent, format)) {

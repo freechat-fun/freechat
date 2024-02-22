@@ -20,16 +20,22 @@ public final class ChatContextDynamicSqlSupport {
     public static final SqlColumn<Date> gmtModified = chatContext.gmtModified;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Date> gmtRead = chatContext.gmtRead;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> chatType = chatContext.chatType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userId = chatContext.userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userNickname = chatContext.userNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> characterNickname = chatContext.characterNickname;
+    public static final SqlColumn<String> backendId = chatContext.backendId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> backendId = chatContext.backendId;
+    public static final SqlColumn<String> characterNickname = chatContext.characterNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userProfile = chatContext.userProfile;
@@ -48,13 +54,17 @@ public final class ChatContextDynamicSqlSupport {
 
         public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
 
+        public final SqlColumn<Date> gmtRead = column("gmt_read", JDBCType.TIMESTAMP);
+
+        public final SqlColumn<String> chatType = column("chat_type", JDBCType.VARCHAR);
+
         public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
 
         public final SqlColumn<String> userNickname = column("user_nickname", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> characterNickname = column("character_nickname", JDBCType.VARCHAR);
-
         public final SqlColumn<String> backendId = column("backend_id", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> characterNickname = column("character_nickname", JDBCType.VARCHAR);
 
         public final SqlColumn<String> userProfile = column("user_profile", JDBCType.LONGVARCHAR);
 

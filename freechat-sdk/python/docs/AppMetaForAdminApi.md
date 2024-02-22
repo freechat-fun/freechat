@@ -20,8 +20,6 @@ This method does nothing.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.llm_result_dto import LlmResultDTO
 from freechat_sdk.models.open_ai_param_dto import OpenAiParamDTO
@@ -106,8 +104,6 @@ Get application information to accurately locate the corresponding project versi
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.app_meta_dto import AppMetaDTO
 from freechat_sdk.rest import ApiException

@@ -8,12 +8,12 @@ Request data for starting a chat session
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**userNickname** | **String** | User nickname for this session. |  [optional] |
-|**userProfile** | **String** | User profile for this session. |  [optional] |
-|**characterNickname** | **String** | Character nickname for this session. |  [optional] |
-|**about** | **String** | Anything about this session. |  [optional] |
-|**backendId** | **String** | Character backend for this session. |  |
-|**ext** | **String** | Extra info for this session. |  [optional] |
+|**userNickname** | **String** | User nickname for this session |  [optional] |
+|**userProfile** | **String** | User profile for this session |  [optional] |
+|**characterNickname** | **String** | Character nickname for this session |  [optional] |
+|**about** | **String** | Anything about this session |  [optional] |
+|**backendId** | **String** | Character backend for this session |  |
+|**ext** | **String** | Extra info for this session |  [optional] |
 
 
 

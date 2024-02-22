@@ -11,7 +11,7 @@ import { getDateLabel } from "../../libs/date_utils";
 import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt";
 import { getMessageText } from "../../libs/template_utils";
 
-interface PromptViewerProps {
+type PromptViewerProps = {
   id: string | undefined;
   parameters?: { [key: string]: any };
   variables?: { [key: string]: any };
@@ -46,6 +46,14 @@ export default function PromptViewer({
       })
       .catch(handleError);
   }, [handleError, id, promptApi]);
+
+  useEffect(() => {
+    setDefaultParameters(parameters ? {...parameters} : undefined);
+  }, [parameters]);
+
+  useEffect(() => {
+    setDefaultVariables(variables ? {...variables} : undefined);
+  }, [variables]);
 
   function handleEdit(): void {
     id && navigate(`/w/prompt/edit/${id}`);

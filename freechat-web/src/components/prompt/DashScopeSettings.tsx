@@ -52,7 +52,30 @@ export default function DashScopeSettings(props: {
 
   useEffect(() => {
     setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[dash_scope]qwen-plus')));
-  }, [defaultParameters?.modelId, models]);
+
+    setTopP(defaultParameters?.topP ?? 0.8);
+    setEnableTopP(containsKey(defaultParameters, 'topP'));
+
+    setTopK(defaultParameters?.topK ?? 0);
+    setEnableTopK(containsKey(defaultParameters, 'topK'));
+
+    setMaxTokens(defaultParameters?.maxTokens ?? 2000);
+    setEnableMaxTokens(containsKey(defaultParameters, 'maxTokens'));
+
+    setEnableSearch(defaultParameters?.enableSearch ?? false);
+
+    setSeed(defaultParameters?.seed ?? 1234);
+    setEnableSeed(containsKey(defaultParameters, 'seed'));
+
+    setRepetitionPenalty(defaultParameters?.repetitionPenalty ?? 1.1);
+    setEnableRepetitionPenalty(containsKey(defaultParameters, 'repetitionPenalty'));
+
+    setTemperature(defaultParameters?.temperature ?? 1);
+    setEnableTemperature(containsKey(defaultParameters, 'temperature'));
+
+    setStop(defaultParameters?.stop ?? []);
+    setEnableStop(containsKey(defaultParameters, 'stop'));
+  }, [defaultParameters, models]);
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
     if (newValue && newValue !== model?.modelId) {

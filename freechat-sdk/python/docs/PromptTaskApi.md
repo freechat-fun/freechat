@@ -22,8 +22,6 @@ Add a prompt task.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_task_dto import PromptTaskDTO
 from freechat_sdk.rest import ApiException
@@ -102,8 +100,6 @@ Delete a prompt task.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -181,8 +177,6 @@ Get the prompt task details.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_task_details_dto import PromptTaskDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -261,8 +255,6 @@ Update a prompt task.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_task_dto import PromptTaskDTO
 from freechat_sdk.rest import ApiException

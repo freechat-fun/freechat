@@ -45,7 +45,7 @@ public class CacheConfig {
         return cacheManager;
     }
 
-    @Bean
+    @Bean(name = IN_PROCESS_CACHE_MANAGER)
     public CacheManager inProcessCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(LONG_PERIOD_CACHE_NAME);
         cacheManager.setAllowNullValues(false);

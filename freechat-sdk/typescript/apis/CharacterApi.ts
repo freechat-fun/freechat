@@ -16,10 +16,6 @@ import { CharacterItemForNameDTO } from '../models/CharacterItemForNameDTO.js';
 import { CharacterQueryDTO } from '../models/CharacterQueryDTO.js';
 import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
 import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
-import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
-import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
-import { LlmResultDTO } from '../models/LlmResultDTO.js';
-import { SseEmitter } from '../models/SseEmitter.js';
 
 /**
  * no description
@@ -389,44 +385,6 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Delete the chat session.
-     * Delete Chat Session
-     * @param chatId Chat session identifier
-     */
-    public async deleteChat(chatId: string, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatId' is not null or undefined
-        if (chatId === null || chatId === undefined) {
-            throw new RequiredError("CharacterApi", "deleteChat", "chatId");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name
@@ -731,144 +689,6 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     */
-    public async listMessages(chatId: string, limit: number, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatId' is not null or undefined
-        if (chatId === null || chatId === undefined) {
-            throw new RequiredError("CharacterApi", "listMessages", "chatId");
-        }
-
-
-        // verify required parameter 'limit' is not null or undefined
-        if (limit === null || limit === undefined) {
-            throw new RequiredError("CharacterApi", "listMessages", "limit");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat/messages/{chatId}/{limit}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'limit' + '}', encodeURIComponent(String(limit)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     * @param offset Messages offset (from new to old)
-     */
-    public async listMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatId' is not null or undefined
-        if (chatId === null || chatId === undefined) {
-            throw new RequiredError("CharacterApi", "listMessages1", "chatId");
-        }
-
-
-        // verify required parameter 'limit' is not null or undefined
-        if (limit === null || limit === undefined) {
-            throw new RequiredError("CharacterApi", "listMessages1", "limit");
-        }
-
-
-        // verify required parameter 'offset' is not null or undefined
-        if (offset === null || offset === undefined) {
-            throw new RequiredError("CharacterApi", "listMessages1", "offset");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat/messages/{chatId}/{limit}/{offset}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)))
-            .replace('{' + 'limit' + '}', encodeURIComponent(String(limit)))
-            .replace('{' + 'offset' + '}', encodeURIComponent(String(offset)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     */
-    public async listMessages2(chatId: string, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatId' is not null or undefined
-        if (chatId === null || chatId === undefined) {
-            throw new RequiredError("CharacterApi", "listMessages2", "chatId");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat/messages/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
      * Create a new character name starting with a desired name.
      * Create New Character Name
      * @param desired Desired name
@@ -1125,62 +945,6 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Send a chat message to character.
-     * Send Chat Message
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public async sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatId' is not null or undefined
-        if (chatId === null || chatId === undefined) {
-            throw new RequiredError("CharacterApi", "sendMessage", "chatId");
-        }
-
-
-        // verify required parameter 'chatMessageDTO' is not null or undefined
-        if (chatMessageDTO === null || chatMessageDTO === undefined) {
-            throw new RequiredError("CharacterApi", "sendMessage", "chatMessageDTO");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat/send/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        // Body Params
-        const contentType = ObjectSerializer.getPreferredMediaType([
-            "application/json"
-        ]);
-        requestContext.setHeaderParam("Content-Type", contentType);
-        const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(chatMessageDTO, "ChatMessageDTO", ""),
-            contentType
-        );
-        requestContext.setBody(serializedBody);
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
      * Set the default backend configuration.
      * Set Default Character Backend
      * @param characterBackendId The characterBackendId to be set to default
@@ -1202,110 +966,6 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
         requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
 
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * Start a chat session.
-     * Start Chat Session
-     * @param chatCreateDTO Parameters for starting a chat session
-     */
-    public async startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatCreateDTO' is not null or undefined
-        if (chatCreateDTO === null || chatCreateDTO === undefined) {
-            throw new RequiredError("CharacterApi", "startChat", "chatCreateDTO");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat';
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        // Body Params
-        const contentType = ObjectSerializer.getPreferredMediaType([
-            "application/json"
-        ]);
-        requestContext.setHeaderParam("Content-Type", contentType);
-        const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(chatCreateDTO, "ChatCreateDTO", ""),
-            contentType
-        );
-        requestContext.setBody(serializedBody);
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
-     * Send Chat Message by Streaming Back
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public async streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'chatId' is not null or undefined
-        if (chatId === null || chatId === undefined) {
-            throw new RequiredError("CharacterApi", "streamSendMessage", "chatId");
-        }
-
-
-        // verify required parameter 'chatMessageDTO' is not null or undefined
-        if (chatMessageDTO === null || chatMessageDTO === undefined) {
-            throw new RequiredError("CharacterApi", "streamSendMessage", "chatMessageDTO");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/character/chat/send/stream/{chatId}'
-            .replace('{' + 'chatId' + '}', encodeURIComponent(String(chatId)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        // Body Params
-        const contentType = ObjectSerializer.getPreferredMediaType([
-            "application/json"
-        ]);
-        requestContext.setHeaderParam("Content-Type", contentType);
-        const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(chatMessageDTO, "ChatMessageDTO", ""),
-            contentType
-        );
-        requestContext.setBody(serializedBody);
 
         let authMethod: SecurityAuthentication | undefined;
         // Apply auth methods
@@ -1802,35 +1462,6 @@ export class CharacterApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to deleteChat
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async deleteChatWithHttpInfo(response: ResponseContext): Promise<HttpInfo<boolean >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: boolean = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "boolean", ""
-            ) as boolean;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: boolean = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "boolean", ""
-            ) as boolean;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
      * @params response Response returned by the server for a request to existsCharacterName
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -2063,93 +1694,6 @@ export class CharacterApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to listMessages
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async listMessagesWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<ChatMessageDTO> >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<ChatMessageDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<ChatMessageDTO>", ""
-            ) as Array<ChatMessageDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<ChatMessageDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<ChatMessageDTO>", ""
-            ) as Array<ChatMessageDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to listMessages1
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async listMessages1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<ChatMessageDTO> >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<ChatMessageDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<ChatMessageDTO>", ""
-            ) as Array<ChatMessageDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<ChatMessageDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<ChatMessageDTO>", ""
-            ) as Array<ChatMessageDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to listMessages2
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async listMessages2WithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<ChatMessageDTO> >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<ChatMessageDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<ChatMessageDTO>", ""
-            ) as Array<ChatMessageDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<ChatMessageDTO> = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<ChatMessageDTO>", ""
-            ) as Array<ChatMessageDTO>;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
      * @params response Response returned by the server for a request to newCharacterName
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -2324,35 +1868,6 @@ export class CharacterApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to sendMessage
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async sendMessageWithHttpInfo(response: ResponseContext): Promise<HttpInfo<LlmResultDTO >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: LlmResultDTO = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "LlmResultDTO", ""
-            ) as LlmResultDTO;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: LlmResultDTO = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "LlmResultDTO", ""
-            ) as LlmResultDTO;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
      * @params response Response returned by the server for a request to setDefaultCharacterBackend
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -2372,64 +1887,6 @@ export class CharacterApiResponseProcessor {
                 ObjectSerializer.parse(await response.body.text(), contentType),
                 "boolean", ""
             ) as boolean;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to startChat
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async startChatWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
-    }
-
-    /**
-     * Unwraps the actual response sent by the server from the response context and deserializes the response content
-     * to the expected objects
-     *
-     * @params response Response returned by the server for a request to streamSendMessage
-     * @throws ApiException if the response code was not in [200, 299]
-     */
-     public async streamSendMessageWithHttpInfo(response: ResponseContext): Promise<HttpInfo<SseEmitter >> {
-        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
-        if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: SseEmitter = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "SseEmitter", ""
-            ) as SseEmitter;
-            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
-        }
-
-        // Work around for missing responses in specification, e.g. for petstore.yaml
-        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: SseEmitter = ObjectSerializer.deserialize(
-                ObjectSerializer.parse(await response.body.text(), contentType),
-                "SseEmitter", ""
-            ) as SseEmitter;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

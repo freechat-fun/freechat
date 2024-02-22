@@ -34,8 +34,6 @@ Batch call shortcut for /api/v1/agent/details/search.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_details_dto import AgentDetailsDTO
 from freechat_sdk.models.agent_query_dto import AgentQueryDTO
@@ -115,8 +113,6 @@ Batch call shortcut for /api/v1/agent/search.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_query_dto import AgentQueryDTO
 from freechat_sdk.models.agent_summary_dto import AgentSummaryDTO
@@ -196,8 +192,6 @@ Enter the agentId, generate a new record, the content is basically the same as t
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -275,8 +269,6 @@ Batch clone multiple agents. Ensure transactionality, return the agentId list af
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -354,8 +346,6 @@ Calculate the number of agents according to the specified query conditions.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_query_dto import AgentQueryDTO
 from freechat_sdk.rest import ApiException
@@ -434,8 +424,6 @@ Create a agent, ignore required fields: - Agent name - Agent configuration  Limi
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_create_dto import AgentCreateDTO
 from freechat_sdk.rest import ApiException
@@ -514,8 +502,6 @@ Batch create multiple agents. Ensure transactionality, return the agentId list a
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_create_dto import AgentCreateDTO
 from freechat_sdk.rest import ApiException
@@ -594,8 +580,6 @@ Delete agent. Return success or failure.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -673,8 +657,6 @@ Delete multiple agents. Ensure transactionality, return the list of successfully
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -752,8 +734,6 @@ Get agent detailed information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_details_dto import AgentDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -832,8 +812,6 @@ Get agent summary information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_summary_dto import AgentSummaryDTO
 from freechat_sdk.rest import ApiException
@@ -912,8 +890,6 @@ List the versions and corresponding agentIds by agent name.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_item_for_name_dto import AgentItemForNameDTO
 from freechat_sdk.rest import ApiException
@@ -992,8 +968,6 @@ Publish agent, draft content becomes formal content, version number increases by
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -1073,8 +1047,6 @@ Same as /api/v1/agent/search, but returns detailed information of the agent.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_details_dto import AgentDetailsDTO
 from freechat_sdk.models.agent_query_dto import AgentQueryDTO
@@ -1154,8 +1126,6 @@ Search agents: - Specifiable query fields, and relationship:   - Scope: private,
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_query_dto import AgentQueryDTO
 from freechat_sdk.models.agent_summary_dto import AgentSummaryDTO
@@ -1235,8 +1205,6 @@ Update agent, refer to /api/v1/agent/create, required field: agentId. Return suc
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_update_dto import AgentUpdateDTO
 from freechat_sdk.rest import ApiException

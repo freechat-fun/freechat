@@ -75,7 +75,7 @@ export default function ThinSidebar() {
       sx={{
         position: 'fixed',
         zIndex: 9999,
-        height: '100vh',
+        height: '100dvh',
         width: '80px',
         bgcolor: 'transparent',
         boxShadow: 'none',
@@ -108,20 +108,18 @@ export default function ThinSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Home')}>
-              <ItemButton href="/w" disabled={false}>
+              <ItemButton href="/w">
                 <HomeRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>
 
           <ListItem>
-          
             <ItemTooltip title={t('Chat')}>
               <ItemButton href="/w/chat">
                 <ChatIcon />
               </ItemButton>
             </ItemTooltip>
-              
           </ListItem>
 
           <ListDivider sx={{my: 2}}/>
@@ -159,7 +157,7 @@ export default function ThinSidebar() {
           </ListItem>
 
           <ListItem>
-            <ItemTooltip title={t('API reference')}>
+            <ItemTooltip title={t('API Reference')}>
               <ItemButton href="/w/docs" disabled={false}>
                 <HelpRounded />
               </ItemButton>
@@ -211,7 +209,7 @@ export default function ThinSidebar() {
             <form method="post" action="/logout">
               <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
                 <Tooltip
-                  title={t('Sign out', {ns: 'account'})}
+                  title={t('Sign Out', {ns: 'account'})}
                   size="sm"
                   placement="right"
                   sx={{zIndex: 9999}}
@@ -223,7 +221,7 @@ export default function ThinSidebar() {
             </form>
           ) : (
             <ListItem>
-              <ItemTooltip title={t('Sign in', {ns: 'account'})}>
+              <ItemTooltip title={t('Sign In', {ns: 'account'})}>
                 <ItemButton href="/w/login" disabled={false}>
                   <LoginRounded />
                 </ItemButton>

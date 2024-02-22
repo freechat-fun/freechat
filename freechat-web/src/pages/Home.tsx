@@ -34,7 +34,7 @@ export default function Home() {
               width: 240,
             }}
           >
-            <img src={mode === 'dark' ? '/w/freechat_dark.png' : '/w/freechat_light.png'} />
+            <img src={mode === 'dark' ? '/img/freechat_dark.png' : '/img/freechat_light.png'} />
           </AspectRatio>
         </Card>
         <LinePlaceholder spacing={6} />

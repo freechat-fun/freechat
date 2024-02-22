@@ -41,8 +41,6 @@ Apply parameters to prompt record.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_ref_dto import PromptRefDTO
 from freechat_sdk.rest import ApiException
@@ -121,8 +119,6 @@ Apply parameters to prompt template.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_template_dto import PromptTemplateDTO
 from freechat_sdk.rest import ApiException
@@ -201,8 +197,6 @@ Batch call shortcut for /api/v1/prompt/details/search.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_details_dto import PromptDetailsDTO
 from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
@@ -282,8 +276,6 @@ Batch call shortcut for /api/v1/prompt/search.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
 from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
@@ -363,8 +355,6 @@ Enter the promptId, generate a new record, the content is basically the same as 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -442,8 +432,6 @@ Batch clone multiple prompts. Ensure transactionality, return the promptId list 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -521,8 +509,6 @@ Calculate the number of prompts according to the specified query conditions.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
 from freechat_sdk.rest import ApiException
@@ -601,8 +587,6 @@ Create a prompt, required fields: - Prompt name - Prompt content - Applicable mo
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_create_dto import PromptCreateDTO
 from freechat_sdk.rest import ApiException
@@ -681,8 +665,6 @@ Batch create multiple prompts. Ensure transactionality, return the promptId list
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_create_dto import PromptCreateDTO
 from freechat_sdk.rest import ApiException
@@ -761,8 +743,6 @@ Delete prompt. Returns success or failure.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -840,8 +820,6 @@ Delete prompt by name. return the list of successfully deleted promptIds.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -919,8 +897,6 @@ Delete multiple prompts. Ensure transactionality, return the list of successfull
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -998,8 +974,6 @@ Check if the prompt name already exists.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -1077,8 +1051,6 @@ Get prompt detailed information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_details_dto import PromptDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -1157,8 +1129,6 @@ Get prompt summary information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
 from freechat_sdk.rest import ApiException
@@ -1237,8 +1207,6 @@ List the versions and corresponding promptIds by prompt name.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_item_for_name_dto import PromptItemForNameDTO
 from freechat_sdk.rest import ApiException
@@ -1317,8 +1285,6 @@ Create a new prompt name starting with a desired name.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -1396,8 +1362,6 @@ Publish prompt, draft content becomes formal content, version number increases b
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -1477,8 +1441,6 @@ Same as /api/v1/prompt/search, but returns detailed information of the prompt.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_details_dto import PromptDetailsDTO
 from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
@@ -1558,8 +1520,6 @@ Search prompts: - Specifiable query fields, and relationship:   - Scope: private
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
 from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
@@ -1639,8 +1599,6 @@ Send the prompt to the AI service. Note that if the embedding model is called, t
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.llm_result_dto import LlmResultDTO
 from freechat_sdk.models.prompt_ai_param_dto import PromptAiParamDTO
@@ -1720,8 +1678,6 @@ Refer to /api/v1/prompt/send, stream back chunks of the response.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_ai_param_dto import PromptAiParamDTO
 from freechat_sdk.models.sse_emitter import SseEmitter
@@ -1801,8 +1757,6 @@ Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_update_dto import PromptUpdateDTO
 from freechat_sdk.rest import ApiException

@@ -17,16 +17,18 @@ export function useDebounce<T>(value: T, delay: number): T {
 }
 
 export const DEFAULT_IMAGE_MAX_WIDTH = 512;
-export const DEFAULT_IMAGE_MAX_SIZE = 20000;
+export const DEFAULT_IMAGE_MAX_SIZE = 20 * 1024;
 
-export function getCompressedImageDataURL(
+export type ImageInfo = { dataUrl: string, blob: Blob };
+
+export function getCompressedImage(
   file: Blob,
   maxSize: number = DEFAULT_IMAGE_MAX_SIZE,
   maxWidth: number = DEFAULT_IMAGE_MAX_WIDTH
-): Promise<string> {
+): Promise<ImageInfo> {
   let currentQuality = 0.8;
 
-  const compressImage = (file: Blob, quality: number): Promise<string> => {
+  const compressImage = (file: Blob, quality: number): Promise<ImageInfo> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -43,7 +45,13 @@ export function getCompressedImageDataURL(
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           const dataUrl = canvas.toDataURL('image/jpeg', quality);
-          resolve(dataUrl);
+          canvas.toBlob(blob => {
+            if (blob) {
+              resolve({ dataUrl, blob });
+            } else {
+              reject(new Error('Compression failed'));
+            }
+          }, 'image/jpeg', quality);
         };
         img.onerror = reject;
         img.src = e.target!.result as string;
@@ -53,9 +61,9 @@ export function getCompressedImageDataURL(
     });
   };
 
-  const checkSizeAndCompress = (base64: string): Promise<string> => {
-    if (base64.length < maxSize) {
-      return Promise.resolve(base64);
+  const checkSizeAndCompress = ({dataUrl, blob}: ImageInfo): Promise<ImageInfo> => {
+    if (dataUrl.length < maxSize) {
+      return Promise.resolve({dataUrl, blob});
     } else {
       if (currentQuality > 0.01) {
         currentQuality *= 0.8;

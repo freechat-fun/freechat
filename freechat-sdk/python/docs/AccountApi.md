@@ -30,8 +30,6 @@ Create a timed API Token, valid for {duration} seconds.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -105,8 +103,6 @@ Create a timed API Token, valid for {duration} seconds.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -184,8 +180,6 @@ Delete an API Token.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -263,8 +257,6 @@ Delete the API token by id.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -342,8 +334,6 @@ Disable an API Token, the token is not deleted.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -421,8 +411,6 @@ Disable the API token by id.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -500,8 +488,6 @@ Get the API token by id.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -579,8 +565,6 @@ Return user basic information, including: username, nickname, avatar link.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_basic_info_dto import UserBasicInfoDTO
 from freechat_sdk.rest import ApiException
@@ -659,8 +643,6 @@ Return the detailed user information of the current account, the fields refer to
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_details_dto import UserDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -735,8 +717,6 @@ List currently valid tokens.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.api_token_info_dto import ApiTokenInfoDTO
 from freechat_sdk.rest import ApiException
@@ -811,8 +791,6 @@ Update the detailed user information of the current account.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_details_dto import UserDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -891,8 +869,6 @@ Upload a picture of the user.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint

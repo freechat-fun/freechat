@@ -29,7 +29,7 @@ public final class ChatHistoryDynamicSqlSupport {
     public static final SqlColumn<String> message = chatHistory.message;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> systemMessage = chatHistory.systemMessage;
+    public static final SqlColumn<String> ext = chatHistory.ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class ChatHistory extends AliasableSqlTable<ChatHistory> {
@@ -45,7 +45,7 @@ public final class ChatHistoryDynamicSqlSupport {
 
         public final SqlColumn<String> message = column("message", JDBCType.LONGVARCHAR);
 
-        public final SqlColumn<String> systemMessage = column("system_message", JDBCType.LONGVARCHAR);
+        public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
 
         public ChatHistory() {
             super("chat_history", ChatHistory::new);

@@ -10,8 +10,8 @@ Name | Type | Description | Notes
 **name** | **str** | user: Name of the user role; tool_call: Name of the called tool | [optional] 
 **contents** | [**List[ChatContentDTO]**](ChatContentDTO.md) | default: Dialogue content; tool_result: tool call result, serialized as json | [optional] 
 **tool_calls** | [**List[ChatToolCallDTO]**](ChatToolCallDTO.md) | Tool calls information during the conversation | [optional] 
-**gmt_create** | **datetime** | Creation time | [optional] 
-**context** | **str** | Contextual information in this round of conversation | [optional] 
+**context** | **str** | Contextual information in this round of conversation (the external RAG result can be passed in through this parameter) | [optional] 
+**content_text** | **str** |  | [optional] 
 
 ## Example
 

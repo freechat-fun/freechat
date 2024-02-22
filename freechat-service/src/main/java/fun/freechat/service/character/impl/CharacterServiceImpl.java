@@ -916,6 +916,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
         public static final SqlColumn<String> parentId = CharacterInfoDynamicSqlSupport.parentId;
         public static final SqlColumn<String> visibility = CharacterInfoDynamicSqlSupport.visibility;
         public static final SqlColumn<String> name = CharacterInfoDynamicSqlSupport.name;
+        public static final SqlColumn<String> nickname = CharacterInfoDynamicSqlSupport.nickname;
         public static final SqlColumn<String> avatar = CharacterInfoDynamicSqlSupport.avatar;
         public static final SqlColumn<String> picture = CharacterInfoDynamicSqlSupport.picture;
         public static final SqlColumn<String> lang = CharacterInfoDynamicSqlSupport.lang;
@@ -939,6 +940,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.visibility,
                     Info.version,
                     Info.name,
+                    Info.nickname,
                     Info.avatar,
                     Info.picture,
                     Info.gender,

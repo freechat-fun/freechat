@@ -29,8 +29,6 @@ Get the superior relationships of the current account, including direct and indi
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -108,8 +106,6 @@ Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graph
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -187,8 +183,6 @@ Get the superior relationship of the subordinate account, including direct and i
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -268,8 +262,6 @@ Get the subordinate relationship of the subordinate account, including direct an
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -349,8 +341,6 @@ Get the subordinate relationships of the current account, including direct and i
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -428,8 +418,6 @@ Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -507,8 +495,6 @@ List the permission list of the subordinate account.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -586,8 +572,6 @@ Fully delete the direct subordinate relationship of the subordinate account.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -665,8 +649,6 @@ Update the permission list of the subordinate account, the granted permissions c
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -746,8 +728,6 @@ Fully update the direct superior relationship of the subordinate account (i.e., 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -827,8 +807,6 @@ Fully update the direct subordinate relationship of the subordinate account (i.e
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint

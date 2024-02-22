@@ -1,27 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PhotoCameraRounded, SvgIconComponent } from "@mui/icons-material";
-import { Button, DialogActions, DialogContent, DialogTitle, IconButton, IconButtonProps, Input, Modal, ModalClose, ModalDialog, Stack, styled } from "@mui/joy";
+import { DoneRounded, PhotoCameraRounded, SvgIconComponent, UndoRounded } from "@mui/icons-material";
+import { DialogActions, DialogContent, DialogTitle, IconButton, IconButtonProps, Input, Modal, ModalClose, ModalDialog, Stack } from "@mui/joy";
 import { extractFilenameFromUrl } from "../libs/url_utils";
-import { DEFAULT_IMAGE_MAX_WIDTH } from "../libs/ui_utils";
+import { ImagePreview } from ".";
 
-interface ImagePreviewProps {
-  src: string;
-  width: string | number;
-  height: string | number;
-  borderRadius: string | number;
-}
-
-const ImagePreview = styled('div')<ImagePreviewProps>(({ src, width, height, borderRadius }) => ({
-  width: width,
-  height: height,
-  backgroundImage: `url(${src})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  borderRadius: borderRadius,
-}));
-
-interface ImagePickerProps extends IconButtonProps{
+type ImagePickerProps = IconButtonProps & {
   onImageSelect: (file: Blob, name: string) => void;
   previewProps?: {
     width?: string | number;
@@ -36,27 +20,10 @@ export default function ImagePicker(props: ImagePickerProps) {
 
   const { t } = useTranslation('button');
   const [image, setImage] = useState<string | undefined>();
-  const [imageSize, setImageSize] = useState<{width: number, height: number} | null>(null);
   const [file, setFile] = useState<Blob | null>(null);
   const [open, setOpen] = useState(false);
 
   const preview = { width: 'auto', height: 'auto', borderRadius: 0, ...previewProps };
-
-  useEffect(() => {
-    if (image) {
-      const img = new Image();
-      img.onload = () => {
-        let newWidth = img.width;
-        let newHeight = img.height;
-        if (newWidth > DEFAULT_IMAGE_MAX_WIDTH) {
-          newWidth = DEFAULT_IMAGE_MAX_WIDTH;
-          newHeight = img.height * DEFAULT_IMAGE_MAX_WIDTH / img.width;
-        }
-        setImageSize({ width: newWidth, height: newHeight });
-      };
-      img.src = image;
-    }
-  }, [image]);
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const filePath = event.target.files && event.target.files[0];
@@ -123,15 +90,15 @@ export default function ImagePicker(props: ImagePickerProps) {
             }}>
               {image && <ImagePreview
                 src={image}
-                width={preview.width === 'auto' ? imageSize?.width ?? '200px' : preview.width}
-                height={preview.height === 'auto' ? imageSize?.height ?? '200px' : preview.height}
+                width={preview.width !== 'auto' ? preview.width : undefined}
+                height={preview.height !== 'auto' ? preview.height : undefined}
                 borderRadius={preview.borderRadius}
               />}
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleConfirm}>{t('Submit')}</Button>
-            <Button onClick={handleModify}>{t('Modify')}</Button>
+            <IconButton onClick={handleConfirm}><DoneRounded /></IconButton>
+            <IconButton onClick={handleModify}><UndoRounded /></IconButton>
           </DialogActions>
         </ModalDialog>
       </Modal>

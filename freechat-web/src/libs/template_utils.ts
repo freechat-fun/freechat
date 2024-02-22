@@ -371,7 +371,7 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     request.tags.push(characterName);
   }
 
-  const variables: { [key: string]: string} = {};
+  const variables: { [key: string]: string } = {};
 
   let promptDescription;
   let promptTemplate;
@@ -392,7 +392,6 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['MESSAGE_CONTEXT'] = '*（注入的当前轮次对话的相关信息）*';
     variables['CURRENT_TIME'] = '*（当前时间，格式：yyyy-MM-dd HH:mm:ss）*';
     variables['input'] = '*（用户输入）*';
-    variables['attachment'] = '*（附件，目前只支持图片）*';
 
     promptDescription = CHARACTER_PROMPT_DESCRIPTION_ZH;
     promptTemplate = CHARACTER_PROMPT_TEMPLATE_ZH;
@@ -411,7 +410,6 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['MESSAGE_CONTEXT'] = '*(Injected relevant information for the current round of conversation)*';
     variables['CURRENT_TIME'] = '*(Current time, format: yyyy-MM-dd HH:mm:ss)*';
     variables['input'] = '*(User input)*';
-    variables['attachment'] = '*(Attachment, only image is supported for now.)*';
 
     promptDescription = CHARACTER_PROMPT_DESCRIPTION_EN;
     promptTemplate = CHARACTER_PROMPT_TEMPLATE_EN;

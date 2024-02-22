@@ -11,8 +11,8 @@ export default function SidebarFrame() {
         flexDirection: 'column',
         gap: 1,
         overflow: 'auto',
-        pl: '120px',
-        pr: {xs: '40px', sm: '120px'},
+        pl: {xs: '80px', sm: '120px'},
+        pr: {xs: '0px', sm: '120px'},
       }}>
         <Outlet />
       </Box>

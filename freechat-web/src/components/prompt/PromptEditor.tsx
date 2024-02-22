@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
-import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, LinePlaceholder, TinyInput } from "../../components";
+import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, ContentTextarea, LinePlaceholder, TinyInput } from "../../components";
 import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
@@ -14,16 +14,16 @@ import { extractVariables, generateExample, getMessageText, setMessageText } fro
 import { providers } from "../../configs/model-providers-config";
 import { HelpIcon } from "../../components/icon";
 
-interface MessageRound {
+type MessageRound = {
   user: ChatMessageDTO;
   assistant: ChatMessageDTO;
-}
+};
 
-interface PromptEditorProps {
+type PromptEditorProps = {
   id: string | undefined;
   parameters?: { [key: string]: any };
   variables?: { [key: string]: any };
-}
+};
 
 export default function PromptEditor({
   id,
@@ -136,6 +136,15 @@ export default function PromptEditor({
       .then(setModelInfos)
       .catch(handleError);
   }, [handleError, id, promptApi, aiServiceApi]);
+
+  useEffect(() => {
+    setDefaultParameters(parameters ? {...parameters} : undefined);
+  }, [parameters]);
+
+  useEffect(() => {
+    setDefaultVariables(variables ? {...variables} : undefined);
+  }, [variables]);
+
 
   useEffect(() => {
     if (origRecord) {
@@ -630,10 +639,8 @@ export default function PromptEditor({
                       {rounds?.map((round, index) => {
                         return (
                           <CommonBox key={`round-${index}`} sx={roundItemStyle}>
-                            <Box sx={{
+                            <CommonGridBox sx={{
                               flex: 1,
-                              display: 'grid',
-                              gridTemplateColumns: 'auto 1fr',
                               gap: 1,
                             }}>
                               <Chip variant="soft" color="success" sx={{ "--Chip-radius": "2px"}}>
@@ -648,7 +655,7 @@ export default function PromptEditor({
                               <Typography level="body-md" sx={contentStyle}>
                                 {getMessageText(round.assistant)}
                               </Typography>
-                            </Box>
+                            </CommonGridBox>
                             <IconButton
                               sx={{
                                 mr: 4,
@@ -671,7 +678,7 @@ export default function PromptEditor({
                         gap: 1,
                       }}>
                         {rounds.length > 0 ? (
-                          <Chip variant="soft" color="success">{editUserName}</Chip>
+                          <Chip variant="soft" color="success" sx={{ "--Chip-radius": "2px"}}>{editUserName}</Chip>
                         ) : (
                           <TinyInput
                             name="editUserName"
@@ -685,7 +692,7 @@ export default function PromptEditor({
                           onChange={(event) => setEditUserContent(event.target.value)}
                         />
                         {rounds.length > 0 ? (
-                          <Chip variant="soft" color="warning">{editAssistantName}</Chip>
+                          <Chip variant="soft" color="warning" sx={{ "--Chip-radius": "2px"}}>{editAssistantName}</Chip>
                         ) : (
                           <TinyInput
                             name="editAssistantName"
@@ -811,7 +818,7 @@ export default function PromptEditor({
               p: 2,
               boxShadow: 'sm',
             }}>
-              <CommonBox sx={{gap: 2}}>
+              <CommonGridBox>
                 <Typography level="title-sm" textColor="neutral">
                   {t('Public')}
                 </Typography>
@@ -827,10 +834,7 @@ export default function PromptEditor({
                   }}
                   onChange={(event) => event.target.checked ? setVisibility('public') : setVisibility('private')}
                 />
-              </CommonBox>
-              <LinePlaceholder spacing={2} />
 
-              <CommonBox sx={{gap: 2}}>
                 <Typography level="title-sm" textColor="neutral">
                   {t('Format')}
                 </Typography>
@@ -877,10 +881,7 @@ export default function PromptEditor({
                     />
                   ))}
                 </RadioGroup>
-              </CommonBox>
-              <LinePlaceholder spacing={2} />
 
-              <CommonBox>
                 <Typography level="title-sm" textColor="neutral">
                   {t('Language')}
                 </Typography>
@@ -896,11 +897,9 @@ export default function PromptEditor({
                     </Option>
                   ))}
                 </Select>
-                <LinePlaceholder spacing={2} />
-              </CommonBox>
-              <LinePlaceholder spacing={2} />
+              </CommonGridBox>
 
-              <CommonBox>
+              <CommonBox sx={{ mt: 4 }}>
                 <Typography level="title-sm" textColor="neutral">
                   {t('Tags')}
                 </Typography>

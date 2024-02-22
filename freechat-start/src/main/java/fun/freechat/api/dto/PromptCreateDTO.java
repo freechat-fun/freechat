@@ -62,7 +62,9 @@ public class PromptCreateDTO {
         promptInfo.setFormat(PromptFormat.of(getFormat()).text());
         if (StringUtils.isBlank(getTemplate()) && Objects.nonNull(getChatTemplate())) {
             try {
-                promptInfo.setTemplate(InfoUtils.defaultMapper().writeValueAsString(getChatTemplate()));
+                promptInfo.setTemplate(
+                        InfoUtils.defaultMapper().writeValueAsString(
+                                getChatTemplate().toChatPromptContent()));
                 promptInfo.setType(PromptType.CHAT.text());
             } catch (JsonProcessingException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
-import { AliyunIcon  }from '../../components/icon';
+import { AliyunIcon  } from '../../components/icon';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
+
   const protocol = window.location.protocol;
   const host = window.location.hostname;
   const port = window.location.port;
@@ -21,7 +22,7 @@ export default function SignIn() {
   }
 
   return (
-    <Stack direction='row' justifyContent='center'>
+    <Stack direction='row'>
       <Box
         sx={(theme) => ({
           width:
@@ -176,6 +177,30 @@ export default function SignIn() {
           </Box>
         </Box>
       </Box>
+      <Box
+        id="sign-in-cover"
+        sx={(theme) => ({
+          height: '100dvh',
+          position: 'fixed',
+          right: 0,
+          top: 0,
+          bottom: 0,
+          left: 'clamp(0px, (100vw - var(--Collapsed-breakpoint)) * 999, 100vw - var(--Cover-width))',
+          transition:
+            'background-image var(--Transition-duration), left var(--Transition-duration) !important',
+          transitionDelay: 'calc(var(--Transition-duration) + 0.1s)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundBlendMode: 'overlay',
+          backgroundImage:
+            'url(/img/sign_in_light.jpg), linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
+          [theme.getColorSchemeSelector('dark')]: {
+            backgroundImage:
+              'url(/img/sign_in_light.jpg), linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+          },
+        })}
+      />
     </Stack>
   );
 }

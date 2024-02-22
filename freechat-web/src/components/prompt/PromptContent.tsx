@@ -9,7 +9,7 @@ export default function PromptContent(props: {
   record: PromptDetailsDTO | undefined,
 }) {
   const { record } = props;
-  const { t } = useTranslation(['prompt']);
+  const { t } = useTranslation('prompt');
   const inputs = extractJson(record?.inputs);
 
   return (

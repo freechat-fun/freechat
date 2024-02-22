@@ -1,8 +1,10 @@
 package fun.freechat.langchain4j.memory.chat;
 
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import lombok.Builder;
 import org.slf4j.Logger;
@@ -54,11 +56,22 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
         store.updateMessages(id, messages);
     }
 
+    public void addAiMessage(AiMessage message, TokenUsage usage) {
+        if (store instanceof TokenUsageChatMemoryStore tokenUsageChatMemoryStore) {
+            List<ChatMessage> messages = messages();
+            messages.add(message);
+            ensureCapacity(messages, maxMessages);
+            tokenUsageChatMemoryStore.addAiMessage(id, message, usage);
+        } else {
+            add(message);
+        }
+    }
+
     private static Optional<SystemMessage> findSystemMessage(List<ChatMessage> messages) {
         return messages.stream()
                 .filter(message -> message instanceof SystemMessage)
                 .map(message -> (SystemMessage) message)
-                .findAny();
+                .findFirst();
     }
 
     @Override

@@ -2,7 +2,7 @@ import { ChevronRightRounded, HomeRounded } from "@mui/icons-material";
 import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { RouterLink } from ".";
 
-interface BreadcrumbsbarProps {
+type BreadcrumbsbarProps = {
   breadcrumbs: { [name: string]: string | undefined; };
 }
 

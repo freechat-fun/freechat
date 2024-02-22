@@ -31,8 +31,6 @@ Batch call shortcut for /api/v1/plugin/details/search.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_details_dto import PluginDetailsDTO
 from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
@@ -112,8 +110,6 @@ Batch call shortcut for /api/v1/plugin/search.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
 from freechat_sdk.models.plugin_summary_dto import PluginSummaryDTO
@@ -193,8 +189,6 @@ Calculate the number of plugins according to the specified query conditions.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
 from freechat_sdk.rest import ApiException
@@ -273,8 +267,6 @@ Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JS
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_create_dto import PluginCreateDTO
 from freechat_sdk.rest import ApiException
@@ -353,8 +345,6 @@ Batch create multiple plugins. Ensure transactionality, return the pluginId list
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_create_dto import PluginCreateDTO
 from freechat_sdk.rest import ApiException
@@ -433,8 +423,6 @@ Delete plugin. Returns success or failure.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -512,8 +500,6 @@ Delete multiple plugins. Ensure transactionality, return the list of successfull
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -591,8 +577,6 @@ Get plugin detailed information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_details_dto import PluginDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -671,8 +655,6 @@ Get plugin summary information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_summary_dto import PluginSummaryDTO
 from freechat_sdk.rest import ApiException
@@ -751,8 +733,6 @@ For online manifest, api-docs information provided at the time of entry, this in
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -828,8 +808,6 @@ Same as /api/v1/plugin/search, but returns detailed information of the plugin.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_details_dto import PluginDetailsDTO
 from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
@@ -909,8 +887,6 @@ Search plugins: - Specifiable query fields, and relationship:   - Scope: private
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_query_dto import PluginQueryDTO
 from freechat_sdk.models.plugin_summary_dto import PluginSummaryDTO
@@ -990,8 +966,6 @@ Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_update_dto import PluginUpdateDTO
 from freechat_sdk.rest import ApiException

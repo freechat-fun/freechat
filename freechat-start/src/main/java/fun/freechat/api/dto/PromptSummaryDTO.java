@@ -35,7 +35,7 @@ public class PromptSummaryDTO extends TraceableDTO {
     private String description;
     @Schema(description = "Prompt format: mustache (default) | f_string")
     private String format;
-    @Schema(description = "Prompt language: en (default) | zh_CN | ...")
+    @Schema(description = "Prompt language: en (default) | zh | ...")
     private String lang;
     @Schema(description = "Prompt owner")
     private String username;

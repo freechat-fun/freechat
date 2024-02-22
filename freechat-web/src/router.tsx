@@ -14,6 +14,7 @@ import Characters from './pages/character/Characters';
 import CharacterEdit from './pages/character/CharacterEdit';
 import PromptTaskEdit from './pages/prompt/PromptTaskEdit';
 import PromptTaskInfo from './pages/prompt/PromptTaskInfo';
+import Chats from './pages/chat/Chats';
 
 const sidebarRoutes = [
   {
@@ -23,6 +24,10 @@ const sidebarRoutes = [
   {
     path: 'login',
     element: <SignIn />,
+  },
+  {
+    path: 'chat/:id?/:mode?',
+    element: <Chats />,
   },
   {
     path: 'prompts',

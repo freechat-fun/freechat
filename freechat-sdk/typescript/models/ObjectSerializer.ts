@@ -24,10 +24,14 @@ export * from '../models/CharacterSummaryDTO.js';
 export * from '../models/CharacterSummaryStatsDTO.js';
 export * from '../models/CharacterUpdateDTO.js';
 export * from '../models/ChatContentDTO.js';
+export * from '../models/ChatContextDTO.js';
 export * from '../models/ChatCreateDTO.js';
 export * from '../models/ChatMessageDTO.js';
+export * from '../models/ChatMessageRecordDTO.js';
 export * from '../models/ChatPromptContentDTO.js';
+export * from '../models/ChatSessionDTO.js';
 export * from '../models/ChatToolCallDTO.js';
+export * from '../models/ChatUpdateDTO.js';
 export * from '../models/HotTagDTO.js';
 export * from '../models/InteractiveStatsDTO.js';
 export * from '../models/LlmResultDTO.js';
@@ -85,10 +89,14 @@ import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
 import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
 import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
 import { ChatContentDTO } from '../models/ChatContentDTO.js';
+import { ChatContextDTO } from '../models/ChatContextDTO.js';
 import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
+import { ChatMessageRecordDTO } from '../models/ChatMessageRecordDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
+import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
+import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -162,10 +170,14 @@ let typeMap: {[index: string]: any} = {
     "CharacterSummaryStatsDTO": CharacterSummaryStatsDTO,
     "CharacterUpdateDTO": CharacterUpdateDTO,
     "ChatContentDTO": ChatContentDTO,
+    "ChatContextDTO": ChatContextDTO,
     "ChatCreateDTO": ChatCreateDTO,
     "ChatMessageDTO": ChatMessageDTO,
+    "ChatMessageRecordDTO": ChatMessageRecordDTO,
     "ChatPromptContentDTO": ChatPromptContentDTO,
+    "ChatSessionDTO": ChatSessionDTO,
     "ChatToolCallDTO": ChatToolCallDTO,
+    "ChatUpdateDTO": ChatUpdateDTO,
     "HotTagDTO": HotTagDTO,
     "InteractiveStatsDTO": InteractiveStatsDTO,
     "LlmResultDTO": LlmResultDTO,

@@ -44,6 +44,9 @@ public final class PromptTaskDynamicSqlSupport {
     public static final SqlColumn<String> variables = promptTask.variables;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> apiKeyValue = promptTask.apiKeyValue;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> params = promptTask.params;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -69,6 +72,8 @@ public final class PromptTaskDynamicSqlSupport {
         public final SqlColumn<String> status = column("status", JDBCType.VARCHAR);
 
         public final SqlColumn<String> variables = column("variables", JDBCType.LONGVARCHAR);
+
+        public final SqlColumn<String> apiKeyValue = column("api_key_value", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> params = column("params", JDBCType.LONGVARCHAR);
 

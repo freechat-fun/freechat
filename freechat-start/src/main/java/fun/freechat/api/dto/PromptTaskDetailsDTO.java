@@ -34,6 +34,8 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
     private String modelId;
     @Schema(description = "API-KEY name")
     private String apiKeyName;
+    @Schema(description = "API-KEY value")
+    private String apiKeyValue;
     @Schema(description = "Model call parameters")
     private Map<String, Object> params;
     @Schema(description = "Task scheduling configuration which compatible with Quartz cron format")

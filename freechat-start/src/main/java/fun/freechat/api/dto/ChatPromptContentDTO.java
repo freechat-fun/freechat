@@ -2,7 +2,7 @@ package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.langchain4j.data.message.UserMessage;
-import fun.freechat.service.ai.message.ChatPromptContent;
+import fun.freechat.service.prompt.ChatPromptContent;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;

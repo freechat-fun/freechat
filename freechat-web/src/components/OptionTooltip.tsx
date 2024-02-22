@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Box, Tooltip, TooltipProps } from "@mui/joy";
+import { Tooltip, TooltipProps } from "@mui/joy";
 
 const OptionTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   const { sx, children, ...others } = props;
@@ -13,9 +13,7 @@ const OptionTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       }}
       {...others}
     >
-      <Box component="span" sx={{ display: 'inline-block' }}>
-        {children}
-      </Box>
+      {children}
     </Tooltip>
   );
 });

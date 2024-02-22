@@ -100,4 +100,8 @@ public class AccountUtils implements ApplicationContextAware {
                 .map(User::getUserId)
                 .orElse(userName);
     }
+
+    public static boolean hasSufficientPermission(String authority) {
+        return AuthorityUtils.getPriorityOfRole(AccountUtils.currentRole()) >= AuthorityUtils.getPriority(authority);
+    }
 }

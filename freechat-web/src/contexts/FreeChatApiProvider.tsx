@@ -11,6 +11,7 @@ import {
   AppConfigForAdminApi,
   AppMetaForAdminApi,
   CharacterApi,
+  ChatApi,
   EncryptionManagerForAdminApi,
   AgentApi,
   InteractiveStatisticsApi,
@@ -20,11 +21,11 @@ import {
   PromptTaskApi,
 } from 'freechat-sdk';
 
-interface FreeChatApiProps {
+type FreeChatApiProps = {
   server?: string;
 }
 
-interface FreeChatApiContextValue {
+type FreeChatApiContextValue = {
   serverUrl: string | undefined;
   configuration: Configuration | undefined;
   aiServiceApi: AIServiceApi | undefined;
@@ -33,6 +34,7 @@ interface FreeChatApiContextValue {
   appConfigForAdminApi: AppConfigForAdminApi | undefined;
   appMetaForAdminApi: AppMetaForAdminApi | undefined;
   characterApi: CharacterApi | undefined;
+  chatApi: ChatApi | undefined;
   encryptionManagerForAdminApi: EncryptionManagerForAdminApi | undefined;
   agentApi: AgentApi | undefined;
   interactiveStatisticsApi: InteractiveStatisticsApi | undefined;
@@ -51,6 +53,7 @@ const undefinedContext: FreeChatApiContextValue = {
   appConfigForAdminApi: undefined,
   appMetaForAdminApi: undefined,
   characterApi: undefined,
+  chatApi: undefined,
   encryptionManagerForAdminApi: undefined,
   agentApi: undefined,
   interactiveStatisticsApi: undefined,
@@ -75,6 +78,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
   const appConfigForAdminApi = new AppConfigForAdminApi(configuration);
   const appMetaForAdminApi = new AppMetaForAdminApi(configuration);
   const characterApi = new CharacterApi(configuration);
+  const chatApi = new ChatApi(configuration);
   const encryptionManagerForAdminApi = new EncryptionManagerForAdminApi(configuration);
   const agentApi = new AgentApi(configuration);
   const interactiveStatisticsApi = new InteractiveStatisticsApi(configuration);
@@ -93,8 +97,9 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
       appConfigForAdminApi,
       appMetaForAdminApi,
       characterApi,
+      chatApi,
       encryptionManagerForAdminApi,
-      agentApi: agentApi,
+      agentApi,
       interactiveStatisticsApi,
       organizationApi,
       pluginApi,

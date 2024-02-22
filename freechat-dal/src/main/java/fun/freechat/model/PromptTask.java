@@ -39,6 +39,9 @@ public class PromptTask implements Serializable {
     private String variables;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String apiKeyValue;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String params;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -221,6 +224,22 @@ public class PromptTask implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getApiKeyValue() {
+        return apiKeyValue;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public PromptTask withApiKeyValue(String apiKeyValue) {
+        this.setApiKeyValue(apiKeyValue);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setApiKeyValue(String apiKeyValue) {
+        this.apiKeyValue = apiKeyValue == null ? null : apiKeyValue.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getParams() {
         return params;
     }
@@ -297,6 +316,7 @@ public class PromptTask implements Serializable {
         sb.append(", cron=").append(cron);
         sb.append(", status=").append(status);
         sb.append(", variables=").append(variables);
+        sb.append(", apiKeyValue=").append(apiKeyValue);
         sb.append(", params=").append(params);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

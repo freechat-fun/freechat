@@ -51,7 +51,7 @@ public class PromptTaskApi {
             description = "Update a prompt task."
     )
     @PutMapping("/{promptTaskId}")
-    @PreAuthorize("hasPermission(#p0 + '|' + #p1.promptRef.promptId, 'promptTaskUpdateOp')")
+    @PreAuthorize("hasPermission(#p0 + '|' + #p1.promptRef?.promptId, 'promptTaskUpdateOp')")
     public Boolean update(
             @Parameter(description = "The promptTaskId to be updated") @PathVariable("promptTaskId") @NotBlank
             String promptTaskId,

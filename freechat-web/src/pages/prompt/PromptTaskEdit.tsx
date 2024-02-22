@@ -9,7 +9,10 @@ export default function PromptTaskEdit() {
   const { promptTaskApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>()
+  const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
+  const [promptId, setPromptId] = useState(promptTask?.promptRef?.promptId);
+  const [parameters, setParameters] = useState({...promptTask?.params, modelId: promptTask?.modelId, apiKeyName: promptTask?.apiKeyName, apiKey: promptTask?.apiKeyValue});
+  const [variables, setVariables] = useState({...promptTask?.promptRef?.variables});
   
   useEffect(() => {
     if (id) {
@@ -18,11 +21,23 @@ export default function PromptTaskEdit() {
         .catch(handleError);
     }
   }, [promptTaskApi, handleError, id]);
+
+  useEffect(() => {
+    setPromptId(promptTask?.promptRef?.promptId);
+    setParameters({
+      ...promptTask?.params,
+      modelId: promptTask?.modelId,
+      apiKeyName: promptTask?.apiKeyName,
+      apiKey: promptTask?.apiKeyValue
+    });
+    setVariables({...promptTask?.promptRef?.variables});
+  }, [promptTask]);
+
   return (
     <PromptEditor 
-      id={promptTask?.promptRef?.promptId}
-      parameters={promptTask?.params}
-      variables={promptTask?.promptRef?.variables}
+      id={promptId}
+      parameters={parameters}
+      variables={variables}
     />
   );
 }

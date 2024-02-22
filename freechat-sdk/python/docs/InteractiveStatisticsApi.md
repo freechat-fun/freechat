@@ -36,8 +36,6 @@ Add the statistics of the corresponding metrics of the corresponding resources. 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -121,8 +119,6 @@ Get the current user's score for the corresponding resource.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -202,8 +198,6 @@ Get the statistics of the corresponding metrics of the corresponding resources.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -285,8 +279,6 @@ Get all statistics of the corresponding resources.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.interactive_stats_dto import InteractiveStatsDTO
 from freechat_sdk.rest import ApiException
@@ -367,8 +359,6 @@ Increase the statistics of the corresponding metrics of the corresponding resour
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -450,8 +440,6 @@ List agents based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -532,8 +520,6 @@ List agents based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -616,8 +602,6 @@ List agents based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.agent_summary_stats_dto import AgentSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -702,8 +686,6 @@ List characters based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -786,8 +768,6 @@ List characters based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -872,8 +852,6 @@ List characters based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.character_summary_stats_dto import CharacterSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -954,8 +932,6 @@ Get popular tags for a specified info type.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.hot_tag_dto import HotTagDTO
 from freechat_sdk.rest import ApiException
@@ -1038,8 +1014,6 @@ List plugins based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -1124,8 +1098,6 @@ List plugins based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -1208,8 +1180,6 @@ List plugins based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.plugin_summary_stats_dto import PluginSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -1290,8 +1260,6 @@ List prompts based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -1374,8 +1342,6 @@ List prompts based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
 from freechat_sdk.rest import ApiException
@@ -1460,8 +1426,6 @@ List prompts based on statistics, including interactive statistical data.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.prompt_summary_stats_dto import PromptSummaryStatsDTO
 from freechat_sdk.rest import ApiException

@@ -52,7 +52,29 @@ export default function OpenAISettings(props: {
 
   useEffect(() => {
     setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[open_ai]gpt-4')));
-  }, [defaultParameters?.modelId, models]);
+    setBaseUrl(defaultParameters?.baseUrl ?? 'https://api.openai.com/v1');
+
+    setTopP(defaultParameters?.topP ?? 0.8);
+    setEnableTopP(containsKey(defaultParameters, 'topP'));
+
+    setMaxTokens(defaultParameters?.maxTokens ?? 2000);
+    setEnableMaxTokens(containsKey(defaultParameters, 'maxTokens'));
+
+    setSeed(defaultParameters?.seed ?? 1234);
+    setEnableSeed(containsKey(defaultParameters, 'seed'));
+
+    setPresencePenalty(defaultParameters?.presencePenalty ?? 0);
+    setEnablePresencePenalty(containsKey(defaultParameters, 'presencePenalty'));
+
+    setFrequencyPenalty(defaultParameters?.frequencyPenalty ?? 0);
+    setEnableFrequencyPenalty(containsKey(defaultParameters, 'frequencyPenalty'));
+
+    setTemperature(defaultParameters?.temperature ?? 1);
+    setEnableTemperature(containsKey(defaultParameters, 'temperature'));
+
+    setStop(defaultParameters?.stop ?? []);
+    setEnableStop(containsKey(defaultParameters, 'stop'));
+  }, [defaultParameters, models]);
 
   function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
     if (newValue && newValue !== model?.modelId) {

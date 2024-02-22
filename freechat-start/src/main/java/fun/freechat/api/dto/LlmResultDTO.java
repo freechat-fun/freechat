@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,13 +48,11 @@ public class LlmResultDTO extends TraceableDTO {
             case String textMessage -> {
                 text = textMessage;
                 message.setContents(List.of(ChatContentDTO.fromText(text)));
-                message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }
             case AiMessage aiMessage -> {
                 text = aiMessage.text();
                 message.setContents(List.of(ChatContentDTO.fromText(text)));
-                message.setGmtCreate(new Date());
                 if (aiMessage.hasToolExecutionRequests()) {
                     message.setToolCalls(aiMessage.toolExecutionRequests().stream()
                             .map(request -> {
@@ -75,7 +72,6 @@ public class LlmResultDTO extends TraceableDTO {
             case null, default -> {
                 text = Objects.nonNull(content) ? content.toString() : "";
                 message.setContents(List.of(ChatContentDTO.fromText(text)));
-                message.setGmtCreate(new Date());
                 message.setRole(PromptRole.ASSISTANT.text());
             }
         }

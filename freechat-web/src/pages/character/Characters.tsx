@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CommonBox, ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
-import { CharacterCreateDTO, CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO } from "freechat-sdk";
+import { CharacterCreateDTO, CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, ChatCreateDTO } from "freechat-sdk";
 import { Avatar, Box, Button, Card, Chip, FormControl, FormHelperText, IconButton, Input, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { AddCircleRounded, DeleteForeverRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
@@ -13,7 +13,7 @@ import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequ
 import { i18nConfig } from "../../configs/i18n-config";
 import { ChatIcon } from "../../components/icon";
 
-interface RecordCardProps {
+type RecordCardProps = {
   record: CharacterSummaryDTO,
   onView: (record: CharacterSummaryDTO) => void,
   onEdit: (record: CharacterSummaryDTO) => void,
@@ -91,7 +91,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
 export default function Characters() {
   const navigate = useNavigate();
   const { t } = useTranslation(['character']);
-  const { characterApi } = useFreeChatApiContext();
+  const { accountApi, characterApi, chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const pageSize = 6;
@@ -176,18 +176,44 @@ export default function Characters() {
   }
 
   function handleView(record: CharacterSummaryDTO): void {
-    navigate(`/w/character/${record.characterId}`)
+    record.characterId && chatApi?.getDefaultChatId(record.characterId)
+      .then(resp => {
+        navigate(`/w/chat/${resp}/debug`);
+      })
+      .catch(() => {
+        accountApi?.getUserDetails()
+          .then(userDetails => {
+            characterApi?.getDefaultCharacterBackend(record.characterId as string)
+              .then(backend => {
+                if (backend.backendId) {
+                  const request = new ChatCreateDTO();
+                  request.userNickname = userDetails.nickname ?? userDetails.username;
+                  request.userProfile = userDetails.profile;
+                  request.characterNickname = record.nickname ?? record.name;
+                  request.backendId = backend.backendId;
+
+                  chatApi.startChat(request)
+                    .then(chatId => {
+                      navigate(`/w/chat/${chatId}/debug`);
+                    })
+                    .catch(handleError);
+                }
+              })
+              .catch(handleError);
+          })
+          .catch(handleError);
+      });
   }
 
   function handleEdit(record: CharacterSummaryDTO): void {
-    navigate(`/w/character/edit/${record.characterId}`)
+    navigate(`/w/character/edit/${record.characterId}`);
   }
 
   function handleNameChange(): void {
     if (editRecordNameError || !editRecordName) {
       return;
     }
-      
+
     characterApi?.existsCharacterName(editRecordName)
       .then(resp => {
         if (!resp) {

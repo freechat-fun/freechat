@@ -1,6 +1,6 @@
 package fun.freechat.util;
 
-import fun.freechat.service.character.ChatContextService;
+import fun.freechat.service.chat.ChatContextService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -15,7 +15,7 @@ public class TestChatUtils  implements ApplicationContextAware {
     private static ChatContextService chatContextService;
 
     public static void deleteChats(String userId) {
-        List<String> ids = chatContextService.listIdsByUser(userId);
+        List<String> ids = chatContextService.listIds(userId);
         Optional.ofNullable(ids)
                 .orElse(Collections.emptyList())
                 .forEach(chatContextService::delete);

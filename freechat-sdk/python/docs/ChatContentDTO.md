@@ -7,8 +7,7 @@ Chat content
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **type** | **str** | Chat type: text (default) | image | [optional] 
-**content** | **str** | Chat content(for image, it might be an url or base64 encoded string) | 
-**mime_type** | **str** | Mime-type of content | [optional] 
+**content** | **str** | Chat content(for image, it might be a normal url or data url) | 
 
 ## Example
 

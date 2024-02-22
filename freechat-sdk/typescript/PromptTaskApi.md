@@ -37,6 +37,7 @@ let body:.PromptTaskApiCreatePromptTaskRequest = {
     },
     modelId: "modelId_example",
     apiKeyName: "apiKeyName_example",
+    apiKeyValue: "apiKeyValue_example",
     params: {
       "key": {},
     },
@@ -216,6 +217,7 @@ let body:.PromptTaskApiUpdatePromptTaskRequest = {
     },
     modelId: "modelId_example",
     apiKeyName: "apiKeyName_example",
+    apiKeyValue: "apiKeyValue_example",
     params: {
       "key": {},
     },

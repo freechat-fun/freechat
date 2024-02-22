@@ -5,6 +5,7 @@ import fun.freechat.mapper.PromptTaskMapper;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
+import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.util.IdUtils;
@@ -29,13 +30,18 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     @Autowired
     private PromptService promptService;
 
+    @Autowired
+    private EncryptionService encryptionService;
+
     @Override
     public boolean create(PromptTask task) {
         if (StringUtils.isBlank(task.getPromptId())) {
             return false;
         }
+
         Date now = new Date();
         int rows = promptTaskMapper.insertSelective(task
+                .withApiKeyValue(encryptionService.encrypt(task.getApiKeyValue()))
                 .withGmtCreate(now)
                 .withGmtModified(now)
                 .withGmtExecuted(null)
@@ -50,7 +56,9 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0.taskId")
     public boolean update(PromptTask task) {
-        int rows = promptTaskMapper.updateByPrimaryKey(task.withGmtModified(new Date()));
+        int rows = promptTaskMapper.updateByPrimaryKeySelective(task
+                .withApiKeyValue(encryptionService.encrypt(task.getApiKeyValue()))
+                .withGmtModified(new Date()));
         return rows > 0;
     }
 
@@ -71,7 +79,9 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public PromptTask get(String taskId) {
-        return promptTaskMapper.selectByPrimaryKey(taskId).orElse(null);
+        return promptTaskMapper.selectByPrimaryKey(taskId)
+                .map(task -> task.withApiKeyValue(encryptionService.decrypt(task.getApiKeyValue())))
+                .orElse(null);
     }
 
     @Override

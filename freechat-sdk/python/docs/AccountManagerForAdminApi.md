@@ -32,8 +32,6 @@ Create an API Token for a specified user, valid for duration seconds.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -113,8 +111,6 @@ Create user.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_full_details_dto import UserFullDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -193,8 +189,6 @@ Delete the specified API Token.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -272,8 +266,6 @@ Delete user by username.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -351,8 +343,6 @@ Disable the specified API Token.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -430,8 +420,6 @@ Return detailed user information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_details_dto import UserDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -510,8 +498,6 @@ Get the detailed user information corresponding to the API Token.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_details_dto import UserDetailsDTO
 from freechat_sdk.rest import ApiException
@@ -590,8 +576,6 @@ List the user's permissions.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -669,8 +653,6 @@ Get the list of API Tokens of the user.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.api_token_info_dto import ApiTokenInfoDTO
 from freechat_sdk.rest import ApiException
@@ -749,8 +731,6 @@ Return user information by page, return the pageNum page, up to pageSize user in
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_basic_info_dto import UserBasicInfoDTO
 from freechat_sdk.rest import ApiException
@@ -831,8 +811,6 @@ Return user information by page, return the pageNum page, up to pageSize user in
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_basic_info_dto import UserBasicInfoDTO
 from freechat_sdk.rest import ApiException
@@ -911,8 +889,6 @@ Return user information by page, return the pageNum page, up to pageSize user in
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_basic_info_dto import UserBasicInfoDTO
 from freechat_sdk.rest import ApiException
@@ -987,8 +963,6 @@ Update the user's permission list.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -1068,8 +1042,6 @@ Update user information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.user_full_details_dto import UserFullDetailsDTO
 from freechat_sdk.rest import ApiException

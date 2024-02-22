@@ -28,10 +28,14 @@ import { CharacterSummaryDTO } from '../models/CharacterSummaryDTO.js';
 import { CharacterSummaryStatsDTO } from '../models/CharacterSummaryStatsDTO.js';
 import { CharacterUpdateDTO } from '../models/CharacterUpdateDTO.js';
 import { ChatContentDTO } from '../models/ChatContentDTO.js';
+import { ChatContextDTO } from '../models/ChatContextDTO.js';
 import { ChatCreateDTO } from '../models/ChatCreateDTO.js';
 import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
+import { ChatMessageRecordDTO } from '../models/ChatMessageRecordDTO.js';
 import { ChatPromptContentDTO } from '../models/ChatPromptContentDTO.js';
+import { ChatSessionDTO } from '../models/ChatSessionDTO.js';
 import { ChatToolCallDTO } from '../models/ChatToolCallDTO.js';
+import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
@@ -2372,39 +2376,6 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Delete the chat session.
-     * Delete Chat Session
-     * @param chatId Chat session identifier
-     */
-    public deleteChatWithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
-        const requestContextPromise = this.requestFactory.deleteChat(chatId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteChatWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Delete the chat session.
-     * Delete Chat Session
-     * @param chatId Chat session identifier
-     */
-    public deleteChat(chatId: string, _options?: Configuration): Observable<boolean> {
-        return this.deleteChatWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
-    }
-
-    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name
@@ -2669,111 +2640,6 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     */
-    public listMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageDTO>>> {
-        const requestContextPromise = this.requestFactory.listMessages(chatId, limit, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listMessagesWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     */
-    public listMessages(chatId: string, limit: number, _options?: Configuration): Observable<Array<ChatMessageDTO>> {
-        return this.listMessagesWithHttpInfo(chatId, limit, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     * @param offset Messages offset (from new to old)
-     */
-    public listMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageDTO>>> {
-        const requestContextPromise = this.requestFactory.listMessages1(chatId, limit, offset, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listMessages1WithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     * @param limit Messages limit
-     * @param offset Messages offset (from new to old)
-     */
-    public listMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Observable<Array<ChatMessageDTO>> {
-        return this.listMessages1WithHttpInfo(chatId, limit, offset, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     */
-    public listMessages2WithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageDTO>>> {
-        const requestContextPromise = this.requestFactory.listMessages2(chatId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listMessages2WithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List messages of a chat.
-     * List Chat Messages
-     * @param chatId Chat session identifier
-     */
-    public listMessages2(chatId: string, _options?: Configuration): Observable<Array<ChatMessageDTO>> {
-        return this.listMessages2WithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageDTO>>) => apiResponse.data));
-    }
-
-    /**
      * Create a new character name starting with a desired name.
      * Create New Character Name
      * @param desired Desired name
@@ -2974,41 +2840,6 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Send a chat message to character.
-     * Send Chat Message
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<HttpInfo<LlmResultDTO>> {
-        const requestContextPromise = this.requestFactory.sendMessage(chatId, chatMessageDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.sendMessageWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Send a chat message to character.
-     * Send Chat Message
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<LlmResultDTO> {
-        return this.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options).pipe(map((apiResponse: HttpInfo<LlmResultDTO>) => apiResponse.data));
-    }
-
-    /**
      * Set the default backend configuration.
      * Set Default Character Backend
      * @param characterBackendId The characterBackendId to be set to default
@@ -3039,74 +2870,6 @@ export class ObservableCharacterApi {
      */
     public setDefaultCharacterBackend(characterBackendId: string, _options?: Configuration): Observable<boolean> {
         return this.setDefaultCharacterBackendWithHttpInfo(characterBackendId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
-    }
-
-    /**
-     * Start a chat session.
-     * Start Chat Session
-     * @param chatCreateDTO Parameters for starting a chat session
-     */
-    public startChatWithHttpInfo(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.startChat(chatCreateDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.startChatWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Start a chat session.
-     * Start Chat Session
-     * @param chatCreateDTO Parameters for starting a chat session
-     */
-    public startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Observable<string> {
-        return this.startChatWithHttpInfo(chatCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
-    }
-
-    /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
-     * Send Chat Message by Streaming Back
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<HttpInfo<SseEmitter>> {
-        const requestContextPromise = this.requestFactory.streamSendMessage(chatId, chatMessageDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.streamSendMessageWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
-     * Send Chat Message by Streaming Back
-     * @param chatId Chat session identifier
-     * @param chatMessageDTO Chat message
-     */
-    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<SseEmitter> {
-        return this.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options).pipe(map((apiResponse: HttpInfo<SseEmitter>) => apiResponse.data));
     }
 
     /**
@@ -3243,6 +3006,397 @@ export class ObservableCharacterApi {
      */
     public uploadCharacterPicture(file: HttpFile, _options?: Configuration): Observable<string> {
         return this.uploadCharacterPictureWithHttpInfo(file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+}
+
+import { ChatApiRequestFactory, ChatApiResponseProcessor} from "../apis/ChatApi.js";
+export class ObservableChatApi {
+    private requestFactory: ChatApiRequestFactory;
+    private responseProcessor: ChatApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: ChatApiRequestFactory,
+        responseProcessor?: ChatApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new ChatApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new ChatApiResponseProcessor();
+    }
+
+    /**
+     * Clear memory of the chat session.
+     * Clear Memory
+     * @param chatId Chat session identifier
+     */
+    public clearMemoryWithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.clearMemory(chatId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.clearMemoryWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Clear memory of the chat session.
+     * Clear Memory
+     * @param chatId Chat session identifier
+     */
+    public clearMemory(chatId: string, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.clearMemoryWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Delete the chat session.
+     * Delete Chat Session
+     * @param chatId Chat session identifier
+     */
+    public deleteChatWithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteChat(chatId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteChatWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete the chat session.
+     * Delete Chat Session
+     * @param chatId Chat session identifier
+     */
+    public deleteChat(chatId: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteChatWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Get default chat id of current user and the character.
+     * Get Default Chat
+     * @param characterId Character identifier
+     */
+    public getDefaultChatIdWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.getDefaultChatId(characterId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getDefaultChatIdWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get default chat id of current user and the character.
+     * Get Default Chat
+     * @param characterId Character identifier
+     */
+    public getDefaultChatId(characterId: string, _options?: Configuration): Observable<string> {
+        return this.getDefaultChatIdWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * List chats of current user.
+     * List Chats
+     */
+    public listChatsWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<ChatSessionDTO>>> {
+        const requestContextPromise = this.requestFactory.listChats(_options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listChatsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List chats of current user.
+     * List Chats
+     */
+    public listChats(_options?: Configuration): Observable<Array<ChatSessionDTO>> {
+        return this.listChatsWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<ChatSessionDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     */
+    public listMessagesWithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listMessages(chatId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listMessagesWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     */
+    public listMessages(chatId: string, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listMessagesWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listMessages1(chatId, limit, offset, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listMessages1WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listMessages1WithHttpInfo(chatId, limit, offset, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listMessages2WithHttpInfo(chatId: string, limit: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listMessages2(chatId, limit, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listMessages2WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List messages of a chat.
+     * List Chat Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listMessages2(chatId: string, limit: number, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listMessages2WithHttpInfo(chatId, limit, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Send a chat message to character.
+     * Send Chat Message
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public sendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<HttpInfo<LlmResultDTO>> {
+        const requestContextPromise = this.requestFactory.sendMessage(chatId, chatMessageDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.sendMessageWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Send a chat message to character.
+     * Send Chat Message
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public sendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<LlmResultDTO> {
+        return this.sendMessageWithHttpInfo(chatId, chatMessageDTO, _options).pipe(map((apiResponse: HttpInfo<LlmResultDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Start a chat session.
+     * Start Chat Session
+     * @param chatCreateDTO Parameters for starting a chat session
+     */
+    public startChatWithHttpInfo(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.startChat(chatCreateDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.startChatWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Start a chat session.
+     * Start Chat Session
+     * @param chatCreateDTO Parameters for starting a chat session
+     */
+    public startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Observable<string> {
+        return this.startChatWithHttpInfo(chatCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Send Chat Message by Streaming Back
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public streamSendMessageWithHttpInfo(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<HttpInfo<SseEmitter>> {
+        const requestContextPromise = this.requestFactory.streamSendMessage(chatId, chatMessageDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.streamSendMessageWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Send Chat Message by Streaming Back
+     * @param chatId Chat session identifier
+     * @param chatMessageDTO Chat message
+     */
+    public streamSendMessage(chatId: string, chatMessageDTO: ChatMessageDTO, _options?: Configuration): Observable<SseEmitter> {
+        return this.streamSendMessageWithHttpInfo(chatId, chatMessageDTO, _options).pipe(map((apiResponse: HttpInfo<SseEmitter>) => apiResponse.data));
+    }
+
+    /**
+     * Update the chat session.
+     * Update Chat Session
+     * @param chatId Chat session identifier
+     * @param chatUpdateDTO The chat session information to be updated
+     */
+    public updateChatWithHttpInfo(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.updateChat(chatId, chatUpdateDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.updateChatWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Update the chat session.
+     * Update Chat Session
+     * @param chatId Chat session identifier
+     * @param chatUpdateDTO The chat session information to be updated
+     */
+    public updateChat(chatId: string, chatUpdateDTO: ChatUpdateDTO, _options?: Configuration): Observable<boolean> {
+        return this.updateChatWithHttpInfo(chatId, chatUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
 }

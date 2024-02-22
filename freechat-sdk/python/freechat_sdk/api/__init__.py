@@ -8,6 +8,7 @@ from freechat_sdk.api.agent_api import AgentApi
 from freechat_sdk.api.app_config_for_admin_api import AppConfigForAdminApi
 from freechat_sdk.api.app_meta_for_admin_api import AppMetaForAdminApi
 from freechat_sdk.api.character_api import CharacterApi
+from freechat_sdk.api.chat_api import ChatApi
 from freechat_sdk.api.encryption_manager_for_admin_api import EncryptionManagerForAdminApi
 from freechat_sdk.api.interactive_statistics_api import InteractiveStatisticsApi
 from freechat_sdk.api.organization_api import OrganizationApi

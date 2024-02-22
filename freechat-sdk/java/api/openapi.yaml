@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.2.15
+  version: 0.4.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -2168,6 +2168,110 @@ paths:
       - Plugin
       x-content-type: application/json
       x-accepts: application/json
+  /api/v1/chat:
+    get:
+      description: List chats of current user.
+      operationId: listChats
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatSessionDTO'
+                type: array
+          description: OK
+      summary: List Chats
+      tags:
+      - Chat
+      x-accepts: application/json
+    post:
+      description: Start a chat session.
+      operationId: startChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCreateDTO'
+        description: Parameters for starting a chat session
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Start Chat Session
+      tags:
+      - Chat
+      x-content-type: application/json
+      x-accepts: text/plain
+  /api/v1/chat/send/{chatId}:
+    post:
+      description: Send a chat message to character.
+      operationId: sendMessage
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageDTO'
+        description: Chat message
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmResultDTO'
+          description: OK
+      summary: Send Chat Message
+      tags:
+      - Chat
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/chat/send/stream/{chatId}:
+    post:
+      description: "Refer to /api/v1/chat/send/{chatId}, stream back chunks of the\
+        \ response."
+      operationId: streamSendMessage
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageDTO'
+        description: Chat message
+        required: true
+      responses:
+        "200":
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/SseEmitter'
+          description: OK
+      summary: Send Chat Message by Streaming Back
+      tags:
+      - Chat
+      x-content-type: application/json
+      x-accepts: text/event-stream
   /api/v1/character:
     post:
       description: Create a character.
@@ -2475,94 +2579,6 @@ paths:
       tags:
       - Character
       x-accepts: text/plain
-  /api/v1/character/chat:
-    post:
-      description: Start a chat session.
-      operationId: startChat
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatCreateDTO'
-        description: Parameters for starting a chat session
-        required: true
-      responses:
-        "200":
-          content:
-            text/plain:
-              schema:
-                type: string
-          description: OK
-      summary: Start Chat Session
-      tags:
-      - Character
-      x-content-type: application/json
-      x-accepts: text/plain
-  /api/v1/character/chat/send/{chatId}:
-    post:
-      description: Send a chat message to character.
-      operationId: sendMessage
-      parameters:
-      - description: Chat session identifier
-        explode: false
-        in: path
-        name: chatId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatMessageDTO'
-        description: Chat message
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LlmResultDTO'
-          description: OK
-      summary: Send Chat Message
-      tags:
-      - Character
-      x-content-type: application/json
-      x-accepts: application/json
-  /api/v1/character/chat/send/stream/{chatId}:
-    post:
-      description: "Refer to /api/v1/chat/send/{chatId}, stream back chunks of the\
-        \ response."
-      operationId: streamSendMessage
-      parameters:
-      - description: Chat session identifier
-        explode: false
-        in: path
-        name: chatId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatMessageDTO'
-        description: Chat message
-        required: true
-      responses:
-        "200":
-          content:
-            text/event-stream:
-              schema:
-                $ref: '#/components/schemas/SseEmitter'
-          description: OK
-      summary: Send Chat Message by Streaming Back
-      tags:
-      - Character
-      x-content-type: application/json
-      x-accepts: text/event-stream
   /api/v1/character/batch/search:
     post:
       description: Batch call shortcut for /api/v1/character/search.
@@ -4254,6 +4270,111 @@ paths:
       tags:
       - Organization
       x-accepts: application/json
+  /api/v1/chat/messages/{chatId}:
+    get:
+      description: List messages of a chat.
+      operationId: listMessages
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: List Chat Messages
+      tags:
+      - Chat
+      x-accepts: application/json
+  /api/v1/chat/messages/{chatId}/{limit}/{offset}:
+    get:
+      description: List messages of a chat.
+      operationId: listMessages_1
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Messages limit
+        explode: false
+        in: path
+        name: limit
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      - description: Messages offset (from new to old)
+        explode: false
+        in: path
+        name: offset
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: List Chat Messages
+      tags:
+      - Chat
+      x-accepts: application/json
+  /api/v1/chat/messages/{chatId}/{limit}:
+    get:
+      description: List messages of a chat.
+      operationId: listMessages_2
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Messages limit
+        explode: false
+        in: path
+        name: limit
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: List Chat Messages
+      tags:
+      - Chat
+      x-accepts: application/json
   /api/v1/character/summary/{characterId}:
     get:
       description: Get character summary information.
@@ -4350,111 +4471,6 @@ paths:
       tags:
       - Character
       x-accepts: text/plain
-  /api/v1/character/chat/messages/{chatId}/{limit}:
-    get:
-      description: List messages of a chat.
-      operationId: listMessages
-      parameters:
-      - description: Chat session identifier
-        explode: false
-        in: path
-        name: chatId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Messages limit
-        explode: false
-        in: path
-        name: limit
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/ChatMessageDTO'
-                type: array
-          description: OK
-      summary: List Chat Messages
-      tags:
-      - Character
-      x-accepts: application/json
-  /api/v1/character/chat/messages/{chatId}/{limit}/{offset}:
-    get:
-      description: List messages of a chat.
-      operationId: listMessages_1
-      parameters:
-      - description: Chat session identifier
-        explode: false
-        in: path
-        name: chatId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Messages limit
-        explode: false
-        in: path
-        name: limit
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      - description: Messages offset (from new to old)
-        explode: false
-        in: path
-        name: offset
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/ChatMessageDTO'
-                type: array
-          description: OK
-      summary: List Chat Messages
-      tags:
-      - Character
-      x-accepts: application/json
-  /api/v1/character/chat/messages/{chatId}:
-    get:
-      description: List messages of a chat.
-      operationId: listMessages_2
-      parameters:
-      - description: Chat session identifier
-        explode: false
-        in: path
-        name: chatId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/ChatMessageDTO'
-                type: array
-          description: OK
-      summary: List Chat Messages
-      tags:
-      - Character
-      x-accepts: application/json
   /api/v1/character/backends/{characterId}:
     get:
       description: List character backends.
@@ -5148,6 +5164,56 @@ paths:
       tags:
       - Prompt
       x-accepts: application/json
+  /api/v1/chat/{chatId}:
+    delete:
+      description: Delete the chat session.
+      operationId: deleteChat
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Chat Session
+      tags:
+      - Chat
+      x-accepts: application/json
+  /api/v1/chat/memory/{chatId}:
+    delete:
+      description: Clear memory of the chat session.
+      operationId: clearMemory
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: Clear Memory
+      tags:
+      - Chat
+      x-accepts: application/json
   /api/v1/character/name/{name}:
     delete:
       description: Delete character by name. return the list of successfully deleted
@@ -5172,30 +5238,6 @@ paths:
                 type: array
           description: OK
       summary: Delete Character by Name
-      tags:
-      - Character
-      x-accepts: application/json
-  /api/v1/character/chat/{chatId}:
-    delete:
-      description: Delete the chat session.
-      operationId: deleteChat
-      parameters:
-      - description: Chat session identifier
-        explode: false
-        in: path
-        name: chatId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: OK
-      summary: Delete Chat Session
       tags:
       - Character
       x-accepts: application/json
@@ -5232,7 +5274,6 @@ components:
     ChatContentDTO:
       description: Chat content
       example:
-        mimeType: mimeType
         type: type
         content: content
       properties:
@@ -5240,11 +5281,7 @@ components:
           description: "Chat type: text (default) | image"
           type: string
         content:
-          description: "Chat content(for image, it might be an url or base64 encoded\
-            \ string)"
-          type: string
-        mimeType:
-          description: Mime-type of content
+          description: "Chat content(for image, it might be a normal url or data url)"
           type: string
       required:
       - content
@@ -5254,14 +5291,13 @@ components:
       example:
         role: role
         contents:
-        - mimeType: mimeType
-          type: type
+        - type: type
           content: content
-        - mimeType: mimeType
-          type: type
+        - type: type
           content: content
         name: name
         context: context
+        contentText: contentText
         toolCalls:
         - name: name
           arguments: arguments
@@ -5269,7 +5305,6 @@ components:
         - name: name
           arguments: arguments
           id: id
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         role:
           description: "Chat role: system | assistant | user | tool_call | tool_result"
@@ -5289,13 +5324,13 @@ components:
           items:
             $ref: '#/components/schemas/ChatToolCallDTO'
           type: array
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
         context:
-          description: Contextual information in this round of conversation
+          description: Contextual information in this round of conversation (the external
+            RAG result can be passed in through this parameter)
           type: string
+        contentText:
+          type: string
+          writeOnly: true
       type: object
     ChatPromptContentDTO:
       description: Prompt chat template content
@@ -5304,14 +5339,13 @@ components:
         messages:
         - role: role
           contents:
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
           name: name
           context: context
+          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -5319,17 +5353,15 @@ components:
           - name: name
             arguments: arguments
             id: id
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
         - role: role
           contents:
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
           name: name
           context: context
+          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -5337,18 +5369,16 @@ components:
           - name: name
             arguments: arguments
             id: id
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
         messageToSend:
           role: role
           contents:
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
           name: name
           context: context
+          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -5356,7 +5386,6 @@ components:
           - name: name
             arguments: arguments
             id: id
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         system:
           description: Prompt system template
@@ -5408,14 +5437,13 @@ components:
           messages:
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -5423,17 +5451,15 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -5441,18 +5467,16 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           messageToSend:
             role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -5460,7 +5484,6 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
         draft: draft
         name: name
         lang: lang
@@ -5998,14 +6021,13 @@ components:
           messages:
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6013,17 +6035,15 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6031,18 +6051,16 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           messageToSend:
             role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6050,7 +6068,6 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
         draft: draft
         name: name
         lang: lang
@@ -6205,14 +6222,13 @@ components:
             messages:
             - role: role
               contents:
-              - mimeType: mimeType
-                type: type
+              - type: type
                 content: content
-              - mimeType: mimeType
-                type: type
+              - type: type
                 content: content
               name: name
               context: context
+              contentText: contentText
               toolCalls:
               - name: name
                 arguments: arguments
@@ -6220,17 +6236,15 @@ components:
               - name: name
                 arguments: arguments
                 id: id
-              gmtCreate: 2000-01-23T04:56:07.000+00:00
             - role: role
               contents:
-              - mimeType: mimeType
-                type: type
+              - type: type
                 content: content
-              - mimeType: mimeType
-                type: type
+              - type: type
                 content: content
               name: name
               context: context
+              contentText: contentText
               toolCalls:
               - name: name
                 arguments: arguments
@@ -6238,18 +6252,16 @@ components:
               - name: name
                 arguments: arguments
                 id: id
-              gmtCreate: 2000-01-23T04:56:07.000+00:00
             messageToSend:
               role: role
               contents:
-              - mimeType: mimeType
-                type: type
+              - type: type
                 content: content
-              - mimeType: mimeType
-                type: type
+              - type: type
                 content: content
               name: name
               context: context
+              contentText: contentText
               toolCalls:
               - name: name
                 arguments: arguments
@@ -6257,7 +6269,6 @@ components:
               - name: name
                 arguments: arguments
                 id: id
-              gmtCreate: 2000-01-23T04:56:07.000+00:00
           format: format
       properties:
         prompt:
@@ -6292,14 +6303,13 @@ components:
           messages:
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6307,17 +6317,15 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6325,18 +6333,16 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           messageToSend:
             role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6344,7 +6350,6 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
         format: format
       properties:
         template:
@@ -6376,14 +6381,13 @@ components:
         message:
           role: role
           contents:
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
-          - mimeType: mimeType
-            type: type
+          - type: type
             content: content
           name: name
           context: context
+          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -6391,7 +6395,6 @@ components:
           - name: name
             arguments: arguments
             id: id
-          gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         requestId:
           description: Request identifier
@@ -6700,14 +6703,13 @@ components:
           messages:
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6715,17 +6717,15 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           - role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6733,18 +6733,16 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
           messageToSend:
             role: role
             contents:
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
-            - mimeType: mimeType
-              type: type
+            - type: type
               content: content
             name: name
             context: context
+            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6752,7 +6750,6 @@ components:
             - name: name
               arguments: arguments
               id: id
-            gmtCreate: 2000-01-23T04:56:07.000+00:00
         requestId: requestId
         promptId: promptId
         draft: draft
@@ -7171,6 +7168,37 @@ components:
         ext:
           description: "Additional information, JSON format"
           type: string
+      type: object
+    ChatCreateDTO:
+      description: Request data for starting a chat session
+      example:
+        characterNickname: characterNickname
+        ext: ext
+        about: about
+        userNickname: userNickname
+        backendId: backendId
+        userProfile: userProfile
+      properties:
+        userNickname:
+          description: User nickname for this session
+          type: string
+        userProfile:
+          description: User profile for this session
+          type: string
+        characterNickname:
+          description: Character nickname for this session
+          type: string
+        about:
+          description: Anything about this session
+          type: string
+        backendId:
+          description: Character backend for this session
+          type: string
+        ext:
+          description: Extra info for this session
+          type: string
+      required:
+      - backendId
       type: object
     CharacterCreateDTO:
       description: Request data for creating new character information
@@ -7630,37 +7658,6 @@ components:
           type: array
       required:
       - name
-      type: object
-    ChatCreateDTO:
-      description: Request data for starting a chat session
-      example:
-        characterNickname: characterNickname
-        ext: ext
-        about: about
-        userNickname: userNickname
-        backendId: backendId
-        userProfile: userProfile
-      properties:
-        userNickname:
-          description: User nickname for this session.
-          type: string
-        userProfile:
-          description: User profile for this session.
-          type: string
-        characterNickname:
-          description: Character nickname for this session.
-          type: string
-        about:
-          description: Anything about this session.
-          type: string
-        backendId:
-          description: Character backend for this session.
-          type: string
-        ext:
-          description: Extra info for this session.
-          type: string
-      required:
-      - backendId
       type: object
     AiApiKeyCreateDTO:
       description: Request data for adding new model credential information
@@ -8571,6 +8568,131 @@ components:
           type: string
         status:
           description: "Task execution status: pending | running | succeeded | failed"
+          type: string
+      type: object
+    ChatContextDTO:
+      description: Chat context
+      example:
+        characterNickname: characterNickname
+        ext: ext
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        chatId: chatId
+        requestId: requestId
+        about: about
+        userNickname: userNickname
+        backendId: backendId
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        userProfile: userProfile
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        chatId:
+          description: Chat identifier
+          type: string
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        userNickname:
+          description: User nickname for this session
+          type: string
+        userProfile:
+          description: User profile for this session
+          type: string
+        characterNickname:
+          description: Character nickname for this session
+          type: string
+        about:
+          description: Anything about this session
+          type: string
+        backendId:
+          description: Character backend for this session
+          type: string
+        ext:
+          description: Extra info for this session
+          type: string
+      required:
+      - backendId
+      type: object
+    ChatSessionDTO:
+      description: Chat session
+      example:
+        character:
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          visibility: visibility
+          gender: gender
+          description: description
+          avatar: avatar
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
+          version: 0
+          picture: picture
+          tags:
+          - tags
+          - tags
+          requestId: requestId
+          name: name
+          nickname: nickname
+          lang: lang
+          characterId: characterId
+          username: username
+        context:
+          characterNickname: characterNickname
+          ext: ext
+          gmtModified: 2000-01-23T04:56:07.000+00:00
+          chatId: chatId
+          requestId: requestId
+          about: about
+          userNickname: userNickname
+          backendId: backendId
+          gmtCreate: 2000-01-23T04:56:07.000+00:00
+          userProfile: userProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/ChatContextDTO'
+        character:
+          $ref: '#/components/schemas/CharacterSummaryDTO'
+      type: object
+    ChatMessageRecordDTO:
+      description: Chat message record
+      example:
+        ext: ext
+        messageId: 0
+        message:
+          role: role
+          contents:
+          - type: type
+            content: content
+          - type: type
+            content: content
+          name: name
+          context: context
+          contentText: contentText
+          toolCalls:
+          - name: name
+            arguments: arguments
+            id: id
+          - name: name
+            arguments: arguments
+            id: id
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+      properties:
+        message:
+          $ref: '#/components/schemas/ChatMessageDTO'
+        messageId:
+          description: Message identifier
+          format: int64
+          type: integer
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        ext:
+          description: Additional information
           type: string
       type: object
     AiApiKeyInfoDTO:

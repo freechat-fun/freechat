@@ -24,8 +24,10 @@ public class PromptTaskDTO {
     private PromptRefDTO promptRef;
     @Schema(description = "Model identifier")
     private String modelId;
-    @Schema(description = "API-KEY name")
+    @Schema(description = "API-KEY name, priority: apiKeyName > apiKeyValue")
     private String apiKeyName;
+    @Schema(description = "API-KEY value")
+    private String apiKeyValue;
     @Schema(description = "Model call parameters")
     private Map<String, Object> params;
     @Schema(description = "Task scheduling configuration which compatible with Quartz cron format")
@@ -35,6 +37,10 @@ public class PromptTaskDTO {
 
     public PromptTask toPromptTask() {
         PromptTask task = CommonUtils.convert(this, PromptTask.class);
+
+        if (Objects.isNull(promptRef)) {
+            return task;
+        }
 
         String variables = null;
         if (MapUtils.isNotEmpty(promptRef.getVariables())) {

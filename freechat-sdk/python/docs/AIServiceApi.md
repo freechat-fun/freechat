@@ -28,8 +28,6 @@ Add a credential for the model service.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_api_key_create_dto import AiApiKeyCreateDTO
 from freechat_sdk.rest import ApiException
@@ -108,8 +106,6 @@ Delete the credential information of the model provider.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -187,8 +183,6 @@ Disable the credential information of the model provider.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -266,8 +260,6 @@ Enable the credential information of the model provider.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -345,8 +337,6 @@ Get the credential information of the model provider.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
 from freechat_sdk.rest import ApiException
@@ -425,8 +415,6 @@ Return specific model information.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
 from freechat_sdk.rest import ApiException
@@ -505,8 +493,6 @@ List all credential information of the model provider.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_api_key_info_dto import AiApiKeyInfoDTO
 from freechat_sdk.rest import ApiException
@@ -585,8 +571,6 @@ Return model information by page, return the pageNum page, up to pageSize model 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
 from freechat_sdk.rest import ApiException
@@ -665,8 +649,6 @@ Return model information by page, return the pageNum page, up to pageSize model 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
 from freechat_sdk.rest import ApiException
@@ -741,8 +723,6 @@ Return model information by page, return the pageNum page, up to pageSize model 
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
 from freechat_sdk.rest import ApiException

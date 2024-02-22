@@ -18,7 +18,7 @@ type ErrorMessageAction = {
   message: ErrorMessage;
 }
 
-interface ErrorMessageBusContextValue {
+type ErrorMessageBusContextValue = {
   messages: ErrorMessage[];
   putMessage: (message: ErrorMessage) => void;
   removeMessage: (message: ErrorMessage) => void;

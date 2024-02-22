@@ -5,7 +5,7 @@ const TextareaTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.body,
   padding: theme.spacing(1, 2),
   borderRadius: '6px',
-  minHeight: '96px',
+  minHeight: '76px',
   color: theme.palette.text.primary,
 }));
 

@@ -2,7 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 
-interface UserInfoContextValue {
+type UserInfoContextValue = {
   username: string | null | undefined,
   platform: string | null | undefined,
   csrfToken: string | null | undefined,

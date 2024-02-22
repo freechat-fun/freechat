@@ -1,6 +1,7 @@
 package fun.freechat.service.util;
 
 import org.springframework.beans.BeansException;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -23,11 +24,14 @@ public class CacheUtils implements ApplicationContextAware {
 
     public static final String KEY_GENERATOR = "fullNameKeyGenerator";
 
-    private static CacheManager cacheManager;
+    private static CacheManager defaultCacheManager;
+
+    private static CacheManager inProcessCacheManager;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        cacheManager = applicationContext.getBean(CacheManager.class);
+        defaultCacheManager = applicationContext.getBean(CacheManager.class);
+        inProcessCacheManager = applicationContext.getBean(IN_PROCESS_CACHE_MANAGER, CacheManager.class);
     }
 
     public static void cacheEvict(String cacheName, List<String> keys) {
@@ -35,7 +39,7 @@ public class CacheUtils implements ApplicationContextAware {
             return;
         }
 
-        Optional.ofNullable(cacheManager)
+        Optional.ofNullable(defaultCacheManager)
                 .map(manager -> manager.getCache(cacheName))
                 .ifPresent(cache -> keys.forEach(cache::evict));
     }
@@ -50,5 +54,11 @@ public class CacheUtils implements ApplicationContextAware {
 
     public static void shortPeriodCacheEvict(List<String> keys) {
         cacheEvict(SHORT_PERIOD_CACHE_NAME, keys);
+    }
+
+    public static Cache inProcessLongPeriodCache() {
+        return Optional.ofNullable(inProcessCacheManager)
+                .map(manager -> manager.getCache(LONG_PERIOD_CACHE_NAME))
+                .orElse(null);
     }
 }

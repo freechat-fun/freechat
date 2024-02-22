@@ -9,7 +9,7 @@ import { AddCircleRounded, ArticleRounded, DeleteForeverRounded, DeleteRounded, 
 import { formatDateTime } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
 
-interface CharacterBackendListProps {
+type CharacterBackendListProps = {
   characterId?: string;
   defaultBackends?: CharacterBackendDetailsDTO[];
   editMode?: boolean;
@@ -26,11 +26,11 @@ export default function CharacterBackends({
 }: CharacterBackendListProps) {
   const navigator = useNavigate();
   const { t } = useTranslation(['character', 'button']);
-  const { characterApi } = useFreeChatApiContext();
+  const { characterApi, promptTaskApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>(defaultBackends ?? []);
-  const [backendIdToConfirm, setBackendIdToConfirm] = useState<string>();
+  const [backendIdToConfirm, setBackendIdToConfirm] = useState('');
 
   const getBackends = useCallback(() => {
     characterId && characterApi?.listCharacterBackends(characterId)
@@ -51,11 +51,14 @@ export default function CharacterBackends({
   }
 
   function handleDelete(id: string | undefined): void {
-    id && characterApi?.removeCharacterBackend(id)
-      .then(() => getBackends())
-      .catch(handleError);
-    
-    setBackendIdToConfirm(undefined);
+    if (id) {
+      const backend = backends.find(b => b.backendId === id);
+      backend?.chatPromptTaskId && promptTaskApi?.deletePromptTask(backend.chatPromptTaskId);
+      characterApi?.removeCharacterBackend(id)
+          .then(() => getBackends())
+          .catch(handleError);
+    }
+    setBackendIdToConfirm('');
   }
 
   function handleTryDelete(id: string | undefined): void {
@@ -93,7 +96,7 @@ export default function CharacterBackends({
           <tr>
             <th>#</th>
             <th>{t('Creation Time')}</th>
-            <th>{t('Message Window Size')}</th>
+            <th>{t('Message Window')}</th>
             <th>{t('Moderation Model')}</th>
             <th>{t('As Default')}</th>
             <th>{t('Actions')}</th>
@@ -142,7 +145,7 @@ export default function CharacterBackends({
 
       <ConfirmModal
         open={!!backendIdToConfirm}
-        onClose={() => setBackendIdToConfirm(undefined)}
+        onClose={() => setBackendIdToConfirm('')}
         obj={backendIdToConfirm}
         dialog={{
           color: 'danger',

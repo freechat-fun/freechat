@@ -22,8 +22,6 @@ Get the latest configuration information of the application by name.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.app_config_info_dto import AppConfigInfoDTO
 from freechat_sdk.rest import ApiException
@@ -102,8 +100,6 @@ Get the configuration information of the application by name and version.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.app_config_info_dto import AppConfigInfoDTO
 from freechat_sdk.rest import ApiException
@@ -184,8 +180,6 @@ List all application configuration names.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
@@ -259,8 +253,6 @@ Publish application configuration, return configuration version.
 * Bearer Authentication (bearerAuth):
 
 ```python
-import time
-import os
 import freechat_sdk
 from freechat_sdk.models.app_config_create_dto import AppConfigCreateDTO
 from freechat_sdk.rest import ApiException

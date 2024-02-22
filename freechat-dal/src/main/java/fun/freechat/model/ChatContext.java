@@ -15,16 +15,22 @@ public class ChatContext implements Serializable {
     private Date gmtModified;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Date gmtRead;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String chatType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String characterNickname;
+    private String backendId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String backendId;
+    private String characterNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userProfile;
@@ -87,6 +93,38 @@ public class ChatContext implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Date getGmtRead() {
+        return gmtRead;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withGmtRead(Date gmtRead) {
+        this.setGmtRead(gmtRead);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setGmtRead(Date gmtRead) {
+        this.gmtRead = gmtRead;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getChatType() {
+        return chatType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withChatType(String chatType) {
+        this.setChatType(chatType);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setChatType(String chatType) {
+        this.chatType = chatType == null ? null : chatType.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserId() {
         return userId;
     }
@@ -119,22 +157,6 @@ public class ChatContext implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getCharacterNickname() {
-        return characterNickname;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public ChatContext withCharacterNickname(String characterNickname) {
-        this.setCharacterNickname(characterNickname);
-        return this;
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCharacterNickname(String characterNickname) {
-        this.characterNickname = characterNickname == null ? null : characterNickname.trim();
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getBackendId() {
         return backendId;
     }
@@ -148,6 +170,22 @@ public class ChatContext implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setBackendId(String backendId) {
         this.backendId = backendId == null ? null : backendId.trim();
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getCharacterNickname() {
+        return characterNickname;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withCharacterNickname(String characterNickname) {
+        this.setCharacterNickname(characterNickname);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCharacterNickname(String characterNickname) {
+        this.characterNickname = characterNickname == null ? null : characterNickname.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -214,10 +252,12 @@ public class ChatContext implements Serializable {
         return (this.getChatId() == null ? other.getChatId() == null : this.getChatId().equals(other.getChatId()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
+            && (this.getGmtRead() == null ? other.getGmtRead() == null : this.getGmtRead().equals(other.getGmtRead()))
+            && (this.getChatType() == null ? other.getChatType() == null : this.getChatType().equals(other.getChatType()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getUserNickname() == null ? other.getUserNickname() == null : this.getUserNickname().equals(other.getUserNickname()))
-            && (this.getCharacterNickname() == null ? other.getCharacterNickname() == null : this.getCharacterNickname().equals(other.getCharacterNickname()))
-            && (this.getBackendId() == null ? other.getBackendId() == null : this.getBackendId().equals(other.getBackendId()));
+            && (this.getBackendId() == null ? other.getBackendId() == null : this.getBackendId().equals(other.getBackendId()))
+            && (this.getCharacterNickname() == null ? other.getCharacterNickname() == null : this.getCharacterNickname().equals(other.getCharacterNickname()));
     }
 
     @Override
@@ -228,10 +268,12 @@ public class ChatContext implements Serializable {
         result = prime * result + ((getChatId() == null) ? 0 : getChatId().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
+        result = prime * result + ((getGmtRead() == null) ? 0 : getGmtRead().hashCode());
+        result = prime * result + ((getChatType() == null) ? 0 : getChatType().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getUserNickname() == null) ? 0 : getUserNickname().hashCode());
-        result = prime * result + ((getCharacterNickname() == null) ? 0 : getCharacterNickname().hashCode());
         result = prime * result + ((getBackendId() == null) ? 0 : getBackendId().hashCode());
+        result = prime * result + ((getCharacterNickname() == null) ? 0 : getCharacterNickname().hashCode());
         return result;
     }
 
@@ -245,10 +287,12 @@ public class ChatContext implements Serializable {
         sb.append(", chatId=").append(chatId);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
+        sb.append(", gmtRead=").append(gmtRead);
+        sb.append(", chatType=").append(chatType);
         sb.append(", userId=").append(userId);
         sb.append(", userNickname=").append(userNickname);
-        sb.append(", characterNickname=").append(characterNickname);
         sb.append(", backendId=").append(backendId);
+        sb.append(", characterNickname=").append(characterNickname);
         sb.append(", userProfile=").append(userProfile);
         sb.append(", about=").append(about);
         sb.append(", ext=").append(ext);

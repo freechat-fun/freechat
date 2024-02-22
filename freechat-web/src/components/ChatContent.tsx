@@ -8,8 +8,9 @@ import { LinePlaceholder, MarkdownContent } from '.';
 import { Box, Chip, Divider, IconButton, Typography } from '@mui/joy';
 import { ContentCopyRounded } from '@mui/icons-material';
 
-interface ChatContentProps {
+type ChatContentProps = {
   disabled?: boolean;
+  debugMode?: boolean;
   url?: string;
   body?: string;
   initialData?: string;
@@ -23,6 +24,7 @@ interface ChatContentProps {
 
 export default function ChatContent({
   disabled = false,
+  debugMode = true,
   url,
   body,
   initialData,
@@ -96,7 +98,7 @@ export default function ChatContent({
       <MarkdownContent sx={sx}>
         {data}
       </MarkdownContent>
-      {usage && (
+      {debugMode && usage && (
         <Fragment>
           <LinePlaceholder spacing={2} />
           <Box sx={{

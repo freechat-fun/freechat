@@ -67,7 +67,6 @@ let body:.AppMetaForAdminApiExposeRequest = {
         {
           type: "type_example",
           content: "content_example",
-          mimeType: "mimeType_example",
         },
       ],
       toolCalls: [
@@ -77,8 +76,8 @@ let body:.AppMetaForAdminApiExposeRequest = {
           arguments: "arguments_example",
         },
       ],
-      gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
       context: "context_example",
+      contentText: "contentText_example",
     },
     finishReason: "finishReason_example",
     tokenUsage: {

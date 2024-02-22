@@ -102,7 +102,7 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
         ApiToken apiToken = apiTokenRepo.getApiToken(token);
         if (Objects.nonNull(apiToken)) {
             apiToken.setExpiresAt(apiToken.getIssuedAt());
-            rows = apiTokenMapper.updateByPrimaryKey(apiToken);
+            rows = apiTokenMapper.updateByPrimaryKeySelective(apiToken);
         }
         if (rows > 0) {
             apiTokenRepo.onDisable(token);
@@ -117,7 +117,7 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
         ApiToken apiToken = apiTokenRepo.getApiTokenById(id);
         if (Objects.nonNull(apiToken)) {
             apiToken.setExpiresAt(apiToken.getIssuedAt());
-            rows = apiTokenMapper.updateByPrimaryKey(apiToken);
+            rows = apiTokenMapper.updateByPrimaryKeySelective(apiToken);
         }
         if (rows > 0) {
             apiTokenRepo.onDisableById(id);

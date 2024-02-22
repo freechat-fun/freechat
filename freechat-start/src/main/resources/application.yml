@@ -17,7 +17,7 @@ auth:
     bizAdminUri: /api/biz/admin/**,/api/v1/biz/admin/**
     apiUri: /api/**
     privateUri: /private/**
-    publicUri: /public/**,/assets/**,/css/**,/js/**,/logo/**,/favicon.ico
+    publicUri: /public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico
   token:
     limits: 5
     prefix: fc-
@@ -112,12 +112,18 @@ springdoc:
     - group: g-prompt
       displayName: Prompt
       pathsToMatch: /api/v1/prompt/**
-    - group: g-agent
-      displayName: Agent
-      pathsToMatch: /api/v1/agent/**
     - group: g-plugin
       displayName: Plugin
       pathsToMatch: /api/v1/plugin/**
+    - group: g-agent
+      displayName: Agent
+      pathsToMatch: /api/v1/agent/**
+    - group: g-character
+      displayName: Character
+      pathsToMatch: /api/v1/character/**
+    - group: g-chat
+      displayName: Chat
+      pathsToMatch: /api/v1/chat/**
     - group: g-organization
       displayName: Organization
       pathsToMatch: /api/v1/org/**
@@ -129,4 +135,4 @@ springdoc:
       pathsToMatch: /api/v1/stats/**,/api/v1/score/**
 perf:
   trace:
-    excludeUri: /public/check/**,/favicon.ico,/error
+    excludeUri: /public/check/**,/favicon.ico,/w/**,/error

@@ -62,7 +62,7 @@ public class CharacterApi {
 
     private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
 
-    private static final long DEFAULT_AVATAR_MAX_SIZE = 64 * 1024;
+    private static final long DEFAULT_AVATAR_MAX_SIZE = 1024 * 1024;
 
     private static final int DEFAULT_AVATAR_MAX_COUNT = 10;
 

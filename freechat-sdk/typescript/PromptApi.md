@@ -117,7 +117,6 @@ let body:.PromptApiApplyPromptTemplateRequest = {
           {
             type: "type_example",
             content: "content_example",
-            mimeType: "mimeType_example",
           },
         ],
         toolCalls: [
@@ -127,8 +126,8 @@ let body:.PromptApiApplyPromptTemplateRequest = {
             arguments: "arguments_example",
           },
         ],
-        gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         context: "context_example",
+        contentText: "contentText_example",
       },
       messages: [
         {
@@ -138,7 +137,6 @@ let body:.PromptApiApplyPromptTemplateRequest = {
             {
               type: "type_example",
               content: "content_example",
-              mimeType: "mimeType_example",
             },
           ],
           toolCalls: [
@@ -148,8 +146,8 @@ let body:.PromptApiApplyPromptTemplateRequest = {
               arguments: "arguments_example",
             },
           ],
-          gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           context: "context_example",
+          contentText: "contentText_example",
         },
       ],
     },
@@ -568,7 +566,6 @@ let body:.PromptApiCreatePromptRequest = {
           {
             type: "type_example",
             content: "content_example",
-            mimeType: "mimeType_example",
           },
         ],
         toolCalls: [
@@ -578,8 +575,8 @@ let body:.PromptApiCreatePromptRequest = {
             arguments: "arguments_example",
           },
         ],
-        gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         context: "context_example",
+        contentText: "contentText_example",
       },
       messages: [
         {
@@ -589,7 +586,6 @@ let body:.PromptApiCreatePromptRequest = {
             {
               type: "type_example",
               content: "content_example",
-              mimeType: "mimeType_example",
             },
           ],
           toolCalls: [
@@ -599,8 +595,8 @@ let body:.PromptApiCreatePromptRequest = {
               arguments: "arguments_example",
             },
           ],
-          gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           context: "context_example",
+          contentText: "contentText_example",
         },
       ],
     },
@@ -686,7 +682,6 @@ let body:.PromptApiCreatePromptsRequest = {
             {
               type: "type_example",
               content: "content_example",
-              mimeType: "mimeType_example",
             },
           ],
           toolCalls: [
@@ -696,8 +691,8 @@ let body:.PromptApiCreatePromptsRequest = {
               arguments: "arguments_example",
             },
           ],
-          gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           context: "context_example",
+          contentText: "contentText_example",
         },
         messages: [
           {
@@ -707,7 +702,6 @@ let body:.PromptApiCreatePromptsRequest = {
               {
                 type: "type_example",
                 content: "content_example",
-                mimeType: "mimeType_example",
               },
             ],
             toolCalls: [
@@ -717,8 +711,8 @@ let body:.PromptApiCreatePromptsRequest = {
                 arguments: "arguments_example",
               },
             ],
-            gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
             context: "context_example",
+            contentText: "contentText_example",
           },
         ],
       },
@@ -1445,7 +1439,6 @@ let body:.PromptApiSendPromptRequest = {
             {
               type: "type_example",
               content: "content_example",
-              mimeType: "mimeType_example",
             },
           ],
           toolCalls: [
@@ -1455,8 +1448,8 @@ let body:.PromptApiSendPromptRequest = {
               arguments: "arguments_example",
             },
           ],
-          gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           context: "context_example",
+          contentText: "contentText_example",
         },
         messages: [
           {
@@ -1466,7 +1459,6 @@ let body:.PromptApiSendPromptRequest = {
               {
                 type: "type_example",
                 content: "content_example",
-                mimeType: "mimeType_example",
               },
             ],
             toolCalls: [
@@ -1476,8 +1468,8 @@ let body:.PromptApiSendPromptRequest = {
                 arguments: "arguments_example",
               },
             ],
-            gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
             context: "context_example",
+            contentText: "contentText_example",
           },
         ],
       },
@@ -1563,7 +1555,6 @@ let body:.PromptApiStreamSendPromptRequest = {
             {
               type: "type_example",
               content: "content_example",
-              mimeType: "mimeType_example",
             },
           ],
           toolCalls: [
@@ -1573,8 +1564,8 @@ let body:.PromptApiStreamSendPromptRequest = {
               arguments: "arguments_example",
             },
           ],
-          gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           context: "context_example",
+          contentText: "contentText_example",
         },
         messages: [
           {
@@ -1584,7 +1575,6 @@ let body:.PromptApiStreamSendPromptRequest = {
               {
                 type: "type_example",
                 content: "content_example",
-                mimeType: "mimeType_example",
               },
             ],
             toolCalls: [
@@ -1594,8 +1584,8 @@ let body:.PromptApiStreamSendPromptRequest = {
                 arguments: "arguments_example",
               },
             ],
-            gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
             context: "context_example",
+            contentText: "contentText_example",
           },
         ],
       },
@@ -1685,7 +1675,6 @@ let body:.PromptApiUpdatePromptRequest = {
           {
             type: "type_example",
             content: "content_example",
-            mimeType: "mimeType_example",
           },
         ],
         toolCalls: [
@@ -1695,8 +1684,8 @@ let body:.PromptApiUpdatePromptRequest = {
             arguments: "arguments_example",
           },
         ],
-        gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
         context: "context_example",
+        contentText: "contentText_example",
       },
       messages: [
         {
@@ -1706,7 +1695,6 @@ let body:.PromptApiUpdatePromptRequest = {
             {
               type: "type_example",
               content: "content_example",
-              mimeType: "mimeType_example",
             },
           ],
           toolCalls: [
@@ -1716,8 +1704,8 @@ let body:.PromptApiUpdatePromptRequest = {
               arguments: "arguments_example",
             },
           ],
-          gmtCreate: new Date('1970-01-01T00:00:00.00Z'),
           context: "context_example",
+          contentText: "contentText_example",
         },
       ],
     },

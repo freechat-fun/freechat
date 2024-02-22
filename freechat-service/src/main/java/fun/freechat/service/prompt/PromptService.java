@@ -4,7 +4,6 @@ import dev.langchain4j.data.message.ChatMessage;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.PromptInfo;
 import fun.freechat.model.User;
-import fun.freechat.service.ai.message.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.enums.Visibility;

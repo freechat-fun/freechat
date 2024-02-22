@@ -61,7 +61,7 @@ public class OrgServiceImpl implements OrgService {
                     if (isEnabled(oldRelationship) && isVirtual == isVirtual(oldRelationship)) {
                         continue;
                     }
-                    rows = orgRelationshipMapper.updateByPrimaryKey(
+                    rows = orgRelationshipMapper.updateByPrimaryKeySelective(
                             oldRelationship.withGmtModified(now)
                                     .withEnabled((byte)1)
                                     .withIsVirtual(isVirtual ? (byte)1 : (byte)0));
@@ -114,7 +114,7 @@ public class OrgServiceImpl implements OrgService {
                     if (isEnabled(oldRelationship) && isVirtual == isVirtual(oldRelationship)) {
                         continue;
                     }
-                    rows = orgRelationshipMapper.updateByPrimaryKey(
+                    rows = orgRelationshipMapper.updateByPrimaryKeySelective(
                             oldRelationship.withGmtModified(now)
                                     .withEnabled((byte)1)
                                     .withIsVirtual(isVirtual ? (byte)1 : (byte)0));

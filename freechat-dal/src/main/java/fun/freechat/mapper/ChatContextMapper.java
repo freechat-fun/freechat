@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<ChatContext>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, userId, userNickname, characterNickname, backendId, userProfile, about, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(chatId, gmtCreate, gmtModified, gmtRead, chatType, userId, userNickname, backendId, characterNickname, userProfile, about, ext);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -40,10 +40,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         @Result(column="chat_id", property="chatId", jdbcType=JdbcType.VARCHAR, id=true),
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="gmt_read", property="gmtRead", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="chat_type", property="chatType", jdbcType=JdbcType.VARCHAR),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.VARCHAR),
         @Result(column="user_nickname", property="userNickname", jdbcType=JdbcType.VARCHAR),
-        @Result(column="character_nickname", property="characterNickname", jdbcType=JdbcType.VARCHAR),
         @Result(column="backend_id", property="backendId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="character_nickname", property="characterNickname", jdbcType=JdbcType.VARCHAR),
         @Result(column="user_profile", property="userProfile", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="about", property="about", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
@@ -78,10 +80,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             c.map(chatId).toProperty("chatId")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
+            .map(gmtRead).toProperty("gmtRead")
+            .map(chatType).toProperty("chatType")
             .map(userId).toProperty("userId")
             .map(userNickname).toProperty("userNickname")
-            .map(characterNickname).toProperty("characterNickname")
             .map(backendId).toProperty("backendId")
+            .map(characterNickname).toProperty("characterNickname")
             .map(userProfile).toProperty("userProfile")
             .map(about).toProperty("about")
             .map(ext).toProperty("ext")
@@ -94,10 +98,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             c.map(chatId).toProperty("chatId")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
+            .map(gmtRead).toProperty("gmtRead")
+            .map(chatType).toProperty("chatType")
             .map(userId).toProperty("userId")
             .map(userNickname).toProperty("userNickname")
-            .map(characterNickname).toProperty("characterNickname")
             .map(backendId).toProperty("backendId")
+            .map(characterNickname).toProperty("characterNickname")
             .map(userProfile).toProperty("userProfile")
             .map(about).toProperty("about")
             .map(ext).toProperty("ext")
@@ -110,10 +116,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
             c.map(chatId).toPropertyWhenPresent("chatId", row::getChatId)
             .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
+            .map(gmtRead).toPropertyWhenPresent("gmtRead", row::getGmtRead)
+            .map(chatType).toPropertyWhenPresent("chatType", row::getChatType)
             .map(userId).toPropertyWhenPresent("userId", row::getUserId)
             .map(userNickname).toPropertyWhenPresent("userNickname", row::getUserNickname)
-            .map(characterNickname).toPropertyWhenPresent("characterNickname", row::getCharacterNickname)
             .map(backendId).toPropertyWhenPresent("backendId", row::getBackendId)
+            .map(characterNickname).toPropertyWhenPresent("characterNickname", row::getCharacterNickname)
             .map(userProfile).toPropertyWhenPresent("userProfile", row::getUserProfile)
             .map(about).toPropertyWhenPresent("about", row::getAbout)
             .map(ext).toPropertyWhenPresent("ext", row::getExt)
@@ -152,10 +160,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         return dsl.set(chatId).equalTo(row::getChatId)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
+                .set(gmtRead).equalTo(row::getGmtRead)
+                .set(chatType).equalTo(row::getChatType)
                 .set(userId).equalTo(row::getUserId)
                 .set(userNickname).equalTo(row::getUserNickname)
-                .set(characterNickname).equalTo(row::getCharacterNickname)
                 .set(backendId).equalTo(row::getBackendId)
+                .set(characterNickname).equalTo(row::getCharacterNickname)
                 .set(userProfile).equalTo(row::getUserProfile)
                 .set(about).equalTo(row::getAbout)
                 .set(ext).equalTo(row::getExt);
@@ -166,10 +176,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         return dsl.set(chatId).equalToWhenPresent(row::getChatId)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
+                .set(gmtRead).equalToWhenPresent(row::getGmtRead)
+                .set(chatType).equalToWhenPresent(row::getChatType)
                 .set(userId).equalToWhenPresent(row::getUserId)
                 .set(userNickname).equalToWhenPresent(row::getUserNickname)
-                .set(characterNickname).equalToWhenPresent(row::getCharacterNickname)
                 .set(backendId).equalToWhenPresent(row::getBackendId)
+                .set(characterNickname).equalToWhenPresent(row::getCharacterNickname)
                 .set(userProfile).equalToWhenPresent(row::getUserProfile)
                 .set(about).equalToWhenPresent(row::getAbout)
                 .set(ext).equalToWhenPresent(row::getExt);
@@ -180,10 +192,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         return update(c ->
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
+            .set(gmtRead).equalTo(row::getGmtRead)
+            .set(chatType).equalTo(row::getChatType)
             .set(userId).equalTo(row::getUserId)
             .set(userNickname).equalTo(row::getUserNickname)
-            .set(characterNickname).equalTo(row::getCharacterNickname)
             .set(backendId).equalTo(row::getBackendId)
+            .set(characterNickname).equalTo(row::getCharacterNickname)
             .set(userProfile).equalTo(row::getUserProfile)
             .set(about).equalTo(row::getAbout)
             .set(ext).equalTo(row::getExt)
@@ -196,10 +210,12 @@ public interface ChatContextMapper extends CommonCountMapper, CommonDeleteMapper
         return update(c ->
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
+            .set(gmtRead).equalToWhenPresent(row::getGmtRead)
+            .set(chatType).equalToWhenPresent(row::getChatType)
             .set(userId).equalToWhenPresent(row::getUserId)
             .set(userNickname).equalToWhenPresent(row::getUserNickname)
-            .set(characterNickname).equalToWhenPresent(row::getCharacterNickname)
             .set(backendId).equalToWhenPresent(row::getBackendId)
+            .set(characterNickname).equalToWhenPresent(row::getCharacterNickname)
             .set(userProfile).equalToWhenPresent(row::getUserProfile)
             .set(about).equalToWhenPresent(row::getAbout)
             .set(ext).equalToWhenPresent(row::getExt)

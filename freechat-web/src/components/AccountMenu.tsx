@@ -42,7 +42,7 @@ export default function AccountMenu() {
                 <ListItemDecorator>
                   <LogoutRounded />
                 </ListItemDecorator>
-                {t('Sign out')}
+                {t('Sign Out')}
               </MenuItem>
             </form>
           </Menu>
@@ -55,7 +55,7 @@ export default function AccountMenu() {
               <ListItemDecorator>
                 <LoginRounded />
               </ListItemDecorator>
-              {t('Sign in')}
+              {t('Sign In')}
             </MenuItem>
           </Menu>
         </>

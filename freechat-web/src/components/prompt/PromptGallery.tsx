@@ -11,7 +11,7 @@ import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
 
-interface RecordCardProps {
+type RecordCardProps = {
   record: PromptSummaryStatsDTO,
   sx?: SxProps,
   onClick?: (record: PromptSummaryStatsDTO) => void;

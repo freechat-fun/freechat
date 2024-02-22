@@ -10,7 +10,7 @@ export default function NotFound() {
       component="main"
       className="MainContent"
       sx={{
-        height: '100vh',
+        height: '100dvh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -25,7 +25,6 @@ export default function NotFound() {
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        mb: 'calc(10px + var(--Header-height))',
       }}>
           <Typography level="title-lg" gutterBottom>
             {t('Page not found')}

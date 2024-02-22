@@ -10,7 +10,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import java.util.List;
 
 public interface HotTagMapper extends TagMapper {
-    @SelectProvider(type= SqlProviderAdapter.class, method="select")
+    @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="HotTag", value={
             @Result(column="content", property="content"),
             @Result(column="count", property="count")

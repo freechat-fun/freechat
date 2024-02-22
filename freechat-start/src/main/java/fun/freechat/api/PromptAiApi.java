@@ -9,7 +9,7 @@ import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
-import fun.freechat.service.ai.message.ChatPromptContent;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.prompt.PromptAiService;

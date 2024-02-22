@@ -10,7 +10,6 @@ import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,12 +31,10 @@ public class ChatMessageDTO {
     private List<ChatContentDTO> contents;
     @Schema(description = "Tool calls information during the conversation")
     private List<ChatToolCallDTO> toolCalls;
-    @Schema(description = "Creation time")
-    private Date gmtCreate;
-    @Schema(description = "Contextual information in this round of conversation")
+    @Schema(description = "Contextual information in this round of conversation (the external RAG result can be passed in through this parameter)")
     private String context;
 
-    public String getContentText() {
+    private String getContentText() {
         return ValidationUtils.ensureNotEmpty(contents, "contents")
                 .stream()
                 .filter(content -> contentTypeOf(content.getType()) == TEXT)
@@ -45,13 +42,12 @@ public class ChatMessageDTO {
                 .collect(Collectors.joining("\n"));
     }
 
-    public void setContentText(String text) {
+    private void setContentText(String text) {
         setContents(List.of(ChatContentDTO.fromText(text)));
     }
 
     public static ChatMessageDTO from(ChatMessage message) {
         ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setGmtCreate(new Date());
         switch (message.type()) {
             case SYSTEM -> {
                 dto.setRole(SYSTEM.text());

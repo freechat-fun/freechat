@@ -13,7 +13,7 @@ import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequ
 import { i18nConfig } from "../../configs/i18n-config";
 import { setMessageText } from "../../libs/template_utils";
 
-interface RecordCardProps {
+type RecordCardProps = {
   record: PromptSummaryDTO,
   onView: (record: PromptSummaryDTO) => void,
   onEdit: (record: PromptSummaryDTO) => void,

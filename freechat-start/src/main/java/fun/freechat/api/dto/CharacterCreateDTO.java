@@ -41,7 +41,7 @@ public class CharacterCreateDTO {
     private String chatStyle;
     @Schema(description = "Character chat-example")
     private String chatExample;
-    @Schema(description = "Character language: English | Chinese (Simplified) | ...")
+    @Schema(description = "Character language: en (default) | zh | ...")
     private String lang;
     @Schema(description = "Additional information, JSON format")
     private String ext;

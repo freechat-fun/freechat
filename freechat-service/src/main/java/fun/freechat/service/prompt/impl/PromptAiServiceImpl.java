@@ -14,7 +14,7 @@ import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.CloseableAiApiKey;
-import fun.freechat.service.ai.message.ChatPromptContent;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.ModelType;
 import fun.freechat.service.enums.PromptType;
