@@ -9,7 +9,7 @@ import { CommonContainer, LinePlaceholder } from "../../components";
 import { PromptDetailsDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt";
-import { getMessageText } from "../../libs/template_utils";
+import { extractVariables, getMessageText } from "../../libs/template_utils";
 
 type PromptViewerProps = {
   id: string | undefined;
@@ -46,6 +46,23 @@ export default function PromptViewer({
       })
       .catch(handleError);
   }, [handleError, id, promptApi]);
+
+  useEffect(() => {
+    if (!record) {
+      return;
+    }
+
+    setDefaultVariables(extractVariables(record));
+
+    if (record.ext) {
+      try {
+        const persistentParameters = JSON.parse(record.ext) as { [key: string]: any };
+        setDefaultParameters(persistentParameters);
+      } catch (error) {
+        // ignore
+      }
+    }
+  }, [record]);
 
   useEffect(() => {
     setDefaultParameters(parameters ? {...parameters} : undefined);

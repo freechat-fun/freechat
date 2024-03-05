@@ -6,6 +6,7 @@ import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.PromptInfo;
 import fun.freechat.service.enums.PromptType;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -45,8 +46,8 @@ public class PromptDetailsDTO extends PromptSummaryDTO {
         dto.setUsername(AccountUtils.userIdToName(promptInfoTriple.getLeft().getUserId()));
         if (PromptType.of(info.getType()) == PromptType.CHAT) {
             try {
-                ChatPromptContentDTO chatPrompt =
-                        InfoUtils.defaultMapper().readValue(info.getTemplate(), ChatPromptContentDTO.class);
+                ChatPromptContentDTO chatPrompt = ChatPromptContentDTO.from(
+                        InfoUtils.defaultMapper().readValue(info.getTemplate(), ChatPromptContent.class));
                 dto.setChatTemplate(chatPrompt);
                 dto.setTemplate(null);
             } catch (JsonProcessingException e) {

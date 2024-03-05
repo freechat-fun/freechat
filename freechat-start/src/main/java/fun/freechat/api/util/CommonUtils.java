@@ -43,6 +43,7 @@ public class CommonUtils {
                     result.setRequestId(null);
                     sseEmitter.send(result);
                 } catch (NullPointerException | IOException e) {
+                    log.error("Error when sending message.", e);
                     sseEmitter.completeWithError(e);
                     abort = true;
                 }
@@ -60,6 +61,7 @@ public class CommonUtils {
                     sseEmitter.send(result);
                     sseEmitter.complete();
                 } catch (NullPointerException | IOException e) {
+                    log.error("Error when sending message.", e);
                     sseEmitter.completeWithError(e);
                 }
                 abort = true;
@@ -70,6 +72,7 @@ public class CommonUtils {
                 if (abort) {
                     return;
                 }
+                log.error("SSE exception", throwable);
                 try {
                     LlmResultDTO result = LlmResultDTO.from(
                             throwable.getMessage(), null, null, null);
@@ -78,6 +81,7 @@ public class CommonUtils {
                     sseEmitter.send(result);
                     sseEmitter.complete();
                 } catch (IOException e) {
+                    log.error("Error when sending message.", e);
                     sseEmitter.completeWithError(e);
                 }
                 abort = true;

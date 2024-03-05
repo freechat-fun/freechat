@@ -16,6 +16,7 @@ export function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+export const DEFAULT_TEXT_MAX_WIDTH = 720;
 export const DEFAULT_IMAGE_MAX_WIDTH = 512;
 export const DEFAULT_IMAGE_MAX_SIZE = 20 * 1024;
 

@@ -25,7 +25,7 @@ export default function Home() {
           }}>
             <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
-            <Typography level="title-md">{t('Create your friends here!')}</Typography>
+            <Typography level="title-md">{t('Make a friend for yourself')}</Typography>
           </Box>
           <AspectRatio
             variant="plain"

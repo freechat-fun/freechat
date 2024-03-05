@@ -94,7 +94,8 @@ public class LanguageModelFactory {
                 .seed((Integer) parameters.get("seed"))
                 .repetitionPenalty((Float) parameters.get("repetitionPenalty"))
                 .temperature((Float) parameters.get("temperature"))
-                .stops((List<String>) parameters.get("stop"))
+                .maxTokens((Integer) parameters.get("maxTokens"))
+                .stops((List<String>) parameters.get("stops"))
                 .build();
     }
 
@@ -107,6 +108,10 @@ public class LanguageModelFactory {
                 .topK((Integer) parameters.get("topK"))
                 .enableSearch((Boolean) parameters.get("enableSearch"))
                 .seed((Integer) parameters.get("seed"))
+                .repetitionPenalty((Float) parameters.get("repetitionPenalty"))
+                .temperature((Float) parameters.get("temperature"))
+                .maxTokens((Integer) parameters.get("maxTokens"))
+                .stops((List<String>) parameters.get("stops"))
                 .build();
     }
 
@@ -119,6 +124,10 @@ public class LanguageModelFactory {
                 .topK((Integer) parameters.get("topK"))
                 .enableSearch((Boolean) parameters.get("enableSearch"))
                 .seed((Integer) parameters.get("seed"))
+                .repetitionPenalty((Float) parameters.get("repetitionPenalty"))
+                .temperature((Float) parameters.get("temperature"))
+                .maxTokens((Integer) parameters.get("maxTokens"))
+                .stops((List<String>) parameters.get("stops"))
                 .build();
     }
 
@@ -131,6 +140,10 @@ public class LanguageModelFactory {
                 .topK((Integer) parameters.get("topK"))
                 .enableSearch((Boolean) parameters.get("enableSearch"))
                 .seed((Integer) parameters.get("seed"))
+                .repetitionPenalty((Float) parameters.get("repetitionPenalty"))
+                .temperature((Float) parameters.get("temperature"))
+                .maxTokens((Integer) parameters.get("maxTokens"))
+                .stops((List<String>) parameters.get("stops"))
                 .build();
     }
 

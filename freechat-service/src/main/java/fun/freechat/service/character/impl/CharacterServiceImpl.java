@@ -654,30 +654,26 @@ select distinct c.user_id, c.character_id, c.visibility... \
             doCreate(Pair.of(info, infoTriple.getMiddle()));
             publishedInfoId = info.getCharacterId();
 
-            if (CollectionUtils.isNotEmpty(infoTriple.getRight())) {
-                Set<CharacterBackend> backendSet = new HashSet<>(infoTriple.getRight());
-                List<String> cacheKeys = new ArrayList<>(backendSet.size());
-                for (CharacterBackend backend : backendSet) {
-                    int rows = characterBackendMapper.updateByPrimaryKeySelective(backend
-                            .withCharacterId(publishedInfoId)
-                            .withGmtModified(info.getGmtModified()));
-                    cacheKeys.add(BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + backend.getBackendId());
-                    if (rows <= 0) {
-                        info.setCharacterId(null);
-                        throw new RuntimeException("Publish backend from " + backend.getBackendId() + " failed!");
-                    }
-                    eventPublisher.publishEvent(
-                            new CharacterBackendEvent(user.getUserId(), backend.getBackendId()));
-                }
-                CacheUtils.longPeriodCacheEvict(cacheKeys);
-            }
-
             for (var prevVersionInfo : versionInfoList) {
                 info = new CharacterInfo()
                         .withCharacterId(prevVersionInfo.getLeft())
                         .withVisibility(Visibility.HIDDEN.text())
                         .withGmtModified(new Date());
                 characterInfoMapper.updateByPrimaryKeySelective(info);
+
+                List<CharacterBackend> backends = listBackends(prevVersionInfo.getLeft());
+                List<String> cacheKeys = new ArrayList<>(backends.size());
+                for (CharacterBackend backend : backends) {
+                    int rows = characterBackendMapper.updateByPrimaryKeySelective(backend
+                            .withCharacterId(publishedInfoId)
+                            .withGmtModified(info.getGmtModified()));
+                    cacheKeys.add(BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + backend.getBackendId());
+                    if (rows > 0) {
+                        eventPublisher.publishEvent(
+                                new CharacterBackendEvent(user.getUserId(), backend.getBackendId()));
+                    }
+                }
+                CacheUtils.longPeriodCacheEvict(cacheKeys);
             }
 
             if (Objects.nonNull(versionInfo) && Objects.nonNull(versionInfo.getRight())) {

@@ -39,7 +39,7 @@
   "Please enter a new name": "Please enter a new name",
   "Name already exists!": "Name already exists!",
   "Welcome to FreeChat": "Welcome to FreeChat",
-  "Create your friends here!": "\"Create\" your friends here!",
+  "Make a friend for yourself": "Make a friend for yourself",
   "Search": "Search",
   "Search tags": "Search tags",
   "Supports markdown format": "Supports markdown format",
@@ -47,5 +47,6 @@
   "Total": "Total",
   "attachment": "attachment",
   "Only image attachment is supported for now.": "Only image attachment is supported for now.",
+  "System Prompt": "System Prompt",
   ".": "."
 }

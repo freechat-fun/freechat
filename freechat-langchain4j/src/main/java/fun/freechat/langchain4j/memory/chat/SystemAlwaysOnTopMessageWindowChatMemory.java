@@ -44,9 +44,12 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
             if (systemMessage.isPresent()) {
                 if (systemMessage.get().equals(message)) {
                     return; // do not add the same system message
-                } else {
-                    messages.remove(systemMessage.get()); // need to replace existing system message
                 }
+                messages.remove(systemMessage.get()); // need to replace existing system message
+                messages.addFirst(message);
+                // only update the system message in store
+                store.updateMessages(id, List.of(message));
+                return;
             }
             messages.addFirst(message);
         } else {

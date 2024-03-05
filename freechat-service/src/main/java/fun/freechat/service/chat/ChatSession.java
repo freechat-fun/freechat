@@ -109,12 +109,10 @@ public class ChatSession {
     }
 
     public boolean acquire() {
-        log.info("[ChatSession.acquire] {}", this);
         return !processing.compareAndExchangeAcquire(false, true);
     }
 
     public void release() {
-        log.info("[ChatSession.release] {}", this);
         processing.compareAndExchangeRelease(true, false);
     }
 }

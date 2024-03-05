@@ -10,7 +10,7 @@ import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, 
 import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded } from "@mui/icons-material";
 import { CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
-import { createPromptForCharacter } from "../../libs/template_utils";
+import { createPromptForCharacter } from "../../libs/chat_utils";
 import { getCompressedImage } from "../../libs/ui_utils";
 
 type CharacterEditorProps = {
@@ -27,7 +27,7 @@ export default function CharacterEditor ({
   const { username } = useUserInfoContext();
 
   const [origRecord, setOrigRecord] = useState(new CharacterDetailsDTO());
-  const [editRecordName, setEditRecordName] = useState('');
+  const [editRecordName, setEditRecordName] = useState<string | null>(null);
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
   const [recordName, setRecordName] = useState<string>();
@@ -133,13 +133,13 @@ export default function CharacterEditor ({
     if (editRecordName && editRecordName !== recordName) {
       if (editRecordName === originName.current) {
         setRecordName(editRecordName);
-        setEditRecordName('');
+        setEditRecordName(null);
       } else {
         characterApi?.existsCharacterName(editRecordName)
           .then(resp => {
             if (!resp) {
               setRecordName(editRecordName);
-              setEditRecordName('');
+              setEditRecordName(null);
             } else {
               setEditRecordNameError(true);
             }
@@ -148,7 +148,7 @@ export default function CharacterEditor ({
       }
     } else {
       setEditRecordNameError(false);
-      setEditRecordName('');
+      setEditRecordName(null);
     }
   }
 
@@ -649,8 +649,8 @@ export default function CharacterEditor ({
       </CommonContainer>
 
       <ConfirmModal
-        open={!!editRecordName}
-        onClose={() => setEditRecordName('')}
+        open={editRecordName !== null}
+        onClose={() => setEditRecordName(null)}
         dialog={{
           title: t('Please enter a new name'),
         }}
@@ -663,7 +663,7 @@ export default function CharacterEditor ({
         <FormControl error={editRecordNameError}>
           <Input
             name="RecordName"
-            value={editRecordName}
+            value={editRecordName ?? ''}
             onChange={(event) => {
               setEditRecordName(event.target.value);
               setEditRecordNameError(false);

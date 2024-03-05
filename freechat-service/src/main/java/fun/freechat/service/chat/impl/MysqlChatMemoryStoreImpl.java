@@ -139,7 +139,6 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                     .withExt(InfoUtils.serialize(tokenUsage))
                     .withGmtModified(new Date());
             chatHistoryMapper.updateByPrimaryKeySelective(newHistory);
-
         }
     }
 

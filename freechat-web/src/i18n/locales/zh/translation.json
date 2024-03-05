@@ -10,6 +10,7 @@
   "homepage": "主页",
   "FreeChat": "狐狸猜",
   "Choose a picture": "选择一张图片",
+  "Text preview": "文本预览",
   "Please confirm carefully!": "请仔细确认！",
   "Copied!": "已复制！",
   "Name": "名称",
@@ -39,7 +40,7 @@
   "Please enter a new name": "请输入一个新名字",
   "Name already exists!": "名字已存在！",
   "Welcome to FreeChat": "欢迎来到狐狸猜",
-  "Create your friends here!": "在这里“创造”你的朋友！",
+  "Make a friend for yourself": "做自己的朋友",
   "Search": "搜索",
   "Search tags": "搜索标签",
   "Supports markdown format": "支持 Markdown 格式",
@@ -47,5 +48,6 @@
   "Total": "总数",
   "attachment": "附件",
   "Only image attachment is supported for now.": "目前只支持图片附件。",
+  "System Prompt": "系统提示词",
   ".": "。"
 }

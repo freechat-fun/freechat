@@ -49,7 +49,7 @@ public class PromptAiServiceImpl implements PromptAiService {
     }
 
     @Override
-    @Trace(ignoreArgs = true, extInfo = "'prompt:[' + #p0 + '],model:' + #p4.modelId + ',parameters:' + #p5")
+    @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
     public Response<AiMessage> send(String prompt,
                                     PromptType promptType,
                                     User user,
@@ -110,7 +110,7 @@ public class PromptAiServiceImpl implements PromptAiService {
     }
 
     @Override
-    @Trace(ignoreArgs = true, extInfo = "'prompt:[' + #p0 + '],model:' + #p4.modelId + ',parameters:' + #p5")
+    @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
     public <T> void streamSend(String prompt,
                                PromptType promptType,
                                User user,

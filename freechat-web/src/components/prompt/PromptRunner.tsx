@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, IconButton, Tooltip, Chip, ChipDelete } from "@mui/joy";
@@ -67,6 +67,28 @@ export default function PromptRunner(props: PromptRunnerProps) {
     }) : [];
   }, [models, provider, record]);
 
+  const initParameters = useCallback((
+    initialParameters: { [key: string]: any } | undefined,
+    initialProvider: string,
+    initialModels: (AiModelInfoDTO | undefined)[]
+  ): { [key: string]: any } | undefined => {
+    if (extractModelProvider(initialParameters?.modelId) === initialProvider) {
+      return {...initialParameters};
+    } else {
+      const defaultModelName = initialProvider === 'dash_scope' ? '[dash_scope]qwen-plus' : '[open_ai]gpt-4';
+      const defaultModel = initialModels?.find(modelInfo => modelInfo?.modelId === defaultModelName);
+      if (defaultModel) {
+        const initialParameters: { [key: string]: any } = {};
+        initialParameters['modelId'] = defaultModel.modelId;
+        if (initialProvider === 'open_ai') {
+          initialParameters['baseUrl'] = 'https://api.openai-proxy.com/v1';
+        }
+        return initialParameters;
+      }
+    }
+    return undefined;
+  }, []);
+
   useEffect(() => {
     aiServiceApi?.listAiModelInfo1()
       .then(setModels)
@@ -85,12 +107,15 @@ export default function PromptRunner(props: PromptRunnerProps) {
     setProvider(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
     setApiKeyName(defaultParameters?.apiKeyName);
     setApiKeyValue(defaultParameters?.apiKey);
-    const initialParameters = initParameters(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
+
+    const initialProvider = extractModelProvider(defaultParameters?.modelId) ?? 'open_ai';
+    
+    const initialParameters = initParameters(defaultParameters, initialProvider, models);
+
     if (initialParameters) {
       setParameters(initialParameters);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultParameters]);
+  }, [defaultParameters, initParameters, models]);
 
   useEffect(() => {
     setInputs({...defaultVariables});
@@ -99,14 +124,6 @@ export default function PromptRunner(props: PromptRunnerProps) {
   useEffect(() => {
     setWidth(maxWidth || '50%');
   }, [maxWidth]);
-
-  useEffect(() => {
-    const initialParameters = initParameters(provider ?? 'open_ai');
-    if (initialParameters) {
-      setParameters(initialParameters);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, models]);
 
   function handleInputChange(key: string, value: string | undefined): void {
     if (inputs && value !== inputs[key]) {
@@ -176,24 +193,6 @@ export default function PromptRunner(props: PromptRunnerProps) {
       !inputs ||
       !Object.keys(inputs).includes('input') ||
       !!inputs.input);
-  }
-
-  function initParameters(initialProvider: string): { [key: string]: any } | undefined {
-    if (extractModelProvider(defaultParameters?.modelId) === initialProvider) {
-      return {...defaultParameters};
-    } else {
-      const defaultModelName = initialProvider === 'dash_scope' ? '[dash_scope]qwen-plus' : '[open_ai]gpt-4';
-      const defaultModel = models?.find(modelInfo => modelInfo?.modelId === defaultModelName);
-      if (defaultModel) {
-        const initialParameters: { [key: string]: any } = {};
-        initialParameters['modelId'] = defaultModel.modelId;
-        if (initialProvider === 'open_ai') {
-          initialParameters['baseUrl'] = 'https://api.openai-proxy.com/v1';
-        }
-        return initialParameters;
-      }
-    }
-    return undefined;
   }
 
   function getServiceUrl(): string {

@@ -1,12 +1,12 @@
 import { Fragment, MouseEventHandler, forwardRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Chip, Divider, IconButton, Sheet, SheetProps, Stack, Typography } from "@mui/joy";
-import { ChatContent, ImagePreview, LinePlaceholder, MarkdownContent } from "..";
+import { ChatContent, CommonBox, ImagePreview, LinePlaceholder, MarkdownContent, TextPreview } from "..";
 import { ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
-import { getSenderName } from "../../libs/chat_utils";
+import { getSenderName, getSenderReply } from "../../libs/chat_utils";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ContentCopyRounded } from "@mui/icons-material";
+import { ArticleRounded, ContentCopyRounded } from "@mui/icons-material";
 
 
 type BubbleContainerProps = SheetProps & {
@@ -66,6 +66,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const { session, record,  variant, debugMode = false, apiPath, onFinish, onError = handleError } = props;
 
   const [copied, setCopied] = useState(false);
+  const [showSystemPrompt, setShowSystemPrompt] = useState(false);
   // const [isHovered, setIsHovered] = React.useState<boolean>(false);
 
   const context = session?.context;
@@ -77,14 +78,26 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const ext = record.ext;
 
   let tokenUsage: number[];
-  if (ext && !isSent) {
-    try {
-      tokenUsage = JSON.parse(ext);
-    } catch (_e) {
-      // ignore
+  let systemPrompt: string;
+  console.log(`message: ${JSON.stringify(message)}`)
+  console.log(`ext: ${JSON.stringify(ext)}`)
+  if (ext) {
+    if (isSent) {
+      try {
+        systemPrompt = JSON.parse(ext)?.text;
+        console.log(systemPrompt);
+      } catch (_e) {
+        // ignore
+      }
+    } else {
+      try {
+        tokenUsage = JSON.parse(ext);
+        console.log(JSON.stringify(tokenUsage));
+      } catch (_e) {
+        // ignore
+      }
     }
   }
-
 
   function getServiceUrl(): string | undefined {
     return apiPath ? serverUrl + apiPath : undefined;
@@ -133,12 +146,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
                     ? theme.palette.common.white
                     : theme.palette.text.primary,
                 })}>
-                  {content.content}
+                  {getSenderReply(content.content, debugMode)}
                 </MarkdownContent>
               )}
               {debugMode && ext && (
                 <Fragment>
-                  { tokenUsage && (
+                  {tokenUsage && (
                     <Fragment>
                       <LinePlaceholder spacing={2} />
                       <Box sx={{
@@ -162,10 +175,37 @@ export default function ChatBubble(props: ChatBubbleProps) {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                       }}>
-                        <Typography level='body-sm'>{`${t('Input')}: ${tokenUsage[0]}`}</Typography>
-                        <Typography level='body-sm'>{`${t('Output')}: ${tokenUsage[1]}`}</Typography>
-                        <Typography level='body-sm'>{`${t('Total')}: ${tokenUsage[2]}`}</Typography>
+                        <Typography level="body-sm">{`${t('Input')}: ${tokenUsage[0]}`}</Typography>
+                        <Typography level="body-sm">{`${t('Output')}: ${tokenUsage[1]}`}</Typography>
+                        <Typography level="body-sm">{`${t('Total')}: ${tokenUsage[2]}`}</Typography>
                       </Box>
+                    </Fragment>
+                  )}
+                  {systemPrompt && (
+                    <Fragment>
+                      <LinePlaceholder spacing={3} />
+                      <CommonBox sx={{ justifyContent: 'flex-end' }}>
+                        <Typography level="body-sm" sx={{ color: 'white' }}>
+                          {t('System Prompt')}
+                        </Typography>
+                        <IconButton
+                          aria-label="expand"
+                          onClick={() => {setShowSystemPrompt(true)}}
+                          size="sm"
+                          variant="solid"
+                          color="neutral"
+                          sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
+                        >
+                          <ArticleRounded fill="e0e0e0" />
+                        </IconButton>
+                      </CommonBox>
+                      <TextPreview
+                        title={t('System Prompt')}
+                        open={showSystemPrompt}
+                        setOpen={setShowSystemPrompt}
+                      >
+                        {systemPrompt}
+                      </TextPreview>
                     </Fragment>
                   )}
                 </Fragment>

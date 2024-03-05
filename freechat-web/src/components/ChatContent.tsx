@@ -7,6 +7,7 @@ import { SxProps } from '@mui/joy/styles/types';
 import { LinePlaceholder, MarkdownContent } from '.';
 import { Box, Chip, Divider, IconButton, Typography } from '@mui/joy';
 import { ContentCopyRounded } from '@mui/icons-material';
+import { getSenderReply } from '../libs/chat_utils';
 
 type ChatContentProps = {
   disabled?: boolean;
@@ -89,14 +90,17 @@ export default function ChatContent({
     };
 
     startListening();
-    return () => controller.abort();
+    return () => {
+      console.log('ChatContent was closed!');
+      controller.abort();
+    };
     
   }, [url, body, onFinish, onMessage, onError, onClose, handleError, disabled]);
 
   return (
     <Fragment>
       <MarkdownContent sx={sx}>
-        {data}
+        {getSenderReply(data, debugMode)}
       </MarkdownContent>
       {debugMode && usage && (
         <Fragment>
@@ -122,9 +126,9 @@ export default function ChatContent({
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-            <Typography level='body-sm'>{`${t('Input')}: ${usage.inputTokenCount}`}</Typography>
-            <Typography level='body-sm'>{`${t('Output')}: ${usage.outputTokenCount}`}</Typography>
-            <Typography level='body-sm'>{`${t('Total')}: ${usage.totalTokenCount}`}</Typography>
+            <Typography level="body-sm">{`${t('Input')}: ${usage.inputTokenCount}`}</Typography>
+            <Typography level="body-sm">{`${t('Output')}: ${usage.outputTokenCount}`}</Typography>
+            <Typography level="body-sm">{`${t('Total')}: ${usage.totalTokenCount}`}</Typography>
           </Box>
         </Fragment>
       )}

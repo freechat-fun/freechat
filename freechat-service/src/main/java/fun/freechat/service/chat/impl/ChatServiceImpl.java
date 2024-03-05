@@ -12,6 +12,7 @@ import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
+import fun.freechat.annotation.Trace;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
@@ -132,6 +133,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
     public Response<AiMessage> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (Objects.isNull(session) || Objects.isNull(message) || !session.acquire()) {
@@ -190,13 +192,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
     public TokenStream streamSend(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (Objects.isNull(session) || Objects.isNull(message) || !session.acquire()) {
             return null;
         }
-
-        log.info("[chatId]: {}, [session]: {}, [message]: {}", chatId, session, message.text());
 
         session.getProcessing().set(true);
 

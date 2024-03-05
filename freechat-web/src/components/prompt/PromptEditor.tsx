@@ -41,7 +41,7 @@ export default function PromptEditor({
   const [defaultVariables, setDefaultVariables] = useState(variables ? {...variables} : undefined)
   const [defaultOutputText, setDefaultOutputText] = useState<string>();
   const [origRecord, setOrigRecord] = useState(new PromptDetailsDTO());
-  const [editRecordName, setEditRecordName] = useState<string>();
+  const [editRecordName, setEditRecordName] = useState<string | null>(null);
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
   const [recordName, setRecordName] = useState<string>();
@@ -126,9 +126,7 @@ export default function PromptEditor({
   useEffect(() => {
     if (id) {
       promptApi?.getPromptDetails(id)
-        .then(resp => {
-          setOrigRecord(resp);
-        })
+        .then(setOrigRecord)
         .catch(handleError);
     }
 
@@ -264,13 +262,13 @@ export default function PromptEditor({
     if (editRecordName && editRecordName !== recordName) {
       if (editRecordName === originName.current) {
         setRecordName(editRecordName);
-        setEditRecordName(undefined);
+        setEditRecordName(null);
       } else {
         promptApi?.existsPromptName(editRecordName)
           .then(resp => {
             if (!resp) {
               setRecordName(editRecordName);
-              setEditRecordName(undefined);
+              setEditRecordName(null);
             } else {
               setEditRecordNameError(true);
             }
@@ -279,7 +277,7 @@ export default function PromptEditor({
       }
     } else {
       setEditRecordNameError(false);
-      setEditRecordName(undefined);
+      setEditRecordName(null);
     }
   }
 
@@ -1072,8 +1070,8 @@ export default function PromptEditor({
         }
       </CommonContainer>
       <ConfirmModal
-        open={editRecordName !== undefined}
-        onClose={() => setEditRecordName(undefined)}
+        open={editRecordName !== null}
+        onClose={() => setEditRecordName(null)}
         dialog={{
           title: t('Please enter a new name'),
         }}
@@ -1086,7 +1084,7 @@ export default function PromptEditor({
         <FormControl error={editRecordNameError}>
           <Input
             name="RecordName"
-            value={editRecordName}
+            value={editRecordName ?? ''}
             onChange={(event) => {
               setEditRecordName(event.target.value);
               setEditRecordNameError(false);

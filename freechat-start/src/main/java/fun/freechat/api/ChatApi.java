@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -38,6 +39,7 @@ import java.util.*;
 @RequestMapping("/api/v1/chat")
 @ResponseBody
 @Validated
+@Slf4j
 @SuppressWarnings("unused")
 public class ChatApi {
     @Autowired
@@ -229,6 +231,7 @@ public class ChatApi {
                 result.setRequestId(null);
                 sseEmitter.send(result);
             } catch (NullPointerException | IOException e) {
+                log.error("Error when sending message.", e);
                 chatSessionService.get(chatId).release();
                 sseEmitter.completeWithError(e);
             }
@@ -241,12 +244,14 @@ public class ChatApi {
                 sseEmitter.send(result);
                 sseEmitter.complete();
             } catch (NullPointerException | IOException e) {
+                log.error("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
             } finally {
                 chatSessionService.get(chatId).release();
             }
         }).onError(ex -> {
             try {
+                log.error("SSE exception.", ex);
                 sseEmitter.completeWithError(ex);
             } finally {
                 chatSessionService.get(chatId).release();
