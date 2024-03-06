@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PROJECT_PATH=$(cd $(dirname ${BASH_SOURCE[0]})/..; pwd)
 PROJECT_NAME=${PROJECT_PATH##*/}
@@ -11,6 +11,7 @@ DOCKER_CONFIG_HOME=${PROJECT_PATH}/app-meta/docker-config
 HELM_CONFIG_HOME=${PROJECT_PATH}/app-meta/helm-config
 
 KUBE_CONFIG=${HELM_CONFIG_HOME}/kube-private.conf
+HELM_CONFIG=${HELM_CONFIG_HOME}/values-private.yaml
 NAMESPACE=
 INITIAL=0
 ARGS=()
@@ -20,6 +21,11 @@ do
   case $1 in
     --kubeconfig)
       KUBE_CONFIG=$2
+      shift
+      shift
+      ;;
+    --helmconfig)
+      HELM_CONFIG=$2
       shift
       shift
       ;;
@@ -69,10 +75,11 @@ function parse_yaml {
 
 eval $(parse_yaml "${HELM_CONFIG_HOME}/Chart.yaml" HELM_)
 eval $(parse_yaml "${HELM_CONFIG_HOME}/values.yaml" HELM_)
-if [[ -f "${HELM_CONFIG_HOME}/values-private.yaml" ]]; then
-  eval $(parse_yaml "${HELM_CONFIG_HOME}/values-private.yaml" HELM_)
+values_yaml="${HELM_CONFIG_HOME}/values.yaml"
+if [[ -f "${HELM_CONFIG}" ]]; then
+  eval $(parse_yaml "${HELM_CONFIG}" HELM_)
+  values_yaml="${HELM_CONFIG}"
 fi
-
 
 if [[ -f "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/application-local.yml" ]]; then
   eval $(parse_yaml "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/application-local.yml" LOCAL_)

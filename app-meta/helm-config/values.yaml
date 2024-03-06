@@ -1,7 +1,7 @@
 global:
   redis:
     password: ''
-  storageClass: ''
+  storageClass: 'default'
 auth:
   aes:
     key: ''
@@ -51,8 +51,8 @@ deployment:
     enabled: false
   pvc:
     enabled: false
-    accessModes: [ReadWriteMany]
-    storage: 20Gi
+    accessModes: [ReadWriteOnce]
+    storage: 120Gi
 image:
   backend:
     pullPolicy: Always

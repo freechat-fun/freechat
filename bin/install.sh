@@ -1,11 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
-
-values_yaml="${HELM_CONFIG_HOME}/values.yaml"
-if [[ -f "${HELM_CONFIG_HOME}/values-private.yaml" ]]; then
-  values_yaml="${HELM_CONFIG_HOME}/values-private.yaml"
-fi
 
 tls_opt=""
 if [[ "x${INITIAL}" == "x1" ]]; then
