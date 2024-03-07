@@ -85,11 +85,15 @@ mysql:
     rootPassword: ''
     username: freechat
 redis:
-  url: redis://freechat-redis-cluster:6379
+  url: redis://freechat-redis-master:6379
+  replica:
+    replicaCount: 0
 replicaCount: 2
 resources:
   limits: {}
   requests: {}
+podSecurityContext:
+  fsGroup: 2023
 securityContext:
   runAsUser: 2023
   runAsGroup: 2023

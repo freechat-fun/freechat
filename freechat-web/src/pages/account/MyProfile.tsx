@@ -5,6 +5,7 @@ import { AspectRatio, Button, Card, CardActions, CardOverflow, FormControl, Form
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
 import { ImagePicker, LinePlaceholder } from "../../components";
 import { UserDetailsDTO } from 'freechat-sdk';
+import { getCompressedImage } from "../../libs/ui_utils";
 
 export default function MyProfile() {
   const { t } = useTranslation(['account', 'button']);
@@ -92,9 +93,13 @@ export default function MyProfile() {
   }
 
   function handleImageSelect(file: Blob, name: string) {
-    const request = new File([file], name);
-    accountApi?.uploadUserPicture(request)
-      .then(url => setCurrentAvatar(url))
+    getCompressedImage(file, 1024 * 1024)
+      .then(imageInfo => {
+        const request = new File([imageInfo.blob], name);
+        accountApi?.uploadUserPicture(request)
+          .then(url => setCurrentAvatar(url))
+          .catch(handleError);
+      })
       .catch(handleError);
   }
 

@@ -101,7 +101,6 @@ export default function SignIn() {
                 {t('Continue with GitHub')}
               </Button>
               <Button
-                disabled
                 variant="soft"
                 color="neutral"
                 fullWidth
@@ -197,7 +196,7 @@ export default function SignIn() {
             'url(/img/sign_in_light.jpg), linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
           [theme.getColorSchemeSelector('dark')]: {
             backgroundImage:
-              'url(/img/sign_in_light.jpg), linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+              'url(/img/sign_in_dark.jpg), linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
           },
         })}
       />

@@ -19,8 +19,6 @@ RUN apt-get update && \
     chmod +x ${APP_HOME}/*.sh && \
     chown -R ${UNAME}:${UNAME} ${APP_HOME}
 
-VOLUME ${APP_HOME}/logs
-
 COPY ${APP_NAME}.jar ${APP_HOME}/${APP_NAME}.jar
 
 USER ${UNAME}

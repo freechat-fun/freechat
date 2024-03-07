@@ -13,13 +13,13 @@ dependencies:
   - database
   version: 9.x.x
 - condition: bitnami.redis.enabled
-  name: redis-cluster
+  name: redis
   repository: https://charts.bitnami.com/bitnami
   tags:
     - redis
     - keyvalue
     - database
-  version: 8.x.x
+  version: 18.x.x
 description: A Helm chart for freechat
 maintainers:
 - email: dev.freechat.fun@gmail.com

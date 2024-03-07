@@ -52,7 +52,6 @@ spring:
   {{- toYaml .Values.spring | nindent 2 }}
   {{- end }}
 redis:
-  mode: cluster
   datasource:
     url: {{ default "redis://redis:6379" .Values.redis.url }}
     {{- $redisPassword := "" }}
