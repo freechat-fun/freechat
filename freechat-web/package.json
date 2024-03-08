@@ -1,7 +1,7 @@
 {
   "name": "freechat.fun",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.4.1",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000",

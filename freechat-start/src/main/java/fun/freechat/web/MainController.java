@@ -2,7 +2,12 @@ package fun.freechat.web;
 
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.User;
+import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.enums.GenderType;
+import fun.freechat.service.util.ConfigUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Properties;
+
 @Controller
 @SuppressWarnings("unused")
 public class MainController {
+    private static final String CONFIG_NAME = "system";
+
+    private static final String WEB_VERSION_KEY = "web.version";
+
+    @Autowired
+    @Qualifier("mysqlConfigService")
+    private ConfigService configService;
+
     @RequestMapping("/w/**")
     public String index(Model model) {
         try {
@@ -27,6 +42,15 @@ public class MainController {
             model.addAttribute("platform", "");
             model.addAttribute("gender", GenderType.OTHER.text());
         }
+
+        String script = "/assets/index.js";
+        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
+        String webVersion = properties.getProperty(WEB_VERSION_KEY);
+        if (StringUtils.isNotBlank(webVersion)) {
+            script = "/asserts/index-" + webVersion + ".js";
+        }
+        model.addAttribute("script", script);
+
         return "index";
     }
 
