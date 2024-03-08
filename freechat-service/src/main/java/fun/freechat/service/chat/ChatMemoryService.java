@@ -10,4 +10,5 @@ public interface ChatMemoryService extends TokenUsageChatMemoryStore {
     void updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage);
     List<ChatMessageRecord> listChatMessages(Object memoryId);
     ChatMessageRecord getLatestChatMessage(Object memoryId);
+    List<Long> rollback(Object memoryId, Integer count);
 }

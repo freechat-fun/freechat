@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -309,5 +310,18 @@ public class ChatApi {
                 .stream()
                 .map(ChatMessageRecordDTO::from)
                 .toList();
+    }
+
+    @Operation(
+            operationId = "rollbackMessages",
+            summary = "Rollback Chat Messages",
+            description = "Rollback messages of a chat."
+    )
+    @PostMapping("/messages/rollback/{chatId}/{count}")
+    @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
+    public List<Long> messages(
+            @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
+            @Parameter(description = "Message count to be rolled back") @PathVariable("count") @Positive Integer count) {
+        return chatMemoryService.rollback(chatId, count);
     }
 }

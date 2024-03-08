@@ -12,6 +12,7 @@ import fun.freechat.service.util.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -168,6 +169,34 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                                 .limit(1))
                 .map(this::historyToMessageRecord)
                 .orElse(null);
+    }
+
+    @Override
+    public List<Long> rollback(Object memoryId, Integer count) {
+        if (StringUtils.isBlank((String) memoryId) || Objects.isNull(count) || count <= 0) {
+            return Collections.emptyList();
+        }
+
+        var statement = select(ChatHistoryDynamicSqlSupport.id)
+                .from(ChatHistoryDynamicSqlSupport.chatHistory)
+                .where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+                .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
+                .orderBy(ChatHistoryDynamicSqlSupport.id.descending())
+                .limit(count);
+
+        List<Long> ids = chatHistoryMapper.selectMany(statement.build().render(RenderingStrategies.MYBATIS3))
+                .stream()
+                .map(ChatHistory::getId)
+                .toList();
+
+        if (CollectionUtils.isNotEmpty(ids)) {
+            chatHistoryMapper.update(c ->
+                    c.set(ChatHistoryDynamicSqlSupport.enabled)
+                            .equalTo((byte) 0)
+                            .where(ChatHistoryDynamicSqlSupport.id, isIn(ids)));
+        }
+
+        return ids;
     }
 
     private List<ChatHistory> loadHistories(Object memoryId) {
