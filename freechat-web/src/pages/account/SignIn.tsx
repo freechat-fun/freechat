@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Stack, Typography } from "@mui/joy";
+import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon  } from '../../components/icon';
 
@@ -109,26 +109,42 @@ export default function SignIn() {
               >
                 {t('Continue with Google')}
               </Button>
-              <Box sx={{ display: 'flex', justifyContent: 'center', }}>
-                <form method="post" action="/login">
-                  <input type="hidden" value={guestUsername} id="username" name="username" />
-                  <input type="hidden" value={guestPassword} id="password" name="password" />
-                  <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
-                  <Button
-                    type="submit"
-                    variant="plain"
-                    color="primary"
-                    sx={{
-                      textDecoration: 'underline',
-                      p: 0,
-                      '&:hover': {
-                        backgroundColor: 'Background'
-                      }
-                  }}>
-                    {t('I\'m a guest')}
-                  </Button>
-                </form>
-              </Box>
+
+              <Divider>{t('or')}</Divider>
+              <form method="post" action="/login">
+                <FormControl required>
+                  <FormLabel>{t('Username')}</FormLabel>
+                  <Input type="text" name="username" />
+                </FormControl>
+                <FormControl required>
+                  <FormLabel>{t('Password')}</FormLabel>
+                  <Input type="password" name="password" />
+                </FormControl>
+                <Stack gap={4} sx={{ mt: 2 }}>
+                  <Button type="submit" fullWidth>{t('Sign in')}</Button>
+                </Stack>
+                <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
+              </form>
+
+              <form method="post" action="/login">
+                <input type="hidden" value={guestUsername} id="username" name="username" />
+                <input type="hidden" value={guestPassword} id="password" name="password" />
+                <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
+                <Button
+                  type="submit"
+                  variant="plain"
+                  color="primary"
+                  sx={{
+                    textDecoration: 'underline',
+                    p: 0,
+                    '&:hover': {
+                      backgroundColor: 'transparent'
+                    }
+                }}>
+                  {t('I\'m a guest')}
+                </Button>
+              </form>
+
             </Stack>
             {/* <Divider
               sx={(theme) => ({
