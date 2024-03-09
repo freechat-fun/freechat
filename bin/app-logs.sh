@@ -7,9 +7,8 @@ pod=$(kubectl get pods -o name --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPA
   | grep -v -p "mysql" | grep -v -p "redis" | head -1)
 
 if [[ -z "${pod}" ]]; then
-  echo "Failed to find app pod!"
+  echo "Failed to find mysql pod!"
   exit -1
 fi
 
-kubectl exec --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} \
-  -it ${pod} -c ${HELM_name} -- /bin/bash
+kubectl logs --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} ${pod}
