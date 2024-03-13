@@ -14,17 +14,17 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!--dependency versions-->
-    <spring-boot.version>3.2.2</spring-boot.version>
-    <springdoc.version>2.3.0</springdoc.version>
+    <spring-boot.version>3.2.3</spring-boot.version>
+    <springdoc.version>2.4.0</springdoc.version>
     <mybatis.version>3.5.15</mybatis.version>
     <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
     <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-io.version>2.15.1</commons-io.version>
-    <redisson.version>3.27.0</redisson.version>
+    <redisson.version>3.27.2</redisson.version>
     <objenesis.version>3.3</objenesis.version>
     <swagger-parser.version>2.1.20</swagger-parser.version>
-    <langchain4j.version>0.27.1</langchain4j.version>
+    <langchain4j.version>0.28.0</langchain4j.version>
 
     <!--plugin versions-->
     <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>

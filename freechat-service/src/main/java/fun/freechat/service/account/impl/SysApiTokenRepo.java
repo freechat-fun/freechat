@@ -66,7 +66,7 @@ public class SysApiTokenRepo {
     })
     public void onDisable(String token) {}
 
-    @LongPeriodCacheEvict(key = TOKEN_BY_ID_CACHE_KEY)
+    @LongPeriodCacheEvict(keyBy = TOKEN_BY_ID_CACHE_KEY)
     public void onDeleteById(Long id) {}
 
     @LongPeriodCacheEvict(keyBy = TOKEN_BY_ID_CACHE_KEY)

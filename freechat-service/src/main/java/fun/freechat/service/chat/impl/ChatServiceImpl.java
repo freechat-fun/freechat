@@ -133,7 +133,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
+    // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
     public Response<AiMessage> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (Objects.isNull(session) || Objects.isNull(message) || !session.acquire()) {
@@ -192,7 +192,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
+    // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
     public TokenStream streamSend(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (Objects.isNull(session) || Objects.isNull(message) || !session.acquire()) {

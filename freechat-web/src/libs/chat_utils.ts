@@ -64,7 +64,11 @@ export function getSenderReply(message: string, debugMode: boolean): string {
 
   const lines = message.split(/\r?\n/);
   const processedLines = lines.map((line) => handleLine(line));
-  return processedLines.join('\n').trim();
+  let reply =  processedLines.join('\n').trim();
+  if (reply.startsWith('"') && reply.endsWith('"')) {
+    reply = reply.substring(1, reply.length - 1);
+  }
+  return reply;
 }
 
 const CHARACTER_PROMPT_DESCRIPTION_EN = `

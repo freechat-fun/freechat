@@ -9,15 +9,14 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.language.LanguageModel;
 import dev.langchain4j.model.language.StreamingLanguageModel;
 import dev.langchain4j.model.output.Response;
-import fun.freechat.annotation.Trace;
 import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.CloseableAiApiKey;
-import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.ModelType;
 import fun.freechat.service.enums.PromptType;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptAiService;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
@@ -49,7 +48,7 @@ public class PromptAiServiceImpl implements PromptAiService {
     }
 
     @Override
-    @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
+    // @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
     public Response<AiMessage> send(String prompt,
                                     PromptType promptType,
                                     User user,
@@ -110,7 +109,7 @@ public class PromptAiServiceImpl implements PromptAiService {
     }
 
     @Override
-    @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
+    // @Trace(ignoreArgs = true, extInfo = "'prompt:' + #p0 + ',model:' + #p4.modelId + ',parameters:' + #p5")
     public <T> void streamSend(String prompt,
                                PromptType promptType,
                                User user,

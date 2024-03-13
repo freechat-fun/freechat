@@ -71,10 +71,12 @@ spec:
             httpGet:
               path: public/check/live
               port: http
+            failureThreshold: 30
           readinessProbe:
             httpGet:
               path: public/check/ready
               port: http
+            failureThreshold: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

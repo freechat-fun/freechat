@@ -14,9 +14,6 @@ import static fun.freechat.service.util.CacheUtils.SHORT_PERIOD_CACHE_NAME;
 @CacheEvict(cacheNames = SHORT_PERIOD_CACHE_NAME)
 @SuppressWarnings("unused")
 public @interface ShortPeriodCacheEvict {
-    @AliasFor("keyBy")
-    String key() default "";
-
-    @AliasFor("key")
+    @AliasFor(annotation = CacheEvict.class, attribute = "key")
     String keyBy() default "";
 }

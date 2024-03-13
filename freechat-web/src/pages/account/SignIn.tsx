@@ -86,15 +86,6 @@ export default function SignIn() {
                 variant="soft"
                 color="neutral"
                 fullWidth
-                startDecorator={<AliyunIcon />}
-                onClick={() => handleClick('/oauth2/authorization/aliyun')}
-              >
-                {t('Continue with Aliyun')}
-              </Button>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
                 startDecorator={<GitHub />}
                 onClick={() => handleClick('/oauth2/authorization/github')}
               >
@@ -108,6 +99,15 @@ export default function SignIn() {
                 onClick={() => handleClick('/oauth2/authorization/google')}
               >
                 {t('Continue with Google')}
+              </Button>
+              <Button
+                variant="soft"
+                color="neutral"
+                fullWidth
+                startDecorator={<AliyunIcon />}
+                onClick={() => handleClick('/oauth2/authorization/aliyun')}
+              >
+                {t('Continue with Aliyun')}
               </Button>
 
               <Divider>{t('or')}</Divider>
