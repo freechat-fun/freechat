@@ -5,11 +5,11 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
-import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.moderation.ModerationModel;
+import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
@@ -52,6 +52,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static fun.freechat.service.ai.LanguageModelFactory.*;
 import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
@@ -236,20 +237,24 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             ChatMemoryStore chatMemoryStore = StoreUtils.defaultMemoryStore();
             Integer windowSize = backend.getMessageWindowSize();
-            ChatMemory chatMemory = SystemAlwaysOnTopMessageWindowChatMemory.builder()
+            SystemAlwaysOnTopMessageWindowChatMemory chatMemory = SystemAlwaysOnTopMessageWindowChatMemory.builder()
                     .id(chatId)
                     .maxMessages(windowSize)
                     .chatMemoryStore(chatMemoryStore)
                     .build();
 
             PromptFormat promptFormat = PromptFormat.of(promptInfo.getFormat());
-            if (CollectionUtils.isEmpty(chatMemory.messages())) {
+            List<ChatMessage> messages = chatMemory.messages();
+            if (CollectionUtils.isEmpty(messages)) {
                 chatMemory.add(SystemMessage.from(promptService.apply(
                         prompt.getSystem(), variables, promptFormat)));
 
                 if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
                     prompt.getMessages().forEach(chatMemory::add);
                 }
+            } else if (messages.getLast().type() == USER) {
+                Response<AiMessage> response = chatModel.generate(messages);
+                chatMemory.addAiMessage(response.content(), response.tokenUsage());
             }
 
             return ChatSession.builder()

@@ -3262,6 +3262,76 @@ export class ObservableChatApi {
     }
 
     /**
+     * Rollback messages of a chat.
+     * Rollback Chat Messages
+     * @param chatId Chat session identifier
+     * @param count Message count to be rolled back
+     */
+    public rollbackMessagesWithHttpInfo(chatId: string, count: number, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
+        const requestContextPromise = this.requestFactory.rollbackMessages(chatId, count, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.rollbackMessagesWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Rollback messages of a chat.
+     * Rollback Chat Messages
+     * @param chatId Chat session identifier
+     * @param count Message count to be rolled back
+     */
+    public rollbackMessages(chatId: string, count: number, _options?: Configuration): Observable<Array<number>> {
+        return this.rollbackMessagesWithHttpInfo(chatId, count, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
+    }
+
+    /**
+     * Rollback messages of a chat from specified id.
+     * Rollback Chat Messages by Id
+     * @param chatId Chat session identifier
+     * @param messageId Starting message id to be rolled back
+     */
+    public rollbackMessagesFromWithHttpInfo(chatId: string, messageId: number, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
+        const requestContextPromise = this.requestFactory.rollbackMessagesFrom(chatId, messageId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.rollbackMessagesFromWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Rollback messages of a chat from specified id.
+     * Rollback Chat Messages by Id
+     * @param chatId Chat session identifier
+     * @param messageId Starting message id to be rolled back
+     */
+    public rollbackMessagesFrom(chatId: string, messageId: number, _options?: Configuration): Observable<Array<number>> {
+        return this.rollbackMessagesFromWithHttpInfo(chatId, messageId, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
+    }
+
+    /**
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
@@ -4357,7 +4427,7 @@ export class ObservableOrganizationApi {
      * List Subordinate Permissions
      * @param username Username
      */
-    public listSubordinateAuthoritiesWithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<Set<string>>> {
+    public listSubordinateAuthoritiesWithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
         const requestContextPromise = this.requestFactory.listSubordinateAuthorities(username, _options);
 
         // build promise chain
@@ -4381,8 +4451,8 @@ export class ObservableOrganizationApi {
      * List Subordinate Permissions
      * @param username Username
      */
-    public listSubordinateAuthorities(username: string, _options?: Configuration): Observable<Set<string>> {
-        return this.listSubordinateAuthoritiesWithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<Set<string>>) => apiResponse.data));
+    public listSubordinateAuthorities(username: string, _options?: Configuration): Observable<Array<string>> {
+        return this.listSubordinateAuthoritiesWithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
     /**

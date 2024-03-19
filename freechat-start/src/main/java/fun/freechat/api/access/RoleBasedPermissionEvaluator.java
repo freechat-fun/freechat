@@ -84,7 +84,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "chatDefaultOp" -> allow = targetObject instanceof String chatId &&
                         currentUser.getUserId().equals(getChatContextService().getChatOwner(chatId));
                 case "chatCreateOp" -> {
-                    String characterId  = getCharacterService().getBackendCharacterId((String) targetObject);
+                    String characterId  =(String) targetObject;
                     if (StringUtils.isBlank(characterId)) {
                         allow = false;
                     } else {

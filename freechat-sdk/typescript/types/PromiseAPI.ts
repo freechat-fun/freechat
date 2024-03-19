@@ -2069,6 +2069,50 @@ export class PromiseChatApi {
     }
 
     /**
+     * Rollback messages of a chat.
+     * Rollback Chat Messages
+     * @param chatId Chat session identifier
+     * @param count Message count to be rolled back
+     */
+    public rollbackMessagesWithHttpInfo(chatId: string, count: number, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
+        const result = this.api.rollbackMessagesWithHttpInfo(chatId, count, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat.
+     * Rollback Chat Messages
+     * @param chatId Chat session identifier
+     * @param count Message count to be rolled back
+     */
+    public rollbackMessages(chatId: string, count: number, _options?: Configuration): Promise<Array<number>> {
+        const result = this.api.rollbackMessages(chatId, count, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat from specified id.
+     * Rollback Chat Messages by Id
+     * @param chatId Chat session identifier
+     * @param messageId Starting message id to be rolled back
+     */
+    public rollbackMessagesFromWithHttpInfo(chatId: string, messageId: number, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
+        const result = this.api.rollbackMessagesFromWithHttpInfo(chatId, messageId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat from specified id.
+     * Rollback Chat Messages by Id
+     * @param chatId Chat session identifier
+     * @param messageId Starting message id to be rolled back
+     */
+    public rollbackMessagesFrom(chatId: string, messageId: number, _options?: Configuration): Promise<Array<number>> {
+        const result = this.api.rollbackMessagesFrom(chatId, messageId, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
@@ -2790,7 +2834,7 @@ export class PromiseOrganizationApi {
      * List Subordinate Permissions
      * @param username Username
      */
-    public listSubordinateAuthoritiesWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Set<string>>> {
+    public listSubordinateAuthoritiesWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
         const result = this.api.listSubordinateAuthoritiesWithHttpInfo(username, _options);
         return result.toPromise();
     }
@@ -2800,7 +2844,7 @@ export class PromiseOrganizationApi {
      * List Subordinate Permissions
      * @param username Username
      */
-    public listSubordinateAuthorities(username: string, _options?: Configuration): Promise<Set<string>> {
+    public listSubordinateAuthorities(username: string, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.listSubordinateAuthorities(username, _options);
         return result.toPromise();
     }

@@ -4,23 +4,25 @@ import { Box, Chip, IconButton, Input, List, Sheet, Stack, Typography } from "@m
 import { ChatSessionDTO } from "freechat-sdk";
 import { ChatListItem } from ".";
 import { getSenderName, toggleMessagesPane } from "../../libs/chat_utils";
-import { CloseRounded, EditNoteRounded, SearchRounded } from "@mui/icons-material";
+import { CloseRounded, EditNoteRounded, PlaylistAddCheckRounded, SearchRounded } from "@mui/icons-material";
 import { useDebounce } from "../../libs/ui_utils";
 import { escapeRegExp } from "../../libs/js_utils";
 
 type ChatsPaneProps = {
   sessions: ChatSessionDTO[];
   selectedChatId?: string;
-  onSelectChat: (chatId: string | undefined) => void;
+  onSelectChat?: (chatId: string | undefined) => void;
+  onRemoveChat?: (chatId: string | undefined) => void;
 };
 
 export default function ChatsPane(props: ChatsPaneProps) {
   const { t } = useTranslation('chat');
   
-  const { sessions, selectedChatId, onSelectChat } = props;
+  const { sessions, selectedChatId, onSelectChat, onRemoveChat } = props;
 
   const [chats, setChats] = useState([...sessions]);
   const [keyWord, setKeyWord] = useState('');
+  const [editMode, setEditMode] = useState(false);
   const debouncedSearchTerm = useDebounce<string>(keyWord, 200);
 
   useEffect(() => {
@@ -81,9 +83,10 @@ export default function ChatsPane(props: ChatsPaneProps) {
           aria-label="edit"
           color="neutral"
           size="sm"
-          sx={{ display: { xs: 'none', sm: 'unset' } }}
+          sx={{ display: 'unset' }}
+          onClick={() => setEditMode(!editMode)}
         >
-          <EditNoteRounded />
+          { editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded /> }
         </IconButton>
         <IconButton
           variant="plain"
@@ -118,9 +121,11 @@ export default function ChatsPane(props: ChatsPaneProps) {
           <ChatListItem
             key={session.context?.chatId || `chat-session-${index}`}
             session={session}
-            onSelectChat={onSelectChat}
             selectedChatId={selectedChatId}
             highlight={debouncedSearchTerm}
+            editMode={editMode}
+            onSelectChat={() => onSelectChat?.(session.context?.chatId)}
+            onRemoveChat={() => onRemoveChat?.(session.context?.chatId)}
           />
         ))}
       </List>

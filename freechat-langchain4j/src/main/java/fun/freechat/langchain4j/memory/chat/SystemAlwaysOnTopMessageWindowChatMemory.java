@@ -7,22 +7,23 @@ import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import lombok.Builder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
+import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
+import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.internal.ValidationUtils.ensureGreaterThanZero;
 import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
 
+@Slf4j
 public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
-    private static final Logger log = LoggerFactory.getLogger(SystemAlwaysOnTopMessageWindowChatMemory.class);
-
     private final Object id;
     private final Integer maxMessages;
     private final ChatMemoryStore store;
+    private SystemMessage latestSystemMessage;
 
     @Builder
     public SystemAlwaysOnTopMessageWindowChatMemory(String id, Integer maxMessages, ChatMemoryStore chatMemoryStore) {
@@ -40,21 +41,12 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     public void add(ChatMessage message) {
         List<ChatMessage> messages = messages();
         if (message instanceof SystemMessage) {
-            Optional<SystemMessage> systemMessage = findSystemMessage(messages);
-            if (systemMessage.isPresent()) {
-                if (systemMessage.get().equals(message)) {
-                    return; // do not add the same system message
-                }
-                messages.remove(systemMessage.get()); // need to replace existing system message
-                messages.addFirst(message);
-                // only update the system message in store
-                store.updateMessages(id, List.of(message));
+            latestSystemMessage = (SystemMessage) message;
+            if (!messages.isEmpty()) {
                 return;
             }
-            messages.addFirst(message);
-        } else {
-            messages.add(message);
         }
+        messages.add(message);
         ensureCapacity(messages, maxMessages);
         store.updateMessages(id, messages);
     }
@@ -70,16 +62,13 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
         }
     }
 
-    private static Optional<SystemMessage> findSystemMessage(List<ChatMessage> messages) {
-        return messages.stream()
-                .filter(message -> message instanceof SystemMessage)
-                .map(message -> (SystemMessage) message)
-                .findFirst();
-    }
-
     @Override
     public List<ChatMessage> messages() {
-        List<ChatMessage> messages = new LinkedList<>(store.getMessages(id));
+        LinkedList<ChatMessage> messages = new LinkedList<>(store.getMessages(id));
+        if (Objects.nonNull(latestSystemMessage)) {
+            messages.removeFirst();
+            messages.addFirst(latestSystemMessage);
+        }
         ensureCapacity(messages, maxMessages);
         return messages;
     }
@@ -89,14 +78,17 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
         store.deleteMessages(id);
     }
 
+    private static int firstNonSystemMessageIndex(List<ChatMessage> messages) {
+        return messages.getFirst().type() == SYSTEM ? 1 : 0;
+    }
 
     private static void ensureCapacity(List<ChatMessage> messages, int maxMessages) {
-        while (messages.size() > maxMessages) {
-            int messageToRemove = 0;
-            if (messages.getFirst() instanceof SystemMessage) {
-                messageToRemove = 1;
-            }
-            ChatMessage removedMessage = messages.remove(messageToRemove);
+        if (messages.size() <= 1) {
+            return;
+        }
+        int firstIndex = firstNonSystemMessageIndex(messages);
+        while (messages.size() > maxMessages || messages.get(firstIndex).type() != USER) {
+            ChatMessage removedMessage = messages.remove(firstIndex);
             log.trace("Removing the following message to comply with the capacity requirements: {}", removedMessage);
         }
     }

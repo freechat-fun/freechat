@@ -183,21 +183,15 @@ export default function Characters() {
       .catch(() => {
         accountApi?.getUserDetails()
           .then(userDetails => {
-            characterApi?.getDefaultCharacterBackend(record.characterId as string)
-              .then(backend => {
-                if (backend.backendId) {
-                  const request = new ChatCreateDTO();
-                  request.userNickname = userDetails.nickname ?? userDetails.username;
-                  request.userProfile = userDetails.profile;
-                  request.characterNickname = record.nickname ?? record.name;
-                  request.backendId = backend.backendId;
+            const request = new ChatCreateDTO();
+            request.userNickname = userDetails.nickname ?? userDetails.username;
+            request.userProfile = userDetails.profile;
+            request.characterNickname = record.nickname ?? record.name;
+            request.characterId = record.characterId as string;
 
-                  chatApi.startChat(request)
-                    .then(chatId => {
-                      navigate(`/w/chat/${chatId}/debug`);
-                    })
-                    .catch(handleError);
-                }
+            chatApi.startChat(request)
+              .then(chatId => {
+                navigate(`/w/chat/${chatId}/debug`);
               })
               .catch(handleError);
           })

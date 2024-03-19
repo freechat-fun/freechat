@@ -381,6 +381,16 @@ public class ChatIT extends AbstractIntegrationTest{
                 .forEach(System.out::println);
     }
 
+    private void testRollbackMessages() {
+        testClient.post().uri("/api/v1/chat/messages/rollback/" + chatId + "/2")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(Long.class)
+                .hasSize(2);
+    }
+
     private void testDeleteChatFailed() {
         testClient.delete().uri("/api/v1/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -502,6 +512,9 @@ public class ChatIT extends AbstractIntegrationTest{
         TestCommonUtils.waitAWhile();
 
         testListMessages();
+        TestCommonUtils.waitAWhile();
+
+        testRollbackMessages();
         TestCommonUtils.waitAWhile();
 
         testDeleteChatFailed();

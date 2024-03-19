@@ -2559,6 +2559,36 @@ export interface ChatApiListMessages2Request {
     limit: number
 }
 
+export interface ChatApiRollbackMessagesRequest {
+    /**
+     * Chat session identifier
+     * @type string
+     * @memberof ChatApirollbackMessages
+     */
+    chatId: string
+    /**
+     * Message count to be rolled back
+     * @type number
+     * @memberof ChatApirollbackMessages
+     */
+    count: number
+}
+
+export interface ChatApiRollbackMessagesFromRequest {
+    /**
+     * Chat session identifier
+     * @type string
+     * @memberof ChatApirollbackMessagesFrom
+     */
+    chatId: string
+    /**
+     * Starting message id to be rolled back
+     * @type number
+     * @memberof ChatApirollbackMessagesFrom
+     */
+    messageId: number
+}
+
 export interface ChatApiSendMessageRequest {
     /**
      * Chat session identifier
@@ -2744,6 +2774,42 @@ export class ObjectChatApi {
      */
     public listMessages2(param: ChatApiListMessages2Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
         return this.api.listMessages2(param.chatId, param.limit,  options).toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat.
+     * Rollback Chat Messages
+     * @param param the request object
+     */
+    public rollbackMessagesWithHttpInfo(param: ChatApiRollbackMessagesRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+        return this.api.rollbackMessagesWithHttpInfo(param.chatId, param.count,  options).toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat.
+     * Rollback Chat Messages
+     * @param param the request object
+     */
+    public rollbackMessages(param: ChatApiRollbackMessagesRequest, options?: Configuration): Promise<Array<number>> {
+        return this.api.rollbackMessages(param.chatId, param.count,  options).toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat from specified id.
+     * Rollback Chat Messages by Id
+     * @param param the request object
+     */
+    public rollbackMessagesFromWithHttpInfo(param: ChatApiRollbackMessagesFromRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+        return this.api.rollbackMessagesFromWithHttpInfo(param.chatId, param.messageId,  options).toPromise();
+    }
+
+    /**
+     * Rollback messages of a chat from specified id.
+     * Rollback Chat Messages by Id
+     * @param param the request object
+     */
+    public rollbackMessagesFrom(param: ChatApiRollbackMessagesFromRequest, options?: Configuration): Promise<Array<number>> {
+        return this.api.rollbackMessagesFrom(param.chatId, param.messageId,  options).toPromise();
     }
 
     /**
@@ -3819,7 +3885,7 @@ export class ObjectOrganizationApi {
      * List Subordinate Permissions
      * @param param the request object
      */
-    public listSubordinateAuthoritiesWithHttpInfo(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: Configuration): Promise<HttpInfo<Set<string>>> {
+    public listSubordinateAuthoritiesWithHttpInfo(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
         return this.api.listSubordinateAuthoritiesWithHttpInfo(param.username,  options).toPromise();
     }
 
@@ -3828,7 +3894,7 @@ export class ObjectOrganizationApi {
      * List Subordinate Permissions
      * @param param the request object
      */
-    public listSubordinateAuthorities(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: Configuration): Promise<Set<string>> {
+    public listSubordinateAuthorities(param: OrganizationApiListSubordinateAuthoritiesRequest, options?: Configuration): Promise<Array<string>> {
         return this.api.listSubordinateAuthorities(param.username,  options).toPromise();
     }
 

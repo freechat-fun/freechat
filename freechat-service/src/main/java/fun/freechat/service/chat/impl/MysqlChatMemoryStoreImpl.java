@@ -52,23 +52,29 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         }
 
         List<ChatMessage> messages = cache().get(CACHE_KEY_PREFIX + memoryId, List.class);
-        if (CollectionUtils.isEmpty(messages)) {
-            messages = loadHistories(memoryId)
-                    .stream()
-                    .map(MysqlChatMemoryStoreImpl::historyToMessage)
-                    .filter(Objects::nonNull)
-                    .reduce(new LinkedList<>(), (acc, message) -> {
-                        if (!acc.isEmpty() && acc.getLast().type() == message.type()) {
-                            acc.removeLast();
-                        }
-                        acc.add(message);
-                        return acc;
-                    }, (acc1, acc2) -> {
-                        throw new UnsupportedOperationException("Parallel Stream not supported");
-                    });
-            cache().put(CACHE_KEY_PREFIX + memoryId, messages);
+        List<ChatMessage> filteredMessages = Optional.ofNullable(messages)
+                .orElseGet(() -> loadHistories(memoryId)
+                        .stream()
+                        .map(MysqlChatMemoryStoreImpl::historyToMessage)
+                        .filter(Objects::nonNull)
+                        .toList())
+                .stream()
+                .reduce(new LinkedList<>(),
+                        (acc, message) -> {
+                            if (!acc.isEmpty() && acc.getLast().type() == message.type()) {
+                                acc.removeLast();
+                            }
+                            acc.add(message);
+                            return acc;
+                        },
+                        (acc1, acc2) -> {
+                            throw new UnsupportedOperationException("Parallel Stream not supported");
+                        });
+
+        if (CollectionUtils.isEmpty(messages) && CollectionUtils.isNotEmpty(filteredMessages)) {
+            cache().put(CACHE_KEY_PREFIX + memoryId, filteredMessages);
         }
-        return messages;
+        return filteredMessages;
     }
 
     @Override
@@ -81,16 +87,10 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         var lastMessage = messages.getLast();
 
         SystemMessage systemMessage = firstMessage.type() == SYSTEM ? (SystemMessage) firstMessage : null;
-
-        if (lastMessage.type() == SYSTEM && Objects.nonNull(loadSystemHistory(memoryId))) {
-            // No need to update the system message record.
+        int rows = chatHistoryMapper.insertSelective(
+                messageToHistory(memoryId, lastMessage, systemMessage, null));
+        if (rows > 0) {
             cache().put(CACHE_KEY_PREFIX + memoryId, messages);
-        } else {
-            int rows = chatHistoryMapper.insertSelective(
-                    messageToHistory(memoryId, lastMessage, systemMessage, null));
-            if (rows > 0) {
-                cache().put(CACHE_KEY_PREFIX + memoryId, messages);
-            }
         }
     }
 
@@ -196,6 +196,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                             .where(ChatHistoryDynamicSqlSupport.id, isIn(ids)));
         }
 
+        cache().evict(CACHE_KEY_PREFIX + memoryId);
         return ids;
     }
 

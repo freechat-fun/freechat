@@ -240,7 +240,7 @@ public class OrganizationApi {
             description = "List the permission list of the subordinate account."
     )
     @GetMapping("/authority/{username}")
-    public Set<String> listSubordinateAuthorities(
+    public List<String> listSubordinateAuthorities(
             @Parameter(description = "Username") @PathVariable("username") @NotBlank
             String username) {
         getSubordinateId(username);
@@ -248,7 +248,7 @@ public class OrganizationApi {
         if (Objects.isNull(user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find user " + username);
         }
-        return authorityService.list(user);
+        return authorityService.list(user).stream().toList();
     }
 
     @Operation(

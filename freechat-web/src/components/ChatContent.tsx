@@ -91,7 +91,7 @@ export default function ChatContent({
 
     startListening();
     return () => {
-      console.log('ChatContent was closed!');
+      // console.log('ChatContent was closed!');
       controller.abort();
     };
     

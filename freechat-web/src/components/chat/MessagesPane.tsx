@@ -1,27 +1,27 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, IconButton, Sheet, Stack } from "@mui/joy";
+import { Box, IconButton, Sheet, SheetProps, Stack } from "@mui/joy";
 import { AvatarWithStatus, ChatBubble, MessageInput, MessagesPaneHeader } from "."
 import { ChatContentDTO, ChatMessageDTO, ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { getSenderName, getSenderStatus } from "../../libs/chat_utils";
 import { ReplayCircleFilledRounded } from "@mui/icons-material";
 
-type MessagesPaneProps = {
+type MessagesPaneProps = SheetProps & {
   session?: ChatSessionDTO;
   defaultDebugMode?: boolean;
   onOpen?: () => void;
 };
 
 export default function MessagesPane(props: MessagesPaneProps) {
-  const { session, defaultDebugMode = false, onOpen } = props;
+  const { session, defaultDebugMode = false, onOpen, sx, ...others } = props;
   const { t } = useTranslation('chat');
   const { chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [chatMessages, setChatMessages] = useState<ChatMessageRecordDTO[]>([]);
   const [textAreaValue, setTextAreaValue] = useState('');
-  const [messageToSend, setSessageToSend] = useState<ChatMessageRecordDTO | null>(null);
+  const [messageToSend, setMessageToSend] = useState<ChatMessageRecordDTO | null>(null);
   const [failedToSend, setFailedToSend] = useState(false);
   const [debugMode, setDebugMode] = useState(defaultDebugMode);
 
@@ -85,7 +85,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
       return [...prevMessages, messageRecord];
     });
 
-    setSessageToSend(messageRecord);
+    setMessageToSend(messageRecord);
   }
 
   function handleReceiveFinish(result: LlmResultDTO): void {
@@ -100,28 +100,51 @@ export default function MessagesPane(props: MessagesPaneProps) {
       return [...prevMessages, messageRecord];
     });
 
-    setSessageToSend(null);
+    setMessageToSend(null);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleReceiveError(): void {
-    // setFailedToSend(true);
+    setFailedToSend(true);
     // handleError(reason);
+  }
+
+  function handleChatReplay(index: number): void {
+    if (!context?.chatId || index >= chatMessages.length) {
+      return;
+    }
+
+    let rollbackIndex = index;
+    while(chatMessages[rollbackIndex].message?.role !== 'user' && rollbackIndex > 0) {
+      rollbackIndex = rollbackIndex - 1;
+    }
+    const rollbackCount = chatMessages.length - rollbackIndex;
+
+    chatApi?.rollbackMessages(context?.chatId, rollbackCount)
+      .then(() => {
+        const newMessageToSend = chatMessages[rollbackIndex];
+        const newChatMessages = chatMessages.slice(0, rollbackIndex + 1);
+        setChatMessages(newChatMessages);
+        setMessageToSend(newMessageToSend);
+      })
+      .catch(handleError);
   }
 
   return (
     <Sheet
-      sx={(theme) => ({
+      sx={{
         height: { xs: 'calc(100dvh - var(--Header-height))', lg: '100dvh' },
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: theme.palette.background.level1,
-      })}
+        backgroundColor: 'background.level1',
+        ...sx
+      }}
+      {...others}
     >
       <MessagesPaneHeader
         session={session}
         onClearHistory={handleClearMemory}
         debugMode={debugMode}
+        disabled={!!messageToSend}
         setDebugMode={setDebugMode}
       />
       <Box
@@ -158,6 +181,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
                   session={session}
                   record={record}
                   variant={isYou ? 'sent' : 'received'}
+                  onReplay={() => handleChatReplay(index)}
                 />
               </Stack>
             );

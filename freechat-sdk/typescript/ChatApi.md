@@ -11,6 +11,8 @@ Method | HTTP request | Description
 [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
+[**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
+[**rollbackMessagesFrom**](ChatApi.md#rollbackMessagesFrom) | **POST** /api/v1/chat/messages/rollback/from/{chatId}/{messageId} | Rollback Chat Messages by Id
 [**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message
 [**startChat**](ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session
 [**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
@@ -398,6 +400,120 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
+# **rollbackMessages**
+> Array<number> rollbackMessages()
+
+Rollback messages of a chat.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .ChatApi(configuration);
+
+let body:.ChatApiRollbackMessagesRequest = {
+  // string | Chat session identifier
+  chatId: "chatId_example",
+  // number | Message count to be rolled back
+  count: 1,
+};
+
+apiInstance.rollbackMessages(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chatId** | [**string**] | Chat session identifier | defaults to undefined
+ **count** | [**number**] | Message count to be rolled back | defaults to undefined
+
+
+### Return type
+
+**Array<number>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **rollbackMessagesFrom**
+> Array<number> rollbackMessagesFrom()
+
+Rollback messages of a chat from specified id.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .ChatApi(configuration);
+
+let body:.ChatApiRollbackMessagesFromRequest = {
+  // string | Chat session identifier
+  chatId: "chatId_example",
+  // number | Starting message id to be rolled back
+  messageId: 1,
+};
+
+apiInstance.rollbackMessagesFrom(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chatId** | [**string**] | Chat session identifier | defaults to undefined
+ **messageId** | [**number**] | Starting message id to be rolled back | defaults to undefined
+
+
+### Return type
+
+**Array<number>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
 # **sendMessage**
 > LlmResultDTO sendMessage(chatMessageDTO)
 
@@ -495,6 +611,7 @@ let body:.ChatApiStartChatRequest = {
     userProfile: "userProfile_example",
     characterNickname: "characterNickname_example",
     about: "about_example",
+    characterId: "characterId_example",
     backendId: "backendId_example",
     ext: "ext_example",
   },
@@ -633,6 +750,7 @@ let body:.ChatApiUpdateChatRequest = {
     userProfile: "userProfile_example",
     characterNickname: "characterNickname_example",
     about: "about_example",
+    characterId: "characterId_example",
     backendId: "backendId_example",
     ext: "ext_example",
     gmtRead: new Date('1970-01-01T00:00:00.00Z'),

@@ -6,7 +6,7 @@ import { ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk
 import { getDateLabel } from "../../libs/date_utils";
 import { getSenderName, getSenderReply } from "../../libs/chat_utils";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ArticleRounded, ContentCopyRounded } from "@mui/icons-material";
+import { ArticleRounded, ContentCopyRounded, ReplayRounded } from "@mui/icons-material";
 
 
 type BubbleContainerProps = SheetProps & {
@@ -56,6 +56,7 @@ type ChatBubbleProps = {
   onFinish?: (result: LlmResultDTO) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onError?: (reason: any) => void;
+  onReplay?: () => void;
 };
 
 export default function ChatBubble(props: ChatBubbleProps) {
@@ -63,11 +64,11 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const { handleError } = useErrorMessageBusContext();
   const { i18n, t } = useTranslation('chat');
 
-  const { session, record,  variant, debugMode = false, apiPath, onFinish, onError = handleError } = props;
+  const { session, record,  variant, debugMode = false, apiPath, onFinish, onError = handleError, onReplay } = props;
 
   const [copied, setCopied] = useState(false);
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
-  // const [isHovered, setIsHovered] = React.useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const context = session?.context;
   const sender = session?.character;
@@ -79,20 +80,16 @@ export default function ChatBubble(props: ChatBubbleProps) {
 
   let tokenUsage: number[];
   let systemPrompt: string;
-  console.log(`message: ${JSON.stringify(message)}`)
-  console.log(`ext: ${JSON.stringify(ext)}`)
   if (ext) {
     if (isSent) {
       try {
         systemPrompt = JSON.parse(ext)?.text;
-        console.log(systemPrompt);
       } catch (_e) {
         // ignore
       }
     } else {
       try {
         tokenUsage = JSON.parse(ext);
-        console.log(JSON.stringify(tokenUsage));
       } catch (_e) {
         // ignore
       }
@@ -104,7 +101,17 @@ export default function ChatBubble(props: ChatBubbleProps) {
   }
 
   return (
-    <Box sx={{ maxWidth: '60%', minWidth: 'auto' }}>
+    <Box 
+      sx={{
+        maxWidth: '60%',
+        minWidth: 'auto',
+        display: 'grid',
+        gridTemplateColumns: 'auto 1fr',
+        alignItems: 'center',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -114,6 +121,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
         <Typography level="body-xs">{nickname}</Typography>
         <Typography level="body-xs">{getDateLabel(record.gmtCreate || new Date(), i18n.language, true)}</Typography>
       </Stack>
+
+      <LinePlaceholder />
+
       {apiPath ? (
         <BubbleContainer isSent={isSent}>
           <ChatContent
@@ -135,8 +145,6 @@ export default function ChatBubble(props: ChatBubbleProps) {
             <BubbleContainer
               key={`message-${index}`}
               isSent={isSent}
-              // onMouseEnter={() => setIsHovered(true)}
-              // onMouseLeave={() => setIsHovered(false)}
             >
               {content.type === 'image' ? (
                 <ImagePreview src={content.content} />
@@ -214,6 +222,15 @@ export default function ChatBubble(props: ChatBubbleProps) {
           ))}
       </Fragment>
     )}
+    {!isSent && !apiPath && (
+      <IconButton
+        size="sm"
+        onClick={() => onReplay?.()}
+        sx={{ visibility: isHovered ? 'visible' : 'hidden' }}
+      >
+        <ReplayRounded fontSize="small" />
+      </IconButton>
+          )}
     </Box>
   );
 }

@@ -7,7 +7,7 @@ import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { locales } from "../../configs/i18n-config";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, TinyInput } from "../../components";
 import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Tooltip, Typography, switchClasses } from "@mui/joy";
-import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded } from "@mui/icons-material";
+import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
 import { CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
 import { createPromptForCharacter } from "../../libs/chat_utils";
@@ -204,21 +204,15 @@ export default function CharacterEditor ({
             .catch(() => {
               accountApi?.getUserDetails()
                 .then(userDetails => {
-                  characterApi?.getDefaultCharacterBackend(characterId as string)
-                    .then(backend => {
-                      if (backend.backendId) {
-                        const request = new ChatCreateDTO();
-                        request.userNickname = userDetails.nickname ?? userDetails.username;
-                        request.userProfile = userDetails.profile;
-                        request.characterNickname = nickname;
-                        request.backendId = backend.backendId;
+                  const request = new ChatCreateDTO();
+                  request.userNickname = userDetails.nickname ?? userDetails.username;
+                  request.userProfile = userDetails.profile;
+                  request.characterNickname = nickname;
+                  request.characterId = characterId as string;
 
-                        chatApi.startChat(request)
-                          .then(chatId => {
-                            navigate(`/w/chat/${chatId}/debug`);
-                          })
-                          .catch(handleError);
-                      }
+                  chatApi.startChat(request)
+                    .then(chatId => {
+                      navigate(`/w/chat/${chatId}/debug`);
                     })
                     .catch(handleError);
                 })
@@ -463,9 +457,11 @@ export default function CharacterEditor ({
             {(tag !== undefined) && (
               <form onSubmit={handleTagSubmit}>
                 <TinyInput
+                  autoFocus
                   type="text"
                   value={tag}
                   onChange={(event => setTag(event.target.value))}
+                  endDecorator={<TransitEnterexitRounded fontSize="small" />}
                 />
               </form>
             )}

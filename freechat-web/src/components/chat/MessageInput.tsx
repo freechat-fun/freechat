@@ -25,6 +25,7 @@ export default function MessageInput(props: MessageInputProps) {
     <Box sx={{ px: 2, pb: 3 }}>
       <FormControl>
         <Textarea
+          disabled={disabled}
           placeholder="Type something here…"
           aria-label="Message"
           ref={textAreaRef}

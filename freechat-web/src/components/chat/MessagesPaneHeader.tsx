@@ -8,12 +8,13 @@ import { CommonBox } from "..";
 type MessagesPaneHeaderProps = {
   session?: ChatSessionDTO;
   debugMode?: boolean,
+  disabled?: boolean;
   setDebugMode?: (debugMode: boolean) => void,
   onClearHistory?: (chatId: string) => void;
 };
 
 export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
-  const { session, debugMode, setDebugMode, onClearHistory } = props;
+  const { session, debugMode, disabled = false, setDebugMode, onClearHistory } = props;
   const { t } = useTranslation('chat');
 
   const sender = session?.character;
@@ -87,11 +88,12 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
         {session?.isDebugEnabled && (
           <CommonBox sx={{gap: 2}}>
             <Typography level="body-sm">{t('Debug')}</Typography>
-            <Switch checked={debugMode} onChange={() => setDebugMode?.(!debugMode)} />
+            <Switch disabled={disabled} checked={debugMode} onChange={() => setDebugMode?.(!debugMode)} />
           </CommonBox>
         )}
         <Dropdown>
-          <MenuButton 
+          <MenuButton
+            disabled={disabled}
             slots={{ root: IconButton }}
             slotProps={{ root: { variant: 'plain', color: 'neutral' } }}
           >

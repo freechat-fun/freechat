@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CommonBox, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
-import { InteractiveStatsDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO, PromptSummaryStatsDTO, UserBasicInfoDTO } from "freechat-sdk";
-import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Tooltip, Typography } from "@mui/joy";
+import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, CharacterSummaryStatsDTO, ChatCreateDTO, InteractiveStatsDTO, PromptSummaryStatsDTO } from "freechat-sdk";
+import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded, ShareRounded, VisibilityRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
@@ -12,30 +12,21 @@ import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
 
 type RecordCardProps = {
-  record: PromptSummaryStatsDTO,
+  record: CharacterSummaryStatsDTO,
   sx?: SxProps,
-  onClick?: (record: PromptSummaryStatsDTO) => void;
+  onClick?: (record: CharacterSummaryStatsDTO) => void;
 }
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { record, sx , onClick} = props;
   const { i18n } = useTranslation();
-  const { accountApi } = useFreeChatApiContext();
 
-  const [user, setUser] = useState<UserBasicInfoDTO>();
-  const [userName, setUserName] = useState(record?.username ?? '');
   const [tags, setTags] = useState(record?.tags ?? []);
-
-  useEffect(() => {
-    record.username && accountApi?.getUserBasic(record.username)
-      .then(resp => {
-        setUser(resp);
-        setUserName(resp?.nickname ?? resp?.username ?? '');
-      });
-  }, [accountApi, record]);
+  const [nickname, setNickname] = useState(record?.nickname ?? record?.name);
 
   useEffect(() => {
     setTags(record?.tags ?? []);
+    setNickname(record?.nickname ?? record?.name);
   }, [record]);
 
   return (
@@ -61,6 +52,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
             event.preventDefault();
             onClick?.(record);
         }}>
+          <Avatar alt={nickname} src={record.avatar} size="md" />
           <Typography
             level="title-lg"
             sx={{
@@ -70,16 +62,14 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               maxWidth: '20rem',
             }}
           >
-            {record.name}
+            {nickname}
+            { nickname !== record.name && <Typography level="body-sm">@{record.name}</Typography> }
           </Typography>
         </Link>
         <Chip color="success" variant="soft">v{record.version}</Chip>
-        <Chip color={record.type === 'string' ? 'warning' : 'success'} variant="outlined">{record.type}</Chip>
-        <CommonBox sx={{ ml: 'auto' }}>
-          <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" title={userName}>
-            <Avatar alt={userName} src={user?.picture} size="md" />
-          </Tooltip>
-        </CommonBox>
+        {(record.gender === 'female' || record.gender === 'male') && (
+          <Chip color="warning" variant="outlined">{record.gender}</Chip>
+        )}
       </Box>
       <Divider />
 
@@ -91,7 +81,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       {tags.length > 0 && (
         <CommonBox>
           {tags.map((tag, index) => (
-            <Chip variant="outlined" color="success" key={`tag-${record.promptId}-${tag}-${index}`}>{tag}</Chip>
+            <Chip variant="outlined" color="success" key={`tag-${record.characterId}-${tag}-${index}`}>{tag}</Chip>
           ))}
         </CommonBox>
       )}
@@ -120,15 +110,15 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   )
 });
 
-export default function PromptGallery() {
+export default function CharacterGallery() {
   const navigate = useNavigate();
-  const { promptApi, interactiveStatisticsApi } = useFreeChatApiContext();
+  const { accountApi, characterApi, chatApi, interactiveStatisticsApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const pageSize = 6;
 
-  const [records, setRecords] = useState<PromptSummaryStatsDTO[]>([]);
-  const [query, setQuery] = useState<PromptQueryDTO>(defaultQuery());
+  const [records, setRecords] = useState<CharacterSummaryStatsDTO[]>([]);
+  const [query, setQuery] = useState<CharacterQueryDTO>(defaultQuery());
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -136,9 +126,9 @@ export default function PromptGallery() {
   const [showCardsFinish, setShowCardsFinish] = useState(false);
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
-  function defaultQuery(): PromptQueryDTO {
-    const newQuery = new PromptQueryDTO();
-    newQuery.where = new PromptQueryWhere();
+  function defaultQuery(): CharacterQueryDTO {
+    const newQuery = new CharacterQueryDTO();
+    newQuery.where = new CharacterQueryWhere();
     newQuery.where.visibility = 'public';
     newQuery.pageSize = pageSize;
     newQuery.pageNum = 0;
@@ -152,15 +142,15 @@ export default function PromptGallery() {
   }, []);
 
   useEffect(() => {
-    query && promptApi?.searchPromptSummary(query)
+    query && characterApi?.searchCharacterSummary(query)
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
-          r.promptId && interactiveStatisticsApi?.getStatistics('prompt', r.promptId)
-            .then(stats => promptInfoWithStats(r, stats))
+          r.characterId && interactiveStatisticsApi?.getStatistics('character', r.characterId)
+            .then(stats => characterInfoWithStats(r, stats))
             .then(recordWithStats => {
               setRecords(prevRecords => {
-                const newRecords = prevRecords.filter(r1 => r1.promptId !== recordWithStats.promptId);
+                const newRecords = prevRecords.filter(r1 => r1.characterId !== recordWithStats.characterId);
                 newRecords.push(recordWithStats);
                 return newRecords;
               });
@@ -168,15 +158,15 @@ export default function PromptGallery() {
             .catch(handleError);
         })
         if (query.pageNum === 0) {
-          promptApi?.countPrompts(query)
+          characterApi.countCharacters(query)
             .then(setTotal)
             .catch(handleError);
         }
       })
       .catch(handleError);
-  }, [handleError, interactiveStatisticsApi, promptApi, query]);
+  }, [characterApi, handleError, interactiveStatisticsApi, query]);
 
-  function promptInfoWithStats(record: PromptSummaryDTO, stats: InteractiveStatsDTO | undefined | null): PromptSummaryStatsDTO {
+  function characterInfoWithStats(record: CharacterSummaryDTO, stats: InteractiveStatsDTO | undefined | null): CharacterSummaryStatsDTO {
     const s = {...{
       viewCount: 0,
       referCount: 0,
@@ -184,17 +174,16 @@ export default function PromptGallery() {
       scoreCount: 0,
       score: 0,
     }, ...stats};
-    const recordWithStats: PromptSummaryStatsDTO = { ...s, ...record };
+    const recordWithStats: CharacterSummaryStatsDTO = { ...s, ...record };
     return recordWithStats;
   }
 
-  function handleSearch(text: string | undefined, modelIds: string[] | undefined): void {
-    const where = new PromptQueryWhere();
+  function handleSearch(text: string | undefined): void {
+    const where = new CharacterQueryWhere();
     where.text = text;
-    where.aiModels = modelIds;
     where.visibility = 'public';
 
-    const newQuery = new PromptQueryDTO();
+    const newQuery = new CharacterQueryDTO();
     newQuery.where = where;
     newQuery.pageSize = pageSize;
     newQuery.pageNum = 0;
@@ -205,11 +194,11 @@ export default function PromptGallery() {
   }
 
   function handleTagClick(tag: string): void {
-    const where = new PromptQueryWhere();
+    const where = new CharacterQueryWhere();
     where.tags = [tag];
     where.visibility = 'public';
 
-    const newQuery = new PromptQueryDTO();
+    const newQuery = new CharacterQueryDTO();
     newQuery.where = where;
     newQuery.pageSize = pageSize;
     newQuery.pageNum = 0;
@@ -222,7 +211,7 @@ export default function PromptGallery() {
   function handleChangePage(newPage: number): void {
     setPage(newPage);
     if (query) {
-      const newQuery = new PromptQueryDTO();
+      const newQuery = new CharacterQueryDTO();
       newQuery.where = query.where;
       newQuery.pageSize = query.pageSize || pageSize;
       newQuery.orderBy = query.orderBy;
@@ -231,12 +220,34 @@ export default function PromptGallery() {
     }
   }
 
-  function handleView(record: PromptSummaryStatsDTO): void {
-    if (!record.promptId) {
+  function handleView(record: CharacterSummaryStatsDTO): void {
+    if (!record.characterId) {
       return;
     }
-    interactiveStatisticsApi?.increaseStatistic('prompt', record.promptId, 'view_count')
-      .finally(() => navigate(`/w/prompt/${record.promptId}`));
+    interactiveStatisticsApi?.increaseStatistic('character', record.characterId, 'view_count')
+      .finally(() => {
+        chatApi?.getDefaultChatId(record.characterId as string)
+          .then(resp => {
+            navigate(`/w/chat/${resp}`);
+          })
+          .catch(() => {
+            accountApi?.getUserDetails()
+              .then(userDetails => {
+                const request = new ChatCreateDTO();
+                request.userNickname = userDetails.nickname ?? userDetails.username;
+                request.userProfile = userDetails.profile;
+                request.characterNickname = record.nickname ?? record.name;
+                request.characterId = record.characterId as string;
+
+                chatApi.startChat(request)
+                  .then(chatId => {
+                    navigate(`/w/chat/${chatId}`);
+                  })
+                  .catch(handleError);
+              })
+              .catch(handleError);
+          });
+    });
   }
   
   function getLabelDisplayedRowsTo(): number {
@@ -271,12 +282,12 @@ export default function PromptGallery() {
       gap: 3,
     }}>
       <Stack sx={{ flex: 1 }}>
-        <InfoSearchbar onSearch={handleSearch} />
+        <InfoSearchbar enableModelSelect={false} onSearch={handleSearch} />
         <LinePlaceholder />
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
             gap: 3,
           }}
         >
@@ -285,12 +296,12 @@ export default function PromptGallery() {
               in={showCards}
               timeout={index * defaultTransitionInterval}
               unmountOnExit
-              key={`transition-${record.promptId || index}`}
+              key={`transition-${record.characterId || index}`}
               nodeRef={cardRefs.current[index]}
             >
               {(state) => (
                 <RecordCard
-                  key={`record-card-${record.promptId || index}`}
+                  key={`record-card-${record.characterId || index}`}
                   ref={cardRefs.current[index]}
                   record={record}
                   onClick={handleView}
@@ -349,7 +360,7 @@ export default function PromptGallery() {
         display: {xs: 'none', sm: 'block'},
       }} />
       <HotTags
-        infoType="prompt"
+        infoType="character"
         count={30}
         onTagClick={handleTagClick}
         sx={{

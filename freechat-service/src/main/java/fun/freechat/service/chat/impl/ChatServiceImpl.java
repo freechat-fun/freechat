@@ -12,7 +12,6 @@ import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
-import fun.freechat.annotation.Trace;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
@@ -74,6 +73,11 @@ public class ChatServiceImpl implements ChatService {
                         String about,
                         String backendId,
                         String ext) {
+        String chatId = chatContextService.getIdByBackend(user.getUserId(), backendId);
+        if (StringUtils.isNotBlank(chatId)) {
+            return chatId;
+        }
+
         ChatContext context = new ChatContext()
                 .withUserId(user.getUserId())
                 .withUserNickname(userNickname)
@@ -82,15 +86,19 @@ public class ChatServiceImpl implements ChatService {
                 .withAbout(about)
                 .withBackendId(backendId)
                 .withExt(ext);
+
         ChatContext persistentContext = chatContextService.create(context);
+
         if (Objects.isNull(persistentContext)) {
             return null;
         }
+
         ChatSession session = chatSessionService.get(persistentContext);
         if (Objects.isNull(session)) {
             chatContextService.delete(persistentContext.getChatId());
             return null;
         }
+
         return persistentContext.getChatId();
     }
 

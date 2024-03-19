@@ -16,7 +16,9 @@ public class ChatCreateDTO {
     private String characterNickname;
     @Schema(description = "Anything about this session")
     private String about;
-    @Schema(description = "Character backend for this session", requiredMode = REQUIRED)
+    @Schema(description = "Character id for this session", requiredMode = REQUIRED)
+    private String characterId;
+    @Schema(description = "Character backend for this session")
     private String backendId;
     @Schema(description = "Extra info for this session")
     private String ext;

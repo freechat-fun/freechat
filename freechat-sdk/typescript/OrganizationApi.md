@@ -348,7 +348,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **listSubordinateAuthorities**
-> Set<string> listSubordinateAuthorities()
+> Array<string> listSubordinateAuthorities()
 
 List the permission list of the subordinate account.
 
@@ -382,7 +382,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Set<string>**
+**Array<string>**
 
 ### Authorization
 

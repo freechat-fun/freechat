@@ -6,8 +6,10 @@ import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
+import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.Visibility;
@@ -44,6 +46,9 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class ChatApi {
     @Autowired
+    private CharacterService characterService;
+
+    @Autowired
     private ChatService chatService;
 
     @Autowired
@@ -64,18 +69,35 @@ public class ChatApi {
             description = "Start a chat session."
     )
     @PostMapping(value = "", produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("hasPermission(#p0.backendId, 'chatCreateOp')")
+    @PreAuthorize("hasPermission(#p0.characterId, 'chatCreateOp')")
     public String start(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Parameters for starting a chat session")
             @RequestBody
             @NotNull
             ChatCreateDTO chatCreateParams) {
+        String backendId = null;
+        if (Objects.isNull(chatCreateParams.getBackendId())) {
+            CharacterBackend backend = characterService.getDefaultBackend(chatCreateParams.getCharacterId());
+            if (Objects.nonNull(backend)) {
+                backendId = backend.getBackendId();
+            }
+        } else {
+            String backendCharacterId = characterService.getBackendCharacterId(chatCreateParams.getBackendId());
+            if (backendCharacterId.equals(chatCreateParams.getCharacterId())) {
+                backendId = chatCreateParams.getBackendId();
+            }
+        }
+
+        if (StringUtils.isBlank(backendId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No backend found.");
+        }
+
         String chatId = chatService.start(AccountUtils.currentUser(),
                 chatCreateParams.getUserNickname(),
                 chatCreateParams.getUserProfile(),
                 chatCreateParams.getCharacterNickname(),
                 chatCreateParams.getAbout(),
-                chatCreateParams.getBackendId(),
+                backendId,
                 chatCreateParams.getExt());
         if (StringUtils.isBlank(chatId)) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Failed to start a chat.");
@@ -319,7 +341,7 @@ public class ChatApi {
     )
     @PostMapping("/messages/rollback/{chatId}/{count}")
     @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
-    public List<Long> messages(
+    public List<Long> rollbackMessages(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @Parameter(description = "Message count to be rolled back") @PathVariable("count") @Positive Integer count) {
         return chatMemoryService.rollback(chatId, count);

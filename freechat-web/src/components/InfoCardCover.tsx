@@ -2,16 +2,18 @@
 import { ElementType } from "react";
 import { Box, CardCover, IconButton } from "@mui/joy";
 import { VisibilityRounded, EditRounded, DeleteRounded } from "@mui/icons-material";
+import { SxProps } from "@mui/joy/styles/types";
 
-function CardIconButton({ Icon, onClick }: {
+function CardIconButton({ Icon, onClick, sx }: {
   Icon: React.ElementType,
   onClick: () => void,
+  sx?: SxProps,
 }) {
   return (
     <IconButton
       variant="solid"
       color="neutral"
-      sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
+      sx={{ bgcolor: 'rgba(0 0 0 / 0)', ...sx }}
       onClick={onClick}
     >
       <Icon fill="e0e0e0" />
@@ -55,7 +57,7 @@ export default function InfoCardCover(props: {
             gap: 1,
             width: '100%',
           }}>
-            <CardIconButton Icon={iconSet.view} onClick={onView} />
+            <CardIconButton Icon={iconSet.view} onClick={onView} sx={{ ml: 'auto' }} />
             <CardIconButton Icon={iconSet.edit} onClick={onEdit} />
             <CardIconButton Icon={iconSet.delete} onClick={onDelete} />
           </Box>

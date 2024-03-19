@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { AspectRatio, Box, Card, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses, useColorScheme } from "@mui/joy";
 import { LinePlaceholder } from "../components";
 import { PromptGallery } from "../components/prompt";
+import { CharacterGallery } from "../components/character";
 
 export default function Home() {
   const { t } = useTranslation(['sidebar']);
@@ -39,7 +40,7 @@ export default function Home() {
         </Card>
         <LinePlaceholder spacing={6} />
         <Tabs
-          defaultValue={1}
+          defaultValue={0}
           sx={{
             bgcolor: 'transparent',
           }}
@@ -65,9 +66,12 @@ export default function Home() {
               },
             }}
           >
-            <Tab disabled sx={{borderRadius: '6px 6px 0 0'}} value={0}>{t('Characters')}</Tab>
+            <Tab sx={{borderRadius: '6px 6px 0 0'}} value={0}>{t('Characters')}</Tab>
             <Tab sx={{borderRadius: '6px 6px 0 0'}} value={1}>{t('Prompts')}</Tab>
           </TabList>
+          <TabPanel value={0} key="character-gallery-panel">
+            <CharacterGallery />
+          </TabPanel>
           <TabPanel value={1} key="prompt-gallery-panel">
             <PromptGallery />
           </TabPanel>

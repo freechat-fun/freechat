@@ -114,7 +114,6 @@ public class ChatContextServiceImpl implements ChatContextService {
     }
 
     @Override
-    @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0 + '_' + #p1")
     public String getIdByBackend(String userId, String backendId) {
         var statement = select(ChatContextDynamicSqlSupport.chatId)
                 .from(ChatContextDynamicSqlSupport.chatContext)
