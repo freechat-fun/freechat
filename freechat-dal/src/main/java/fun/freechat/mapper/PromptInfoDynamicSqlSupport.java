@@ -11,7 +11,10 @@ public final class PromptInfoDynamicSqlSupport {
     public static final PromptInfo promptInfo = new PromptInfo();
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> promptId = promptInfo.promptId;
+    public static final SqlColumn<Long> promptId = promptInfo.promptId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> promptUid = promptInfo.promptUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Date> gmtCreate = promptInfo.gmtCreate;
@@ -23,7 +26,7 @@ public final class PromptInfoDynamicSqlSupport {
     public static final SqlColumn<String> userId = promptInfo.userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> parentId = promptInfo.parentId;
+    public static final SqlColumn<String> parentUid = promptInfo.parentUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> visibility = promptInfo.visibility;
@@ -63,7 +66,9 @@ public final class PromptInfoDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class PromptInfo extends AliasableSqlTable<PromptInfo> {
-        public final SqlColumn<String> promptId = column("prompt_id", JDBCType.VARCHAR);
+        public final SqlColumn<Long> promptId = column("prompt_id", JDBCType.BIGINT);
+
+        public final SqlColumn<String> promptUid = column("prompt_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
 
@@ -71,7 +76,7 @@ public final class PromptInfoDynamicSqlSupport {
 
         public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> parentId = column("parent_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> parentUid = column("parent_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<String> visibility = column("visibility", JDBCType.VARCHAR);
 

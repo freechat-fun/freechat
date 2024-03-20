@@ -5,6 +5,6 @@ export default function PromptInfo() {
   const { id } = useParams();
   
   return (
-    <PromptViewer id={id} />
+    <PromptViewer id={Number(id)} />
   )
 }

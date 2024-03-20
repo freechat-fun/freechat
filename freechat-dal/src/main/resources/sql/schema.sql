@@ -100,13 +100,14 @@ CREATE TABLE IF NOT EXISTS `ai_model_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `prompt_info` (
-  `prompt_id` varchar(32) NOT NULL,
+  `prompt_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `prompt_uid` varchar(32) NOT NULL COMMENT 'immutable prompt identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `user_id` varchar(32) NOT NULL,
-  `parent_id` varchar(32) DEFAULT NULL,
+  `parent_uid` varchar(32) DEFAULT NULL,
   `visibility` varchar(16) DEFAULT 'private',
-  `name` varchar(128) NOT NULL,
+  `name` varchar(128) NOT NULL COMMENT 'mutable prompt identifier',
   `type` varchar(16) DEFAULT 'string' COMMENT 'string | chat',
   `description` text DEFAULT NULL,
   `template` text DEFAULT NULL,
@@ -118,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `prompt_info` (
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
   PRIMARY KEY (`prompt_id`),
+  INDEX `idx_uid` (`prompt_uid`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
   INDEX `idx_user` (`user_id`),
@@ -127,13 +129,14 @@ CREATE TABLE IF NOT EXISTS `prompt_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `agent_info` (
-  `agent_id` varchar(32) NOT NULL,
+  `agent_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `agent_uid` varchar(32) NOT NULL COMMENT 'immutable agent identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `user_id` varchar(32) NOT NULL,
-  `parent_id` varchar(32) DEFAULT NULL,
+  `parent_uid` varchar(32) DEFAULT NULL,
   `visibility` varchar(16) DEFAULT 'private',
-  `name` varchar(128) NOT NULL,
+  `name` varchar(128) NOT NULL COMMENT 'mutable agent identifier',
   `description` text DEFAULT NULL,
   `config` json DEFAULT NULL,
   `format` varchar(16) DEFAULT 'langflow',
@@ -143,6 +146,7 @@ CREATE TABLE IF NOT EXISTS `agent_info` (
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,
   PRIMARY KEY (`agent_id`),
+  INDEX `idx_uid` (`agent_uid`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
   INDEX `idx_user` (`user_id`),
@@ -152,12 +156,13 @@ CREATE TABLE IF NOT EXISTS `agent_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `plugin_info` (
-  `plugin_id` varchar(32) NOT NULL,
+  `plugin_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_uid` varchar(32) NOT NULL COMMENT 'immutable plugin identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `user_id` varchar(32) NOT NULL,
   `visibility` varchar(16) DEFAULT 'private',
-  `name` varchar(128) NOT NULL,
+  `name` varchar(128) NOT NULL COMMENT 'mutable plugin identifier',
   `provider` text DEFAULT NULL COMMENT 'provider information',
   `manifest_info` text DEFAULT NULL COMMENT 'url or json',
   `manifest_format` varchar(16) DEFAULT 'dash_scope' COMMENT 'dash_scope | open_ai',
@@ -165,6 +170,7 @@ CREATE TABLE IF NOT EXISTS `plugin_info` (
   `api_format` varchar(24) DEFAULT 'openapi_v3' COMMENT 'openapi_v3 | open_ai',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`plugin_id`),
+  INDEX `idx_uid` (`plugin_uid`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
   INDEX `idx_user` (`user_id`),
@@ -174,13 +180,14 @@ CREATE TABLE IF NOT EXISTS `plugin_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `character_info` (
-  `character_id` varchar(32) NOT NULL,
+  `character_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `character_uid` varchar(32) NOT NULL COMMENT 'immutable character identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `user_id` varchar(32) NOT NULL,
-  `parent_id` varchar(32) DEFAULT NULL,
+  `parent_uid` varchar(32) DEFAULT NULL,
   `visibility` varchar(16) DEFAULT 'private',
-  `name` varchar(128) NOT NULL,
+  `name` varchar(128) NOT NULL COMMENT 'mutable character identifier',
   `description` text DEFAULT NULL,
   `nickname` varchar(128) DEFAULT NULL,
   `avatar` varchar(256) DEFAULT NULL,
@@ -196,6 +203,7 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `draft` text DEFAULT NULL,
   `priority` int unsigned DEFAULT 1,
   PRIMARY KEY (`character_id`),
+  INDEX `idx_uid` (`character_uid`),
   INDEX `idx_visibility` (`visibility`),
   INDEX `idx_visibility_name` (`visibility`, `name`),
   INDEX `idx_user` (`user_id`),
@@ -208,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `backend_id` varchar(32) NOT NULL,
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
-  `character_id` varchar(32) NOT NULL,
+  `character_uid` varchar(32) NOT NULL,
   `is_default` tinyint NOT NULL DEFAULT 0,
   `chat_prompt_task_id` varchar(32) NOT NULL,
   `greeting_prompt_task_id` varchar(32) DEFAULT NULL,
@@ -218,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `forward_to_user` tinyint NOT NULL DEFAULT 0,
   `message_window_size` int NOT NULL DEFAULT 100,
   PRIMARY KEY (`backend_id`),
-  INDEX `idx_character` (`character_id`)
+  INDEX `idx_character` (`character_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character backend table'
 ;
 
@@ -227,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `prompt_task` (
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
   `gmt_executed` datetime DEFAULT NULL,
-  `prompt_id` varchar(32) DEFAULT NULL,
+  `prompt_uid` varchar(32) DEFAULT NULL,
   `variables` json DEFAULT NULL COMMENT 'variables applied to the prompt template',
   `draft` tinyint NOT NULL DEFAULT 0 COMMENT 'whether to use the prompt draft content',
   `model_id` varchar(98) DEFAULT NULL,
@@ -237,7 +245,7 @@ CREATE TABLE IF NOT EXISTS `prompt_task` (
   `cron` varchar(32) DEFAULT NULL COMMENT 'cron expression for scheduled task',
   `status` varchar(16) DEFAULT NUll COMMENT 'pending | running | succeeded | failed | unknown',
   PRIMARY KEY (`task_id`),
-  INDEX `idx_prompt` (`prompt_id`)
+  INDEX `idx_prompt` (`prompt_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='prompt task table'
 ;
 

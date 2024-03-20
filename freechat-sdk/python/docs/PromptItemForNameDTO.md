@@ -6,7 +6,7 @@ Prompt identifier and version information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**prompt_id** | **str** | promptId | [optional] 
+**prompt_id** | **int** | promptId | [optional] 
 **version** | **int** | version | [optional] 
 **stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  | [optional] 
 

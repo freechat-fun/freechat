@@ -9,12 +9,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.stereotype.Controller;
@@ -267,9 +266,9 @@ public class PluginApi {
                     - Tags: 5
                     """
     )
-    @PostMapping(value = "", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'pluginCreateOp')")
-    public String create(
+    public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Information of the plugin to be created",
                     content = @Content(
@@ -304,7 +303,7 @@ public class PluginApi {
     )
     @PostMapping("/batch")
     @PreFilter("hasPermission(filterObject.visibility, 'pluginCreateOp')")
-    public List<String> batchCreate(
+    public List<Long> batchCreate(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "List of plugin information to be created",
                     content = @Content(
@@ -351,8 +350,8 @@ public class PluginApi {
     @PutMapping("/{pluginId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'pluginUpdateOp')")
     public Boolean update(
-            @Parameter(description = "The pluginId to be updated") @PathVariable("pluginId") @NotBlank
-            String pluginId,
+            @Parameter(description = "The pluginId to be updated") @PathVariable("pluginId") @Positive
+            Long pluginId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "The plugin information to be updated",
                     content = @Content(
@@ -382,8 +381,8 @@ public class PluginApi {
     @DeleteMapping("/{pluginId}")
     @PreAuthorize("hasPermission(#p0, 'pluginDeleteOp')")
     public Boolean delete(
-            @Parameter(description = "The pluginId to be deleted") @PathVariable("pluginId") @NotBlank
-            String pluginId) {
+            @Parameter(description = "The pluginId to be deleted") @PathVariable("pluginId") @Positive
+            Long pluginId) {
         return pluginService.delete(pluginId, AccountUtils.currentUser());
     }
 
@@ -394,11 +393,11 @@ public class PluginApi {
     )
     @DeleteMapping("/batch")
     @PreFilter("hasPermission(filterObject, 'pluginDeleteOp')")
-    public List<String> batchDelete(
+    public List<Long> batchDelete(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of pluginIds to be deleted")
             @RequestBody
             @NotEmpty
-            List<String> pluginIds) {
+            List<Long> pluginIds) {
         return pluginService.delete(pluginIds, AccountUtils.currentUser());
     }
 
@@ -409,8 +408,8 @@ public class PluginApi {
     )
     @GetMapping("/summary/{pluginId}")
     public PluginSummaryDTO summary(
-            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @NotBlank
-            String pluginId) {
+            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @Positive
+            Long pluginId) {
         var pluginInfo = pluginService.summary(pluginId, AccountUtils.currentUser());
         return PluginSummaryDTO.from(pluginInfo);
     }
@@ -422,8 +421,8 @@ public class PluginApi {
     )
     @GetMapping("/details/{pluginId}")
     public PluginDetailsDTO details(
-            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @NotBlank
-            String pluginId) {
+            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @Positive
+            Long pluginId) {
         var pluginInfo = pluginService.details(pluginId, AccountUtils.currentUser());
         return PluginDetailsDTO.from(pluginInfo);
     }
@@ -435,9 +434,7 @@ public class PluginApi {
     )
     @PostMapping("/count")
     public Long count(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
-            @RequestBody
-            @NotNull
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
             PluginQueryDTO query) {
         PluginService.Query infoQuery = query.toPluginInfoQuery();
         infoQuery.setOffset(null);
@@ -453,8 +450,8 @@ public class PluginApi {
     )
     @PutMapping("/refresh/{pluginId}")
     public void refresh(
-            @Parameter(description = "The pluginId to be fetched") @PathVariable("pluginId") @NotBlank
-            String pluginId) {
+            @Parameter(description = "The pluginId to be fetched") @PathVariable("pluginId") @Positive
+            Long pluginId) {
         var pluginInfo = pluginService.summary(pluginId, AccountUtils.currentUser());
         pluginFetchService.clearCaches(pluginInfo.getLeft());
     }

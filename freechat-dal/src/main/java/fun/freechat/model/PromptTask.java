@@ -18,7 +18,7 @@ public class PromptTask implements Serializable {
     private Date gmtExecuted;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String promptId;
+    private String promptUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte draft;
@@ -112,19 +112,19 @@ public class PromptTask implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getPromptId() {
-        return promptId;
+    public String getPromptUid() {
+        return promptUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptTask withPromptId(String promptId) {
-        this.setPromptId(promptId);
+    public PromptTask withPromptUid(String promptUid) {
+        this.setPromptUid(promptUid);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setPromptId(String promptId) {
-        this.promptId = promptId == null ? null : promptId.trim();
+    public void setPromptUid(String promptUid) {
+        this.promptUid = promptUid == null ? null : promptUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -272,7 +272,7 @@ public class PromptTask implements Serializable {
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getGmtExecuted() == null ? other.getGmtExecuted() == null : this.getGmtExecuted().equals(other.getGmtExecuted()))
-            && (this.getPromptId() == null ? other.getPromptId() == null : this.getPromptId().equals(other.getPromptId()))
+            && (this.getPromptUid() == null ? other.getPromptUid() == null : this.getPromptUid().equals(other.getPromptUid()))
             && (this.getDraft() == null ? other.getDraft() == null : this.getDraft().equals(other.getDraft()))
             && (this.getModelId() == null ? other.getModelId() == null : this.getModelId().equals(other.getModelId()))
             && (this.getApiKeyName() == null ? other.getApiKeyName() == null : this.getApiKeyName().equals(other.getApiKeyName()))
@@ -289,7 +289,7 @@ public class PromptTask implements Serializable {
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getGmtExecuted() == null) ? 0 : getGmtExecuted().hashCode());
-        result = prime * result + ((getPromptId() == null) ? 0 : getPromptId().hashCode());
+        result = prime * result + ((getPromptUid() == null) ? 0 : getPromptUid().hashCode());
         result = prime * result + ((getDraft() == null) ? 0 : getDraft().hashCode());
         result = prime * result + ((getModelId() == null) ? 0 : getModelId().hashCode());
         result = prime * result + ((getApiKeyName() == null) ? 0 : getApiKeyName().hashCode());
@@ -309,7 +309,7 @@ public class PromptTask implements Serializable {
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", gmtExecuted=").append(gmtExecuted);
-        sb.append(", promptId=").append(promptId);
+        sb.append(", promptUid=").append(promptUid);
         sb.append(", draft=").append(draft);
         sb.append(", modelId=").append(modelId);
         sb.append(", apiKeyName=").append(apiKeyName);

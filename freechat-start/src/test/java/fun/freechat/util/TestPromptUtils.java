@@ -28,7 +28,7 @@ public class TestPromptUtils implements ApplicationContextAware {
 
     private static PromptTaskService promptTaskService;
 
-    public static String createPrompt(String userId, String template, String draft) {
+    public static Long createPrompt(String userId, String template, String draft) {
         Date now = new Date();
         PromptInfo promptInfo = new PromptInfo()
                 .withGmtCreate(now)
@@ -46,8 +46,8 @@ public class TestPromptUtils implements ApplicationContextAware {
         return promptInfo.getPromptId();
     }
 
-    public static void deletePrompt(String userId, String promptId) {
-        if (StringUtils.isAnyBlank(userId, promptId)) {
+    public static void deletePrompt(String userId, Long promptId) {
+        if (StringUtils.isBlank(userId)) {
             return;
         }
         User user = new User().withUserId(userId);
@@ -59,10 +59,12 @@ public class TestPromptUtils implements ApplicationContextAware {
             return;
         }
         User user = new User().withUserId(userId);
-        List<String> promptIds = promptService.delete(user);
+        List<Long> promptIds = promptService.delete(user);
         Optional.ofNullable(promptIds)
                 .orElse(Collections.emptyList())
-                .forEach(promptTaskService::deleteByPromptId);
+                .stream()
+                .map(promptService::getUid)
+                .forEach(promptTaskService::deleteByPromptUid);
     }
 
     @Override

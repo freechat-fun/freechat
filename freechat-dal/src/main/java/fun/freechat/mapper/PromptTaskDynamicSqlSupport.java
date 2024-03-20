@@ -23,7 +23,7 @@ public final class PromptTaskDynamicSqlSupport {
     public static final SqlColumn<Date> gmtExecuted = promptTask.gmtExecuted;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> promptId = promptTask.promptId;
+    public static final SqlColumn<String> promptUid = promptTask.promptUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> draft = promptTask.draft;
@@ -59,7 +59,7 @@ public final class PromptTaskDynamicSqlSupport {
 
         public final SqlColumn<Date> gmtExecuted = column("gmt_executed", JDBCType.TIMESTAMP);
 
-        public final SqlColumn<String> promptId = column("prompt_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> promptUid = column("prompt_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<Byte> draft = column("draft", JDBCType.TINYINT);
 

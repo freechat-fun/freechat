@@ -73,19 +73,19 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
         String ownerId;
         try {
             switch ((String)permission) {
-                case "promptDefaultOp" -> allow = targetObject instanceof String infoId &&
+                case "promptDefaultOp" -> allow = targetObject instanceof Long infoId &&
                         currentUser.getUserId().equals(getPromptService().getOwner(infoId));
                 case "promptTaskDefaultOp" -> allow = targetObject instanceof String infoId &&
                         currentUser.getUserId().equals(getPromptTaskService().getOwner(infoId));
-                case "characterDefaultOp" -> allow = targetObject instanceof String infoId &&
+                case "characterDefaultOp" -> allow = targetObject instanceof Long infoId &&
                         currentUser.getUserId().equals(getCharacterService().getOwner(infoId));
                 case "characterBackendDefaultOp" -> allow = targetObject instanceof String backendId &&
                         currentUser.getUserId().equals(getCharacterService().getBackendOwner(backendId));
                 case "chatDefaultOp" -> allow = targetObject instanceof String chatId &&
                         currentUser.getUserId().equals(getChatContextService().getChatOwner(chatId));
                 case "chatCreateOp" -> {
-                    String characterId  =(String) targetObject;
-                    if (StringUtils.isBlank(characterId)) {
+                    Long characterId  =(Long) targetObject;
+                    if (Objects.isNull(characterId)) {
                         allow = false;
                     } else {
                         String chatUserId = currentUser.getUserId();
@@ -105,7 +105,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    ownerId = getCharacterService().getOwner(targets[0]);
+                    Long infoId = Long.parseLong(targets[0]);
+                    ownerId = getCharacterService().getOwner(infoId);
                     allow = currentUser.getUserId().equals(ownerId);
                     if (targetNotBlank(targets[1])) {
                         allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
@@ -129,7 +130,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    ownerId = getPromptService().getOwner(targets[0]);
+                    Long infoId = Long.parseLong(targets[0]);
+                    ownerId = getPromptService().getOwner(infoId);
                     allow = currentUser.getUserId().equals(ownerId) &&
                             checkVisibility(targets[1], currentRole);
                 }
@@ -138,7 +140,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    ownerId = getAgentService().getOwner(targets[0]);
+                    Long infoId = Long.parseLong(targets[0]);
+                    ownerId = getAgentService().getOwner(infoId);
                     allow = currentUser.getUserId().equals(ownerId) &&
                             checkVisibility(targets[1], currentRole);
                 }
@@ -147,7 +150,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    ownerId = getPluginService().getOwner(targets[0]);
+                    Long infoId = Long.parseLong(targets[0]);
+                    ownerId = getPluginService().getOwner(infoId);
                     allow = currentUser.getUserId().equals(ownerId) &&
                             checkVisibility(targets[1], currentRole);
                 }
@@ -156,7 +160,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    ownerId = getCharacterService().getOwner(targets[0]);
+                    Long infoId = Long.parseLong(targets[0]);
+                    ownerId = getCharacterService().getOwner(infoId);
                     allow = currentUser.getUserId().equals(ownerId) &&
                             checkVisibility(targets[1], currentRole);
                 }
@@ -168,29 +173,30 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     ownerId = getPromptTaskService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
                     if (targetNotBlank(targets[1])) {
-                        allow = allow && currentUser.getUserId().equals(getPromptService().getOwner(targets[1]));
+                        Long infoId = Long.parseLong(targets[1]);
+                        allow = allow && currentUser.getUserId().equals(getPromptService().getOwner(infoId));
                     }
                 }
                 case "promptDeleteOp" -> {
-                    var info = getPromptService().summary((String) targetObject, currentUser);
+                    var info = getPromptService().summary((Long) targetObject, currentUser);
                     allow = Objects.nonNull(info) &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
                 case "agentDeleteOp" -> {
-                    var info = getAgentService().summary((String) targetObject, currentUser);
+                    var info = getAgentService().summary((Long) targetObject, currentUser);
                     allow = Objects.nonNull(info) &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
                 case "pluginDeleteOp" -> {
-                    var info = getPluginService().summary((String) targetObject, currentUser);
+                    var info = getPluginService().summary((Long) targetObject, currentUser);
                     allow = Objects.nonNull(info) &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
                 case "characterDeleteOp" -> {
-                    var info = getCharacterService().summary((String) targetObject, currentUser);
+                    var info = getCharacterService().summary((Long) targetObject, currentUser);
                     allow = Objects.nonNull(info) &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
@@ -216,7 +222,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 }
                 case "promptApplyOp" -> {
                     PromptRefDTO promptRef = (PromptRefDTO) targetObject;
-                    allow = StringUtils.isNotBlank(promptRef.getPromptId());
+                    allow = Objects.nonNull(promptRef.getPromptId());
                     if (allow) {
                         ownerId = getPromptService().getOwner(promptRef.getPromptId());
                         allow = currentUser.getUserId().equals(ownerId);

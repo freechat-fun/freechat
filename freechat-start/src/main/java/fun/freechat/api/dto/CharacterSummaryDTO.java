@@ -12,23 +12,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-
 @Schema(description = "Character summary content")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CharacterSummaryDTO extends TraceableDTO {
-    @Schema(description = "Character identifier")
-    private String characterId;
+    @Schema(description = "Character identifier, will change after publish")
+    private Long characterId;
+    @Schema(description = "Character immutable identifier")
+    private String characterUid;
     @Schema(description = "Creation time")
     private Date gmtCreate;
     @Schema(description = "Modification time")
     private Date gmtModified;
+    @Schema(description = "Referenced character")
+    private String parentUid;
     @Schema(description = "Visibility: private, public, public_org, hidden")
     private String visibility;
     @Schema(description = "Version")
     private Integer version;
-    @Schema(description = "Character name", requiredMode = REQUIRED)
+    @Schema(description = "Character name")
     private String name;
     @Schema(description = "Character description")
     private String description;

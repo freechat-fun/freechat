@@ -8,7 +8,7 @@ Character identifier and version information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**characterId** | **String** | characterId |  [optional] |
+|**characterId** | **Long** | characterId |  [optional] |
 |**version** | **Integer** | version |  [optional] |
 |**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  |  [optional] |
 

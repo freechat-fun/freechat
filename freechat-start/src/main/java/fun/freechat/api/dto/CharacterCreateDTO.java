@@ -18,7 +18,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Data
 public class CharacterCreateDTO {
     @Schema(description = "Referenced character")
-    private String parentId;
+    private String parentUid;
     @Schema(description = "Visibility: private (default), public, public_org, hidden")
     private String visibility;
     @Schema(description = "Character name", requiredMode = REQUIRED)

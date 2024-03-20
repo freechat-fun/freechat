@@ -16,7 +16,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CharacterUpdateDTO extends CharacterCreateDTO {
-    public Pair<CharacterInfo, List<String>> toCharacterInfo(String characterId) {
+    public Pair<CharacterInfo, List<String>> toCharacterInfo(Long characterId) {
         CharacterInfo characterInfo = CommonUtils.convert(this, CharacterInfo.class);
         characterInfo.setCharacterId(characterId);
         characterInfo.setUserId(

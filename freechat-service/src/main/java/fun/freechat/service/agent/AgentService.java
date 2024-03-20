@@ -43,21 +43,24 @@ public interface AgentService {
         return Query.builder();
     }
 
-    List<Triple<AgentInfo, List<String>, List<String>>> search(AgentService.Query query, User user);
-    List<Triple<AgentInfo, List<String>, List<String>>> searchDetails(AgentService.Query query, User user);
+    List<Triple<AgentInfo, List<String>, List<String>>> search(Query query, User user);
+    List<Triple<AgentInfo, List<String>, List<String>>> searchDetails(Query query, User user);
     long count(Query query, User user);
     boolean create(Triple<AgentInfo, List<String>, List<String>> AgentInfoTriple);
-    List<String> create(List<Triple<AgentInfo, List<String>, List<String>>> AgentInfoList);
+    List<Long> create(List<Triple<AgentInfo, List<String>, List<String>>> AgentInfoList);
     boolean update(Triple<AgentInfo, List<String>, List<String>> AgentInfoTriple);
-    boolean hide(String agentId, User user);
-    boolean delete(String agentId, User user);
-    List<String> delete(List<String> agentIds, User user);
-    Triple<AgentInfo, List<String>, List<String>> summary(String agentId, User user);
-    List<Triple<AgentInfo, List<String>, List<String>>> summary(Collection<String> agentIds, User user);
-    Triple<AgentInfo, List<String>, List<String>> details(String agentId, User user);
-    List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<String> agentIds, User user);
-    List<Triple<String, Integer, InteractiveStats>> listVersionsByName(String name, User user);
-    String getLatestIdByName(String name, User user);
-    String publish(String agentId, Visibility visibility, User user);
-    String getOwner(String agentId);
+    boolean hide(Long agentId, User user);
+    boolean delete(Long agentId, User user);
+    List<Long> delete(List<Long> agentIds, User user);
+    Triple<AgentInfo, List<String>, List<String>> summary(Long agentId, User user);
+    List<Triple<AgentInfo, List<String>, List<String>>> summary(Collection<Long> agentIds, User user);
+    Triple<AgentInfo, List<String>, List<String>> details(Long agentId, User user);
+    List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<Long> agentIds, User user);
+    List<Triple<Long, Integer, InteractiveStats>> listVersionsByName(String name, User user);
+    Long getLatestIdByName(String name, User user);
+    Long getLatestIdByUid(String agentUid, User user);
+    Long publish(Long agentId, Visibility visibility, User user);
+    String getOwner(Long agentId);
+    String getOwnerByUid(String agentUid);
+    String getUid(Long agentId);
 }

@@ -177,7 +177,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **cloneAgent**
-> string cloneAgent()
+> number cloneAgent()
 
 Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different: - Version number is 1 - Visibility is private - The parent agent is the source agentId - The creation time is the current moment.  - All statistical indicators are zeroed.  Return the new agentId. 
 
@@ -192,8 +192,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiCloneAgentRequest = {
-  // string | The referenced agentId
-  agentId: "agentId_example",
+  // number | The referenced agentId
+  agentId: 1,
 };
 
 apiInstance.cloneAgent(body).then((data:any) => {
@@ -206,12 +206,12 @@ apiInstance.cloneAgent(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agentId** | [**string**] | The referenced agentId | defaults to undefined
+ **agentId** | [**number**] | The referenced agentId | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -220,7 +220,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -231,7 +231,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **cloneAgents**
-> Array<string> cloneAgents(requestBody)
+> Array<number> cloneAgents(requestBody)
 
 Batch clone multiple agents. Ensure transactionality, return the agentId list after success.
 
@@ -246,9 +246,9 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiCloneAgentsRequest = {
-  // Array<string> | List of agent information to be created
+  // Array<number> | List of agent information to be created
   requestBody: [
-    "requestBody_example",
+    1,
   ],
 };
 
@@ -262,12 +262,12 @@ apiInstance.cloneAgents(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **requestBody** | **Array<string>**| List of agent information to be created |
+ **requestBody** | **Array<number>**| List of agent information to be created |
 
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -362,7 +362,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createAgent**
-> string createAgent(agentCreateDTO)
+> number createAgent(agentCreateDTO)
 
 Create a agent, ignore required fields: - Agent name - Agent configuration  Limitations: - Description: 300 characters - Configuration: 2000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
 
@@ -379,7 +379,7 @@ const apiInstance = new .AgentApi(configuration);
 let body:.AgentApiCreateAgentRequest = {
   // AgentCreateDTO | Information of the agent to be created
   agentCreateDTO: {
-    parentId: "parentId_example",
+    parentUid: "parentUid_example",
     visibility: "visibility_example",
     format: "format_example",
     name: "name_example",
@@ -413,7 +413,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -422,7 +422,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -433,7 +433,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createAgents**
-> Array<string> createAgents(agentCreateDTO)
+> Array<number> createAgents(agentCreateDTO)
 
 Batch create multiple agents. Ensure transactionality, return the agentId list after success.
 
@@ -451,7 +451,7 @@ let body:.AgentApiCreateAgentsRequest = {
   // Array<AgentCreateDTO> | List of agent information to be created
   agentCreateDTO: [
     {
-      parentId: "parentId_example",
+      parentUid: "parentUid_example",
       visibility: "visibility_example",
       format: "format_example",
       name: "name_example",
@@ -486,7 +486,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -521,8 +521,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiDeleteAgentRequest = {
-  // string | AgentId to be deleted
-  agentId: "agentId_example",
+  // number | AgentId to be deleted
+  agentId: 1,
 };
 
 apiInstance.deleteAgent(body).then((data:any) => {
@@ -535,7 +535,7 @@ apiInstance.deleteAgent(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agentId** | [**string**] | AgentId to be deleted | defaults to undefined
+ **agentId** | [**number**] | AgentId to be deleted | defaults to undefined
 
 
 ### Return type
@@ -560,7 +560,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **deleteAgents**
-> Array<string> deleteAgents(requestBody)
+> Array<number> deleteAgents(requestBody)
 
 Delete multiple agents. Ensure transactionality, return the list of successfully deleted agentId.
 
@@ -575,9 +575,9 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiDeleteAgentsRequest = {
-  // Array<string> | List of agentId to be deleted
+  // Array<number> | List of agentId to be deleted
   requestBody: [
-    "requestBody_example",
+    1,
   ],
 };
 
@@ -591,12 +591,12 @@ apiInstance.deleteAgents(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **requestBody** | **Array<string>**| List of agentId to be deleted |
+ **requestBody** | **Array<number>**| List of agentId to be deleted |
 
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -631,8 +631,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiGetAgentDetailsRequest = {
-  // string | AgentId to be obtained
-  agentId: "agentId_example",
+  // number | AgentId to be obtained
+  agentId: 1,
 };
 
 apiInstance.getAgentDetails(body).then((data:any) => {
@@ -645,7 +645,7 @@ apiInstance.getAgentDetails(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agentId** | [**string**] | AgentId to be obtained | defaults to undefined
+ **agentId** | [**number**] | AgentId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -685,8 +685,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiGetAgentSummaryRequest = {
-  // string | agentId to be obtained
-  agentId: "agentId_example",
+  // number | agentId to be obtained
+  agentId: 1,
 };
 
 apiInstance.getAgentSummary(body).then((data:any) => {
@@ -699,7 +699,7 @@ apiInstance.getAgentSummary(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agentId** | [**string**] | agentId to be obtained | defaults to undefined
+ **agentId** | [**number**] | agentId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -778,7 +778,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **publishAgent**
-> string publishAgent()
+> number publishAgent()
 
 Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication.
 
@@ -793,8 +793,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiPublishAgentRequest = {
-  // string | The agentId to be published
-  agentId: "agentId_example",
+  // number | The agentId to be published
+  agentId: 1,
   // string | Visibility: public | private | ...
   visibility: "visibility_example",
 };
@@ -809,13 +809,13 @@ apiInstance.publishAgent(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agentId** | [**string**] | The agentId to be published | defaults to undefined
+ **agentId** | [**number**] | The agentId to be published | defaults to undefined
  **visibility** | [**string**] | Visibility: public | private | ... | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -824,7 +824,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1000,11 +1000,11 @@ const configuration = .createConfiguration();
 const apiInstance = new .AgentApi(configuration);
 
 let body:.AgentApiUpdateAgentRequest = {
-  // string | AgentId to be updated
-  agentId: "agentId_example",
+  // number | AgentId to be updated
+  agentId: 1,
   // AgentUpdateDTO | Agent information to be updated
   agentUpdateDTO: {
-    parentId: "parentId_example",
+    parentUid: "parentUid_example",
     visibility: "visibility_example",
     format: "format_example",
     name: "name_example",
@@ -1034,7 +1034,7 @@ apiInstance.updateAgent(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **agentUpdateDTO** | **AgentUpdateDTO**| Agent information to be updated |
- **agentId** | [**string**] | AgentId to be updated | defaults to undefined
+ **agentId** | [**number**] | AgentId to be updated | defaults to undefined
 
 
 ### Return type

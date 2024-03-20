@@ -18,7 +18,9 @@ import java.util.Objects;
 @EqualsAndHashCode(callSuper = true)
 public class PluginSummaryDTO extends TraceableDTO {
     @Schema(description = "Plugin identifier")
-    private String pluginId;
+    private Long pluginId;
+    @Schema(description = "Plugin immutable identifier")
+    private String pluginUid;
     @Schema(description = "Creation time")
     private Date gmtCreate;
     @Schema(description = "Modification time")

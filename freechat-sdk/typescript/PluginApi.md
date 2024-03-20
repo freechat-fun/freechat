@@ -255,7 +255,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createPlugin**
-> string createPlugin(pluginCreateDTO)
+> number createPlugin(pluginCreateDTO)
 
 Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JSON) - Plugin apiInfo (URL or JSON)  Limitations: - Name: 100 characters - Example: 2000 characters - Tags: 5 
 
@@ -304,7 +304,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -313,7 +313,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -324,7 +324,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createPlugins**
-> Array<string> createPlugins(pluginCreateDTO)
+> Array<number> createPlugins(pluginCreateDTO)
 
 Batch create multiple plugins. Ensure transactionality, return the pluginId list after success.
 
@@ -375,7 +375,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -410,8 +410,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PluginApi(configuration);
 
 let body:.PluginApiDeletePluginRequest = {
-  // string | The pluginId to be deleted
-  pluginId: "pluginId_example",
+  // number | The pluginId to be deleted
+  pluginId: 1,
 };
 
 apiInstance.deletePlugin(body).then((data:any) => {
@@ -424,7 +424,7 @@ apiInstance.deletePlugin(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **pluginId** | [**string**] | The pluginId to be deleted | defaults to undefined
+ **pluginId** | [**number**] | The pluginId to be deleted | defaults to undefined
 
 
 ### Return type
@@ -449,7 +449,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **deletePlugins**
-> Array<string> deletePlugins(requestBody)
+> Array<number> deletePlugins(requestBody)
 
 Delete multiple plugins. Ensure transactionality, return the list of successfully deleted pluginIds.
 
@@ -464,9 +464,9 @@ const configuration = .createConfiguration();
 const apiInstance = new .PluginApi(configuration);
 
 let body:.PluginApiDeletePluginsRequest = {
-  // Array<string> | List of pluginIds to be deleted
+  // Array<number> | List of pluginIds to be deleted
   requestBody: [
-    "requestBody_example",
+    1,
   ],
 };
 
@@ -480,12 +480,12 @@ apiInstance.deletePlugins(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **requestBody** | **Array<string>**| List of pluginIds to be deleted |
+ **requestBody** | **Array<number>**| List of pluginIds to be deleted |
 
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -520,8 +520,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PluginApi(configuration);
 
 let body:.PluginApiGetPluginDetailsRequest = {
-  // string | PluginId to be obtained
-  pluginId: "pluginId_example",
+  // number | PluginId to be obtained
+  pluginId: 1,
 };
 
 apiInstance.getPluginDetails(body).then((data:any) => {
@@ -534,7 +534,7 @@ apiInstance.getPluginDetails(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **pluginId** | [**string**] | PluginId to be obtained | defaults to undefined
+ **pluginId** | [**number**] | PluginId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -574,8 +574,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PluginApi(configuration);
 
 let body:.PluginApiGetPluginSummaryRequest = {
-  // string | PluginId to be obtained
-  pluginId: "pluginId_example",
+  // number | PluginId to be obtained
+  pluginId: 1,
 };
 
 apiInstance.getPluginSummary(body).then((data:any) => {
@@ -588,7 +588,7 @@ apiInstance.getPluginSummary(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **pluginId** | [**string**] | PluginId to be obtained | defaults to undefined
+ **pluginId** | [**number**] | PluginId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -628,8 +628,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PluginApi(configuration);
 
 let body:.PluginApiRefreshPluginInfoRequest = {
-  // string | The pluginId to be fetched
-  pluginId: "pluginId_example",
+  // number | The pluginId to be fetched
+  pluginId: 1,
 };
 
 apiInstance.refreshPluginInfo(body).then((data:any) => {
@@ -642,7 +642,7 @@ apiInstance.refreshPluginInfo(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **pluginId** | [**string**] | The pluginId to be fetched | defaults to undefined
+ **pluginId** | [**number**] | The pluginId to be fetched | defaults to undefined
 
 
 ### Return type
@@ -836,8 +836,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PluginApi(configuration);
 
 let body:.PluginApiUpdatePluginRequest = {
-  // string | The pluginId to be updated
-  pluginId: "pluginId_example",
+  // number | The pluginId to be updated
+  pluginId: 1,
   // PluginUpdateDTO | The plugin information to be updated
   pluginUpdateDTO: {
     visibility: "visibility_example",
@@ -868,7 +868,7 @@ apiInstance.updatePlugin(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **pluginUpdateDTO** | **PluginUpdateDTO**| The plugin information to be updated |
- **pluginId** | [**string**] | The pluginId to be updated | defaults to undefined
+ **pluginId** | [**number**] | The pluginId to be updated | defaults to undefined
 
 
 ### Return type

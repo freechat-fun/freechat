@@ -9,7 +9,8 @@ Plugin template summary content, including interactive statistical information
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**requestId** | **String** | Request identifier |  [optional] |
-|**pluginId** | **String** | Plugin identifier |  [optional] |
+|**pluginId** | **Long** | Plugin identifier |  [optional] |
+|**pluginUid** | **String** | Plugin immutable identifier |  [optional] |
 |**gmtCreate** | **OffsetDateTime** | Creation time |  [optional] |
 |**gmtModified** | **OffsetDateTime** | Modification time |  [optional] |
 |**visibility** | **String** | Visibility: private, public, public_org, hidden |  [optional] |

@@ -8,7 +8,7 @@ Prompt reference information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**promptId** | **String** | Prompt identifier |  |
+|**promptId** | **Long** | Prompt identifier |  |
 |**variables** | **Map&lt;String, Object&gt;** | Variables applied to the template, can be empty |  [optional] |
 |**draft** | **Boolean** | Whether to use draft content |  [optional] |
 

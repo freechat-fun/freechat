@@ -15,7 +15,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PluginUpdateDTO extends PluginCreateDTO {
-    public Triple<PluginInfo, List<String>, List<String>> toPluginInfo(String pluginId) {
+    public Triple<PluginInfo, List<String>, List<String>> toPluginInfo(Long pluginId) {
         PluginInfo pluginInfo = CommonUtils.convert(this, PluginInfo.class);
         pluginInfo.setPluginId(pluginId);
         pluginInfo.setUserId(

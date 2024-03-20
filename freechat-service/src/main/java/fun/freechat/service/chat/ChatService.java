@@ -23,7 +23,7 @@ public interface ChatService {
                  String ext);
     boolean delete(String chatId);
     List<Triple<ChatContext, CharacterInfo, ChatMessageRecord>> list(User user);
-    String getDefaultChatId(User user, String characterId);
+    String getDefaultChatId(User user, Long characterId);
     default Response<AiMessage> send(String chatId, String text) {
         return send(chatId, UserMessage.from(text), null);
     }

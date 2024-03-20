@@ -256,7 +256,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_plugin**
-> str create_plugin(plugin_create_dto)
+> int create_plugin(plugin_create_dto)
 
 Create Plugin
 
@@ -314,7 +314,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -323,7 +323,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -334,7 +334,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_plugins**
-> List[str] create_plugins(plugin_create_dto)
+> List[int] create_plugins(plugin_create_dto)
 
 Batch Create Plugins
 
@@ -392,7 +392,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -447,7 +447,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PluginApi(api_client)
-    plugin_id = 'plugin_id_example' # str | The pluginId to be deleted
+    plugin_id = 56 # int | The pluginId to be deleted
 
     try:
         # Delete Plugin
@@ -465,7 +465,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **str**| The pluginId to be deleted | 
+ **plugin_id** | **int**| The pluginId to be deleted | 
 
 ### Return type
 
@@ -489,7 +489,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_plugins**
-> List[str] delete_plugins(request_body)
+> List[int] delete_plugins(request_body)
 
 Batch Delete Plugins
 
@@ -524,7 +524,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PluginApi(api_client)
-    request_body = ['request_body_example'] # List[str] | List of pluginIds to be deleted
+    request_body = [56] # List[int] | List of pluginIds to be deleted
 
     try:
         # Batch Delete Plugins
@@ -542,11 +542,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[str]**](str.md)| List of pluginIds to be deleted | 
+ **request_body** | [**List[int]**](int.md)| List of pluginIds to be deleted | 
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -602,7 +602,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PluginApi(api_client)
-    plugin_id = 'plugin_id_example' # str | PluginId to be obtained
+    plugin_id = 56 # int | PluginId to be obtained
 
     try:
         # Get Plugin Details
@@ -620,7 +620,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **str**| PluginId to be obtained | 
+ **plugin_id** | **int**| PluginId to be obtained | 
 
 ### Return type
 
@@ -680,7 +680,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PluginApi(api_client)
-    plugin_id = 'plugin_id_example' # str | PluginId to be obtained
+    plugin_id = 56 # int | PluginId to be obtained
 
     try:
         # Get Plugin Summary
@@ -698,7 +698,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **str**| PluginId to be obtained | 
+ **plugin_id** | **int**| PluginId to be obtained | 
 
 ### Return type
 
@@ -757,7 +757,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PluginApi(api_client)
-    plugin_id = 'plugin_id_example' # str | The pluginId to be fetched
+    plugin_id = 56 # int | The pluginId to be fetched
 
     try:
         # Refresh Plugin Information
@@ -773,7 +773,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **str**| The pluginId to be fetched | 
+ **plugin_id** | **int**| The pluginId to be fetched | 
 
 ### Return type
 
@@ -991,7 +991,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PluginApi(api_client)
-    plugin_id = 'plugin_id_example' # str | The pluginId to be updated
+    plugin_id = 56 # int | The pluginId to be updated
     plugin_update_dto = {"name":"Second Test Plugin (New)","visibility":"public","tags":["test2","demo2","business"]} # PluginUpdateDTO | The plugin information to be updated
 
     try:
@@ -1010,7 +1010,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **plugin_id** | **str**| The pluginId to be updated | 
+ **plugin_id** | **int**| The pluginId to be updated | 
  **plugin_update_dto** | [**PluginUpdateDTO**](PluginUpdateDTO.md)| The plugin information to be updated | 
 
 ### Return type

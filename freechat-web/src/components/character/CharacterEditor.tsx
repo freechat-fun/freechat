@@ -14,7 +14,7 @@ import { createPromptForCharacter } from "../../libs/chat_utils";
 import { getCompressedImage } from "../../libs/ui_utils";
 
 type CharacterEditorProps = {
-  id: string | undefined;
+  id: number | undefined;
 }
 
 export default function CharacterEditor ({
@@ -100,7 +100,7 @@ export default function CharacterEditor ({
 
       const draftRecord = {...origRecord, ...draft};
       
-      originName.current = draftRecord.name;
+      originName.current = draftRecord.name ?? '';
 
       setRecordName(draftRecord.name);
       setNickname(draftRecord.nickname);
@@ -163,10 +163,13 @@ export default function CharacterEditor ({
   }
 
   function handleImageSelect(file: Blob, name: string) {
+    if (!id) {
+      return;
+    }
     getCompressedImage(file, 1024 * 1024)
       .then(imageInfo => {
         const request = new File([imageInfo.blob], name);
-        characterApi?.uploadCharacterAvatar(request)
+        characterApi?.uploadCharacterAvatar(id as number, request)
           .then(url => setAvatar(url))
           .catch(handleError);
       })
@@ -194,8 +197,8 @@ export default function CharacterEditor ({
     if (!id) {
       return;
     }
-    const onUpdated = (id: string, visibility: string, nickname: string) => {
-      characterApi?.publishCharacter1(id, visibility)
+    const onUpdated = (currentId: number, visibility: string, nickname: string) => {
+      characterApi?.publishCharacter1(currentId, visibility)
         .then(characterId => {
           chatApi?.getDefaultChatId(characterId)
             .then(resp => {
@@ -208,7 +211,7 @@ export default function CharacterEditor ({
                   request.userNickname = userDetails.nickname ?? userDetails.username;
                   request.userProfile = userDetails.profile;
                   request.characterNickname = nickname;
-                  request.characterId = characterId as string;
+                  request.characterId = characterId as number;
 
                   chatApi.startChat(request)
                     .then(chatId => {
@@ -229,9 +232,9 @@ export default function CharacterEditor ({
         setSaved(resp);
         if (resp) {
           onUpdated(
-            editRecord.characterId as string,
+            editRecord.characterId as number,
             editRecord.visibility === 'private' ? 'private' : 'public',
-            editRecord.nickname ?? editRecord.name,
+            editRecord.nickname ?? editRecord.name ?? '',
           );
         }
       })
@@ -298,16 +301,16 @@ export default function CharacterEditor ({
           .catch(handleError);
         } else if (id) {
           characterApi?.addCharacterBackend(id, req)
-          .then((bId) => {
-            if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
-            } else {
-              setBackends((prevBackends) => {
-                return [...prevBackends, {...backend, backendId: bId, chatPromptTaskId: req.chatPromptTaskId}];
-              });
-              setEditBackend(undefined);
-            }
-          })
+            .then((bId) => {
+              if (redirectToChatPrompt && req.chatPromptTaskId) {
+                navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
+              } else {
+                setBackends((prevBackends) => {
+                  return [...prevBackends, {...backend, backendId: bId, chatPromptTaskId: req.chatPromptTaskId}];
+                });
+                setEditBackend(undefined);
+              }
+            })
         }
       }
 

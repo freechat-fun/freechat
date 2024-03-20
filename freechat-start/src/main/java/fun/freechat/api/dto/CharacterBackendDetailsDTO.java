@@ -19,8 +19,8 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private Date gmtCreate;
     @Schema(description = "Modification time")
     private Date gmtModified;
-    @Schema(description = "Character identifier")
-    private String characterId;
+    @Schema(description = "Character immutable identifier")
+    private String characterUid;
     @Schema(description = "Whether it is the default backend")
     private Boolean isDefault;
     @Schema(description = "Prompt task identifier for chat")

@@ -20,7 +20,7 @@ type MessageRound = {
 };
 
 type PromptEditorProps = {
-  id: string | undefined;
+  id: number | undefined;
   parameters?: { [key: string]: any };
   variables?: { [key: string]: any };
 };
@@ -413,8 +413,8 @@ export default function PromptEditor({
     if (!id) {
       return;
     }
-    const onUpdated = (id: string, visibility: string) => {
-      promptApi?.publishPrompt(id, visibility)
+    const onUpdated = (currentId: number, visibility: string) => {
+      promptApi?.publishPrompt(currentId, visibility)
         .then(resp => {
           if (!resp) {
             return;
@@ -431,7 +431,7 @@ export default function PromptEditor({
       .then(resp => {
         setSaved(resp);
         if (resp) {
-          onUpdated(id as string, editRecord.visibility === 'private' ? 'private' : 'public');
+          onUpdated(id, editRecord.visibility === 'private' ? 'private' : 'public');
         }
       })
       .catch(handleError);

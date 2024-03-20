@@ -81,11 +81,11 @@ public class ChatIT extends AbstractIntegrationTest{
 
     private String userApiKey;
 
-    private String promptId;
+    private Long promptId;
 
     private String promptTaskId;
 
-    private String characterId;
+    private Long characterId;
 
     private String backendId;
 
@@ -148,12 +148,11 @@ public class ChatIT extends AbstractIntegrationTest{
         dto.setFormat(PromptFormat.MUSTACHE.text());
 
         promptId = testClient.post().uri("/api/v1/prompt")
-                .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(String.class)
+                .expectBody(Long.class)
                 .returnResult()
                 .getResponseBody();
 
@@ -195,12 +194,11 @@ public class ChatIT extends AbstractIntegrationTest{
         dto.setVisibility(Visibility.PRIVATE.text());
 
         characterId = testClient.post().uri("/api/v1/character")
-                .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(String.class)
+                .expectBody(Long.class)
                 .returnResult()
                 .getResponseBody();
 
@@ -209,11 +207,10 @@ public class ChatIT extends AbstractIntegrationTest{
 
     private void testPublishCharacter() {
         characterId = testClient.post().uri("/api/v1/character/publish/" + characterId)
-                .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(String.class)
+                .expectBody(Long.class)
                 .returnResult()
                 .getResponseBody();
 
@@ -245,6 +242,7 @@ public class ChatIT extends AbstractIntegrationTest{
         dto.setCharacterNickname(CHARACTER_NICKNAME);
         dto.setUserNickname(USER_NICKNAME);
         dto.setUserProfile(USER_PROFILE);
+        dto.setCharacterId(characterId);
 
         testClient.post().uri("/api/v1/chat")
                 .accept(MediaType.TEXT_PLAIN)
@@ -260,6 +258,7 @@ public class ChatIT extends AbstractIntegrationTest{
         dto.setCharacterNickname(CHARACTER_NICKNAME);
         dto.setUserNickname(USER_NICKNAME);
         dto.setUserProfile(USER_PROFILE);
+        dto.setCharacterId(characterId);
 
         chatId = testClient.post().uri("/api/v1/chat")
                 .accept(MediaType.TEXT_PLAIN)

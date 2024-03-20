@@ -61,9 +61,6 @@ public class AgentServiceImpl implements AgentService {
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 
-    @Autowired
-    private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
-
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
         return c.where(Info.visibility,
@@ -131,13 +128,13 @@ public class AgentServiceImpl implements AgentService {
         }
         List<String> tags = tagMapper.select(c ->
                         c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getAgentId())))
+                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                 .stream()
                 .map(Tag::getContent)
                 .toList();
         List<String> aiModels = aiModelMapper.select(c ->
                         c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getAgentId())))
+                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                 .stream()
                 .map(AiModel::getModelId)
                 .toList();
@@ -162,10 +159,8 @@ public class AgentServiceImpl implements AgentService {
         Date now = new Date();
         int rows = agentInfoMapper.insertSelective(info
                 .withGmtCreate(now)
-                .withGmtModified(now)
-                .withAgentId(IdUtils.newId()));
+                .withGmtModified(now));
         if (rows <= 0) {
-            info.setAgentId(null);
             throw new RuntimeException("Insert agent " + info.getName() + " failed!");
         }
         if (CollectionUtils.isNotEmpty(infoTriple.getMiddle())) {
@@ -180,9 +175,8 @@ public class AgentServiceImpl implements AgentService {
                         .withContent(tagText)
                         .withUserId(info.getUserId())
                         .withReferType(InfoType.AGENT.text())
-                        .withReferId(info.getAgentId()));
+                        .withReferId(info.getAgentUid()));
                 if (rows <= 0) {
-                    info.setAgentId(null);
                     throw new RuntimeException("Insert tag " + tagText + " failed!");
                 }
             }
@@ -198,9 +192,8 @@ public class AgentServiceImpl implements AgentService {
                         .withGmtModified(now)
                         .withModelId(aiModelId)
                         .withReferType(InfoType.AGENT.text())
-                        .withReferId(info.getAgentId()));
+                        .withReferId(info.getAgentUid()));
                 if (rows <= 0) {
-                    info.setAgentId(null);
                     throw new RuntimeException("Insert aiModel " + aiModelId + " failed!");
                 }
             }
@@ -214,19 +207,19 @@ public class AgentServiceImpl implements AgentService {
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
             table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.agentId, equalTo(TagDynamicSqlSupport.referId));
+                    .on(Info.agentUid, equalTo(TagDynamicSqlSupport.referId));
 
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
-                    .on(Info.agentId, equalTo(AiModelDynamicSqlSupport.referId));
+                    .on(Info.agentUid, equalTo(AiModelDynamicSqlSupport.referId));
         }
         List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
-                    .on(Info.agentId, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+                    .on(Info.agentUid, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
         }
         // conditions
         var conditions = table.where();
@@ -380,6 +373,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     public boolean create(Triple<AgentInfo, List<String>, List<String>> infoTriple) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
+            infoTriple.getLeft().setAgentUid(IdUtils.newId());
             doCreate(infoTriple);
             session.commit();
             return true;
@@ -393,11 +387,12 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
-    public List<String> create(List<Triple<AgentInfo, List<String>, List<String>>> AgentInfoList) {
+    public List<Long> create(List<Triple<AgentInfo, List<String>, List<String>>> AgentInfoList) {
         SqlSession session = sqlSessionFactory.openSession();
-        LinkedList<String> agentIds = new LinkedList<>();
+        LinkedList<Long> agentIds = new LinkedList<>();
         try {
             for (Triple<AgentInfo, List<String>, List<String>> infoTriple : AgentInfoList) {
+                infoTriple.getLeft().setAgentUid(IdUtils.newId());
                 doCreate(infoTriple);
                 agentIds.add(infoTriple.getLeft().getAgentId());
             }
@@ -418,30 +413,29 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         SqlSession session = sqlSessionFactory.openSession();
         try {
             Date now = new Date();
-            AgentInfo AgentInfo = infoTriple.getLeft();
-            agentInfoMapper.updateByPrimaryKeySelective(AgentInfo.withGmtModified(now));
+            AgentInfo agentInfo = infoTriple.getLeft();
+            agentInfoMapper.updateByPrimaryKeySelective(agentInfo.withGmtModified(now));
             int rows;
             if (CollectionUtils.isNotEmpty(infoTriple.getMiddle())) {
-                tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(AgentInfo.getAgentId()))
+                tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(agentInfo.getAgentUid()))
                         .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                        .and(TagDynamicSqlSupport.userId, isEqualTo(AgentInfo.getUserId())));
+                        .and(TagDynamicSqlSupport.userId, isEqualTo(agentInfo.getUserId())));
                 Set<String> tagSet = new HashSet<>(infoTriple.getMiddle());
                 for (String tagText : tagSet) {
                     rows = tagMapper.insert(new Tag()
                             .withGmtCreate(now)
                             .withGmtModified(now)
                             .withContent(tagText)
-                            .withUserId(AgentInfo.getUserId())
+                            .withUserId(agentInfo.getUserId())
                             .withReferType(InfoType.AGENT.text())
-                            .withReferId(AgentInfo.getAgentId()));
+                            .withReferId(agentInfo.getAgentUid()));
                     if (rows <= 0) {
-                        AgentInfo.setAgentId(null);
                         throw new RuntimeException("Update tag " + tagText + " failed!");
                     }
                 }
             }
             if (CollectionUtils.isNotEmpty(infoTriple.getRight())) {
-                aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(AgentInfo.getAgentId()))
+                aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(agentInfo.getAgentUid()))
                         .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text())));
                 Set<String> aiModelSet = new HashSet<>(infoTriple.getRight());
                 for (String aiModelId : aiModelSet) {
@@ -450,9 +444,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                             .withGmtModified(now)
                             .withModelId(aiModelId)
                             .withReferType(InfoType.AGENT.text())
-                            .withReferId(AgentInfo.getAgentId()));
+                            .withReferId(agentInfo.getAgentUid()));
                     if (rows <= 0) {
-                        AgentInfo.setAgentId(null);
                         throw new RuntimeException("Update aiModel " + aiModelId + " failed!");
                     }
                 }
@@ -470,8 +463,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public boolean hide(String agentId, User user) {
-        if (StringUtils.isBlank(agentId)) {
+    public boolean hide(Long agentId, User user) {
+        if (Objects.isNull(agentId)) {
             return false;
         }
         AgentInfo AgentInfo = agentInfoMapper.selectOne(c ->
@@ -491,33 +484,21 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public boolean delete(String agentId, User user) {
-        if (StringUtils.isBlank(agentId)) {
+    public boolean delete(Long agentId, User user) {
+        if (Objects.isNull(agentId)) {
             return false;
         }
         int rows = agentInfoMapper.delete(c -> c.where(Info.agentId, isEqualTo(agentId))
                 .and(Info.userId, isEqualTo(user.getUserId())));
-        if (rows > 0) {
-            tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(agentId))
-                    .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text())));
-            aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(agentId))
-                    .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text())));
-            interactiveStatsMapper.delete(c ->
-                    c.where(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(agentId))
-                            .and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text())));
-            interactiveStatsScoreDetailsMapper.delete(c ->
-                    c.where(InteractiveStatsScoreDetailsDynamicSqlSupport.referId, isEqualTo(agentId))
-                            .and(InteractiveStatsScoreDetailsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text())));
-        }
         return rows > 0;
     }
 
     @Override
-    public List<String> delete(List<String> agentIds, User user) {
-        LinkedList<String> deletedIds = new LinkedList<>();
+    public List<Long> delete(List<Long> agentIds, User user) {
+        LinkedList<Long> deletedIds = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            for (String agentId : agentIds) {
+            for (Long agentId : agentIds) {
                 if (delete(agentId, user)) {
                     deletedIds.add(agentId);
                 }
@@ -535,7 +516,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
-    public Triple<AgentInfo, List<String>, List<String>> summary(String agentId, User user) {
+    public Triple<AgentInfo, List<String>, List<String>> summary(Long agentId, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
 
@@ -550,7 +531,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
-    public List<Triple<AgentInfo, List<String>, List<String>>> summary(Collection<String> agentIds, User user) {
+    public List<Triple<AgentInfo, List<String>, List<String>>> summary(Collection<Long> agentIds, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
 
@@ -567,7 +548,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public Triple<AgentInfo, List<String>, List<String>> details(String agentId, User user) {
+    public Triple<AgentInfo, List<String>, List<String>> details(Long agentId, User user) {
         return agentInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
                         .and(Info.agentId, isEqualTo(agentId)))
                 .filter(info -> filterVisibility(info, user))
@@ -576,7 +557,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
-    public List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<String> agentIds, User user) {
+    public List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<Long> agentIds, User user) {
         return agentInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
                         .and(Info.agentId, isIn(agentIds)))
                 .stream()
@@ -586,7 +567,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
-    public List<Triple<String, Integer, InteractiveStats>> listVersionsByName(String name, User user) {
+    public List<Triple<Long, Integer, InteractiveStats>> listVersionsByName(String name, User user) {
         var statement = select(Info.agentId, Info.version)
                 .from(Info.table)
                 .where(Info.name, isEqualTo(name))
@@ -600,7 +581,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                 .map(info -> {
                     InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
                                     c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getAgentId())))
+                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                             .orElse(null);
                     return Triple.of(info.getAgentId(), info.getVersion(), stats);
                 })
@@ -608,7 +589,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
-    public String getLatestIdByName(String name, User user) {
+    public Long getLatestIdByName(String name, User user) {
         var statement = select(Info.agentId, Info.version)
                 .from(Info.table)
                 .where(Info.name, isEqualTo(name))
@@ -623,9 +604,24 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
+    public Long getLatestIdByUid(String agentUid, User user) {
+        var statement = select(Info.agentId, Info.version)
+                .from(Info.table)
+                .where(Info.agentUid, isEqualTo(agentUid))
+                .and(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                .orderBy(Info.version.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return agentInfoMapper.selectOne(statement).map(AgentInfo::getAgentId).orElse(null);
+    }
+
+    @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public String publish(String agentId, Visibility visibility, User user) {
-        String publishedInfoId;
+    public Long publish(Long agentId, Visibility visibility, User user) {
+        Long publishedInfoId;
         SqlSession session = sqlSessionFactory.openSession();
         try {
             var infoTriple = details(agentId, user);
@@ -634,8 +630,8 @@ select distinct a.user_id, a.agent_id, a.visibility... \
             }
             AgentInfo info = infoTriple.getLeft();
 
-            List<Triple<String, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
-            Triple<String, Integer, InteractiveStats> versionInfo =
+            List<Triple<Long, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
+            Triple<Long, Integer, InteractiveStats> versionInfo =
                     CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
             Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
 
@@ -658,17 +654,6 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                         .withGmtModified(new Date());
                 agentInfoMapper.updateByPrimaryKeySelective(info);
             }
-
-            if (Objects.nonNull(versionInfo) && Objects.nonNull(versionInfo.getRight())) {
-                Date now = new Date();
-                InteractiveStats stats = versionInfo.getRight();
-                interactiveStatsMapper.insertSelective(stats
-                        .withId(null)
-                        .withGmtCreate(now)
-                        .withGmtModified(now)
-                        .withReferId(publishedInfoId)
-                );
-            }
             session.commit();
         } catch (Exception e) {
             log.error("Failed to publish agent", e);
@@ -682,7 +667,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
 
     @Override
     @LongPeriodCache
-    public String getOwner(String agentId) {
+    public String getOwner(Long agentId) {
         var statement = select(Info.userId)
                 .from(Info.table)
                 .where(Info.agentId, isEqualTo(agentId))
@@ -692,13 +677,38 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         return agentInfoMapper.selectOne(statement).map(AgentInfo::getUserId).orElse(null);
     }
 
+    @Override
+    public String getOwnerByUid(String agentUid) {
+        var statement = select(Info.userId)
+                .from(Info.table)
+                .where(Info.agentUid, isEqualTo(agentUid))
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return agentInfoMapper.selectOne(statement).map(AgentInfo::getUserId).orElse(null);
+    }
+
+    @Override
+    public String getUid(Long agentId) {
+        var statement = select(Info.agentUid)
+                .from(Info.table)
+                .where(Info.agentId, isEqualTo(agentId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return agentInfoMapper.selectOne(statement).map(AgentInfo::getAgentUid).orElse(null);
+    }
+
     private static class Info {
         public static final AgentInfoDynamicSqlSupport.AgentInfo table = AgentInfoDynamicSqlSupport.agentInfo;
-        public static final SqlColumn<String> agentId = AgentInfoDynamicSqlSupport.agentId;
+        public static final SqlColumn<Long> agentId = AgentInfoDynamicSqlSupport.agentId;
+        public static final SqlColumn<String> agentUid = AgentInfoDynamicSqlSupport.agentUid;
+
         public static final SqlColumn<Date> gmtCreate = AgentInfoDynamicSqlSupport.gmtCreate;
         public static final SqlColumn<Date> gmtModified = AgentInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = AgentInfoDynamicSqlSupport.userId;
-        public static final SqlColumn<String> parentId = AgentInfoDynamicSqlSupport.parentId;
+        public static final SqlColumn<String> parentUid = AgentInfoDynamicSqlSupport.parentUid;
         public static final SqlColumn<String> visibility = AgentInfoDynamicSqlSupport.visibility;
         public static final SqlColumn<String> format = AgentInfoDynamicSqlSupport.format;
         public static final SqlColumn<Integer> version = AgentInfoDynamicSqlSupport.version;
@@ -715,6 +725,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                     Info.gmtModified,
                     Info.userId,
                     Info.agentId,
+                    Info.agentUid,
                     Info.visibility,
                     Info.format,
                     Info.version,

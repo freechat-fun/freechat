@@ -187,7 +187,7 @@ export default function Characters() {
             request.userNickname = userDetails.nickname ?? userDetails.username;
             request.userProfile = userDetails.profile;
             request.characterNickname = record.nickname ?? record.name;
-            request.characterId = record.characterId as string;
+            request.characterId = record.characterId as number;
 
             chatApi.startChat(request)
               .then(chatId => {

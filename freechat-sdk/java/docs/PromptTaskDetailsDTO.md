@@ -16,6 +16,7 @@ Prompt task detailed information
 |**promptRef** | [**PromptRefDTO**](PromptRefDTO.md) |  |  [optional] |
 |**modelId** | **String** | Model identifier |  [optional] |
 |**apiKeyName** | **String** | API-KEY name |  [optional] |
+|**apiKeyValue** | **String** | API-KEY value |  [optional] |
 |**params** | **Map&lt;String, Object&gt;** | Model call parameters |  [optional] |
 |**cron** | **String** | Task scheduling configuration which compatible with Quartz cron format |  [optional] |
 |**status** | **String** | Task execution status: pending | running | succeeded | failed |  [optional] |

@@ -10,7 +10,7 @@ import { formatDateTime } from "../../libs/date_utils";
 import { ConfirmModal } from "..";
 
 type CharacterBackendListProps = {
-  characterId?: string;
+  characterId?: number;
   defaultBackends?: CharacterBackendDetailsDTO[];
   editMode?: boolean;
   sx?: SxProps;

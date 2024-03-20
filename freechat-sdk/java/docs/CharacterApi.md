@@ -19,6 +19,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**getDefaultCharacterBackend**](CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend |
 | [**listCharacterBackendIds**](CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids |
 | [**listCharacterBackends**](CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends |
+| [**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures |
 | [**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name |
 | [**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name |
 | [**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character |
@@ -29,8 +30,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend |
 | [**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character |
 | [**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend |
-| [**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar | Upload Character Avatar |
-| [**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture | Upload Character Picture |
+| [**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar |
+| [**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture |
 
 
 <a id="addCharacterBackend"></a>
@@ -61,7 +62,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be added a backend
+    Long characterId = 56L; // Long | The characterId to be added a backend
     CharacterBackendDTO characterBackendDTO = new CharacterBackendDTO(); // CharacterBackendDTO | The character backend to be added
     try {
       String result = apiInstance.addCharacterBackend(characterId, characterBackendDTO);
@@ -81,7 +82,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be added a backend | |
+| **characterId** | **Long**| The characterId to be added a backend | |
 | **characterBackendDTO** | [**CharacterBackendDTO**](CharacterBackendDTO.md)| The character backend to be added | |
 
 ### Return type
@@ -238,7 +239,7 @@ public class Example {
 
 <a id="cloneCharacter"></a>
 # **cloneCharacter**
-> String cloneCharacter(characterId)
+> Long cloneCharacter(characterId)
 
 Clone Character
 
@@ -264,9 +265,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The referenced characterId
+    Long characterId = 56L; // Long | The referenced characterId
     try {
-      String result = apiInstance.cloneCharacter(characterId);
+      Long result = apiInstance.cloneCharacter(characterId);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#cloneCharacter");
@@ -283,11 +284,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The referenced characterId | |
+| **characterId** | **Long**| The referenced characterId | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -296,7 +297,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -372,7 +373,7 @@ public class Example {
 
 <a id="createCharacter"></a>
 # **createCharacter**
-> String createCharacter(characterCreateDTO)
+> Long createCharacter(characterCreateDTO)
 
 Create Character
 
@@ -400,7 +401,7 @@ public class Example {
     CharacterApi apiInstance = new CharacterApi(defaultClient);
     CharacterCreateDTO characterCreateDTO = new CharacterCreateDTO(); // CharacterCreateDTO | Information of the character to be created
     try {
-      String result = apiInstance.createCharacter(characterCreateDTO);
+      Long result = apiInstance.createCharacter(characterCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#createCharacter");
@@ -421,7 +422,7 @@ public class Example {
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -430,7 +431,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -465,7 +466,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be deleted
+    Long characterId = 56L; // Long | The characterId to be deleted
     try {
       Boolean result = apiInstance.deleteCharacter(characterId);
       System.out.println(result);
@@ -484,7 +485,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be deleted | |
+| **characterId** | **Long**| The characterId to be deleted | |
 
 ### Return type
 
@@ -506,7 +507,7 @@ public class Example {
 
 <a id="deleteCharacterByName"></a>
 # **deleteCharacterByName**
-> List&lt;String&gt; deleteCharacterByName(name)
+> List&lt;Long&gt; deleteCharacterByName(name)
 
 Delete Character by Name
 
@@ -534,7 +535,7 @@ public class Example {
     CharacterApi apiInstance = new CharacterApi(defaultClient);
     String name = "name_example"; // String | The character name to be deleted
     try {
-      List<String> result = apiInstance.deleteCharacterByName(name);
+      List<Long> result = apiInstance.deleteCharacterByName(name);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#deleteCharacterByName");
@@ -555,7 +556,7 @@ public class Example {
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -666,7 +667,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | CharacterId to be obtained
+    Long characterId = 56L; // Long | CharacterId to be obtained
     try {
       CharacterDetailsDTO result = apiInstance.getCharacterDetails(characterId);
       System.out.println(result);
@@ -685,7 +686,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| CharacterId to be obtained | |
+| **characterId** | **Long**| CharacterId to be obtained | |
 
 ### Return type
 
@@ -707,7 +708,7 @@ public class Example {
 
 <a id="getCharacterLatestIdByName"></a>
 # **getCharacterLatestIdByName**
-> String getCharacterLatestIdByName(name)
+> Long getCharacterLatestIdByName(name)
 
 Get Latest Character Id by Name
 
@@ -735,7 +736,7 @@ public class Example {
     CharacterApi apiInstance = new CharacterApi(defaultClient);
     String name = "name_example"; // String | Character name
     try {
-      String result = apiInstance.getCharacterLatestIdByName(name);
+      Long result = apiInstance.getCharacterLatestIdByName(name);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#getCharacterLatestIdByName");
@@ -756,7 +757,7 @@ public class Example {
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -765,7 +766,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -800,7 +801,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | CharacterId to be obtained
+    Long characterId = 56L; // Long | CharacterId to be obtained
     try {
       CharacterSummaryDTO result = apiInstance.getCharacterSummary(characterId);
       System.out.println(result);
@@ -819,7 +820,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| CharacterId to be obtained | |
+| **characterId** | **Long**| CharacterId to be obtained | |
 
 ### Return type
 
@@ -867,7 +868,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be queried
+    Long characterId = 56L; // Long | The characterId to be queried
     try {
       CharacterBackendDetailsDTO result = apiInstance.getDefaultCharacterBackend(characterId);
       System.out.println(result);
@@ -886,7 +887,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be queried | |
+| **characterId** | **Long**| The characterId to be queried | |
 
 ### Return type
 
@@ -934,7 +935,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be queried
+    Long characterId = 56L; // Long | The characterId to be queried
     try {
       List<String> result = apiInstance.listCharacterBackendIds(characterId);
       System.out.println(result);
@@ -953,7 +954,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be queried | |
+| **characterId** | **Long**| The characterId to be queried | |
 
 ### Return type
 
@@ -1001,7 +1002,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be queried
+    Long characterId = 56L; // Long | The characterId to be queried
     try {
       List<CharacterBackendDetailsDTO> result = apiInstance.listCharacterBackends(characterId);
       System.out.println(result);
@@ -1020,11 +1021,78 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be queried | |
+| **characterId** | **Long**| The characterId to be queried | |
 
 ### Return type
 
 [**List&lt;CharacterBackendDetailsDTO&gt;**](CharacterBackendDetailsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listCharacterPictures"></a>
+# **listCharacterPictures**
+> List&lt;String&gt; listCharacterPictures(characterId)
+
+List Character Pictures
+
+List pictures of the character.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    Long characterId = 56L; // Long | Character identifier
+    try {
+      List<String> result = apiInstance.listCharacterPictures(characterId);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#listCharacterPictures");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **characterId** | **Long**| Character identifier | |
+
+### Return type
+
+**List&lt;String&gt;**
 
 ### Authorization
 
@@ -1176,7 +1244,7 @@ public class Example {
 
 <a id="publishCharacter"></a>
 # **publishCharacter**
-> String publishCharacter(characterId)
+> Long publishCharacter(characterId)
 
 Publish Character
 
@@ -1202,9 +1270,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be published
+    Long characterId = 56L; // Long | The characterId to be published
     try {
-      String result = apiInstance.publishCharacter(characterId);
+      Long result = apiInstance.publishCharacter(characterId);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#publishCharacter");
@@ -1221,11 +1289,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be published | |
+| **characterId** | **Long**| The characterId to be published | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -1234,7 +1302,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -1243,7 +1311,7 @@ public class Example {
 
 <a id="publishCharacter1"></a>
 # **publishCharacter1**
-> String publishCharacter1(characterId, visibility)
+> Long publishCharacter1(characterId, visibility)
 
 Publish Character
 
@@ -1269,10 +1337,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be published
+    Long characterId = 56L; // Long | The characterId to be published
     String visibility = "visibility_example"; // String | Visibility: public | private | ...
     try {
-      String result = apiInstance.publishCharacter1(characterId, visibility);
+      Long result = apiInstance.publishCharacter1(characterId, visibility);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#publishCharacter1");
@@ -1289,12 +1357,12 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be published | |
+| **characterId** | **Long**| The characterId to be published | |
 | **visibility** | **String**| Visibility: public | private | ... | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -1303,7 +1371,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -1606,7 +1674,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
-    String characterId = "characterId_example"; // String | The characterId to be updated
+    Long characterId = 56L; // Long | The characterId to be updated
     CharacterUpdateDTO characterUpdateDTO = new CharacterUpdateDTO(); // CharacterUpdateDTO | The character information to be updated
     try {
       Boolean result = apiInstance.updateCharacter(characterId, characterUpdateDTO);
@@ -1626,7 +1694,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **String**| The characterId to be updated | |
+| **characterId** | **Long**| The characterId to be updated | |
 | **characterUpdateDTO** | [**CharacterUpdateDTO**](CharacterUpdateDTO.md)| The character information to be updated | |
 
 ### Return type
@@ -1718,7 +1786,7 @@ public class Example {
 
 <a id="uploadCharacterAvatar"></a>
 # **uploadCharacterAvatar**
-> String uploadCharacterAvatar(_file)
+> String uploadCharacterAvatar(characterId, _file)
 
 Upload Character Avatar
 
@@ -1744,9 +1812,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
+    Long characterId = 56L; // Long | Character identifier
     File _file = new File("/path/to/file"); // File | Character avatar
     try {
-      String result = apiInstance.uploadCharacterAvatar(_file);
+      String result = apiInstance.uploadCharacterAvatar(characterId, _file);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#uploadCharacterAvatar");
@@ -1763,6 +1832,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
+| **characterId** | **Long**| Character identifier | |
 | **_file** | **File**| Character avatar | |
 
 ### Return type
@@ -1785,7 +1855,7 @@ public class Example {
 
 <a id="uploadCharacterPicture"></a>
 # **uploadCharacterPicture**
-> String uploadCharacterPicture(_file)
+> String uploadCharacterPicture(characterId, _file)
 
 Upload Character Picture
 
@@ -1811,9 +1881,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     CharacterApi apiInstance = new CharacterApi(defaultClient);
+    Long characterId = 56L; // Long | Character identifier
     File _file = new File("/path/to/file"); // File | Character picture
     try {
-      String result = apiInstance.uploadCharacterPicture(_file);
+      String result = apiInstance.uploadCharacterPicture(characterId, _file);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#uploadCharacterPicture");
@@ -1830,6 +1901,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
+| **characterId** | **Long**| Character identifier | |
 | **_file** | **File**| Character picture | |
 
 ### Return type

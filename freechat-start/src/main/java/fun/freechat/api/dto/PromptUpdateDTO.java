@@ -21,7 +21,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PromptUpdateDTO extends PromptCreateDTO {
-    public Triple<PromptInfo, List<String>, List<String>> toPromptInfo(String promptId) {
+    public Triple<PromptInfo, List<String>, List<String>> toPromptInfo(Long promptId) {
         PromptInfo promptInfo = CommonUtils.convert(this, PromptInfo.class);
         promptInfo.setPromptId(promptId);
         promptInfo.setUserId(

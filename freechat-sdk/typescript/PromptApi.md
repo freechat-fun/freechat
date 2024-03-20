@@ -47,7 +47,7 @@ const apiInstance = new .PromptApi(configuration);
 let body:.PromptApiApplyPromptRefRequest = {
   // PromptRefDTO | Prompt record
   promptRefDTO: {
-    promptId: "promptId_example",
+    promptId: 1,
     variables: {
       "key": {},
     },
@@ -349,7 +349,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **clonePrompt**
-> string clonePrompt()
+> number clonePrompt()
 
 Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different: - Version number is 1 - Visibility is private - The parent prompt is the source promptId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new promptId. 
 
@@ -364,8 +364,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiClonePromptRequest = {
-  // string | The referenced promptId
-  promptId: "promptId_example",
+  // number | The referenced promptId
+  promptId: 1,
 };
 
 apiInstance.clonePrompt(body).then((data:any) => {
@@ -378,12 +378,12 @@ apiInstance.clonePrompt(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **promptId** | [**string**] | The referenced promptId | defaults to undefined
+ **promptId** | [**number**] | The referenced promptId | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -392,7 +392,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -403,7 +403,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **clonePrompts**
-> Array<string> clonePrompts(requestBody)
+> Array<number> clonePrompts(requestBody)
 
 Batch clone multiple prompts. Ensure transactionality, return the promptId list after success.
 
@@ -418,9 +418,9 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiClonePromptsRequest = {
-  // Array<string> | List of prompt information to be created
+  // Array<number> | List of prompt information to be created
   requestBody: [
-    "requestBody_example",
+    1,
   ],
 };
 
@@ -434,12 +434,12 @@ apiInstance.clonePrompts(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **requestBody** | **Array<string>**| List of prompt information to be created |
+ **requestBody** | **Array<number>**| List of prompt information to be created |
 
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -535,7 +535,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createPrompt**
-> string createPrompt(promptCreateDTO)
+> number createPrompt(promptCreateDTO)
 
 Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
 
@@ -552,7 +552,7 @@ const apiInstance = new .PromptApi(configuration);
 let body:.PromptApiCreatePromptRequest = {
   // PromptCreateDTO | Information of the prompt to be created
   promptCreateDTO: {
-    parentId: "parentId_example",
+    parentUid: "parentUid_example",
     visibility: "visibility_example",
     name: "name_example",
     description: "description_example",
@@ -630,7 +630,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -639,7 +639,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -650,7 +650,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createPrompts**
-> Array<string> createPrompts(promptCreateDTO)
+> Array<number> createPrompts(promptCreateDTO)
 
 Batch create multiple prompts. Ensure transactionality, return the promptId list after success.
 
@@ -668,7 +668,7 @@ let body:.PromptApiCreatePromptsRequest = {
   // Array<PromptCreateDTO> | List of prompt information to be created
   promptCreateDTO: [
     {
-      parentId: "parentId_example",
+      parentUid: "parentUid_example",
       visibility: "visibility_example",
       name: "name_example",
       description: "description_example",
@@ -747,7 +747,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -782,8 +782,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiDeletePromptRequest = {
-  // string | The promptId to be deleted
-  promptId: "promptId_example",
+  // number | The promptId to be deleted
+  promptId: 1,
 };
 
 apiInstance.deletePrompt(body).then((data:any) => {
@@ -796,7 +796,7 @@ apiInstance.deletePrompt(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **promptId** | [**string**] | The promptId to be deleted | defaults to undefined
+ **promptId** | [**number**] | The promptId to be deleted | defaults to undefined
 
 
 ### Return type
@@ -821,7 +821,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **deletePromptByName**
-> Array<string> deletePromptByName()
+> Array<number> deletePromptByName()
 
 Delete prompt by name. return the list of successfully deleted promptIds.
 
@@ -855,7 +855,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -875,7 +875,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **deletePrompts**
-> Array<string> deletePrompts(requestBody)
+> Array<number> deletePrompts(requestBody)
 
 Delete multiple prompts. Ensure transactionality, return the list of successfully deleted promptIds.
 
@@ -890,9 +890,9 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiDeletePromptsRequest = {
-  // Array<string> | List of promptIds to be deleted
+  // Array<number> | List of promptIds to be deleted
   requestBody: [
-    "requestBody_example",
+    1,
   ],
 };
 
@@ -906,12 +906,12 @@ apiInstance.deletePrompts(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **requestBody** | **Array<string>**| List of promptIds to be deleted |
+ **requestBody** | **Array<number>**| List of promptIds to be deleted |
 
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -1000,8 +1000,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiGetPromptDetailsRequest = {
-  // string | PromptId to be obtained
-  promptId: "promptId_example",
+  // number | PromptId to be obtained
+  promptId: 1,
 };
 
 apiInstance.getPromptDetails(body).then((data:any) => {
@@ -1014,7 +1014,7 @@ apiInstance.getPromptDetails(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **promptId** | [**string**] | PromptId to be obtained | defaults to undefined
+ **promptId** | [**number**] | PromptId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -1054,8 +1054,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiGetPromptSummaryRequest = {
-  // string | PromptId to be obtained
-  promptId: "promptId_example",
+  // number | PromptId to be obtained
+  promptId: 1,
 };
 
 apiInstance.getPromptSummary(body).then((data:any) => {
@@ -1068,7 +1068,7 @@ apiInstance.getPromptSummary(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **promptId** | [**string**] | PromptId to be obtained | defaults to undefined
+ **promptId** | [**number**] | PromptId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -1201,7 +1201,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **publishPrompt**
-> string publishPrompt()
+> number publishPrompt()
 
 Publish prompt, draft content becomes formal content, version number increases by 1. After successful publication, a new promptId will be generated and returned. You need to specify the visibility for publication.
 
@@ -1216,8 +1216,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiPublishPromptRequest = {
-  // string | The promptId to be published
-  promptId: "promptId_example",
+  // number | The promptId to be published
+  promptId: 1,
   // string | Visibility: public | private | ...
   visibility: "visibility_example",
 };
@@ -1232,13 +1232,13 @@ apiInstance.publishPrompt(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **promptId** | [**string**] | The promptId to be published | defaults to undefined
+ **promptId** | [**number**] | The promptId to be published | defaults to undefined
  **visibility** | [**string**] | Visibility: public | private | ... | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -1247,7 +1247,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1479,7 +1479,7 @@ let body:.PromptApiSendPromptRequest = {
       format: "format_example",
     },
     promptRef: {
-      promptId: "promptId_example",
+      promptId: 1,
       variables: {
         "key": {},
       },
@@ -1595,7 +1595,7 @@ let body:.PromptApiStreamSendPromptRequest = {
       format: "format_example",
     },
     promptRef: {
-      promptId: "promptId_example",
+      promptId: 1,
       variables: {
         "key": {},
       },
@@ -1657,11 +1657,11 @@ const configuration = .createConfiguration();
 const apiInstance = new .PromptApi(configuration);
 
 let body:.PromptApiUpdatePromptRequest = {
-  // string | The promptId to be updated
-  promptId: "promptId_example",
+  // number | The promptId to be updated
+  promptId: 1,
   // PromptUpdateDTO | The prompt information to be updated
   promptUpdateDTO: {
-    parentId: "parentId_example",
+    parentUid: "parentUid_example",
     visibility: "visibility_example",
     name: "name_example",
     description: "description_example",
@@ -1735,7 +1735,7 @@ apiInstance.updatePrompt(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **promptUpdateDTO** | **PromptUpdateDTO**| The prompt information to be updated |
- **promptId** | [**string**] | The promptId to be updated | defaults to undefined
+ **promptId** | [**number**] | The promptId to be updated | defaults to undefined
 
 
 ### Return type

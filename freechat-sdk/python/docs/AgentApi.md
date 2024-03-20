@@ -181,7 +181,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **clone_agent**
-> str clone_agent(agent_id)
+> int clone_agent(agent_id)
 
 Clone Agent
 
@@ -216,7 +216,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    agent_id = 'agent_id_example' # str | The referenced agentId
+    agent_id = 56 # int | The referenced agentId
 
     try:
         # Clone Agent
@@ -234,11 +234,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **str**| The referenced agentId | 
+ **agent_id** | **int**| The referenced agentId | 
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -247,7 +247,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -258,7 +258,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **clone_agents**
-> List[str] clone_agents(request_body)
+> List[int] clone_agents(request_body)
 
 Batch Clone Agents
 
@@ -293,7 +293,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    request_body = ['request_body_example'] # List[str] | List of agent information to be created
+    request_body = [56] # List[int] | List of agent information to be created
 
     try:
         # Batch Clone Agents
@@ -311,11 +311,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[str]**](str.md)| List of agent information to be created | 
+ **request_body** | [**List[int]**](int.md)| List of agent information to be created | 
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -413,7 +413,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_agent**
-> str create_agent(agent_create_dto)
+> int create_agent(agent_create_dto)
 
 Create Agent
 
@@ -471,7 +471,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -480,7 +480,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -491,7 +491,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_agents**
-> List[str] create_agents(agent_create_dto)
+> List[int] create_agents(agent_create_dto)
 
 Batch Create Agents
 
@@ -549,7 +549,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -604,7 +604,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    agent_id = 'agent_id_example' # str | AgentId to be deleted
+    agent_id = 56 # int | AgentId to be deleted
 
     try:
         # Delete Agent
@@ -622,7 +622,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **str**| AgentId to be deleted | 
+ **agent_id** | **int**| AgentId to be deleted | 
 
 ### Return type
 
@@ -646,7 +646,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_agents**
-> List[str] delete_agents(request_body)
+> List[int] delete_agents(request_body)
 
 Batch Delete Agents
 
@@ -681,7 +681,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    request_body = ['request_body_example'] # List[str] | List of agentId to be deleted
+    request_body = [56] # List[int] | List of agentId to be deleted
 
     try:
         # Batch Delete Agents
@@ -699,11 +699,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[str]**](str.md)| List of agentId to be deleted | 
+ **request_body** | [**List[int]**](int.md)| List of agentId to be deleted | 
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -759,7 +759,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    agent_id = 'agent_id_example' # str | AgentId to be obtained
+    agent_id = 56 # int | AgentId to be obtained
 
     try:
         # Get Agent Details
@@ -777,7 +777,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **str**| AgentId to be obtained | 
+ **agent_id** | **int**| AgentId to be obtained | 
 
 ### Return type
 
@@ -837,7 +837,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    agent_id = 'agent_id_example' # str | agentId to be obtained
+    agent_id = 56 # int | agentId to be obtained
 
     try:
         # Get Agent Summary
@@ -855,7 +855,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **str**| agentId to be obtained | 
+ **agent_id** | **int**| agentId to be obtained | 
 
 ### Return type
 
@@ -957,7 +957,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **publish_agent**
-> str publish_agent(agent_id, visibility)
+> int publish_agent(agent_id, visibility)
 
 Publish Agent
 
@@ -992,7 +992,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    agent_id = 'agent_id_example' # str | The agentId to be published
+    agent_id = 56 # int | The agentId to be published
     visibility = 'visibility_example' # str | Visibility: public | private | ...
 
     try:
@@ -1011,12 +1011,12 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **str**| The agentId to be published | 
+ **agent_id** | **int**| The agentId to be published | 
  **visibility** | **str**| Visibility: public | private | ... | 
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -1025,7 +1025,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -1230,7 +1230,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AgentApi(api_client)
-    agent_id = 'agent_id_example' # str | AgentId to be updated
+    agent_id = 56 # int | AgentId to be updated
     agent_update_dto = {"version":2,"name":"Second Test Agent (New)","visibility":"public","description":"Second agent description (new)","config":"{}","inputs":"{\"robot\": null}","tags":["test2","demo2","robot"],"aiModels":["123","456"]} # AgentUpdateDTO | Agent information to be updated
 
     try:
@@ -1249,7 +1249,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **agent_id** | **str**| AgentId to be updated | 
+ **agent_id** | **int**| AgentId to be updated | 
  **agent_update_dto** | [**AgentUpdateDTO**](AgentUpdateDTO.md)| Agent information to be updated | 
 
 ### Return type

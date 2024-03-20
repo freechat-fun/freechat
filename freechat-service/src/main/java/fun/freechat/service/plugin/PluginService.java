@@ -47,14 +47,17 @@ public interface PluginService {
     List<Triple<PluginInfo, List<String>, List<String>>> searchDetails(Query query, User user);
     long count(Query query, User user);
     boolean create(Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple);
-    List<String> create(List<Triple<PluginInfo, List<String>, List<String>>> pluginInfoList);
+    List<Long> create(List<Triple<PluginInfo, List<String>, List<String>>> pluginInfoList);
     boolean update(Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple);
-    boolean hide(String pluginId, User user);
-    boolean delete(String pluginId, User user);
-    List<String> delete(List<String> pluginIds, User user);
-    Triple<PluginInfo, List<String>, List<String>> summary(String pluginId, User user);
-    List<Triple<PluginInfo, List<String>, List<String>>> summary(Collection<String> pluginIds, User user);
-    Triple<PluginInfo, List<String>, List<String>> details(String pluginId, User user);
-    List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<String> pluginIds, User user);
-    String getOwner(String pluginId);
+    boolean hide(Long pluginId, User user);
+    boolean delete(Long pluginId, User user);
+    List<Long> delete(List<Long> pluginIds, User user);
+    Triple<PluginInfo, List<String>, List<String>> summary(Long pluginId, User user);
+    List<Triple<PluginInfo, List<String>, List<String>>> summary(Collection<Long> pluginIds, User user);
+    Triple<PluginInfo, List<String>, List<String>> details(Long pluginId, User user);
+    List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<Long> pluginIds, User user);
+    Long getIdByUid(String pluginUid, User user);
+    String getOwner(Long pluginId);
+    String getOwnerByUid(String pluginUid);
+    String getUid(Long pluginId);
 }

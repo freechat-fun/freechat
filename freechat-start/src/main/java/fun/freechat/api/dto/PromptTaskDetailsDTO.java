@@ -3,6 +3,7 @@ package fun.freechat.api.dto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import fun.freechat.api.util.CommonUtils;
+import fun.freechat.api.util.PromptUtils;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,7 +50,7 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
         }
         PromptTaskDetailsDTO dto = CommonUtils.convert(task, PromptTaskDetailsDTO.class);
 
-        if (StringUtils.isNotBlank(task.getPromptId())) {
+        if (StringUtils.isNotBlank(task.getPromptUid())) {
             Map<String, Object> variables = null;
             if (StringUtils.isNotBlank(task.getVariables())) {
                 try {
@@ -60,7 +61,8 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
                 }
             }
             Boolean draft = (byte) 1 == task.getDraft();
-            PromptRefDTO promptRef = PromptRefDTO.from(task.getPromptId(), variables, draft);
+            PromptRefDTO promptRef = PromptRefDTO.from(
+                    PromptUtils.uidToLatestId(task.getPromptUid()), variables, draft);
 
             dto.setPromptRef(promptRef);
         }

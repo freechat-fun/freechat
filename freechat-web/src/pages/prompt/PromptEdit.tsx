@@ -5,6 +5,6 @@ export default function PromptEdit() {
   const { id } = useParams();
   
   return (
-    <PromptEditor id={id} />
+    <PromptEditor id={Number(id)} />
   )
 }

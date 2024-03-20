@@ -11,13 +11,13 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Data
 public class PromptRefDTO {
     @Schema(description = "Prompt identifier", requiredMode = REQUIRED)
-    private String promptId;
+    private Long promptId;
     @Schema(description = "Variables applied to the template, can be empty")
     private Map<String, Object> variables;
     @Schema(description = "Whether to use draft content")
     private Boolean draft;
 
-    public static PromptRefDTO from(String promptId, Map<String, Object> variables, Boolean draft) {
+    public static PromptRefDTO from(Long promptId, Map<String, Object> variables, Boolean draft) {
         PromptRefDTO dto = new PromptRefDTO();
         dto.setPromptId(promptId);
         dto.setVariables(variables);

@@ -5,17 +5,19 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import fun.freechat.model.PromptInfo;
 import jakarta.annotation.Generated;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -25,23 +27,28 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
-import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
-public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PromptInfo>, CommonUpdateMapper {
+public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(promptId, gmtCreate, gmtModified, userId, parentId, visibility, name, type, format, lang, version, description, template, example, inputs, ext, draft);
+    BasicColumn[] selectList = BasicColumn.columnList(promptId, promptUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, type, format, lang, version, description, template, example, inputs, ext, draft);
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
+    @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.promptId", before=false, resultType=Long.class)
+    int insert(InsertStatementProvider<PromptInfo> insertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="PromptInfoResult", value = {
-        @Result(column="prompt_id", property="promptId", jdbcType=JdbcType.VARCHAR, id=true),
+        @Result(column="prompt_id", property="promptId", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column="prompt_uid", property="promptUid", jdbcType=JdbcType.VARCHAR),
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.VARCHAR),
-        @Result(column="parent_id", property="parentId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="parent_uid", property="parentUid", jdbcType=JdbcType.VARCHAR),
         @Result(column="visibility", property="visibility", jdbcType=JdbcType.VARCHAR),
         @Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
         @Result(column="type", property="type", jdbcType=JdbcType.VARCHAR),
@@ -73,7 +80,7 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int deleteByPrimaryKey(String promptId_) {
+    default int deleteByPrimaryKey(Long promptId_) {
         return delete(c -> 
             c.where(promptId, isEqualTo(promptId_))
         );
@@ -82,34 +89,11 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(PromptInfo row) {
         return MyBatis3Utils.insert(this::insert, row, promptInfo, c ->
-            c.map(promptId).toProperty("promptId")
+            c.map(promptUid).toProperty("promptUid")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
             .map(userId).toProperty("userId")
-            .map(parentId).toProperty("parentId")
-            .map(visibility).toProperty("visibility")
-            .map(name).toProperty("name")
-            .map(type).toProperty("type")
-            .map(format).toProperty("format")
-            .map(lang).toProperty("lang")
-            .map(version).toProperty("version")
-            .map(description).toProperty("description")
-            .map(template).toProperty("template")
-            .map(example).toProperty("example")
-            .map(inputs).toProperty("inputs")
-            .map(ext).toProperty("ext")
-            .map(draft).toProperty("draft")
-        );
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insertMultiple(Collection<PromptInfo> records) {
-        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, promptInfo, c ->
-            c.map(promptId).toProperty("promptId")
-            .map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(userId).toProperty("userId")
-            .map(parentId).toProperty("parentId")
+            .map(parentUid).toProperty("parentUid")
             .map(visibility).toProperty("visibility")
             .map(name).toProperty("name")
             .map(type).toProperty("type")
@@ -128,11 +112,11 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(PromptInfo row) {
         return MyBatis3Utils.insert(this::insert, row, promptInfo, c ->
-            c.map(promptId).toPropertyWhenPresent("promptId", row::getPromptId)
+            c.map(promptUid).toPropertyWhenPresent("promptUid", row::getPromptUid)
             .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
             .map(userId).toPropertyWhenPresent("userId", row::getUserId)
-            .map(parentId).toPropertyWhenPresent("parentId", row::getParentId)
+            .map(parentUid).toPropertyWhenPresent("parentUid", row::getParentUid)
             .map(visibility).toPropertyWhenPresent("visibility", row::getVisibility)
             .map(name).toPropertyWhenPresent("name", row::getName)
             .map(type).toPropertyWhenPresent("type", row::getType)
@@ -164,7 +148,7 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default Optional<PromptInfo> selectByPrimaryKey(String promptId_) {
+    default Optional<PromptInfo> selectByPrimaryKey(Long promptId_) {
         return selectOne(c ->
             c.where(promptId, isEqualTo(promptId_))
         );
@@ -177,11 +161,11 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(PromptInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(promptId).equalTo(row::getPromptId)
+        return dsl.set(promptUid).equalTo(row::getPromptUid)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
-                .set(parentId).equalTo(row::getParentId)
+                .set(parentUid).equalTo(row::getParentUid)
                 .set(visibility).equalTo(row::getVisibility)
                 .set(name).equalTo(row::getName)
                 .set(type).equalTo(row::getType)
@@ -198,11 +182,11 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(PromptInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(promptId).equalToWhenPresent(row::getPromptId)
+        return dsl.set(promptUid).equalToWhenPresent(row::getPromptUid)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
-                .set(parentId).equalToWhenPresent(row::getParentId)
+                .set(parentUid).equalToWhenPresent(row::getParentUid)
                 .set(visibility).equalToWhenPresent(row::getVisibility)
                 .set(name).equalToWhenPresent(row::getName)
                 .set(type).equalToWhenPresent(row::getType)
@@ -220,10 +204,11 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(PromptInfo row) {
         return update(c ->
-            c.set(gmtCreate).equalTo(row::getGmtCreate)
+            c.set(promptUid).equalTo(row::getPromptUid)
+            .set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(userId).equalTo(row::getUserId)
-            .set(parentId).equalTo(row::getParentId)
+            .set(parentUid).equalTo(row::getParentUid)
             .set(visibility).equalTo(row::getVisibility)
             .set(name).equalTo(row::getName)
             .set(type).equalTo(row::getType)
@@ -243,10 +228,11 @@ public interface PromptInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(PromptInfo row) {
         return update(c ->
-            c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
+            c.set(promptUid).equalToWhenPresent(row::getPromptUid)
+            .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(userId).equalToWhenPresent(row::getUserId)
-            .set(parentId).equalToWhenPresent(row::getParentId)
+            .set(parentUid).equalToWhenPresent(row::getParentUid)
             .set(visibility).equalToWhenPresent(row::getVisibility)
             .set(name).equalToWhenPresent(row::getName)
             .set(type).equalToWhenPresent(row::getType)

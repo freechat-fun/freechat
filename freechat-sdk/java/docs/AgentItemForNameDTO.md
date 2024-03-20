@@ -8,7 +8,7 @@ Agent identifier and version information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**agentId** | **String** | agentId |  [optional] |
+|**agentId** | **Long** | agentId |  [optional] |
 |**version** | **Integer** | version |  [optional] |
 |**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  |  [optional] |
 

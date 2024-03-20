@@ -12,7 +12,7 @@ Character backend detailed information
 |**backendId** | **String** | Character backend identifier |  [optional] |
 |**gmtCreate** | **OffsetDateTime** | Creation time |  [optional] |
 |**gmtModified** | **OffsetDateTime** | Modification time |  [optional] |
-|**characterId** | **String** | Character identifier |  [optional] |
+|**characterUid** | **String** | Character immutable identifier |  [optional] |
 |**isDefault** | **Boolean** | Whether it is the default backend |  [optional] |
 |**chatPromptTaskId** | **String** | Prompt task identifier for chat |  [optional] |
 |**greetingPromptTaskId** | **String** | Prompt task identifier for greeting |  [optional] |

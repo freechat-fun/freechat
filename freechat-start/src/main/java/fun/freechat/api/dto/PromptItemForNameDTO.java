@@ -15,13 +15,13 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class PromptItemForNameDTO {
     @Schema(description = "promptId")
-    private String promptId;
+    private Long promptId;
     @Schema(description = "version")
     private Integer version;
     @Schema(description = "Interactive statistics information")
     InteractiveStatsDTO stats;
 
-    public static PromptItemForNameDTO from(Triple<String, Integer, InteractiveStats> infoItem) {
+    public static PromptItemForNameDTO from(Triple<Long, Integer, InteractiveStats> infoItem) {
         PromptItemForNameDTO dto = new PromptItemForNameDTO();
         dto.setPromptId(infoItem.getLeft());
         dto.setVersion(infoItem.getMiddle());

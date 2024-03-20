@@ -11,7 +11,10 @@ public final class CharacterInfoDynamicSqlSupport {
     public static final CharacterInfo characterInfo = new CharacterInfo();
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> characterId = characterInfo.characterId;
+    public static final SqlColumn<Long> characterId = characterInfo.characterId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> characterUid = characterInfo.characterUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Date> gmtCreate = characterInfo.gmtCreate;
@@ -23,7 +26,7 @@ public final class CharacterInfoDynamicSqlSupport {
     public static final SqlColumn<String> userId = characterInfo.userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> parentId = characterInfo.parentId;
+    public static final SqlColumn<String> parentUid = characterInfo.parentUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> visibility = characterInfo.visibility;
@@ -75,7 +78,9 @@ public final class CharacterInfoDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class CharacterInfo extends AliasableSqlTable<CharacterInfo> {
-        public final SqlColumn<String> characterId = column("character_id", JDBCType.VARCHAR);
+        public final SqlColumn<Long> characterId = column("character_id", JDBCType.BIGINT);
+
+        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
 
@@ -83,7 +88,7 @@ public final class CharacterInfoDynamicSqlSupport {
 
         public final SqlColumn<String> userId = column("user_id", JDBCType.VARCHAR);
 
-        public final SqlColumn<String> parentId = column("parent_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> parentUid = column("parent_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<String> visibility = column("visibility", JDBCType.VARCHAR);
 

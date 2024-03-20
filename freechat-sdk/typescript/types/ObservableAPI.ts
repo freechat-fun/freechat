@@ -1394,7 +1394,7 @@ export class ObservableAgentApi {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public cloneAgentWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public cloneAgentWithHttpInfo(agentId: number, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.cloneAgent(agentId, _options);
 
         // build promise chain
@@ -1418,8 +1418,8 @@ export class ObservableAgentApi {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public cloneAgent(agentId: string, _options?: Configuration): Observable<string> {
-        return this.cloneAgentWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public cloneAgent(agentId: number, _options?: Configuration): Observable<number> {
+        return this.cloneAgentWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -1427,7 +1427,7 @@ export class ObservableAgentApi {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public cloneAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public cloneAgentsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.cloneAgents(requestBody, _options);
 
         // build promise chain
@@ -1451,8 +1451,8 @@ export class ObservableAgentApi {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public cloneAgents(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.cloneAgentsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public cloneAgents(requestBody: Array<number>, _options?: Configuration): Observable<Array<number>> {
+        return this.cloneAgentsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -1493,7 +1493,7 @@ export class ObservableAgentApi {
      * Create Agent
      * @param agentCreateDTO Information of the agent to be created
      */
-    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.createAgent(agentCreateDTO, _options);
 
         // build promise chain
@@ -1517,8 +1517,8 @@ export class ObservableAgentApi {
      * Create Agent
      * @param agentCreateDTO Information of the agent to be created
      */
-    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Observable<string> {
-        return this.createAgentWithHttpInfo(agentCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Observable<number> {
+        return this.createAgentWithHttpInfo(agentCreateDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -1526,7 +1526,7 @@ export class ObservableAgentApi {
      * Batch Create Agents
      * @param agentCreateDTO List of agent information to be created
      */
-    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.createAgents(agentCreateDTO, _options);
 
         // build promise chain
@@ -1550,8 +1550,8 @@ export class ObservableAgentApi {
      * Batch Create Agents
      * @param agentCreateDTO List of agent information to be created
      */
-    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Observable<Array<string>> {
-        return this.createAgentsWithHttpInfo(agentCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Observable<Array<number>> {
+        return this.createAgentsWithHttpInfo(agentCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -1559,7 +1559,7 @@ export class ObservableAgentApi {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public deleteAgentWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public deleteAgentWithHttpInfo(agentId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.deleteAgent(agentId, _options);
 
         // build promise chain
@@ -1583,7 +1583,7 @@ export class ObservableAgentApi {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public deleteAgent(agentId: string, _options?: Configuration): Observable<boolean> {
+    public deleteAgent(agentId: number, _options?: Configuration): Observable<boolean> {
         return this.deleteAgentWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -1592,7 +1592,7 @@ export class ObservableAgentApi {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public deleteAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public deleteAgentsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.deleteAgents(requestBody, _options);
 
         // build promise chain
@@ -1616,8 +1616,8 @@ export class ObservableAgentApi {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public deleteAgents(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.deleteAgentsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public deleteAgents(requestBody: Array<number>, _options?: Configuration): Observable<Array<number>> {
+        return this.deleteAgentsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -1625,7 +1625,7 @@ export class ObservableAgentApi {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public getAgentDetailsWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<AgentDetailsDTO>> {
+    public getAgentDetailsWithHttpInfo(agentId: number, _options?: Configuration): Observable<HttpInfo<AgentDetailsDTO>> {
         const requestContextPromise = this.requestFactory.getAgentDetails(agentId, _options);
 
         // build promise chain
@@ -1649,7 +1649,7 @@ export class ObservableAgentApi {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public getAgentDetails(agentId: string, _options?: Configuration): Observable<AgentDetailsDTO> {
+    public getAgentDetails(agentId: number, _options?: Configuration): Observable<AgentDetailsDTO> {
         return this.getAgentDetailsWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<AgentDetailsDTO>) => apiResponse.data));
     }
 
@@ -1658,7 +1658,7 @@ export class ObservableAgentApi {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public getAgentSummaryWithHttpInfo(agentId: string, _options?: Configuration): Observable<HttpInfo<AgentSummaryDTO>> {
+    public getAgentSummaryWithHttpInfo(agentId: number, _options?: Configuration): Observable<HttpInfo<AgentSummaryDTO>> {
         const requestContextPromise = this.requestFactory.getAgentSummary(agentId, _options);
 
         // build promise chain
@@ -1682,7 +1682,7 @@ export class ObservableAgentApi {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public getAgentSummary(agentId: string, _options?: Configuration): Observable<AgentSummaryDTO> {
+    public getAgentSummary(agentId: number, _options?: Configuration): Observable<AgentSummaryDTO> {
         return this.getAgentSummaryWithHttpInfo(agentId, _options).pipe(map((apiResponse: HttpInfo<AgentSummaryDTO>) => apiResponse.data));
     }
 
@@ -1725,7 +1725,7 @@ export class ObservableAgentApi {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishAgentWithHttpInfo(agentId: string, visibility: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public publishAgentWithHttpInfo(agentId: number, visibility: string, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.publishAgent(agentId, visibility, _options);
 
         // build promise chain
@@ -1750,8 +1750,8 @@ export class ObservableAgentApi {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishAgent(agentId: string, visibility: string, _options?: Configuration): Observable<string> {
-        return this.publishAgentWithHttpInfo(agentId, visibility, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public publishAgent(agentId: number, visibility: string, _options?: Configuration): Observable<number> {
+        return this.publishAgentWithHttpInfo(agentId, visibility, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -1826,7 +1826,7 @@ export class ObservableAgentApi {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public updateAgentWithHttpInfo(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public updateAgentWithHttpInfo(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.updateAgent(agentId, agentUpdateDTO, _options);
 
         // build promise chain
@@ -1851,7 +1851,7 @@ export class ObservableAgentApi {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public updateAgent(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Observable<boolean> {
+    public updateAgent(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Observable<boolean> {
         return this.updateAgentWithHttpInfo(agentId, agentUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -2115,7 +2115,7 @@ export class ObservableCharacterApi {
      * @param characterId The characterId to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackendWithHttpInfo(characterId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+    public addCharacterBackendWithHttpInfo(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Observable<HttpInfo<string>> {
         const requestContextPromise = this.requestFactory.addCharacterBackend(characterId, characterBackendDTO, _options);
 
         // build promise chain
@@ -2140,7 +2140,7 @@ export class ObservableCharacterApi {
      * @param characterId The characterId to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackend(characterId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Observable<string> {
+    public addCharacterBackend(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Observable<string> {
         return this.addCharacterBackendWithHttpInfo(characterId, characterBackendDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
@@ -2215,7 +2215,7 @@ export class ObservableCharacterApi {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public cloneCharacterWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public cloneCharacterWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.cloneCharacter(characterId, _options);
 
         // build promise chain
@@ -2239,8 +2239,8 @@ export class ObservableCharacterApi {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public cloneCharacter(characterId: string, _options?: Configuration): Observable<string> {
-        return this.cloneCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public cloneCharacter(characterId: number, _options?: Configuration): Observable<number> {
+        return this.cloneCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -2281,7 +2281,7 @@ export class ObservableCharacterApi {
      * Create Character
      * @param characterCreateDTO Information of the character to be created
      */
-    public createCharacterWithHttpInfo(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+    public createCharacterWithHttpInfo(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.createCharacter(characterCreateDTO, _options);
 
         // build promise chain
@@ -2305,8 +2305,8 @@ export class ObservableCharacterApi {
      * Create Character
      * @param characterCreateDTO Information of the character to be created
      */
-    public createCharacter(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Observable<string> {
-        return this.createCharacterWithHttpInfo(characterCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createCharacter(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Observable<number> {
+        return this.createCharacterWithHttpInfo(characterCreateDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -2314,7 +2314,7 @@ export class ObservableCharacterApi {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public deleteCharacterWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public deleteCharacterWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.deleteCharacter(characterId, _options);
 
         // build promise chain
@@ -2338,7 +2338,7 @@ export class ObservableCharacterApi {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public deleteCharacter(characterId: string, _options?: Configuration): Observable<boolean> {
+    public deleteCharacter(characterId: number, _options?: Configuration): Observable<boolean> {
         return this.deleteCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -2347,7 +2347,7 @@ export class ObservableCharacterApi {
      * Delete Character by Name
      * @param name The character name to be deleted
      */
-    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.deleteCharacterByName(name, _options);
 
         // build promise chain
@@ -2371,8 +2371,8 @@ export class ObservableCharacterApi {
      * Delete Character by Name
      * @param name The character name to be deleted
      */
-    public deleteCharacterByName(name: string, _options?: Configuration): Observable<Array<string>> {
-        return this.deleteCharacterByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public deleteCharacterByName(name: string, _options?: Configuration): Observable<Array<number>> {
+        return this.deleteCharacterByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -2413,7 +2413,7 @@ export class ObservableCharacterApi {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterDetailsWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<CharacterDetailsDTO>> {
+    public getCharacterDetailsWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<CharacterDetailsDTO>> {
         const requestContextPromise = this.requestFactory.getCharacterDetails(characterId, _options);
 
         // build promise chain
@@ -2437,7 +2437,7 @@ export class ObservableCharacterApi {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterDetails(characterId: string, _options?: Configuration): Observable<CharacterDetailsDTO> {
+    public getCharacterDetails(characterId: number, _options?: Configuration): Observable<CharacterDetailsDTO> {
         return this.getCharacterDetailsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<CharacterDetailsDTO>) => apiResponse.data));
     }
 
@@ -2446,7 +2446,7 @@ export class ObservableCharacterApi {
      * Get Latest Character Id by Name
      * @param name Character name
      */
-    public getCharacterLatestIdByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public getCharacterLatestIdByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.getCharacterLatestIdByName(name, _options);
 
         // build promise chain
@@ -2470,8 +2470,8 @@ export class ObservableCharacterApi {
      * Get Latest Character Id by Name
      * @param name Character name
      */
-    public getCharacterLatestIdByName(name: string, _options?: Configuration): Observable<string> {
-        return this.getCharacterLatestIdByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public getCharacterLatestIdByName(name: string, _options?: Configuration): Observable<number> {
+        return this.getCharacterLatestIdByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -2479,7 +2479,7 @@ export class ObservableCharacterApi {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterSummaryWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<CharacterSummaryDTO>> {
+    public getCharacterSummaryWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<CharacterSummaryDTO>> {
         const requestContextPromise = this.requestFactory.getCharacterSummary(characterId, _options);
 
         // build promise chain
@@ -2503,7 +2503,7 @@ export class ObservableCharacterApi {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterSummary(characterId: string, _options?: Configuration): Observable<CharacterSummaryDTO> {
+    public getCharacterSummary(characterId: number, _options?: Configuration): Observable<CharacterSummaryDTO> {
         return this.getCharacterSummaryWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<CharacterSummaryDTO>) => apiResponse.data));
     }
 
@@ -2512,7 +2512,7 @@ export class ObservableCharacterApi {
      * Get Default Character Backend
      * @param characterId The characterId to be queried
      */
-    public getDefaultCharacterBackendWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<CharacterBackendDetailsDTO>> {
+    public getDefaultCharacterBackendWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<CharacterBackendDetailsDTO>> {
         const requestContextPromise = this.requestFactory.getDefaultCharacterBackend(characterId, _options);
 
         // build promise chain
@@ -2536,7 +2536,7 @@ export class ObservableCharacterApi {
      * Get Default Character Backend
      * @param characterId The characterId to be queried
      */
-    public getDefaultCharacterBackend(characterId: string, _options?: Configuration): Observable<CharacterBackendDetailsDTO> {
+    public getDefaultCharacterBackend(characterId: number, _options?: Configuration): Observable<CharacterBackendDetailsDTO> {
         return this.getDefaultCharacterBackendWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<CharacterBackendDetailsDTO>) => apiResponse.data));
     }
 
@@ -2545,7 +2545,7 @@ export class ObservableCharacterApi {
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackendIdsWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public listCharacterBackendIdsWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
         const requestContextPromise = this.requestFactory.listCharacterBackendIds(characterId, _options);
 
         // build promise chain
@@ -2569,7 +2569,7 @@ export class ObservableCharacterApi {
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackendIds(characterId: string, _options?: Configuration): Observable<Array<string>> {
+    public listCharacterBackendIds(characterId: number, _options?: Configuration): Observable<Array<string>> {
         return this.listCharacterBackendIdsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
@@ -2578,7 +2578,7 @@ export class ObservableCharacterApi {
      * List Character Backends
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackendsWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+    public listCharacterBackendsWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
         const requestContextPromise = this.requestFactory.listCharacterBackends(characterId, _options);
 
         // build promise chain
@@ -2602,8 +2602,41 @@ export class ObservableCharacterApi {
      * List Character Backends
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackends(characterId: string, _options?: Configuration): Observable<Array<CharacterBackendDetailsDTO>> {
+    public listCharacterBackends(characterId: number, _options?: Configuration): Observable<Array<CharacterBackendDetailsDTO>> {
         return this.listCharacterBackendsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterBackendDetailsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param characterId Character identifier
+     */
+    public listCharacterPicturesWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.listCharacterPictures(characterId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listCharacterPicturesWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param characterId Character identifier
+     */
+    public listCharacterPictures(characterId: number, _options?: Configuration): Observable<Array<string>> {
+        return this.listCharacterPicturesWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
     /**
@@ -2677,7 +2710,7 @@ export class ObservableCharacterApi {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public publishCharacterWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public publishCharacterWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.publishCharacter(characterId, _options);
 
         // build promise chain
@@ -2701,8 +2734,8 @@ export class ObservableCharacterApi {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public publishCharacter(characterId: string, _options?: Configuration): Observable<string> {
-        return this.publishCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public publishCharacter(characterId: number, _options?: Configuration): Observable<number> {
+        return this.publishCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -2711,7 +2744,7 @@ export class ObservableCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1WithHttpInfo(characterId: string, visibility: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public publishCharacter1WithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.publishCharacter1(characterId, visibility, _options);
 
         // build promise chain
@@ -2736,8 +2769,8 @@ export class ObservableCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1(characterId: string, visibility: string, _options?: Configuration): Observable<string> {
-        return this.publishCharacter1WithHttpInfo(characterId, visibility, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public publishCharacter1(characterId: number, visibility: string, _options?: Configuration): Observable<number> {
+        return this.publishCharacter1WithHttpInfo(characterId, visibility, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -2878,7 +2911,7 @@ export class ObservableCharacterApi {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public updateCharacterWithHttpInfo(characterId: string, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public updateCharacterWithHttpInfo(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.updateCharacter(characterId, characterUpdateDTO, _options);
 
         // build promise chain
@@ -2903,7 +2936,7 @@ export class ObservableCharacterApi {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public updateCharacter(characterId: string, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Observable<boolean> {
+    public updateCharacter(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Observable<boolean> {
         return this.updateCharacterWithHttpInfo(characterId, characterUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -2945,10 +2978,11 @@ export class ObservableCharacterApi {
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
+     * @param characterId Character identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatarWithHttpInfo(file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.uploadCharacterAvatar(file, _options);
+    public uploadCharacterAvatarWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.uploadCharacterAvatar(characterId, file, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2969,19 +3003,21 @@ export class ObservableCharacterApi {
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
+     * @param characterId Character identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatar(file: HttpFile, _options?: Configuration): Observable<string> {
-        return this.uploadCharacterAvatarWithHttpInfo(file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Observable<string> {
+        return this.uploadCharacterAvatarWithHttpInfo(characterId, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
      * Upload a picture of the character.
      * Upload Character Picture
+     * @param characterId Character identifier
      * @param file Character picture
      */
-    public uploadCharacterPictureWithHttpInfo(file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.uploadCharacterPicture(file, _options);
+    public uploadCharacterPictureWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.uploadCharacterPicture(characterId, file, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -3002,10 +3038,11 @@ export class ObservableCharacterApi {
     /**
      * Upload a picture of the character.
      * Upload Character Picture
+     * @param characterId Character identifier
      * @param file Character picture
      */
-    public uploadCharacterPicture(file: HttpFile, _options?: Configuration): Observable<string> {
-        return this.uploadCharacterPictureWithHttpInfo(file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public uploadCharacterPicture(characterId: number, file: HttpFile, _options?: Configuration): Observable<string> {
+        return this.uploadCharacterPictureWithHttpInfo(characterId, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
 }
@@ -3097,7 +3134,7 @@ export class ObservableChatApi {
      * Get Default Chat
      * @param characterId Character identifier
      */
-    public getDefaultChatIdWithHttpInfo(characterId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public getDefaultChatIdWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<string>> {
         const requestContextPromise = this.requestFactory.getDefaultChatId(characterId, _options);
 
         // build promise chain
@@ -3121,7 +3158,7 @@ export class ObservableChatApi {
      * Get Default Chat
      * @param characterId Character identifier
      */
-    public getDefaultChatId(characterId: string, _options?: Configuration): Observable<string> {
+    public getDefaultChatId(characterId: number, _options?: Configuration): Observable<string> {
         return this.getDefaultChatIdWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
@@ -3294,41 +3331,6 @@ export class ObservableChatApi {
      */
     public rollbackMessages(chatId: string, count: number, _options?: Configuration): Observable<Array<number>> {
         return this.rollbackMessagesWithHttpInfo(chatId, count, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
-    }
-
-    /**
-     * Rollback messages of a chat from specified id.
-     * Rollback Chat Messages by Id
-     * @param chatId Chat session identifier
-     * @param messageId Starting message id to be rolled back
-     */
-    public rollbackMessagesFromWithHttpInfo(chatId: string, messageId: number, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
-        const requestContextPromise = this.requestFactory.rollbackMessagesFrom(chatId, messageId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.rollbackMessagesFromWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Rollback messages of a chat from specified id.
-     * Rollback Chat Messages by Id
-     * @param chatId Chat session identifier
-     * @param messageId Starting message id to be rolled back
-     */
-    public rollbackMessagesFrom(chatId: string, messageId: number, _options?: Configuration): Observable<Array<number>> {
-        return this.rollbackMessagesFromWithHttpInfo(chatId, messageId, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -4715,7 +4717,7 @@ export class ObservablePluginApi {
      * Create Plugin
      * @param pluginCreateDTO Information of the plugin to be created
      */
-    public createPluginWithHttpInfo(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+    public createPluginWithHttpInfo(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.createPlugin(pluginCreateDTO, _options);
 
         // build promise chain
@@ -4739,8 +4741,8 @@ export class ObservablePluginApi {
      * Create Plugin
      * @param pluginCreateDTO Information of the plugin to be created
      */
-    public createPlugin(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Observable<string> {
-        return this.createPluginWithHttpInfo(pluginCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createPlugin(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Observable<number> {
+        return this.createPluginWithHttpInfo(pluginCreateDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -4748,7 +4750,7 @@ export class ObservablePluginApi {
      * Batch Create Plugins
      * @param pluginCreateDTO List of plugin information to be created
      */
-    public createPluginsWithHttpInfo(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public createPluginsWithHttpInfo(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.createPlugins(pluginCreateDTO, _options);
 
         // build promise chain
@@ -4772,8 +4774,8 @@ export class ObservablePluginApi {
      * Batch Create Plugins
      * @param pluginCreateDTO List of plugin information to be created
      */
-    public createPlugins(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Observable<Array<string>> {
-        return this.createPluginsWithHttpInfo(pluginCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public createPlugins(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Observable<Array<number>> {
+        return this.createPluginsWithHttpInfo(pluginCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -4781,7 +4783,7 @@ export class ObservablePluginApi {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public deletePluginWithHttpInfo(pluginId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public deletePluginWithHttpInfo(pluginId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.deletePlugin(pluginId, _options);
 
         // build promise chain
@@ -4805,7 +4807,7 @@ export class ObservablePluginApi {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public deletePlugin(pluginId: string, _options?: Configuration): Observable<boolean> {
+    public deletePlugin(pluginId: number, _options?: Configuration): Observable<boolean> {
         return this.deletePluginWithHttpInfo(pluginId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -4814,7 +4816,7 @@ export class ObservablePluginApi {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public deletePluginsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public deletePluginsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.deletePlugins(requestBody, _options);
 
         // build promise chain
@@ -4838,8 +4840,8 @@ export class ObservablePluginApi {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public deletePlugins(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.deletePluginsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public deletePlugins(requestBody: Array<number>, _options?: Configuration): Observable<Array<number>> {
+        return this.deletePluginsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -4847,7 +4849,7 @@ export class ObservablePluginApi {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public getPluginDetailsWithHttpInfo(pluginId: string, _options?: Configuration): Observable<HttpInfo<PluginDetailsDTO>> {
+    public getPluginDetailsWithHttpInfo(pluginId: number, _options?: Configuration): Observable<HttpInfo<PluginDetailsDTO>> {
         const requestContextPromise = this.requestFactory.getPluginDetails(pluginId, _options);
 
         // build promise chain
@@ -4871,7 +4873,7 @@ export class ObservablePluginApi {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public getPluginDetails(pluginId: string, _options?: Configuration): Observable<PluginDetailsDTO> {
+    public getPluginDetails(pluginId: number, _options?: Configuration): Observable<PluginDetailsDTO> {
         return this.getPluginDetailsWithHttpInfo(pluginId, _options).pipe(map((apiResponse: HttpInfo<PluginDetailsDTO>) => apiResponse.data));
     }
 
@@ -4880,7 +4882,7 @@ export class ObservablePluginApi {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public getPluginSummaryWithHttpInfo(pluginId: string, _options?: Configuration): Observable<HttpInfo<PluginSummaryDTO>> {
+    public getPluginSummaryWithHttpInfo(pluginId: number, _options?: Configuration): Observable<HttpInfo<PluginSummaryDTO>> {
         const requestContextPromise = this.requestFactory.getPluginSummary(pluginId, _options);
 
         // build promise chain
@@ -4904,7 +4906,7 @@ export class ObservablePluginApi {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public getPluginSummary(pluginId: string, _options?: Configuration): Observable<PluginSummaryDTO> {
+    public getPluginSummary(pluginId: number, _options?: Configuration): Observable<PluginSummaryDTO> {
         return this.getPluginSummaryWithHttpInfo(pluginId, _options).pipe(map((apiResponse: HttpInfo<PluginSummaryDTO>) => apiResponse.data));
     }
 
@@ -4913,7 +4915,7 @@ export class ObservablePluginApi {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public refreshPluginInfoWithHttpInfo(pluginId: string, _options?: Configuration): Observable<HttpInfo<void>> {
+    public refreshPluginInfoWithHttpInfo(pluginId: number, _options?: Configuration): Observable<HttpInfo<void>> {
         const requestContextPromise = this.requestFactory.refreshPluginInfo(pluginId, _options);
 
         // build promise chain
@@ -4937,7 +4939,7 @@ export class ObservablePluginApi {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public refreshPluginInfo(pluginId: string, _options?: Configuration): Observable<void> {
+    public refreshPluginInfo(pluginId: number, _options?: Configuration): Observable<void> {
         return this.refreshPluginInfoWithHttpInfo(pluginId, _options).pipe(map((apiResponse: HttpInfo<void>) => apiResponse.data));
     }
 
@@ -5013,7 +5015,7 @@ export class ObservablePluginApi {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public updatePluginWithHttpInfo(pluginId: string, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public updatePluginWithHttpInfo(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.updatePlugin(pluginId, pluginUpdateDTO, _options);
 
         // build promise chain
@@ -5038,7 +5040,7 @@ export class ObservablePluginApi {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public updatePlugin(pluginId: string, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Observable<boolean> {
+    public updatePlugin(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Observable<boolean> {
         return this.updatePluginWithHttpInfo(pluginId, pluginUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -5197,7 +5199,7 @@ export class ObservablePromptApi {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public clonePromptWithHttpInfo(promptId: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public clonePromptWithHttpInfo(promptId: number, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.clonePrompt(promptId, _options);
 
         // build promise chain
@@ -5221,8 +5223,8 @@ export class ObservablePromptApi {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public clonePrompt(promptId: string, _options?: Configuration): Observable<string> {
-        return this.clonePromptWithHttpInfo(promptId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public clonePrompt(promptId: number, _options?: Configuration): Observable<number> {
+        return this.clonePromptWithHttpInfo(promptId, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -5230,7 +5232,7 @@ export class ObservablePromptApi {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public clonePromptsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public clonePromptsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.clonePrompts(requestBody, _options);
 
         // build promise chain
@@ -5254,8 +5256,8 @@ export class ObservablePromptApi {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public clonePrompts(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.clonePromptsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public clonePrompts(requestBody: Array<number>, _options?: Configuration): Observable<Array<number>> {
+        return this.clonePromptsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -5296,7 +5298,7 @@ export class ObservablePromptApi {
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
      */
-    public createPromptWithHttpInfo(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+    public createPromptWithHttpInfo(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.createPrompt(promptCreateDTO, _options);
 
         // build promise chain
@@ -5320,8 +5322,8 @@ export class ObservablePromptApi {
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
      */
-    public createPrompt(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Observable<string> {
-        return this.createPromptWithHttpInfo(promptCreateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createPrompt(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Observable<number> {
+        return this.createPromptWithHttpInfo(promptCreateDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -5329,7 +5331,7 @@ export class ObservablePromptApi {
      * Batch Create Prompts
      * @param promptCreateDTO List of prompt information to be created
      */
-    public createPromptsWithHttpInfo(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public createPromptsWithHttpInfo(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.createPrompts(promptCreateDTO, _options);
 
         // build promise chain
@@ -5353,8 +5355,8 @@ export class ObservablePromptApi {
      * Batch Create Prompts
      * @param promptCreateDTO List of prompt information to be created
      */
-    public createPrompts(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Observable<Array<string>> {
-        return this.createPromptsWithHttpInfo(promptCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public createPrompts(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Observable<Array<number>> {
+        return this.createPromptsWithHttpInfo(promptCreateDTO, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -5362,7 +5364,7 @@ export class ObservablePromptApi {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public deletePromptWithHttpInfo(promptId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public deletePromptWithHttpInfo(promptId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.deletePrompt(promptId, _options);
 
         // build promise chain
@@ -5386,7 +5388,7 @@ export class ObservablePromptApi {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public deletePrompt(promptId: string, _options?: Configuration): Observable<boolean> {
+    public deletePrompt(promptId: number, _options?: Configuration): Observable<boolean> {
         return this.deletePromptWithHttpInfo(promptId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
@@ -5395,7 +5397,7 @@ export class ObservablePromptApi {
      * Delete Prompt by Name
      * @param name The prompt name to be deleted
      */
-    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.deletePromptByName(name, _options);
 
         // build promise chain
@@ -5419,8 +5421,8 @@ export class ObservablePromptApi {
      * Delete Prompt by Name
      * @param name The prompt name to be deleted
      */
-    public deletePromptByName(name: string, _options?: Configuration): Observable<Array<string>> {
-        return this.deletePromptByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public deletePromptByName(name: string, _options?: Configuration): Observable<Array<number>> {
+        return this.deletePromptByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -5428,7 +5430,7 @@ export class ObservablePromptApi {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public deletePromptsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+    public deletePromptsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Observable<HttpInfo<Array<number>>> {
         const requestContextPromise = this.requestFactory.deletePrompts(requestBody, _options);
 
         // build promise chain
@@ -5452,8 +5454,8 @@ export class ObservablePromptApi {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public deletePrompts(requestBody: Array<string>, _options?: Configuration): Observable<Array<string>> {
-        return this.deletePromptsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    public deletePrompts(requestBody: Array<number>, _options?: Configuration): Observable<Array<number>> {
+        return this.deletePromptsWithHttpInfo(requestBody, _options).pipe(map((apiResponse: HttpInfo<Array<number>>) => apiResponse.data));
     }
 
     /**
@@ -5494,7 +5496,7 @@ export class ObservablePromptApi {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public getPromptDetailsWithHttpInfo(promptId: string, _options?: Configuration): Observable<HttpInfo<PromptDetailsDTO>> {
+    public getPromptDetailsWithHttpInfo(promptId: number, _options?: Configuration): Observable<HttpInfo<PromptDetailsDTO>> {
         const requestContextPromise = this.requestFactory.getPromptDetails(promptId, _options);
 
         // build promise chain
@@ -5518,7 +5520,7 @@ export class ObservablePromptApi {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public getPromptDetails(promptId: string, _options?: Configuration): Observable<PromptDetailsDTO> {
+    public getPromptDetails(promptId: number, _options?: Configuration): Observable<PromptDetailsDTO> {
         return this.getPromptDetailsWithHttpInfo(promptId, _options).pipe(map((apiResponse: HttpInfo<PromptDetailsDTO>) => apiResponse.data));
     }
 
@@ -5527,7 +5529,7 @@ export class ObservablePromptApi {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public getPromptSummaryWithHttpInfo(promptId: string, _options?: Configuration): Observable<HttpInfo<PromptSummaryDTO>> {
+    public getPromptSummaryWithHttpInfo(promptId: number, _options?: Configuration): Observable<HttpInfo<PromptSummaryDTO>> {
         const requestContextPromise = this.requestFactory.getPromptSummary(promptId, _options);
 
         // build promise chain
@@ -5551,7 +5553,7 @@ export class ObservablePromptApi {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public getPromptSummary(promptId: string, _options?: Configuration): Observable<PromptSummaryDTO> {
+    public getPromptSummary(promptId: number, _options?: Configuration): Observable<PromptSummaryDTO> {
         return this.getPromptSummaryWithHttpInfo(promptId, _options).pipe(map((apiResponse: HttpInfo<PromptSummaryDTO>) => apiResponse.data));
     }
 
@@ -5627,7 +5629,7 @@ export class ObservablePromptApi {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishPromptWithHttpInfo(promptId: string, visibility: string, _options?: Configuration): Observable<HttpInfo<string>> {
+    public publishPromptWithHttpInfo(promptId: number, visibility: string, _options?: Configuration): Observable<HttpInfo<number>> {
         const requestContextPromise = this.requestFactory.publishPrompt(promptId, visibility, _options);
 
         // build promise chain
@@ -5652,8 +5654,8 @@ export class ObservablePromptApi {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishPrompt(promptId: string, visibility: string, _options?: Configuration): Observable<string> {
-        return this.publishPromptWithHttpInfo(promptId, visibility, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public publishPrompt(promptId: number, visibility: string, _options?: Configuration): Observable<number> {
+        return this.publishPromptWithHttpInfo(promptId, visibility, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -5794,7 +5796,7 @@ export class ObservablePromptApi {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public updatePromptWithHttpInfo(promptId: string, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+    public updatePromptWithHttpInfo(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
         const requestContextPromise = this.requestFactory.updatePrompt(promptId, promptUpdateDTO, _options);
 
         // build promise chain
@@ -5819,7 +5821,7 @@ export class ObservablePromptApi {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public updatePrompt(promptId: string, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Observable<boolean> {
+    public updatePrompt(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Observable<boolean> {
         return this.updatePromptWithHttpInfo(promptId, promptUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 

@@ -7,7 +7,7 @@ import { getLocaleLabel } from "../../configs/i18n-config";
 
 export default function PromptMeta(props: {
   record: PromptDetailsDTO | undefined,
-  history: string[],
+  history: [string, number][],
 }) {
   const { record, history } = props;
   const { t } = useTranslation(['prompt']);
@@ -82,18 +82,20 @@ export default function PromptMeta(props: {
           <Typography level="title-sm" textColor="neutral">
             {t('History')}
           </Typography>
-          {history.map(id => {
+          {history.map(item => {
+            const label = item[0];
+            const id = item[1];
             if (id === record?.promptId) {
               return (
                 <HistoryTypography textColor="gray" level="body-sm" key={`history-${id}`}>
-                  {id}
+                  {label}
                 </HistoryTypography>
               );
             } else {
               return (
                 <RouterLink href={`/w/prompt/${id}`} key={`history-${id}`}>
                   <HistoryTypography level="body-sm">
-                    {id}
+                    {label}
                   </HistoryTypography>
                 </RouterLink>
               );

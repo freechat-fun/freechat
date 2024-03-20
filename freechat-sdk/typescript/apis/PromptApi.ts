@@ -222,7 +222,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public async clonePrompt(promptId: string, _options?: Configuration): Promise<RequestContext> {
+    public async clonePrompt(promptId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptId' is not null or undefined
@@ -260,7 +260,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public async clonePrompts(requestBody: Array<string>, _options?: Configuration): Promise<RequestContext> {
+    public async clonePrompts(requestBody: Array<number>, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'requestBody' is not null or undefined
@@ -283,7 +283,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(requestBody, "Array<string>", ""),
+            ObjectSerializer.serialize(requestBody, "Array<number>", ""),
             contentType
         );
         requestContext.setBody(serializedBody);
@@ -452,7 +452,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public async deletePrompt(promptId: string, _options?: Configuration): Promise<RequestContext> {
+    public async deletePrompt(promptId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptId' is not null or undefined
@@ -528,7 +528,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public async deletePrompts(requestBody: Array<string>, _options?: Configuration): Promise<RequestContext> {
+    public async deletePrompts(requestBody: Array<number>, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'requestBody' is not null or undefined
@@ -551,7 +551,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(requestBody, "Array<string>", ""),
+            ObjectSerializer.serialize(requestBody, "Array<number>", ""),
             contentType
         );
         requestContext.setBody(serializedBody);
@@ -614,7 +614,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public async getPromptDetails(promptId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getPromptDetails(promptId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptId' is not null or undefined
@@ -652,7 +652,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public async getPromptSummary(promptId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getPromptSummary(promptId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptId' is not null or undefined
@@ -767,7 +767,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public async publishPrompt(promptId: string, visibility: string, _options?: Configuration): Promise<RequestContext> {
+    public async publishPrompt(promptId: number, visibility: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptId' is not null or undefined
@@ -1005,7 +1005,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public async updatePrompt(promptId: string, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<RequestContext> {
+    public async updatePrompt(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'promptId' is not null or undefined
@@ -1182,22 +1182,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to clonePrompt
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async clonePromptWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async clonePromptWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1211,22 +1211,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to clonePrompts
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async clonePromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async clonePromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1269,22 +1269,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to createPrompt
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createPromptWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async createPromptWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1298,22 +1298,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to createPrompts
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createPromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async createPromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1356,22 +1356,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to deletePromptByName
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async deletePromptByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async deletePromptByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1385,22 +1385,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to deletePrompts
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async deletePromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async deletePromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1559,22 +1559,22 @@ export class PromptApiResponseProcessor {
      * @params response Response returned by the server for a request to publishPrompt
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async publishPromptWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async publishPromptWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

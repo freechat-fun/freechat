@@ -1092,19 +1092,19 @@ export interface AgentApiBatchSearchAgentSummaryRequest {
 export interface AgentApiCloneAgentRequest {
     /**
      * The referenced agentId
-     * @type string
+     * @type number
      * @memberof AgentApicloneAgent
      */
-    agentId: string
+    agentId: number
 }
 
 export interface AgentApiCloneAgentsRequest {
     /**
      * List of agent information to be created
-     * @type Array&lt;string&gt;
+     * @type Array&lt;number&gt;
      * @memberof AgentApicloneAgents
      */
-    requestBody: Array<string>
+    requestBody: Array<number>
 }
 
 export interface AgentApiCountAgentsRequest {
@@ -1137,37 +1137,37 @@ export interface AgentApiCreateAgentsRequest {
 export interface AgentApiDeleteAgentRequest {
     /**
      * AgentId to be deleted
-     * @type string
+     * @type number
      * @memberof AgentApideleteAgent
      */
-    agentId: string
+    agentId: number
 }
 
 export interface AgentApiDeleteAgentsRequest {
     /**
      * List of agentId to be deleted
-     * @type Array&lt;string&gt;
+     * @type Array&lt;number&gt;
      * @memberof AgentApideleteAgents
      */
-    requestBody: Array<string>
+    requestBody: Array<number>
 }
 
 export interface AgentApiGetAgentDetailsRequest {
     /**
      * AgentId to be obtained
-     * @type string
+     * @type number
      * @memberof AgentApigetAgentDetails
      */
-    agentId: string
+    agentId: number
 }
 
 export interface AgentApiGetAgentSummaryRequest {
     /**
      * agentId to be obtained
-     * @type string
+     * @type number
      * @memberof AgentApigetAgentSummary
      */
-    agentId: string
+    agentId: number
 }
 
 export interface AgentApiListAgentVersionsByNameRequest {
@@ -1182,10 +1182,10 @@ export interface AgentApiListAgentVersionsByNameRequest {
 export interface AgentApiPublishAgentRequest {
     /**
      * The agentId to be published
-     * @type string
+     * @type number
      * @memberof AgentApipublishAgent
      */
-    agentId: string
+    agentId: number
     /**
      * Visibility: public | private | ...
      * @type string
@@ -1215,10 +1215,10 @@ export interface AgentApiSearchAgentSummaryRequest {
 export interface AgentApiUpdateAgentRequest {
     /**
      * AgentId to be updated
-     * @type string
+     * @type number
      * @memberof AgentApiupdateAgent
      */
-    agentId: string
+    agentId: number
     /**
      * Agent information to be updated
      * @type AgentUpdateDTO
@@ -1275,7 +1275,7 @@ export class ObjectAgentApi {
      * Clone Agent
      * @param param the request object
      */
-    public cloneAgentWithHttpInfo(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public cloneAgentWithHttpInfo(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.cloneAgentWithHttpInfo(param.agentId,  options).toPromise();
     }
 
@@ -1284,7 +1284,7 @@ export class ObjectAgentApi {
      * Clone Agent
      * @param param the request object
      */
-    public cloneAgent(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<string> {
+    public cloneAgent(param: AgentApiCloneAgentRequest, options?: Configuration): Promise<number> {
         return this.api.cloneAgent(param.agentId,  options).toPromise();
     }
 
@@ -1293,7 +1293,7 @@ export class ObjectAgentApi {
      * Batch Clone Agents
      * @param param the request object
      */
-    public cloneAgentsWithHttpInfo(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public cloneAgentsWithHttpInfo(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.cloneAgentsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -1302,7 +1302,7 @@ export class ObjectAgentApi {
      * Batch Clone Agents
      * @param param the request object
      */
-    public cloneAgents(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<Array<string>> {
+    public cloneAgents(param: AgentApiCloneAgentsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.cloneAgents(param.requestBody,  options).toPromise();
     }
 
@@ -1329,7 +1329,7 @@ export class ObjectAgentApi {
      * Create Agent
      * @param param the request object
      */
-    public createAgentWithHttpInfo(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createAgentWithHttpInfo(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.createAgentWithHttpInfo(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1338,7 +1338,7 @@ export class ObjectAgentApi {
      * Create Agent
      * @param param the request object
      */
-    public createAgent(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<string> {
+    public createAgent(param: AgentApiCreateAgentRequest, options?: Configuration): Promise<number> {
         return this.api.createAgent(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1347,7 +1347,7 @@ export class ObjectAgentApi {
      * Batch Create Agents
      * @param param the request object
      */
-    public createAgentsWithHttpInfo(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public createAgentsWithHttpInfo(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.createAgentsWithHttpInfo(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1356,7 +1356,7 @@ export class ObjectAgentApi {
      * Batch Create Agents
      * @param param the request object
      */
-    public createAgents(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<Array<string>> {
+    public createAgents(param: AgentApiCreateAgentsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.createAgents(param.agentCreateDTO,  options).toPromise();
     }
 
@@ -1383,7 +1383,7 @@ export class ObjectAgentApi {
      * Batch Delete Agents
      * @param param the request object
      */
-    public deleteAgentsWithHttpInfo(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deleteAgentsWithHttpInfo(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.deleteAgentsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -1392,7 +1392,7 @@ export class ObjectAgentApi {
      * Batch Delete Agents
      * @param param the request object
      */
-    public deleteAgents(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<Array<string>> {
+    public deleteAgents(param: AgentApiDeleteAgentsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.deleteAgents(param.requestBody,  options).toPromise();
     }
 
@@ -1455,7 +1455,7 @@ export class ObjectAgentApi {
      * Publish Agent
      * @param param the request object
      */
-    public publishAgentWithHttpInfo(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public publishAgentWithHttpInfo(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.publishAgentWithHttpInfo(param.agentId, param.visibility,  options).toPromise();
     }
 
@@ -1464,7 +1464,7 @@ export class ObjectAgentApi {
      * Publish Agent
      * @param param the request object
      */
-    public publishAgent(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<string> {
+    public publishAgent(param: AgentApiPublishAgentRequest, options?: Configuration): Promise<number> {
         return this.api.publishAgent(param.agentId, param.visibility,  options).toPromise();
     }
 
@@ -1722,10 +1722,10 @@ import { CharacterApiRequestFactory, CharacterApiResponseProcessor} from "../api
 export interface CharacterApiAddCharacterBackendRequest {
     /**
      * The characterId to be added a backend
-     * @type string
+     * @type number
      * @memberof CharacterApiaddCharacterBackend
      */
-    characterId: string
+    characterId: number
     /**
      * The character backend to be added
      * @type CharacterBackendDTO
@@ -1755,10 +1755,10 @@ export interface CharacterApiBatchSearchCharacterSummaryRequest {
 export interface CharacterApiCloneCharacterRequest {
     /**
      * The referenced characterId
-     * @type string
+     * @type number
      * @memberof CharacterApicloneCharacter
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiCountCharactersRequest {
@@ -1782,10 +1782,10 @@ export interface CharacterApiCreateCharacterRequest {
 export interface CharacterApiDeleteCharacterRequest {
     /**
      * The characterId to be deleted
-     * @type string
+     * @type number
      * @memberof CharacterApideleteCharacter
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiDeleteCharacterByNameRequest {
@@ -1809,10 +1809,10 @@ export interface CharacterApiExistsCharacterNameRequest {
 export interface CharacterApiGetCharacterDetailsRequest {
     /**
      * CharacterId to be obtained
-     * @type string
+     * @type number
      * @memberof CharacterApigetCharacterDetails
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiGetCharacterLatestIdByNameRequest {
@@ -1827,37 +1827,46 @@ export interface CharacterApiGetCharacterLatestIdByNameRequest {
 export interface CharacterApiGetCharacterSummaryRequest {
     /**
      * CharacterId to be obtained
-     * @type string
+     * @type number
      * @memberof CharacterApigetCharacterSummary
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiGetDefaultCharacterBackendRequest {
     /**
      * The characterId to be queried
-     * @type string
+     * @type number
      * @memberof CharacterApigetDefaultCharacterBackend
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiListCharacterBackendIdsRequest {
     /**
      * The characterId to be queried
-     * @type string
+     * @type number
      * @memberof CharacterApilistCharacterBackendIds
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiListCharacterBackendsRequest {
     /**
      * The characterId to be queried
-     * @type string
+     * @type number
      * @memberof CharacterApilistCharacterBackends
      */
-    characterId: string
+    characterId: number
+}
+
+export interface CharacterApiListCharacterPicturesRequest {
+    /**
+     * Character identifier
+     * @type number
+     * @memberof CharacterApilistCharacterPictures
+     */
+    characterId: number
 }
 
 export interface CharacterApiListCharacterVersionsByNameRequest {
@@ -1881,19 +1890,19 @@ export interface CharacterApiNewCharacterNameRequest {
 export interface CharacterApiPublishCharacterRequest {
     /**
      * The characterId to be published
-     * @type string
+     * @type number
      * @memberof CharacterApipublishCharacter
      */
-    characterId: string
+    characterId: number
 }
 
 export interface CharacterApiPublishCharacter1Request {
     /**
      * The characterId to be published
-     * @type string
+     * @type number
      * @memberof CharacterApipublishCharacter1
      */
-    characterId: string
+    characterId: number
     /**
      * Visibility: public | private | ...
      * @type string
@@ -1941,10 +1950,10 @@ export interface CharacterApiSetDefaultCharacterBackendRequest {
 export interface CharacterApiUpdateCharacterRequest {
     /**
      * The characterId to be updated
-     * @type string
+     * @type number
      * @memberof CharacterApiupdateCharacter
      */
-    characterId: string
+    characterId: number
     /**
      * The character information to be updated
      * @type CharacterUpdateDTO
@@ -1970,6 +1979,12 @@ export interface CharacterApiUpdateCharacterBackendRequest {
 
 export interface CharacterApiUploadCharacterAvatarRequest {
     /**
+     * Character identifier
+     * @type number
+     * @memberof CharacterApiuploadCharacterAvatar
+     */
+    characterId: number
+    /**
      * Character avatar
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterAvatar
@@ -1978,6 +1993,12 @@ export interface CharacterApiUploadCharacterAvatarRequest {
 }
 
 export interface CharacterApiUploadCharacterPictureRequest {
+    /**
+     * Character identifier
+     * @type number
+     * @memberof CharacterApiuploadCharacterPicture
+     */
+    characterId: number
     /**
      * Character picture
      * @type HttpFile
@@ -2052,7 +2073,7 @@ export class ObjectCharacterApi {
      * Clone Character
      * @param param the request object
      */
-    public cloneCharacterWithHttpInfo(param: CharacterApiCloneCharacterRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public cloneCharacterWithHttpInfo(param: CharacterApiCloneCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.cloneCharacterWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2061,7 +2082,7 @@ export class ObjectCharacterApi {
      * Clone Character
      * @param param the request object
      */
-    public cloneCharacter(param: CharacterApiCloneCharacterRequest, options?: Configuration): Promise<string> {
+    public cloneCharacter(param: CharacterApiCloneCharacterRequest, options?: Configuration): Promise<number> {
         return this.api.cloneCharacter(param.characterId,  options).toPromise();
     }
 
@@ -2088,7 +2109,7 @@ export class ObjectCharacterApi {
      * Create Character
      * @param param the request object
      */
-    public createCharacterWithHttpInfo(param: CharacterApiCreateCharacterRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createCharacterWithHttpInfo(param: CharacterApiCreateCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.createCharacterWithHttpInfo(param.characterCreateDTO,  options).toPromise();
     }
 
@@ -2097,7 +2118,7 @@ export class ObjectCharacterApi {
      * Create Character
      * @param param the request object
      */
-    public createCharacter(param: CharacterApiCreateCharacterRequest, options?: Configuration): Promise<string> {
+    public createCharacter(param: CharacterApiCreateCharacterRequest, options?: Configuration): Promise<number> {
         return this.api.createCharacter(param.characterCreateDTO,  options).toPromise();
     }
 
@@ -2124,7 +2145,7 @@ export class ObjectCharacterApi {
      * Delete Character by Name
      * @param param the request object
      */
-    public deleteCharacterByNameWithHttpInfo(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deleteCharacterByNameWithHttpInfo(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.deleteCharacterByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -2133,7 +2154,7 @@ export class ObjectCharacterApi {
      * Delete Character by Name
      * @param param the request object
      */
-    public deleteCharacterByName(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<Array<string>> {
+    public deleteCharacterByName(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.deleteCharacterByName(param.name,  options).toPromise();
     }
 
@@ -2178,7 +2199,7 @@ export class ObjectCharacterApi {
      * Get Latest Character Id by Name
      * @param param the request object
      */
-    public getCharacterLatestIdByNameWithHttpInfo(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public getCharacterLatestIdByNameWithHttpInfo(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.getCharacterLatestIdByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -2187,7 +2208,7 @@ export class ObjectCharacterApi {
      * Get Latest Character Id by Name
      * @param param the request object
      */
-    public getCharacterLatestIdByName(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: Configuration): Promise<string> {
+    public getCharacterLatestIdByName(param: CharacterApiGetCharacterLatestIdByNameRequest, options?: Configuration): Promise<number> {
         return this.api.getCharacterLatestIdByName(param.name,  options).toPromise();
     }
 
@@ -2264,6 +2285,24 @@ export class ObjectCharacterApi {
     }
 
     /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param param the request object
+     */
+    public listCharacterPicturesWithHttpInfo(param: CharacterApiListCharacterPicturesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.listCharacterPicturesWithHttpInfo(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param param the request object
+     */
+    public listCharacterPictures(param: CharacterApiListCharacterPicturesRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.listCharacterPictures(param.characterId,  options).toPromise();
+    }
+
+    /**
      * List the versions and corresponding characterIds by character name.
      * List Versions by Character Name
      * @param param the request object
@@ -2304,7 +2343,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacterWithHttpInfo(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public publishCharacterWithHttpInfo(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.publishCharacterWithHttpInfo(param.characterId,  options).toPromise();
     }
 
@@ -2313,7 +2352,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacter(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<string> {
+    public publishCharacter(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<number> {
         return this.api.publishCharacter(param.characterId,  options).toPromise();
     }
 
@@ -2322,7 +2361,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacter1WithHttpInfo(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<HttpInfo<string>> {
+    public publishCharacter1WithHttpInfo(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.publishCharacter1WithHttpInfo(param.characterId, param.visibility,  options).toPromise();
     }
 
@@ -2331,7 +2370,7 @@ export class ObjectCharacterApi {
      * Publish Character
      * @param param the request object
      */
-    public publishCharacter1(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<string> {
+    public publishCharacter1(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<number> {
         return this.api.publishCharacter1(param.characterId, param.visibility,  options).toPromise();
     }
 
@@ -2449,7 +2488,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterAvatarWithHttpInfo(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.uploadCharacterAvatarWithHttpInfo(param.file,  options).toPromise();
+        return this.api.uploadCharacterAvatarWithHttpInfo(param.characterId, param.file,  options).toPromise();
     }
 
     /**
@@ -2458,7 +2497,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterAvatar(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<string> {
-        return this.api.uploadCharacterAvatar(param.file,  options).toPromise();
+        return this.api.uploadCharacterAvatar(param.characterId, param.file,  options).toPromise();
     }
 
     /**
@@ -2467,7 +2506,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterPictureWithHttpInfo(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.uploadCharacterPictureWithHttpInfo(param.file,  options).toPromise();
+        return this.api.uploadCharacterPictureWithHttpInfo(param.characterId, param.file,  options).toPromise();
     }
 
     /**
@@ -2476,7 +2515,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterPicture(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<string> {
-        return this.api.uploadCharacterPicture(param.file,  options).toPromise();
+        return this.api.uploadCharacterPicture(param.characterId, param.file,  options).toPromise();
     }
 
 }
@@ -2505,10 +2544,10 @@ export interface ChatApiDeleteChatRequest {
 export interface ChatApiGetDefaultChatIdRequest {
     /**
      * Character identifier
-     * @type string
+     * @type number
      * @memberof ChatApigetDefaultChatId
      */
-    characterId: string
+    characterId: number
 }
 
 export interface ChatApiListChatsRequest {
@@ -2572,21 +2611,6 @@ export interface ChatApiRollbackMessagesRequest {
      * @memberof ChatApirollbackMessages
      */
     count: number
-}
-
-export interface ChatApiRollbackMessagesFromRequest {
-    /**
-     * Chat session identifier
-     * @type string
-     * @memberof ChatApirollbackMessagesFrom
-     */
-    chatId: string
-    /**
-     * Starting message id to be rolled back
-     * @type number
-     * @memberof ChatApirollbackMessagesFrom
-     */
-    messageId: number
 }
 
 export interface ChatApiSendMessageRequest {
@@ -2792,24 +2816,6 @@ export class ObjectChatApi {
      */
     public rollbackMessages(param: ChatApiRollbackMessagesRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.rollbackMessages(param.chatId, param.count,  options).toPromise();
-    }
-
-    /**
-     * Rollback messages of a chat from specified id.
-     * Rollback Chat Messages by Id
-     * @param param the request object
-     */
-    public rollbackMessagesFromWithHttpInfo(param: ChatApiRollbackMessagesFromRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        return this.api.rollbackMessagesFromWithHttpInfo(param.chatId, param.messageId,  options).toPromise();
-    }
-
-    /**
-     * Rollback messages of a chat from specified id.
-     * Rollback Chat Messages by Id
-     * @param param the request object
-     */
-    public rollbackMessagesFrom(param: ChatApiRollbackMessagesFromRequest, options?: Configuration): Promise<Array<number>> {
-        return this.api.rollbackMessagesFrom(param.chatId, param.messageId,  options).toPromise();
     }
 
     /**
@@ -4023,46 +4029,46 @@ export interface PluginApiCreatePluginsRequest {
 export interface PluginApiDeletePluginRequest {
     /**
      * The pluginId to be deleted
-     * @type string
+     * @type number
      * @memberof PluginApideletePlugin
      */
-    pluginId: string
+    pluginId: number
 }
 
 export interface PluginApiDeletePluginsRequest {
     /**
      * List of pluginIds to be deleted
-     * @type Array&lt;string&gt;
+     * @type Array&lt;number&gt;
      * @memberof PluginApideletePlugins
      */
-    requestBody: Array<string>
+    requestBody: Array<number>
 }
 
 export interface PluginApiGetPluginDetailsRequest {
     /**
      * PluginId to be obtained
-     * @type string
+     * @type number
      * @memberof PluginApigetPluginDetails
      */
-    pluginId: string
+    pluginId: number
 }
 
 export interface PluginApiGetPluginSummaryRequest {
     /**
      * PluginId to be obtained
-     * @type string
+     * @type number
      * @memberof PluginApigetPluginSummary
      */
-    pluginId: string
+    pluginId: number
 }
 
 export interface PluginApiRefreshPluginInfoRequest {
     /**
      * The pluginId to be fetched
-     * @type string
+     * @type number
      * @memberof PluginApirefreshPluginInfo
      */
-    pluginId: string
+    pluginId: number
 }
 
 export interface PluginApiSearchPluginDetailsRequest {
@@ -4086,10 +4092,10 @@ export interface PluginApiSearchPluginSummaryRequest {
 export interface PluginApiUpdatePluginRequest {
     /**
      * The pluginId to be updated
-     * @type string
+     * @type number
      * @memberof PluginApiupdatePlugin
      */
-    pluginId: string
+    pluginId: number
     /**
      * The plugin information to be updated
      * @type PluginUpdateDTO
@@ -4164,7 +4170,7 @@ export class ObjectPluginApi {
      * Create Plugin
      * @param param the request object
      */
-    public createPluginWithHttpInfo(param: PluginApiCreatePluginRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createPluginWithHttpInfo(param: PluginApiCreatePluginRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.createPluginWithHttpInfo(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4173,7 +4179,7 @@ export class ObjectPluginApi {
      * Create Plugin
      * @param param the request object
      */
-    public createPlugin(param: PluginApiCreatePluginRequest, options?: Configuration): Promise<string> {
+    public createPlugin(param: PluginApiCreatePluginRequest, options?: Configuration): Promise<number> {
         return this.api.createPlugin(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4182,7 +4188,7 @@ export class ObjectPluginApi {
      * Batch Create Plugins
      * @param param the request object
      */
-    public createPluginsWithHttpInfo(param: PluginApiCreatePluginsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public createPluginsWithHttpInfo(param: PluginApiCreatePluginsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.createPluginsWithHttpInfo(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4191,7 +4197,7 @@ export class ObjectPluginApi {
      * Batch Create Plugins
      * @param param the request object
      */
-    public createPlugins(param: PluginApiCreatePluginsRequest, options?: Configuration): Promise<Array<string>> {
+    public createPlugins(param: PluginApiCreatePluginsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.createPlugins(param.pluginCreateDTO,  options).toPromise();
     }
 
@@ -4218,7 +4224,7 @@ export class ObjectPluginApi {
      * Batch Delete Plugins
      * @param param the request object
      */
-    public deletePluginsWithHttpInfo(param: PluginApiDeletePluginsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deletePluginsWithHttpInfo(param: PluginApiDeletePluginsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.deletePluginsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -4227,7 +4233,7 @@ export class ObjectPluginApi {
      * Batch Delete Plugins
      * @param param the request object
      */
-    public deletePlugins(param: PluginApiDeletePluginsRequest, options?: Configuration): Promise<Array<string>> {
+    public deletePlugins(param: PluginApiDeletePluginsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.deletePlugins(param.requestBody,  options).toPromise();
     }
 
@@ -4383,19 +4389,19 @@ export interface PromptApiBatchSearchPromptSummaryRequest {
 export interface PromptApiClonePromptRequest {
     /**
      * The referenced promptId
-     * @type string
+     * @type number
      * @memberof PromptApiclonePrompt
      */
-    promptId: string
+    promptId: number
 }
 
 export interface PromptApiClonePromptsRequest {
     /**
      * List of prompt information to be created
-     * @type Array&lt;string&gt;
+     * @type Array&lt;number&gt;
      * @memberof PromptApiclonePrompts
      */
-    requestBody: Array<string>
+    requestBody: Array<number>
 }
 
 export interface PromptApiCountPromptsRequest {
@@ -4428,10 +4434,10 @@ export interface PromptApiCreatePromptsRequest {
 export interface PromptApiDeletePromptRequest {
     /**
      * The promptId to be deleted
-     * @type string
+     * @type number
      * @memberof PromptApideletePrompt
      */
-    promptId: string
+    promptId: number
 }
 
 export interface PromptApiDeletePromptByNameRequest {
@@ -4446,10 +4452,10 @@ export interface PromptApiDeletePromptByNameRequest {
 export interface PromptApiDeletePromptsRequest {
     /**
      * List of promptIds to be deleted
-     * @type Array&lt;string&gt;
+     * @type Array&lt;number&gt;
      * @memberof PromptApideletePrompts
      */
-    requestBody: Array<string>
+    requestBody: Array<number>
 }
 
 export interface PromptApiExistsPromptNameRequest {
@@ -4464,19 +4470,19 @@ export interface PromptApiExistsPromptNameRequest {
 export interface PromptApiGetPromptDetailsRequest {
     /**
      * PromptId to be obtained
-     * @type string
+     * @type number
      * @memberof PromptApigetPromptDetails
      */
-    promptId: string
+    promptId: number
 }
 
 export interface PromptApiGetPromptSummaryRequest {
     /**
      * PromptId to be obtained
-     * @type string
+     * @type number
      * @memberof PromptApigetPromptSummary
      */
-    promptId: string
+    promptId: number
 }
 
 export interface PromptApiListPromptVersionsByNameRequest {
@@ -4500,10 +4506,10 @@ export interface PromptApiNewPromptNameRequest {
 export interface PromptApiPublishPromptRequest {
     /**
      * The promptId to be published
-     * @type string
+     * @type number
      * @memberof PromptApipublishPrompt
      */
-    promptId: string
+    promptId: number
     /**
      * Visibility: public | private | ...
      * @type string
@@ -4551,10 +4557,10 @@ export interface PromptApiStreamSendPromptRequest {
 export interface PromptApiUpdatePromptRequest {
     /**
      * The promptId to be updated
-     * @type string
+     * @type number
      * @memberof PromptApiupdatePrompt
      */
-    promptId: string
+    promptId: number
     /**
      * The prompt information to be updated
      * @type PromptUpdateDTO
@@ -4647,7 +4653,7 @@ export class ObjectPromptApi {
      * Clone Prompt
      * @param param the request object
      */
-    public clonePromptWithHttpInfo(param: PromptApiClonePromptRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public clonePromptWithHttpInfo(param: PromptApiClonePromptRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.clonePromptWithHttpInfo(param.promptId,  options).toPromise();
     }
 
@@ -4656,7 +4662,7 @@ export class ObjectPromptApi {
      * Clone Prompt
      * @param param the request object
      */
-    public clonePrompt(param: PromptApiClonePromptRequest, options?: Configuration): Promise<string> {
+    public clonePrompt(param: PromptApiClonePromptRequest, options?: Configuration): Promise<number> {
         return this.api.clonePrompt(param.promptId,  options).toPromise();
     }
 
@@ -4665,7 +4671,7 @@ export class ObjectPromptApi {
      * Batch Clone Prompts
      * @param param the request object
      */
-    public clonePromptsWithHttpInfo(param: PromptApiClonePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public clonePromptsWithHttpInfo(param: PromptApiClonePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.clonePromptsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -4674,7 +4680,7 @@ export class ObjectPromptApi {
      * Batch Clone Prompts
      * @param param the request object
      */
-    public clonePrompts(param: PromptApiClonePromptsRequest, options?: Configuration): Promise<Array<string>> {
+    public clonePrompts(param: PromptApiClonePromptsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.clonePrompts(param.requestBody,  options).toPromise();
     }
 
@@ -4701,7 +4707,7 @@ export class ObjectPromptApi {
      * Create Prompt
      * @param param the request object
      */
-    public createPromptWithHttpInfo(param: PromptApiCreatePromptRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public createPromptWithHttpInfo(param: PromptApiCreatePromptRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.createPromptWithHttpInfo(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -4710,7 +4716,7 @@ export class ObjectPromptApi {
      * Create Prompt
      * @param param the request object
      */
-    public createPrompt(param: PromptApiCreatePromptRequest, options?: Configuration): Promise<string> {
+    public createPrompt(param: PromptApiCreatePromptRequest, options?: Configuration): Promise<number> {
         return this.api.createPrompt(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -4719,7 +4725,7 @@ export class ObjectPromptApi {
      * Batch Create Prompts
      * @param param the request object
      */
-    public createPromptsWithHttpInfo(param: PromptApiCreatePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public createPromptsWithHttpInfo(param: PromptApiCreatePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.createPromptsWithHttpInfo(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -4728,7 +4734,7 @@ export class ObjectPromptApi {
      * Batch Create Prompts
      * @param param the request object
      */
-    public createPrompts(param: PromptApiCreatePromptsRequest, options?: Configuration): Promise<Array<string>> {
+    public createPrompts(param: PromptApiCreatePromptsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.createPrompts(param.promptCreateDTO,  options).toPromise();
     }
 
@@ -4755,7 +4761,7 @@ export class ObjectPromptApi {
      * Delete Prompt by Name
      * @param param the request object
      */
-    public deletePromptByNameWithHttpInfo(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deletePromptByNameWithHttpInfo(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.deletePromptByNameWithHttpInfo(param.name,  options).toPromise();
     }
 
@@ -4764,7 +4770,7 @@ export class ObjectPromptApi {
      * Delete Prompt by Name
      * @param param the request object
      */
-    public deletePromptByName(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<Array<string>> {
+    public deletePromptByName(param: PromptApiDeletePromptByNameRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.deletePromptByName(param.name,  options).toPromise();
     }
 
@@ -4773,7 +4779,7 @@ export class ObjectPromptApi {
      * Batch Delete Prompts
      * @param param the request object
      */
-    public deletePromptsWithHttpInfo(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deletePromptsWithHttpInfo(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
         return this.api.deletePromptsWithHttpInfo(param.requestBody,  options).toPromise();
     }
 
@@ -4782,7 +4788,7 @@ export class ObjectPromptApi {
      * Batch Delete Prompts
      * @param param the request object
      */
-    public deletePrompts(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<Array<string>> {
+    public deletePrompts(param: PromptApiDeletePromptsRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.deletePrompts(param.requestBody,  options).toPromise();
     }
 
@@ -4881,7 +4887,7 @@ export class ObjectPromptApi {
      * Publish Prompt
      * @param param the request object
      */
-    public publishPromptWithHttpInfo(param: PromptApiPublishPromptRequest, options?: Configuration): Promise<HttpInfo<string>> {
+    public publishPromptWithHttpInfo(param: PromptApiPublishPromptRequest, options?: Configuration): Promise<HttpInfo<number>> {
         return this.api.publishPromptWithHttpInfo(param.promptId, param.visibility,  options).toPromise();
     }
 
@@ -4890,7 +4896,7 @@ export class ObjectPromptApi {
      * Publish Prompt
      * @param param the request object
      */
-    public publishPrompt(param: PromptApiPublishPromptRequest, options?: Configuration): Promise<string> {
+    public publishPrompt(param: PromptApiPublishPromptRequest, options?: Configuration): Promise<number> {
         return this.api.publishPrompt(param.promptId, param.visibility,  options).toPromise();
     }
 

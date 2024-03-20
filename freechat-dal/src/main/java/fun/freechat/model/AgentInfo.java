@@ -6,7 +6,10 @@ import java.util.Date;
 
 public class AgentInfo implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String agentId;
+    private Long agentId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String agentUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date gmtCreate;
@@ -18,7 +21,7 @@ public class AgentInfo implements Serializable {
     private String userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String parentId;
+    private String parentUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String visibility;
@@ -54,19 +57,35 @@ public class AgentInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getAgentId() {
+    public Long getAgentId() {
         return agentId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AgentInfo withAgentId(String agentId) {
+    public AgentInfo withAgentId(Long agentId) {
         this.setAgentId(agentId);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setAgentId(String agentId) {
-        this.agentId = agentId == null ? null : agentId.trim();
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getAgentUid() {
+        return agentUid;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public AgentInfo withAgentUid(String agentUid) {
+        this.setAgentUid(agentUid);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setAgentUid(String agentUid) {
+        this.agentUid = agentUid == null ? null : agentUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -118,19 +137,19 @@ public class AgentInfo implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getParentId() {
-        return parentId;
+    public String getParentUid() {
+        return parentUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public AgentInfo withParentId(String parentId) {
-        this.setParentId(parentId);
+    public AgentInfo withParentUid(String parentUid) {
+        this.setParentUid(parentUid);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setParentId(String parentId) {
-        this.parentId = parentId == null ? null : parentId.trim();
+    public void setParentUid(String parentUid) {
+        this.parentUid = parentUid == null ? null : parentUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -307,10 +326,11 @@ public class AgentInfo implements Serializable {
         }
         AgentInfo other = (AgentInfo) that;
         return (this.getAgentId() == null ? other.getAgentId() == null : this.getAgentId().equals(other.getAgentId()))
+            && (this.getAgentUid() == null ? other.getAgentUid() == null : this.getAgentUid().equals(other.getAgentUid()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
+            && (this.getParentUid() == null ? other.getParentUid() == null : this.getParentUid().equals(other.getParentUid()))
             && (this.getVisibility() == null ? other.getVisibility() == null : this.getVisibility().equals(other.getVisibility()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getFormat() == null ? other.getFormat() == null : this.getFormat().equals(other.getFormat()))
@@ -323,10 +343,11 @@ public class AgentInfo implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getAgentId() == null) ? 0 : getAgentId().hashCode());
+        result = prime * result + ((getAgentUid() == null) ? 0 : getAgentUid().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getParentId() == null) ? 0 : getParentId().hashCode());
+        result = prime * result + ((getParentUid() == null) ? 0 : getParentUid().hashCode());
         result = prime * result + ((getVisibility() == null) ? 0 : getVisibility().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getFormat() == null) ? 0 : getFormat().hashCode());
@@ -342,10 +363,11 @@ public class AgentInfo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", agentId=").append(agentId);
+        sb.append(", agentUid=").append(agentUid);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", userId=").append(userId);
-        sb.append(", parentId=").append(parentId);
+        sb.append(", parentUid=").append(parentUid);
         sb.append(", visibility=").append(visibility);
         sb.append(", name=").append(name);
         sb.append(", format=").append(format);

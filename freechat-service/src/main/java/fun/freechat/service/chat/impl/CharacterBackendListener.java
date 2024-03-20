@@ -10,6 +10,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @SuppressWarnings("unused")
@@ -23,9 +25,19 @@ public class CharacterBackendListener {
     @EventListener
     @Async("eventExecutor")
     public void onCharacterBackendChanged(CharacterBackendEvent backendEvent) {
-        String chatId = chatContextService.getIdByBackend(backendEvent.getUserId(), backendEvent.getBackendId());
-        if (StringUtils.isNotBlank(chatId)) {
-            chatSessionService.reset(chatId);
+        String userId = backendEvent.getUserId();
+        if (StringUtils.isBlank(userId)) {
+            List<String> chatIds = chatContextService.listIdsByBackend(backendEvent.getBackendId());
+            for (String chatId: chatIds) {
+                if (StringUtils.isNotBlank(chatId)) {
+                    chatSessionService.reset(chatId);
+                }
+            }
+        } else {
+            String chatId = chatContextService.getIdByBackend(backendEvent.getUserId(), backendEvent.getBackendId());
+            if (StringUtils.isNotBlank(chatId)) {
+                chatSessionService.reset(chatId);
+            }
         }
     }
 }

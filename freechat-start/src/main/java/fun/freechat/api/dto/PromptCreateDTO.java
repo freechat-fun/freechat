@@ -24,7 +24,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Data
 public class PromptCreateDTO {
     @Schema(description = "Referenced prompt")
-    private String parentId;
+    private String parentUid;
     @Schema(description = "Visibility: private (default), public, public_org, hidden")
     private String visibility;
     @Schema(description = "Prompt name", requiredMode = REQUIRED)

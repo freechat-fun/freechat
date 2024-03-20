@@ -16,7 +16,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
 
     private String apiToken;
 
-    private String promptId;
+    private Long promptId;
 
     @BeforeEach
     public void setUp() {

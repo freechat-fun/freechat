@@ -75,15 +75,16 @@ public class ChatApi {
             @RequestBody
             @NotNull
             ChatCreateDTO chatCreateParams) {
+        String chatCharacterUid = characterService.getUid(chatCreateParams.getCharacterId());
         String backendId = null;
         if (Objects.isNull(chatCreateParams.getBackendId())) {
-            CharacterBackend backend = characterService.getDefaultBackend(chatCreateParams.getCharacterId());
+            CharacterBackend backend = characterService.getDefaultBackend(chatCharacterUid);
             if (Objects.nonNull(backend)) {
                 backendId = backend.getBackendId();
             }
         } else {
-            String backendCharacterId = characterService.getBackendCharacterId(chatCreateParams.getBackendId());
-            if (backendCharacterId.equals(chatCreateParams.getCharacterId())) {
+            String backendCharacterUid = characterService.getBackendCharacterUid(chatCreateParams.getBackendId());
+            if (backendCharacterUid.equals(chatCharacterUid)) {
                 backendId = chatCreateParams.getBackendId();
             }
         }
@@ -176,7 +177,7 @@ public class ChatApi {
     )
     @GetMapping(value = "/{characterId}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getDefault(
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @NotBlank String characterId) {
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive Long characterId) {
         return chatService.getDefaultChatId(AccountUtils.currentUser(), characterId);
     }
 

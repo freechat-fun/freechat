@@ -11,7 +11,10 @@ public final class PluginInfoDynamicSqlSupport {
     public static final PluginInfo pluginInfo = new PluginInfo();
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> pluginId = pluginInfo.pluginId;
+    public static final SqlColumn<Long> pluginId = pluginInfo.pluginId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> pluginUid = pluginInfo.pluginUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Date> gmtCreate = pluginInfo.gmtCreate;
@@ -48,7 +51,9 @@ public final class PluginInfoDynamicSqlSupport {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final class PluginInfo extends AliasableSqlTable<PluginInfo> {
-        public final SqlColumn<String> pluginId = column("plugin_id", JDBCType.VARCHAR);
+        public final SqlColumn<Long> pluginId = column("plugin_id", JDBCType.BIGINT);
+
+        public final SqlColumn<String> pluginUid = column("plugin_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<Date> gmtCreate = column("gmt_create", JDBCType.TIMESTAMP);
 

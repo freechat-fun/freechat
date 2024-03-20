@@ -12,7 +12,7 @@ import { PromptContent, PromptMeta, PromptRunner } from "../../components/prompt
 import { extractVariables, getMessageText } from "../../libs/template_utils";
 
 type PromptViewerProps = {
-  id: string | undefined;
+  id: number | undefined;
   parameters?: { [key: string]: any };
   variables?: { [key: string]: any };
 }
@@ -29,7 +29,7 @@ export default function PromptViewer({
   const { username } = useUserInfoContext();
 
   const [record, setRecord] = useState<PromptDetailsDTO>();
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<[string, number][]>([]);
   const [play, setPlay] = useState(false);
   const [defaultParameters, setDefaultParameters] = useState(parameters ? {...parameters} : undefined)
   const [defaultVariables, setDefaultVariables] = useState(variables ? {...variables} : undefined)
@@ -40,8 +40,8 @@ export default function PromptViewer({
       .then(resp => {
         setRecord(resp);
         resp?.name && promptApi?.listPromptVersionsByName(resp?.name)
-          .then(resp => resp.map(item => item.promptId))
-          .then(ids => setHistory(ids as string[]))
+          .then(resp => resp.map(item => [`v${item.version}`, item.promptId] as [string, number]))
+          .then(ids => setHistory(ids))
           .catch(handleError);
       })
       .catch(handleError);

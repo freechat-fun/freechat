@@ -299,7 +299,7 @@ public class Example {
 
 <a id="clonePrompt"></a>
 # **clonePrompt**
-> String clonePrompt(promptId)
+> Long clonePrompt(promptId)
 
 Clone Prompt
 
@@ -325,9 +325,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    String promptId = "promptId_example"; // String | The referenced promptId
+    Long promptId = 56L; // Long | The referenced promptId
     try {
-      String result = apiInstance.clonePrompt(promptId);
+      Long result = apiInstance.clonePrompt(promptId);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#clonePrompt");
@@ -344,11 +344,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **promptId** | **String**| The referenced promptId | |
+| **promptId** | **Long**| The referenced promptId | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -357,7 +357,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -366,7 +366,7 @@ public class Example {
 
 <a id="clonePrompts"></a>
 # **clonePrompts**
-> List&lt;String&gt; clonePrompts(requestBody)
+> List&lt;Long&gt; clonePrompts(requestBody)
 
 Batch Clone Prompts
 
@@ -392,9 +392,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    List<String> requestBody = Arrays.asList(); // List<String> | List of prompt information to be created
+    List<Long> requestBody = Arrays.asList(); // List<Long> | List of prompt information to be created
     try {
-      List<String> result = apiInstance.clonePrompts(requestBody);
+      List<Long> result = apiInstance.clonePrompts(requestBody);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#clonePrompts");
@@ -411,11 +411,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | [**List&lt;String&gt;**](String.md)| List of prompt information to be created | |
+| **requestBody** | [**List&lt;Long&gt;**](Long.md)| List of prompt information to be created | |
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -500,7 +500,7 @@ public class Example {
 
 <a id="createPrompt"></a>
 # **createPrompt**
-> String createPrompt(promptCreateDTO)
+> Long createPrompt(promptCreateDTO)
 
 Create Prompt
 
@@ -528,7 +528,7 @@ public class Example {
     PromptApi apiInstance = new PromptApi(defaultClient);
     PromptCreateDTO promptCreateDTO = new PromptCreateDTO(); // PromptCreateDTO | Information of the prompt to be created
     try {
-      String result = apiInstance.createPrompt(promptCreateDTO);
+      Long result = apiInstance.createPrompt(promptCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#createPrompt");
@@ -549,7 +549,7 @@ public class Example {
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -558,7 +558,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -567,7 +567,7 @@ public class Example {
 
 <a id="createPrompts"></a>
 # **createPrompts**
-> List&lt;String&gt; createPrompts(promptCreateDTO)
+> List&lt;Long&gt; createPrompts(promptCreateDTO)
 
 Batch Create Prompts
 
@@ -595,7 +595,7 @@ public class Example {
     PromptApi apiInstance = new PromptApi(defaultClient);
     List<PromptCreateDTO> promptCreateDTO = Arrays.asList(); // List<PromptCreateDTO> | List of prompt information to be created
     try {
-      List<String> result = apiInstance.createPrompts(promptCreateDTO);
+      List<Long> result = apiInstance.createPrompts(promptCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#createPrompts");
@@ -616,7 +616,7 @@ public class Example {
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -660,7 +660,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    String promptId = "promptId_example"; // String | The promptId to be deleted
+    Long promptId = 56L; // Long | The promptId to be deleted
     try {
       Boolean result = apiInstance.deletePrompt(promptId);
       System.out.println(result);
@@ -679,7 +679,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **promptId** | **String**| The promptId to be deleted | |
+| **promptId** | **Long**| The promptId to be deleted | |
 
 ### Return type
 
@@ -701,7 +701,7 @@ public class Example {
 
 <a id="deletePromptByName"></a>
 # **deletePromptByName**
-> List&lt;String&gt; deletePromptByName(name)
+> List&lt;Long&gt; deletePromptByName(name)
 
 Delete Prompt by Name
 
@@ -729,7 +729,7 @@ public class Example {
     PromptApi apiInstance = new PromptApi(defaultClient);
     String name = "name_example"; // String | The prompt name to be deleted
     try {
-      List<String> result = apiInstance.deletePromptByName(name);
+      List<Long> result = apiInstance.deletePromptByName(name);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#deletePromptByName");
@@ -750,7 +750,7 @@ public class Example {
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -768,7 +768,7 @@ public class Example {
 
 <a id="deletePrompts"></a>
 # **deletePrompts**
-> List&lt;String&gt; deletePrompts(requestBody)
+> List&lt;Long&gt; deletePrompts(requestBody)
 
 Batch Delete Prompts
 
@@ -794,9 +794,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    List<String> requestBody = Arrays.asList(); // List<String> | List of promptIds to be deleted
+    List<Long> requestBody = Arrays.asList(); // List<Long> | List of promptIds to be deleted
     try {
-      List<String> result = apiInstance.deletePrompts(requestBody);
+      List<Long> result = apiInstance.deletePrompts(requestBody);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#deletePrompts");
@@ -813,11 +813,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | [**List&lt;String&gt;**](String.md)| List of promptIds to be deleted | |
+| **requestBody** | [**List&lt;Long&gt;**](Long.md)| List of promptIds to be deleted | |
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -928,7 +928,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    String promptId = "promptId_example"; // String | PromptId to be obtained
+    Long promptId = 56L; // Long | PromptId to be obtained
     try {
       PromptDetailsDTO result = apiInstance.getPromptDetails(promptId);
       System.out.println(result);
@@ -947,7 +947,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **promptId** | **String**| PromptId to be obtained | |
+| **promptId** | **Long**| PromptId to be obtained | |
 
 ### Return type
 
@@ -995,7 +995,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    String promptId = "promptId_example"; // String | PromptId to be obtained
+    Long promptId = 56L; // Long | PromptId to be obtained
     try {
       PromptSummaryDTO result = apiInstance.getPromptSummary(promptId);
       System.out.println(result);
@@ -1014,7 +1014,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **promptId** | **String**| PromptId to be obtained | |
+| **promptId** | **Long**| PromptId to be obtained | |
 
 ### Return type
 
@@ -1170,7 +1170,7 @@ public class Example {
 
 <a id="publishPrompt"></a>
 # **publishPrompt**
-> String publishPrompt(promptId, visibility)
+> Long publishPrompt(promptId, visibility)
 
 Publish Prompt
 
@@ -1196,10 +1196,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    String promptId = "promptId_example"; // String | The promptId to be published
+    Long promptId = 56L; // Long | The promptId to be published
     String visibility = "visibility_example"; // String | Visibility: public | private | ...
     try {
-      String result = apiInstance.publishPrompt(promptId, visibility);
+      Long result = apiInstance.publishPrompt(promptId, visibility);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#publishPrompt");
@@ -1216,12 +1216,12 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **promptId** | **String**| The promptId to be published | |
+| **promptId** | **Long**| The promptId to be published | |
 | **visibility** | **String**| Visibility: public | private | ... | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -1230,7 +1230,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -1533,7 +1533,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PromptApi apiInstance = new PromptApi(defaultClient);
-    String promptId = "promptId_example"; // String | The promptId to be updated
+    Long promptId = 56L; // Long | The promptId to be updated
     PromptUpdateDTO promptUpdateDTO = new PromptUpdateDTO(); // PromptUpdateDTO | The prompt information to be updated
     try {
       Boolean result = apiInstance.updatePrompt(promptId, promptUpdateDTO);
@@ -1553,7 +1553,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **promptId** | **String**| The promptId to be updated | |
+| **promptId** | **Long**| The promptId to be updated | |
 | **promptUpdateDTO** | [**PromptUpdateDTO**](PromptUpdateDTO.md)| The prompt information to be updated | |
 
 ### Return type

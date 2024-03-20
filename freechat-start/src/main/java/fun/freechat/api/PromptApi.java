@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -56,9 +57,9 @@ public class PromptApi {
         return name;
     }
 
-    private void resetPromptInfo(PromptInfo info, String parentId) {
-        if (StringUtils.isNotBlank(parentId)) {
-            info.setParentId(parentId);
+    private void resetPromptInfo(PromptInfo info, String parentUid) {
+        if (StringUtils.isNotBlank(parentUid)) {
+            info.setParentUid(parentUid);
             info.setVisibility(Visibility.PRIVATE.text());
         }
         info.setName(newUniqueName(info.getName()));
@@ -68,13 +69,13 @@ public class PromptApi {
     }
 
     private void resetPromptInfoTriple(
-            Triple<PromptInfo, List<String>, List<String>> infoTriple, String parentId) {
-        resetPromptInfo(infoTriple.getLeft(), parentId);
+            Triple<PromptInfo, List<String>, List<String>> infoTriple, String parentUid) {
+        resetPromptInfo(infoTriple.getLeft(), parentUid);
     }
 
-    private void increaseReferCount(String promptId) {
+    private void increaseReferCount(String promptUid) {
         interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
-                InfoType.PROMPT, promptId, StatsType.REFER_COUNT, 1L);
+                InfoType.PROMPT, promptUid, StatsType.REFER_COUNT, 1L);
     }
 
     @Operation(
@@ -302,9 +303,9 @@ public class PromptApi {
                     - Parameters: 10
                     """
     )
-    @PostMapping(value = "", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'promptCreateOp')")
-    public String create(
+    public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Information of the prompt to be created",
                     content = @Content(
@@ -342,7 +343,7 @@ public class PromptApi {
     )
     @PostMapping("/batch")
     @PreFilter("hasPermission(filterObject.visibility, 'promptCreateOp')")
-    public List<String> batchCreate(
+    public List<Long> batchCreate(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "List of prompt information to be created",
                     content = @Content(
@@ -393,8 +394,8 @@ public class PromptApi {
     @PutMapping("/{promptId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'promptUpdateOp')")
     public Boolean update(
-            @Parameter(description = "The promptId to be updated") @PathVariable("promptId") @NotBlank
-            String promptId,
+            @Parameter(description = "The promptId to be updated") @PathVariable("promptId") @Positive
+            Long promptId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "The prompt information to be updated",
                     content = @Content(
@@ -438,19 +439,20 @@ public class PromptApi {
                     Return the new promptId.
                     """
     )
-    @PostMapping(value = "/clone/{promptId}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String clone(
-            @Parameter(description = "The referenced promptId") @PathVariable("promptId") @NotBlank
-            String promptId) {
+    @PostMapping("/clone/{promptId}")
+    public Long clone(
+            @Parameter(description = "The referenced promptId") @PathVariable("promptId") @Positive
+            Long promptId) {
         var promptInfo = promptService.details(promptId, AccountUtils.currentUser());
         if (Objects.isNull(promptInfo)) {
             return null;
         }
-        resetPromptInfoTriple(promptInfo, promptId);
+        String promptUid = promptService.getUid(promptId);
+        resetPromptInfoTriple(promptInfo, promptUid);
         if (!promptService.create(promptInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt.");
         }
-        increaseReferCount(promptId);
+        increaseReferCount(promptUid);
         return promptInfo.getLeft().getPromptId();
     }
 
@@ -460,26 +462,27 @@ public class PromptApi {
             description = "Batch clone multiple prompts. Ensure transactionality, return the promptId list after success."
     )
     @PostMapping("/batch/clone")
-    public List<String> batchClone(
+    public List<Long> batchClone(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of prompt information to be created")
             @RequestBody
             @NotEmpty
-            List<String> promptIds) {
+            List<Long> promptIds) {
         var promptInfoList = promptService.details(promptIds, AccountUtils.currentUser());
         if (CollectionUtils.isEmpty(promptInfoList)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to find prompts " + promptIds);
         }
         HashMap<String, Integer> referCountMap = new HashMap<>(promptInfoList.size());
         for (var promptInfo : promptInfoList) {
-            String parentPromptId = promptInfo.getLeft().getPromptId();
-            resetPromptInfoTriple(promptInfo, parentPromptId);
+            Long parentPromptId = promptInfo.getLeft().getPromptId();
+            String parentUid = Objects.isNull(parentPromptId) ? null : promptService.getUid(parentPromptId);
+            resetPromptInfoTriple(promptInfo, parentUid);
         }
-        List<String> newPromptIds = promptService.create(promptInfoList);
+        List<Long> newPromptIds = promptService.create(promptInfoList);
         if (!newPromptIds.isEmpty()) {
             for (var promptInfo : promptInfoList) {
                 if (newPromptIds.contains(promptInfo.getLeft().getPromptId())) {
-                    String parentPromptId = promptInfo.getLeft().getParentId();
-                    increaseReferCount(parentPromptId);
+                    String parentUid = promptInfo.getLeft().getParentUid();
+                    increaseReferCount(parentUid);
                 }
             }
         }
@@ -494,8 +497,8 @@ public class PromptApi {
     @DeleteMapping("/{promptId}")
     @PreAuthorize("hasPermission(#p0, 'promptDeleteOp')")
     public Boolean delete(
-            @Parameter(description = "The promptId to be deleted") @PathVariable("promptId") @NotBlank
-            String promptId) {
+            @Parameter(description = "The promptId to be deleted") @PathVariable("promptId") @Positive
+            Long promptId) {
         return promptService.delete(promptId, AccountUtils.currentUser());
     }
 
@@ -505,7 +508,7 @@ public class PromptApi {
             description = "Delete prompt by name. return the list of successfully deleted promptIds."
     )
     @DeleteMapping("/name/{name}")
-    public List<String> deleteByName(
+    public List<Long> deleteByName(
             @Parameter(description = "The prompt name to be deleted") @PathVariable("name") @NotBlank
             String name) {
         return promptService.deleteByName(name, AccountUtils.currentUser());
@@ -518,11 +521,11 @@ public class PromptApi {
     )
     @DeleteMapping("/batch")
     @PreFilter("hasPermission(filterObject, 'promptDeleteOp')")
-    public List<String> batchDelete(
+    public List<Long> batchDelete(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of promptIds to be deleted")
             @RequestBody
             @NotEmpty
-            List<String> promptIds) {
+            List<Long> promptIds) {
         return promptService.delete(promptIds, AccountUtils.currentUser());
     }
 
@@ -533,8 +536,8 @@ public class PromptApi {
     )
     @GetMapping("/summary/{promptId}")
     public PromptSummaryDTO summary(
-            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @NotBlank
-            String promptId) {
+            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @Positive
+            Long promptId) {
         var promptInfo = promptService.summary(promptId, AccountUtils.currentUser());
         return PromptSummaryDTO.from(promptInfo);
     }
@@ -546,8 +549,8 @@ public class PromptApi {
     )
     @GetMapping("/details/{promptId}")
     public PromptDetailsDTO details(
-            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @NotBlank
-            String promptId) {
+            @Parameter(description = "PromptId to be obtained") @PathVariable("promptId") @Positive
+            Long promptId) {
         var promptInfo = promptService.details(promptId, AccountUtils.currentUser());
         return PromptDetailsDTO.from(promptInfo);
     }
@@ -559,9 +562,7 @@ public class PromptApi {
     )
     @PostMapping("/count")
     public Long count(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
-            @RequestBody
-            @NotNull
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
             PromptQueryDTO query) {
         PromptService.Query infoQuery = query.toPromptInfoQuery();
         infoQuery.setOffset(null);
@@ -590,11 +591,11 @@ public class PromptApi {
             summary = "Publish Prompt",
             description = "Publish prompt, draft content becomes formal content, version number increases by 1. After successful publication, a new promptId will be generated and returned. You need to specify the visibility for publication."
     )
-    @PostMapping(value = "/publish/{promptId}/{visibility}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("/publish/{promptId}/{visibility}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'promptUpdateOp')")
-    public String publish(
-            @Parameter(description = "The promptId to be published") @PathVariable("promptId") @NotBlank
-            String promptId,
+    public Long publish(
+            @Parameter(description = "The promptId to be published") @PathVariable("promptId") @Positive
+            Long promptId,
             @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility") @NotBlank
             String visibility){
         return promptService.publish(promptId, Visibility.of(visibility), AccountUtils.currentUser());

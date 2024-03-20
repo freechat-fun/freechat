@@ -6,7 +6,7 @@ Request data for creating new prompt information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**parent_id** | **str** | Referenced prompt | [optional] 
+**parent_uid** | **str** | Referenced prompt | [optional] 
 **visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
 **name** | **str** | Prompt name | 
 **description** | **str** | Prompt description | [optional] 

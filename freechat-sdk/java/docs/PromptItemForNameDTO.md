@@ -8,7 +8,7 @@ Prompt identifier and version information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**promptId** | **String** | promptId |  [optional] |
+|**promptId** | **Long** | promptId |  [optional] |
 |**version** | **Integer** | version |  [optional] |
 |**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  |  [optional] |
 

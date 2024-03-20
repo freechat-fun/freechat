@@ -15,7 +15,7 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AgentUpdateDTO extends AgentCreateDTO {
-    public Triple<AgentInfo, List<String>, List<String>> toAgentInfo(String agentId) {
+    public Triple<AgentInfo, List<String>, List<String>> toAgentInfo(Long agentId) {
         AgentInfo agentInfo = CommonUtils.convert(this, AgentInfo.class);
         agentInfo.setAgentId(agentId);
         agentInfo.setUserId(

@@ -7,18 +7,20 @@ Character detailed content
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
-**character_id** | **str** | Character identifier | [optional] 
+**character_id** | **int** | Character identifier, will change after publish | [optional] 
+**character_uid** | **str** | Character immutable identifier | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **gmt_modified** | **datetime** | Modification time | [optional] 
+**parent_uid** | **str** | Referenced character | [optional] 
 **visibility** | **str** | Visibility: private, public, public_org, hidden | [optional] 
 **version** | **int** | Version | [optional] 
-**name** | **str** | Character name | 
+**name** | **str** | Character name | [optional] 
 **description** | **str** | Character description | [optional] 
 **nickname** | **str** | Character nickname | [optional] 
 **avatar** | **str** | Character avatar url | [optional] 
 **picture** | **str** | Character picture url | [optional] 
 **gender** | **str** | Character gender: male | female | other | [optional] 
-**lang** | **str** | Character language: English | Chinese (Simplified) | ... | [optional] 
+**lang** | **str** | Character language: en (default) | zh | ... | [optional] 
 **username** | **str** | Character owner | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 
 **profile** | **str** | Character profile | [optional] 

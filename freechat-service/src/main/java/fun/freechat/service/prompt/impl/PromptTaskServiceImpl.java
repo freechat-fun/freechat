@@ -35,7 +35,7 @@ public class PromptTaskServiceImpl implements PromptTaskService {
 
     @Override
     public boolean create(PromptTask task) {
-        if (StringUtils.isBlank(task.getPromptId())) {
+        if (StringUtils.isBlank(task.getPromptUid())) {
             return false;
         }
 
@@ -70,9 +70,9 @@ public class PromptTaskServiceImpl implements PromptTaskService {
     }
 
     @Override
-    public boolean deleteByPromptId(String promptId) {
+    public boolean deleteByPromptUid(String promptUid) {
         int rows = promptTaskMapper.delete(c ->
-                c.where(PromptTaskDynamicSqlSupport.promptId, isEqualTo(promptId)));
+                c.where(PromptTaskDynamicSqlSupport.promptUid, isEqualTo(promptUid)));
         return rows > 0;
     }
 
@@ -91,7 +91,7 @@ public class PromptTaskServiceImpl implements PromptTaskService {
         if (Objects.isNull(task)) {
             return null;
         }
-        String promptId = task.getPromptId();
-        return promptService.getOwner(promptId);
+        String promptUid = task.getPromptUid();
+        return promptService.getOwnerByUid(promptUid);
     }
 }

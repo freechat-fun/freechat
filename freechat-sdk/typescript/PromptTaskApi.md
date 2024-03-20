@@ -29,7 +29,7 @@ let body:.PromptTaskApiCreatePromptTaskRequest = {
   // PromptTaskDTO | The prompt task to be added
   promptTaskDTO: {
     promptRef: {
-      promptId: "promptId_example",
+      promptId: 1,
       variables: {
         "key": {},
       },
@@ -209,7 +209,7 @@ let body:.PromptTaskApiUpdatePromptTaskRequest = {
   // PromptTaskDTO | The prompt task info to be updated
   promptTaskDTO: {
     promptRef: {
-      promptId: "promptId_example",
+      promptId: 1,
       variables: {
         "key": {},
       },

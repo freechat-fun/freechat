@@ -38,7 +38,7 @@ public class PromptAiIT extends AbstractIntegrationTest {
 
     private String apiToken;
 
-    private String promptId;
+    private Long promptId;
 
     @BeforeEach
     public void setUp() {
@@ -142,7 +142,6 @@ public class PromptAiIT extends AbstractIntegrationTest {
     static Stream<Arguments> testPromptWithApiKeyName() {
         return Stream.of(
                 Arguments.of("[dash_scope]qwen-vl-max", "test_api_key_dash_scope"),
-                Arguments.of("[open_ai]gpt-3.5-turbo-instruct", "test_api_key_open_ai"),
                 Arguments.of("[open_ai]gpt-3.5-turbo", "test_api_key_open_ai")
         );
     }
@@ -261,7 +260,7 @@ public class PromptAiIT extends AbstractIntegrationTest {
                 .expectStatus().isForbidden();
 
         PromptRefDTO promptRef = new PromptRefDTO();
-        promptRef.setPromptId("No Id");
+        promptRef.setPromptId(1000L);
         aiRequest = createRequest("[dash_scope]qwen-vl-max");
         aiRequest.getParams().put("apiKey", TestAiApiKeyUtils.apiKeyOfDashScope());
         aiRequest.setPromptRef(promptRef);

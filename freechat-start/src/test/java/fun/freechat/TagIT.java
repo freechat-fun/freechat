@@ -19,9 +19,9 @@ public class TagIT extends AbstractIntegrationTest {
 
     private String apiToken;
 
-    private String promptId1;
+    private Long promptId1;
 
-    private String promptId2;
+    private Long promptId2;
 
     @BeforeEach
     public void setUp() {

@@ -13,13 +13,13 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class AgentItemForNameDTO {
     @Schema(description = "agentId")
-    private String agentId;
+    private Long agentId;
     @Schema(description = "version")
     private Integer version;
     @Schema(description = "Interactive statistics information")
     InteractiveStatsDTO stats;
 
-    public static AgentItemForNameDTO from(Triple<String, Integer, InteractiveStats> infoItem) {
+    public static AgentItemForNameDTO from(Triple<Long, Integer, InteractiveStats> infoItem) {
         AgentItemForNameDTO dto = new AgentItemForNameDTO();
         dto.setAgentId(infoItem.getLeft());
         dto.setVersion(infoItem.getMiddle());

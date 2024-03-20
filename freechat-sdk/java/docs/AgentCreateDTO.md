@@ -8,7 +8,7 @@ Request data for creating new agent information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**parentId** | **String** | Referenced agent |  [optional] |
+|**parentUid** | **String** | Referenced agent |  [optional] |
 |**visibility** | **String** | Visibility: private (default), public, public_org, hidden |  [optional] |
 |**format** | **String** | Agent format, currently supported: langflow |  [optional] |
 |**name** | **String** | Agent name |  |

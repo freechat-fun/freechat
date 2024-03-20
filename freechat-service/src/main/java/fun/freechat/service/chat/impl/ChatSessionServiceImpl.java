@@ -129,9 +129,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             }
 
             CharacterBackend backend = characterService.getBackend(context.getBackendId());
-            String characterId = backend.getCharacterId();
-            String ownerId = characterService.getOwner(characterId);
+            String characterUid = backend.getCharacterUid();
+            String ownerId = characterService.getOwnerByUid(characterUid);
             User owner = userService.loadByUserId(ownerId);
+            Long characterId = characterService.getLatestIdByUid(characterUid, owner);
             CharacterInfo characterInfo = characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
             AiModelInfo modelInfo = aiModelInfoService.get(promptTask.getModelId());
@@ -175,7 +176,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 }
             }
 
-            PromptInfo promptInfo = promptService.details(promptTask.getPromptId(), owner).getLeft();
+            Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
+            PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
             String promptTemplate = promptTask.getDraft() == (byte) 1 && StringUtils.isNotBlank(promptInfo.getDraft()) ?
                     PromptUtils.getDraftTemplate(promptInfo.getDraft()) :
                     promptInfo.getTemplate();

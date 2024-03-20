@@ -20,7 +20,7 @@ public final class CharacterBackendDynamicSqlSupport {
     public static final SqlColumn<Date> gmtModified = characterBackend.gmtModified;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public static final SqlColumn<String> characterId = characterBackend.characterId;
+    public static final SqlColumn<String> characterUid = characterBackend.characterUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Byte> isDefault = characterBackend.isDefault;
@@ -54,7 +54,7 @@ public final class CharacterBackendDynamicSqlSupport {
 
         public final SqlColumn<Date> gmtModified = column("gmt_modified", JDBCType.TIMESTAMP);
 
-        public final SqlColumn<String> characterId = column("character_id", JDBCType.VARCHAR);
+        public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<Byte> isDefault = column("is_default", JDBCType.TINYINT);
 

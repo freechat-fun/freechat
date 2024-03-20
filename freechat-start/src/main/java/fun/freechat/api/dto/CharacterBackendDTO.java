@@ -27,11 +27,11 @@ public class CharacterBackendDTO {
     @Schema(description = "Weather to forward messages to the character owner")
     private Boolean forwardToUser;
 
-    public CharacterBackend toCharacterBackend(String characterId) {
-        if (StringUtils.isBlank(characterId)) {
+    public CharacterBackend toCharacterBackend(String characterUid) {
+        if (StringUtils.isBlank(characterUid)) {
             return null;
         }
-        CharacterBackend backend = CommonUtils.convert(this, CharacterBackend.class).withCharacterId(characterId);
+        CharacterBackend backend = CommonUtils.convert(this, CharacterBackend.class).withCharacterUid(characterUid);
         backend.setIsDefault(BooleanUtils.isTrue(getIsDefault()) ? (byte) 1 : (byte) 0);
         backend.setForwardToUser(BooleanUtils.isTrue(getForwardToUser()) ? (byte) 1 : (byte) 0);
         return backend;

@@ -17,12 +17,16 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PromptSummaryDTO extends TraceableDTO {
-    @Schema(description = "Prompt identifier")
-    private String promptId;
+    @Schema(description = "Prompt identifier, will change after publish")
+    private Long promptId;
+    @Schema(description = "Prompt immutable identifier")
+    private String promptUid;
     @Schema(description = "Creation time")
     private Date gmtCreate;
     @Schema(description = "Modification time")
     private Date gmtModified;
+    @Schema(description = "Referenced prompt")
+    private String parentUid;
     @Schema(description = "Visibility: private, public, public_org, hidden")
     private String visibility;
     @Schema(description = "Version")

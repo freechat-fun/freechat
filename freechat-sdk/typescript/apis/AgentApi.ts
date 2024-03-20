@@ -121,7 +121,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public async cloneAgent(agentId: string, _options?: Configuration): Promise<RequestContext> {
+    public async cloneAgent(agentId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'agentId' is not null or undefined
@@ -159,7 +159,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public async cloneAgents(requestBody: Array<string>, _options?: Configuration): Promise<RequestContext> {
+    public async cloneAgents(requestBody: Array<number>, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'requestBody' is not null or undefined
@@ -182,7 +182,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(requestBody, "Array<string>", ""),
+            ObjectSerializer.serialize(requestBody, "Array<number>", ""),
             contentType
         );
         requestContext.setBody(serializedBody);
@@ -351,7 +351,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public async deleteAgent(agentId: string, _options?: Configuration): Promise<RequestContext> {
+    public async deleteAgent(agentId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'agentId' is not null or undefined
@@ -389,7 +389,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public async deleteAgents(requestBody: Array<string>, _options?: Configuration): Promise<RequestContext> {
+    public async deleteAgents(requestBody: Array<number>, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'requestBody' is not null or undefined
@@ -412,7 +412,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(requestBody, "Array<string>", ""),
+            ObjectSerializer.serialize(requestBody, "Array<number>", ""),
             contentType
         );
         requestContext.setBody(serializedBody);
@@ -437,7 +437,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public async getAgentDetails(agentId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getAgentDetails(agentId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'agentId' is not null or undefined
@@ -475,7 +475,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public async getAgentSummary(agentId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getAgentSummary(agentId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'agentId' is not null or undefined
@@ -552,7 +552,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public async publishAgent(agentId: string, visibility: string, _options?: Configuration): Promise<RequestContext> {
+    public async publishAgent(agentId: number, visibility: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'agentId' is not null or undefined
@@ -694,7 +694,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public async updateAgent(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<RequestContext> {
+    public async updateAgent(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'agentId' is not null or undefined
@@ -813,22 +813,22 @@ export class AgentApiResponseProcessor {
      * @params response Response returned by the server for a request to cloneAgent
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async cloneAgentWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async cloneAgentWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -842,22 +842,22 @@ export class AgentApiResponseProcessor {
      * @params response Response returned by the server for a request to cloneAgents
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async cloneAgentsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async cloneAgentsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -900,22 +900,22 @@ export class AgentApiResponseProcessor {
      * @params response Response returned by the server for a request to createAgent
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createAgentWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async createAgentWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -929,22 +929,22 @@ export class AgentApiResponseProcessor {
      * @params response Response returned by the server for a request to createAgents
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createAgentsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async createAgentsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -987,22 +987,22 @@ export class AgentApiResponseProcessor {
      * @params response Response returned by the server for a request to deleteAgents
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async deleteAgentsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async deleteAgentsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1103,22 +1103,22 @@ export class AgentApiResponseProcessor {
      * @params response Response returned by the server for a request to publishAgent
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async publishAgentWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async publishAgentWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

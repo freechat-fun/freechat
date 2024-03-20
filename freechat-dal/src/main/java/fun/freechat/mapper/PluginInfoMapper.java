@@ -5,17 +5,19 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import fun.freechat.model.PluginInfo;
 import jakarta.annotation.Generated;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -25,19 +27,24 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
-import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
-public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PluginInfo>, CommonUpdateMapper {
+public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(pluginId, gmtCreate, gmtModified, userId, visibility, name, manifestFormat, apiFormat, provider, manifestInfo, apiInfo, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(pluginId, pluginUid, gmtCreate, gmtModified, userId, visibility, name, manifestFormat, apiFormat, provider, manifestInfo, apiInfo, ext);
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
+    @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="row.pluginId", before=false, resultType=Long.class)
+    int insert(InsertStatementProvider<PluginInfo> insertStatement);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="PluginInfoResult", value = {
-        @Result(column="plugin_id", property="pluginId", jdbcType=JdbcType.VARCHAR, id=true),
+        @Result(column="plugin_id", property="pluginId", jdbcType=JdbcType.BIGINT, id=true),
+        @Result(column="plugin_uid", property="pluginUid", jdbcType=JdbcType.VARCHAR),
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="user_id", property="userId", jdbcType=JdbcType.VARCHAR),
@@ -68,7 +75,7 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int deleteByPrimaryKey(String pluginId_) {
+    default int deleteByPrimaryKey(Long pluginId_) {
         return delete(c -> 
             c.where(pluginId, isEqualTo(pluginId_))
         );
@@ -77,25 +84,7 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insert(PluginInfo row) {
         return MyBatis3Utils.insert(this::insert, row, pluginInfo, c ->
-            c.map(pluginId).toProperty("pluginId")
-            .map(gmtCreate).toProperty("gmtCreate")
-            .map(gmtModified).toProperty("gmtModified")
-            .map(userId).toProperty("userId")
-            .map(visibility).toProperty("visibility")
-            .map(name).toProperty("name")
-            .map(manifestFormat).toProperty("manifestFormat")
-            .map(apiFormat).toProperty("apiFormat")
-            .map(provider).toProperty("provider")
-            .map(manifestInfo).toProperty("manifestInfo")
-            .map(apiInfo).toProperty("apiInfo")
-            .map(ext).toProperty("ext")
-        );
-    }
-
-    @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default int insertMultiple(Collection<PluginInfo> records) {
-        return MyBatis3Utils.insertMultiple(this::insertMultiple, records, pluginInfo, c ->
-            c.map(pluginId).toProperty("pluginId")
+            c.map(pluginUid).toProperty("pluginUid")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
             .map(userId).toProperty("userId")
@@ -113,7 +102,7 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int insertSelective(PluginInfo row) {
         return MyBatis3Utils.insert(this::insert, row, pluginInfo, c ->
-            c.map(pluginId).toPropertyWhenPresent("pluginId", row::getPluginId)
+            c.map(pluginUid).toPropertyWhenPresent("pluginUid", row::getPluginUid)
             .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
             .map(userId).toPropertyWhenPresent("userId", row::getUserId)
@@ -144,7 +133,7 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    default Optional<PluginInfo> selectByPrimaryKey(String pluginId_) {
+    default Optional<PluginInfo> selectByPrimaryKey(Long pluginId_) {
         return selectOne(c ->
             c.where(pluginId, isEqualTo(pluginId_))
         );
@@ -157,7 +146,7 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateAllColumns(PluginInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(pluginId).equalTo(row::getPluginId)
+        return dsl.set(pluginUid).equalTo(row::getPluginUid)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
                 .set(userId).equalTo(row::getUserId)
@@ -173,7 +162,7 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(PluginInfo row, UpdateDSL<UpdateModel> dsl) {
-        return dsl.set(pluginId).equalToWhenPresent(row::getPluginId)
+        return dsl.set(pluginUid).equalToWhenPresent(row::getPluginUid)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
                 .set(userId).equalToWhenPresent(row::getUserId)
@@ -190,7 +179,8 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKey(PluginInfo row) {
         return update(c ->
-            c.set(gmtCreate).equalTo(row::getGmtCreate)
+            c.set(pluginUid).equalTo(row::getPluginUid)
+            .set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
             .set(userId).equalTo(row::getUserId)
             .set(visibility).equalTo(row::getVisibility)
@@ -208,7 +198,8 @@ public interface PluginInfoMapper extends CommonCountMapper, CommonDeleteMapper,
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     default int updateByPrimaryKeySelective(PluginInfo row) {
         return update(c ->
-            c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
+            c.set(pluginUid).equalToWhenPresent(row::getPluginUid)
+            .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
             .set(userId).equalToWhenPresent(row::getUserId)
             .set(visibility).equalToWhenPresent(row::getVisibility)

@@ -3,6 +3,7 @@ package fun.freechat.api.dto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimbusds.oauth2.sdk.util.MapUtils;
 import fun.freechat.api.util.CommonUtils;
+import fun.freechat.api.util.PromptUtils;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,7 +51,7 @@ public class PromptTaskDTO {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
             }
         }
-        task.setPromptId(promptRef.getPromptId());
+        task.setPromptUid(PromptUtils.idToUid(promptRef.getPromptId()));
         task.setVariables(variables);
         if (Objects.nonNull(promptRef.getDraft())) {
             task.setDraft(promptRef.getDraft() ? (byte) 0 : (byte) 1);

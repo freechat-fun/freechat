@@ -6,7 +6,10 @@ import java.util.Date;
 
 public class CharacterInfo implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String characterId;
+    private Long characterId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String characterUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date gmtCreate;
@@ -18,7 +21,7 @@ public class CharacterInfo implements Serializable {
     private String userId;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String parentId;
+    private String parentUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String visibility;
@@ -72,19 +75,35 @@ public class CharacterInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getCharacterId() {
+    public Long getCharacterId() {
         return characterId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterInfo withCharacterId(String characterId) {
+    public CharacterInfo withCharacterId(Long characterId) {
         this.setCharacterId(characterId);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCharacterId(String characterId) {
-        this.characterId = characterId == null ? null : characterId.trim();
+    public void setCharacterId(Long characterId) {
+        this.characterId = characterId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getCharacterUid() {
+        return characterUid;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterInfo withCharacterUid(String characterUid) {
+        this.setCharacterUid(characterUid);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setCharacterUid(String characterUid) {
+        this.characterUid = characterUid == null ? null : characterUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -136,19 +155,19 @@ public class CharacterInfo implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getParentId() {
-        return parentId;
+    public String getParentUid() {
+        return parentUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterInfo withParentId(String parentId) {
-        this.setParentId(parentId);
+    public CharacterInfo withParentUid(String parentUid) {
+        this.setParentUid(parentUid);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setParentId(String parentId) {
-        this.parentId = parentId == null ? null : parentId.trim();
+    public void setParentUid(String parentUid) {
+        this.parentUid = parentUid == null ? null : parentUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -421,10 +440,11 @@ public class CharacterInfo implements Serializable {
         }
         CharacterInfo other = (CharacterInfo) that;
         return (this.getCharacterId() == null ? other.getCharacterId() == null : this.getCharacterId().equals(other.getCharacterId()))
+            && (this.getCharacterUid() == null ? other.getCharacterUid() == null : this.getCharacterUid().equals(other.getCharacterUid()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
+            && (this.getParentUid() == null ? other.getParentUid() == null : this.getParentUid().equals(other.getParentUid()))
             && (this.getVisibility() == null ? other.getVisibility() == null : this.getVisibility().equals(other.getVisibility()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getNickname() == null ? other.getNickname() == null : this.getNickname().equals(other.getNickname()))
@@ -442,10 +462,11 @@ public class CharacterInfo implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getCharacterId() == null) ? 0 : getCharacterId().hashCode());
+        result = prime * result + ((getCharacterUid() == null) ? 0 : getCharacterUid().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getParentId() == null) ? 0 : getParentId().hashCode());
+        result = prime * result + ((getParentUid() == null) ? 0 : getParentUid().hashCode());
         result = prime * result + ((getVisibility() == null) ? 0 : getVisibility().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getNickname() == null) ? 0 : getNickname().hashCode());
@@ -466,10 +487,11 @@ public class CharacterInfo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", characterId=").append(characterId);
+        sb.append(", characterUid=").append(characterUid);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", userId=").append(userId);
-        sb.append(", parentId=").append(parentId);
+        sb.append(", parentUid=").append(parentUid);
         sb.append(", visibility=").append(visibility);
         sb.append(", name=").append(name);
         sb.append(", nickname=").append(nickname);

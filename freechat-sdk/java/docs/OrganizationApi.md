@@ -425,7 +425,7 @@ public class Example {
 
 <a id="listSubordinateAuthorities"></a>
 # **listSubordinateAuthorities**
-> Set&lt;String&gt; listSubordinateAuthorities(username)
+> List&lt;String&gt; listSubordinateAuthorities(username)
 
 List Subordinate Permissions
 
@@ -453,7 +453,7 @@ public class Example {
     OrganizationApi apiInstance = new OrganizationApi(defaultClient);
     String username = "username_example"; // String | Username
     try {
-      Set<String> result = apiInstance.listSubordinateAuthorities(username);
+      List<String> result = apiInstance.listSubordinateAuthorities(username);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling OrganizationApi#listSubordinateAuthorities");
@@ -474,7 +474,7 @@ public class Example {
 
 ### Return type
 
-**Set&lt;String&gt;**
+**List&lt;String&gt;**
 
 ### Authorization
 

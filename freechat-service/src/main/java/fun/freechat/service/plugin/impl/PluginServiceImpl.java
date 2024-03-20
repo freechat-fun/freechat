@@ -145,13 +145,13 @@ public class PluginServiceImpl implements PluginService {
         }
         List<String> tags = tagMapper.select(c ->
                         c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPluginId())))
+                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
                 .stream()
                 .map(Tag::getContent)
                 .toList();
         List<String> aiModels = aiModelMapper.select(c ->
                         c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
-                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPluginId())))
+                                .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
                 .stream()
                 .map(AiModel::getModelId)
                 .toList();
@@ -175,10 +175,8 @@ public class PluginServiceImpl implements PluginService {
         Date now = new Date();
         int rows = pluginInfoMapper.insertSelective(info
                 .withGmtCreate(now)
-                .withGmtModified(now)
-                .withPluginId(IdUtils.newId()));
+                .withGmtModified(now));
         if (rows <= 0) {
-            info.setPluginId(null);
             throw new RuntimeException("Insert plugin " + info.getName() + " failed!");
         }
         if (CollectionUtils.isNotEmpty(infoTriple.getMiddle())) {
@@ -193,9 +191,8 @@ public class PluginServiceImpl implements PluginService {
                         .withContent(tagText)
                         .withUserId(info.getUserId())
                         .withReferType(InfoType.PLUGIN.text())
-                        .withReferId(info.getPluginId()));
+                        .withReferId(info.getPluginUid()));
                 if (rows <= 0) {
-                    info.setPluginId(null);
                     throw new RuntimeException("Insert tag " + tagText + " failed!");
                 }
             }
@@ -211,9 +208,8 @@ public class PluginServiceImpl implements PluginService {
                         .withGmtModified(now)
                         .withModelId(aiModelId)
                         .withReferType(InfoType.PLUGIN.text())
-                        .withReferId(info.getPluginId()));
+                        .withReferId(info.getPluginUid()));
                 if (rows <= 0) {
-                    info.setPluginId(null);
                     throw new RuntimeException("Insert aiModel " + aiModelId + " failed!");
                 }
             }
@@ -227,19 +223,19 @@ public class PluginServiceImpl implements PluginService {
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
             table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.pluginId, equalTo(TagDynamicSqlSupport.referId));
+                    .on(Info.pluginUid, equalTo(TagDynamicSqlSupport.referId));
 
         }
         List<String> modelIds = InfoUtils.trimListElements(query.getWhere().getAiModels());
         if (CollectionUtils.isNotEmpty(modelIds)) {
             table.leftJoin(AiModelDynamicSqlSupport.aiModel, "m")
-                    .on(Info.pluginId, equalTo(AiModelDynamicSqlSupport.referId));
+                    .on(Info.pluginUid, equalTo(AiModelDynamicSqlSupport.referId));
         }
         List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
-                    .on(Info.pluginId, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+                    .on(Info.pluginUid, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
         }
         // conditions
         var conditions = table.where();
@@ -391,6 +387,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     public boolean create(Triple<PluginInfo, List<String>, List<String>> infoTriple) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
+            infoTriple.getLeft().setPluginUid(IdUtils.newId());
             doCreate(infoTriple);
             session.commit();
             return true;
@@ -404,11 +401,12 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     }
 
     @Override
-    public List<String> create(List<Triple<PluginInfo, List<String>, List<String>>> pluginInfoList) {
+    public List<Long> create(List<Triple<PluginInfo, List<String>, List<String>>> pluginInfoList) {
         SqlSession session = sqlSessionFactory.openSession();
-        LinkedList<String> pluginIds = new LinkedList<>();
+        LinkedList<Long> pluginIds = new LinkedList<>();
         try {
             for (Triple<PluginInfo, List<String>, List<String>> infoTriple : pluginInfoList) {
+                infoTriple.getLeft().setPluginUid(IdUtils.newId());
                 doCreate(infoTriple);
                 pluginIds.add(infoTriple.getLeft().getPluginId());
             }
@@ -433,7 +431,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
             pluginInfoMapper.updateByPrimaryKeySelective(pluginInfo.withGmtModified(now));
             int rows;
             if (CollectionUtils.isNotEmpty(infoTriple.getMiddle())) {
-                tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(pluginInfo.getPluginId()))
+                tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(pluginInfo.getPluginUid()))
                         .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
                         .and(TagDynamicSqlSupport.userId, isEqualTo(pluginInfo.getUserId())));
                 Set<String> tagSet = new HashSet<>(infoTriple.getMiddle());
@@ -444,15 +442,14 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                             .withContent(tagText)
                             .withUserId(pluginInfo.getUserId())
                             .withReferType(InfoType.PLUGIN.text())
-                            .withReferId(pluginInfo.getPluginId()));
+                            .withReferId(pluginInfo.getPluginUid()));
                     if (rows <= 0) {
-                        pluginInfo.setPluginId(null);
                         throw new RuntimeException("Update tag " + tagText + " failed!");
                     }
                 }
             }
             if (CollectionUtils.isNotEmpty(infoTriple.getRight())) {
-                aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(pluginInfo.getPluginId()))
+                aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(pluginInfo.getPluginUid()))
                         .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
                 Set<String> aiModelSet = new HashSet<>(infoTriple.getRight());
                 for (String aiModelId : aiModelSet) {
@@ -461,9 +458,8 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                             .withGmtModified(now)
                             .withModelId(aiModelId)
                             .withReferType(InfoType.PLUGIN.text())
-                            .withReferId(pluginInfo.getPluginId()));
+                            .withReferId(pluginInfo.getPluginUid()));
                     if (rows <= 0) {
-                        pluginInfo.setPluginId(null);
                         throw new RuntimeException("Update aiModel " + aiModelId + " failed!");
                     }
                 }
@@ -481,8 +477,8 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public boolean hide(String pluginId, User user) {
-        if (StringUtils.isBlank(pluginId)) {
+    public boolean hide(Long pluginId, User user) {
+        if (Objects.isNull(pluginId)) {
             return false;
         }
         PluginInfo pluginInfo = pluginInfoMapper.selectOne(c ->
@@ -502,33 +498,21 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public boolean delete(String pluginId, User user) {
-        if (StringUtils.isBlank(pluginId)) {
+    public boolean delete(Long pluginId, User user) {
+        if (Objects.isNull(pluginId)) {
             return false;
         }
         int rows = pluginInfoMapper.delete(c -> c.where(Info.pluginId, isEqualTo(pluginId))
                 .and(Info.userId, isEqualTo(user.getUserId())));
-        if (rows > 0) {
-            tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(pluginId))
-                    .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
-            aiModelMapper.delete(c -> c.where(AiModelDynamicSqlSupport.referId, isEqualTo(pluginId))
-                    .and(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
-            interactiveStatsMapper.delete(c ->
-                    c.where(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(pluginId))
-                            .and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
-            interactiveStatsScoreDetailsMapper.delete(c ->
-                    c.where(InteractiveStatsScoreDetailsDynamicSqlSupport.referId, isEqualTo(pluginId))
-                            .and(InteractiveStatsScoreDetailsDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text())));
-        }
         return rows > 0;
     }
 
     @Override
-    public List<String> delete(List<String> pluginIds, User user) {
-        LinkedList<String> deletedIds = new LinkedList<>();
+    public List<Long> delete(List<Long> pluginIds, User user) {
+        LinkedList<Long> deletedIds = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            for (String pluginId : pluginIds) {
+            for (Long pluginId : pluginIds) {
                 if (delete(pluginId, user)) {
                     deletedIds.add(pluginId);
                 }
@@ -546,7 +530,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     }
 
     @Override
-    public Triple<PluginInfo, List<String>, List<String>> summary(String pluginId, User user) {
+    public Triple<PluginInfo, List<String>, List<String>> summary(Long pluginId, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
 
@@ -562,7 +546,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     }
 
     @Override
-    public List<Triple<PluginInfo, List<String>, List<String>>> summary(Collection<String> pluginIds, User user) {
+    public List<Triple<PluginInfo, List<String>, List<String>>> summary(Collection<Long> pluginIds, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
 
@@ -580,7 +564,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
 
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public Triple<PluginInfo, List<String>, List<String>> details(String pluginId, User user) {
+    public Triple<PluginInfo, List<String>, List<String>> details(Long pluginId, User user) {
         return pluginInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
                         .and(Info.pluginId, isEqualTo(pluginId)))
                 .filter(info -> filterVisibility(info, user))
@@ -590,7 +574,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     }
 
     @Override
-    public List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<String> pluginIds, User user) {
+    public List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<Long> pluginIds, User user) {
         return pluginInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
                         .and(Info.pluginId, isIn(pluginIds)))
                 .stream()
@@ -601,8 +585,23 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     }
 
     @Override
+    public Long getIdByUid(String pluginUid, User user) {
+        var statement = select(Info.pluginId, Info.gmtCreate)
+                .from(Info.table)
+                .where(Info.pluginUid, isEqualTo(pluginUid))
+                .and(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                .orderBy(Info.gmtCreate.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return pluginInfoMapper.selectOne(statement).map(PluginInfo::getPluginId).orElse(null);
+    }
+
+    @Override
     @LongPeriodCache
-    public String getOwner(String pluginId) {
+    public String getOwner(Long pluginId) {
         var statement = select(Info.userId)
                 .from(Info.table)
                 .where(Info.pluginId, isEqualTo(pluginId))
@@ -612,9 +611,33 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
         return pluginInfoMapper.selectOne(statement).map(PluginInfo::getUserId).orElse(null);
     }
 
+    @Override
+    public String getOwnerByUid(String pluginUid) {
+        var statement = select(Info.userId)
+                .from(Info.table)
+                .where(Info.pluginUid, isEqualTo(pluginUid))
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return pluginInfoMapper.selectOne(statement).map(PluginInfo::getUserId).orElse(null);
+    }
+
+    @Override
+    public String getUid(Long pluginId) {
+        var statement = select(Info.pluginUid)
+                .from(Info.table)
+                .where(Info.pluginId, isEqualTo(pluginId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return pluginInfoMapper.selectOne(statement).map(PluginInfo::getPluginUid).orElse(null);
+    }
+
     private static class Info {
         public static final PluginInfoDynamicSqlSupport.PluginInfo table = PluginInfoDynamicSqlSupport.pluginInfo;
-        public static final SqlColumn<String> pluginId = PluginInfoDynamicSqlSupport.pluginId;
+        public static final SqlColumn<Long> pluginId = PluginInfoDynamicSqlSupport.pluginId;
+        public static final SqlColumn<String> pluginUid = PluginInfoDynamicSqlSupport.pluginUid;
         public static final SqlColumn<Date> gmtCreate = PluginInfoDynamicSqlSupport.gmtCreate;
         public static final SqlColumn<Date> gmtModified = PluginInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = PluginInfoDynamicSqlSupport.userId;
@@ -633,6 +656,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
                     Info.gmtModified,
                     Info.userId,
                     Info.pluginId,
+                    Info.pluginUid,
                     Info.visibility,
                     Info.name,
                     Info.provider,

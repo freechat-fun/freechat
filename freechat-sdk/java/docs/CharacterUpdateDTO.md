@@ -8,7 +8,7 @@ Request data for updating character information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**parentId** | **String** | Referenced character |  [optional] |
+|**parentUid** | **String** | Referenced character |  [optional] |
 |**visibility** | **String** | Visibility: private (default), public, public_org, hidden |  [optional] |
 |**name** | **String** | Character name |  |
 |**description** | **String** | Character description |  [optional] |
@@ -20,7 +20,7 @@ Request data for updating character information
 |**greeting** | **String** | Character greeting |  [optional] |
 |**chatStyle** | **String** | Character chat-style |  [optional] |
 |**chatExample** | **String** | Character chat-example |  [optional] |
-|**lang** | **String** | Character language: English | Chinese (Simplified) | ... |  [optional] |
+|**lang** | **String** | Character language: en (default) | zh | ... |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |
 |**draft** | **String** | Character draft information |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |

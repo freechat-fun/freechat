@@ -81,9 +81,6 @@ public class CharacterServiceImpl implements CharacterService {
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 
-    @Autowired
-    private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
-
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {
         return c.where(Info.visibility,
@@ -131,7 +128,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
         List<String> tags = tagMapper.select(c ->
                         c.where(TagDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
-                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getCharacterId())))
+                                .and(TagDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid())))
                 .stream()
                 .map(Tag::getContent)
                 .toList();
@@ -145,8 +142,8 @@ public class CharacterServiceImpl implements CharacterService {
             return null;
         }
         List<CharacterBackend> backends = characterBackendMapper.select(c ->
-                        c.where(CharacterBackendDynamicSqlSupport.characterId,
-                                isEqualTo(infoPair.getLeft().getCharacterId())));
+                        c.where(CharacterBackendDynamicSqlSupport.characterUid,
+                                isEqualTo(infoPair.getLeft().getCharacterUid())));
 
         return Triple.of(infoPair.getLeft(), infoPair.getRight(), backends);
     }
@@ -179,10 +176,8 @@ public class CharacterServiceImpl implements CharacterService {
         Date now = new Date();
         int rows = characterInfoMapper.insertSelective(info
                 .withGmtCreate(now)
-                .withGmtModified(now)
-                .withCharacterId(IdUtils.newId()));
+                .withGmtModified(now));
         if (rows <= 0) {
-            info.setCharacterId(null);
             throw new RuntimeException("Insert character " + info.getName() + " failed!");
         }
         if (CollectionUtils.isNotEmpty(infoPair.getRight())) {
@@ -197,9 +192,8 @@ public class CharacterServiceImpl implements CharacterService {
                         .withContent(tagText)
                         .withUserId(info.getUserId())
                         .withReferType(InfoType.CHARACTER.text())
-                        .withReferId(info.getCharacterId()));
+                        .withReferId(info.getCharacterUid()));
                 if (rows <= 0) {
-                    info.setCharacterId(null);
                     throw new RuntimeException("Insert tag " + tagText + " failed!");
                 }
             }
@@ -213,14 +207,14 @@ public class CharacterServiceImpl implements CharacterService {
         List<String> tags = InfoUtils.trimListElements(query.getWhere().getTags());
         if (CollectionUtils.isNotEmpty(tags)) {
             table.leftJoin(TagDynamicSqlSupport.tag, "t")
-                    .on(Info.characterId, equalTo(TagDynamicSqlSupport.referId));
+                    .on(Info.characterUid, equalTo(TagDynamicSqlSupport.referId));
 
         }
         List<String> orderByStats =  new LinkedList<>(InfoUtils.trimListElements(query.getOrderBy()));
         orderByStats.retainAll(StatsType.fieldNames());
         if (!orderByStats.isEmpty()) {
             table.leftJoin(InteractiveStatsDynamicSqlSupport.interactiveStats, "i")
-                    .on(Info.characterId, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
+                    .on(Info.characterUid, equalTo((InteractiveStatsDynamicSqlSupport.referId)));
         }
 
         // conditions
@@ -375,6 +369,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     public boolean create(Pair<CharacterInfo, List<String>> infoPair) {
         SqlSession session = sqlSessionFactory.openSession();
         try {
+            infoPair.getLeft().setCharacterUid(IdUtils.newId());
             doCreate(infoPair);
             session.commit();
             return true;
@@ -397,7 +392,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
             characterInfoMapper.updateByPrimaryKeySelective(characterInfo.withGmtModified(now));
             int rows;
             if (CollectionUtils.isNotEmpty(infoPair.getRight())) {
-                tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(characterInfo.getCharacterId()))
+                tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(characterInfo.getCharacterUid()))
                         .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
                         .and(TagDynamicSqlSupport.userId, isEqualTo(characterInfo.getUserId())));
                 Set<String> tagSet = new HashSet<>(infoPair.getRight());
@@ -408,9 +403,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
                             .withContent(tagText)
                             .withUserId(characterInfo.getUserId())
                             .withReferType(InfoType.CHARACTER.text())
-                            .withReferId(characterInfo.getCharacterId()));
+                            .withReferId(characterInfo.getCharacterUid()));
                     if (rows <= 0) {
-                        characterInfo.setCharacterId(null);
                         throw new RuntimeException("Update tag " + tagText + " failed!");
                     }
                 }
@@ -428,8 +422,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public boolean hide(String characterId, User user) {
-        if (StringUtils.isBlank(characterId)) {
+    public boolean hide(Long characterId, User user) {
+        if (Objects.isNull(characterId)) {
             return false;
         }
         CharacterInfo characterInfo = characterInfoMapper.selectOne(c ->
@@ -449,35 +443,23 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public boolean delete(String characterId, User user) {
-        if (StringUtils.isBlank(characterId)) {
+    public boolean delete(Long characterId, User user) {
+        if (Objects.isNull(characterId)) {
             return false;
         }
         int rows = characterInfoMapper.delete(c -> c.where(Info.characterId, isEqualTo(characterId))
                 .and(Info.userId, isEqualTo(user.getUserId())));
-        if (rows > 0) {
-            characterBackendMapper.delete(c ->
-                    c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId)));
-            tagMapper.delete(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(characterId))
-                    .and(TagDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text())));
-            interactiveStatsMapper.delete(c ->
-                    c.where(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(characterId))
-                            .and(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text())));
-            interactiveStatsScoreDetailsMapper.delete(c ->
-                    c.where(InteractiveStatsScoreDetailsDynamicSqlSupport.referId, isEqualTo(characterId))
-                            .and(InteractiveStatsScoreDetailsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text())));
-        }
         return rows > 0;
     }
 
     @Override
-    public List<String> delete(User user) {
+    public List<Long> delete(User user) {
         var statement = select(Info.characterId)
                 .from(Info.table)
                 .where(Info.userId, isEqualTo(user.getUserId()))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<String> ids = characterInfoMapper.selectMany(statement)
+        List<Long> ids = characterInfoMapper.selectMany(statement)
                 .stream()
                 .map(CharacterInfo::getCharacterId)
                 .toList();
@@ -486,14 +468,14 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<String> deleteByName(String name, User user) {
+    public List<Long> deleteByName(String name, User user) {
         var statement = select(Info.characterId)
                 .from(Info.table)
                 .where(Info.userId, isEqualTo(user.getUserId()))
                 .and(Info.name, isEqualTo(name))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-        List<String> ids = characterInfoMapper.selectMany(statement)
+        List<Long> ids = characterInfoMapper.selectMany(statement)
                 .stream()
                 .map(CharacterInfo::getCharacterId)
                 .toList();
@@ -501,11 +483,11 @@ select distinct c.user_id, c.character_id, c.visibility... \
         return delete(ids, user);
     }
 
-    private List<String> delete(List<String> ids, User user) {
-        LinkedList<String> deletedIds = new LinkedList<>();
+    private List<Long> delete(List<Long> ids, User user) {
+        LinkedList<Long> deletedIds = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
         try {
-            for (String id : ids) {
+            for (Long id : ids) {
                 if (delete(id, user)) {
                     deletedIds.add(id);
                 }
@@ -525,7 +507,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     @LongPeriodCache
-    public CharacterInfo summary(String characterId) {
+    public CharacterInfo summary(Long characterId) {
         var statement = select(Info.summaryColumns())
                 .from(Info.table)
                 .where(Info.characterId, isEqualTo(characterId))
@@ -535,7 +517,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public Pair<CharacterInfo, List<String>> summary(String characterId, User user) {
+    public Pair<CharacterInfo, List<String>> summary(Long characterId, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
 
@@ -550,7 +532,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<Pair<CharacterInfo, List<String>>> summary(Collection<String> characterIds, User user) {
+    public List<Pair<CharacterInfo, List<String>>> summary(Collection<Long> characterIds, User user) {
         var fields = select(Info.summaryColumns())
                 .from(Info.table);
 
@@ -567,7 +549,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(String characterId, User user) {
+    public Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(Long characterId, User user) {
         return characterInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())
                         .and(Info.characterId, isEqualTo(characterId)))
                 .filter(info -> filterVisibility(info, user))
@@ -577,7 +559,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> details(Collection<String> characterIds, User user) {
+    public List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> details(Collection<Long> characterIds, User user) {
         return characterInfoMapper.select(c -> wrapQueryExpression(c, user.getUserId())
                         .and(Info.characterId, isIn(characterIds)))
                 .stream()
@@ -588,7 +570,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<Triple<String, Integer, InteractiveStats>> listVersionsByName(String name, User user) {
+    public List<Triple<Long, Integer, InteractiveStats>> listVersionsByName(String name, User user) {
         var statement = select(Info.characterId, Info.version)
                 .from(Info.table)
                 .where(Info.name, isEqualTo(name))
@@ -602,7 +584,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .map(info -> {
                     InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
                                     c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterId())))
+                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid())))
                             .orElse(null);
                     return Triple.of(info.getCharacterId(), info.getVersion(), stats);
                 })
@@ -610,7 +592,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public String getLatestIdByName(String name, User user) {
+    public Long getLatestIdByName(String name, User user) {
         var statement = select(Info.characterId, Info.version)
                 .from(Info.table)
                 .where(Info.name, isEqualTo(name))
@@ -625,9 +607,24 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
+    public Long getLatestIdByUid(String characterUid, User user) {
+        var statement = select(Info.characterId, Info.version)
+                .from(Info.table)
+                .where(Info.characterUid, isEqualTo(characterUid))
+                .and(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                .orderBy(Info.version.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getCharacterId).orElse(null);
+    }
+
+    @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public String publish(String characterId, Visibility visibility, User user) {
-        String publishedInfoId;
+    public Long publish(Long characterId, Visibility visibility, User user) {
+        Long publishedInfoId;
         SqlSession session = sqlSessionFactory.openSession();
         try {
             var infoTriple = details(characterId, user);
@@ -636,8 +633,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
             }
             CharacterInfo info = infoTriple.getLeft();
 
-            List<Triple<String, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
-            Triple<String, Integer, InteractiveStats> versionInfo =
+            List<Triple<Long, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
+            Triple<Long, Integer, InteractiveStats> versionInfo =
                     CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
             Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
 
@@ -660,33 +657,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                         .withVisibility(Visibility.HIDDEN.text())
                         .withGmtModified(new Date());
                 characterInfoMapper.updateByPrimaryKeySelective(info);
-
-                List<CharacterBackend> backends = listBackends(prevVersionInfo.getLeft());
-                List<String> cacheKeys = new ArrayList<>(backends.size());
-                for (CharacterBackend backend : backends) {
-                    int rows = characterBackendMapper.updateByPrimaryKeySelective(backend
-                            .withCharacterId(publishedInfoId)
-                            .withGmtModified(info.getGmtModified()));
-                    cacheKeys.add(BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + backend.getBackendId());
-                    if (rows > 0) {
-                        eventPublisher.publishEvent(
-                                new CharacterBackendEvent(user.getUserId(), backend.getBackendId()));
-                    }
-                }
-                CacheUtils.longPeriodCacheEvict(cacheKeys);
             }
-
-            if (Objects.nonNull(versionInfo) && Objects.nonNull(versionInfo.getRight())) {
-                Date now = new Date();
-                InteractiveStats stats = versionInfo.getRight();
-                interactiveStatsMapper.insertSelective(stats
-                        .withId(null)
-                        .withGmtCreate(now)
-                        .withGmtModified(now)
-                        .withReferId(publishedInfoId)
-                );
-            }
-
             session.commit();
         } catch (Exception e) {
             log.error("Failed to publish character", e);
@@ -700,7 +671,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     @LongPeriodCache
-    public String getOwner(String characterId) {
+    public String getOwner(Long characterId) {
         var statement = select(Info.userId)
                 .from(Info.table)
                 .where(Info.characterId, isEqualTo(characterId))
@@ -708,6 +679,31 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .render(RenderingStrategies.MYBATIS3);
 
         return characterInfoMapper.selectOne(statement).map(CharacterInfo::getUserId).orElse(null);
+    }
+
+    @Override
+    @LongPeriodCache
+    public String getOwnerByUid(String characterUid) {
+        var statement = select(Info.userId)
+                .from(Info.table)
+                .where(Info.characterUid, isEqualTo(characterUid))
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getUserId).orElse(null);
+    }
+
+    @Override
+    @LongPeriodCache
+    public String getUid(Long characterId) {
+        var statement = select(Info.characterUid)
+                .from(Info.table)
+                .where(Info.characterId, isEqualTo(characterId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getCharacterUid).orElse(null);
     }
 
     @Override
@@ -724,19 +720,19 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     private void ensureDefaultBackend(CharacterBackend characterBackend, Date now) {
-        String characterId = characterBackend.getCharacterId();
-        if (StringUtils.isBlank(characterId)) {
+        String characterUid = characterBackend.getCharacterUid();
+        if (StringUtils.isBlank(characterUid)) {
             return;
         }
 
         if (characterBackend.getIsDefault() != (byte) 1) {
-            ensureDefaultBackend(characterId, now);
+            ensureDefaultBackend(characterUid, now);
             return;
         }
 
         List<CharacterBackend> defaultBackends = characterBackendMapper.select(c ->
                 c.where(CharacterBackendDynamicSqlSupport.backendId, isNotEqualTo(characterBackend.getBackendId()))
-                        .and(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId))
+                        .and(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)));
 
         for (CharacterBackend defaultBackend : defaultBackends) {
@@ -747,13 +743,13 @@ select distinct c.user_id, c.character_id, c.visibility... \
         }
     }
 
-    private void ensureDefaultBackend(String characterId, Date now) {
+    private void ensureDefaultBackend(String characterUid, Date now) {
         List<CharacterBackend> defaultBackends = characterBackendMapper.select(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId))
+                c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)));
 
         if (CollectionUtils.isEmpty(defaultBackends)) {
-            characterBackendMapper.select(c -> c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId)))
+            characterBackendMapper.select(c -> c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)))
                     .stream()
                     .findAny()
                     .ifPresent(backend -> characterBackendMapper.updateByPrimaryKeySelective(
@@ -762,9 +758,9 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    @LongPeriodCacheEvict(keyBy = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.characterId")
+    @LongPeriodCacheEvict(keyBy = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.characterUid")
     public String addBackend(CharacterBackend characterBackend) {
-        if (StringUtils.isBlank(characterBackend.getCharacterId())) {
+        if (StringUtils.isBlank(characterBackend.getCharacterUid())) {
             return null;
         }
 
@@ -796,10 +792,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0"),
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p1")
     })
-    public boolean removeBackend(String characterId, String characterBackendId) {
+    public boolean removeBackend(String characterUid, String characterBackendId) {
         int rows = characterBackendMapper.deleteByPrimaryKey(characterBackendId);
         if (rows > 0) {
-            ensureDefaultBackend(characterId, new Date());
+            ensureDefaultBackend(characterUid, new Date());
             return true;
         }
         return false;
@@ -807,24 +803,24 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.characterId"),
+            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.characterUid"),
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0.backendId")
     })
     public boolean updateBackend(CharacterBackend characterBackend) {
-        String characterId = characterBackend.getCharacterId();
-        if (StringUtils.isBlank(characterId)) {
-            return false;
-        }
-
         int rows = 0;
         SqlSession session = sqlSessionFactory.openSession();
         try {
             Date now = new Date();
             rows = characterBackendMapper.updateByPrimaryKeySelective(characterBackend
-                    .withGmtModified(now));
+                    .withGmtModified(now)
+                    .withCharacterUid(null));
 
             if (rows > 0) {
                 ensureDefaultBackend(characterBackend, now);
+
+                CharacterBackendEvent event = new CharacterBackendEvent(
+                        null, characterBackend.getBackendId());
+                eventPublisher.publishEvent(event);
             }
         } catch (Exception e) {
             log.error("Failed to update character backend", e);
@@ -840,18 +836,18 @@ select distinct c.user_id, c.character_id, c.visibility... \
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0"),
             @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = BACKEND_CACHE_KEY_SPEL_PREFIX + "#p1")
     })
-    public boolean setDefaultBackend(String characterId, String characterBackendId) {
+    public boolean setDefaultBackend(String characterUid, String characterBackendId) {
         return updateBackend(new CharacterBackend()
-                .withCharacterId(characterId)
+                .withCharacterUid(characterUid)
                 .withBackendId(characterBackendId)
                 .withIsDefault((byte) 1));
     }
 
     @Override
     @LongPeriodCache(keyBy = DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX + "#p0")
-    public CharacterBackend getDefaultBackend(String characterId) {
+    public CharacterBackend getDefaultBackend(String characterUid) {
         return characterBackendMapper.selectOne(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId))
+                c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                         .and(CharacterBackendDynamicSqlSupport.isDefault, isEqualTo((byte) 1)))
                 .orElse(null);
     }
@@ -863,10 +859,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<String> listBackendIds(String characterId) {
+    public List<String> listBackendIds(String characterUid) {
         var statement = select(CharacterBackendDynamicSqlSupport.backendId)
                 .from(CharacterBackendDynamicSqlSupport.characterBackend)
-                .where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId))
+                .where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         return characterBackendMapper.selectMany(statement)
@@ -876,40 +872,41 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
-    public List<CharacterBackend> listBackends(String characterId) {
+    public List<CharacterBackend> listBackends(String characterUid) {
         return characterBackendMapper.select(c ->
-                c.where(CharacterBackendDynamicSqlSupport.characterId, isEqualTo(characterId)));
+                c.where(CharacterBackendDynamicSqlSupport.characterUid, isEqualTo(characterUid)));
     }
 
     @Override
     @LongPeriodCache
     public String getBackendOwner(String characterBackendId) {
-        String characterId = getBackendCharacterId(characterBackendId);
-        if (StringUtils.isNotBlank(characterId)) {
-            return getOwner(characterId);
+        String characterUid = getBackendCharacterUid(characterBackendId);
+        if (StringUtils.isNotBlank(characterUid)) {
+            return getOwnerByUid(characterUid);
         }
         return null;
     }
 
     @Override
     @LongPeriodCache(keyBy = BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX + "#p0")
-    public String getBackendCharacterId(String characterBackendId) {
-        var statement = select(CharacterBackendDynamicSqlSupport.characterId)
+    public String getBackendCharacterUid(String characterBackendId) {
+        var statement = select(CharacterBackendDynamicSqlSupport.characterUid)
                 .from(CharacterBackendDynamicSqlSupport.characterBackend)
                 .where(CharacterBackendDynamicSqlSupport.backendId, isEqualTo(characterBackendId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        return characterBackendMapper.selectOne(statement).map(CharacterBackend::getCharacterId).orElse(null);
+        return characterBackendMapper.selectOne(statement).map(CharacterBackend::getCharacterUid).orElse(null);
     }
 
     private static class Info {
         public static final CharacterInfoDynamicSqlSupport.CharacterInfo table = CharacterInfoDynamicSqlSupport.characterInfo;
-        public static final SqlColumn<String> characterId = CharacterInfoDynamicSqlSupport.characterId;
+        public static final SqlColumn<Long> characterId = CharacterInfoDynamicSqlSupport.characterId;
+        public static final SqlColumn<String> characterUid = CharacterInfoDynamicSqlSupport.characterUid;
         public static final SqlColumn<Date> gmtCreate = CharacterInfoDynamicSqlSupport.gmtCreate;
         public static final SqlColumn<Date> gmtModified = CharacterInfoDynamicSqlSupport.gmtModified;
         public static final SqlColumn<String> userId = CharacterInfoDynamicSqlSupport.userId;
-        public static final SqlColumn<String> parentId = CharacterInfoDynamicSqlSupport.parentId;
+        public static final SqlColumn<String> parentUid = CharacterInfoDynamicSqlSupport.parentUid;
         public static final SqlColumn<String> visibility = CharacterInfoDynamicSqlSupport.visibility;
         public static final SqlColumn<String> name = CharacterInfoDynamicSqlSupport.name;
         public static final SqlColumn<String> nickname = CharacterInfoDynamicSqlSupport.nickname;
@@ -933,6 +930,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.gmtModified,
                     Info.userId,
                     Info.characterId,
+                    Info.characterUid,
                     Info.visibility,
                     Info.version,
                     Info.name,

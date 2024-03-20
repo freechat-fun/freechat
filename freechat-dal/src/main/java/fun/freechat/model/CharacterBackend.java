@@ -15,7 +15,7 @@ public class CharacterBackend implements Serializable {
     private Date gmtModified;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String characterId;
+    private String characterUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Byte isDefault;
@@ -93,19 +93,19 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getCharacterId() {
-        return characterId;
+    public String getCharacterUid() {
+        return characterUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public CharacterBackend withCharacterId(String characterId) {
-        this.setCharacterId(characterId);
+    public CharacterBackend withCharacterUid(String characterUid) {
+        this.setCharacterUid(characterUid);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setCharacterId(String characterId) {
-        this.characterId = characterId == null ? null : characterId.trim();
+    public void setCharacterUid(String characterUid) {
+        this.characterUid = characterUid == null ? null : characterUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -252,7 +252,7 @@ public class CharacterBackend implements Serializable {
         return (this.getBackendId() == null ? other.getBackendId() == null : this.getBackendId().equals(other.getBackendId()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-            && (this.getCharacterId() == null ? other.getCharacterId() == null : this.getCharacterId().equals(other.getCharacterId()))
+            && (this.getCharacterUid() == null ? other.getCharacterUid() == null : this.getCharacterUid().equals(other.getCharacterUid()))
             && (this.getIsDefault() == null ? other.getIsDefault() == null : this.getIsDefault().equals(other.getIsDefault()))
             && (this.getChatPromptTaskId() == null ? other.getChatPromptTaskId() == null : this.getChatPromptTaskId().equals(other.getChatPromptTaskId()))
             && (this.getGreetingPromptTaskId() == null ? other.getGreetingPromptTaskId() == null : this.getGreetingPromptTaskId().equals(other.getGreetingPromptTaskId()))
@@ -271,7 +271,7 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getBackendId() == null) ? 0 : getBackendId().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
-        result = prime * result + ((getCharacterId() == null) ? 0 : getCharacterId().hashCode());
+        result = prime * result + ((getCharacterUid() == null) ? 0 : getCharacterUid().hashCode());
         result = prime * result + ((getIsDefault() == null) ? 0 : getIsDefault().hashCode());
         result = prime * result + ((getChatPromptTaskId() == null) ? 0 : getChatPromptTaskId().hashCode());
         result = prime * result + ((getGreetingPromptTaskId() == null) ? 0 : getGreetingPromptTaskId().hashCode());
@@ -293,7 +293,7 @@ public class CharacterBackend implements Serializable {
         sb.append(", backendId=").append(backendId);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
-        sb.append(", characterId=").append(characterId);
+        sb.append(", characterUid=").append(characterUid);
         sb.append(", isDefault=").append(isDefault);
         sb.append(", chatPromptTaskId=").append(chatPromptTaskId);
         sb.append(", greetingPromptTaskId=").append(greetingPromptTaskId);

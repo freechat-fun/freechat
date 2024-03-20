@@ -6,7 +6,7 @@ public interface PromptTaskService {
     boolean create(PromptTask task);
     boolean update(PromptTask task);
     boolean delete(String taskId);
-    boolean deleteByPromptId(String promptId);
+    boolean deleteByPromptUid(String promptUid);
     PromptTask get(String taskId);
     String getOwner(String taskId);
 }

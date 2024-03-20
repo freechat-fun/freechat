@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterId, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -40,7 +40,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="backend_id", property="backendId", jdbcType=JdbcType.VARCHAR, id=true),
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="character_id", property="characterId", jdbcType=JdbcType.VARCHAR),
+        @Result(column="character_uid", property="characterUid", jdbcType=JdbcType.VARCHAR),
         @Result(column="is_default", property="isDefault", jdbcType=JdbcType.TINYINT),
         @Result(column="chat_prompt_task_id", property="chatPromptTaskId", jdbcType=JdbcType.VARCHAR),
         @Result(column="greeting_prompt_task_id", property="greetingPromptTaskId", jdbcType=JdbcType.VARCHAR),
@@ -80,7 +80,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             c.map(backendId).toProperty("backendId")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
-            .map(characterId).toProperty("characterId")
+            .map(characterUid).toProperty("characterUid")
             .map(isDefault).toProperty("isDefault")
             .map(chatPromptTaskId).toProperty("chatPromptTaskId")
             .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
@@ -98,7 +98,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             c.map(backendId).toProperty("backendId")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
-            .map(characterId).toProperty("characterId")
+            .map(characterUid).toProperty("characterUid")
             .map(isDefault).toProperty("isDefault")
             .map(chatPromptTaskId).toProperty("chatPromptTaskId")
             .map(greetingPromptTaskId).toProperty("greetingPromptTaskId")
@@ -116,7 +116,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             c.map(backendId).toPropertyWhenPresent("backendId", row::getBackendId)
             .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
-            .map(characterId).toPropertyWhenPresent("characterId", row::getCharacterId)
+            .map(characterUid).toPropertyWhenPresent("characterUid", row::getCharacterUid)
             .map(isDefault).toPropertyWhenPresent("isDefault", row::getIsDefault)
             .map(chatPromptTaskId).toPropertyWhenPresent("chatPromptTaskId", row::getChatPromptTaskId)
             .map(greetingPromptTaskId).toPropertyWhenPresent("greetingPromptTaskId", row::getGreetingPromptTaskId)
@@ -160,7 +160,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         return dsl.set(backendId).equalTo(row::getBackendId)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
-                .set(characterId).equalTo(row::getCharacterId)
+                .set(characterUid).equalTo(row::getCharacterUid)
                 .set(isDefault).equalTo(row::getIsDefault)
                 .set(chatPromptTaskId).equalTo(row::getChatPromptTaskId)
                 .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
@@ -176,7 +176,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         return dsl.set(backendId).equalToWhenPresent(row::getBackendId)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
-                .set(characterId).equalToWhenPresent(row::getCharacterId)
+                .set(characterUid).equalToWhenPresent(row::getCharacterUid)
                 .set(isDefault).equalToWhenPresent(row::getIsDefault)
                 .set(chatPromptTaskId).equalToWhenPresent(row::getChatPromptTaskId)
                 .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)
@@ -192,7 +192,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         return update(c ->
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
-            .set(characterId).equalTo(row::getCharacterId)
+            .set(characterUid).equalTo(row::getCharacterUid)
             .set(isDefault).equalTo(row::getIsDefault)
             .set(chatPromptTaskId).equalTo(row::getChatPromptTaskId)
             .set(greetingPromptTaskId).equalTo(row::getGreetingPromptTaskId)
@@ -210,7 +210,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         return update(c ->
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
-            .set(characterId).equalToWhenPresent(row::getCharacterId)
+            .set(characterUid).equalToWhenPresent(row::getCharacterUid)
             .set(isDefault).equalToWhenPresent(row::getIsDefault)
             .set(chatPromptTaskId).equalToWhenPresent(row::getChatPromptTaskId)
             .set(greetingPromptTaskId).equalToWhenPresent(row::getGreetingPromptTaskId)

@@ -899,7 +899,7 @@ export class PromiseAgentApi {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public cloneAgentWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public cloneAgentWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.cloneAgentWithHttpInfo(agentId, _options);
         return result.toPromise();
     }
@@ -909,7 +909,7 @@ export class PromiseAgentApi {
      * Clone Agent
      * @param agentId The referenced agentId
      */
-    public cloneAgent(agentId: string, _options?: Configuration): Promise<string> {
+    public cloneAgent(agentId: number, _options?: Configuration): Promise<number> {
         const result = this.api.cloneAgent(agentId, _options);
         return result.toPromise();
     }
@@ -919,7 +919,7 @@ export class PromiseAgentApi {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public cloneAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public cloneAgentsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.cloneAgentsWithHttpInfo(requestBody, _options);
         return result.toPromise();
     }
@@ -929,7 +929,7 @@ export class PromiseAgentApi {
      * Batch Clone Agents
      * @param requestBody List of agent information to be created
      */
-    public cloneAgents(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+    public cloneAgents(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.cloneAgents(requestBody, _options);
         return result.toPromise();
     }
@@ -959,7 +959,7 @@ export class PromiseAgentApi {
      * Create Agent
      * @param agentCreateDTO Information of the agent to be created
      */
-    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+    public createAgentWithHttpInfo(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.createAgentWithHttpInfo(agentCreateDTO, _options);
         return result.toPromise();
     }
@@ -969,7 +969,7 @@ export class PromiseAgentApi {
      * Create Agent
      * @param agentCreateDTO Information of the agent to be created
      */
-    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<string> {
+    public createAgent(agentCreateDTO: AgentCreateDTO, _options?: Configuration): Promise<number> {
         const result = this.api.createAgent(agentCreateDTO, _options);
         return result.toPromise();
     }
@@ -979,7 +979,7 @@ export class PromiseAgentApi {
      * Batch Create Agents
      * @param agentCreateDTO List of agent information to be created
      */
-    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public createAgentsWithHttpInfo(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.createAgentsWithHttpInfo(agentCreateDTO, _options);
         return result.toPromise();
     }
@@ -989,7 +989,7 @@ export class PromiseAgentApi {
      * Batch Create Agents
      * @param agentCreateDTO List of agent information to be created
      */
-    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<Array<string>> {
+    public createAgents(agentCreateDTO: Array<AgentCreateDTO>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.createAgents(agentCreateDTO, _options);
         return result.toPromise();
     }
@@ -999,7 +999,7 @@ export class PromiseAgentApi {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public deleteAgentWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteAgentWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.deleteAgentWithHttpInfo(agentId, _options);
         return result.toPromise();
     }
@@ -1009,7 +1009,7 @@ export class PromiseAgentApi {
      * Delete Agent
      * @param agentId AgentId to be deleted
      */
-    public deleteAgent(agentId: string, _options?: Configuration): Promise<boolean> {
+    public deleteAgent(agentId: number, _options?: Configuration): Promise<boolean> {
         const result = this.api.deleteAgent(agentId, _options);
         return result.toPromise();
     }
@@ -1019,7 +1019,7 @@ export class PromiseAgentApi {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public deleteAgentsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deleteAgentsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.deleteAgentsWithHttpInfo(requestBody, _options);
         return result.toPromise();
     }
@@ -1029,7 +1029,7 @@ export class PromiseAgentApi {
      * Batch Delete Agents
      * @param requestBody List of agentId to be deleted
      */
-    public deleteAgents(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+    public deleteAgents(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.deleteAgents(requestBody, _options);
         return result.toPromise();
     }
@@ -1039,7 +1039,7 @@ export class PromiseAgentApi {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public getAgentDetailsWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<AgentDetailsDTO>> {
+    public getAgentDetailsWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<AgentDetailsDTO>> {
         const result = this.api.getAgentDetailsWithHttpInfo(agentId, _options);
         return result.toPromise();
     }
@@ -1049,7 +1049,7 @@ export class PromiseAgentApi {
      * Get Agent Details
      * @param agentId AgentId to be obtained
      */
-    public getAgentDetails(agentId: string, _options?: Configuration): Promise<AgentDetailsDTO> {
+    public getAgentDetails(agentId: number, _options?: Configuration): Promise<AgentDetailsDTO> {
         const result = this.api.getAgentDetails(agentId, _options);
         return result.toPromise();
     }
@@ -1059,7 +1059,7 @@ export class PromiseAgentApi {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public getAgentSummaryWithHttpInfo(agentId: string, _options?: Configuration): Promise<HttpInfo<AgentSummaryDTO>> {
+    public getAgentSummaryWithHttpInfo(agentId: number, _options?: Configuration): Promise<HttpInfo<AgentSummaryDTO>> {
         const result = this.api.getAgentSummaryWithHttpInfo(agentId, _options);
         return result.toPromise();
     }
@@ -1069,7 +1069,7 @@ export class PromiseAgentApi {
      * Get Agent Summary
      * @param agentId agentId to be obtained
      */
-    public getAgentSummary(agentId: string, _options?: Configuration): Promise<AgentSummaryDTO> {
+    public getAgentSummary(agentId: number, _options?: Configuration): Promise<AgentSummaryDTO> {
         const result = this.api.getAgentSummary(agentId, _options);
         return result.toPromise();
     }
@@ -1100,7 +1100,7 @@ export class PromiseAgentApi {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishAgentWithHttpInfo(agentId: string, visibility: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public publishAgentWithHttpInfo(agentId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.publishAgentWithHttpInfo(agentId, visibility, _options);
         return result.toPromise();
     }
@@ -1111,7 +1111,7 @@ export class PromiseAgentApi {
      * @param agentId The agentId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishAgent(agentId: string, visibility: string, _options?: Configuration): Promise<string> {
+    public publishAgent(agentId: number, visibility: string, _options?: Configuration): Promise<number> {
         const result = this.api.publishAgent(agentId, visibility, _options);
         return result.toPromise();
     }
@@ -1162,7 +1162,7 @@ export class PromiseAgentApi {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public updateAgentWithHttpInfo(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateAgentWithHttpInfo(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.updateAgentWithHttpInfo(agentId, agentUpdateDTO, _options);
         return result.toPromise();
     }
@@ -1173,7 +1173,7 @@ export class PromiseAgentApi {
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
      */
-    public updateAgent(agentId: string, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<boolean> {
+    public updateAgent(agentId: number, agentUpdateDTO: AgentUpdateDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updateAgent(agentId, agentUpdateDTO, _options);
         return result.toPromise();
     }
@@ -1363,7 +1363,7 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackendWithHttpInfo(characterId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+    public addCharacterBackendWithHttpInfo(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<HttpInfo<string>> {
         const result = this.api.addCharacterBackendWithHttpInfo(characterId, characterBackendDTO, _options);
         return result.toPromise();
     }
@@ -1374,7 +1374,7 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackend(characterId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<string> {
+    public addCharacterBackend(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<string> {
         const result = this.api.addCharacterBackend(characterId, characterBackendDTO, _options);
         return result.toPromise();
     }
@@ -1424,7 +1424,7 @@ export class PromiseCharacterApi {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public cloneCharacterWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public cloneCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.cloneCharacterWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1434,7 +1434,7 @@ export class PromiseCharacterApi {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public cloneCharacter(characterId: string, _options?: Configuration): Promise<string> {
+    public cloneCharacter(characterId: number, _options?: Configuration): Promise<number> {
         const result = this.api.cloneCharacter(characterId, _options);
         return result.toPromise();
     }
@@ -1464,7 +1464,7 @@ export class PromiseCharacterApi {
      * Create Character
      * @param characterCreateDTO Information of the character to be created
      */
-    public createCharacterWithHttpInfo(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+    public createCharacterWithHttpInfo(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.createCharacterWithHttpInfo(characterCreateDTO, _options);
         return result.toPromise();
     }
@@ -1474,7 +1474,7 @@ export class PromiseCharacterApi {
      * Create Character
      * @param characterCreateDTO Information of the character to be created
      */
-    public createCharacter(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Promise<string> {
+    public createCharacter(characterCreateDTO: CharacterCreateDTO, _options?: Configuration): Promise<number> {
         const result = this.api.createCharacter(characterCreateDTO, _options);
         return result.toPromise();
     }
@@ -1484,7 +1484,7 @@ export class PromiseCharacterApi {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public deleteCharacterWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deleteCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.deleteCharacterWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1494,7 +1494,7 @@ export class PromiseCharacterApi {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public deleteCharacter(characterId: string, _options?: Configuration): Promise<boolean> {
+    public deleteCharacter(characterId: number, _options?: Configuration): Promise<boolean> {
         const result = this.api.deleteCharacter(characterId, _options);
         return result.toPromise();
     }
@@ -1504,7 +1504,7 @@ export class PromiseCharacterApi {
      * Delete Character by Name
      * @param name The character name to be deleted
      */
-    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deleteCharacterByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.deleteCharacterByNameWithHttpInfo(name, _options);
         return result.toPromise();
     }
@@ -1514,7 +1514,7 @@ export class PromiseCharacterApi {
      * Delete Character by Name
      * @param name The character name to be deleted
      */
-    public deleteCharacterByName(name: string, _options?: Configuration): Promise<Array<string>> {
+    public deleteCharacterByName(name: string, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.deleteCharacterByName(name, _options);
         return result.toPromise();
     }
@@ -1544,7 +1544,7 @@ export class PromiseCharacterApi {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterDetailsWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<CharacterDetailsDTO>> {
+    public getCharacterDetailsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<CharacterDetailsDTO>> {
         const result = this.api.getCharacterDetailsWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1554,7 +1554,7 @@ export class PromiseCharacterApi {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterDetails(characterId: string, _options?: Configuration): Promise<CharacterDetailsDTO> {
+    public getCharacterDetails(characterId: number, _options?: Configuration): Promise<CharacterDetailsDTO> {
         const result = this.api.getCharacterDetails(characterId, _options);
         return result.toPromise();
     }
@@ -1564,7 +1564,7 @@ export class PromiseCharacterApi {
      * Get Latest Character Id by Name
      * @param name Character name
      */
-    public getCharacterLatestIdByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public getCharacterLatestIdByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.getCharacterLatestIdByNameWithHttpInfo(name, _options);
         return result.toPromise();
     }
@@ -1574,7 +1574,7 @@ export class PromiseCharacterApi {
      * Get Latest Character Id by Name
      * @param name Character name
      */
-    public getCharacterLatestIdByName(name: string, _options?: Configuration): Promise<string> {
+    public getCharacterLatestIdByName(name: string, _options?: Configuration): Promise<number> {
         const result = this.api.getCharacterLatestIdByName(name, _options);
         return result.toPromise();
     }
@@ -1584,7 +1584,7 @@ export class PromiseCharacterApi {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterSummaryWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<CharacterSummaryDTO>> {
+    public getCharacterSummaryWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<CharacterSummaryDTO>> {
         const result = this.api.getCharacterSummaryWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1594,7 +1594,7 @@ export class PromiseCharacterApi {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public getCharacterSummary(characterId: string, _options?: Configuration): Promise<CharacterSummaryDTO> {
+    public getCharacterSummary(characterId: number, _options?: Configuration): Promise<CharacterSummaryDTO> {
         const result = this.api.getCharacterSummary(characterId, _options);
         return result.toPromise();
     }
@@ -1604,7 +1604,7 @@ export class PromiseCharacterApi {
      * Get Default Character Backend
      * @param characterId The characterId to be queried
      */
-    public getDefaultCharacterBackendWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
+    public getDefaultCharacterBackendWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
         const result = this.api.getDefaultCharacterBackendWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1614,7 +1614,7 @@ export class PromiseCharacterApi {
      * Get Default Character Backend
      * @param characterId The characterId to be queried
      */
-    public getDefaultCharacterBackend(characterId: string, _options?: Configuration): Promise<CharacterBackendDetailsDTO> {
+    public getDefaultCharacterBackend(characterId: number, _options?: Configuration): Promise<CharacterBackendDetailsDTO> {
         const result = this.api.getDefaultCharacterBackend(characterId, _options);
         return result.toPromise();
     }
@@ -1624,7 +1624,7 @@ export class PromiseCharacterApi {
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackendIdsWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public listCharacterBackendIdsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
         const result = this.api.listCharacterBackendIdsWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1634,7 +1634,7 @@ export class PromiseCharacterApi {
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackendIds(characterId: string, _options?: Configuration): Promise<Array<string>> {
+    public listCharacterBackendIds(characterId: number, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.listCharacterBackendIds(characterId, _options);
         return result.toPromise();
     }
@@ -1644,7 +1644,7 @@ export class PromiseCharacterApi {
      * List Character Backends
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackendsWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+    public listCharacterBackendsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
         const result = this.api.listCharacterBackendsWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1654,8 +1654,28 @@ export class PromiseCharacterApi {
      * List Character Backends
      * @param characterId The characterId to be queried
      */
-    public listCharacterBackends(characterId: string, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
+    public listCharacterBackends(characterId: number, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
         const result = this.api.listCharacterBackends(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param characterId Character identifier
+     */
+    public listCharacterPicturesWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterPicturesWithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param characterId Character identifier
+     */
+    public listCharacterPictures(characterId: number, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterPictures(characterId, _options);
         return result.toPromise();
     }
 
@@ -1704,7 +1724,7 @@ export class PromiseCharacterApi {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public publishCharacterWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public publishCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.publishCharacterWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1714,7 +1734,7 @@ export class PromiseCharacterApi {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public publishCharacter(characterId: string, _options?: Configuration): Promise<string> {
+    public publishCharacter(characterId: number, _options?: Configuration): Promise<number> {
         const result = this.api.publishCharacter(characterId, _options);
         return result.toPromise();
     }
@@ -1725,7 +1745,7 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1WithHttpInfo(characterId: string, visibility: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public publishCharacter1WithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.publishCharacter1WithHttpInfo(characterId, visibility, _options);
         return result.toPromise();
     }
@@ -1736,7 +1756,7 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1(characterId: string, visibility: string, _options?: Configuration): Promise<string> {
+    public publishCharacter1(characterId: number, visibility: string, _options?: Configuration): Promise<number> {
         const result = this.api.publishCharacter1(characterId, visibility, _options);
         return result.toPromise();
     }
@@ -1827,7 +1847,7 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public updateCharacterWithHttpInfo(characterId: string, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updateCharacterWithHttpInfo(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.updateCharacterWithHttpInfo(characterId, characterUpdateDTO, _options);
         return result.toPromise();
     }
@@ -1838,7 +1858,7 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public updateCharacter(characterId: string, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<boolean> {
+    public updateCharacter(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updateCharacter(characterId, characterUpdateDTO, _options);
         return result.toPromise();
     }
@@ -1868,40 +1888,44 @@ export class PromiseCharacterApi {
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
+     * @param characterId Character identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatarWithHttpInfo(file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterAvatarWithHttpInfo(file, _options);
+    public uploadCharacterAvatarWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterAvatarWithHttpInfo(characterId, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
+     * @param characterId Character identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatar(file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterAvatar(file, _options);
+    public uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterAvatar(characterId, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload a picture of the character.
      * Upload Character Picture
+     * @param characterId Character identifier
      * @param file Character picture
      */
-    public uploadCharacterPictureWithHttpInfo(file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterPictureWithHttpInfo(file, _options);
+    public uploadCharacterPictureWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterPictureWithHttpInfo(characterId, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload a picture of the character.
      * Upload Character Picture
+     * @param characterId Character identifier
      * @param file Character picture
      */
-    public uploadCharacterPicture(file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterPicture(file, _options);
+    public uploadCharacterPicture(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterPicture(characterId, file, _options);
         return result.toPromise();
     }
 
@@ -1969,7 +1993,7 @@ export class PromiseChatApi {
      * Get Default Chat
      * @param characterId Character identifier
      */
-    public getDefaultChatIdWithHttpInfo(characterId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public getDefaultChatIdWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<string>> {
         const result = this.api.getDefaultChatIdWithHttpInfo(characterId, _options);
         return result.toPromise();
     }
@@ -1979,7 +2003,7 @@ export class PromiseChatApi {
      * Get Default Chat
      * @param characterId Character identifier
      */
-    public getDefaultChatId(characterId: string, _options?: Configuration): Promise<string> {
+    public getDefaultChatId(characterId: number, _options?: Configuration): Promise<string> {
         const result = this.api.getDefaultChatId(characterId, _options);
         return result.toPromise();
     }
@@ -2087,28 +2111,6 @@ export class PromiseChatApi {
      */
     public rollbackMessages(chatId: string, count: number, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.rollbackMessages(chatId, count, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Rollback messages of a chat from specified id.
-     * Rollback Chat Messages by Id
-     * @param chatId Chat session identifier
-     * @param messageId Starting message id to be rolled back
-     */
-    public rollbackMessagesFromWithHttpInfo(chatId: string, messageId: number, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
-        const result = this.api.rollbackMessagesFromWithHttpInfo(chatId, messageId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Rollback messages of a chat from specified id.
-     * Rollback Chat Messages by Id
-     * @param chatId Chat session identifier
-     * @param messageId Starting message id to be rolled back
-     */
-    public rollbackMessagesFrom(chatId: string, messageId: number, _options?: Configuration): Promise<Array<number>> {
-        const result = this.api.rollbackMessagesFrom(chatId, messageId, _options);
         return result.toPromise();
     }
 
@@ -3019,7 +3021,7 @@ export class PromisePluginApi {
      * Create Plugin
      * @param pluginCreateDTO Information of the plugin to be created
      */
-    public createPluginWithHttpInfo(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+    public createPluginWithHttpInfo(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.createPluginWithHttpInfo(pluginCreateDTO, _options);
         return result.toPromise();
     }
@@ -3029,7 +3031,7 @@ export class PromisePluginApi {
      * Create Plugin
      * @param pluginCreateDTO Information of the plugin to be created
      */
-    public createPlugin(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Promise<string> {
+    public createPlugin(pluginCreateDTO: PluginCreateDTO, _options?: Configuration): Promise<number> {
         const result = this.api.createPlugin(pluginCreateDTO, _options);
         return result.toPromise();
     }
@@ -3039,7 +3041,7 @@ export class PromisePluginApi {
      * Batch Create Plugins
      * @param pluginCreateDTO List of plugin information to be created
      */
-    public createPluginsWithHttpInfo(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public createPluginsWithHttpInfo(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.createPluginsWithHttpInfo(pluginCreateDTO, _options);
         return result.toPromise();
     }
@@ -3049,7 +3051,7 @@ export class PromisePluginApi {
      * Batch Create Plugins
      * @param pluginCreateDTO List of plugin information to be created
      */
-    public createPlugins(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Promise<Array<string>> {
+    public createPlugins(pluginCreateDTO: Array<PluginCreateDTO>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.createPlugins(pluginCreateDTO, _options);
         return result.toPromise();
     }
@@ -3059,7 +3061,7 @@ export class PromisePluginApi {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public deletePluginWithHttpInfo(pluginId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deletePluginWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.deletePluginWithHttpInfo(pluginId, _options);
         return result.toPromise();
     }
@@ -3069,7 +3071,7 @@ export class PromisePluginApi {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public deletePlugin(pluginId: string, _options?: Configuration): Promise<boolean> {
+    public deletePlugin(pluginId: number, _options?: Configuration): Promise<boolean> {
         const result = this.api.deletePlugin(pluginId, _options);
         return result.toPromise();
     }
@@ -3079,7 +3081,7 @@ export class PromisePluginApi {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public deletePluginsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deletePluginsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.deletePluginsWithHttpInfo(requestBody, _options);
         return result.toPromise();
     }
@@ -3089,7 +3091,7 @@ export class PromisePluginApi {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public deletePlugins(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+    public deletePlugins(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.deletePlugins(requestBody, _options);
         return result.toPromise();
     }
@@ -3099,7 +3101,7 @@ export class PromisePluginApi {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public getPluginDetailsWithHttpInfo(pluginId: string, _options?: Configuration): Promise<HttpInfo<PluginDetailsDTO>> {
+    public getPluginDetailsWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<PluginDetailsDTO>> {
         const result = this.api.getPluginDetailsWithHttpInfo(pluginId, _options);
         return result.toPromise();
     }
@@ -3109,7 +3111,7 @@ export class PromisePluginApi {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public getPluginDetails(pluginId: string, _options?: Configuration): Promise<PluginDetailsDTO> {
+    public getPluginDetails(pluginId: number, _options?: Configuration): Promise<PluginDetailsDTO> {
         const result = this.api.getPluginDetails(pluginId, _options);
         return result.toPromise();
     }
@@ -3119,7 +3121,7 @@ export class PromisePluginApi {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public getPluginSummaryWithHttpInfo(pluginId: string, _options?: Configuration): Promise<HttpInfo<PluginSummaryDTO>> {
+    public getPluginSummaryWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<PluginSummaryDTO>> {
         const result = this.api.getPluginSummaryWithHttpInfo(pluginId, _options);
         return result.toPromise();
     }
@@ -3129,7 +3131,7 @@ export class PromisePluginApi {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public getPluginSummary(pluginId: string, _options?: Configuration): Promise<PluginSummaryDTO> {
+    public getPluginSummary(pluginId: number, _options?: Configuration): Promise<PluginSummaryDTO> {
         const result = this.api.getPluginSummary(pluginId, _options);
         return result.toPromise();
     }
@@ -3139,7 +3141,7 @@ export class PromisePluginApi {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public refreshPluginInfoWithHttpInfo(pluginId: string, _options?: Configuration): Promise<HttpInfo<void>> {
+    public refreshPluginInfoWithHttpInfo(pluginId: number, _options?: Configuration): Promise<HttpInfo<void>> {
         const result = this.api.refreshPluginInfoWithHttpInfo(pluginId, _options);
         return result.toPromise();
     }
@@ -3149,7 +3151,7 @@ export class PromisePluginApi {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public refreshPluginInfo(pluginId: string, _options?: Configuration): Promise<void> {
+    public refreshPluginInfo(pluginId: number, _options?: Configuration): Promise<void> {
         const result = this.api.refreshPluginInfo(pluginId, _options);
         return result.toPromise();
     }
@@ -3200,7 +3202,7 @@ export class PromisePluginApi {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public updatePluginWithHttpInfo(pluginId: string, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updatePluginWithHttpInfo(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.updatePluginWithHttpInfo(pluginId, pluginUpdateDTO, _options);
         return result.toPromise();
     }
@@ -3211,7 +3213,7 @@ export class PromisePluginApi {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public updatePlugin(pluginId: string, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<boolean> {
+    public updatePlugin(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updatePlugin(pluginId, pluginUpdateDTO, _options);
         return result.toPromise();
     }
@@ -3320,7 +3322,7 @@ export class PromisePromptApi {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public clonePromptWithHttpInfo(promptId: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public clonePromptWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.clonePromptWithHttpInfo(promptId, _options);
         return result.toPromise();
     }
@@ -3330,7 +3332,7 @@ export class PromisePromptApi {
      * Clone Prompt
      * @param promptId The referenced promptId
      */
-    public clonePrompt(promptId: string, _options?: Configuration): Promise<string> {
+    public clonePrompt(promptId: number, _options?: Configuration): Promise<number> {
         const result = this.api.clonePrompt(promptId, _options);
         return result.toPromise();
     }
@@ -3340,7 +3342,7 @@ export class PromisePromptApi {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public clonePromptsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public clonePromptsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.clonePromptsWithHttpInfo(requestBody, _options);
         return result.toPromise();
     }
@@ -3350,7 +3352,7 @@ export class PromisePromptApi {
      * Batch Clone Prompts
      * @param requestBody List of prompt information to be created
      */
-    public clonePrompts(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+    public clonePrompts(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.clonePrompts(requestBody, _options);
         return result.toPromise();
     }
@@ -3380,7 +3382,7 @@ export class PromisePromptApi {
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
      */
-    public createPromptWithHttpInfo(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+    public createPromptWithHttpInfo(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.createPromptWithHttpInfo(promptCreateDTO, _options);
         return result.toPromise();
     }
@@ -3390,7 +3392,7 @@ export class PromisePromptApi {
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
      */
-    public createPrompt(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Promise<string> {
+    public createPrompt(promptCreateDTO: PromptCreateDTO, _options?: Configuration): Promise<number> {
         const result = this.api.createPrompt(promptCreateDTO, _options);
         return result.toPromise();
     }
@@ -3400,7 +3402,7 @@ export class PromisePromptApi {
      * Batch Create Prompts
      * @param promptCreateDTO List of prompt information to be created
      */
-    public createPromptsWithHttpInfo(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public createPromptsWithHttpInfo(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.createPromptsWithHttpInfo(promptCreateDTO, _options);
         return result.toPromise();
     }
@@ -3410,7 +3412,7 @@ export class PromisePromptApi {
      * Batch Create Prompts
      * @param promptCreateDTO List of prompt information to be created
      */
-    public createPrompts(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Promise<Array<string>> {
+    public createPrompts(promptCreateDTO: Array<PromptCreateDTO>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.createPrompts(promptCreateDTO, _options);
         return result.toPromise();
     }
@@ -3420,7 +3422,7 @@ export class PromisePromptApi {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public deletePromptWithHttpInfo(promptId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public deletePromptWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.deletePromptWithHttpInfo(promptId, _options);
         return result.toPromise();
     }
@@ -3430,7 +3432,7 @@ export class PromisePromptApi {
      * Delete Prompt
      * @param promptId The promptId to be deleted
      */
-    public deletePrompt(promptId: string, _options?: Configuration): Promise<boolean> {
+    public deletePrompt(promptId: number, _options?: Configuration): Promise<boolean> {
         const result = this.api.deletePrompt(promptId, _options);
         return result.toPromise();
     }
@@ -3440,7 +3442,7 @@ export class PromisePromptApi {
      * Delete Prompt by Name
      * @param name The prompt name to be deleted
      */
-    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deletePromptByNameWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.deletePromptByNameWithHttpInfo(name, _options);
         return result.toPromise();
     }
@@ -3450,7 +3452,7 @@ export class PromisePromptApi {
      * Delete Prompt by Name
      * @param name The prompt name to be deleted
      */
-    public deletePromptByName(name: string, _options?: Configuration): Promise<Array<string>> {
+    public deletePromptByName(name: string, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.deletePromptByName(name, _options);
         return result.toPromise();
     }
@@ -3460,7 +3462,7 @@ export class PromisePromptApi {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public deletePromptsWithHttpInfo(requestBody: Array<string>, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+    public deletePromptsWithHttpInfo(requestBody: Array<number>, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
         const result = this.api.deletePromptsWithHttpInfo(requestBody, _options);
         return result.toPromise();
     }
@@ -3470,7 +3472,7 @@ export class PromisePromptApi {
      * Batch Delete Prompts
      * @param requestBody List of promptIds to be deleted
      */
-    public deletePrompts(requestBody: Array<string>, _options?: Configuration): Promise<Array<string>> {
+    public deletePrompts(requestBody: Array<number>, _options?: Configuration): Promise<Array<number>> {
         const result = this.api.deletePrompts(requestBody, _options);
         return result.toPromise();
     }
@@ -3500,7 +3502,7 @@ export class PromisePromptApi {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public getPromptDetailsWithHttpInfo(promptId: string, _options?: Configuration): Promise<HttpInfo<PromptDetailsDTO>> {
+    public getPromptDetailsWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<PromptDetailsDTO>> {
         const result = this.api.getPromptDetailsWithHttpInfo(promptId, _options);
         return result.toPromise();
     }
@@ -3510,7 +3512,7 @@ export class PromisePromptApi {
      * Get Prompt Details
      * @param promptId PromptId to be obtained
      */
-    public getPromptDetails(promptId: string, _options?: Configuration): Promise<PromptDetailsDTO> {
+    public getPromptDetails(promptId: number, _options?: Configuration): Promise<PromptDetailsDTO> {
         const result = this.api.getPromptDetails(promptId, _options);
         return result.toPromise();
     }
@@ -3520,7 +3522,7 @@ export class PromisePromptApi {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public getPromptSummaryWithHttpInfo(promptId: string, _options?: Configuration): Promise<HttpInfo<PromptSummaryDTO>> {
+    public getPromptSummaryWithHttpInfo(promptId: number, _options?: Configuration): Promise<HttpInfo<PromptSummaryDTO>> {
         const result = this.api.getPromptSummaryWithHttpInfo(promptId, _options);
         return result.toPromise();
     }
@@ -3530,7 +3532,7 @@ export class PromisePromptApi {
      * Get Prompt Summary
      * @param promptId PromptId to be obtained
      */
-    public getPromptSummary(promptId: string, _options?: Configuration): Promise<PromptSummaryDTO> {
+    public getPromptSummary(promptId: number, _options?: Configuration): Promise<PromptSummaryDTO> {
         const result = this.api.getPromptSummary(promptId, _options);
         return result.toPromise();
     }
@@ -3581,7 +3583,7 @@ export class PromisePromptApi {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishPromptWithHttpInfo(promptId: string, visibility: string, _options?: Configuration): Promise<HttpInfo<string>> {
+    public publishPromptWithHttpInfo(promptId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
         const result = this.api.publishPromptWithHttpInfo(promptId, visibility, _options);
         return result.toPromise();
     }
@@ -3592,7 +3594,7 @@ export class PromisePromptApi {
      * @param promptId The promptId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishPrompt(promptId: string, visibility: string, _options?: Configuration): Promise<string> {
+    public publishPrompt(promptId: number, visibility: string, _options?: Configuration): Promise<number> {
         const result = this.api.publishPrompt(promptId, visibility, _options);
         return result.toPromise();
     }
@@ -3683,7 +3685,7 @@ export class PromisePromptApi {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public updatePromptWithHttpInfo(promptId: string, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+    public updatePromptWithHttpInfo(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
         const result = this.api.updatePromptWithHttpInfo(promptId, promptUpdateDTO, _options);
         return result.toPromise();
     }
@@ -3694,7 +3696,7 @@ export class PromisePromptApi {
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
      */
-    public updatePrompt(promptId: string, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<boolean> {
+    public updatePrompt(promptId: number, promptUpdateDTO: PromptUpdateDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updatePrompt(promptId, promptUpdateDTO, _options);
         return result.toPromise();
     }

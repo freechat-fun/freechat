@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **backend_id** | **str** | Character backend identifier | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **gmt_modified** | **datetime** | Modification time | [optional] 
-**character_id** | **str** | Character identifier | [optional] 
+**character_uid** | **str** | Character immutable identifier | [optional] 
 **is_default** | **bool** | Whether it is the default backend | [optional] 
 **chat_prompt_task_id** | **str** | Prompt task identifier for chat | [optional] 
 **greeting_prompt_task_id** | **str** | Prompt task identifier for greeting | [optional] 

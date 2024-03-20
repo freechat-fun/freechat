@@ -8,6 +8,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **context** | [**ChatContextDTO**](ChatContextDTO.md) |  | [optional] 
 **character** | [**CharacterSummaryDTO**](CharacterSummaryDTO.md) |  | [optional] 
+**latest_message_record** | [**ChatMessageRecordDTO**](ChatMessageRecordDTO.md) |  | [optional] 
+**sender_status** | **str** | Sender status: online | offline | invisible | [optional] 
+**is_debug_enabled** | **bool** | Is it possible to debug | [optional] 
 
 ## Example
 

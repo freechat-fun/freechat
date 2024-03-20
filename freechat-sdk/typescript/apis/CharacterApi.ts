@@ -28,7 +28,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * @param characterId The characterId to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public async addCharacterBackend(characterId: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<RequestContext> {
+    public async addCharacterBackend(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -179,7 +179,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Clone Character
      * @param characterId The referenced characterId
      */
-    public async cloneCharacter(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async cloneCharacter(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -313,7 +313,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Delete Character
      * @param characterId The characterId to be deleted
      */
-    public async deleteCharacter(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async deleteCharacter(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -427,7 +427,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Get Character Details
      * @param characterId CharacterId to be obtained
      */
-    public async getCharacterDetails(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getCharacterDetails(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -503,7 +503,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Get Character Summary
      * @param characterId CharacterId to be obtained
      */
-    public async getCharacterSummary(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getCharacterSummary(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -541,7 +541,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Get Default Character Backend
      * @param characterId The characterId to be queried
      */
-    public async getDefaultCharacterBackend(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getDefaultCharacterBackend(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -579,7 +579,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * List Character Backend ids
      * @param characterId The characterId to be queried
      */
-    public async listCharacterBackendIds(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async listCharacterBackendIds(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -617,7 +617,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * List Character Backends
      * @param characterId The characterId to be queried
      */
-    public async listCharacterBackends(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async listCharacterBackends(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -628,6 +628,44 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
         // Path Params
         const localVarPath = '/api/v1/character/backends/{characterId}'
+            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * List pictures of the character.
+     * List Character Pictures
+     * @param characterId Character identifier
+     */
+    public async listCharacterPictures(characterId: number, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'characterId' is not null or undefined
+        if (characterId === null || characterId === undefined) {
+            throw new RequiredError("CharacterApi", "listCharacterPictures", "characterId");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/character/pictures/{characterId}'
             .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
@@ -731,7 +769,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * Publish Character
      * @param characterId The characterId to be published
      */
-    public async publishCharacter(characterId: string, _options?: Configuration): Promise<RequestContext> {
+    public async publishCharacter(characterId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -770,7 +808,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public async publishCharacter1(characterId: string, visibility: string, _options?: Configuration): Promise<RequestContext> {
+    public async publishCharacter1(characterId: number, visibility: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -988,7 +1026,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
      */
-    public async updateCharacter(characterId: string, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<RequestContext> {
+    public async updateCharacter(characterId: number, characterUpdateDTO: CharacterUpdateDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'characterId' is not null or undefined
@@ -1097,10 +1135,17 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
+     * @param characterId Character identifier
      * @param file Character avatar
      */
-    public async uploadCharacterAvatar(file: HttpFile, _options?: Configuration): Promise<RequestContext> {
+    public async uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
+
+        // verify required parameter 'characterId' is not null or undefined
+        if (characterId === null || characterId === undefined) {
+            throw new RequiredError("CharacterApi", "uploadCharacterAvatar", "characterId");
+        }
+
 
         // verify required parameter 'file' is not null or undefined
         if (file === null || file === undefined) {
@@ -1109,7 +1154,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/avatar';
+        const localVarPath = '/api/v1/character/avatar/{characterId}'
+            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1161,10 +1207,17 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Upload a picture of the character.
      * Upload Character Picture
+     * @param characterId Character identifier
      * @param file Character picture
      */
-    public async uploadCharacterPicture(file: HttpFile, _options?: Configuration): Promise<RequestContext> {
+    public async uploadCharacterPicture(characterId: number, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
+
+        // verify required parameter 'characterId' is not null or undefined
+        if (characterId === null || characterId === undefined) {
+            throw new RequiredError("CharacterApi", "uploadCharacterPicture", "characterId");
+        }
+
 
         // verify required parameter 'file' is not null or undefined
         if (file === null || file === undefined) {
@@ -1173,7 +1226,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/picture';
+        const localVarPath = '/api/v1/character/picture/{characterId}'
+            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1320,22 +1374,22 @@ export class CharacterApiResponseProcessor {
      * @params response Response returned by the server for a request to cloneCharacter
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async cloneCharacterWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async cloneCharacterWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1378,22 +1432,22 @@ export class CharacterApiResponseProcessor {
      * @params response Response returned by the server for a request to createCharacter
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createCharacterWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async createCharacterWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1436,22 +1490,22 @@ export class CharacterApiResponseProcessor {
      * @params response Response returned by the server for a request to deleteCharacterByName
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async deleteCharacterByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async deleteCharacterByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1523,22 +1577,22 @@ export class CharacterApiResponseProcessor {
      * @params response Response returned by the server for a request to getCharacterLatestIdByName
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async getCharacterLatestIdByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async getCharacterLatestIdByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1665,6 +1719,35 @@ export class CharacterApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
+     * @params response Response returned by the server for a request to listCharacterPictures
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async listCharacterPicturesWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<string> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<string>", ""
+            ) as Array<string>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<string> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<string>", ""
+            ) as Array<string>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
      * @params response Response returned by the server for a request to listCharacterVersionsByName
      * @throws ApiException if the response code was not in [200, 299]
      */
@@ -1726,22 +1809,22 @@ export class CharacterApiResponseProcessor {
      * @params response Response returned by the server for a request to publishCharacter
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async publishCharacterWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async publishCharacterWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -1755,22 +1838,22 @@ export class CharacterApiResponseProcessor {
      * @params response Response returned by the server for a request to publishCharacter1
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async publishCharacter1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async publishCharacter1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

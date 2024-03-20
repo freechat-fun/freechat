@@ -7,7 +7,8 @@ Plugin summary information
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
-**plugin_id** | **str** | Plugin identifier | [optional] 
+**plugin_id** | **int** | Plugin identifier | [optional] 
+**plugin_uid** | **str** | Plugin immutable identifier | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **gmt_modified** | **datetime** | Modification time | [optional] 
 **visibility** | **str** | Visibility: private, public, public_org, hidden | [optional] 

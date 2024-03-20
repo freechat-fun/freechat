@@ -146,7 +146,7 @@ export default function CharacterGallery() {
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
-          r.characterId && interactiveStatisticsApi?.getStatistics('character', r.characterId)
+          r.characterUid && interactiveStatisticsApi?.getStatistics('character', r.characterUid)
             .then(stats => characterInfoWithStats(r, stats))
             .then(recordWithStats => {
               setRecords(prevRecords => {
@@ -221,12 +221,12 @@ export default function CharacterGallery() {
   }
 
   function handleView(record: CharacterSummaryStatsDTO): void {
-    if (!record.characterId) {
+    if (!record.characterUid || !record.characterId) {
       return;
     }
-    interactiveStatisticsApi?.increaseStatistic('character', record.characterId, 'view_count')
+    interactiveStatisticsApi?.increaseStatistic('character', record.characterUid, 'view_count')
       .finally(() => {
-        chatApi?.getDefaultChatId(record.characterId as string)
+        chatApi?.getDefaultChatId(record.characterId as number)
           .then(resp => {
             navigate(`/w/chat/${resp}`);
           })
@@ -237,7 +237,7 @@ export default function CharacterGallery() {
                 request.userNickname = userDetails.nickname ?? userDetails.username;
                 request.userProfile = userDetails.profile;
                 request.characterNickname = record.nickname ?? record.name;
-                request.characterId = record.characterId as string;
+                request.characterId = record.characterId as number;
 
                 chatApi.startChat(request)
                   .then(chatId => {

@@ -158,7 +158,7 @@ public class Example {
 
 <a id="cloneAgent"></a>
 # **cloneAgent**
-> String cloneAgent(agentId)
+> Long cloneAgent(agentId)
 
 Clone Agent
 
@@ -184,9 +184,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    String agentId = "agentId_example"; // String | The referenced agentId
+    Long agentId = 56L; // Long | The referenced agentId
     try {
-      String result = apiInstance.cloneAgent(agentId);
+      Long result = apiInstance.cloneAgent(agentId);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AgentApi#cloneAgent");
@@ -203,11 +203,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **agentId** | **String**| The referenced agentId | |
+| **agentId** | **Long**| The referenced agentId | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -216,7 +216,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -225,7 +225,7 @@ public class Example {
 
 <a id="cloneAgents"></a>
 # **cloneAgents**
-> List&lt;String&gt; cloneAgents(requestBody)
+> List&lt;Long&gt; cloneAgents(requestBody)
 
 Batch Clone Agents
 
@@ -251,9 +251,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    List<String> requestBody = Arrays.asList(); // List<String> | List of agent information to be created
+    List<Long> requestBody = Arrays.asList(); // List<Long> | List of agent information to be created
     try {
-      List<String> result = apiInstance.cloneAgents(requestBody);
+      List<Long> result = apiInstance.cloneAgents(requestBody);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AgentApi#cloneAgents");
@@ -270,11 +270,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | [**List&lt;String&gt;**](String.md)| List of agent information to be created | |
+| **requestBody** | [**List&lt;Long&gt;**](Long.md)| List of agent information to be created | |
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -359,7 +359,7 @@ public class Example {
 
 <a id="createAgent"></a>
 # **createAgent**
-> String createAgent(agentCreateDTO)
+> Long createAgent(agentCreateDTO)
 
 Create Agent
 
@@ -387,7 +387,7 @@ public class Example {
     AgentApi apiInstance = new AgentApi(defaultClient);
     AgentCreateDTO agentCreateDTO = new AgentCreateDTO(); // AgentCreateDTO | Information of the agent to be created
     try {
-      String result = apiInstance.createAgent(agentCreateDTO);
+      Long result = apiInstance.createAgent(agentCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AgentApi#createAgent");
@@ -408,7 +408,7 @@ public class Example {
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -417,7 +417,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -426,7 +426,7 @@ public class Example {
 
 <a id="createAgents"></a>
 # **createAgents**
-> List&lt;String&gt; createAgents(agentCreateDTO)
+> List&lt;Long&gt; createAgents(agentCreateDTO)
 
 Batch Create Agents
 
@@ -454,7 +454,7 @@ public class Example {
     AgentApi apiInstance = new AgentApi(defaultClient);
     List<AgentCreateDTO> agentCreateDTO = Arrays.asList(); // List<AgentCreateDTO> | List of agent information to be created
     try {
-      List<String> result = apiInstance.createAgents(agentCreateDTO);
+      List<Long> result = apiInstance.createAgents(agentCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AgentApi#createAgents");
@@ -475,7 +475,7 @@ public class Example {
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -519,7 +519,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    String agentId = "agentId_example"; // String | AgentId to be deleted
+    Long agentId = 56L; // Long | AgentId to be deleted
     try {
       Boolean result = apiInstance.deleteAgent(agentId);
       System.out.println(result);
@@ -538,7 +538,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **agentId** | **String**| AgentId to be deleted | |
+| **agentId** | **Long**| AgentId to be deleted | |
 
 ### Return type
 
@@ -560,7 +560,7 @@ public class Example {
 
 <a id="deleteAgents"></a>
 # **deleteAgents**
-> List&lt;String&gt; deleteAgents(requestBody)
+> List&lt;Long&gt; deleteAgents(requestBody)
 
 Batch Delete Agents
 
@@ -586,9 +586,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    List<String> requestBody = Arrays.asList(); // List<String> | List of agentId to be deleted
+    List<Long> requestBody = Arrays.asList(); // List<Long> | List of agentId to be deleted
     try {
-      List<String> result = apiInstance.deleteAgents(requestBody);
+      List<Long> result = apiInstance.deleteAgents(requestBody);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AgentApi#deleteAgents");
@@ -605,11 +605,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | [**List&lt;String&gt;**](String.md)| List of agentId to be deleted | |
+| **requestBody** | [**List&lt;Long&gt;**](Long.md)| List of agentId to be deleted | |
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -653,7 +653,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    String agentId = "agentId_example"; // String | AgentId to be obtained
+    Long agentId = 56L; // Long | AgentId to be obtained
     try {
       AgentDetailsDTO result = apiInstance.getAgentDetails(agentId);
       System.out.println(result);
@@ -672,7 +672,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **agentId** | **String**| AgentId to be obtained | |
+| **agentId** | **Long**| AgentId to be obtained | |
 
 ### Return type
 
@@ -720,7 +720,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    String agentId = "agentId_example"; // String | agentId to be obtained
+    Long agentId = 56L; // Long | agentId to be obtained
     try {
       AgentSummaryDTO result = apiInstance.getAgentSummary(agentId);
       System.out.println(result);
@@ -739,7 +739,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **agentId** | **String**| agentId to be obtained | |
+| **agentId** | **Long**| agentId to be obtained | |
 
 ### Return type
 
@@ -828,7 +828,7 @@ public class Example {
 
 <a id="publishAgent"></a>
 # **publishAgent**
-> String publishAgent(agentId, visibility)
+> Long publishAgent(agentId, visibility)
 
 Publish Agent
 
@@ -854,10 +854,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    String agentId = "agentId_example"; // String | The agentId to be published
+    Long agentId = 56L; // Long | The agentId to be published
     String visibility = "visibility_example"; // String | Visibility: public | private | ...
     try {
-      String result = apiInstance.publishAgent(agentId, visibility);
+      Long result = apiInstance.publishAgent(agentId, visibility);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AgentApi#publishAgent");
@@ -874,12 +874,12 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **agentId** | **String**| The agentId to be published | |
+| **agentId** | **Long**| The agentId to be published | |
 | **visibility** | **String**| Visibility: public | private | ... | |
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -888,7 +888,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -1057,7 +1057,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AgentApi apiInstance = new AgentApi(defaultClient);
-    String agentId = "agentId_example"; // String | AgentId to be updated
+    Long agentId = 56L; // Long | AgentId to be updated
     AgentUpdateDTO agentUpdateDTO = new AgentUpdateDTO(); // AgentUpdateDTO | Agent information to be updated
     try {
       Boolean result = apiInstance.updateAgent(agentId, agentUpdateDTO);
@@ -1077,7 +1077,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **agentId** | **String**| AgentId to be updated | |
+| **agentId** | **Long**| AgentId to be updated | |
 | **agentUpdateDTO** | [**AgentUpdateDTO**](AgentUpdateDTO.md)| Agent information to be updated | |
 
 ### Return type

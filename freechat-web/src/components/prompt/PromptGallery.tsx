@@ -156,7 +156,7 @@ export default function PromptGallery() {
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
-          r.promptId && interactiveStatisticsApi?.getStatistics('prompt', r.promptId)
+          r.promptUid && interactiveStatisticsApi?.getStatistics('prompt', r.promptUid)
             .then(stats => promptInfoWithStats(r, stats))
             .then(recordWithStats => {
               setRecords(prevRecords => {
@@ -232,10 +232,10 @@ export default function PromptGallery() {
   }
 
   function handleView(record: PromptSummaryStatsDTO): void {
-    if (!record.promptId) {
+    if (!record.promptUid) {
       return;
     }
-    interactiveStatisticsApi?.increaseStatistic('prompt', record.promptId, 'view_count')
+    interactiveStatisticsApi?.increaseStatistic('prompt', record.promptUid, 'view_count')
       .finally(() => navigate(`/w/prompt/${record.promptId}`));
   }
   

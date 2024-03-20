@@ -3,10 +3,10 @@ package fun.freechat.api;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.AgentInfo;
+import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
-import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.stats.InteractiveStatsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,11 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.stereotype.Controller;
@@ -46,9 +46,9 @@ public class AgentApi {
     @Autowired
     private InteractiveStatsService interactiveStatsService;
 
-    private void resetAgentInfo(AgentInfo info, String parentId) {
-        if (StringUtils.isNotBlank(parentId)) {
-            info.setParentId(parentId);
+    private void resetAgentInfo(AgentInfo info, String parentUid) {
+        if (StringUtils.isNotBlank(parentUid)) {
+            info.setParentUid(parentUid);
             info.setVisibility(Visibility.PRIVATE.text());
         }
         info.setAgentId(null);
@@ -57,13 +57,13 @@ public class AgentApi {
     }
 
     private void resetAgentInfoTriple(
-            Triple<AgentInfo, List<String>, List<String>> infoTriple, String parentId) {
-        resetAgentInfo(infoTriple.getLeft(), parentId);
+            Triple<AgentInfo, List<String>, List<String>> infoTriple, String parentUid) {
+        resetAgentInfo(infoTriple.getLeft(), parentUid);
     }
 
-    private void increaseReferCount(String agentId) {
+    private void increaseReferCount(String agentUid) {
         interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
-                InfoType.AGENT, agentId, StatsType.REFER_COUNT, 1L);
+                InfoType.AGENT, agentUid, StatsType.REFER_COUNT, 1L);
     }
 
     @Operation(
@@ -295,9 +295,9 @@ public class AgentApi {
                     - Parameters: 10
                     """
     )
-    @PostMapping(value = "", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'agentCreateOp')")
-    public String create(
+    public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Information of the agent to be created",
                     content = @Content(
@@ -336,7 +336,7 @@ public class AgentApi {
     )
     @PostMapping("/batch")
     @PreFilter("hasPermission(filterObject.visibility, 'agentCreateOp')")
-    public List<String> batchCreate(
+    public List<Long> batchCreate(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "List of agent information to be created",
                     content = @Content(
@@ -389,8 +389,8 @@ public class AgentApi {
     @PutMapping("/{agentId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'agentUpdateOp')")
     public Boolean update(
-            @Parameter(description = "AgentId to be updated") @PathVariable("agentId") @NotBlank
-            String agentId,
+            @Parameter(description = "AgentId to be updated") @PathVariable("agentId") @Positive
+            Long agentId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Agent information to be updated",
                     content = @Content(
@@ -433,19 +433,20 @@ public class AgentApi {
                     Return the new agentId.
                     """
     )
-    @PostMapping(value = "/clone/{agentId}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String clone(
-            @Parameter(description = "The referenced agentId") @PathVariable("agentId") @NotBlank
-            String agentId) {
+    @PostMapping("/clone/{agentId}")
+    public Long clone(
+            @Parameter(description = "The referenced agentId") @PathVariable("agentId") @Positive
+            Long agentId) {
         var agentInfo = agentService.details(agentId, AccountUtils.currentUser());
         if (Objects.isNull(agentInfo)) {
             return null;
         }
-        resetAgentInfoTriple(agentInfo, agentId);
+        String agentUid = agentService.getUid(agentId);
+        resetAgentInfoTriple(agentInfo, agentUid);
         if (!agentService.create(agentInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create agent.");
         }
-        increaseReferCount(agentId);
+        increaseReferCount(agentUid);
         return agentInfo.getLeft().getAgentId();
     }
 
@@ -455,25 +456,26 @@ public class AgentApi {
             description = "Batch clone multiple agents. Ensure transactionality, return the agentId list after success."
     )
     @PostMapping("/batch/clone")
-    public List<String> batchClone(
+    public List<Long> batchClone(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of agent information to be created")
             @RequestBody
             @NotEmpty
-            List<String> agentIds) {
+            List<Long> agentIds) {
         var agentInfoList = agentService.details(agentIds, AccountUtils.currentUser());
         if (CollectionUtils.isEmpty(agentInfoList)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to find agents " + agentIds);
         }
         for (var agentInfo : agentInfoList) {
-            String parentAgentId = agentInfo.getLeft().getAgentId();
-            resetAgentInfoTriple(agentInfo, parentAgentId);
+            Long parentAgentId = agentInfo.getLeft().getAgentId();
+            String parentUid = Objects.isNull(parentAgentId) ? null : agentService.getUid(parentAgentId);
+            resetAgentInfoTriple(agentInfo, parentUid);
         }
-        List<String> newAgentIds = agentService.create(agentInfoList);
+        List<Long> newAgentIds = agentService.create(agentInfoList);
         if (!newAgentIds.isEmpty()) {
             for (var agentInfo : agentInfoList) {
                 if (newAgentIds.contains(agentInfo.getLeft().getAgentId())) {
-                    String parentAgentId = agentInfo.getLeft().getParentId();
-                    increaseReferCount(parentAgentId);
+                    String parentUid = agentInfo.getLeft().getParentUid();
+                    increaseReferCount(parentUid);
                 }
             }
         }
@@ -488,8 +490,8 @@ public class AgentApi {
     @DeleteMapping("/{agentId}")
     @PreAuthorize("hasPermission(#p0, 'agentDeleteOp')")
     public Boolean delete(
-            @Parameter(description = "AgentId to be deleted") @PathVariable("agentId") @NotBlank
-            String agentId) {
+            @Parameter(description = "AgentId to be deleted") @PathVariable("agentId") @Positive
+            Long agentId) {
         return agentService.delete(agentId, AccountUtils.currentUser());
     }
 
@@ -500,11 +502,11 @@ public class AgentApi {
     )
     @DeleteMapping("/batch/delete")
     @PreFilter("hasPermission(filterObject, 'agentDeleteOp')")
-    public List<String> batchDelete(
+    public List<Long> batchDelete(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of agentId to be deleted")
             @RequestBody
             @NotEmpty
-            List<String> agentIds) {
+            List<Long> agentIds) {
         return agentService.delete(agentIds, AccountUtils.currentUser());
     }
 
@@ -515,8 +517,8 @@ public class AgentApi {
     )
     @GetMapping("/summary/{agentId}")
     public AgentSummaryDTO summary(
-            @Parameter(description = "agentId to be obtained") @PathVariable("agentId") @NotBlank
-            String agentId) {
+            @Parameter(description = "agentId to be obtained") @PathVariable("agentId") @Positive
+            Long agentId) {
         var agentInfo = agentService.summary(agentId, AccountUtils.currentUser());
         return AgentSummaryDTO.from(agentInfo);
     }
@@ -528,8 +530,8 @@ public class AgentApi {
     )
     @GetMapping("/details/{agentId}")
     public AgentDetailsDTO details(
-            @Parameter(description = "AgentId to be obtained") @PathVariable("agentId") @NotBlank
-            String agentId) {
+            @Parameter(description = "AgentId to be obtained") @PathVariable("agentId") @Positive
+            Long agentId) {
         var agentInfo = agentService.details(agentId, AccountUtils.currentUser());
         return AgentDetailsDTO.from(agentInfo);
     }
@@ -541,9 +543,7 @@ public class AgentApi {
     )
     @PostMapping("/count")
     public Long count(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
-            @RequestBody
-            @NotNull
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
             AgentQueryDTO query) {
         AgentService.Query infoQuery = query.toAgentInfoQuery();
         infoQuery.setOffset(null);
@@ -572,11 +572,11 @@ public class AgentApi {
             summary = "Publish Agent",
             description = "Publish agent, draft content becomes formal content, version number increases by 1. After successful publication, a new agentId will be generated and returned. You need to specify the visibility for publication."
     )
-    @PostMapping(value = "/publish/{agentId}/{visibility}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("/publish/{agentId}/{visibility}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'agentUpdateOp')")
-    public String publish(
-            @Parameter(description = "The agentId to be published") @PathVariable("agentId") @NotBlank
-            String agentId,
+    public Long publish(
+            @Parameter(description = "The agentId to be published") @PathVariable("agentId") @Positive
+            Long agentId,
             @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility") @NotBlank
             String visibility){
         return agentService.publish(agentId, Visibility.of(visibility), AccountUtils.currentUser());

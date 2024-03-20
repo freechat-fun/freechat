@@ -5,6 +5,6 @@ export default function CharacterEdit() {
   const { id } = useParams();
   
   return (
-    <CharacterEditor id={id} />
+    <CharacterEditor id={Number(id)} />
   )
 }

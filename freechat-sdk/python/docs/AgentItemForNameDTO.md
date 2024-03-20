@@ -6,7 +6,7 @@ Agent identifier and version information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**agent_id** | **str** | agentId | [optional] 
+**agent_id** | **int** | agentId | [optional] 
 **version** | **int** | version | [optional] 
 **stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  | [optional] 
 

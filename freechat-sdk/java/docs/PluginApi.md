@@ -222,7 +222,7 @@ public class Example {
 
 <a id="createPlugin"></a>
 # **createPlugin**
-> String createPlugin(pluginCreateDTO)
+> Long createPlugin(pluginCreateDTO)
 
 Create Plugin
 
@@ -250,7 +250,7 @@ public class Example {
     PluginApi apiInstance = new PluginApi(defaultClient);
     PluginCreateDTO pluginCreateDTO = new PluginCreateDTO(); // PluginCreateDTO | Information of the plugin to be created
     try {
-      String result = apiInstance.createPlugin(pluginCreateDTO);
+      Long result = apiInstance.createPlugin(pluginCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PluginApi#createPlugin");
@@ -271,7 +271,7 @@ public class Example {
 
 ### Return type
 
-**String**
+**Long**
 
 ### Authorization
 
@@ -280,7 +280,7 @@ public class Example {
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -289,7 +289,7 @@ public class Example {
 
 <a id="createPlugins"></a>
 # **createPlugins**
-> List&lt;String&gt; createPlugins(pluginCreateDTO)
+> List&lt;Long&gt; createPlugins(pluginCreateDTO)
 
 Batch Create Plugins
 
@@ -317,7 +317,7 @@ public class Example {
     PluginApi apiInstance = new PluginApi(defaultClient);
     List<PluginCreateDTO> pluginCreateDTO = Arrays.asList(); // List<PluginCreateDTO> | List of plugin information to be created
     try {
-      List<String> result = apiInstance.createPlugins(pluginCreateDTO);
+      List<Long> result = apiInstance.createPlugins(pluginCreateDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PluginApi#createPlugins");
@@ -338,7 +338,7 @@ public class Example {
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -382,7 +382,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PluginApi apiInstance = new PluginApi(defaultClient);
-    String pluginId = "pluginId_example"; // String | The pluginId to be deleted
+    Long pluginId = 56L; // Long | The pluginId to be deleted
     try {
       Boolean result = apiInstance.deletePlugin(pluginId);
       System.out.println(result);
@@ -401,7 +401,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **pluginId** | **String**| The pluginId to be deleted | |
+| **pluginId** | **Long**| The pluginId to be deleted | |
 
 ### Return type
 
@@ -423,7 +423,7 @@ public class Example {
 
 <a id="deletePlugins"></a>
 # **deletePlugins**
-> List&lt;String&gt; deletePlugins(requestBody)
+> List&lt;Long&gt; deletePlugins(requestBody)
 
 Batch Delete Plugins
 
@@ -449,9 +449,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PluginApi apiInstance = new PluginApi(defaultClient);
-    List<String> requestBody = Arrays.asList(); // List<String> | List of pluginIds to be deleted
+    List<Long> requestBody = Arrays.asList(); // List<Long> | List of pluginIds to be deleted
     try {
-      List<String> result = apiInstance.deletePlugins(requestBody);
+      List<Long> result = apiInstance.deletePlugins(requestBody);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PluginApi#deletePlugins");
@@ -468,11 +468,11 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | [**List&lt;String&gt;**](String.md)| List of pluginIds to be deleted | |
+| **requestBody** | [**List&lt;Long&gt;**](Long.md)| List of pluginIds to be deleted | |
 
 ### Return type
 
-**List&lt;String&gt;**
+**List&lt;Long&gt;**
 
 ### Authorization
 
@@ -516,7 +516,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PluginApi apiInstance = new PluginApi(defaultClient);
-    String pluginId = "pluginId_example"; // String | PluginId to be obtained
+    Long pluginId = 56L; // Long | PluginId to be obtained
     try {
       PluginDetailsDTO result = apiInstance.getPluginDetails(pluginId);
       System.out.println(result);
@@ -535,7 +535,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **pluginId** | **String**| PluginId to be obtained | |
+| **pluginId** | **Long**| PluginId to be obtained | |
 
 ### Return type
 
@@ -583,7 +583,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PluginApi apiInstance = new PluginApi(defaultClient);
-    String pluginId = "pluginId_example"; // String | PluginId to be obtained
+    Long pluginId = 56L; // Long | PluginId to be obtained
     try {
       PluginSummaryDTO result = apiInstance.getPluginSummary(pluginId);
       System.out.println(result);
@@ -602,7 +602,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **pluginId** | **String**| PluginId to be obtained | |
+| **pluginId** | **Long**| PluginId to be obtained | |
 
 ### Return type
 
@@ -650,7 +650,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PluginApi apiInstance = new PluginApi(defaultClient);
-    String pluginId = "pluginId_example"; // String | The pluginId to be fetched
+    Long pluginId = 56L; // Long | The pluginId to be fetched
     try {
       apiInstance.refreshPluginInfo(pluginId);
     } catch (ApiException e) {
@@ -668,7 +668,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **pluginId** | **String**| The pluginId to be fetched | |
+| **pluginId** | **Long**| The pluginId to be fetched | |
 
 ### Return type
 
@@ -850,7 +850,7 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     PluginApi apiInstance = new PluginApi(defaultClient);
-    String pluginId = "pluginId_example"; // String | The pluginId to be updated
+    Long pluginId = 56L; // Long | The pluginId to be updated
     PluginUpdateDTO pluginUpdateDTO = new PluginUpdateDTO(); // PluginUpdateDTO | The plugin information to be updated
     try {
       Boolean result = apiInstance.updatePlugin(pluginId, pluginUpdateDTO);
@@ -870,7 +870,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **pluginId** | **String**| The pluginId to be updated | |
+| **pluginId** | **Long**| The pluginId to be updated | |
 | **pluginUpdateDTO** | [**PluginUpdateDTO**](PluginUpdateDTO.md)| The plugin information to be updated | |
 
 ### Return type

@@ -7,10 +7,11 @@ Agent detailed content
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
-**agent_id** | **str** | Agent identifier | [optional] 
+**agent_id** | **int** | Agent identifier, will change after publish | [optional] 
+**agent_uid** | **str** | Agent immutable identifier | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **gmt_modified** | **datetime** | Modification time | [optional] 
-**parent_id** | **str** | Referenced agent | [optional] 
+**parent_uid** | **str** | Referenced agent | [optional] 
 **visibility** | **str** | Visibility: private, public, public_org, hidden | [optional] 
 **format** | **str** | Agent format, currently supported: langflow | [optional] 
 **version** | **int** | Version | [optional] 

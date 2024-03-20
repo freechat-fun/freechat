@@ -8,7 +8,7 @@ Request data for creating new prompt information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**parentId** | **String** | Referenced prompt |  [optional] |
+|**parentUid** | **String** | Referenced prompt |  [optional] |
 |**visibility** | **String** | Visibility: private (default), public, public_org, hidden |  [optional] |
 |**name** | **String** | Prompt name |  |
 |**description** | **String** | Prompt description |  [optional] |

@@ -139,6 +139,17 @@ public class ChatContextServiceImpl implements ChatContextService {
     }
 
     @Override
+    public List<String> listIdsByBackend(String backendId) {
+        var statement = select(ChatContextDynamicSqlSupport.chatId)
+                .from(ChatContextDynamicSqlSupport.chatContext)
+                .where(ChatContextDynamicSqlSupport.backendId, isEqualTo(backendId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return chatContextMapper.selectMany(statement).stream().map(ChatContext::getChatId).toList();
+    }
+
+    @Override
     @LongPeriodCache
     public String getChatOwner(String chatId) {
         var statement = select(ChatContextDynamicSqlSupport.userId)

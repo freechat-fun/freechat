@@ -6,7 +6,7 @@ Prompt reference information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**prompt_id** | **str** | Prompt identifier | 
+**prompt_id** | **int** | Prompt identifier | 
 **variables** | **Dict[str, object]** | Variables applied to the template, can be empty | [optional] 
 **draft** | **bool** | Whether to use draft content | [optional] 
 

@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +96,9 @@ public class CharacterApi {
         return name;
     }
 
-    private void resetCharacterInfo(CharacterInfo info, String parentId) {
-        if (StringUtils.isNotBlank(parentId)) {
-            info.setParentId(parentId);
+    private void resetCharacterInfo(CharacterInfo info, String parentUid) {
+        if (StringUtils.isNotBlank(parentUid)) {
+            info.setParentUid(parentUid);
             info.setVisibility(Visibility.PRIVATE.text());
         }
         info.setName(newUniqueName(info.getName()));
@@ -107,13 +108,13 @@ public class CharacterApi {
     }
 
     private void resetCharacterInfoPair(
-            Pair<CharacterInfo, List<String>> infoPair, String parentId) {
-        resetCharacterInfo(infoPair.getLeft(), parentId);
+            Pair<CharacterInfo, List<String>> infoPair, String parentUid) {
+        resetCharacterInfo(infoPair.getLeft(), parentUid);
     }
 
-    private void increaseReferCount(String characterId) {
+    private void increaseReferCount(String characterUid) {
         interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
-                InfoType.CHARACTER, characterId, StatsType.REFER_COUNT, 1L);
+                InfoType.CHARACTER, characterUid, StatsType.REFER_COUNT, 1L);
     }
 
     @Operation(
@@ -323,9 +324,9 @@ public class CharacterApi {
             summary = "Create Character",
             description = "Create a character."
     )
-    @PostMapping(value = "", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'characterCreateOp')")
-    public String create(
+    public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Information of the character to be created",
                     content = @Content(
@@ -360,8 +361,8 @@ public class CharacterApi {
     @PutMapping("/{characterId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'characterUpdateOp')")
     public Boolean update(
-            @Parameter(description = "The characterId to be updated") @PathVariable("characterId") @NotBlank
-            String characterId,
+            @Parameter(description = "The characterId to be updated") @PathVariable("characterId") @Positive
+            Long characterId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "The character information to be updated",
                     content = @Content(
@@ -401,21 +402,22 @@ public class CharacterApi {
                     Return the new characterId.
                     """
     )
-    @PostMapping(value = "/clone/{characterId}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String clone(
-            @Parameter(description = "The referenced characterId") @PathVariable("characterId") @NotBlank
-            String characterId) {
+    @PostMapping("/clone/{characterId}")
+    public Long clone(
+            @Parameter(description = "The referenced characterId") @PathVariable("characterId") @Positive
+            Long characterId) {
         var characterDetails = characterService.details(characterId, AccountUtils.currentUser());
         if (Objects.isNull(characterDetails)) {
             return null;
         }
 
         var characterInfo = Pair.of(characterDetails.getLeft(), characterDetails.getMiddle());
-        resetCharacterInfoPair(characterInfo, characterId);
+        String characterUid = characterService.getUid(characterId);
+        resetCharacterInfoPair(characterInfo, characterUid);
         if (!characterService.create(characterInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
         }
-        increaseReferCount(characterId);
+        increaseReferCount(characterUid);
         return characterInfo.getLeft().getCharacterId();
     }
 
@@ -427,8 +429,8 @@ public class CharacterApi {
     @DeleteMapping("/{characterId}")
     @PreAuthorize("hasPermission(#p0, 'characterDeleteOp')")
     public Boolean delete(
-            @Parameter(description = "The characterId to be deleted") @PathVariable("characterId") @NotBlank
-            String characterId) {
+            @Parameter(description = "The characterId to be deleted") @PathVariable("characterId") @Positive
+            Long characterId) {
         return characterService.delete(characterId, AccountUtils.currentUser());
     }
 
@@ -438,7 +440,7 @@ public class CharacterApi {
             description = "Delete character by name. return the list of successfully deleted characterIds."
     )
     @DeleteMapping("/name/{name}")
-    public List<String> deleteByName(
+    public List<Long> deleteByName(
             @Parameter(description = "The character name to be deleted") @PathVariable("name") @NotBlank
             String name) {
         return characterService.deleteByName(name, AccountUtils.currentUser());
@@ -451,8 +453,8 @@ public class CharacterApi {
     )
     @GetMapping("/summary/{characterId}")
     public CharacterSummaryDTO summary(
-            @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @NotBlank
-            String characterId) {
+            @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @Positive
+            Long characterId) {
         var characterInfo = characterService.summary(characterId, AccountUtils.currentUser());
         return CharacterSummaryDTO.from(characterInfo);
     }
@@ -464,8 +466,8 @@ public class CharacterApi {
     )
     @GetMapping("/details/{characterId}")
     public CharacterDetailsDTO details(
-            @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @NotBlank
-            String characterId) {
+            @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @Positive
+            Long characterId) {
         var characterInfo = characterService.details(characterId, AccountUtils.currentUser());
         return CharacterDetailsDTO.from(characterInfo);
     }
@@ -508,8 +510,8 @@ public class CharacterApi {
             summary = "Get Latest Character Id by Name",
             description = "Get latest characterId by character name."
     )
-    @PostMapping(value = "/latest/{name}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getLatestIdByName(
+    @PostMapping("/latest/{name}")
+    public Long getLatestIdByName(
             @Parameter(description = "Character name") @PathVariable("name") @NotBlank
             String name) {
         return characterService.getLatestIdByName(name, AccountUtils.currentUser());
@@ -520,13 +522,11 @@ public class CharacterApi {
             summary = "Publish Character",
             description = "Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication."
     )
-    @PostMapping(
-            value = {"/publish/{characterId}/{visibility}", "/publish/{characterId}"},
-            produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = {"/publish/{characterId}/{visibility}", "/publish/{characterId}"})
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'characterUpdateOp')")
-    public String publish(
-            @Parameter(description = "The characterId to be published") @PathVariable("characterId") @NotBlank
-            String characterId,
+    public Long publish(
+            @Parameter(description = "The characterId to be published") @PathVariable("characterId") @Positive
+            Long characterId,
             @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility")
             Optional<String> visibility){
         Visibility publishVisibility = visibility.map(Visibility::of).orElse(Visibility.PUBLIC);
@@ -541,11 +541,12 @@ public class CharacterApi {
     @PostMapping(value = "/backend/{characterId}", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.chatPromptTaskId, 'characterBackendCreateOp')")
     public String addBackend(
-            @Parameter(description = "The characterId to be added a backend") @PathVariable("characterId") @NotBlank
-            String characterId,
+            @Parameter(description = "The characterId to be added a backend") @PathVariable("characterId") @Positive
+            Long characterId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The character backend to be added") @RequestBody @NotNull
             CharacterBackendDTO backend) {
-        CharacterBackend characterBackend = backend.toCharacterBackend(characterId);
+        String characterUid = characterService.getUid(characterId);
+        CharacterBackend characterBackend = backend.toCharacterBackend(characterUid);
         if (Objects.isNull(characterBackend)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
         }
@@ -577,7 +578,7 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character backend: " + characterBackendId);
         }
 
-        CharacterBackend updatedBackend = backend.toCharacterBackend(characterBackend.getCharacterId());
+        CharacterBackend updatedBackend = backend.toCharacterBackend(characterBackend.getCharacterUid());
         updatedBackend.setBackendId(characterBackend.getBackendId());
         return characterService.updateBackend(updatedBackend);
     }
@@ -592,11 +593,11 @@ public class CharacterApi {
     public Boolean removeBackend(
             @Parameter(description = "The characterBackendId to be removed") @PathVariable("characterBackendId") @NotBlank
             String characterBackendId) {
-        String characterId = characterService.getBackendCharacterId(characterBackendId);
-        if (StringUtils.isBlank(characterId)) {
+        String characterUid = characterService.getBackendCharacterUid(characterBackendId);
+        if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
         }
-        return characterService.removeBackend(characterId, characterBackendId);
+        return characterService.removeBackend(characterUid, characterBackendId);
     }
 
     @Operation(
@@ -607,9 +608,10 @@ public class CharacterApi {
     @GetMapping("/backend/default/{characterId}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
     public CharacterBackendDetailsDTO getDefaultBackend(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
-            String characterId) {
-        return CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterId));
+            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
+            Long characterId) {
+        String characterUid = characterService.getUid(characterId);
+        return CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterUid));
     }
 
     @Operation(
@@ -620,9 +622,10 @@ public class CharacterApi {
     @GetMapping("/backend/ids/{characterId}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
     public List<String> listBackendIds(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
-            String characterId) {
-        return characterService.listBackendIds(characterId);
+            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
+            Long characterId) {
+        String characterUid = characterService.getUid(characterId);
+        return characterService.listBackendIds(characterUid);
     }
 
     @Operation(
@@ -633,9 +636,10 @@ public class CharacterApi {
     @GetMapping("/backends/{characterId}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
     public List<CharacterBackendDetailsDTO> listBackends(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @NotBlank
-            String characterId) {
-        return characterService.listBackends(characterId)
+            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
+            Long characterId) {
+        String characterUid = characterService.getUid(characterId);
+        return characterService.listBackends(characterUid)
                 .stream()
                 .map(CharacterBackendDetailsDTO::from)
                 .toList();
@@ -651,11 +655,11 @@ public class CharacterApi {
     public Boolean setDefaultBackend(
             @Parameter(description = "The characterBackendId to be set to default") @PathVariable("characterBackendId") @NotBlank
             String characterBackendId) {
-        String characterId = characterService.getBackendCharacterId(characterBackendId);
-        if (StringUtils.isBlank(characterId)) {
+        String characterUid = characterService.getBackendCharacterUid(characterBackendId);
+        if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
         }
-        return characterService.setDefaultBackend(characterId, characterBackendId);
+        return characterService.setDefaultBackend(characterUid, characterBackendId);
     }
 
     @Operation(
@@ -663,22 +667,30 @@ public class CharacterApi {
             summary = "Upload Character Picture",
             description = "Upload a picture of the character."
     )
-    @PostMapping(value = "/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/picture/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String uploadPicture(
             HttpServletRequest request,
             @Parameter(description = "Character picture") @RequestParam("file") @NotNull
-            MultipartFile file) {
+            MultipartFile file,
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
+            Long characterId) {
         Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
         long maxSize = ConfigUtils.getLongOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
         int maxCount = ConfigUtils.getIntOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
+
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
         }
 
+        String characterUid = characterService.getUid(characterId);
+        if (StringUtils.isBlank(characterUid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
+        }
+
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture";
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture" + characterUid;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {
@@ -691,15 +703,50 @@ public class CharacterApi {
     }
 
     @Operation(
+            operationId = "listCharacterPictures",
+            summary = "List Character Pictures",
+            description = "List pictures of the character."
+    )
+    @GetMapping(value = "/pictures/{characterId}")
+    public List<String> listPictures(
+            HttpServletRequest request,
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
+            Long characterId) {
+        String characterUid = characterService.getUid(characterId);
+        if (StringUtils.isBlank(characterUid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture" + characterUid;
+            return fileStore.list(dstDir, null, false)
+                    .stream()
+                    .map(path -> {
+                        String shareUrl = fileStore.getShareUrl(path, Integer.MAX_VALUE);
+                        if (StringUtils.isBlank(shareUrl)) {
+                            shareUrl = FileUtils.getDefaultPublicUrlForImage(request, path);
+                        }
+                        return shareUrl;
+                    })
+                    .toList();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
+
+    @Operation(
             operationId = "uploadCharacterAvatar",
             summary = "Upload Character Avatar",
             description = "Upload an avatar of the character."
     )
-    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/avatar/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public String uploadAvatar(
             HttpServletRequest request,
             @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
-            MultipartFile file) {
+            MultipartFile file,
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
+            Long characterId) {
         Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
         long maxSize = ConfigUtils.getLongOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
         int maxCount = ConfigUtils.getIntOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
@@ -708,9 +755,14 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
         }
 
+        String characterUid = characterService.getUid(characterId);
+        if (StringUtils.isBlank(characterUid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
+        }
+
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar";
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar" + characterUid;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {

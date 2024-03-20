@@ -6,7 +6,10 @@ import java.util.Date;
 
 public class PluginInfo implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private String pluginId;
+    private Long pluginId;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String pluginUid;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Date gmtCreate;
@@ -45,19 +48,35 @@ public class PluginInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public String getPluginId() {
+    public Long getPluginId() {
         return pluginId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PluginInfo withPluginId(String pluginId) {
+    public PluginInfo withPluginId(Long pluginId) {
         this.setPluginId(pluginId);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setPluginId(String pluginId) {
-        this.pluginId = pluginId == null ? null : pluginId.trim();
+    public void setPluginId(Long pluginId) {
+        this.pluginId = pluginId;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getPluginUid() {
+        return pluginUid;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public PluginInfo withPluginUid(String pluginUid) {
+        this.setPluginUid(pluginUid);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setPluginUid(String pluginUid) {
+        this.pluginUid = pluginUid == null ? null : pluginUid.trim();
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -250,6 +269,7 @@ public class PluginInfo implements Serializable {
         }
         PluginInfo other = (PluginInfo) that;
         return (this.getPluginId() == null ? other.getPluginId() == null : this.getPluginId().equals(other.getPluginId()))
+            && (this.getPluginUid() == null ? other.getPluginUid() == null : this.getPluginUid().equals(other.getPluginUid()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
@@ -265,6 +285,7 @@ public class PluginInfo implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getPluginId() == null) ? 0 : getPluginId().hashCode());
+        result = prime * result + ((getPluginUid() == null) ? 0 : getPluginUid().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
@@ -283,6 +304,7 @@ public class PluginInfo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", pluginId=").append(pluginId);
+        sb.append(", pluginUid=").append(pluginUid);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
         sb.append(", userId=").append(userId);

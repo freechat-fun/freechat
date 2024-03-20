@@ -19,6 +19,7 @@ Method | HTTP request | Description
 [**getDefaultCharacterBackend**](CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
 [**listCharacterBackendIds**](CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
 [**listCharacterBackends**](CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
+[**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
 [**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 [**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 [**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
@@ -29,8 +30,8 @@ Method | HTTP request | Description
 [**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 [**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 [**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-[**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar | Upload Character Avatar
-[**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture | Upload Character Picture
+[**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
+[**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
 
 
 # **addCharacterBackend**
@@ -49,8 +50,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiAddCharacterBackendRequest = {
-  // string | The characterId to be added a backend
-  characterId: "characterId_example",
+  // number | The characterId to be added a backend
+  characterId: 1,
   // CharacterBackendDTO | The character backend to be added
   characterBackendDTO: {
     isDefault: true,
@@ -75,7 +76,7 @@ apiInstance.addCharacterBackend(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterBackendDTO** | **CharacterBackendDTO**| The character backend to be added |
- **characterId** | [**string**] | The characterId to be added a backend | defaults to undefined
+ **characterId** | [**number**] | The characterId to be added a backend | defaults to undefined
 
 
 ### Return type
@@ -246,7 +247,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **cloneCharacter**
-> string cloneCharacter()
+> number cloneCharacter()
 
 Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different: - Version number is 1 - Visibility is private - The parent character is the source characterId - The creation time is the current moment. - All statistical indicators are zeroed.  Return the new characterId. 
 
@@ -261,8 +262,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiCloneCharacterRequest = {
-  // string | The referenced characterId
-  characterId: "characterId_example",
+  // number | The referenced characterId
+  characterId: 1,
 };
 
 apiInstance.cloneCharacter(body).then((data:any) => {
@@ -275,12 +276,12 @@ apiInstance.cloneCharacter(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The referenced characterId | defaults to undefined
+ **characterId** | [**number**] | The referenced characterId | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -289,7 +290,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -371,7 +372,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **createCharacter**
-> string createCharacter(characterCreateDTO)
+> number createCharacter(characterCreateDTO)
 
 Create a character.
 
@@ -388,7 +389,7 @@ const apiInstance = new .CharacterApi(configuration);
 let body:.CharacterApiCreateCharacterRequest = {
   // CharacterCreateDTO | Information of the character to be created
   characterCreateDTO: {
-    parentId: "parentId_example",
+    parentUid: "parentUid_example",
     visibility: "visibility_example",
     name: "name_example",
     description: "description_example",
@@ -424,7 +425,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -433,7 +434,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -459,8 +460,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiDeleteCharacterRequest = {
-  // string | The characterId to be deleted
-  characterId: "characterId_example",
+  // number | The characterId to be deleted
+  characterId: 1,
 };
 
 apiInstance.deleteCharacter(body).then((data:any) => {
@@ -473,7 +474,7 @@ apiInstance.deleteCharacter(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The characterId to be deleted | defaults to undefined
+ **characterId** | [**number**] | The characterId to be deleted | defaults to undefined
 
 
 ### Return type
@@ -498,7 +499,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **deleteCharacterByName**
-> Array<string> deleteCharacterByName()
+> Array<number> deleteCharacterByName()
 
 Delete character by name. return the list of successfully deleted characterIds.
 
@@ -532,7 +533,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**Array<string>**
+**Array<number>**
 
 ### Authorization
 
@@ -621,8 +622,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiGetCharacterDetailsRequest = {
-  // string | CharacterId to be obtained
-  characterId: "characterId_example",
+  // number | CharacterId to be obtained
+  characterId: 1,
 };
 
 apiInstance.getCharacterDetails(body).then((data:any) => {
@@ -635,7 +636,7 @@ apiInstance.getCharacterDetails(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | CharacterId to be obtained | defaults to undefined
+ **characterId** | [**number**] | CharacterId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -660,7 +661,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **getCharacterLatestIdByName**
-> string getCharacterLatestIdByName()
+> number getCharacterLatestIdByName()
 
 Get latest characterId by character name.
 
@@ -694,7 +695,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -703,7 +704,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -729,8 +730,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiGetCharacterSummaryRequest = {
-  // string | CharacterId to be obtained
-  characterId: "characterId_example",
+  // number | CharacterId to be obtained
+  characterId: 1,
 };
 
 apiInstance.getCharacterSummary(body).then((data:any) => {
@@ -743,7 +744,7 @@ apiInstance.getCharacterSummary(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | CharacterId to be obtained | defaults to undefined
+ **characterId** | [**number**] | CharacterId to be obtained | defaults to undefined
 
 
 ### Return type
@@ -783,8 +784,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiGetDefaultCharacterBackendRequest = {
-  // string | The characterId to be queried
-  characterId: "characterId_example",
+  // number | The characterId to be queried
+  characterId: 1,
 };
 
 apiInstance.getDefaultCharacterBackend(body).then((data:any) => {
@@ -797,7 +798,7 @@ apiInstance.getDefaultCharacterBackend(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The characterId to be queried | defaults to undefined
+ **characterId** | [**number**] | The characterId to be queried | defaults to undefined
 
 
 ### Return type
@@ -837,8 +838,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiListCharacterBackendIdsRequest = {
-  // string | The characterId to be queried
-  characterId: "characterId_example",
+  // number | The characterId to be queried
+  characterId: 1,
 };
 
 apiInstance.listCharacterBackendIds(body).then((data:any) => {
@@ -851,7 +852,7 @@ apiInstance.listCharacterBackendIds(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The characterId to be queried | defaults to undefined
+ **characterId** | [**number**] | The characterId to be queried | defaults to undefined
 
 
 ### Return type
@@ -891,8 +892,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiListCharacterBackendsRequest = {
-  // string | The characterId to be queried
-  characterId: "characterId_example",
+  // number | The characterId to be queried
+  characterId: 1,
 };
 
 apiInstance.listCharacterBackends(body).then((data:any) => {
@@ -905,12 +906,66 @@ apiInstance.listCharacterBackends(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The characterId to be queried | defaults to undefined
+ **characterId** | [**number**] | The characterId to be queried | defaults to undefined
 
 
 ### Return type
 
 **Array<CharacterBackendDetailsDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listCharacterPictures**
+> Array<string> listCharacterPictures()
+
+List pictures of the character.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .CharacterApi(configuration);
+
+let body:.CharacterApiListCharacterPicturesRequest = {
+  // number | Character identifier
+  characterId: 1,
+};
+
+apiInstance.listCharacterPictures(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterId** | [**number**] | Character identifier | defaults to undefined
+
+
+### Return type
+
+**Array<string>**
 
 ### Authorization
 
@@ -1038,7 +1093,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **publishCharacter**
-> string publishCharacter()
+> number publishCharacter()
 
 Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
 
@@ -1053,8 +1108,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiPublishCharacterRequest = {
-  // string | The characterId to be published
-  characterId: "characterId_example",
+  // number | The characterId to be published
+  characterId: 1,
 };
 
 apiInstance.publishCharacter(body).then((data:any) => {
@@ -1067,12 +1122,12 @@ apiInstance.publishCharacter(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The characterId to be published | defaults to undefined
+ **characterId** | [**number**] | The characterId to be published | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -1081,7 +1136,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1092,7 +1147,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
 # **publishCharacter1**
-> string publishCharacter1()
+> number publishCharacter1()
 
 Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
 
@@ -1107,8 +1162,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiPublishCharacter1Request = {
-  // string | The characterId to be published
-  characterId: "characterId_example",
+  // number | The characterId to be published
+  characterId: 1,
   // string | Visibility: public | private | ...
   visibility: "visibility_example",
 };
@@ -1123,13 +1178,13 @@ apiInstance.publishCharacter1(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**string**] | The characterId to be published | defaults to undefined
+ **characterId** | [**number**] | The characterId to be published | defaults to undefined
  **visibility** | [**string**] | Visibility: public | private | ... | defaults to undefined
 
 
 ### Return type
 
-**string**
+**number**
 
 ### Authorization
 
@@ -1138,7 +1193,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1414,11 +1469,11 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiUpdateCharacterRequest = {
-  // string | The characterId to be updated
-  characterId: "characterId_example",
+  // number | The characterId to be updated
+  characterId: 1,
   // CharacterUpdateDTO | The character information to be updated
   characterUpdateDTO: {
-    parentId: "parentId_example",
+    parentUid: "parentUid_example",
     visibility: "visibility_example",
     name: "name_example",
     description: "description_example",
@@ -1450,7 +1505,7 @@ apiInstance.updateCharacter(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterUpdateDTO** | **CharacterUpdateDTO**| The character information to be updated |
- **characterId** | [**string**] | The characterId to be updated | defaults to undefined
+ **characterId** | [**number**] | The characterId to be updated | defaults to undefined
 
 
 ### Return type
@@ -1556,6 +1611,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiUploadCharacterAvatarRequest = {
+  // number | Character identifier
+  characterId: 1,
   // HttpFile | Character avatar
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
@@ -1570,6 +1627,7 @@ apiInstance.uploadCharacterAvatar(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **characterId** | [**number**] | Character identifier | defaults to undefined
  **file** | [**HttpFile**] | Character avatar | defaults to undefined
 
 
@@ -1610,6 +1668,8 @@ const configuration = .createConfiguration();
 const apiInstance = new .CharacterApi(configuration);
 
 let body:.CharacterApiUploadCharacterPictureRequest = {
+  // number | Character identifier
+  characterId: 1,
   // HttpFile | Character picture
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
@@ -1624,6 +1684,7 @@ apiInstance.uploadCharacterPicture(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **characterId** | [**number**] | Character identifier | defaults to undefined
  **file** | [**HttpFile**] | Character picture | defaults to undefined
 
 

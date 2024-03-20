@@ -41,15 +41,23 @@
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
-        <table tableName="ai_model_info"/>
+        <table tableName="ai_model_info" />
 
-        <table tableName="prompt_info" />
+        <table tableName="prompt_info">
+            <generatedKey column="prompt_id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
-        <table tableName="agent_info" />
+        <table tableName="agent_info">
+            <generatedKey column="agent_id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
-        <table tableName="plugin_info" />
+        <table tableName="plugin_info">
+            <generatedKey column="plugin_id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
-        <table tableName="character_info" />
+        <table tableName="character_info">
+            <generatedKey column="character_id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
         <table tableName="character_backend" />
 

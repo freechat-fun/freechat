@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **chat_id** | **str** | Chat identifier | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **gmt_modified** | **datetime** | Modification time | [optional] 
+**gmt_read** | **datetime** | Read time | [optional] 
 **user_nickname** | **str** | User nickname for this session | [optional] 
 **user_profile** | **str** | User profile for this session | [optional] 
 **character_nickname** | **str** | Character nickname for this session | [optional] 

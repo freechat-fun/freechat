@@ -17,14 +17,16 @@ import java.util.Objects;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AgentSummaryDTO extends TraceableDTO {
-    @Schema(description = "Agent identifier")
-    private String agentId;
+    @Schema(description = "Agent identifier, will change after publish")
+    private Long agentId;
+    @Schema(description = "Agent immutable identifier")
+    private String agentUid;
     @Schema(description = "Creation time")
     private Date gmtCreate;
     @Schema(description = "Modification time")
     private Date gmtModified;
     @Schema(description = "Referenced agent")
-    private String parentId;
+    private String parentUid;
     @Schema(description = "Visibility: private, public, public_org, hidden")
     private String visibility;
     @Schema(description = "Agent format, currently supported: langflow")

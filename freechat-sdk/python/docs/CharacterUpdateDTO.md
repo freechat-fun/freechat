@@ -6,7 +6,7 @@ Request data for updating character information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**parent_id** | **str** | Referenced character | [optional] 
+**parent_uid** | **str** | Referenced character | [optional] 
 **visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
 **name** | **str** | Character name | 
 **description** | **str** | Character description | [optional] 
@@ -18,7 +18,7 @@ Name | Type | Description | Notes
 **greeting** | **str** | Character greeting | [optional] 
 **chat_style** | **str** | Character chat-style | [optional] 
 **chat_example** | **str** | Character chat-example | [optional] 
-**lang** | **str** | Character language: English | Chinese (Simplified) | ... | [optional] 
+**lang** | **str** | Character language: en (default) | zh | ... | [optional] 
 **ext** | **str** | Additional information, JSON format | [optional] 
 **draft** | **str** | Character draft information | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 

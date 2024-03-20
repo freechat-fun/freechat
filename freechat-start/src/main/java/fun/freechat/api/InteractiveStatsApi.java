@@ -4,6 +4,7 @@ import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.InteractiveStatsScoreDetails;
+import fun.freechat.model.User;
 import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.common.TagService;
@@ -144,11 +145,13 @@ public class InteractiveStatsApi {
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
                 InfoType.PROMPT, StatsType.of(statsType), limit, offset, desc);
-        HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        HashMap<Long, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        User user = AccountUtils.currentUser();
         for (InteractiveStats stats : statsList) {
-            statsMap.put(stats.getReferId(), stats);
+            Long infoId = promptService.getLatestIdByUid(stats.getReferId(), user);
+            statsMap.put(infoId, stats);
         }
-        var summaries = promptService.summary(statsMap.keySet(), AccountUtils.currentUser());
+        var summaries = promptService.summary(statsMap.keySet(), user);
         List<PromptSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getPromptId());
@@ -180,11 +183,13 @@ public class InteractiveStatsApi {
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
                 InfoType.AGENT, StatsType.of(statsType), limit, offset, desc);
-        HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        HashMap<Long, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        User user = AccountUtils.currentUser();
         for (InteractiveStats stats : statsList) {
-            statsMap.put(stats.getReferId(), stats);
+            Long infoId = agentService.getLatestIdByUid(stats.getReferId(), user);
+            statsMap.put(infoId, stats);
         }
-        var summaries = agentService.summary(statsMap.keySet(), AccountUtils.currentUser());
+        var summaries = agentService.summary(statsMap.keySet(), user);
         List<AgentSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getAgentId());
@@ -216,11 +221,13 @@ public class InteractiveStatsApi {
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
                 InfoType.PLUGIN, StatsType.of(statsType), limit, offset, desc);
-        HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        HashMap<Long, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        User user = AccountUtils.currentUser();
         for (InteractiveStats stats : statsList) {
-            statsMap.put(stats.getReferId(), stats);
+            Long infoId = pluginService.getIdByUid(stats.getReferId(), user);
+            statsMap.put(infoId, stats);
         }
-        var summaries = pluginService.summary(statsMap.keySet(), AccountUtils.currentUser());
+        var summaries = pluginService.summary(statsMap.keySet(), user);
         List<PluginSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getPluginId());
@@ -252,11 +259,13 @@ public class InteractiveStatsApi {
         long offset = pageNum.filter(num -> num >= 0).orElse(0L) * limit;
         List<InteractiveStats> statsList = interactiveStatsService.list(
                 InfoType.CHARACTER, StatsType.of(statsType), limit, offset, desc);
-        HashMap<String, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        HashMap<Long, InteractiveStats> statsMap = new HashMap<>(statsList.size());
+        User user = AccountUtils.currentUser();
         for (InteractiveStats stats : statsList) {
-            statsMap.put(stats.getReferId(), stats);
+            Long infoId = characterService.getLatestIdByUid(stats.getReferId(), user);
+            statsMap.put(infoId, stats);
         }
-        var summaries = characterService.summary(statsMap.keySet(), AccountUtils.currentUser());
+        var summaries = characterService.summary(statsMap.keySet(), user);
         List<CharacterSummaryStatsDTO> dtoList = new ArrayList<>(summaries.size());
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getCharacterId());

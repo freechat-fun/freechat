@@ -12,6 +12,7 @@ Chat context
 |**chatId** | **String** | Chat identifier |  [optional] |
 |**gmtCreate** | **OffsetDateTime** | Creation time |  [optional] |
 |**gmtModified** | **OffsetDateTime** | Modification time |  [optional] |
+|**gmtRead** | **OffsetDateTime** | Read time |  [optional] |
 |**userNickname** | **String** | User nickname for this session |  [optional] |
 |**userProfile** | **String** | User profile for this session |  [optional] |
 |**characterNickname** | **String** | Character nickname for this session |  [optional] |

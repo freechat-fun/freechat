@@ -6,7 +6,7 @@ Request data for creating new agent information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**parent_id** | **str** | Referenced agent | [optional] 
+**parent_uid** | **str** | Referenced agent | [optional] 
 **visibility** | **str** | Visibility: private (default), public, public_org, hidden | [optional] 
 **format** | **str** | Agent format, currently supported: langflow | [optional] 
 **name** | **str** | Agent name | 

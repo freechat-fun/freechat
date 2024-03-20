@@ -344,7 +344,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **clone_prompt**
-> str clone_prompt(prompt_id)
+> int clone_prompt(prompt_id)
 
 Clone Prompt
 
@@ -379,7 +379,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_id = 'prompt_id_example' # str | The referenced promptId
+    prompt_id = 56 # int | The referenced promptId
 
     try:
         # Clone Prompt
@@ -397,11 +397,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **str**| The referenced promptId | 
+ **prompt_id** | **int**| The referenced promptId | 
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -410,7 +410,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -421,7 +421,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **clone_prompts**
-> List[str] clone_prompts(request_body)
+> List[int] clone_prompts(request_body)
 
 Batch Clone Prompts
 
@@ -456,7 +456,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    request_body = ['request_body_example'] # List[str] | List of prompt information to be created
+    request_body = [56] # List[int] | List of prompt information to be created
 
     try:
         # Batch Clone Prompts
@@ -474,11 +474,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[str]**](str.md)| List of prompt information to be created | 
+ **request_body** | [**List[int]**](int.md)| List of prompt information to be created | 
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -576,7 +576,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_prompt**
-> str create_prompt(prompt_create_dto)
+> int create_prompt(prompt_create_dto)
 
 Create Prompt
 
@@ -634,7 +634,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -643,7 +643,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -654,7 +654,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_prompts**
-> List[str] create_prompts(prompt_create_dto)
+> List[int] create_prompts(prompt_create_dto)
 
 Batch Create Prompts
 
@@ -712,7 +712,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -767,7 +767,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_id = 'prompt_id_example' # str | The promptId to be deleted
+    prompt_id = 56 # int | The promptId to be deleted
 
     try:
         # Delete Prompt
@@ -785,7 +785,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **str**| The promptId to be deleted | 
+ **prompt_id** | **int**| The promptId to be deleted | 
 
 ### Return type
 
@@ -809,7 +809,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_prompt_by_name**
-> List[str] delete_prompt_by_name(name)
+> List[int] delete_prompt_by_name(name)
 
 Delete Prompt by Name
 
@@ -866,7 +866,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -886,7 +886,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_prompts**
-> List[str] delete_prompts(request_body)
+> List[int] delete_prompts(request_body)
 
 Batch Delete Prompts
 
@@ -921,7 +921,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    request_body = ['request_body_example'] # List[str] | List of promptIds to be deleted
+    request_body = [56] # List[int] | List of promptIds to be deleted
 
     try:
         # Batch Delete Prompts
@@ -939,11 +939,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request_body** | [**List[str]**](str.md)| List of promptIds to be deleted | 
+ **request_body** | [**List[int]**](int.md)| List of promptIds to be deleted | 
 
 ### Return type
 
-**List[str]**
+**List[int]**
 
 ### Authorization
 
@@ -1076,7 +1076,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_id = 'prompt_id_example' # str | PromptId to be obtained
+    prompt_id = 56 # int | PromptId to be obtained
 
     try:
         # Get Prompt Details
@@ -1094,7 +1094,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **str**| PromptId to be obtained | 
+ **prompt_id** | **int**| PromptId to be obtained | 
 
 ### Return type
 
@@ -1154,7 +1154,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_id = 'prompt_id_example' # str | PromptId to be obtained
+    prompt_id = 56 # int | PromptId to be obtained
 
     try:
         # Get Prompt Summary
@@ -1172,7 +1172,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **str**| PromptId to be obtained | 
+ **prompt_id** | **int**| PromptId to be obtained | 
 
 ### Return type
 
@@ -1351,7 +1351,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **publish_prompt**
-> str publish_prompt(prompt_id, visibility)
+> int publish_prompt(prompt_id, visibility)
 
 Publish Prompt
 
@@ -1386,7 +1386,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_id = 'prompt_id_example' # str | The promptId to be published
+    prompt_id = 56 # int | The promptId to be published
     visibility = 'visibility_example' # str | Visibility: public | private | ...
 
     try:
@@ -1405,12 +1405,12 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **str**| The promptId to be published | 
+ **prompt_id** | **int**| The promptId to be published | 
  **visibility** | **str**| Visibility: public | private | ... | 
 
 ### Return type
 
-**str**
+**int**
 
 ### Authorization
 
@@ -1419,7 +1419,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 ### HTTP response details
 
@@ -1782,7 +1782,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_id = 'prompt_id_example' # str | The promptId to be updated
+    prompt_id = 56 # int | The promptId to be updated
     prompt_update_dto = {"version":2,"name":"Second Test Prompt (New)","visibility":"public","description":"Second prompt description (new)","template":"I wanna call you {robot}","inputs":"{\"robot\": null}","tags":["test2","demo2","robot"],"aiModels":["123","456"]} # PromptUpdateDTO | The prompt information to be updated
 
     try:
@@ -1801,7 +1801,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **prompt_id** | **str**| The promptId to be updated | 
+ **prompt_id** | **int**| The promptId to be updated | 
  **prompt_update_dto** | [**PromptUpdateDTO**](PromptUpdateDTO.md)| The prompt information to be updated | 
 
 ### Return type

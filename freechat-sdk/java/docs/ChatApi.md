@@ -6,13 +6,16 @@ All URIs are relative to *http://127.0.0.1:8080*
 |------------- | ------------- | -------------|
 | [**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory |
 | [**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session |
+| [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat |
 | [**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats |
 | [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages |
 | [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages |
 | [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages |
+| [**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages |
 | [**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message |
 | [**startChat**](ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session |
 | [**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back |
+| [**updateChat**](ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session |
 
 
 <a id="clearMemory"></a>
@@ -143,6 +146,73 @@ public class Example {
 
  - **Content-Type**: Not defined
  - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="getDefaultChatId"></a>
+# **getDefaultChatId**
+> String getDefaultChatId(characterId)
+
+Get Default Chat
+
+Get default chat id of current user and the character.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    Long characterId = 56L; // Long | Character identifier
+    try {
+      String result = apiInstance.getDefaultChatId(characterId);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#getDefaultChatId");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **characterId** | **Long**| Character identifier | |
+
+### Return type
+
+**String**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
 
 ### HTTP response details
 | Status code | Description | Response headers |
@@ -419,6 +489,75 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
+<a id="rollbackMessages"></a>
+# **rollbackMessages**
+> List&lt;Long&gt; rollbackMessages(chatId, count)
+
+Rollback Chat Messages
+
+Rollback messages of a chat.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    Integer count = 56; // Integer | Message count to be rolled back
+    try {
+      List<Long> result = apiInstance.rollbackMessages(chatId, count);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#rollbackMessages");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+| **count** | **Integer**| Message count to be rolled back | |
+
+### Return type
+
+**List&lt;Long&gt;**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
 <a id="sendMessage"></a>
 # **sendMessage**
 > LlmResultDTO sendMessage(chatId, chatMessageDTO)
@@ -618,6 +757,75 @@ public class Example {
 
  - **Content-Type**: application/json
  - **Accept**: text/event-stream
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="updateChat"></a>
+# **updateChat**
+> Boolean updateChat(chatId, chatUpdateDTO)
+
+Update Chat Session
+
+Update the chat session.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    ChatUpdateDTO chatUpdateDTO = new ChatUpdateDTO(); // ChatUpdateDTO | The chat session information to be updated
+    try {
+      Boolean result = apiInstance.updateChat(chatId, chatUpdateDTO);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#updateChat");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+| **chatUpdateDTO** | [**ChatUpdateDTO**](ChatUpdateDTO.md)| The chat session information to be updated | |
+
+### Return type
+
+**Boolean**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |

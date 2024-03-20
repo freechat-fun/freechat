@@ -10,7 +10,8 @@ Name | Type | Description | Notes
 **user_profile** | **str** | User profile for this session | [optional] 
 **character_nickname** | **str** | Character nickname for this session | [optional] 
 **about** | **str** | Anything about this session | [optional] 
-**backend_id** | **str** | Character backend for this session | 
+**character_id** | **int** | Character id for this session | 
+**backend_id** | **str** | Character backend for this session | [optional] 
 **ext** | **str** | Extra info for this session | [optional] 
 
 ## Example

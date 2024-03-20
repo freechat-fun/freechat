@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.4.0
+- API version: 0.5.0
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.4.0</version>
+  <version>0.6.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.4.0"
+     implementation "fun.freechat:freechat-sdk:0.6.0"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.4.0.jar`
+* `target/freechat-sdk-0.6.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -190,6 +190,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
 *CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
 *CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
+*CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
 *CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 *CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 *CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
@@ -200,17 +201,20 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**setDefaultCharacterBackend**](docs/CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 *CharacterApi* | [**updateCharacter**](docs/CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 *CharacterApi* | [**updateCharacterBackend**](docs/CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-*CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar | Upload Character Avatar
-*CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture | Upload Character Picture
+*CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
+*CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
+*ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
 *ChatApi* | [**listChats**](docs/ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
 *ChatApi* | [**listMessages**](docs/ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 *ChatApi* | [**listMessages1**](docs/ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 *ChatApi* | [**listMessages2**](docs/ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
+*ChatApi* | [**rollbackMessages**](docs/ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
 *ChatApi* | [**sendMessage**](docs/ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message
 *ChatApi* | [**startChat**](docs/ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session
 *ChatApi* | [**streamSendMessage**](docs/ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
+*ChatApi* | [**updateChat**](docs/ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session
 *EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v1/admin/encryption/encrypt/{text} | Encrypt Text
 *InteractiveStatisticsApi* | [**addStatistic**](docs/InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
 *InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/score/{infoType}/{infoId} | Get Score for Resource
@@ -318,6 +322,7 @@ Class | Method | HTTP request | Description
  - [ChatPromptContentDTO](docs/ChatPromptContentDTO.md)
  - [ChatSessionDTO](docs/ChatSessionDTO.md)
  - [ChatToolCallDTO](docs/ChatToolCallDTO.md)
+ - [ChatUpdateDTO](docs/ChatUpdateDTO.md)
  - [HotTagDTO](docs/HotTagDTO.md)
  - [InteractiveStatsDTO](docs/InteractiveStatsDTO.md)
  - [LlmResultDTO](docs/LlmResultDTO.md)

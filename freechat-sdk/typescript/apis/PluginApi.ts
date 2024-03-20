@@ -264,7 +264,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
      * Delete Plugin
      * @param pluginId The pluginId to be deleted
      */
-    public async deletePlugin(pluginId: string, _options?: Configuration): Promise<RequestContext> {
+    public async deletePlugin(pluginId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'pluginId' is not null or undefined
@@ -302,7 +302,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
      * Batch Delete Plugins
      * @param requestBody List of pluginIds to be deleted
      */
-    public async deletePlugins(requestBody: Array<string>, _options?: Configuration): Promise<RequestContext> {
+    public async deletePlugins(requestBody: Array<number>, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'requestBody' is not null or undefined
@@ -325,7 +325,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
         ]);
         requestContext.setHeaderParam("Content-Type", contentType);
         const serializedBody = ObjectSerializer.stringify(
-            ObjectSerializer.serialize(requestBody, "Array<string>", ""),
+            ObjectSerializer.serialize(requestBody, "Array<number>", ""),
             contentType
         );
         requestContext.setBody(serializedBody);
@@ -350,7 +350,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
      * Get Plugin Details
      * @param pluginId PluginId to be obtained
      */
-    public async getPluginDetails(pluginId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getPluginDetails(pluginId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'pluginId' is not null or undefined
@@ -388,7 +388,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
      * Get Plugin Summary
      * @param pluginId PluginId to be obtained
      */
-    public async getPluginSummary(pluginId: string, _options?: Configuration): Promise<RequestContext> {
+    public async getPluginSummary(pluginId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'pluginId' is not null or undefined
@@ -426,7 +426,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
      * Refresh Plugin Information
      * @param pluginId The pluginId to be fetched
      */
-    public async refreshPluginInfo(pluginId: string, _options?: Configuration): Promise<RequestContext> {
+    public async refreshPluginInfo(pluginId: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'pluginId' is not null or undefined
@@ -561,7 +561,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
      */
-    public async updatePlugin(pluginId: string, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<RequestContext> {
+    public async updatePlugin(pluginId: number, pluginUpdateDTO: PluginUpdateDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'pluginId' is not null or undefined
@@ -709,22 +709,22 @@ export class PluginApiResponseProcessor {
      * @params response Response returned by the server for a request to createPlugin
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createPluginWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
+     public async createPluginWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: string = ObjectSerializer.deserialize(
+            const body: number = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
-            ) as string;
+                "number", "int64"
+            ) as number;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -738,22 +738,22 @@ export class PluginApiResponseProcessor {
      * @params response Response returned by the server for a request to createPlugins
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async createPluginsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async createPluginsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
@@ -796,22 +796,22 @@ export class PluginApiResponseProcessor {
      * @params response Response returned by the server for a request to deletePlugins
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async deletePluginsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<string> >> {
+     public async deletePluginsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: Array<string> = ObjectSerializer.deserialize(
+            const body: Array<number> = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "Array<string>", ""
-            ) as Array<string>;
+                "Array<number>", "int64"
+            ) as Array<number>;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

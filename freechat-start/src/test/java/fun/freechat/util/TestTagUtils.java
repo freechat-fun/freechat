@@ -5,6 +5,7 @@ import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.common.TagService;
 import fun.freechat.service.enums.InfoType;
+import fun.freechat.service.prompt.PromptService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -18,11 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TestTagUtils implements ApplicationContextAware {
     private static SysUserService userService;
     private static TagService tagService;
+    private static PromptService promptService;
 
-    public static void addTag(String userId, String promptId, String content) {
+    public static void addTag(String userId, Long promptId, String content) {
         User user = userService.loadByUserId(userId);
         assertNotNull(user);
-        tagService.create(user, InfoType.PROMPT, promptId, content);
+        tagService.create(user, InfoType.PROMPT, promptService.getUid(promptId), content);
     }
 
     public static void cleanTags(String userId) {
@@ -40,5 +42,6 @@ public class TestTagUtils implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         userService = applicationContext.getBean(SysUserService.class);
         tagService = applicationContext.getBean(TagService.class);
+        promptService = applicationContext.getBean(PromptService.class);
     }
 }
