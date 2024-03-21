@@ -22,11 +22,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class AiApiKeyIT extends AbstractIntegrationTest{
     @Value("${auth.aiApiKey.limits:#{null}}")
     private Integer maxCount;
-
     private String userId;
-
     private String apiToken;
-
     private LinkedList<AiApiKeyCreateDTO> apiKeys;
 
     @BeforeEach

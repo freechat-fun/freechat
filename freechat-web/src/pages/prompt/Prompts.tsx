@@ -15,9 +15,9 @@ import { setMessageText } from "../../libs/template_utils";
 
 type RecordCardProps = {
   record: PromptSummaryDTO,
-  onView: (record: PromptSummaryDTO) => void,
-  onEdit: (record: PromptSummaryDTO) => void,
-  onDelete: (record: PromptSummaryDTO) => void,
+  onView: () => void,
+  onEdit: () => void,
+  onDelete: () => void,
   sx?: SxProps,
 }
 
@@ -75,9 +75,9 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       </SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
-        onView={() => onView(record)}
-        onEdit={() => onEdit(record)}
-        onDelete={() => onDelete(record)}
+        onView={() => onView()}
+        onEdit={() => onEdit()}
+        onDelete={() => onDelete()}
       />
     </Card>
   )
@@ -269,9 +269,9 @@ export default function Prompts() {
                 key={record.promptId}
                 ref={cardRefs.current[index]}
                 record={record}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleTryDelete}
+                onView={() => handleView(record)}
+                onEdit={() => handleEdit(record)}
+                onDelete={() => handleTryDelete(record)}
                 sx={{
                   transition: defaultTransitionSetting,
                   ...transitionStyles[state],

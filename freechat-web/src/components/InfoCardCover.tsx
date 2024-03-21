@@ -27,9 +27,9 @@ export default function InfoCardCover(props: {
     edit?: ElementType<any>,
     delete?: ElementType<any>,
   }
-  onView: () => void,
-  onEdit: () => void,
-  onDelete: () => void,
+  onView?: () => void,
+  onEdit?: () => void,
+  onDelete?: () => void,
 }) {
   const { icons, onView, onEdit, onDelete } = props;
 
@@ -57,9 +57,9 @@ export default function InfoCardCover(props: {
             gap: 1,
             width: '100%',
           }}>
-            <CardIconButton Icon={iconSet.view} onClick={onView} sx={{ ml: 'auto' }} />
-            <CardIconButton Icon={iconSet.edit} onClick={onEdit} />
-            <CardIconButton Icon={iconSet.delete} onClick={onDelete} />
+            { onView && <CardIconButton Icon={iconSet.view} onClick={onView} /> } 
+            { onEdit && <CardIconButton Icon={iconSet.edit} onClick={onEdit} /> }
+            { onDelete && <CardIconButton Icon={iconSet.delete} onClick={onDelete} /> }
           </Box>
       </div>
       </CardCover>

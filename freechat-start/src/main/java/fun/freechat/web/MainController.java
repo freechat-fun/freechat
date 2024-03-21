@@ -5,9 +5,11 @@ import fun.freechat.model.User;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.util.ConfigUtils;
+import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 @Controller
@@ -27,6 +31,21 @@ public class MainController {
     @Autowired
     @Qualifier("mysqlConfigService")
     private ConfigService configService;
+
+    @Autowired
+    private InMemoryClientRegistrationRepository clientRegistrationRepository;
+
+    private String registrations;
+
+
+    @PostConstruct
+    public void cacheRegistrations() {
+        List<String> registrationList = new LinkedList<>();
+        clientRegistrationRepository.forEach(clientRegistration ->
+                registrationList.add(clientRegistration.getRegistrationId()));
+
+        registrations = String.join(",", registrationList);
+    }
 
     @RequestMapping("/w/**")
     public String index(Model model) {
@@ -50,6 +69,7 @@ public class MainController {
             script = "/asserts/index-" + webVersion + ".js";
         }
         model.addAttribute("script", script);
+        model.addAttribute("registrations", registrations);
 
         return "index";
     }

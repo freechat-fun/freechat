@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/joy";
 import { DEFAULT_IMAGE_MAX_WIDTH } from "../libs/ui_utils";
 
-type ImagePreviewProps = {
+export type ImagePreviewProps = {
   src: string;
   width?: string | number;
   height?: string | number;

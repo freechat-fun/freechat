@@ -14,7 +14,7 @@ import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequ
 type RecordCardProps = {
   record: PromptSummaryStatsDTO,
   sx?: SxProps,
-  onClick?: (record: PromptSummaryStatsDTO) => void;
+  onClick?: () => void;
 }
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
@@ -59,7 +59,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           overlay
           onClick={(event) => {
             event.preventDefault();
-            onClick?.(record);
+            onClick?.();
         }}>
           <Typography
             level="title-lg"
@@ -293,7 +293,7 @@ export default function PromptGallery() {
                   key={`record-card-${record.promptId || index}`}
                   ref={cardRefs.current[index]}
                   record={record}
-                  onClick={handleView}
+                  onClick={() => handleView(record)}
                   sx={{
                     transition: defaultTransitionSetting,
                     ...transitionStyles[state],

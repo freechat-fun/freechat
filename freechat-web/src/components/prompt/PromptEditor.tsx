@@ -2,7 +2,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
 import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, ContentTextarea, LinePlaceholder, TinyInput } from "../../components";
@@ -34,7 +34,7 @@ export default function PromptEditor({
   const { t, i18n } = useTranslation(['prompt', 'button']);
   const { promptApi, aiServiceApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
-  const { username } = useUserInfoContext();
+  const { username } = useMetaInfoContext();
 
   const [play, setPlay] = useState(false);
   const [defaultParameters, setDefaultParameters] = useState(parameters ? {...parameters} : undefined)

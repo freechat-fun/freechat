@@ -35,9 +35,7 @@ public class PromptAiIT extends AbstractIntegrationTest {
     private static final String PROMPT_TEMPLATE_MUSTACHE = "say '{{greeting}}'";
 
     private String userId;
-
     private String apiToken;
-
     private Long promptId;
 
     @BeforeEach

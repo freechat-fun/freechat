@@ -1,20 +1,20 @@
 import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollableTypography } from ".";
-import { DialogActions, DialogContent, DialogTitle, IconButton, Modal, ModalDialog, Stack, TypographyProps } from "@mui/joy";
+import { DialogActions, DialogContent, DialogTitle, IconButton, Modal, ModalDialog } from "@mui/joy";
 import { DoneRounded } from "@mui/icons-material";
+import ImagePreview, { ImagePreviewProps } from "./ImagePreview";
 
-type TextPreviewProps = TypographyProps<'div'> & {
+type ImagePreviewWindowProps = ImagePreviewProps & {
   title?: string,
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }
 
 
-const TextPreview: React.FC<PropsWithChildren<TextPreviewProps>> = (({ children, ...props }) => {
+const ImagePreviewWindow: React.FC<PropsWithChildren<ImagePreviewWindowProps>> = ((props) => {
   const { t } = useTranslation();
 
-  const { title = t('Text preview'), open = false, setOpen = () => {}, ...others } = props;
+  const { title = t('Image preview'), open = false, setOpen = () => {}, ...others } = props;
 
   function handleClose(_event: React.MouseEvent<HTMLButtonElement>, reason: string): void {
     if (reason !== 'backdropClick') {
@@ -31,15 +31,7 @@ const TextPreview: React.FC<PropsWithChildren<TextPreviewProps>> = (({ children,
         <ModalDialog>
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>
-            <Stack spacing={2} sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              <ScrollableTypography {...others}>
-                {children}
-              </ScrollableTypography>
-            </Stack>
+            <ImagePreview {...others} />
           </DialogContent>
           <DialogActions>
             <IconButton onClick={() => setOpen(false)}><DoneRounded /></IconButton>
@@ -50,4 +42,4 @@ const TextPreview: React.FC<PropsWithChildren<TextPreviewProps>> = (({ children,
   );
 });
 
-export default TextPreview;
+export default ImagePreviewWindow;

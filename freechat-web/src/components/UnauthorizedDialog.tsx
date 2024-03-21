@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { Link, Modal, ModalDialog, Typography } from "@mui/joy";
-import { useUserInfoContext } from "../contexts";
+import { useMetaInfoContext } from "../contexts";
 
 export default function UnauthorizedDialog() {
   const { t } = useTranslation('account');
-  const { isAuthorized } = useUserInfoContext();
+  const { isAuthorized } = useMetaInfoContext();
   const { pathname } = window.location;
   
   const normalizePathname = pathname.replace(/\/+$/, "");

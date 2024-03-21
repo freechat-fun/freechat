@@ -35,20 +35,30 @@ public class FileUtils {
     }
 
     public static String getDefaultPublicUrlForImage(HttpServletRequest request, String path) {
-        String sharePath = path.substring(PUBLIC_DIR.length());
+        String subPath = path.substring(PUBLIC_DIR.length());
         return ServletUriComponentsBuilder.fromRequestUri(request)
                 .replacePath("/public/image/" +
-                        Base64.getUrlEncoder().encodeToString(sharePath.getBytes(StandardCharsets.UTF_8)))
+                        Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .toString();
     }
 
+    public static String getDefaultPublicPathForImage(String key) {
+        String subPath = new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8);
+        return PUBLIC_DIR + subPath;
+    }
+
     public static String getDefaultPrivateUrlForImage(HttpServletRequest request, String path, String userId) {
-        String sharePath = path.substring(PRIVATE_DIR.length() + userId.length() + 1);
+        String subPath = path.substring(PRIVATE_DIR.length() + userId.length() + 1);
         return ServletUriComponentsBuilder.fromRequestUri(request)
                 .replacePath("/my/image/" +
-                        Base64.getUrlEncoder().encodeToString(sharePath.getBytes(StandardCharsets.UTF_8)))
+                        Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8)))
                 .build()
                 .toString();
+    }
+
+    public static String getDefaultPrivatePathForImage(String key, String userId) {
+        String subPath = new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8);
+        return PRIVATE_DIR + userId + "/" + subPath;
     }
 }

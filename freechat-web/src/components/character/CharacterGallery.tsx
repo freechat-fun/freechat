@@ -14,7 +14,7 @@ import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequ
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO,
   sx?: SxProps,
-  onClick?: (record: CharacterSummaryStatsDTO) => void;
+  onClick?: () => void;
 }
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
@@ -50,7 +50,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           overlay
           onClick={(event) => {
             event.preventDefault();
-            onClick?.(record);
+            onClick?.();
         }}>
           <Avatar alt={nickname} src={record.avatar} size="md" />
           <Typography
@@ -304,7 +304,7 @@ export default function CharacterGallery() {
                   key={`record-card-${record.characterId || index}`}
                   ref={cardRefs.current[index]}
                   record={record}
-                  onClick={handleView}
+                  onClick={() => handleView(record)}
                   sx={{
                     transition: defaultTransitionSetting,
                     ...transitionStyles[state],

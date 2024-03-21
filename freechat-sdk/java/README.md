@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.5.0
+- API version: 0.6.0
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.6.0</version>
+  <version>0.6.1</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.6.0"
+     implementation "fun.freechat:freechat-sdk:0.6.1"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.6.0.jar`
+* `target/freechat-sdk-0.6.1.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -183,6 +183,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 *CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 *CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+*CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 *CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 *CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name

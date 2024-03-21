@@ -1,7 +1,7 @@
 import { Fragment, MouseEventHandler, forwardRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Chip, Divider, IconButton, Sheet, SheetProps, Stack, Typography } from "@mui/joy";
-import { ChatContent, CommonBox, ImagePreview, LinePlaceholder, MarkdownContent, TextPreview } from "..";
+import { ChatContent, CommonBox, ImagePreview, LinePlaceholder, MarkdownContent, TextPreviewWindow } from "..";
 import { ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
 import { getDateLabel } from "../../libs/date_utils";
 import { getSenderName, getSenderReply } from "../../libs/chat_utils";
@@ -207,13 +207,13 @@ export default function ChatBubble(props: ChatBubbleProps) {
                           <ArticleRounded fill="e0e0e0" />
                         </IconButton>
                       </CommonBox>
-                      <TextPreview
+                      <TextPreviewWindow
                         title={t('System Prompt')}
                         open={showSystemPrompt}
                         setOpen={setShowSystemPrompt}
                       >
                         {systemPrompt}
-                      </TextPreview>
+                      </TextPreviewWindow>
                     </Fragment>
                   )}
                 </Fragment>

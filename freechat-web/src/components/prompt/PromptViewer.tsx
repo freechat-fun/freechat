@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Chip, Divider, Tooltip, Typography } from "@mui/joy";
 import { ArrowBackRounded, ChatBubbleOutlineRounded, ContentCopyRounded, EditRounded, PlayCircleOutlineRounded, PublicOffRounded, PublicRounded, Title } from "@mui/icons-material";
 import { CommonContainer, LinePlaceholder } from "../../components";
@@ -26,7 +26,7 @@ export default function PromptViewer({
   const { t, i18n } = useTranslation(['prompt', 'button']);
   const { promptApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
-  const { username } = useUserInfoContext();
+  const { username } = useMetaInfoContext();
 
   const [record, setRecord] = useState<PromptDetailsDTO>();
   const [history, setHistory] = useState<[string, number][]>([]);

@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { UserInfoProvider, ErrorMessageBusProvider, FreeChatApiProvider } from ".";
+import { MetaInfoProvider, ErrorMessageBusProvider, FreeChatApiProvider } from ".";
 
 const ContextsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   let apiServer = import.meta.env.VITE_API_SERVER;
@@ -13,11 +13,11 @@ const ContextsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <FreeChatApiProvider server={apiServer}>
-      <UserInfoProvider>
+      <MetaInfoProvider>
         <ErrorMessageBusProvider>
           {children}
         </ErrorMessageBusProvider>
-      </UserInfoProvider>
+      </MetaInfoProvider>
     </FreeChatApiProvider>
   );
 };

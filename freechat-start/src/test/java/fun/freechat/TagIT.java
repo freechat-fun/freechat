@@ -16,11 +16,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class TagIT extends AbstractIntegrationTest {
     private String userId;
-
     private String apiToken;
-
     private Long promptId1;
-
     private Long promptId2;
 
     @BeforeEach

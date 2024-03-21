@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `ai_model_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `prompt_info` (
-  `prompt_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `prompt_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'record identifier',
   `prompt_uid` varchar(32) NOT NULL COMMENT 'immutable prompt identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `prompt_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `agent_info` (
-  `agent_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'record identifier',
   `agent_uid` varchar(32) NOT NULL COMMENT 'immutable agent identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `agent_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `plugin_info` (
-  `plugin_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'record identifier',
   `plugin_uid` varchar(32) NOT NULL COMMENT 'immutable plugin identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `plugin_info` (
 ;
 
 CREATE TABLE IF NOT EXISTS `character_info` (
-  `character_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `character_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'record identifier',
   `character_uid` varchar(32) NOT NULL COMMENT 'immutable character identifier',
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,

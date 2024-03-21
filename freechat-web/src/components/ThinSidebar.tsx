@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
 import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded } from "@mui/icons-material";
 import { ColorSchemeToggle, LanguageToggle } from ".";
-import { useUserInfoContext } from "../contexts";
+import { useMetaInfoContext } from "../contexts";
 import { ChatIcon } from "./icon";
 
 
@@ -42,7 +42,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   const { children, href, ...others } = props;
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { isAuthorized } = useUserInfoContext();
+  const { isAuthorized } = useMetaInfoContext();
 
   const isSelected = useCallback((targetPathname: string, currentPathname: string) => {
     return targetPathname.replace(/\/+$/, "") === currentPathname.replace(/\/+$/, "");
@@ -67,7 +67,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
 export default function ThinSidebar() {
   const theme = useTheme();
   const { t } = useTranslation('sidebar');
-  const { csrfToken, isAuthorized, isGuest } = useUserInfoContext();
+  const { csrfToken, isAuthorized, isGuest } = useMetaInfoContext();
   
   return (
     <Box

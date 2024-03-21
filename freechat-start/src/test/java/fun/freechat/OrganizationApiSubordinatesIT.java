@@ -13,7 +13,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     private String userId;
-
     private String apiToken;
 
     @BeforeEach

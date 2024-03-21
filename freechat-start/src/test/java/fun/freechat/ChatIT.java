@@ -39,9 +39,7 @@ public class ChatIT extends AbstractIntegrationTest{
             Kelvin: Hello, dude. What's your name?
             Jack(you): It's easy. My name is Jack. You should know my name!
             """;
-
     private static final String CHARACTER_GREETING = "Hi, Kelvin!";
-
     private static final String USER_NICKNAME = "Kelvin";
     private static final String USER_PROFILE = "Someone who doesn't know Jack.";
     private static final String SYSTEM_PROMPT = """
@@ -72,23 +70,14 @@ public class ChatIT extends AbstractIntegrationTest{
             {{{MESSAGE_CONTEXT}}}
             {{{RELEVANT_INFORMATION}}}
             """;
-
     private String developerId;
-
     private String developerApiKey;
-
     private String userId;
-
     private String userApiKey;
-
     private Long promptId;
-
     private String promptTaskId;
-
     private Long characterId;
-
     private String backendId;
-
     private String chatId;
 
     @BeforeEach

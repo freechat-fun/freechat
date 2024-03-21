@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { AspectRatio, Button, Card, CardActions, CardOverflow, FormControl, FormLabel, Input, Stack, Textarea, Typography, Radio, RadioGroup, Grid, Avatar, Divider } from "@mui/joy";
 import { DoneRounded, SaveAltRounded } from "@mui/icons-material";
 import { ImagePicker, LinePlaceholder } from "../../components";
@@ -11,7 +11,7 @@ export default function MyProfile() {
   const { t } = useTranslation(['account', 'button']);
   const { accountApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
-  const { username, platform, resetUser } = useUserInfoContext();
+  const { username, platform, resetUser } = useMetaInfoContext();
 
   const [currentGender, setCurrentGender] = useState('other');
   const [currentNickname, setCurrentNickname] = useState('');

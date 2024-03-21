@@ -2,14 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon  } from '../../components/icon';
+import { useMetaInfoContext } from '../../contexts';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
+  const { csrfToken, registrations } = useMetaInfoContext();
 
   const protocol = window.location.protocol;
   const host = window.location.hostname;
   const port = window.location.port;
-  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
   const guestUsername = 'guest';
   const guestPassword = 'guest';
 
@@ -82,35 +83,47 @@ export default function SignIn() {
                   </Link>
                 </Typography> */}
               </Stack>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<GitHub />}
-                onClick={() => handleClick('/oauth2/authorization/github')}
-              >
-                {t('Continue with GitHub')}
-              </Button>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<Google />}
-                onClick={() => handleClick('/oauth2/authorization/google')}
-              >
-                {t('Continue with Google')}
-              </Button>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<AliyunIcon />}
-                onClick={() => handleClick('/oauth2/authorization/aliyun')}
-              >
-                {t('Continue with Aliyun')}
-              </Button>
 
-              <Divider>{t('or')}</Divider>
+              {registrations?.includes('github') && (
+                <Button
+                  variant="soft"
+                  color="neutral"
+                  fullWidth
+                  startDecorator={<GitHub />}
+                  onClick={() => handleClick('/oauth2/authorization/github')}
+                >
+                  {t('Continue with GitHub')}
+                </Button>
+              )}
+
+              {registrations?.includes('google') && (
+                <Button
+                  variant="soft"
+                  color="neutral"
+                  fullWidth
+                  startDecorator={<Google />}
+                  onClick={() => handleClick('/oauth2/authorization/google')}
+                >
+                  {t('Continue with Google')}
+                </Button>
+              )}
+
+              {registrations?.includes('aliyun') && (
+                <Button
+                  variant="soft"
+                  color="neutral"
+                  fullWidth
+                  startDecorator={<AliyunIcon />}
+                  onClick={() => handleClick('/oauth2/authorization/aliyun')}
+                >
+                  {t('Continue with Aliyun')}
+                </Button>
+              )}
+
+              {registrations.length > 0 && (
+                <Divider>{t('or')}</Divider>
+              )}
+              
               <form method="post" action="/login">
                 <FormControl required>
                   <FormLabel>{t('Username')}</FormLabel>

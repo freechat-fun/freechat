@@ -15,9 +15,9 @@ import { ChatIcon } from "../../components/icon";
 
 type RecordCardProps = {
   record: CharacterSummaryDTO,
-  onView: (record: CharacterSummaryDTO) => void,
-  onEdit: (record: CharacterSummaryDTO) => void,
-  onDelete: (record: CharacterSummaryDTO) => void,
+  onView: () => void,
+  onEdit: () => void,
+  onDelete: () => void,
   sx?: SxProps,
 }
 
@@ -80,9 +80,9 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       <LinePlaceholder spacing={2} />
       <InfoCardCover
         icons={{view: ChatIcon}}
-        onView={() => onView(record)}
-        onEdit={() => onEdit(record)}
-        onDelete={() => onDelete(record)}
+        onView={() => onView()}
+        onEdit={() => onEdit()}
+        onDelete={() => onDelete()}
       />
     </Card>
   )
@@ -272,7 +272,7 @@ export default function Characters() {
             in={showCards}
             timeout={index * defaultTransitionInterval}
             unmountOnExit
-            key={record.characterId || `transition-${index}`}
+            key={`transition-${index}`}
             nodeRef={cardRefs.current[index]}
           >
             {(state) => (
@@ -280,9 +280,9 @@ export default function Characters() {
                 key={record.characterId}
                 ref={cardRefs.current[index]}
                 record={record}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleTryDelete}
+                onView={() => handleView(record)}
+                onEdit={() => handleEdit(record)}
+                onDelete={() => handleTryDelete(record)}
                 sx={{
                   transition: defaultTransitionSetting,
                   ...transitionStyles[state],

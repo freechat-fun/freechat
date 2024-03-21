@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserInfoContext } from '../contexts';
+import { useMetaInfoContext } from '../contexts';
 import { Dropdown, MenuButton, Menu, MenuItem, IconButton, ListItemDecorator, Button } from '@mui/joy';
 import { LoginRounded, LogoutRounded, ManageAccountsRounded, PermIdentityRounded } from '@mui/icons-material';
 
 export default function AccountMenu() {
   const { t } = useTranslation('account');
-  const { csrfToken, isAuthorized } = useUserInfoContext();
+  const { csrfToken, isAuthorized } = useMetaInfoContext();
 
   const submitRef = useRef<HTMLButtonElement>(null);
 

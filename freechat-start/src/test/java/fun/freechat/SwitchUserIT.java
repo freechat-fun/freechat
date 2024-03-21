@@ -18,9 +18,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class SwitchUserIT extends AbstractIntegrationTest {
     @Value("${auth.impersonate.headerName}")
     private String impersonateHeaderName;
-
     private String adminApiToken;
-
     private String orgApiToken;
 
     private String usernameOf(String sn) {

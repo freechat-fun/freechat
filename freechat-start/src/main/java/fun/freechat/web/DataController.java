@@ -1,6 +1,7 @@
 package fun.freechat.web;
 
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.FileUtils;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.util.StoreUtils;
 import io.micrometer.common.util.StringUtils;
@@ -19,13 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
-import static fun.freechat.api.util.FileUtils.PRIVATE_DIR;
-import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 import static org.springframework.http.MediaType.*;
 
 @Controller
@@ -41,8 +38,7 @@ public class DataController {
     public ResponseEntity<byte[]> getPublicImage(@PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            byte[] imageData = fileStore.readBytes(PUBLIC_DIR +
-                    new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8));
+            byte[] imageData = fileStore.readBytes(FileUtils.getDefaultPublicPathForImage(key));
 
             return new ResponseEntity<>(imageData, getImageHeaders(imageData), HttpStatus.OK);
         } catch (IOException e) {
@@ -55,8 +51,8 @@ public class DataController {
     public ResponseEntity<byte[]> getPrivateImage(@PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            byte[] imageData = fileStore.readBytes(PRIVATE_DIR + AccountUtils.currentUser().getUserId() + "/" +
-                    new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8));
+            byte[] imageData = fileStore.readBytes(FileUtils.getDefaultPrivatePathForImage(
+                    key, AccountUtils.currentUser().getUserId()));
 
             return new ResponseEntity<>(imageData, getImageHeaders(imageData), HttpStatus.OK);
         } catch (IOException e) {

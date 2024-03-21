@@ -26,15 +26,21 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 public class LocalFileStoreImpl implements FileStore {
     @Value("${file.basePath}")
-    private String basePath;
+    private String basePathStr;
+    private Path basePath;
 
     private Path toPath(String path) {
-        return StringUtils.isBlank(basePath) ? Paths.get(path) : Paths.get(basePath, path);
+        return StringUtils.isBlank(basePathStr) ? Paths.get(path) : Paths.get(basePathStr, path);
+    }
+
+    private Path relativePath(Path path) {
+        return basePath.relativize(path);
     }
 
     @PostConstruct
     public void postConstruct() {
-        log.info("File store base path: {}", basePath);
+        basePath = Path.of(basePathStr);
+        log.info("File store base path: {}", basePathStr);
     }
 
     @Override
@@ -56,13 +62,15 @@ public class LocalFileStoreImpl implements FileStore {
             }
 
             if (Objects.isNull(regex)) {
-                return listing.map(Path::toString).toList();
+                return listing.map(this::relativePath)
+                        .map(Path::toString)
+                        .toList();
             }
             Pattern pattern = Pattern.compile(regex);
-            return listing.map(Path::toString)
+            return listing.map(this::relativePath)
+                    .map(Path::toString)
                     .filter(fileName -> pattern.matcher(fileName).find())
                     .toList();
-
         } finally {
             Optional.ofNullable(listing).ifPresent(Stream::close);
         }

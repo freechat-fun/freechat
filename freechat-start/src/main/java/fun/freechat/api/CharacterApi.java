@@ -117,6 +117,19 @@ public class CharacterApi {
                 InfoType.CHARACTER, characterUid, StatsType.REFER_COUNT, 1L);
     }
 
+    private String getCharacterUidFromPath(String path) {
+        int lastIndex = path.lastIndexOf('/');
+        if (lastIndex < 0 || lastIndex >= path.length() - 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image key");
+        }
+        String dir = path.substring(0, lastIndex);
+        lastIndex = dir.lastIndexOf('/');
+        if (lastIndex < 0 || lastIndex >= dir.length() - 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image key");
+        }
+        return dir.substring(lastIndex + 1);
+    }
+
     @Operation(
             operationId = "searchCharacterSummary",
             summary = "Search Character Summary",
@@ -668,6 +681,7 @@ public class CharacterApi {
             description = "Upload a picture of the character."
     )
     @PostMapping(value = "/picture/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p2, 'characterDefaultOp')")
     public String uploadPicture(
             HttpServletRequest request,
             @Parameter(description = "Character picture") @RequestParam("file") @NotNull
@@ -690,7 +704,7 @@ public class CharacterApi {
 
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture" + characterUid;
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture/" + characterUid;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {
@@ -703,11 +717,36 @@ public class CharacterApi {
     }
 
     @Operation(
+            operationId = "deleteCharacterPicture",
+            summary = "Delete Character Picture",
+            description = "Delete a picture of the character by key."
+    )
+    @DeleteMapping("/picture/{key}")
+    public Boolean deletePicture(
+            @Parameter(description = "Image key") @PathVariable("key") @NotBlank
+            String key) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String path = FileUtils.getDefaultPublicPathForImage(key);
+            String characterUid = getCharacterUidFromPath(path);
+            String userId = characterService.getOwnerByUid(characterUid);
+            if (!AccountUtils.currentUser().getUserId().equals(userId)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Image doesn't belong to you");
+            }
+            fileStore.delete(path);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Operation(
             operationId = "listCharacterPictures",
             summary = "List Character Pictures",
             description = "List pictures of the character."
     )
-    @GetMapping(value = "/pictures/{characterId}")
+    @GetMapping("/pictures/{characterId}")
+    @PreAuthorize("hasPermission(#p1, 'characterDefaultOp')")
     public List<String> listPictures(
             HttpServletRequest request,
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
@@ -719,7 +758,7 @@ public class CharacterApi {
 
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture" + characterUid;
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture/" + characterUid;
             return fileStore.list(dstDir, null, false)
                     .stream()
                     .map(path -> {
@@ -762,7 +801,7 @@ public class CharacterApi {
 
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar" + characterUid;
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar/" + characterUid;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
             String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(shareUrl)) {

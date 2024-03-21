@@ -1520,6 +1520,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Delete a picture of the character by key.
+     * Delete Character Picture
+     * @param key Image key
+     */
+    public deleteCharacterPictureWithHttpInfo(key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteCharacterPictureWithHttpInfo(key, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a picture of the character by key.
+     * Delete Character Picture
+     * @param key Image key
+     */
+    public deleteCharacterPicture(key: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteCharacterPicture(key, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name

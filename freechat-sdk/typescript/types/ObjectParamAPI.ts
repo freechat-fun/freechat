@@ -1797,6 +1797,15 @@ export interface CharacterApiDeleteCharacterByNameRequest {
     name: string
 }
 
+export interface CharacterApiDeleteCharacterPictureRequest {
+    /**
+     * Image key
+     * @type string
+     * @memberof CharacterApideleteCharacterPicture
+     */
+    key: string
+}
+
 export interface CharacterApiExistsCharacterNameRequest {
     /**
      * Name
@@ -2156,6 +2165,24 @@ export class ObjectCharacterApi {
      */
     public deleteCharacterByName(param: CharacterApiDeleteCharacterByNameRequest, options?: Configuration): Promise<Array<number>> {
         return this.api.deleteCharacterByName(param.name,  options).toPromise();
+    }
+
+    /**
+     * Delete a picture of the character by key.
+     * Delete Character Picture
+     * @param param the request object
+     */
+    public deleteCharacterPictureWithHttpInfo(param: CharacterApiDeleteCharacterPictureRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteCharacterPictureWithHttpInfo(param.key,  options).toPromise();
+    }
+
+    /**
+     * Delete a picture of the character by key.
+     * Delete Character Picture
+     * @param param the request object
+     */
+    public deleteCharacterPicture(param: CharacterApiDeleteCharacterPictureRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteCharacterPicture(param.key,  options).toPromise();
     }
 
     /**

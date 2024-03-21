@@ -2376,6 +2376,39 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Delete a picture of the character by key.
+     * Delete Character Picture
+     * @param key Image key
+     */
+    public deleteCharacterPictureWithHttpInfo(key: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteCharacterPicture(key, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteCharacterPictureWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete a picture of the character by key.
+     * Delete Character Picture
+     * @param key Image key
+     */
+    public deleteCharacterPicture(key: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteCharacterPictureWithHttpInfo(key, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name

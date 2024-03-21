@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext, useUserInfoContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { CharacterBackendDTO, CharacterBackendDetailsDTO, CharacterDetailsDTO, CharacterUpdateDTO, ChatCreateDTO, PromptRefDTO, PromptTaskDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { locales } from "../../configs/i18n-config";
@@ -24,7 +24,7 @@ export default function CharacterEditor ({
   const { t, i18n } = useTranslation(['character', 'account', 'button']);
   const { accountApi, promptApi, promptTaskApi, characterApi, chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
-  const { username } = useUserInfoContext();
+  const { username } = useMetaInfoContext();
 
   const [origRecord, setOrigRecord] = useState(new CharacterDetailsDTO());
   const [editRecordName, setEditRecordName] = useState<string | null>(null);

@@ -79,7 +79,6 @@ export default function ChatListItem(props: ChatListItemProps) {
                 >
                   {nickname}
                 </HighlightedTypography>
-                { sender && <Typography level="body-sm">@{sender.name}</Typography> }
                 <Box
                   sx={{
                     lineHeight: 1.5,

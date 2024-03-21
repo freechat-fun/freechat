@@ -12,6 +12,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character |
 | [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character |
 | [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name |
+| [**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture |
 | [**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists |
 | [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details |
 | [**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name |
@@ -557,6 +558,73 @@ public class Example {
 ### Return type
 
 **List&lt;Long&gt;**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="deleteCharacterPicture"></a>
+# **deleteCharacterPicture**
+> Boolean deleteCharacterPicture(key)
+
+Delete Character Picture
+
+Delete a picture of the character by key.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    String key = "key_example"; // String | Image key
+    try {
+      Boolean result = apiInstance.deleteCharacterPicture(key);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#deleteCharacterPicture");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **key** | **String**| Image key | |
+
+### Return type
+
+**Boolean**
 
 ### Authorization
 

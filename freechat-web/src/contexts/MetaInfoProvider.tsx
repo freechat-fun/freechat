@@ -2,10 +2,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 
-type UserInfoContextValue = {
+type MetaInfoContextValue = {
   username: string | null | undefined,
   platform: string | null | undefined,
   csrfToken: string | null | undefined,
+  registrations: string[],
   resetUser: (
     name: string | null | undefined,
     from: string | null | undefined,
@@ -14,23 +15,26 @@ type UserInfoContextValue = {
   isGuest: () => boolean;
 }
 
-const anonymous: UserInfoContextValue = {
+const anonymous: MetaInfoContextValue = {
   username: undefined,
   platform: undefined,
   csrfToken: undefined,
+  registrations: [],
   resetUser: () => {},
   isAuthorized: () => false,
   isGuest: () => false,
 };
 
-const UserInfoContext = createContext<UserInfoContextValue>(anonymous);
+const MetaInfoContext = createContext<MetaInfoContextValue>(anonymous);
 
-const UserInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
+const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const metaUsername = document.querySelector('meta[name="_username"]')?.getAttribute('content');
   const metaPlatform = document.querySelector('meta[name="_platform"]')?.getAttribute('content');
   const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const metaRegistrations = document.querySelector('meta[name="_registrations"]')?.getAttribute('content');
   const [username, setUsername] = useState(metaUsername);
   const [platform, setPlatform] = useState(metaPlatform);
+  const registrations = metaRegistrations?.split(',') ?? [];
 
   const resetUser = (
     name: string | null | undefined,
@@ -49,19 +53,20 @@ const UserInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   return (
-    <UserInfoContext.Provider value={{
+    <MetaInfoContext.Provider value={{
         username,
         platform,
         csrfToken,
+        registrations,
         resetUser,
         isAuthorized,
         isGuest,
     }}> 
       {children}
-    </UserInfoContext.Provider>
+    </MetaInfoContext.Provider>
   );
 
 };
 
-export default UserInfoProvider;
-export const useUserInfoContext = () => useContext(UserInfoContext);
+export default MetaInfoProvider;
+export const useMetaInfoContext = () => useContext(MetaInfoContext);

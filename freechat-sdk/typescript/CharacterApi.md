@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+[**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 [**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
 [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 [**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
@@ -534,6 +535,60 @@ Name | Type | Description  | Notes
 ### Return type
 
 **Array<number>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **deleteCharacterPicture**
+> boolean deleteCharacterPicture()
+
+Delete a picture of the character by key.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .CharacterApi(configuration);
+
+let body:.CharacterApiDeleteCharacterPictureRequest = {
+  // string | Image key
+  key: "key_example",
+};
+
+apiInstance.deleteCharacterPicture(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | [**string**] | Image key | defaults to undefined
+
+
+### Return type
+
+**boolean**
 
 ### Authorization
 

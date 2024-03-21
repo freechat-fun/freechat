@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.5.0
+  version: 0.6.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -5403,6 +5403,30 @@ paths:
       summary: Clear Memory
       tags:
       - Chat
+      x-accepts: application/json
+  /api/v1/character/picture/{key}:
+    delete:
+      description: Delete a picture of the character by key.
+      operationId: deleteCharacterPicture
+      parameters:
+      - description: Image key
+        explode: false
+        in: path
+        name: key
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Character Picture
+      tags:
+      - Character
       x-accepts: application/json
   /api/v1/character/name/{name}:
     delete:
