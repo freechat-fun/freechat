@@ -4,18 +4,18 @@ import { DEFAULT_IMAGE_MAX_WIDTH } from "../libs/ui_utils";
 
 export type ImagePreviewProps = {
   src: string;
-  width?: string | number;
-  height?: string | number;
+  maxWidth?: string | number;
+  maxHight?: string | number;
   borderRadius?: string | number;
 }
 
 export default function ImagePreview(props: ImagePreviewProps) {
-  const { src, width, height, borderRadius = 0 } = props;
+  const { src, maxWidth, maxHight, borderRadius = 0 } = props;
 
-  const [imageSize, setImageSize] = useState({ width: width, height: height });
+  const [imageSize, setImageSize] = useState({ width: maxWidth, height: maxHight });
 
   useEffect(() => {
-    if (src && (!width || !height)) {
+    if (src) {
       const img = new Image();
       img.onload = () => {
         let newWidth = img.width;
@@ -24,14 +24,16 @@ export default function ImagePreview(props: ImagePreviewProps) {
           newWidth = DEFAULT_IMAGE_MAX_WIDTH;
           newHeight = img.height * DEFAULT_IMAGE_MAX_WIDTH / img.width;
         }
-        setImageSize({ width: width || newWidth, height: height || newHeight });
+        setImageSize({ width: newWidth, height: newHeight });
       };
       img.src = src;
     }
-  }, [src, width, height]);
+  }, [src]);
   
   return (
     <Box sx={{
+      maxWidth: maxWidth,
+      maxHeight: maxHight,
       width: imageSize.width,
       height: imageSize.height,
       backgroundImage: `url(${src})`,

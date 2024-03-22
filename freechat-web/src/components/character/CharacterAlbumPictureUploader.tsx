@@ -32,6 +32,8 @@ const CharacterAlbumPictureUploader = forwardRef<HTMLDivElement, CharacterAlbumP
   return (
     <Card ref={ref} sx={{
       ...sx,
+      justifyContent: 'center',
+      alignItems: 'center',
       transition: 'transform 0.4s, box-shadow 0.4s',
       boxShadow: 'sm',
       '&:hover': {
@@ -40,8 +42,9 @@ const CharacterAlbumPictureUploader = forwardRef<HTMLDivElement, CharacterAlbumP
       },
     }}>
       <ImagePicker
+        key="picture-picker"
         onImageSelect={handleImageSelect}
-        variant="outlined"
+        variant="plain"
         color="neutral"
         Icon={AddRounded}
       />

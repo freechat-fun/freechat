@@ -205,8 +205,8 @@ export default function MyProfile() {
               <ImagePicker
                 onImageSelect={handleImageSelect}
                 previewProps={{
-                  width: '200px',
-                  height: '200px',
+                  maxWidth: '200px',
+                  maxHeight: '200px',
                   borderRadius: '50%',
                 }}
                 disabled={!editEnabled}

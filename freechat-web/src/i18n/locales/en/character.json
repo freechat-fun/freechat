@@ -23,12 +23,13 @@
   "Affects character performance": "Affects character performance",
   "Style": "Style",
   "Knowledge": "Knowledge",
-  "Images": "Images",
+  "Album": "Album",
   "Set character backend": "Set character backend",
   "The character can connect to different backends": "The character can connect to different backends",
   "History messages window size": "History messages window size",
   "Prompt template": "Prompt template",
   "Model parameters": "Model parameters",
   "Moderation model": "Moderation model",
-  "Set another backend": "Set another backend"
+  "Set another backend": "Set another backend",
+  "Do you really want to delete this picture?": "Do you really want to delete this picture?"
 }

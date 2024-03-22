@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Card } from "@mui/joy";
+import { AspectRatio, Card, CardOverflow } from "@mui/joy";
 import { SxProps } from "@mui/material";
 import { RadioButtonCheckedRounded, RadioButtonUncheckedRounded } from "@mui/icons-material";
 import { InfoCardCover } from "..";
@@ -27,19 +27,25 @@ const CharacterAlbumPicture = forwardRef<HTMLDivElement, CharacterAlbumPicturePr
         boxShadow: 'lg',
         transform: 'translateY(-1px)',
       },
-      position: 'relative',
-      overflow: 'hidden',
-      backgroundImage: `url(${url})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
     }}>
-      <InfoCardCover
-        icons={icons}
-        onView={() => onView()}
-        onEdit={() => onCheck()}
-        onDelete={() => onDelete()}
-      />
+      <CardOverflow>
+        <AspectRatio ratio="1">
+          <img
+            src={url}
+            loading="lazy"
+            style={{
+              objectFit: 'cover',
+            }}
+          />
+        </AspectRatio>
+        <InfoCardCover
+          icons={icons}
+          onView={() => onView()}
+          onEdit={() => onCheck()}
+          onDelete={() => onDelete()}
+        />
+      </CardOverflow>
+      
     </Card>
   )
 });

@@ -8,13 +8,13 @@ import { locales } from "../../configs/i18n-config";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, TinyInput } from "../../components";
 import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Tooltip, Typography, switchClasses } from "@mui/joy";
 import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
-import { CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
+import { CharacterAlbum, CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
 import { createPromptForCharacter } from "../../libs/chat_utils";
 import { getCompressedImage } from "../../libs/ui_utils";
 
 type CharacterEditorProps = {
-  id: number | undefined;
+  id: number;
 }
 
 export default function CharacterEditor ({
@@ -30,7 +30,7 @@ export default function CharacterEditor ({
   const [editRecordName, setEditRecordName] = useState<string | null>(null);
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
-  const [recordName, setRecordName] = useState<string>();
+  const [recordName, setRecordName] = useState<string>('');
   const [nickname, setNickname] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [avatar, setAvatar] = useState<string>();
@@ -44,7 +44,7 @@ export default function CharacterEditor ({
 
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
-  const [tag, setTag] = useState<string>();
+  const [tag, setTag] = useState<string | null>(null);
 
   const [editBackend, setEditBackend] = useState<CharacterBackendDetailsDTO>();
   const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>([]);
@@ -102,7 +102,7 @@ export default function CharacterEditor ({
       
       originName.current = draftRecord.name ?? '';
 
-      setRecordName(draftRecord.name);
+      setRecordName(draftRecord.name ?? '');
       setNickname(draftRecord.nickname);
       setDescription(draftRecord.description);
       setAvatar(draftRecord.avatar);
@@ -159,10 +159,10 @@ export default function CharacterEditor ({
   function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     tags && tag && !tags.includes(tag) && setTags([...tags, tag]);
-    setTag(undefined);
+    setTag(null);
   }
 
-  function handleImageSelect(file: Blob, name: string) {
+  function handleAvatarSelect(file: Blob, name: string) {
     if (!id) {
       return;
     }
@@ -403,7 +403,7 @@ export default function CharacterEditor ({
       <CommonContainer sx={{ alignItems: 'flex-start' }}>
         <Stack spacing={3} sx={{
           minWidth: { sm: '16rem' },
-          mt: 2,
+          my: 2,
           flex: 1,
         }}>
           <CommonBox sx={{gap: 2}}>
@@ -457,7 +457,7 @@ export default function CharacterEditor ({
                 <AddCircleRounded />
               </IconButton>
             )}
-            {(tag !== undefined) && (
+            {(tag !== null) && (
               <form onSubmit={handleTagSubmit}>
                 <TinyInput
                   autoFocus
@@ -513,8 +513,8 @@ export default function CharacterEditor ({
                 <Input
                   disabled={!editEnabled}
                   name="nickname"
-                  value={nickname}
-                  onChange={(event) => setNickname(event.target.value)}
+                  value={nickname || ''}
+                  onChange={(event) => setNickname(event.target.value || undefined)}
                 />
                 <LabelTypography>
                   {t('account:Gender')}
@@ -558,14 +558,14 @@ export default function CharacterEditor ({
                   <Avatar variant="soft" src={avatar} />
                 </AspectRatio>
                 <ImagePicker
-                  onImageSelect={handleImageSelect}
+                  key="avatar-picker"
+                  onImageSelect={handleAvatarSelect}
                   previewProps={{
-                    width: '200px',
-                    height: '200px',
+                    maxWidth: '200px',
+                    maxHeight: '200px',
                     borderRadius: '50%',
                   }}
                   disabled={!editEnabled}
-                  aria-label="upload new picture"
                   size="sm"
                   variant="outlined"
                   color="neutral"
@@ -598,8 +598,8 @@ export default function CharacterEditor ({
             <ContentTextarea
               name="info-chat-style"
               minRows={1}
-              value={chatStyle}
-              onChange={(event) => setChatStyle(event.target.value)}
+              value={chatStyle || ''}
+              onChange={(event) => setChatStyle(event.target.value || undefined)}
             />
 
             <LabelTypography>
@@ -608,8 +608,8 @@ export default function CharacterEditor ({
             <ContentTextarea
               name="info-chat-example"
               minRows={3}
-              value={chatExample}
-              onChange={(event) => setChatExample(event.target.value)}
+              value={chatExample || ''}
+              onChange={(event) => setChatExample(event.target.value || undefined)}
             />
 
             <LabelTypography>
@@ -618,8 +618,8 @@ export default function CharacterEditor ({
             <ContentTextarea
               name="info-greeting"
               minRows={1}
-              value={greeting}
-              onChange={(event) => setGreeting(event.target.value)}
+              value={greeting || ''}
+              onChange={(event) => setGreeting(event.target.value || undefined)}
             />
           </Card>
 
@@ -629,6 +629,17 @@ export default function CharacterEditor ({
             editMode={true}
             onEdit={handleBackendEdit}
           />
+          <LinePlaceholder />
+
+          <LabelTypography>
+            {t('Album')}
+          </LabelTypography>
+          <CharacterAlbum
+            characterId={id}
+            picture={picture}
+            setPicture={setPicture}
+          />
+          <LinePlaceholder />
         </Stack>
 
         {editBackend ? (
@@ -641,7 +652,8 @@ export default function CharacterEditor ({
           }}/>
         ) : (
           <CharacterGuide sx={{
-            width: { xs: '100%', sm: '21rem' }
+            display: { xs: 'none', md: 'inherit' },
+            width: '21rem',
           }}/>
         )}
 

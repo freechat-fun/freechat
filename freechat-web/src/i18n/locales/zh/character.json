@@ -21,12 +21,13 @@
   "Affects character performance": "影响着角色的表现",
   "Style": "风格",
   "Knowledge": "知识",
-  "Images": "形象",
+  "Album": "相册",
   "Set character backend": "设置角色后端",
   "The character can connect to different backends": "角色可以连接到不同的后端",
   "History messages window size": "历史消息窗口尺寸",
   "Prompt template": "提示词模版",
   "Model parameters": "模型参数",
   "Moderation model": "审核模型",
-  "Set another backend": "设置另一个后端"
+  "Set another backend": "设置另一个后端",
+  "Do you really want to delete this picture?": "你真的想删除这张图片吗？"
 }

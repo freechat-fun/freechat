@@ -118,16 +118,11 @@ public class CharacterApi {
     }
 
     private String getCharacterUidFromPath(String path) {
-        int lastIndex = path.lastIndexOf('/');
-        if (lastIndex < 0 || lastIndex >= path.length() - 1) {
+        String[] parts = path.split("/");
+        if (parts.length < 2) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image key");
         }
-        String dir = path.substring(0, lastIndex);
-        lastIndex = dir.lastIndexOf('/');
-        if (lastIndex < 0 || lastIndex >= dir.length() - 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image key");
-        }
-        return dir.substring(lastIndex + 1);
+        return parts[parts.length - 2];
     }
 
     @Operation(
@@ -770,7 +765,7 @@ public class CharacterApi {
                     })
                     .toList();
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+            return Collections.emptyList();
         }
     }
 

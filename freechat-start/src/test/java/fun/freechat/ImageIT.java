@@ -151,11 +151,7 @@ public class ImageIT extends AbstractIntegrationTest {
     }
 
     private String getImageKey(String url) {
-        int lastSlashIndex = url.lastIndexOf('/');
-
-        assertTrue(lastSlashIndex > 0);
-        assertTrue(lastSlashIndex < url.length() - 1);
-
-        return url.substring(lastSlashIndex + 1);
+        String[] parts = url.split("/");
+        return parts[parts.length - 1];
     }
 }

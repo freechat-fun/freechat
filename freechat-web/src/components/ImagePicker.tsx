@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DoneRounded, PhotoCameraRounded, SvgIconComponent, UndoRounded } from "@mui/icons-material";
 import { DialogActions, DialogContent, DialogTitle, IconButton, IconButtonProps, Input, Modal, ModalClose, ModalDialog, Stack } from "@mui/joy";
 import { extractFilenameFromUrl } from "../libs/url_utils";
 import { ImagePreview } from ".";
 
+let idCounter = 0;
+
 type ImagePickerProps = IconButtonProps & {
   onImageSelect: (file: Blob, name: string) => void;
   previewProps?: {
-    width?: string | number;
-    height?: string | number;
+    maxWidth?: string | number;
+    maxHeight?: string | number;
     borderRadius?: string | number;
   };
   Icon?: SvgIconComponent;
@@ -23,7 +25,9 @@ export default function ImagePicker(props: ImagePickerProps) {
   const [file, setFile] = useState<Blob | null>(null);
   const [open, setOpen] = useState(false);
 
-  const preview = { width: 'auto', height: 'auto', borderRadius: 0, ...previewProps };
+  const inputId = useRef(`image-upload-input-${idCounter++}`).current;
+
+  const preview = { maxWidth: 'auto', maxHeight: 'auto', borderRadius: 0, ...previewProps };
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const filePath = event.target.files && event.target.files[0];
@@ -45,7 +49,7 @@ export default function ImagePicker(props: ImagePickerProps) {
 
   function handleModify() {
     if (typeof document !== 'undefined') {
-      document.getElementById("image-upload-input")?.click();
+      document.getElementById(inputId)?.click();
     }
   }
 
@@ -59,14 +63,14 @@ export default function ImagePicker(props: ImagePickerProps) {
     <>
       <Input
         type="file"
-        id="image-upload-input"
+        id={inputId}
         onChange={handleImageChange}
         sx={{ display: 'none' }}
         slotProps={{ input: {
           accept: "image/*"
         }}}
       />
-      <label htmlFor="image-upload-input">
+      <label htmlFor={inputId}>
         <IconButton
           onClick={handleModify}
           {...iconButtonProps}
@@ -90,8 +94,8 @@ export default function ImagePicker(props: ImagePickerProps) {
             }}>
               {image && <ImagePreview
                 src={image}
-                width={preview.width !== 'auto' ? preview.width : undefined}
-                height={preview.height !== 'auto' ? preview.height : undefined}
+                maxWidth={preview.maxWidth !== 'auto' ? preview.maxWidth : undefined}
+                maxHight={preview.maxHeight !== 'auto' ? preview.maxHeight : undefined}
                 borderRadius={preview.borderRadius}
               />}
             </Stack>

@@ -9,8 +9,7 @@ export default function CharacterGuide(props: CardProps) {
   
   return (
     <Card sx={{
-      my: 2,
-      mx: { xs: 0, sm: 2 },
+      margin: 2,
       p: 2,
       boxShadow: 'sm',
       ...sx
@@ -52,7 +51,7 @@ export default function CharacterGuide(props: CardProps) {
           <Typography level="body-sm">{t('Knowledge')}</Typography>
         </Step>
         <Step>
-          <Typography level="body-sm">{t('Images')}</Typography>
+          <Typography level="body-sm">{t('Album')}</Typography>
         </Step>
         <Step indicator={
           <StepIndicator color="primary">
