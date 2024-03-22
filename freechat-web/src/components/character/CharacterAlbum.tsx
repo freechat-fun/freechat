@@ -80,7 +80,7 @@ export default function CharacterAlbum({
               url={url}
               checked={url === picture}
               onView={() => setPicturePreviewUrl(url)}
-              onCheck={() => setPicture?.(url === picture ? undefined : url)}
+              onCheck={() => setPicture?.(url === picture ? '' : url)}
               onDelete={() => setPictureDeleteUrl(url)}
               sx={{
                 transition: defaultTransitionSetting,

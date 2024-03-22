@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CommonBox, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, CharacterSummaryStatsDTO, ChatCreateDTO, InteractiveStatsDTO, PromptSummaryStatsDTO } from "freechat-sdk";
-import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Typography } from "@mui/joy";
+import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Typography, useColorScheme } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded, ShareRounded, VisibilityRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
+import { processBackground } from "../../libs/ui_utils";
 
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO,
@@ -20,14 +21,18 @@ type RecordCardProps = {
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { record, sx , onClick} = props;
   const { i18n } = useTranslation();
+  const { mode } = useColorScheme();
 
   const [tags, setTags] = useState(record?.tags ?? []);
   const [nickname, setNickname] = useState(record?.nickname ?? record?.name);
+  const [background, setBackground] = useState('');
 
   useEffect(() => {
     setTags(record?.tags ?? []);
     setNickname(record?.nickname ?? record?.name);
-  }, [record]);
+    record.picture && processBackground(record.picture, mode, 0.3)
+      .then(setBackground);
+  }, [mode, record]);
 
   return (
     <Card ref={ref} sx={{
@@ -38,6 +43,11 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         boxShadow: 'lg',
         transform: 'translateY(-2px)',
       },
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundImage: `url(${background})`,
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
     }}>
       <Box sx={{
         ...sx,
@@ -51,7 +61,11 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           onClick={(event) => {
             event.preventDefault();
             onClick?.();
-        }}>
+          }}
+          sx={{
+            gap: 2,
+          }}
+        >
           <Avatar alt={nickname} src={record.avatar} size="md" />
           <Typography
             level="title-lg"
@@ -94,14 +108,14 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        <Typography level="body-sm" textColor="gray">
+        <Typography level="body-sm">
           {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
         <CommonBox>
-          <Chip size="sm" variant="plain" startDecorator={<VisibilityRounded />} >
+          <Chip size="sm" variant="plain" sx={{bgcolor: 'transparent'}} startDecorator={<VisibilityRounded />} >
             {record.viewCount}
           </Chip>
-          <Chip size="sm" variant="plain" startDecorator={<ShareRounded />} >
+          <Chip size="sm" variant="plain" sx={{bgcolor: 'transparent'}} startDecorator={<ShareRounded />} >
             {record.referCount}
           </Chip>
         </CommonBox>

@@ -1,11 +1,12 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, IconButton, Sheet, SheetProps, Stack } from "@mui/joy";
+import { Box, IconButton, Sheet, SheetProps, Stack, useColorScheme } from "@mui/joy";
 import { AvatarWithStatus, ChatBubble, MessageInput, MessagesPaneHeader } from "."
 import { ChatContentDTO, ChatMessageDTO, ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { getSenderName, getSenderStatus } from "../../libs/chat_utils";
 import { ReplayCircleFilledRounded } from "@mui/icons-material";
+import { processBackground } from "../../libs/ui_utils";
 
 type MessagesPaneProps = SheetProps & {
   session?: ChatSessionDTO;
@@ -16,6 +17,7 @@ type MessagesPaneProps = SheetProps & {
 export default function MessagesPane(props: MessagesPaneProps) {
   const { session, defaultDebugMode = false, onOpen, sx, ...others } = props;
   const { t } = useTranslation('chat');
+  const { mode } = useColorScheme();
   const { chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -24,6 +26,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const [messageToSend, setMessageToSend] = useState<ChatMessageRecordDTO | null>(null);
   const [failedToSend, setFailedToSend] = useState(false);
   const [debugMode, setDebugMode] = useState(defaultDebugMode);
+  const [background, setBackground] = useState('');
+  const [enableBackground, setEnableBackground] = useState(true);
 
   const sender = session?.character;
   const context = session?.context;
@@ -52,10 +56,23 @@ export default function MessagesPane(props: MessagesPaneProps) {
           return;
         }
         setChatMessages(resp);
+        sender?.picture && processBackground(sender?.picture, mode, 0.4)
+          .then(setBackground);
         onOpen?.();
       })
       .catch(handleError);
-  }, [chatApi, context?.chatId, handleError, onOpen]);
+  }, [chatApi, context?.chatId, handleError, mode, onOpen, sender?.picture]);
+
+  useEffect(() => {
+    const savedEnableBackground = localStorage.getItem('MessagesPane.enableBackground');
+    if (savedEnableBackground) {
+      setEnableBackground(savedEnableBackground === '1');
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('MessagesPane.enableBackground', enableBackground ? '1': '0');
+  }, [enableBackground]);
 
   function handleClearMemory(chatId: string): void {
     chatApi?.clearMemory(chatId)
@@ -136,6 +153,11 @@ export default function MessagesPane(props: MessagesPaneProps) {
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'background.level1',
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundImage: `url(${enableBackground ? background : ''})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
         ...sx
       }}
       {...others}
@@ -145,6 +167,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
         onClearHistory={handleClearMemory}
         debugMode={debugMode}
         disabled={!!messageToSend}
+        enableBackground={background ? enableBackground : undefined}
+        setEnableBackground={setEnableBackground}
         setDebugMode={setDebugMode}
       />
       <Box

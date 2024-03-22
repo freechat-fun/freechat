@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Avatar, Chip, Dropdown, IconButton, ListItemDecorator, Menu, MenuButton, MenuItem, Stack, Switch, Typography } from "@mui/joy";
-import { ArrowBackIosNewRounded, CircleRounded, DeleteForeverRounded, MoreVertRounded } from "@mui/icons-material";
+import { ArrowBackIosNewRounded, CheckRounded, CircleRounded, DeleteForeverRounded, MoreVertRounded } from "@mui/icons-material";
 import { ChatSessionDTO } from "freechat-sdk";
 import { getSenderName, getSenderStatus, getSenderStatusColor, toggleMessagesPane } from "../../libs/chat_utils";
 import { CommonBox } from "..";
@@ -9,12 +9,14 @@ type MessagesPaneHeaderProps = {
   session?: ChatSessionDTO;
   debugMode?: boolean,
   disabled?: boolean;
+  enableBackground?: boolean;
+  setEnableBackground?: (enabled: boolean) => void,
   setDebugMode?: (debugMode: boolean) => void,
   onClearHistory?: (chatId: string) => void;
 };
 
 export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
-  const { session, debugMode, disabled = false, setDebugMode, onClearHistory } = props;
+  const { session, debugMode, disabled = false, enableBackground, setEnableBackground, setDebugMode, onClearHistory } = props;
   const { t } = useTranslation('chat');
 
   const sender = session?.character;
@@ -100,6 +102,15 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
             <MoreVertRounded />
           </MenuButton>
           <Menu>
+            <MenuItem
+              disabled={enableBackground === undefined}
+              onClick={() => setEnableBackground?.(!enableBackground)}
+            >
+              <ListItemDecorator>
+                {enableBackground && <CheckRounded />}
+              </ListItemDecorator>
+              {t('Enable Background')}
+            </MenuItem>
             <MenuItem onClick={() => handleClearHistory()}>
               <ListItemDecorator>
                 <DeleteForeverRounded />

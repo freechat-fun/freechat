@@ -38,7 +38,7 @@ const CharacterAlbumPictureUploader = forwardRef<HTMLDivElement, CharacterAlbumP
       boxShadow: 'sm',
       '&:hover': {
         boxShadow: 'lg',
-        transform: 'translateY(-1px)',
+        transform: 'translateY(-2px)',
       },
     }}>
       <ImagePicker

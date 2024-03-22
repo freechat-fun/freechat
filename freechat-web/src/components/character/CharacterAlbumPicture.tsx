@@ -19,13 +19,13 @@ const CharacterAlbumPicture = forwardRef<HTMLDivElement, CharacterAlbumPicturePr
   const icons = { edit: checked ? RadioButtonCheckedRounded : RadioButtonUncheckedRounded }
 
   return (
-    <Card ref={ref} sx={{
+    <Card ref={ref} onClick={() => onView()} sx={{
       ...sx,
       transition: 'transform 0.4s, box-shadow 0.4s',
       boxShadow: 'sm',
       '&:hover': {
         boxShadow: 'lg',
-        transform: 'translateY(-1px)',
+        transform: 'translateY(-2px)',
       },
     }}>
       <CardOverflow>
@@ -40,7 +40,6 @@ const CharacterAlbumPicture = forwardRef<HTMLDivElement, CharacterAlbumPicturePr
         </AspectRatio>
         <InfoCardCover
           icons={icons}
-          onView={() => onView()}
           onEdit={() => onCheck()}
           onDelete={() => onDelete()}
         />

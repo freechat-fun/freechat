@@ -77,3 +77,47 @@ export function getCompressedImage(
 
   return compressImage(file, currentQuality).then(checkSizeAndCompress);
 }
+
+
+export function processBackground(imageUrl: string | undefined, mode: string = 'dark', opacity: number = 0.3): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!imageUrl) {
+      resolve('');
+      return;
+    }
+    const image = new Image();
+    image.crossOrigin = 'Anonymous';
+
+    image.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve('');
+        return;
+      }
+
+      ctx.drawImage(image, 0, 0);
+
+      ctx.fillStyle = `rgba(${mode === 'dark' ? '0 0 0' : '255 255 255'} / ${1 -opacity})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      canvas.style.filter = 'blur(10px)';
+
+      resolve(canvas.toDataURL());
+    };
+
+    image.onerror = (error) => {
+      reject(error);
+    };
+
+    image.src = imageUrl;
+
+    if (image.complete || image.complete === undefined) {
+      image.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+      image.src = imageUrl;
+    }
+  });
+}

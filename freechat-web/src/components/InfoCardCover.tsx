@@ -13,8 +13,18 @@ function CardIconButton({ Icon, onClick, sx }: {
     <IconButton
       variant="solid"
       color="neutral"
-      sx={{ bgcolor: 'rgba(0 0 0 / 0)', ...sx }}
-      onClick={onClick}
+      sx={{
+        bgcolor: 'transparent',
+        transition: 'transform 0.4s, box-shadow 0.4s',
+        '&:hover': {
+          bgcolor: 'transparent',
+          transform: 'translateY(-2px)',
+        },
+        ...sx }}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
     >
       <Icon fill="e0e0e0" />
     </IconButton>
