@@ -105,11 +105,11 @@ export default function InfoSearchbar(props: {
             >
               {modelProviders.map(p => <Option value={p.provider} key={`options-${p.provider}`}>{p.label}</Option>)}
             </Select>
-            <Button type="submit" variant="soft">
-              {t('Search')}
-            </Button>
           </Fragment>
         )}
+        <Button type="submit" variant="soft">
+          {t('Search')}
+        </Button>
       </Box>
     </form>
   );
