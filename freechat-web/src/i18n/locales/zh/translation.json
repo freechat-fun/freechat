@@ -50,5 +50,7 @@
   "attachment": "附件",
   "Only image attachment is supported for now.": "目前只支持图片附件。",
   "System Prompt": "系统提示词",
+  "Confirm to Leave": "确认离开",
+  "You may have unsaved changes. Are you sure you want to leave?": "你可能有未保存的更改，确定要离开吗？",
   ".": "。"
 }

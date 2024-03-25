@@ -5,8 +5,8 @@ import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } 
 import { CharacterBackendDTO, CharacterBackendDetailsDTO, CharacterDetailsDTO, CharacterUpdateDTO, ChatCreateDTO, PromptRefDTO, PromptTaskDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { locales } from "../../configs/i18n-config";
-import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, TinyInput } from "../../components";
-import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Tooltip, Typography, switchClasses } from "@mui/joy";
+import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, OptionTooltip, RouterBlocker, TinyInput } from "../../components";
+import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Typography, switchClasses } from "@mui/joy";
 import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
 import { CharacterAlbum, CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
@@ -50,7 +50,7 @@ export default function CharacterEditor ({
   const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>([]);
 
   const [editEnabled, setEditEnabled] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(true);
 
   const originName = useRef('');
 
@@ -430,9 +430,9 @@ export default function CharacterEditor ({
               <Typography level="title-lg" color="primary">
                 {t('Description')}
               </Typography>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports markdown format')}>
+              <OptionTooltip placement="right" title={t('Supports markdown format')}>
                 <HelpIcon />
-              </Tooltip>
+              </OptionTooltip>
             </CommonBox>
             <ContentTextarea
               name="info-description"
@@ -631,9 +631,14 @@ export default function CharacterEditor ({
           />
           <LinePlaceholder />
 
-          <LabelTypography>
-            {t('Album')}
-          </LabelTypography>
+          <CommonBox>
+            <LabelTypography sx={{ mr: 0 }}>
+              {t('Album')}
+            </LabelTypography>
+            <OptionTooltip placement="right" title={t('Maximum of 10 pictures are allowed, one of which can be selected as the chat background')}>
+              <HelpIcon />
+            </OptionTooltip>
+          </CommonBox>
           <CharacterAlbum
             characterId={id}
             picture={picture}
@@ -688,6 +693,11 @@ export default function CharacterEditor ({
           )}
         </FormControl>
       </ConfirmModal>
+
+      <RouterBlocker
+        when={!saved}
+        message={t('You may have unsaved changes. Are you sure you want to leave?')}
+      />
     </>
   );
 }

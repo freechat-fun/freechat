@@ -2,7 +2,7 @@ import 'openapi-explorer';
 import { reactEventListener } from 'openapi-explorer/dist/es/react';
 import { useEffect, useRef, useState } from 'react';
 import { useFreeChatApiContext } from '../../contexts';
-import { useTheme } from '@mui/joy';
+import { Skeleton, useTheme } from '@mui/joy';
 import { LinePlaceholder } from '../../components';
 
 export default function OpenApi() {
@@ -10,6 +10,7 @@ export default function OpenApi() {
   const explorerRef = useRef<HTMLElement>(null);
   const { serverUrl } = useFreeChatApiContext();
   const [specLoaded, setSpecLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const specUrl = `${serverUrl?.replace('http://localhost:3000', 'http://127.0.0.1:8080') ?? 'http://127.0.0.1:8080'}/public/openapi/v3/api-docs/g-all`;
 
@@ -34,51 +35,60 @@ export default function OpenApi() {
       }
       `
       apiExplorer?.shadowRoot?.appendChild(style);
+      setLoading(false);
     }
   }, [specLoaded, theme.palette.background.body, theme.palette.background.surface, theme.palette.neutral.softHoverBg, theme.palette.neutral.softHoverColor, theme.palette.primary]);
 
   return (
-    <>
-    <style>
-      {`
-      openapi-explorer::part(section-navbar) {
-        background-color: ${theme.palette.neutral.softBg};
-        border-radius: 6px;
-        color: ${theme.palette.text.primary};
-      }
-      openapi-explorer::part(section-main-content) {
-        background-color: ${theme.palette.background.body};
-        border-radius: 6px;
-        color: ${theme.palette.text.primary};
-      }
-      openapi-explorer::part(navbar-operations-header) {
-        background: ${theme.palette.neutral.softBg};
-        border-radius: 6px;
-        color: ${theme.palette.primary.softColor};
-      }
-      openapi-explorer::part(btn-fill) {
-        background-color: ${theme.palette.background.level3};
-        color: ${theme.palette.text.primary};
-      }
-      openapi-explorer::part(btn-outline) {
-        color: ${theme.palette.text.primary};
-      }
-      openapi-explorer::part(btn-search) {
-        background-color: ${theme.palette.background.body};
-        color: ${theme.palette.text.primary};
-      }
-      openapi-explorer::part(label-operation-path) {
-        color: ${theme.palette.text.tertiary};
-      }
-      `}
-    </style>
-    <LinePlaceholder />
-    <openapi-explorer
-      ref={explorerRef}
-      spec-url={specUrl}
-      hide-components
-    />
-    <LinePlaceholder spacing={1} />
-  </>
+    <main>
+      <style>
+        {`
+        openapi-explorer::part(section-navbar) {
+          background-color: ${theme.palette.neutral.softBg};
+          border-radius: 6px;
+          color: ${theme.palette.text.primary};
+        }
+        openapi-explorer::part(section-main-content) {
+          background-color: ${theme.palette.background.body};
+          border-radius: 6px;
+          color: ${theme.palette.text.primary};
+        }
+        openapi-explorer::part(navbar-operations-header) {
+          background: ${theme.palette.neutral.softBg};
+          border-radius: 6px;
+          color: ${theme.palette.primary.softColor};
+        }
+        openapi-explorer::part(btn-fill) {
+          background-color: ${theme.palette.background.level3};
+          color: ${theme.palette.text.primary};
+        }
+        openapi-explorer::part(btn-outline) {
+          color: ${theme.palette.text.primary};
+        }
+        openapi-explorer::part(btn-search) {
+          background-color: ${theme.palette.background.body};
+          color: ${theme.palette.text.primary};
+        }
+        openapi-explorer::part(label-operation-path) {
+          color: ${theme.palette.text.tertiary};
+        }
+        `}
+      </style>
+      <LinePlaceholder />
+      <openapi-explorer
+        ref={explorerRef}
+        spec-url={specUrl}
+        hide-components
+        style={{
+          display: loading ? 'none' : 'unset',
+        }}
+      />
+      <Skeleton sx={{
+        width: '88%',
+        height: '20%',
+        display: loading ? 'block' : 'none',
+      }} />
+      <LinePlaceholder spacing={1} />
+  </main>
   );
 }

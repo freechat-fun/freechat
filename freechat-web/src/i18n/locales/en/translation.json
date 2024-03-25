@@ -50,5 +50,7 @@
   "attachment": "attachment",
   "Only image attachment is supported for now.": "Only image attachment is supported for now.",
   "System Prompt": "System Prompt",
+  "Confirm to Leave": "Confirm to Leave",
+  "You may have unsaved changes. Are you sure you want to leave?": "You may have unsaved changes. Are you sure you want to leave?",
   ".": "."
 }

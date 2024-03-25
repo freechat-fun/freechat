@@ -2,6 +2,7 @@ export { default as LanguageSelect } from "./LanguageSelect";
 export { default as LanguageToggle } from "./LanguageToggle";
 export { default as ColorSchemeToggle } from "./ColorSchemeToggle";
 export { default as RouterLink } from "./RouterLink";
+export { default as RouterBlocker } from './RouterBlocker';
 export { default as FreeChatLogo } from "./FreeChatLogo";
 export { default as AccountMenu } from "./AccountMenu";
 export { default as UnauthorizedDialog } from "./UnauthorizedDialog";

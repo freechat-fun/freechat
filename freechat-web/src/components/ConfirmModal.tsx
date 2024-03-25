@@ -41,7 +41,7 @@ export default function ConfirmModal(props: ModalProps & {
         <DialogActions>
           <Button
             color={button?.color}
-            onClick={() => onConfirm && onConfirm(obj)}
+            onClick={() => onConfirm?.(obj)}
             startDecorator={button?.startDecorator}
           >
             {button?.text || t('button:Confirm')}

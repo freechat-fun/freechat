@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
 import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
-import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, ContentTextarea, LinePlaceholder, TinyInput } from "../../components";
+import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, ContentTextarea, LinePlaceholder, RouterBlocker, TinyInput } from "../../components";
 import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
 import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { PromptRunner } from "../../components/prompt";
@@ -69,7 +69,7 @@ export default function PromptEditor({
   const [editAssistantName, setEditAssistantName] = useState<string | undefined>('assistant')
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(true);
 
   const originName = useRef<string>();
 
@@ -1098,6 +1098,11 @@ export default function PromptEditor({
           )}
         </FormControl>
       </ConfirmModal>
+
+      <RouterBlocker
+        when={!saved}
+        message={t('You may have unsaved changes. Are you sure you want to leave?')}
+      />
     </>
   );
 }
