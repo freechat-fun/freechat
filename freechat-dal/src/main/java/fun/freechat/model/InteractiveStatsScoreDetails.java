@@ -90,7 +90,7 @@ public class InteractiveStatsScoreDetails implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferType(String referType) {
-        this.referType = referType == null ? null : referType.trim();
+        this.referType = referType;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -106,7 +106,7 @@ public class InteractiveStatsScoreDetails implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferId(String referId) {
-        this.referId = referId == null ? null : referId.trim();
+        this.referId = referId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,7 +122,7 @@ public class InteractiveStatsScoreDetails implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

@@ -42,7 +42,7 @@ public class AiModelInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModelId(String modelId) {
-        this.modelId = modelId == null ? null : modelId.trim();
+        this.modelId = modelId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -90,7 +90,7 @@ public class AiModelInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -106,7 +106,7 @@ public class AiModelInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = description;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,7 +122,7 @@ public class AiModelInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProvider(String provider) {
-        this.provider = provider == null ? null : provider.trim();
+        this.provider = provider;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -138,7 +138,7 @@ public class AiModelInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+        this.type = type;
     }
 
     @Override

@@ -112,7 +112,7 @@ public class AiApiKey implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -128,7 +128,7 @@ public class AiApiKey implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProvider(String provider) {
-        this.provider = provider == null ? null : provider.trim();
+        this.provider = provider;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -160,7 +160,7 @@ public class AiApiKey implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -176,7 +176,7 @@ public class AiApiKey implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setToken(String token) {
-        this.token = token == null ? null : token.trim();
+        this.token = token;
     }
 
     @Override

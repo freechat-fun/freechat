@@ -90,7 +90,7 @@ public class OrgRelationship implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -106,7 +106,7 @@ public class OrgRelationship implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId == null ? null : ownerId.trim();
+        this.ownerId = ownerId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

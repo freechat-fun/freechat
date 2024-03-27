@@ -105,7 +105,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -153,7 +153,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
+        this.username = username;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -169,7 +169,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+        this.password = password;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -185,7 +185,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setNickname(String nickname) {
-        this.nickname = nickname == null ? null : nickname.trim();
+        this.nickname = nickname;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -201,7 +201,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGivenName(String givenName) {
-        this.givenName = givenName == null ? null : givenName.trim();
+        this.givenName = givenName;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -217,7 +217,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMiddleName(String middleName) {
-        this.middleName = middleName == null ? null : middleName.trim();
+        this.middleName = middleName;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -233,7 +233,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setFamilyName(String familyName) {
-        this.familyName = familyName == null ? null : familyName.trim();
+        this.familyName = familyName;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -249,7 +249,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPreferredUsername(String preferredUsername) {
-        this.preferredUsername = preferredUsername == null ? null : preferredUsername.trim();
+        this.preferredUsername = preferredUsername;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -265,7 +265,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProfile(String profile) {
-        this.profile = profile == null ? null : profile.trim();
+        this.profile = profile;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -281,7 +281,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPicture(String picture) {
-        this.picture = picture == null ? null : picture.trim();
+        this.picture = picture;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -297,7 +297,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setWebsite(String website) {
-        this.website = website == null ? null : website.trim();
+        this.website = website;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -313,7 +313,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setEmail(String email) {
-        this.email = email == null ? null : email.trim();
+        this.email = email;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -345,7 +345,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGender(String gender) {
-        this.gender = gender == null ? null : gender.trim();
+        this.gender = gender;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -377,7 +377,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setZoneinfo(String zoneinfo) {
-        this.zoneinfo = zoneinfo == null ? null : zoneinfo.trim();
+        this.zoneinfo = zoneinfo;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -393,7 +393,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setLocale(String locale) {
-        this.locale = locale == null ? null : locale.trim();
+        this.locale = locale;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -409,7 +409,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber == null ? null : phoneNumber.trim();
+        this.phoneNumber = phoneNumber;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -457,7 +457,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPlatform(String platform) {
-        this.platform = platform == null ? null : platform.trim();
+        this.platform = platform;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -537,7 +537,7 @@ public class User implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+        this.address = address;
     }
 
     @Override

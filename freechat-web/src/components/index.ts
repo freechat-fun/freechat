@@ -40,3 +40,4 @@ export { default as HistoryTypography } from './HistoryTypography';
 export { default as ScrollableTypography } from './ScrollableTypography';
 export { default as SummaryTypography } from './SummaryTypography';
 export { default as HotTags } from './HotTags';
+export { default as DocumentSkeleton } from './DocumentSkeleton';

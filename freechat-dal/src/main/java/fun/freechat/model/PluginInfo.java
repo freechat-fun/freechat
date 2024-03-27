@@ -76,7 +76,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPluginUid(String pluginUid) {
-        this.pluginUid = pluginUid == null ? null : pluginUid.trim();
+        this.pluginUid = pluginUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -124,7 +124,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -140,7 +140,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVisibility(String visibility) {
-        this.visibility = visibility == null ? null : visibility.trim();
+        this.visibility = visibility;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -156,7 +156,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -172,7 +172,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setManifestFormat(String manifestFormat) {
-        this.manifestFormat = manifestFormat == null ? null : manifestFormat.trim();
+        this.manifestFormat = manifestFormat;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -188,7 +188,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiFormat(String apiFormat) {
-        this.apiFormat = apiFormat == null ? null : apiFormat.trim();
+        this.apiFormat = apiFormat;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -204,7 +204,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProvider(String provider) {
-        this.provider = provider == null ? null : provider.trim();
+        this.provider = provider;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -220,7 +220,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setManifestInfo(String manifestInfo) {
-        this.manifestInfo = manifestInfo == null ? null : manifestInfo.trim();
+        this.manifestInfo = manifestInfo;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -236,7 +236,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiInfo(String apiInfo) {
-        this.apiInfo = apiInfo == null ? null : apiInfo.trim();
+        this.apiInfo = apiInfo;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -252,7 +252,7 @@ public class PluginInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
-        this.ext = ext == null ? null : ext.trim();
+        this.ext = ext;
     }
 
     @Override

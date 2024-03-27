@@ -87,7 +87,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
 
     const content = new ChatContentDTO();
     content.type = 'text';
-    content.content = textAreaValue;
+    content.content = textAreaValue.trim();
 
     const userMessage = new ChatMessageDTO();
     userMessage.role = 'user';

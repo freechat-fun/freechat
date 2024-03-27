@@ -27,6 +27,7 @@ public interface CharacterService {
             private String name;
             private String lang;
             private String text;
+            private Integer priority;
         }
 
         private Where where;

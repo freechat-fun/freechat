@@ -57,7 +57,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setBackendId(String backendId) {
-        this.backendId = backendId == null ? null : backendId.trim();
+        this.backendId = backendId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -105,7 +105,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterUid(String characterUid) {
-        this.characterUid = characterUid == null ? null : characterUid.trim();
+        this.characterUid = characterUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -137,7 +137,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatPromptTaskId(String chatPromptTaskId) {
-        this.chatPromptTaskId = chatPromptTaskId == null ? null : chatPromptTaskId.trim();
+        this.chatPromptTaskId = chatPromptTaskId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -153,7 +153,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGreetingPromptTaskId(String greetingPromptTaskId) {
-        this.greetingPromptTaskId = greetingPromptTaskId == null ? null : greetingPromptTaskId.trim();
+        this.greetingPromptTaskId = greetingPromptTaskId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -169,7 +169,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModerationModelId(String moderationModelId) {
-        this.moderationModelId = moderationModelId == null ? null : moderationModelId.trim();
+        this.moderationModelId = moderationModelId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -185,7 +185,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModerationApiKeyName(String moderationApiKeyName) {
-        this.moderationApiKeyName = moderationApiKeyName == null ? null : moderationApiKeyName.trim();
+        this.moderationApiKeyName = moderationApiKeyName;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -233,7 +233,7 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModerationParams(String moderationParams) {
-        this.moderationParams = moderationParams == null ? null : moderationParams.trim();
+        this.moderationParams = moderationParams;
     }
 
     @Override

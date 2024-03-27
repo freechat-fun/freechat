@@ -1,4 +1,4 @@
-import { createRef, forwardRef, useEffect, useRef, useState } from "react";
+import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
@@ -132,7 +132,7 @@ export default function CharacterGallery() {
   const pageSize = 6;
 
   const [records, setRecords] = useState<CharacterSummaryStatsDTO[]>([]);
-  const [query, setQuery] = useState<CharacterQueryDTO>(defaultQuery());
+  const [query, setQuery] = useState<CharacterQueryDTO>();
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -140,7 +140,7 @@ export default function CharacterGallery() {
   const [showCardsFinish, setShowCardsFinish] = useState(false);
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
-  function defaultQuery(): CharacterQueryDTO {
+  const defaultQuery = useCallback(() => {
     const newQuery = new CharacterQueryDTO();
     newQuery.where = new CharacterQueryWhere();
     newQuery.where.visibility = 'public';
@@ -149,14 +149,15 @@ export default function CharacterGallery() {
     newQuery.orderBy = ['viewCount', 'referCount', 'modifyTime'];
 
     return newQuery;
-  }
+  }, []);
 
   useEffect(() => {
     return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
   }, []);
 
   useEffect(() => {
-    query && characterApi?.searchCharacterSummary(query)
+    const currentQuery = query || defaultQuery();
+    characterApi?.searchCharacterSummary(query || defaultQuery())
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
@@ -171,14 +172,14 @@ export default function CharacterGallery() {
             })
             .catch(handleError);
         })
-        if (query.pageNum === 0) {
-          characterApi.countCharacters(query)
+        if (currentQuery.pageNum === 0) {
+          characterApi.countCharacters(currentQuery)
             .then(setTotal)
             .catch(handleError);
         }
       })
       .catch(handleError);
-  }, [characterApi, handleError, interactiveStatisticsApi, query]);
+  }, [characterApi, defaultQuery, handleError, interactiveStatisticsApi, query]);
 
   function characterInfoWithStats(record: CharacterSummaryDTO, stats: InteractiveStatsDTO | undefined | null): CharacterSummaryStatsDTO {
     const s = {...{

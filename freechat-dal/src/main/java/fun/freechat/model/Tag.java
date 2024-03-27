@@ -90,7 +90,7 @@ public class Tag implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = content;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -106,7 +106,7 @@ public class Tag implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferType(String referType) {
-        this.referType = referType == null ? null : referType.trim();
+        this.referType = referType;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,7 +122,7 @@ public class Tag implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferId(String referId) {
-        this.referId = referId == null ? null : referId.trim();
+        this.referId = referId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -138,7 +138,7 @@ public class Tag implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Override

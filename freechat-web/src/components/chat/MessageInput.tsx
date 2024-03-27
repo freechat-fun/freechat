@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, FormControl, Stack, Textarea } from "@mui/joy";
+import { Box, Button, Chip, FormControl, Stack, Textarea } from "@mui/joy";
 import { SendRounded } from "@mui/icons-material";
 
 export type MessageInputProps = {
@@ -31,7 +31,7 @@ export default function MessageInput(props: MessageInputProps) {
           ref={textAreaRef}
           onChange={(e) => setTextAreaValue(e.target.value)}
           value={textAreaValue}
-          minRows={3}
+          minRows={2}
           maxRows={10}
           endDecorator={
             <Stack
@@ -46,27 +46,37 @@ export default function MessageInput(props: MessageInputProps) {
                 borderColor: 'divider',
               }}
             >
+              <Chip variant="soft" color="primary">
+                {`${t('Newline')} (Ctrl/⌘ + ⏎)`}
+              </Chip>
               <Button
                 disabled={disabled}
                 size="sm"
                 color="primary"
-                sx={{ alignSelf: 'center', borderRadius: 'sm' }}
+                sx={{ alignSelf: 'center', borderRadius: 'lg' }}
                 endDecorator={<SendRounded />}
                 onClick={handleClick}
               >
-                {`${t('Send')} (Ctrl/⌘ + ⏎)`}
+                {t('Send')}
               </Button>
             </Stack>
           }
           onKeyDown={(event) => {
-            if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-              handleClick();
+            if (event.key === 'Enter') {
+              if (event.metaKey || event.ctrlKey) {
+                event.preventDefault();
+                const textarea = event.target as HTMLTextAreaElement;
+                const cursorPosition = textarea.selectionStart;
+                const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+                const textAfterCursor = textarea.value.substring(cursorPosition);
+                textarea.value = textBeforeCursor + '\n' + textAfterCursor;
+                textarea.selectionStart = cursorPosition + 1;
+                textarea.selectionEnd = cursorPosition + 1;
+              } else {
+                event.preventDefault();
+                handleClick();
+              }
             }
-          }}
-          sx={{
-            '& textarea:first-of-type': {
-              minHeight: 72,
-            },
           }}
         />
       </FormControl>

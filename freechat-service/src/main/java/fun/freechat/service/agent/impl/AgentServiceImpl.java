@@ -644,7 +644,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                 info.setDraft(null);
             }
 
-            doCreate(infoTriple);
+            doCreate(Triple.of(infoTriple.getLeft(), null, null));
             publishedInfoId = info.getAgentId();
 
             for (var prevVersionInfo : versionInfoList) {

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
@@ -44,7 +44,7 @@ export default function CharacterEditor ({
 
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
-  const [tag, setTag] = useState<string | null>(null);
+  const [tag, setTag] = useState<string>();
 
   const [editBackend, setEditBackend] = useState<CharacterBackendDetailsDTO>();
   const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>([]);
@@ -70,9 +70,10 @@ export default function CharacterEditor ({
     newRecord.chatExample = chatExample;
     newRecord.visibility = visibility;
     newRecord.tags = [...tags];
+    newRecord.characterUid = origRecord.characterUid;
 
     return newRecord;
-  }, [avatar, chatExample, chatStyle, description, gender, greeting, id, lang, nickname, picture, profile, recordName, tags, visibility]);
+  }, [avatar, chatExample, chatStyle, description, gender, greeting, id, lang, nickname, origRecord.characterUid, picture, profile, recordName, tags, visibility]);
   
   useEffect(() => {
     if (id) {
@@ -159,7 +160,7 @@ export default function CharacterEditor ({
   function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     tags && tag && !tags.includes(tag) && setTags([...tags, tag]);
-    setTag(null);
+    setTag(undefined);
   }
 
   function handleAvatarSelect(file: Blob, name: string) {
@@ -457,7 +458,7 @@ export default function CharacterEditor ({
                 <AddCircleRounded />
               </IconButton>
             )}
-            {(tag !== null) && (
+            {(tag !== undefined) && (
               <form onSubmit={handleTagSubmit}>
                 <TinyInput
                   autoFocus
@@ -470,20 +471,16 @@ export default function CharacterEditor ({
             )}
           </CommonBox>
           <CommonBox>
-            {tags.length > 0 && (
-              <Fragment>
-                {tags.map((tag, index) => (
-                  <Chip
-                    variant="outlined"
-                    color="success"
-                    key={`tag-${tag}-${index}`}
-                    endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
-                  >
-                    {tag}
-                  </Chip>
-                ))}
-              </Fragment>
-          )}
+            {tags.length > 0 && tags.map((tag, index) => (
+              <Chip
+                variant="outlined"
+                color="success"
+                key={`tag-${tag}-${index}`}
+                endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
+              >
+                {tag}
+              </Chip>
+            ))}
           </CommonBox>
 
           <Divider>{t('Character\'s information, significantly influences chat feedback')}</Divider>

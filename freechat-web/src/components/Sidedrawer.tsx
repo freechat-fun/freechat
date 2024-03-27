@@ -14,7 +14,7 @@ const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
           sx: {
             md: 50,
             bgcolor: 'transparent',
-            p: { md: 2, sm: 0 },
+            p: { sm: 0, md: 2 },
             boxShadow: 'none',
           },
         },

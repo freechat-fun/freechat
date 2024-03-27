@@ -253,6 +253,9 @@ public class CharacterServiceImpl implements CharacterService {
         // lang
         conditions.and(Info.lang,
                 isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
+        // priority
+        conditions.and(Info.priority,
+                isEqualTo(query.getWhere().getPriority()).filter(Objects::nonNull));
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
@@ -329,6 +332,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
   and t.content in '{tags}' \
   and c.name like '{name}%' \
   and c.lang = '{lang}' \
+  and c.priority = {priority} \
   and (c.name like '%{text}%' or \
     c.description like '%{text}%' or \
     c.profile like '%{text}%' or \
@@ -648,7 +652,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
             }
 
             info.setCharacterId(null);
-            doCreate(Pair.of(info, infoTriple.getMiddle()));
+            doCreate(Pair.of(info, null));
             publishedInfoId = info.getCharacterId();
 
             for (var prevVersionInfo : versionInfoList) {
@@ -938,6 +942,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.avatar,
                     Info.picture,
                     Info.gender,
+                    Info.greeting,
                     Info.description,
                     Info.lang,
                     Info.priority

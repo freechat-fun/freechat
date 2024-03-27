@@ -17,13 +17,13 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.parser.core.models.ParseOptions;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
@@ -179,7 +179,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         if (CollectionUtils.isEmpty(parametersList)) {
             return null;
         } else if (parametersList.size() == 1) {
-            return parametersList.get(0);
+            return parametersList.getFirst();
         }
 
         Map<String, ToolProperties> properties = new HashMap<>();
@@ -250,7 +250,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         return stringMapper.writeValueAsString(resultList);
     }
 
-    @NotNull
+    @NonNull
     private static String getPrefix(Operation op, PathItem item) {
         String prefix;
         if (op == item.getGet()) {

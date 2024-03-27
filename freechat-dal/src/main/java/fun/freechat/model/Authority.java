@@ -84,7 +84,7 @@ public class Authority implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -100,7 +100,7 @@ public class Authority implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setScope(String scope) {
-        this.scope = scope == null ? null : scope.trim();
+        this.scope = scope;
     }
 
     @Override

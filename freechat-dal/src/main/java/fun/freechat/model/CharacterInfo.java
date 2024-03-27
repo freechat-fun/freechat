@@ -103,7 +103,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterUid(String characterUid) {
-        this.characterUid = characterUid == null ? null : characterUid.trim();
+        this.characterUid = characterUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -151,7 +151,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -167,7 +167,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setParentUid(String parentUid) {
-        this.parentUid = parentUid == null ? null : parentUid.trim();
+        this.parentUid = parentUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -183,7 +183,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVisibility(String visibility) {
-        this.visibility = visibility == null ? null : visibility.trim();
+        this.visibility = visibility;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -199,7 +199,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -215,7 +215,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setNickname(String nickname) {
-        this.nickname = nickname == null ? null : nickname.trim();
+        this.nickname = nickname;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -231,7 +231,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAvatar(String avatar) {
-        this.avatar = avatar == null ? null : avatar.trim();
+        this.avatar = avatar;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -247,7 +247,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPicture(String picture) {
-        this.picture = picture == null ? null : picture.trim();
+        this.picture = picture;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -263,7 +263,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGender(String gender) {
-        this.gender = gender == null ? null : gender.trim();
+        this.gender = gender;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -279,7 +279,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setLang(String lang) {
-        this.lang = lang == null ? null : lang.trim();
+        this.lang = lang;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -327,7 +327,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = description;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -343,7 +343,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setProfile(String profile) {
-        this.profile = profile == null ? null : profile.trim();
+        this.profile = profile;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -359,7 +359,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setGreeting(String greeting) {
-        this.greeting = greeting == null ? null : greeting.trim();
+        this.greeting = greeting;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -375,7 +375,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatStyle(String chatStyle) {
-        this.chatStyle = chatStyle == null ? null : chatStyle.trim();
+        this.chatStyle = chatStyle;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -391,7 +391,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatExample(String chatExample) {
-        this.chatExample = chatExample == null ? null : chatExample.trim();
+        this.chatExample = chatExample;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -407,7 +407,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
-        this.ext = ext == null ? null : ext.trim();
+        this.ext = ext;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -423,7 +423,7 @@ public class CharacterInfo implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setDraft(String draft) {
-        this.draft = draft == null ? null : draft.trim();
+        this.draft = draft;
     }
 
     @Override

@@ -102,7 +102,7 @@ public class Binding implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -118,7 +118,7 @@ public class Binding implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPlatform(String platform) {
-        this.platform = platform == null ? null : platform.trim();
+        this.platform = platform;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -134,7 +134,7 @@ public class Binding implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setSub(String sub) {
-        this.sub = sub == null ? null : sub.trim();
+        this.sub = sub;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -150,7 +150,7 @@ public class Binding implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setIss(String iss) {
-        this.iss = iss == null ? null : iss.trim();
+        this.iss = iss;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -198,7 +198,7 @@ public class Binding implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAud(String aud) {
-        this.aud = aud == null ? null : aud.trim();
+        this.aud = aud;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -214,7 +214,7 @@ public class Binding implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken == null ? null : refreshToken.trim();
+        this.refreshToken = refreshToken;
     }
 
     @Override

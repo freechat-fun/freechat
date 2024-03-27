@@ -119,9 +119,10 @@ export default function PromptEditor({
     newRecord.lang = lang;
     newRecord.tags = [...tags];
     newRecord.aiModels = [...models];
+    newRecord.promptUid = origRecord.promptUid;
 
     return newRecord;
-  }, [description, example, format, id, lang, messages, models, origRecord.type, recordName, stringTemplate, system, tags, userMessage, visibility]);
+  }, [description, example, format, id, lang, messages, models, origRecord.promptUid, origRecord.type, recordName, stringTemplate, system, tags, userMessage, visibility]);
 
   useEffect(() => {
     if (id) {
@@ -921,20 +922,16 @@ export default function PromptEditor({
                 )}
               </CommonBox>
               <CommonBox>
-                {tags.length > 0 && (
-                  <Fragment>
-                    {tags.map((tag, index) => (
-                      <Chip
-                        variant="outlined"
-                        color="success"
-                        key={`tag-${tag}-${index}`}
-                        endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
-                      >
-                        {tag}
-                      </Chip>
-                    ))}
-                  </Fragment>
-                )}
+                {tags.length > 0 && tags.map((tag, index) => (
+                  <Chip
+                    variant="outlined"
+                    color="success"
+                    key={`tag-${tag}-${index}`}
+                    endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
+                  >
+                    {tag}
+                  </Chip>
+                ))}
               </CommonBox>
               <LinePlaceholder spacing={2} />
 

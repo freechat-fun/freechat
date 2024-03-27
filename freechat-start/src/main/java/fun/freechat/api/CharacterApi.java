@@ -393,6 +393,7 @@ public class CharacterApi {
             @NotNull
             CharacterUpdateDTO character) {
         var characterInfo = character.toCharacterInfo(characterId);
+        characterInfo.getLeft().setCharacterUid(characterService.getUid(characterId));
         return characterService.update(characterInfo);
     }
 

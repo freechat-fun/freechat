@@ -2,8 +2,8 @@ import 'openapi-explorer';
 import { reactEventListener } from 'openapi-explorer/dist/es/react';
 import { useEffect, useRef, useState } from 'react';
 import { useFreeChatApiContext } from '../../contexts';
-import { Skeleton, useTheme } from '@mui/joy';
-import { LinePlaceholder } from '../../components';
+import { useTheme } from '@mui/joy';
+import { DocumentSkeleton, LinePlaceholder } from '../../components';
 
 export default function OpenApi() {
   const theme = useTheme();
@@ -83,11 +83,7 @@ export default function OpenApi() {
           display: loading ? 'none' : 'unset',
         }}
       />
-      <Skeleton sx={{
-        width: '88%',
-        height: '20%',
-        display: loading ? 'block' : 'none',
-      }} />
+      <DocumentSkeleton lines={3} loading={loading} sx={{ width: '100%' }} />
       <LinePlaceholder spacing={1} />
   </main>
   );

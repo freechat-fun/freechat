@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Stack, Typography } from "@mui/joy";
 import { ChatSessionDTO } from "freechat-sdk";
-import { getSenderName, getSenderStatus, toggleMessagesPane } from "../../libs/chat_utils";
+import { getSenderName, getSenderReply, getSenderStatus, toggleMessagesPane } from "../../libs/chat_utils";
 import { AvatarWithStatus } from ".";
 import { CommonGridBox, HighlightedTypography } from "..";
 import { CircleRounded, RemoveCircleRounded } from "@mui/icons-material";
@@ -19,9 +19,9 @@ type ChatListItemProps = ListItemButtonProps & {
 };
 
 export default function ChatListItem(props: ChatListItemProps) {
-  const { i18n } = useTranslation();
-  
   const { session, selectedChatId, highlight, editMode = false, onSelectChat, onRemoveChat } = props;
+
+  const { i18n } = useTranslation();
 
   const [selected, setSelected] = useState(selectedChatId === session.context?.chatId);
   const [context, setContext] = useState(session.context);
@@ -110,7 +110,7 @@ export default function ChatListItem(props: ChatListItemProps) {
                   textOverflow: 'ellipsis',
                 }}
               >
-                {getMessageText(record?.message)}
+                {getSenderReply(getMessageText(record?.message) ?? '', false)}
               </Typography>
             </Stack>
           {editMode && (

@@ -99,7 +99,7 @@ export default function ChatContent({
 
   return (
     <Fragment>
-      <MarkdownContent sx={sx}>
+      <MarkdownContent sx={sx} loading={!data}>
         {getSenderReply(data, debugMode)}
       </MarkdownContent>
       {debugMode && usage && (

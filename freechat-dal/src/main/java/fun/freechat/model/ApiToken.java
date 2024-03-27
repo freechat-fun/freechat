@@ -96,7 +96,7 @@ public class ApiToken implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -112,7 +112,7 @@ public class ApiToken implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setToken(String token) {
-        this.token = token == null ? null : token.trim();
+        this.token = token;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -128,7 +128,7 @@ public class ApiToken implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+        this.type = type;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -176,7 +176,7 @@ public class ApiToken implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPolicy(String policy) {
-        this.policy = policy == null ? null : policy.trim();
+        this.policy = policy;
     }
 
     @Override

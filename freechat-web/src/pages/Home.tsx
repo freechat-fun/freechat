@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { AspectRatio, Box, Card, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses, useColorScheme } from "@mui/joy";
 import { LinePlaceholder } from "../components";
 import { PromptGallery } from "../components/prompt";
-import { CharacterGallery } from "../components/character";
+import { CharacterGallery, CharacterRecommendationPane } from "../components/character";
 
 export default function Home() {
   const { t } = useTranslation(['sidebar']);
@@ -38,7 +38,11 @@ export default function Home() {
             <img src={mode === 'dark' ? '/img/freechat_dark.png' : '/img/freechat_light.png'} />
           </AspectRatio>
         </Card>
+
         <LinePlaceholder spacing={6} />
+
+        <CharacterRecommendationPane sx={{ mb: 6, width: '80%' }} />
+
         <Tabs
           defaultValue={0}
           sx={{

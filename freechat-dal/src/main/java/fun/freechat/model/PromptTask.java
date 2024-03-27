@@ -60,7 +60,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setTaskId(String taskId) {
-        this.taskId = taskId == null ? null : taskId.trim();
+        this.taskId = taskId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -124,7 +124,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setPromptUid(String promptUid) {
-        this.promptUid = promptUid == null ? null : promptUid.trim();
+        this.promptUid = promptUid;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -156,7 +156,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setModelId(String modelId) {
-        this.modelId = modelId == null ? null : modelId.trim();
+        this.modelId = modelId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -172,7 +172,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiKeyName(String apiKeyName) {
-        this.apiKeyName = apiKeyName == null ? null : apiKeyName.trim();
+        this.apiKeyName = apiKeyName;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -188,7 +188,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCron(String cron) {
-        this.cron = cron == null ? null : cron.trim();
+        this.cron = cron;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -204,7 +204,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+        this.status = status;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -220,7 +220,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setVariables(String variables) {
-        this.variables = variables == null ? null : variables.trim();
+        this.variables = variables;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -236,7 +236,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setApiKeyValue(String apiKeyValue) {
-        this.apiKeyValue = apiKeyValue == null ? null : apiKeyValue.trim();
+        this.apiKeyValue = apiKeyValue;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -252,7 +252,7 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setParams(String params) {
-        this.params = params == null ? null : params.trim();
+        this.params = params;
     }
 
     @Override

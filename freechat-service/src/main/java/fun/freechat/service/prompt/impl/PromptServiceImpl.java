@@ -683,7 +683,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 info.setDraft(null);
             }
 
-            doCreate(infoTriple);
+            doCreate(Triple.of(infoTriple.getLeft(), null, null));
             publishedInfoId = info.getPromptId();
 
             final PromptInfo updatedInfo = info;

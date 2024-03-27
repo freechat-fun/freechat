@@ -22,7 +22,7 @@
 
         <javaModelGenerator targetPackage="fun.freechat.model"
                             targetProject="src/main/java">
-            <property name="trimStrings" value="true" />
+            <property name="trimStrings" value="false" />
         </javaModelGenerator>
 
         <javaClientGenerator targetPackage="fun.freechat.mapper" targetProject="src/main/java"/>

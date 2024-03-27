@@ -1,4 +1,4 @@
-import { createRef, forwardRef, useEffect, useRef, useState } from "react";
+import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
@@ -128,7 +128,7 @@ export default function PromptGallery() {
   const pageSize = 6;
 
   const [records, setRecords] = useState<PromptSummaryStatsDTO[]>([]);
-  const [query, setQuery] = useState<PromptQueryDTO>(defaultQuery());
+  const [query, setQuery] = useState<PromptQueryDTO>();
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -136,7 +136,7 @@ export default function PromptGallery() {
   const [showCardsFinish, setShowCardsFinish] = useState(false);
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
-  function defaultQuery(): PromptQueryDTO {
+  const defaultQuery = useCallback(() => {
     const newQuery = new PromptQueryDTO();
     newQuery.where = new PromptQueryWhere();
     newQuery.where.visibility = 'public';
@@ -145,14 +145,15 @@ export default function PromptGallery() {
     newQuery.orderBy = ['viewCount', 'referCount', 'modifyTime'];
 
     return newQuery;
-  }
+  }, []);
 
   useEffect(() => {
     return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
   }, []);
 
   useEffect(() => {
-    query && promptApi?.searchPromptSummary(query)
+    const currentQuery = query || defaultQuery();
+    promptApi?.searchPromptSummary(currentQuery)
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
@@ -167,14 +168,14 @@ export default function PromptGallery() {
             })
             .catch(handleError);
         })
-        if (query.pageNum === 0) {
-          promptApi?.countPrompts(query)
+        if (currentQuery.pageNum === 0) {
+          promptApi?.countPrompts(currentQuery)
             .then(setTotal)
             .catch(handleError);
         }
       })
       .catch(handleError);
-  }, [handleError, interactiveStatisticsApi, promptApi, query]);
+  }, [defaultQuery, handleError, interactiveStatisticsApi, promptApi, query]);
 
   function promptInfoWithStats(record: PromptSummaryDTO, stats: InteractiveStatsDTO | undefined | null): PromptSummaryStatsDTO {
     const s = {...{

@@ -99,7 +99,7 @@ public class InteractiveStats implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferType(String referType) {
-        this.referType = referType == null ? null : referType.trim();
+        this.referType = referType;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -115,7 +115,7 @@ public class InteractiveStats implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setReferId(String referId) {
-        this.referId = referId == null ? null : referId.trim();
+        this.referId = referId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

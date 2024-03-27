@@ -133,7 +133,7 @@ export default function Chats() {
         display: 'grid',
         gridTemplateColumns: {
           xs: '1fr',
-          sm: '20% 60% 20%',
+          sm: '1fr 3fr 1fr',
         },
       }}
     >

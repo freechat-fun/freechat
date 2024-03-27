@@ -18,8 +18,6 @@ import java.util.Objects;
 public class CharacterDetailsDTO extends CharacterSummaryDTO {
     @Schema(description = "Character profile")
     private String profile;
-    @Schema(description = "Character greeting")
-    private String greeting;
     @Schema(description = "Character chat-style")
     private String chatStyle;
     @Schema(description = "Character chat-example")

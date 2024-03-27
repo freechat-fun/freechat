@@ -58,7 +58,7 @@ public class ChatHistory implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMemoryId(String memoryId) {
-        this.memoryId = memoryId == null ? null : memoryId.trim();
+        this.memoryId = memoryId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,7 +122,7 @@ public class ChatHistory implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setMessage(String message) {
-        this.message = message == null ? null : message.trim();
+        this.message = message;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -138,7 +138,7 @@ public class ChatHistory implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
-        this.ext = ext == null ? null : ext.trim();
+        this.ext = ext;
     }
 
     @Override

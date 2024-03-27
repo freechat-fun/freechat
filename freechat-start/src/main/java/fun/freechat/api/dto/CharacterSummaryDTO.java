@@ -44,6 +44,8 @@ public class CharacterSummaryDTO extends TraceableDTO {
     private String gender;
     @Schema(description = "Character language: en (default) | zh | ...")
     private String lang;
+    @Schema(description = "Character greeting")
+    private String greeting;
     @Schema(description = "Character owner")
     private String username;
     @Schema(description = "Tag set")

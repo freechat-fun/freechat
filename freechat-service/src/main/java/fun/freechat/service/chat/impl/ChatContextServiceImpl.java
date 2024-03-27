@@ -9,9 +9,9 @@ import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.util.IdUtils;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -60,7 +60,7 @@ public class ChatContextServiceImpl implements ChatContextService {
     }
 
     @Override
-    public ChatContext create(@NotNull ChatContext context) {
+    public ChatContext create(@NonNull ChatContext context) {
         if (StringUtils.isBlank(context.getUserId()) || StringUtils.isBlank(context.getBackendId())) {
             return null;
         }

@@ -57,7 +57,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatId(String chatId) {
-        this.chatId = chatId == null ? null : chatId.trim();
+        this.chatId = chatId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -121,7 +121,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setChatType(String chatType) {
-        this.chatType = chatType == null ? null : chatType.trim();
+        this.chatType = chatType;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -137,7 +137,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -153,7 +153,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserNickname(String userNickname) {
-        this.userNickname = userNickname == null ? null : userNickname.trim();
+        this.userNickname = userNickname;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -169,7 +169,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setBackendId(String backendId) {
-        this.backendId = backendId == null ? null : backendId.trim();
+        this.backendId = backendId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -185,7 +185,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setCharacterNickname(String characterNickname) {
-        this.characterNickname = characterNickname == null ? null : characterNickname.trim();
+        this.characterNickname = characterNickname;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -201,7 +201,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserProfile(String userProfile) {
-        this.userProfile = userProfile == null ? null : userProfile.trim();
+        this.userProfile = userProfile;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -217,7 +217,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAbout(String about) {
-        this.about = about == null ? null : about.trim();
+        this.about = about;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -233,7 +233,7 @@ public class ChatContext implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setExt(String ext) {
-        this.ext = ext == null ? null : ext.trim();
+        this.ext = ext;
     }
 
     @Override

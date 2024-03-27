@@ -42,7 +42,7 @@ public class NonRealTimeConfig implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -106,7 +106,7 @@ public class NonRealTimeConfig implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setFormat(String format) {
-        this.format = format == null ? null : format.trim();
+        this.format = format;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -122,7 +122,7 @@ public class NonRealTimeConfig implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
+        this.userId = userId;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -138,7 +138,7 @@ public class NonRealTimeConfig implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = content;
     }
 
     @Override
