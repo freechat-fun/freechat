@@ -24,7 +24,6 @@ public class RedissonConfig {
     private String password;
     @Value("${redis.datasource.timeout}")
     private Integer timeout;
-
     @Autowired
     private EncryptionService encryptionService;
 

@@ -51,35 +51,22 @@ import java.util.regex.Pattern;
 @Slf4j
 public class ApiSwitchUserFilter extends SwitchUserFilter {
     private static final Pattern HEADER_PATTERN = Pattern.compile("([^:@]*)[:]?([^:@]*)[@]?([^:@]*)");
-
     private static final String CHAIN_ATTR_NAME = ApiSwitchUserFilter.class.getName() + "_chain";
 
     private String headerName;
-
     private boolean enableAutoRegister;
-
     private OrgService orgService;
-
     private SysUserDetailsManager sysUserDetailsManager;
-
     private SysUserService sysUserService;
-
     private SysAuthorityService sysAuthorityService;
-
     private PasswordEncoder passwordEncoder;
-
     private SecurityContextHolderStrategy securityContextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
-
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
-
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
             new WebAuthenticationDetailsSource();
-
     private String switchAuthorityRole = ROLE_PREVIOUS_ADMINISTRATOR;
-
     private SwitchUserAuthorityChanger switchUserAuthorityChanger;
-
     private ApplicationEventPublisher eventPublisher;
 
     public ApiSwitchUserFilter() {}
@@ -315,9 +302,9 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         super.setUserDetailsService(userDetailsService);
         sysUserDetailsManager = (SysUserDetailsManager) userDetailsService;
-        sysUserService = sysUserDetailsManager.getUserService();
-        sysAuthorityService = sysUserDetailsManager.getAuthorityService();
-        passwordEncoder = sysUserDetailsManager.getPasswordEncoder();
+        sysUserService = sysUserDetailsManager.userService();
+        sysAuthorityService = sysUserDetailsManager.authorityService();
+        passwordEncoder = sysUserDetailsManager.passwordEncoder();
     }
 
     @Override

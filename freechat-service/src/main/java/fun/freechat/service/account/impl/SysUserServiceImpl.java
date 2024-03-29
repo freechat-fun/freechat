@@ -25,7 +25,6 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private EncryptionService encryptionService;
 

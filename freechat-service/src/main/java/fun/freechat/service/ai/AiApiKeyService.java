@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface AiApiKeyService {
     Long create(User user, String name, ModelProvider provider, String token, boolean enabled);
-
     boolean disable(Long id);
     boolean enable(Long id);
     boolean delete(Long id);

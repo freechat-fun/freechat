@@ -24,6 +24,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 @SuppressWarnings("unused")
 public class AiModelInfoServiceImpl implements AiModelInfoService {
     final static String CACHE_KEY = "'AiModelInfoServiceImpl_' + #p0";
+
     @Autowired
     private AiModelInfoMapper aiModelInfoMapper;
 

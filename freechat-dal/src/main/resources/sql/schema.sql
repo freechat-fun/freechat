@@ -280,6 +280,22 @@ CREATE TABLE IF NOT EXISTS `chat_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='chat message table'
 ;
 
+CREATE TABLE IF NOT EXISTS `rag_task` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `gmt_create` datetime NOT NULL,
+  `gmt_modified` datetime NOT NULL,
+  `gmt_start` datetime DEFAULT NULL,
+  `gmt_end` datetime DEFAULT NULL,
+  `character_uid` varchar(32) NOT NULL,
+  `source_type` varchar(16) NOT NULL DEFAULT 'file' COMMENT 'file | url | github',
+  `source` text NOT NULL,
+  `status` varchar(16) DEFAULT NUll COMMENT 'pending | running | succeeded | failed | unknown',
+  `ext` json DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `idx_character` (`character_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='rag task table'
+;
+
 CREATE TABLE IF NOT EXISTS `tag` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `gmt_create` datetime NOT NULL,

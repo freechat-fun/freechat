@@ -33,16 +33,12 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Value("${chat.memory.maxMessageSize:10000}")
     private Integer maxSize;
-
     @Autowired
     private CacheManager cacheManager;
-
     @Autowired
     private ChatHistoryMapper chatHistoryMapper;
-
     @Autowired
     private ChatContextService chatContextService;
-
     private Cache cache;
 
     @Override

@@ -40,24 +40,18 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @SuppressWarnings({"unused", "rawtypes"})
 public class AgentServiceImpl implements AgentService {
     private final static String CACHE_KEY_PREFIX = "agentservice_";
-
     private final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
-
     @Autowired
     private AgentInfoMapper agentInfoMapper;
-
     @Autowired
     private TagMapper tagMapper;
-
     @Autowired
     private AiModelMapper aiModelMapper;
-
     @Autowired
     private OrgService orgService;
-
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 

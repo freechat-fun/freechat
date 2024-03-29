@@ -17,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 public class EncryptionServiceImpl implements EncryptionService {
     @Value("${auth.aes.key}")
     private String aesKey;
-
     private EncryptionUtils encryptionUtils;
 
     @PostConstruct

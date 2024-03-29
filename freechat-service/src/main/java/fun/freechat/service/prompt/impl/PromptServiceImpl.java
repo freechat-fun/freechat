@@ -43,29 +43,20 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @SuppressWarnings({"unused", "rawtypes"})
 public class PromptServiceImpl implements PromptService {
     private final static String CACHE_KEY_PREFIX = "PromptService_";
-
     private final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
-
     @Autowired
     private PromptInfoMapper promptInfoMapper;
-
     @Autowired
     private TagMapper tagMapper;
-
     @Autowired
     private AiModelMapper aiModelMapper;
-
     @Autowired
     private OrgService orgService;
-
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
-
-    @Autowired
-    private PromptTaskMapper promptTaskMapper;
 
     private QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder wrapQueryExpression(
             QueryExpressionDSL<SelectModel> c, String currentUserId) {

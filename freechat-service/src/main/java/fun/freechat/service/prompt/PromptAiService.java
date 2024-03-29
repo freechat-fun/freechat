@@ -16,7 +16,6 @@ public interface PromptAiService {
                              String apiKeyInfo,
                              AiModelInfo modelInfo,
                              Map<String, Object> parameters);
-
     <T> void streamSend(String prompt,
                         PromptType promptType,
                         User user,

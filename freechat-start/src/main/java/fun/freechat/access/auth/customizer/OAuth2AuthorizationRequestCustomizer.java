@@ -32,18 +32,14 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2AuthorizationRequest.Builder>, ApplicationContextAware {
     private static final String BIND_MODE_PARAMETER_NAME = "bind";
-
     private static final String CACHED_AUTHENTICATION_PREFIX =
             OAuth2AuthorizationRequestCustomizer.class.getName() + "-";
-
     private static final Duration CACHED_AUTHENTICATION_TIMEOUT = Duration.of(10, ChronoUnit.MINUTES);
-
     private static final StringKeyGenerator DEFAULT_STATE_GENERATOR =
             new Base64StringKeyGenerator(Base64.getUrlEncoder());
 
     @Autowired
     private RedissonClient persistentClient;
-
     private ApplicationContext applicationContext;
 
     private boolean isBinding() {

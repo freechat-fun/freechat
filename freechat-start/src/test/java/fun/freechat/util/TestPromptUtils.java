@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 public class TestPromptUtils implements ApplicationContextAware {
     private static PromptService promptService;
-
     private static PromptTaskService promptTaskService;
 
     public static Long createPrompt(String userId, String template, String draft) {

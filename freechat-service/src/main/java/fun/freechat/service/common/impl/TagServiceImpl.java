@@ -22,7 +22,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class TagServiceImpl implements TagService {
     @Autowired
     private TagMapper tagMapper;
-
     @Autowired
     private HotTagMapper hotTagMapper;
 

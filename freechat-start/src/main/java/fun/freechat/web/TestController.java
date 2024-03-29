@@ -70,7 +70,6 @@ public class TestController {
     /*==== trace ====*/
     @Autowired
     TestComponent testComponent;
-
     @Value("${app.logging.home}")
     String loggingHome;
 

@@ -62,6 +62,10 @@ export default function MessageInput(props: MessageInputProps) {
             </Stack>
           }
           onKeyDown={(event) => {
+            if (event.nativeEvent.isComposing) {
+              return;
+            }
+
             if (event.key === 'Enter') {
               if (event.metaKey || event.ctrlKey) {
                 event.preventDefault();

@@ -33,7 +33,6 @@ import java.util.List;
 public class PluginApi {
     @Autowired
     private PluginService pluginService;
-
     @Autowired
     private PluginFetchService pluginFetchService;
 

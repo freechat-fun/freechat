@@ -33,22 +33,16 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class ApiTokenAuthenticationProvider implements AuthenticationProvider, AuthenticationConverter {
     @Value("${auth.token.parameterName:#{null}}")
     private String parameterName;
-
     @Value("${auth.token.headerName:#{null}}")
     private String headerName;
-
     @Value("${auth.token.prefix:#{null}}")
     private String prefix;
-
     @Autowired
     private SysApiTokenService apiTokenService;
-
     @Autowired
     private SysAuthorityService authorityService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private SecurityContextHolderStrategy securityContextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
 

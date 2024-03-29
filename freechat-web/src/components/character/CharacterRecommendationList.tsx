@@ -10,22 +10,24 @@ type CharacterRecommendationListProps = ListProps & {
   records: CharacterSummaryDTO[],
   selectedId: number;
   setSelectedId: (id?: number) => void;
+  onShow?: () => void;
 }
 
 export default function CharacterRecommendationList(props: CharacterRecommendationListProps) {
-  const { records, selectedId, setSelectedId, sx } = props;
+  const { records, selectedId, setSelectedId, onShow, sx } = props;
 
   const [showCards, setShowCards] = useState(false);
   const itemRefs = useRef(Array(records.length || 6).fill(createRef()));
 
   useEffect(() => {
-    return initTransitionSequence(setShowCards, undefined, records.length);
-  }, [records.length]);
+    return initTransitionSequence(setShowCards, onShow, records.length);
+  }, [onShow, records.length]);
 
   return (
       <List
         sx={{
           py: 0,
+          my: 0,
           '--ListItem-paddingY': '0.75rem',
           '--ListItem-paddingX': '1rem',
           ...sx,

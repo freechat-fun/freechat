@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
     @Value("${auth.login.uri}")
     private String loginUri;
-
     @Autowired
     private OAuth2AuthorizedClientService oAuth2ClientService;
-
     @Autowired
     private SysUserService userService;
 

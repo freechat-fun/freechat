@@ -42,7 +42,6 @@ import java.util.Objects;
 public class AgentApi {
     @Autowired
     private AgentService agentService;
-
     @Autowired
     private InteractiveStatsService interactiveStatsService;
 

@@ -43,7 +43,6 @@ public interface CharacterService {
     static Query.QueryBuilder queryBuilder() {
         return Query.builder();
     }
-
     List<Pair<CharacterInfo, List<String>>> search(Query query, User user);
     List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> searchDetails(Query query, User user);
     long count(Query query, User user);

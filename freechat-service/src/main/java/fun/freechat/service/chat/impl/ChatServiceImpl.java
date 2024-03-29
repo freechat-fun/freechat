@@ -49,22 +49,17 @@ public class ChatServiceImpl implements ChatService {
 
     @Autowired
     private ChatContextService chatContextService;
-
     @Autowired
     private ChatSessionService chatSessionService;
-
     @Autowired
     private ChatMemoryService chatMemoryService;
-
     @Autowired
     private PromptService promptService;
-
     @Autowired
     private CharacterService characterService;
-
     @Autowired
     private OrgService orgService;
-
+    
     @Override
     public String start(User user,
                         String userNickname,

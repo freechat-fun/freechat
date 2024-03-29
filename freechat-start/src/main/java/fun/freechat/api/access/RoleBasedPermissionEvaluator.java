@@ -34,23 +34,14 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class RoleBasedPermissionEvaluator implements PermissionEvaluator, ApplicationContextAware {
     private ApplicationContext applicationContext;
-
     private PromptService promptService;
-
     private PromptTaskService promptTaskService;
-
     private AgentService agentService;
-
     private PluginService pluginService;
-
     private CharacterService characterService;
-
     private ChatContextService chatContextService;
-
     private AiApiKeyService aiApiKeyService;
-
     private OrgService orgService;
-
     private SysApiTokenService sysApiTokenService;
 
     private boolean targetNotBlank(String target) {

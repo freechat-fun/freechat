@@ -69,6 +69,10 @@
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
+        <table tableName="rag_task">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+
         <table tableName="tag">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

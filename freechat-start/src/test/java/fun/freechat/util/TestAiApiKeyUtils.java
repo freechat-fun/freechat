@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Component
 public class TestAiApiKeyUtils implements ApplicationContextAware {
     private static SysUserService userService;
-
     private static AiApiKeyService aiApiKeyService;
 
     public static void addAiApiKey(String userId,

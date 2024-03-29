@@ -13,7 +13,6 @@ import java.util.Set;
 
 public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
     private final Set<String> tokens;
-
     private final SysUserDetails sysUser;
 
     private static List<GrantedAuthority> getAuthorities(SysUserDetails sysUser) {

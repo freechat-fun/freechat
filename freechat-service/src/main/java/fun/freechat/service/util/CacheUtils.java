@@ -15,17 +15,12 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public class CacheUtils implements ApplicationContextAware {
     public static final String IN_PROCESS_CACHE_MANAGER = "inProcessCacheManager";
-
     public static final String LONG_PERIOD_CACHE_NAME = "freechatLongPeriodCache";
-
     public static final String MIDDLE_PERIOD_CACHE_NAME = "freechatMiddlePeriodCache";
-
     public static final String SHORT_PERIOD_CACHE_NAME = "freechatShortPeriodCache";
-
     public static final String KEY_GENERATOR = "fullNameKeyGenerator";
 
     private static CacheManager defaultCacheManager;
-
     private static CacheManager inProcessCacheManager;
 
     @Override

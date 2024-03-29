@@ -48,7 +48,6 @@ public interface PromptService {
     static Query.QueryBuilder queryBuilder() {
         return Query.builder();
     }
-
     List<Triple<PromptInfo, List<String>, List<String>>> search(Query query, User user);
     List<Triple<PromptInfo, List<String>, List<String>>> searchDetails(Query query, User user);
     long count(Query query, User user);

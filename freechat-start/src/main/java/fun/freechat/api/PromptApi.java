@@ -43,7 +43,6 @@ import java.util.*;
 public class PromptApi {
     @Autowired
     private PromptService promptService;
-
     @Autowired
     private InteractiveStatsService interactiveStatsService;
 

@@ -24,13 +24,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 public class SysApiTokenServiceImpl implements SysApiTokenService {
     @Value("${auth.token.prefix:#{null}}")
     private String prefix;
-
     @Value("${auth.token.limits:#{null}}")
     private Integer maxCount;
-
     @Autowired
     private SysApiTokenRepo apiTokenRepo;
-
     @Autowired
     private ApiTokenMapper apiTokenMapper;
 

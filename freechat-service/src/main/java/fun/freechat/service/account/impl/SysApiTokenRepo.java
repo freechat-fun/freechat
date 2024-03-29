@@ -23,9 +23,9 @@ public class SysApiTokenRepo {
     final static String TOKEN_CACHE_KEY = "'SysApiTokenRepo_token_' + #p0";
     final static String USER_CACHE_KEY = "'SysApiTokenRepo_user_' + #p0";
     final static String TOKEN_BY_ID_CACHE_KEY = "'SysApiTokenRepo_token_byId_' + #p0";
+
     @Autowired
     private ApiTokenMapper apiTokenMapper;
-
     @Autowired
     private UserMapper userMapper;
 

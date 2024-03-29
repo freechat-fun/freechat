@@ -41,30 +41,22 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @SuppressWarnings({"unused", "rawtypes"})
 public class PluginServiceImpl implements PluginService {
     private final static String CACHE_KEY_PREFIX = "PluginService_";
-
     private final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
-
     @Autowired
     private PluginInfoMapper pluginInfoMapper;
-
     @Autowired
     private TagMapper tagMapper;
-
     @Autowired
     private AiModelMapper aiModelMapper;
-
     @Autowired
     private PluginFetchService fetchService;
-
     @Autowired
     private OrgService orgService;
-
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
-
     @Autowired
     private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
 

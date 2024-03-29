@@ -60,6 +60,8 @@ export default function CharacterRecommendationPane(props: SheetProps) {
         p: 2,
         display: { xs: 'none', sm: records.length > 0 ? 'grid' : 'none' },
         gridTemplateColumns: '1fr 4fr',
+        gridTemplateRows: 'minmax(auto, 1fr)',
+        alignItems: 'stretch',
         ...sx,
       }}
       {...others}
@@ -68,9 +70,18 @@ export default function CharacterRecommendationPane(props: SheetProps) {
         records={records}
         selectedId={selectedId ?? 0}
         setSelectedId={setSelectedId}
+        sx={{
+          minHeight: `calc(80px * ${records.length})`,
+        }}
       />
 
-      <CharacterRecommendationPoster record={selectedRecord} />
+      <CharacterRecommendationPoster
+        record={selectedRecord}
+        maxDescriptionLines={2 * records.length}
+        sx={{
+          gridTemplateRows: `calc(64px * ${records.length})`,
+        }}
+      />
     </Sheet>
   )
 }

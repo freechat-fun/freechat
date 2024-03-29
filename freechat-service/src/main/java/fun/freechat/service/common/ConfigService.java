@@ -9,10 +9,7 @@ import java.util.List;
 
 public interface ConfigService {
     Integer publish(User user, String name, ConfigFormat format, String content);
-
     Triple<String, ConfigFormat, Integer> load(String name);
-
     Pair<String, ConfigFormat> load(String name, Integer version);
-
     List<String> listNames();
 }

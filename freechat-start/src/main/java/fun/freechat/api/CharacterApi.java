@@ -50,38 +50,25 @@ import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 @SuppressWarnings("unused")
 public class CharacterApi {
     private static final String CONFIG_NAME = "character";
-
     private static final String PICTURE_MAX_SIZE_KEY = "picture.maxSize";
-
     private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
-
     private static final String AVATAR_MAX_SIZE_KEY = "avatar.maxSize";
-
     private static final String AVATAR_MAX_COUNT_KEY = "avatar.maxCount";
-
     private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
-
     private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
-
     private static final long DEFAULT_AVATAR_MAX_SIZE = 1024 * 1024;
-
     private static final int DEFAULT_AVATAR_MAX_COUNT = 10;
 
     @Value("${chat.memory.minWindowSize:50}")
     private Integer minWindowSize;
-
     @Value("${chat.memory.maxWindowSize:1000}")
     private Integer maxWindowSize;
-
     @Value("${chat.memory.defaultWindowSize:100}")
     private Integer defaultWindowSize;
-
     @Autowired
     private CharacterService characterService;
-
     @Autowired
     private InteractiveStatsService interactiveStatsService;
-
     @Autowired
     @Qualifier("mysqlConfigService")
     private ConfigService configService;

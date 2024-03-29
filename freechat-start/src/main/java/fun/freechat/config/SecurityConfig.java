@@ -45,43 +45,30 @@ import java.util.List;
 public class SecurityConfig {
     @Value("${auth.role.adminUri:#{null}}")
     private String[] adminUri;
-
     @Value("${auth.role.bizAdminUri:#{null}}")
     private String[] bizAdminUri;
-
     @Value("${auth.role.apiUri:#{null}}")
     private String[] apiUri;
-
     @Value("${auth.role.privateUri:#{null}}")
     private String[] privateUri;
-
     @Value("${auth.role.publicUri:#{null}}")
     private String[] publicUri;
-
     @Value("${auth.login.uri}")
     private String loginUri;
-
     @Value("${auth.login.processingUri}")
     private String loginProcessingUri;
-
     @Value("${auth.login.oauth2.successUri}")
     private String oauth2LoginSuccessUri;
-
     @Value("${auth.login.oauth2.failureUri}")
     private String oauth2LoginFailureUri;
-
     @Value("${auth.login.portal.successUri}")
     private String portalLoginSuccessUri;
-
     @Value("${auth.login.portal.failureUri}")
     private String portalLoginFailureUri;
-
     @Value("${auth.login.oauth2.baseUri:#{T(org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter).DEFAULT_AUTHORIZATION_REQUEST_BASE_URI}}")
     private String authorizationRequestBaseUri;
-
     @Value("${auth.impersonate.headerName}")
     private String impersonateHeaderName;
-
     @Value("${auth.impersonate.autoRegister}")
     private Boolean impersonateAutoRegister;
 

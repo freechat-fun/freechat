@@ -18,7 +18,6 @@ import java.util.List;
 public class CharacterBackendListener {
     @Autowired
     private ChatContextService chatContextService;
-
     @Autowired
     private ChatSessionService chatSessionService;
 

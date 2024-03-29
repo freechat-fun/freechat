@@ -16,7 +16,6 @@ import java.util.Base64;
 
 @Slf4j
 public class EncryptionUtils {
-
     private final Cipher encryptCipher;
     private final Cipher decryptCipher;
 

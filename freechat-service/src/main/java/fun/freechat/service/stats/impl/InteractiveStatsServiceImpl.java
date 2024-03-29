@@ -28,7 +28,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class InteractiveStatsServiceImpl implements InteractiveStatsService {
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
-
     @Autowired
     private InteractiveStatsScoreDetailsMapper interactiveStatsScoreDetailsMapper;
 

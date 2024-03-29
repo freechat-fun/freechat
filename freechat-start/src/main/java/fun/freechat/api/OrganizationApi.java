@@ -32,10 +32,8 @@ import java.util.*;
 public class OrganizationApi {
     @Autowired
     private SysUserService userService;
-
     @Autowired
     private SysAuthorityService authorityService;
-
     @Autowired
     private OrgService orgService;
 

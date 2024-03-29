@@ -25,10 +25,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 public class OrgServiceImpl implements OrgService {
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
-
     @Autowired
     OrgRelationshipRepo orgRelationshipRepo;
-
     @Autowired
     OrgRelationshipMapper orgRelationshipMapper;
 

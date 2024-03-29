@@ -49,21 +49,15 @@ import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 @SuppressWarnings("unused")
 public class AccountApi {
     private static final String CONFIG_NAME = "user";
-
     private static final String PICTURE_MAX_SIZE_KEY = "picture.maxSize";
-
     private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
-
     private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
-
     private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
 
     @Autowired
     private SysUserService userService;
-
     @Autowired
     private SysApiTokenService apiTokenService;
-
     @Autowired
     @Qualifier("mysqlConfigService")
     private ConfigService configService;

@@ -42,7 +42,6 @@ public interface AgentService {
     static Query.QueryBuilder queryBuilder() {
         return Query.builder();
     }
-
     List<Triple<AgentInfo, List<String>, List<String>>> search(Query query, User user);
     List<Triple<AgentInfo, List<String>, List<String>>> searchDetails(Query query, User user);
     long count(Query query, User user);

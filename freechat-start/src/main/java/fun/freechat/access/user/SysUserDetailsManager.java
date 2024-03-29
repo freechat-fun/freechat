@@ -4,7 +4,6 @@ import fun.freechat.model.User;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysBindService;
 import fun.freechat.service.account.SysUserService;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,24 +31,12 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
 @Slf4j
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class SysUserDetailsManager implements UserDetailsManager {
-    private final SysUserService userService;
-    private final SysBindService bindService;
-    private final SysAuthorityService authorityService;
-    private final PasswordEncoder passwordEncoder;
-
-    public SysUserDetailsManager(SysUserService userService,
-                                 SysBindService bindService,
-                                 SysAuthorityService authorityService,
-                                 PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.bindService = bindService;
-        this.authorityService = authorityService;
-        this.passwordEncoder = passwordEncoder;
-    }
+public record SysUserDetailsManager(SysUserService userService,
+                                    SysBindService bindService,
+                                    SysAuthorityService authorityService,
+                                    PasswordEncoder passwordEncoder) implements UserDetailsManager {
 
     private User mapUser(UserDetails userDetails, User user) {
         Date now = new Date();
@@ -285,7 +272,7 @@ public class SysUserDetailsManager implements UserDetailsManager {
     }
 
     private Byte toByte(Boolean bool) {
-        return Objects.nonNull(bool) && bool ? (byte)1 : (byte)0;
+        return Objects.nonNull(bool) && bool ? (byte) 1 : (byte) 0;
     }
 
     public SysUserDetails createSysUserFromOAuth2UserIfNecessary(OAuth2User oAuth2User,

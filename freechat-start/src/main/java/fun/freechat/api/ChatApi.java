@@ -47,19 +47,14 @@ import java.util.*;
 public class ChatApi {
     @Autowired
     private CharacterService characterService;
-
     @Autowired
     private ChatService chatService;
-
     @Autowired
     private ChatMemoryService chatMemoryService;
-
     @Autowired
     private ChatContextService chatContextService;
-
     @Autowired
     private ChatSessionService chatSessionService;
-
     @Autowired
     private OrgService orgService;
 

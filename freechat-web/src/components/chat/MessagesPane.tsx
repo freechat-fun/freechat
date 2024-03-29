@@ -61,7 +61,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
         onOpen?.();
       })
       .catch(handleError);
-  }, [chatApi, context?.chatId, handleError, mode, onOpen, sender?.picture]);
+  }, [chatApi, context?.chatId, handleError, mode, onOpen, sender, debugMode]);
 
   useEffect(() => {
     const savedEnableBackground = localStorage.getItem('MessagesPane.enableBackground');

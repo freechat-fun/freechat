@@ -13,6 +13,7 @@ import java.util.Objects;
 @Component
 public class AiModelUtils implements ApplicationContextAware {
     private static AiModelInfoService aiModelInfoService;
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         aiModelInfoService = applicationContext.getBean(AiModelInfoService.class);

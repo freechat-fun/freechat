@@ -22,7 +22,7 @@ import java.util.Objects;
 
 @Component
 @Slf4j
-@SuppressWarnings({"unused", "rawtypes"})
+@SuppressWarnings("unused")
 public class EncryptedPropertyProcessor implements BeanPostProcessor {
     private static final List<Pair<String, String>> INNER_SECRET_CONFIG_LIST = List.of(
             // Pair.of("org.springframework.boot.autoconfigure.jdbc.DataSourceProperties", "password")
@@ -30,7 +30,6 @@ public class EncryptedPropertyProcessor implements BeanPostProcessor {
 
     @Value("${auth.aes.key}")
     private String aesKey;
-
     private EncryptionUtils encryptionUtils;
 
     @PostConstruct

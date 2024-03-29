@@ -24,9 +24,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final OAuth2AuthorizedClientService oAuth2ClientService;
-
     private final SysUserDetailsManager userDetailsManager;
-
     private final OAuth2AuthorizationRequestCustomizer oAuth2AuthorizationRequestCustomizer;
 
     public OAuth2AuthenticationSuccessHandler(OAuth2AuthorizedClientService oAuth2ClientService,

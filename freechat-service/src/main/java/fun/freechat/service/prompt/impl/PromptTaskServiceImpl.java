@@ -26,10 +26,8 @@ public class PromptTaskServiceImpl implements PromptTaskService {
 
     @Autowired
     private PromptTaskMapper promptTaskMapper;
-
     @Autowired
     private PromptService promptService;
-
     @Autowired
     private EncryptionService encryptionService;
 

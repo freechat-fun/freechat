@@ -49,7 +49,6 @@ import java.util.Objects;
 public class PromptAiApi {
     @Autowired
     private PromptService promptService;
-
     @Autowired
     private PromptAiService promptAiService;
 

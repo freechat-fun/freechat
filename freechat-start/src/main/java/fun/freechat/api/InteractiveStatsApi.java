@@ -35,19 +35,14 @@ import java.util.*;
 public class InteractiveStatsApi {
     @Autowired
     private InteractiveStatsService interactiveStatsService;
-
     @Autowired
     private PromptService promptService;
-
     @Autowired
     private AgentService agentService;
-
     @Autowired
     private PluginService pluginService;
-
     @Autowired
     private CharacterService characterService;
-
     @Autowired
     private TagService tagService;
 

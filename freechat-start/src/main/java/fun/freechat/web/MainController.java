@@ -25,7 +25,6 @@ import java.util.Properties;
 @SuppressWarnings("unused")
 public class MainController {
     private static final String CONFIG_NAME = "system";
-
     private static final String WEB_VERSION_KEY = "web.version";
 
     @Autowired

@@ -70,6 +70,7 @@ public class ChatIT extends AbstractIntegrationTest{
             {{{MESSAGE_CONTEXT}}}
             {{{RELEVANT_INFORMATION}}}
             """;
+
     private String developerId;
     private String developerApiKey;
     private String userId;

@@ -64,27 +64,20 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("unused")
 public class ChatSessionServiceImpl implements ChatSessionService {
     final static String CACHE_KEY_PREFIX = "ChatSessionService_";
-
     final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private CharacterService characterService;
-
     @Autowired
     private ChatContextService chatContextService;
-
     @Autowired
     private PromptService promptService;
-
     @Autowired
     private PromptTaskService promptTaskService;
-
     @Autowired
     private AiApiKeyService aiApiKeyService;
-
     @Autowired
     private SysUserService userService;
-
     @Autowired
     private AiModelInfoService aiModelInfoService;
 

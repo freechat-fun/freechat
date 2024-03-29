@@ -1,38 +1,50 @@
 import { Fragment, forwardRef } from "react";
-import { Box, Chip, Divider, Stack, Typography } from "@mui/joy";
+import { Box, BoxProps, Chip, Divider, Stack, Typography } from "@mui/joy";
 import { CharacterSummaryDTO } from "freechat-sdk";
-import { CommonBox, CommonGridBox } from "..";
+import { CommonBox, CommonGridBox, SummaryTypography } from "..";
 import { getSenderName } from "../../libs/chat_utils";
 
-type CharacterRecommendationPosterProps = {
+type CharacterRecommendationPosterProps = BoxProps & {
   record?: CharacterSummaryDTO,
+  maxDescriptionLines?: number,
+  disabled?: boolean;
 }
 
 const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecommendationPosterProps>((props, ref) => {
-  const { record } = props;
+  const { record, maxDescriptionLines = 3, disabled = false, sx, ...others } = props;
 
   const nickname = getSenderName(record);
 
   return (
     <Fragment>
       <CommonGridBox ref={ref} sx={{
+        display: disabled ? 'none' : 'grid',
         p: 2,
         alignItems: 'flex-start',
         gridTemplateColumns: '1fr auto 1fr',
         position: 'relative',
         overflow: 'hidden',
+        borderRadius: 6,
         backgroundImage: `url(${record?.picture})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-      }}>
-        <Stack sx={{ gap: 1 }}>
+        ...sx,
+        }}
+        {...others}
+      >
+        <Stack sx={{
+          gap: 1,
+          alignItems: 'flex-start',
+          height: '100%',
+        }}>
           <Box sx={{
             borderRadius: 6,
             bgcolor: 'transparent',
-            backdropFilter: 'blur(10px)',
+            backdropFilter: 'blur(3px)',
             alignSelf: 'flex-start',
             px: 1,
+            mr: 'auto',
           }}>
             <Typography level="h2" sx={{ color: 'white' }}>
               {nickname}
@@ -55,15 +67,18 @@ const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecomm
             sx={{
               mt: 'auto',
               display: record?.greeting ? 'flex' : 'none',
-              p: 1.25,
+              py: 1.25,
+              px: 2,
+              border: 1,
               borderRadius: 'lg',
               borderTopRightRadius: 'lg',
               borderTopLeftRadius: 0,
-              bgcolor: 'transparent',
-              backdropFilter: 'blur(10px)',
+              borderColor: 'white',
+              background: 'rgba(0 0 0 / 0.2)',
+              backdropFilter: 'blur(3px)',
             }}
           >
-            <Typography level="body-md" sx={{ color: 'white' }}>
+            <Typography level="body-md" sx={{ color: 'white', whiteSpace: 'pre-wrap' }}>
               {record?.greeting}
             </Typography>
           </Box>
@@ -80,17 +95,21 @@ const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecomm
           justifyContent: 'center',
         }}>
           <Box sx={{
+            overflow: 'hidden',
             borderRadius: 6,
-            background: 'rgba(0 0 0 / 0.2)',
+            background: 'rgba(0 0 0 / 0.3)',
             backdropFilter: 'blur(10px)',
             p: 1,
           }}>
-            <Typography level="body-md" sx={{
+            <SummaryTypography level="body-md" sx={{
               color: 'white',
               transition: 'transform 0.4s, box-shadow 0.4s',
+              maxHeight: '100%',
+              minHeight: '1.5rem',
+              WebkitLineClamp: maxDescriptionLines,
             }}>
               {record?.description}
-            </Typography>
+            </SummaryTypography>
           </Box>
         </Stack>
 

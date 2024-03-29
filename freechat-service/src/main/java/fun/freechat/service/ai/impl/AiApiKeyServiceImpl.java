@@ -27,10 +27,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class AiApiKeyServiceImpl implements AiApiKeyService {
     @Value("${auth.aiApiKey.limits:#{null}}")
     private Integer maxCount;
-
     @Autowired
     private AiApiKeyMapper aiApiKeyMapper;
-
     @Autowired
     private EncryptionService encryptionService;
 

@@ -49,35 +49,24 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @SuppressWarnings({"unused", "rawtypes"})
 public class CharacterServiceImpl implements CharacterService {
     final static String CACHE_KEY_PREFIX = "CharacterService_";
-
     final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_character_' + ";
-
     final static String BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_backend_' + ";
-
     final static String DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_default_backend_' + ";
-
     final static String BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX = CACHE_KEY_PREFIX + "_backend_character_id_";
-
     final static String BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX = "'" + BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
-
     @Autowired
     private CharacterInfoMapper characterInfoMapper;
-
     @Autowired
     private CharacterBackendMapper characterBackendMapper;
-
     @Autowired
     private TagMapper tagMapper;
-
     @Autowired
     private OrgService orgService;
-
     @Autowired
     private InteractiveStatsMapper interactiveStatsMapper;
 

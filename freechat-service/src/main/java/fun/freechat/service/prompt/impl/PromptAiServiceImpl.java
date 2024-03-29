@@ -35,7 +35,6 @@ import static fun.freechat.service.ai.LanguageModelFactory.*;
 @Service
 @SuppressWarnings("unused")
 public class PromptAiServiceImpl implements PromptAiService {
-
     @Autowired
     private AiApiKeyService aiApiKeyService;
 

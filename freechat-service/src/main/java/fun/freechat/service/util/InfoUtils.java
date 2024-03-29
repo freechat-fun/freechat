@@ -15,7 +15,6 @@ public class InfoUtils {
     private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
             .disable(FAIL_ON_UNKNOWN_PROPERTIES)
             .setSerializationInclusion(NON_NULL);
-
     private static final int VISIBLE_SIZE = 4;
 
     public static ObjectMapper defaultMapper() {

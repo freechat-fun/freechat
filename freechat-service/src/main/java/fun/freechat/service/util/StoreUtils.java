@@ -21,11 +21,9 @@ import java.util.Base64;
 @Slf4j
 public class StoreUtils implements ApplicationContextAware {
     private static final String MEMORY_STORE_BEAN_NAME_SUFFIX = "ChatMemoryStore";
-
     private static final String FILE_STORE_BEAN_NAME_SUFFIX = "FileStore";
 
     private static ChatMemoryStore memoryStore = new InMemoryChatMemoryStore();
-
     private static FileStore fileStore;
 
     @Override
