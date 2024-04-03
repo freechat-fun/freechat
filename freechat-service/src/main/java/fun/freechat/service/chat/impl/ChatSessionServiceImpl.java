@@ -5,12 +5,22 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.moderation.ModerationModel;
 import dev.langchain4j.model.output.Response;
+import dev.langchain4j.rag.DefaultRetrievalAugmentor;
+import dev.langchain4j.rag.RetrievalAugmentor;
+import dev.langchain4j.rag.content.injector.ContentInjector;
+import dev.langchain4j.rag.content.injector.DefaultContentInjector;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
+import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.ModerationException;
+import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.*;
@@ -28,6 +38,8 @@ import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
+import fun.freechat.service.rag.EmbeddingModelService;
+import fun.freechat.service.rag.EmbeddingStoreService;
 import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
@@ -38,10 +50,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -66,6 +81,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     final static String CACHE_KEY_PREFIX = "ChatSessionService_";
     final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
+    @Value("${rag.maxResults}")
+    private Integer maxResults;
+    @Value("${rag.minScore}")
+    private Double minScore;
     @Autowired
     private CharacterService characterService;
     @Autowired
@@ -80,6 +99,15 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     private SysUserService userService;
     @Autowired
     private AiModelInfoService aiModelInfoService;
+    @Autowired
+    @Qualifier("inMemoryEmbeddingStoreService")
+    private EmbeddingStoreService<TextSegment> embeddingStoreService;
+    @Autowired
+    @Qualifier("spiEmbeddingModelService")
+    private EmbeddingModelService embeddingModelService;
+    @Autowired
+    @Qualifier("defaultExecutor")
+    private ThreadPoolTaskExecutor executor;
 
     private synchronized Lock getLock(Cache cache, String chatId) {
         if (Objects.isNull(cache)) {
@@ -252,6 +280,29 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 chatMemory.addAiMessage(response.content(), response.tokenUsage());
             }
 
+            // knowledge
+            EmbeddingModel embeddingModel = embeddingModelService.from(characterUid);
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(characterUid);
+
+            // todo: long-term memory
+
+            ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
+                    .embeddingModel(embeddingModel)
+                    .embeddingStore(embeddingStore)
+                    .maxResults(maxResults)
+                    .minScore(minScore)
+                    .build();
+
+            ContentInjector contentInjector = DefaultContentInjector.builder()
+                    .promptTemplate(PromptTemplate.from("{{contents}}"))
+                    .build();
+
+            RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
+                    .contentRetriever(contentRetriever)
+                    .contentInjector(contentInjector)
+                    .executor(executor)
+                    .build();
+
             return ChatSession.builder()
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
@@ -260,6 +311,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .prompt(prompt)
                     .promptFormat(promptFormat)
                     .variables(variables)
+                    .retriever(retrievalAugmentor)
                     .build();
         } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {
             log.warn("Failed to build chat session of {}", chatId, e);

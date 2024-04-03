@@ -56,6 +56,16 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
         return System.getenv("OPENAI_API_KEY");
     }
 
+    public static String apiKeyFor(String modelId) {
+        if (modelId.startsWith("[dash_scope]")) {
+            return apiKeyOfDashScope();
+        } else if (modelId.startsWith("[open_ai]")) {
+            return apiKeyOfOpenAI();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         userService = applicationContext.getBean(SysUserService.class);

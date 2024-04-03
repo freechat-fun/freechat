@@ -1,7 +1,6 @@
 package fun.freechat.api.admin;
 
 import fun.freechat.api.dto.AppMetaDTO;
-import fun.freechat.api.dto.LlmResultDTO;
 import fun.freechat.api.dto.OpenAiParamDTO;
 import fun.freechat.api.dto.QwenParamDTO;
 import fun.freechat.util.AppMetaUtils;
@@ -58,8 +57,7 @@ public class AppMetaApi {
     @GetMapping("/expose")
     public String expose(
             @RequestParam OpenAiParamDTO openAiParam,
-            @RequestParam QwenParamDTO qwenParam,
-            @RequestParam LlmResultDTO aiForPromptResult) {
+            @RequestParam QwenParamDTO qwenParam) {
         return "Oops...";
     }
 }

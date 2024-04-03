@@ -27,8 +27,10 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
     private Date gmtCreate;
     @Schema(description = "Modification time")
     private Date gmtModified;
-    @Schema(description = "Latest executed time")
-    private Date gmtExecuted;
+    @Schema(description = "Task start execution time")
+    private Date gmtStart;
+    @Schema(description = "Task end execution time")
+    private Date gmtEnd;
     @Schema(description = "Prompt reference information")
     private PromptRefDTO promptRef;
     @Schema(description = "Model identifier")
@@ -41,8 +43,10 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
     private Map<String, Object> params;
     @Schema(description = "Task scheduling configuration which compatible with Quartz cron format")
     private String cron;
-    @Schema(description = "Task execution status: pending | running | succeeded | failed")
+    @Schema(description = "Task execution status: pending | running | succeeded | failed | canceled")
     private String status;
+    @Schema(description = "Additional information, JSON format")
+    private String ext;
 
     public static PromptTaskDetailsDTO from(PromptTask task) {
         if (Objects.isNull(task)) {

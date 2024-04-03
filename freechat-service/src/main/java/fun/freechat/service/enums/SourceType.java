@@ -3,19 +3,16 @@ package fun.freechat.service.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.commons.lang3.StringUtils;
 
-public enum TaskStatus {
-    PENDING,
-    RUNNING,
-    SUCCEEDED,
-    FAILED,
-    CANCELED,
+public enum SourceType {
+    FILE,
+    URL,
     UNKNOWN;
-    public static TaskStatus of(String text) {
+    public static SourceType of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;
         }
         try {
-            return TaskStatus.valueOf(text.toUpperCase());
+            return SourceType.valueOf(text.toUpperCase());
         } catch (IllegalArgumentException e) {
             return UNKNOWN;
         }

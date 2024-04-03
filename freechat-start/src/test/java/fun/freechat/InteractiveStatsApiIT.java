@@ -21,7 +21,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
         Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(InteractiveStatsApiIT.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
-        promptId = TestPromptUtils.createPrompt(userId, "Hello unit-test", null);
+        promptId = TestPromptUtils.createPrompt(userId, "Hello integration-test", null);
         TestCommonUtils.waitAWhile();
     }
 
@@ -95,7 +95,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath(jsonPathPrefix + ".name").isEqualTo("Unit-test Prompt for " + userId)
+                    .jsonPath(jsonPathPrefix + ".name").isEqualTo("Integration-test Prompt for " + userId)
                     .jsonPath(jsonPathPrefix + ".referCount").isEqualTo(1)
                     .jsonPath(jsonPathPrefix + ".scoreCount").isEqualTo(1)
                     .jsonPath(jsonPathPrefix + ".score").isEqualTo(3);

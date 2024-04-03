@@ -234,7 +234,8 @@ CREATE TABLE IF NOT EXISTS `prompt_task` (
   `task_id` varchar(32) NOT NULL,
   `gmt_create` datetime NOT NULL,
   `gmt_modified` datetime NOT NULL,
-  `gmt_executed` datetime DEFAULT NULL,
+  `gmt_start` datetime DEFAULT NULL,
+  `gmt_end` datetime DEFAULT NULL,
   `prompt_uid` varchar(32) DEFAULT NULL,
   `variables` json DEFAULT NULL COMMENT 'variables applied to the prompt template',
   `draft` tinyint NOT NULL DEFAULT 0 COMMENT 'whether to use the prompt draft content',
@@ -243,7 +244,8 @@ CREATE TABLE IF NOT EXISTS `prompt_task` (
   `api_key_value` text DEFAULT NULL,
   `params` json DEFAULT NULL COMMENT 'model call parameters, the actual supported fields are related to modelId, depending on the model provider',
   `cron` varchar(32) DEFAULT NULL COMMENT 'cron expression for scheduled task',
-  `status` varchar(16) DEFAULT NUll COMMENT 'pending | running | succeeded | failed | unknown',
+  `status` varchar(16) DEFAULT NUll COMMENT 'pending | running | succeeded | failed | canceled',
+  `ext` json DEFAULT NULL,
   PRIMARY KEY (`task_id`),
   INDEX `idx_prompt` (`prompt_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='prompt task table'
@@ -287,9 +289,9 @@ CREATE TABLE IF NOT EXISTS `rag_task` (
   `gmt_start` datetime DEFAULT NULL,
   `gmt_end` datetime DEFAULT NULL,
   `character_uid` varchar(32) NOT NULL,
-  `source_type` varchar(16) NOT NULL DEFAULT 'file' COMMENT 'file | url | github',
+  `source_type` varchar(16) NOT NULL DEFAULT 'file' COMMENT 'file | url',
   `source` text NOT NULL,
-  `status` varchar(16) DEFAULT NUll COMMENT 'pending | running | succeeded | failed | unknown',
+  `status` varchar(16) DEFAULT NUll COMMENT 'pending | running | succeeded | failed | canceled',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `idx_character` (`character_uid`)

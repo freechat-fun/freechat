@@ -29,10 +29,6 @@ public class LocalFileStoreImpl implements FileStore {
     private String basePathStr;
     private Path basePath;
 
-    private Path toPath(String path) {
-        return StringUtils.isBlank(basePathStr) ? Paths.get(path) : Paths.get(basePathStr, path);
-    }
-
     private Path relativePath(Path path) {
         return basePath.relativize(path);
     }
@@ -41,6 +37,11 @@ public class LocalFileStoreImpl implements FileStore {
     public void postConstruct() {
         basePath = Path.of(basePathStr);
         log.info("File store base path: {}", basePathStr);
+    }
+
+    @Override
+    public Path toPath(String path) {
+        return StringUtils.isBlank(basePathStr) ? Paths.get(path) : Paths.get(basePathStr, path);
     }
 
     @Override

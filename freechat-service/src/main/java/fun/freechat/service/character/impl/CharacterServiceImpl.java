@@ -871,6 +871,23 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
+    public int removeBackendsByUser(User user) {
+        var statement = selectDistinct(Info.characterUid)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        List<String> characterUidList = characterInfoMapper.selectMany(statement)
+                .stream()
+                .map(CharacterInfo::getCharacterUid)
+                .toList();
+
+        return characterBackendMapper.delete(c ->
+                c.where(CharacterBackendDynamicSqlSupport.characterUid, isIn(characterUidList)));
+    }
+
+    @Override
     @LongPeriodCache
     public String getBackendOwner(String characterBackendId) {
         String characterUid = getBackendCharacterUid(characterBackendId);

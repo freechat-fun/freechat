@@ -15,6 +15,7 @@ import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
+import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.util.AuthorityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +44,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
     private AiApiKeyService aiApiKeyService;
     private OrgService orgService;
     private SysApiTokenService sysApiTokenService;
+    private RagTaskService ragTaskService;
 
     private boolean targetNotBlank(String target) {
         return StringUtils.isNotBlank(target) && !"null".equals(target);
@@ -74,6 +76,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         currentUser.getUserId().equals(getCharacterService().getBackendOwner(backendId));
                 case "chatDefaultOp" -> allow = targetObject instanceof String chatId &&
                         currentUser.getUserId().equals(getChatContextService().getChatOwner(chatId));
+                case "ragDefaultOp" -> allow = targetObject instanceof Long taskId &&
+                        currentUser.getUserId().equals(getRagTaskService().getOwner(taskId));
                 case "chatCreateOp" -> {
                     Long characterId  =(Long) targetObject;
                     if (Objects.isNull(characterId)) {
@@ -313,6 +317,13 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
             sysApiTokenService = applicationContext.getBean(SysApiTokenService.class);
         }
         return sysApiTokenService;
+    }
+
+    private RagTaskService getRagTaskService() {
+        if (Objects.isNull(ragTaskService)) {
+            ragTaskService = applicationContext.getBean((RagTaskService.class));
+        }
+        return ragTaskService;
     }
 
     @Override

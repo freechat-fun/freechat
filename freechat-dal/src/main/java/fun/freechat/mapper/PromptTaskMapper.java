@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PromptTask>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(taskId, gmtCreate, gmtModified, gmtExecuted, promptUid, draft, modelId, apiKeyName, cron, status, variables, apiKeyValue, params);
+    BasicColumn[] selectList = BasicColumn.columnList(taskId, gmtCreate, gmtModified, gmtStart, gmtEnd, promptUid, draft, modelId, apiKeyName, cron, status, variables, apiKeyValue, params, ext);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -40,7 +40,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         @Result(column="task_id", property="taskId", jdbcType=JdbcType.VARCHAR, id=true),
         @Result(column="gmt_create", property="gmtCreate", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="gmt_modified", property="gmtModified", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="gmt_executed", property="gmtExecuted", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="gmt_start", property="gmtStart", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="gmt_end", property="gmtEnd", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="prompt_uid", property="promptUid", jdbcType=JdbcType.VARCHAR),
         @Result(column="draft", property="draft", jdbcType=JdbcType.TINYINT),
         @Result(column="model_id", property="modelId", jdbcType=JdbcType.VARCHAR),
@@ -49,7 +50,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         @Result(column="status", property="status", jdbcType=JdbcType.VARCHAR),
         @Result(column="variables", property="variables", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="api_key_value", property="apiKeyValue", jdbcType=JdbcType.LONGVARCHAR),
-        @Result(column="params", property="params", jdbcType=JdbcType.LONGVARCHAR)
+        @Result(column="params", property="params", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<PromptTask> selectMany(SelectStatementProvider selectStatement);
 
@@ -81,7 +83,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             c.map(taskId).toProperty("taskId")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
-            .map(gmtExecuted).toProperty("gmtExecuted")
+            .map(gmtStart).toProperty("gmtStart")
+            .map(gmtEnd).toProperty("gmtEnd")
             .map(promptUid).toProperty("promptUid")
             .map(draft).toProperty("draft")
             .map(modelId).toProperty("modelId")
@@ -91,6 +94,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .map(variables).toProperty("variables")
             .map(apiKeyValue).toProperty("apiKeyValue")
             .map(params).toProperty("params")
+            .map(ext).toProperty("ext")
         );
     }
 
@@ -100,7 +104,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             c.map(taskId).toProperty("taskId")
             .map(gmtCreate).toProperty("gmtCreate")
             .map(gmtModified).toProperty("gmtModified")
-            .map(gmtExecuted).toProperty("gmtExecuted")
+            .map(gmtStart).toProperty("gmtStart")
+            .map(gmtEnd).toProperty("gmtEnd")
             .map(promptUid).toProperty("promptUid")
             .map(draft).toProperty("draft")
             .map(modelId).toProperty("modelId")
@@ -110,6 +115,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .map(variables).toProperty("variables")
             .map(apiKeyValue).toProperty("apiKeyValue")
             .map(params).toProperty("params")
+            .map(ext).toProperty("ext")
         );
     }
 
@@ -119,7 +125,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             c.map(taskId).toPropertyWhenPresent("taskId", row::getTaskId)
             .map(gmtCreate).toPropertyWhenPresent("gmtCreate", row::getGmtCreate)
             .map(gmtModified).toPropertyWhenPresent("gmtModified", row::getGmtModified)
-            .map(gmtExecuted).toPropertyWhenPresent("gmtExecuted", row::getGmtExecuted)
+            .map(gmtStart).toPropertyWhenPresent("gmtStart", row::getGmtStart)
+            .map(gmtEnd).toPropertyWhenPresent("gmtEnd", row::getGmtEnd)
             .map(promptUid).toPropertyWhenPresent("promptUid", row::getPromptUid)
             .map(draft).toPropertyWhenPresent("draft", row::getDraft)
             .map(modelId).toPropertyWhenPresent("modelId", row::getModelId)
@@ -129,6 +136,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .map(variables).toPropertyWhenPresent("variables", row::getVariables)
             .map(apiKeyValue).toPropertyWhenPresent("apiKeyValue", row::getApiKeyValue)
             .map(params).toPropertyWhenPresent("params", row::getParams)
+            .map(ext).toPropertyWhenPresent("ext", row::getExt)
         );
     }
 
@@ -164,7 +172,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         return dsl.set(taskId).equalTo(row::getTaskId)
                 .set(gmtCreate).equalTo(row::getGmtCreate)
                 .set(gmtModified).equalTo(row::getGmtModified)
-                .set(gmtExecuted).equalTo(row::getGmtExecuted)
+                .set(gmtStart).equalTo(row::getGmtStart)
+                .set(gmtEnd).equalTo(row::getGmtEnd)
                 .set(promptUid).equalTo(row::getPromptUid)
                 .set(draft).equalTo(row::getDraft)
                 .set(modelId).equalTo(row::getModelId)
@@ -173,7 +182,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
                 .set(status).equalTo(row::getStatus)
                 .set(variables).equalTo(row::getVariables)
                 .set(apiKeyValue).equalTo(row::getApiKeyValue)
-                .set(params).equalTo(row::getParams);
+                .set(params).equalTo(row::getParams)
+                .set(ext).equalTo(row::getExt);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -181,7 +191,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         return dsl.set(taskId).equalToWhenPresent(row::getTaskId)
                 .set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
                 .set(gmtModified).equalToWhenPresent(row::getGmtModified)
-                .set(gmtExecuted).equalToWhenPresent(row::getGmtExecuted)
+                .set(gmtStart).equalToWhenPresent(row::getGmtStart)
+                .set(gmtEnd).equalToWhenPresent(row::getGmtEnd)
                 .set(promptUid).equalToWhenPresent(row::getPromptUid)
                 .set(draft).equalToWhenPresent(row::getDraft)
                 .set(modelId).equalToWhenPresent(row::getModelId)
@@ -190,7 +201,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
                 .set(status).equalToWhenPresent(row::getStatus)
                 .set(variables).equalToWhenPresent(row::getVariables)
                 .set(apiKeyValue).equalToWhenPresent(row::getApiKeyValue)
-                .set(params).equalToWhenPresent(row::getParams);
+                .set(params).equalToWhenPresent(row::getParams)
+                .set(ext).equalToWhenPresent(row::getExt);
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -198,7 +210,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         return update(c ->
             c.set(gmtCreate).equalTo(row::getGmtCreate)
             .set(gmtModified).equalTo(row::getGmtModified)
-            .set(gmtExecuted).equalTo(row::getGmtExecuted)
+            .set(gmtStart).equalTo(row::getGmtStart)
+            .set(gmtEnd).equalTo(row::getGmtEnd)
             .set(promptUid).equalTo(row::getPromptUid)
             .set(draft).equalTo(row::getDraft)
             .set(modelId).equalTo(row::getModelId)
@@ -208,6 +221,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .set(variables).equalTo(row::getVariables)
             .set(apiKeyValue).equalTo(row::getApiKeyValue)
             .set(params).equalTo(row::getParams)
+            .set(ext).equalTo(row::getExt)
             .where(taskId, isEqualTo(row::getTaskId))
         );
     }
@@ -217,7 +231,8 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
         return update(c ->
             c.set(gmtCreate).equalToWhenPresent(row::getGmtCreate)
             .set(gmtModified).equalToWhenPresent(row::getGmtModified)
-            .set(gmtExecuted).equalToWhenPresent(row::getGmtExecuted)
+            .set(gmtStart).equalToWhenPresent(row::getGmtStart)
+            .set(gmtEnd).equalToWhenPresent(row::getGmtEnd)
             .set(promptUid).equalToWhenPresent(row::getPromptUid)
             .set(draft).equalToWhenPresent(row::getDraft)
             .set(modelId).equalToWhenPresent(row::getModelId)
@@ -227,6 +242,7 @@ public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper,
             .set(variables).equalToWhenPresent(row::getVariables)
             .set(apiKeyValue).equalToWhenPresent(row::getApiKeyValue)
             .set(params).equalToWhenPresent(row::getParams)
+            .set(ext).equalToWhenPresent(row::getExt)
             .where(taskId, isEqualTo(row::getTaskId))
         );
     }

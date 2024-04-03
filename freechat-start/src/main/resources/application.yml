@@ -36,6 +36,11 @@ chat:
 file:
   storeType: local
   basePath: ${APP_HOME}/data
+rag:
+  maxSegmentSize: 300
+  maxOverlapSize: 30
+  maxResults: 3
+  minScore: 0.3
 redis:
   mode: single
   datasource:
@@ -124,6 +129,9 @@ springdoc:
     - group: g-chat
       displayName: Chat
       pathsToMatch: /api/v1/chat/**
+    - group: g-rag
+      displayName: RAG
+      pathsToMatch: /api/v1/rag/**
     - group: g-organization
       displayName: Organization
       pathsToMatch: /api/v1/org/**

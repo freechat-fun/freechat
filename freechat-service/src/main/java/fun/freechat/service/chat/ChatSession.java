@@ -42,13 +42,15 @@ public class ChatSession {
                        ChatMemory chatMemory,
                        ChatPromptContent prompt,
                        PromptFormat promptFormat,
-                       Map<String, Object> variables) {
+                       Map<String, Object> variables,
+                       RetrievalAugmentor retriever) {
         aiServiceContext = new AiServiceContext(null);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
         aiServiceContext.moderationModel = moderationModel;
         aiServiceContext.chatMemories = new ConcurrentHashMap<>();
         aiServiceContext.chatMemoryProvider = memoryId -> chatMemory;
+        aiServiceContext.retrievalAugmentor = retriever;
 
         this.prompt = prompt;
         this.promptFormat = promptFormat;
@@ -71,12 +73,6 @@ public class ChatSession {
             }
         }
 
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public ChatSession retrievalAugmentor(RetrievalAugmentor retriever) {
-        aiServiceContext.retrievalAugmentor = retriever;
         return this;
     }
 

@@ -30,8 +30,8 @@ public class PromptTaskApi {
 
     @Operation(
             operationId = "createPromptTask",
-            summary = "Add Prompt Task",
-            description = "Add a prompt task."
+            summary = "Create Prompt Task",
+            description = "Create a prompt task."
     )
     @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0.promptRef.promptId, 'promptDefaultOp')")

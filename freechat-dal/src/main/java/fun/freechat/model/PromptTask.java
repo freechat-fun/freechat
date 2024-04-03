@@ -15,7 +15,10 @@ public class PromptTask implements Serializable {
     private Date gmtModified;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    private Date gmtExecuted;
+    private Date gmtStart;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Date gmtEnd;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String promptUid;
@@ -43,6 +46,9 @@ public class PromptTask implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String params;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private static final long serialVersionUID = 1L;
@@ -96,19 +102,35 @@ public class PromptTask implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public Date getGmtExecuted() {
-        return gmtExecuted;
+    public Date getGmtStart() {
+        return gmtStart;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public PromptTask withGmtExecuted(Date gmtExecuted) {
-        this.setGmtExecuted(gmtExecuted);
+    public PromptTask withGmtStart(Date gmtStart) {
+        this.setGmtStart(gmtStart);
         return this;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    public void setGmtExecuted(Date gmtExecuted) {
-        this.gmtExecuted = gmtExecuted;
+    public void setGmtStart(Date gmtStart) {
+        this.gmtStart = gmtStart;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Date getGmtEnd() {
+        return gmtEnd;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public PromptTask withGmtEnd(Date gmtEnd) {
+        this.setGmtEnd(gmtEnd);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setGmtEnd(Date gmtEnd) {
+        this.gmtEnd = gmtEnd;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -255,6 +277,22 @@ public class PromptTask implements Serializable {
         this.params = params;
     }
 
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getExt() {
+        return ext;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public PromptTask withExt(String ext) {
+        this.setExt(ext);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
+
     @Override
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public boolean equals(Object that) {
@@ -271,7 +309,8 @@ public class PromptTask implements Serializable {
         return (this.getTaskId() == null ? other.getTaskId() == null : this.getTaskId().equals(other.getTaskId()))
             && (this.getGmtCreate() == null ? other.getGmtCreate() == null : this.getGmtCreate().equals(other.getGmtCreate()))
             && (this.getGmtModified() == null ? other.getGmtModified() == null : this.getGmtModified().equals(other.getGmtModified()))
-            && (this.getGmtExecuted() == null ? other.getGmtExecuted() == null : this.getGmtExecuted().equals(other.getGmtExecuted()))
+            && (this.getGmtStart() == null ? other.getGmtStart() == null : this.getGmtStart().equals(other.getGmtStart()))
+            && (this.getGmtEnd() == null ? other.getGmtEnd() == null : this.getGmtEnd().equals(other.getGmtEnd()))
             && (this.getPromptUid() == null ? other.getPromptUid() == null : this.getPromptUid().equals(other.getPromptUid()))
             && (this.getDraft() == null ? other.getDraft() == null : this.getDraft().equals(other.getDraft()))
             && (this.getModelId() == null ? other.getModelId() == null : this.getModelId().equals(other.getModelId()))
@@ -288,7 +327,8 @@ public class PromptTask implements Serializable {
         result = prime * result + ((getTaskId() == null) ? 0 : getTaskId().hashCode());
         result = prime * result + ((getGmtCreate() == null) ? 0 : getGmtCreate().hashCode());
         result = prime * result + ((getGmtModified() == null) ? 0 : getGmtModified().hashCode());
-        result = prime * result + ((getGmtExecuted() == null) ? 0 : getGmtExecuted().hashCode());
+        result = prime * result + ((getGmtStart() == null) ? 0 : getGmtStart().hashCode());
+        result = prime * result + ((getGmtEnd() == null) ? 0 : getGmtEnd().hashCode());
         result = prime * result + ((getPromptUid() == null) ? 0 : getPromptUid().hashCode());
         result = prime * result + ((getDraft() == null) ? 0 : getDraft().hashCode());
         result = prime * result + ((getModelId() == null) ? 0 : getModelId().hashCode());
@@ -308,7 +348,8 @@ public class PromptTask implements Serializable {
         sb.append(", taskId=").append(taskId);
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
-        sb.append(", gmtExecuted=").append(gmtExecuted);
+        sb.append(", gmtStart=").append(gmtStart);
+        sb.append(", gmtEnd=").append(gmtEnd);
         sb.append(", promptUid=").append(promptUid);
         sb.append(", draft=").append(draft);
         sb.append(", modelId=").append(modelId);
@@ -318,6 +359,7 @@ public class PromptTask implements Serializable {
         sb.append(", variables=").append(variables);
         sb.append(", apiKeyValue=").append(apiKeyValue);
         sb.append(", params=").append(params);
+        sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

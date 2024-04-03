@@ -34,30 +34,52 @@ public class FileUtils {
         return dstPath;
     }
 
-    public static String getDefaultPublicUrlForImage(HttpServletRequest request, String path) {
-        String subPath = path.substring(PUBLIC_DIR.length());
+    private static String getDefaultPublicUrl(HttpServletRequest request, String path, String dataType) {
         return ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath("/public/image/" +
-                        Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8)))
+                .replacePath("/public/" + dataType + "/" + getDefaultPublicKey(path))
                 .build()
                 .toString();
     }
 
-    public static String getDefaultPublicPathForImage(String key) {
+    public static String getDefaultPublicKey(String path) {
+        String subPath = path.substring(PUBLIC_DIR.length());
+        return Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String getDefaultPublicUrlForImage(HttpServletRequest request, String path) {
+        return getDefaultPublicUrl(request, path, "image");
+    }
+
+    public static String getDefaultPublicUrlForDocument(HttpServletRequest request, String path) {
+        return getDefaultPublicUrl(request, path, "document");
+    }
+
+    public static String getDefaultPublicPath(String key) {
         String subPath = new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8);
         return PUBLIC_DIR + subPath;
     }
 
-    public static String getDefaultPrivateUrlForImage(HttpServletRequest request, String path, String userId) {
-        String subPath = path.substring(PRIVATE_DIR.length() + userId.length() + 1);
+    private static String getDefaultPrivateUrl(HttpServletRequest request, String path, String userId, String dataType) {
         return ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath("/my/image/" +
-                        Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8)))
+                .replacePath("/my/" + dataType + "/" + getDefaultPrivateKey(path, userId))
                 .build()
                 .toString();
     }
 
-    public static String getDefaultPrivatePathForImage(String key, String userId) {
+    public static String getDefaultPrivateKey(String path, String userId) {
+        String subPath = path.substring(PRIVATE_DIR.length() + userId.length() + 1);
+        return Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String getDefaultPrivateUrlForImage(HttpServletRequest request, String path, String userId) {
+        return getDefaultPrivateUrl(request, path, userId, "image");
+    }
+
+    public static String getDefaultPrivateUrlForDocument(HttpServletRequest request, String path, String userId) {
+        return getDefaultPrivateUrl(request, path, userId, "document");
+    }
+
+    public static String getDefaultPrivatePath(String key, String userId) {
         String subPath = new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8);
         return PRIVATE_DIR + userId + "/" + subPath;
     }

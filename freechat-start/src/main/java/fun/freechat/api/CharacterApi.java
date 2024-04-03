@@ -40,6 +40,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.*;
 
+import static fun.freechat.api.util.FileUtils.PRIVATE_DIR;
 import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 
 @Controller
@@ -54,10 +55,14 @@ public class CharacterApi {
     private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
     private static final String AVATAR_MAX_SIZE_KEY = "avatar.maxSize";
     private static final String AVATAR_MAX_COUNT_KEY = "avatar.maxCount";
+    private static final String DOCUMENT_MAX_SIZE_KEY = "document.maxSize";
+    private static final String DOCUMENT_MAX_COUNT_KEY = "document.maxCount";
     private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
     private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
     private static final long DEFAULT_AVATAR_MAX_SIZE = 1024 * 1024;
     private static final int DEFAULT_AVATAR_MAX_COUNT = 10;
+    private static final long DEFAULT_DOCUMENT_MAX_SIZE = 10 * 1024 * 1024;
+    private static final int DEFAULT_DOCUMENT_MAX_COUNT = 5;
 
     @Value("${chat.memory.minWindowSize:50}")
     private Integer minWindowSize;
@@ -107,7 +112,7 @@ public class CharacterApi {
     private String getCharacterUidFromPath(String path) {
         String[] parts = path.split("/");
         if (parts.length < 2) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image key");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid key");
         }
         return parts[parts.length - 2];
     }
@@ -710,7 +715,7 @@ public class CharacterApi {
             String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            String path = FileUtils.getDefaultPublicPathForImage(key);
+            String path = FileUtils.getDefaultPublicPath(key);
             String characterUid = getCharacterUidFromPath(path);
             String userId = characterService.getOwnerByUid(characterUid);
             if (!AccountUtils.currentUser().getUserId().equals(userId)) {
@@ -793,6 +798,98 @@ public class CharacterApi {
             return shareUrl;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
+
+    @Operation(
+            operationId = "uploadCharacterDocument",
+            summary = "Upload Character Document",
+            description = "Upload a document of the character."
+    )
+    @PostMapping(value = "/document/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p2, 'characterDefaultOp')")
+    public String uploadDocument(
+            HttpServletRequest request,
+            @Parameter(description = "Character document") @RequestParam("file") @NotNull
+            MultipartFile file,
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
+            Long characterId) {
+        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
+        long maxSize = ConfigUtils.getLongOrDefault(properties, DOCUMENT_MAX_SIZE_KEY, DEFAULT_DOCUMENT_MAX_SIZE);
+        int maxCount = ConfigUtils.getIntOrDefault(properties, DOCUMENT_MAX_COUNT_KEY, DEFAULT_DOCUMENT_MAX_COUNT);
+
+
+        if (file.getSize() > maxSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
+        }
+
+        String characterUid = characterService.getUid(characterId);
+        if (StringUtils.isBlank(characterUid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+        try {
+            String dstDir = PRIVATE_DIR + userId + "/character/document/" + characterUid;
+            String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            return FileUtils.getDefaultPrivateUrlForDocument(request, dstPath, userId);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
+
+    @Operation(
+            operationId = "deleteCharacterDocument",
+            summary = "Delete Character Document",
+            description = "Delete a document of the character by key."
+    )
+    @DeleteMapping("/document/{key}")
+    public Boolean deleteDocument(
+            @Parameter(description = "Document key") @PathVariable("key") @NotBlank
+            String key) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+        try {
+            String path = FileUtils.getDefaultPrivatePath(key, userId);
+            String characterUid = getCharacterUidFromPath(path);
+            String ownerId = characterService.getOwnerByUid(characterUid);
+            if (!userId.equals(ownerId)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Document doesn't belong to you");
+            }
+            fileStore.delete(path);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Operation(
+            operationId = "listCharacterDocuments",
+            summary = "List Character Documents",
+            description = "List documents of the character."
+    )
+    @GetMapping("/documents/{characterId}")
+    @PreAuthorize("hasPermission(#p1, 'characterDefaultOp')")
+    public List<String> listDocuments(
+            HttpServletRequest request,
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
+            Long characterId) {
+        String characterUid = characterService.getUid(characterId);
+        if (StringUtils.isBlank(characterUid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+        try {
+            String dstDir = PRIVATE_DIR + userId + "/character/document/" + characterUid;
+            return fileStore.list(dstDir, null, false)
+                    .stream()
+                    .map(path -> FileUtils.getDefaultPrivateUrlForDocument(request, path, userId))
+                    .toList();
+        } catch (IOException e) {
+            return Collections.emptyList();
         }
     }
 

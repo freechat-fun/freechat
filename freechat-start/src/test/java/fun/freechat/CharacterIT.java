@@ -3,7 +3,6 @@ package fun.freechat;
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestCharacterUtils;
 import fun.freechat.util.TestCommonUtils;
-import fun.freechat.util.TestImageUtils;
 import io.micrometer.common.util.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,19 +10,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.util.MultiValueMap;
 
-import java.nio.file.Path;
 import java.util.List;
 
+import static fun.freechat.util.TestResourceUtils.bodyFrom;
+import static fun.freechat.util.TestResourceUtils.getResourceKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class ImageIT extends AbstractIntegrationTest {
+public class CharacterIT extends AbstractIntegrationTest {
     private String ownerId;
     private String otherId;
     private String ownerToken;
@@ -33,12 +30,12 @@ public class ImageIT extends AbstractIntegrationTest {
     @BeforeEach
     public void setUp() {
         Pair<String, String> ownerAndToken = TestAccountUtils.createUserAndToken(
-                ImageIT.class.getName() + "-1");
+                CharacterIT.class.getName() + "-1");
         ownerId = ownerAndToken.getLeft();
         ownerToken = ownerAndToken.getRight();
 
         Pair<String, String> otherAndToken = TestAccountUtils.createUserAndToken(
-                ImageIT.class.getName() + "-2");
+                CharacterIT.class.getName() + "-2");
         otherId = otherAndToken.getLeft();
         otherToken = otherAndToken.getRight();
 
@@ -106,8 +103,8 @@ public class ImageIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        String key1 = getImageKey(url1);
-        String key2 = getImageKey(url2);
+        String key1 = getResourceKey(url1);
+        String key2 = getResourceKey(url2);
 
         testClient.delete().uri("/api/v1/character/picture/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
@@ -138,20 +135,88 @@ public class ImageIT extends AbstractIntegrationTest {
         assertTrue(BooleanUtils.isTrue(success));
     }
 
-    private MultiValueMap<String, HttpEntity<?>> bodyFrom(String imagePath) {
-        Path path = Path.of(imagePath);
-        String filename = path.getFileName().toString();
+    @Test
+    public void testCharacterDocuments() {
+        String url1 = testClient.post().uri("/api/v1/character/document/" + characterId)
+                .header(AUTHORIZATION, "Bearer " + ownerToken)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(bodyFrom("/miles-of-smiles-terms-of-use.txt"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        final byte[] fileContent = TestImageUtils.imageData(imagePath);
+        assertTrue(StringUtils.isNotBlank(url1));
 
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("file", fileContent).filename(filename);
+        String url2 = testClient.post().uri("/api/v1/character/document/" + characterId)
+                .header(AUTHORIZATION, "Bearer " + ownerToken)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(bodyFrom("/story-about-happy-carrot.txt"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
 
-        return builder.build();
-    }
+        assertTrue(StringUtils.isNotBlank(url2));
 
-    private String getImageKey(String url) {
-        String[] parts = url.split("/");
-        return parts[parts.length - 1];
+        testClient.post().uri("/api/v1/character/document/" + characterId)
+                .header(AUTHORIZATION, "Bearer " + otherToken)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(bodyFrom("/miles-of-smiles-terms-of-use.txt"))
+                .exchange()
+                .expectStatus().isForbidden();
+
+        List<String> urls = testClient.get().uri("/api/v1/character/documents/" + characterId)
+                .header(AUTHORIZATION, "Bearer " + ownerToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<List<String>>() {})
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(urls).hasSize(2).contains(url1, url2);
+
+        testClient.get().uri("/api/v1/character/documents/" + characterId)
+                .header(AUTHORIZATION, "Bearer " + otherToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isForbidden();
+
+        String key1 = getResourceKey(url1);
+        String key2 = getResourceKey(url2);
+
+        testClient.delete().uri("/api/v1/character/document/" + key1)
+                .header(AUTHORIZATION, "Bearer " + otherToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isForbidden();
+
+        Boolean success = testClient.delete().uri("/api/v1/character/document/" + key1)
+                .header(AUTHORIZATION, "Bearer " + ownerToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertTrue(BooleanUtils.isTrue(success));
+
+        success = testClient.delete().uri("/api/v1/character/document/" + key2)
+                .header(AUTHORIZATION, "Bearer " + ownerToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertTrue(BooleanUtils.isTrue(success));
     }
 }

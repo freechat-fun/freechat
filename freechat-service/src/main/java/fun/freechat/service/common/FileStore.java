@@ -5,12 +5,14 @@ import org.apache.commons.io.IOUtils;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
 public interface FileStore extends Closeable {
+    Path toPath(String path);
     void close();
     long size(String path) throws IOException;
     List<String> list(String path, String regex, boolean recursive) throws IOException;

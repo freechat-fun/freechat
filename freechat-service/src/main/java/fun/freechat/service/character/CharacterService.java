@@ -74,6 +74,7 @@ public interface CharacterService {
     CharacterBackend getBackend(String characterBackendId);
     List<String> listBackendIds(String characterUid);
     List<CharacterBackend> listBackends(String characterUid);
+    int removeBackendsByUser(User user);
     String getBackendOwner(String characterBackendId);
     String getBackendCharacterUid(String characterBackendId);
 }

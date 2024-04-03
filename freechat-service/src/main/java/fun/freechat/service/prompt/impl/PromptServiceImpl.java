@@ -515,21 +515,6 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     @Override
-    public List<Long> delete(User user) {
-        var statement = select(Info.promptId)
-                .from(Info.table)
-                .where(Info.userId, isEqualTo(user.getUserId()))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-        List<Long> ids = promptInfoMapper.selectMany(statement)
-                .stream()
-                .map(PromptInfo::getPromptId)
-                .toList();
-
-        return delete(ids, user);
-    }
-
-    @Override
     public List<Long> deleteByName(String name, User user) {
         var statement = select(Info.promptId)
                 .from(Info.table)
@@ -543,6 +528,21 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .toList();
 
         return delete(ids, user);
+    }
+
+    @Override
+    public void deleteByUser(User user) {
+        var statement = select(Info.promptId)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<Long> ids = promptInfoMapper.selectMany(statement)
+                .stream()
+                .map(PromptInfo::getPromptId)
+                .toList();
+
+        delete(ids, user);
     }
 
     @Override

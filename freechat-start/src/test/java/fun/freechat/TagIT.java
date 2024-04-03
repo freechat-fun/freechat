@@ -25,8 +25,8 @@ public class TagIT extends AbstractIntegrationTest {
         Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(TagIT.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
-        promptId1 = TestPromptUtils.createPrompt(userId, "Hello unit-test 1", null);
-        promptId2 = TestPromptUtils.createPrompt(userId, "Hello unit-test 2", null);
+        promptId1 = TestPromptUtils.createPrompt(userId, "Hello integration-test 1", null);
+        promptId2 = TestPromptUtils.createPrompt(userId, "Hello integration-test 2", null);
         TestTagUtils.addTag(userId, promptId1, "test-tag-1");
         TestTagUtils.addTag(userId, promptId1, "test-tag-2");
         TestTagUtils.addTag(userId, promptId2, "test-tag-1");

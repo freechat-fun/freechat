@@ -57,8 +57,8 @@ public interface PromptService {
     boolean hide(Long promptId, User user);
     boolean delete(Long promptId, User user);
     List<Long> delete(List<Long> promptIds, User user);
-    List<Long> delete(User user);
     List<Long> deleteByName(String name, User user);
+    void deleteByUser(User user);
     Triple<PromptInfo, List<String>, List<String>> summary(Long promptId, User user);
     List<Triple<PromptInfo, List<String>, List<String>>> summary(Collection<Long> promptIds, User user);
     Triple<PromptInfo, List<String>, List<String>> details(Long promptId, User user);

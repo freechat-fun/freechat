@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.http.MediaType;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import static fun.freechat.util.TestChatUtils.modelParams;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -98,19 +100,6 @@ public class ChatIT extends AbstractIntegrationTest{
         deleteDevelop();
     }
 
-    private Map<String, Object> modelParams(String modelId) {
-        Map<String, Object> param = new HashMap<>();
-        if (modelId.startsWith("[dash_scope]")) {
-            param.put("topP", 0.8d);
-            param.put("seed", new Random().nextInt(0, Integer.MAX_VALUE));
-        } else if (modelId.startsWith("[open_ai]")) {
-            param.put("baseUrl", "https://api.openai-proxy.com/v1");
-            param.put("maxTokens", 100);
-            param.put("temperature", 0.7d);
-        }
-        return param;
-    }
-
     private void createDeveloper() {
         Pair<String, String> developerAndToken = TestAccountUtils.createUserAndToken("11");
         developerId = developerAndToken.getLeft();
@@ -135,7 +124,6 @@ public class ChatIT extends AbstractIntegrationTest{
         dto.setLang("en");
         dto.setVisibility(Visibility.PUBLIC.text());
         dto.setChatTemplate(prompt);
-        dto.setFormat(PromptFormat.MUSTACHE.text());
 
         promptId = testClient.post().uri("/api/v1/prompt")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
