@@ -15,4 +15,5 @@ from freechat_sdk.api.organization_api import OrganizationApi
 from freechat_sdk.api.plugin_api import PluginApi
 from freechat_sdk.api.prompt_api import PromptApi
 from freechat_sdk.api.prompt_task_api import PromptTaskApi
+from freechat_sdk.api.rag_api import RagApi
 

@@ -278,14 +278,44 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
+     */
+    public async getUserBasic(_options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // Path Params
+        const localVarPath = '/api/v1/account/basic';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
      * @param username Username
      */
-    public async getUserBasic(username: string, _options?: Configuration): Promise<RequestContext> {
+    public async getUserBasic1(username: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'username' is not null or undefined
         if (username === null || username === undefined) {
-            throw new RequiredError("AccountApi", "getUserBasic", "username");
+            throw new RequiredError("AccountApi", "getUserBasic1", "username");
         }
 
 
@@ -700,6 +730,35 @@ export class AccountApiResponseProcessor {
      * @throws ApiException if the response code was not in [200, 299]
      */
      public async getUserBasicWithHttpInfo(response: ResponseContext): Promise<HttpInfo<UserBasicInfoDTO >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: UserBasicInfoDTO = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "UserBasicInfoDTO", ""
+            ) as UserBasicInfoDTO;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: UserBasicInfoDTO = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "UserBasicInfoDTO", ""
+            ) as UserBasicInfoDTO;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to getUserBasic1
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async getUserBasic1WithHttpInfo(response: ResponseContext): Promise<HttpInfo<UserBasicInfoDTO >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: UserBasicInfoDTO = ObjectSerializer.deserialize(

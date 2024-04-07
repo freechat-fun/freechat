@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **expose**
-> str expose(open_ai_param, qwen_param, ai_for_prompt_result)
+> str expose(open_ai_param, qwen_param)
 
 Expose DTO definitions
 
@@ -21,7 +21,6 @@ This method does nothing.
 
 ```python
 import freechat_sdk
-from freechat_sdk.models.llm_result_dto import LlmResultDTO
 from freechat_sdk.models.open_ai_param_dto import OpenAiParamDTO
 from freechat_sdk.models.qwen_param_dto import QwenParamDTO
 from freechat_sdk.rest import ApiException
@@ -49,11 +48,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     api_instance = freechat_sdk.AppMetaForAdminApi(api_client)
     open_ai_param = freechat_sdk.OpenAiParamDTO() # OpenAiParamDTO | 
     qwen_param = freechat_sdk.QwenParamDTO() # QwenParamDTO | 
-    ai_for_prompt_result = freechat_sdk.LlmResultDTO() # LlmResultDTO | 
 
     try:
         # Expose DTO definitions
-        api_response = api_instance.expose(open_ai_param, qwen_param, ai_for_prompt_result)
+        api_response = api_instance.expose(open_ai_param, qwen_param)
         print("The response of AppMetaForAdminApi->expose:\n")
         pprint(api_response)
     except Exception as e:
@@ -69,7 +67,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **open_ai_param** | [**OpenAiParamDTO**](.md)|  | 
  **qwen_param** | [**QwenParamDTO**](.md)|  | 
- **ai_for_prompt_result** | [**LlmResultDTO**](.md)|  | 
 
 ### Return type
 

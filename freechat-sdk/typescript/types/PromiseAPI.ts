@@ -61,6 +61,8 @@ import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { QwenParamDTO } from '../models/QwenParamDTO.js';
+import { RagTaskDTO } from '../models/RagTaskDTO.js';
+import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -439,10 +441,18 @@ export class PromiseAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
-     * @param username Username
      */
-    public getUserBasicWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        const result = this.api.getUserBasicWithHttpInfo(username, _options);
+    public getUserBasicWithHttpInfo(_options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        const result = this.api.getUserBasicWithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     */
+    public getUserBasic(_options?: Configuration): Promise<UserBasicInfoDTO> {
+        const result = this.api.getUserBasic(_options);
         return result.toPromise();
     }
 
@@ -451,8 +461,18 @@ export class PromiseAccountApi {
      * Get User Basic Information
      * @param username Username
      */
-    public getUserBasic(username: string, _options?: Configuration): Promise<UserBasicInfoDTO> {
-        const result = this.api.getUserBasic(username, _options);
+    public getUserBasic1WithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        const result = this.api.getUserBasic1WithHttpInfo(username, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     * @param username Username
+     */
+    public getUserBasic1(username: string, _options?: Configuration): Promise<UserBasicInfoDTO> {
+        const result = this.api.getUserBasic1(username, _options);
         return result.toPromise();
     }
 
@@ -1301,10 +1321,9 @@ export class PromiseAppMetaForAdminApi {
      * Expose DTO definitions
      * @param openAiParam 
      * @param qwenParam 
-     * @param aiForPromptResult 
      */
-    public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, aiForPromptResult: LlmResultDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.exposeWithHttpInfo(openAiParam, qwenParam, aiForPromptResult, _options);
+    public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.exposeWithHttpInfo(openAiParam, qwenParam, _options);
         return result.toPromise();
     }
 
@@ -1313,10 +1332,9 @@ export class PromiseAppMetaForAdminApi {
      * Expose DTO definitions
      * @param openAiParam 
      * @param qwenParam 
-     * @param aiForPromptResult 
      */
-    public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, aiForPromptResult: LlmResultDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.expose(openAiParam, qwenParam, aiForPromptResult, _options);
+    public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.expose(openAiParam, qwenParam, _options);
         return result.toPromise();
     }
 
@@ -1520,6 +1538,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Delete a document of the character by key.
+     * Delete Character Document
+     * @param key Document key
+     */
+    public deleteCharacterDocumentWithHttpInfo(key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteCharacterDocumentWithHttpInfo(key, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a document of the character by key.
+     * Delete Character Document
+     * @param key Document key
+     */
+    public deleteCharacterDocument(key: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteCharacterDocument(key, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Delete a picture of the character by key.
      * Delete Character Picture
      * @param key Image key
@@ -1676,6 +1714,26 @@ export class PromiseCharacterApi {
      */
     public listCharacterBackends(characterId: number, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
         const result = this.api.listCharacterBackends(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List documents of the character.
+     * List Character Documents
+     * @param characterId Character identifier
+     */
+    public listCharacterDocumentsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterDocumentsWithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List documents of the character.
+     * List Character Documents
+     * @param characterId Character identifier
+     */
+    public listCharacterDocuments(characterId: number, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterDocuments(characterId, _options);
         return result.toPromise();
     }
 
@@ -1924,6 +1982,28 @@ export class PromiseCharacterApi {
      */
     public uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
         const result = this.api.uploadCharacterAvatar(characterId, file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Upload a document of the character.
+     * Upload Character Document
+     * @param characterId Character identifier
+     * @param file Character document
+     */
+    public uploadCharacterDocumentWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterDocumentWithHttpInfo(characterId, file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Upload a document of the character.
+     * Upload Character Document
+     * @param characterId Character identifier
+     * @param file Character document
+     */
+    public uploadCharacterDocument(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterDocument(characterId, file, _options);
         return result.toPromise();
     }
 
@@ -3741,8 +3821,8 @@ export class PromisePromptTaskApi {
     }
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
     public createPromptTaskWithHttpInfo(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<HttpInfo<string>> {
@@ -3751,8 +3831,8 @@ export class PromisePromptTaskApi {
     }
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
     public createPromptTask(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<string> {
@@ -3819,6 +3899,189 @@ export class PromisePromptTaskApi {
      */
     public updatePromptTask(promptTaskId: string, promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updatePromptTask(promptTaskId, promptTaskDTO, _options);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableRagApi } from './ObservableAPI.js';
+
+import { RagApiRequestFactory, RagApiResponseProcessor} from "../apis/RagApi.js";
+export class PromiseRagApi {
+    private api: ObservableRagApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: RagApiRequestFactory,
+        responseProcessor?: RagApiResponseProcessor
+    ) {
+        this.api = new ObservableRagApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Cancel a RAG task.
+     * Cancel RAG Task
+     * @param taskId The taskId to be canceled
+     */
+    public cancelRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.cancelRagTaskWithHttpInfo(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Cancel a RAG task.
+     * Cancel RAG Task
+     * @param taskId The taskId to be canceled
+     */
+    public cancelRagTask(taskId: number, _options?: Configuration): Promise<boolean> {
+        const result = this.api.cancelRagTask(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a RAG task.
+     * Create RAG Task
+     * @param characterId The characterId to be added a RAG task
+     * @param ragTaskDTO The RAG task to be added
+     */
+    public createRagTaskWithHttpInfo(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.createRagTaskWithHttpInfo(characterId, ragTaskDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a RAG task.
+     * Create RAG Task
+     * @param characterId The characterId to be added a RAG task
+     * @param ragTaskDTO The RAG task to be added
+     */
+    public createRagTask(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<number> {
+        const result = this.api.createRagTask(characterId, ragTaskDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a RAG task.
+     * Delete RAG Task
+     * @param taskId The taskId to be deleted
+     */
+    public deleteRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteRagTaskWithHttpInfo(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a RAG task.
+     * Delete RAG Task
+     * @param taskId The taskId to be deleted
+     */
+    public deleteRagTask(taskId: number, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteRagTask(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get the RAG task details.
+     * Get RAG Task
+     * @param taskId The taskId to be queried
+     */
+    public getRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<RagTaskDetailsDTO>> {
+        const result = this.api.getRagTaskWithHttpInfo(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get the RAG task details.
+     * Get RAG Task
+     * @param taskId The taskId to be queried
+     */
+    public getRagTask(taskId: number, _options?: Configuration): Promise<RagTaskDetailsDTO> {
+        const result = this.api.getRagTask(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get the RAG task execution status: pending | running | succeeded | failed | canceled.
+     * Get RAG Task Status
+     * @param taskId The taskId to be queried status
+     */
+    public getRagTaskStatusWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.getRagTaskStatusWithHttpInfo(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get the RAG task execution status: pending | running | succeeded | failed | canceled.
+     * Get RAG Task Status
+     * @param taskId The taskId to be queried status
+     */
+    public getRagTaskStatus(taskId: number, _options?: Configuration): Promise<string> {
+        const result = this.api.getRagTaskStatus(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List the RAG tasks by characterId.
+     * List RAG Tasks
+     * @param characterId The characterId to be queried
+     */
+    public listRagTasksWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
+        const result = this.api.listRagTasksWithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List the RAG tasks by characterId.
+     * List RAG Tasks
+     * @param characterId The characterId to be queried
+     */
+    public listRagTasks(characterId: number, _options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
+        const result = this.api.listRagTasks(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Start a RAG task.
+     * Start RAG Task
+     * @param taskId The taskId to be started
+     */
+    public startRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.startRagTaskWithHttpInfo(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Start a RAG task.
+     * Start RAG Task
+     * @param taskId The taskId to be started
+     */
+    public startRagTask(taskId: number, _options?: Configuration): Promise<boolean> {
+        const result = this.api.startRagTask(taskId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Update a RAG task.
+     * Update RAG Task
+     * @param taskId The taskId to be updated
+     * @param ragTaskDTO The prompt task info to be updated
+     */
+    public updateRagTaskWithHttpInfo(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.updateRagTaskWithHttpInfo(taskId, ragTaskDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Update a RAG task.
+     * Update RAG Task
+     * @param taskId The taskId to be updated
+     * @param ragTaskDTO The prompt task info to be updated
+     */
+    public updateRagTask(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<boolean> {
+        const result = this.api.updateRagTask(taskId, ragTaskDTO, _options);
         return result.toPromise();
     }
 

@@ -3,10 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Transition } from "react-transition-group";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Box } from "@mui/joy";
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
+import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
 import { CharacterAlbumPicture, CharacterAlbumPictureUploader } from ".";
 import { ConfirmModal, ImagePreview, ImagePreviewWindow } from "..";
 import { DeleteForeverRounded } from "@mui/icons-material";
+import { extractFilenameFromUrl } from "../../libs/url_utils";
 
 type CharacterAlbumProps = {
   characterId?: number;
@@ -48,8 +49,7 @@ export default function CharacterAlbum({
       return;
     }
 
-    const parts = url.split('/');
-    const key = parts[parts.length - 1];
+    const key = extractFilenameFromUrl(url);
     characterApi?.deleteCharacterPicture(key)
       .then(() => setPictures(pictures.filter(item => item !== url)))
       .catch(handleError)

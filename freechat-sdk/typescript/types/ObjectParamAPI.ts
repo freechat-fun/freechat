@@ -61,6 +61,8 @@ import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { QwenParamDTO } from '../models/QwenParamDTO.js';
+import { RagTaskDTO } from '../models/RagTaskDTO.js';
+import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -409,10 +411,13 @@ export interface AccountApiGetTokenByIdRequest {
 }
 
 export interface AccountApiGetUserBasicRequest {
+}
+
+export interface AccountApiGetUserBasic1Request {
     /**
      * Username
      * @type string
-     * @memberof AccountApigetUserBasic
+     * @memberof AccountApigetUserBasic1
      */
     username: string
 }
@@ -579,8 +584,8 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasicWithHttpInfo(param: AccountApiGetUserBasicRequest, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        return this.api.getUserBasicWithHttpInfo(param.username,  options).toPromise();
+    public getUserBasicWithHttpInfo(param: AccountApiGetUserBasicRequest = {}, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        return this.api.getUserBasicWithHttpInfo( options).toPromise();
     }
 
     /**
@@ -588,8 +593,26 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic(param: AccountApiGetUserBasicRequest, options?: Configuration): Promise<UserBasicInfoDTO> {
-        return this.api.getUserBasic(param.username,  options).toPromise();
+    public getUserBasic(param: AccountApiGetUserBasicRequest = {}, options?: Configuration): Promise<UserBasicInfoDTO> {
+        return this.api.getUserBasic( options).toPromise();
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     * @param param the request object
+     */
+    public getUserBasic1WithHttpInfo(param: AccountApiGetUserBasic1Request, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        return this.api.getUserBasic1WithHttpInfo(param.username,  options).toPromise();
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     * @param param the request object
+     */
+    public getUserBasic1(param: AccountApiGetUserBasic1Request, options?: Configuration): Promise<UserBasicInfoDTO> {
+        return this.api.getUserBasic1(param.username,  options).toPromise();
     }
 
     /**
@@ -1660,12 +1683,6 @@ export interface AppMetaForAdminApiExposeRequest {
      * @memberof AppMetaForAdminApiexpose
      */
     qwenParam: QwenParamDTO
-    /**
-     * 
-     * @type LlmResultDTO
-     * @memberof AppMetaForAdminApiexpose
-     */
-    aiForPromptResult: LlmResultDTO
 }
 
 export interface AppMetaForAdminApiGetAppMetaRequest {
@@ -1684,7 +1701,7 @@ export class ObjectAppMetaForAdminApi {
      * @param param the request object
      */
     public exposeWithHttpInfo(param: AppMetaForAdminApiExposeRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.exposeWithHttpInfo(param.openAiParam, param.qwenParam, param.aiForPromptResult,  options).toPromise();
+        return this.api.exposeWithHttpInfo(param.openAiParam, param.qwenParam,  options).toPromise();
     }
 
     /**
@@ -1693,7 +1710,7 @@ export class ObjectAppMetaForAdminApi {
      * @param param the request object
      */
     public expose(param: AppMetaForAdminApiExposeRequest, options?: Configuration): Promise<string> {
-        return this.api.expose(param.openAiParam, param.qwenParam, param.aiForPromptResult,  options).toPromise();
+        return this.api.expose(param.openAiParam, param.qwenParam,  options).toPromise();
     }
 
     /**
@@ -1797,6 +1814,15 @@ export interface CharacterApiDeleteCharacterByNameRequest {
     name: string
 }
 
+export interface CharacterApiDeleteCharacterDocumentRequest {
+    /**
+     * Document key
+     * @type string
+     * @memberof CharacterApideleteCharacterDocument
+     */
+    key: string
+}
+
 export interface CharacterApiDeleteCharacterPictureRequest {
     /**
      * Image key
@@ -1865,6 +1891,15 @@ export interface CharacterApiListCharacterBackendsRequest {
      * The characterId to be queried
      * @type number
      * @memberof CharacterApilistCharacterBackends
+     */
+    characterId: number
+}
+
+export interface CharacterApiListCharacterDocumentsRequest {
+    /**
+     * Character identifier
+     * @type number
+     * @memberof CharacterApilistCharacterDocuments
      */
     characterId: number
 }
@@ -1997,6 +2032,21 @@ export interface CharacterApiUploadCharacterAvatarRequest {
      * Character avatar
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterAvatar
+     */
+    file: HttpFile
+}
+
+export interface CharacterApiUploadCharacterDocumentRequest {
+    /**
+     * Character identifier
+     * @type number
+     * @memberof CharacterApiuploadCharacterDocument
+     */
+    characterId: number
+    /**
+     * Character document
+     * @type HttpFile
+     * @memberof CharacterApiuploadCharacterDocument
      */
     file: HttpFile
 }
@@ -2168,6 +2218,24 @@ export class ObjectCharacterApi {
     }
 
     /**
+     * Delete a document of the character by key.
+     * Delete Character Document
+     * @param param the request object
+     */
+    public deleteCharacterDocumentWithHttpInfo(param: CharacterApiDeleteCharacterDocumentRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteCharacterDocumentWithHttpInfo(param.key,  options).toPromise();
+    }
+
+    /**
+     * Delete a document of the character by key.
+     * Delete Character Document
+     * @param param the request object
+     */
+    public deleteCharacterDocument(param: CharacterApiDeleteCharacterDocumentRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteCharacterDocument(param.key,  options).toPromise();
+    }
+
+    /**
      * Delete a picture of the character by key.
      * Delete Character Picture
      * @param param the request object
@@ -2309,6 +2377,24 @@ export class ObjectCharacterApi {
      */
     public listCharacterBackends(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
         return this.api.listCharacterBackends(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * List documents of the character.
+     * List Character Documents
+     * @param param the request object
+     */
+    public listCharacterDocumentsWithHttpInfo(param: CharacterApiListCharacterDocumentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.listCharacterDocumentsWithHttpInfo(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * List documents of the character.
+     * List Character Documents
+     * @param param the request object
+     */
+    public listCharacterDocuments(param: CharacterApiListCharacterDocumentsRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.listCharacterDocuments(param.characterId,  options).toPromise();
     }
 
     /**
@@ -2525,6 +2611,24 @@ export class ObjectCharacterApi {
      */
     public uploadCharacterAvatar(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<string> {
         return this.api.uploadCharacterAvatar(param.characterId, param.file,  options).toPromise();
+    }
+
+    /**
+     * Upload a document of the character.
+     * Upload Character Document
+     * @param param the request object
+     */
+    public uploadCharacterDocumentWithHttpInfo(param: CharacterApiUploadCharacterDocumentRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.uploadCharacterDocumentWithHttpInfo(param.characterId, param.file,  options).toPromise();
+    }
+
+    /**
+     * Upload a document of the character.
+     * Upload Character Document
+     * @param param the request object
+     */
+    public uploadCharacterDocument(param: CharacterApiUploadCharacterDocumentRequest, options?: Configuration): Promise<string> {
+        return this.api.uploadCharacterDocument(param.characterId, param.file,  options).toPromise();
     }
 
     /**
@@ -5072,8 +5176,8 @@ export class ObjectPromptTaskApi {
     }
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param param the request object
      */
     public createPromptTaskWithHttpInfo(param: PromptTaskApiCreatePromptTaskRequest, options?: Configuration): Promise<HttpInfo<string>> {
@@ -5081,8 +5185,8 @@ export class ObjectPromptTaskApi {
     }
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param param the request object
      */
     public createPromptTask(param: PromptTaskApiCreatePromptTaskRequest, options?: Configuration): Promise<string> {
@@ -5141,6 +5245,246 @@ export class ObjectPromptTaskApi {
      */
     public updatePromptTask(param: PromptTaskApiUpdatePromptTaskRequest, options?: Configuration): Promise<boolean> {
         return this.api.updatePromptTask(param.promptTaskId, param.promptTaskDTO,  options).toPromise();
+    }
+
+}
+
+import { ObservableRagApi } from "./ObservableAPI.js";
+import { RagApiRequestFactory, RagApiResponseProcessor} from "../apis/RagApi.js";
+
+export interface RagApiCancelRagTaskRequest {
+    /**
+     * The taskId to be canceled
+     * @type number
+     * @memberof RagApicancelRagTask
+     */
+    taskId: number
+}
+
+export interface RagApiCreateRagTaskRequest {
+    /**
+     * The characterId to be added a RAG task
+     * @type number
+     * @memberof RagApicreateRagTask
+     */
+    characterId: number
+    /**
+     * The RAG task to be added
+     * @type RagTaskDTO
+     * @memberof RagApicreateRagTask
+     */
+    ragTaskDTO: RagTaskDTO
+}
+
+export interface RagApiDeleteRagTaskRequest {
+    /**
+     * The taskId to be deleted
+     * @type number
+     * @memberof RagApideleteRagTask
+     */
+    taskId: number
+}
+
+export interface RagApiGetRagTaskRequest {
+    /**
+     * The taskId to be queried
+     * @type number
+     * @memberof RagApigetRagTask
+     */
+    taskId: number
+}
+
+export interface RagApiGetRagTaskStatusRequest {
+    /**
+     * The taskId to be queried status
+     * @type number
+     * @memberof RagApigetRagTaskStatus
+     */
+    taskId: number
+}
+
+export interface RagApiListRagTasksRequest {
+    /**
+     * The characterId to be queried
+     * @type number
+     * @memberof RagApilistRagTasks
+     */
+    characterId: number
+}
+
+export interface RagApiStartRagTaskRequest {
+    /**
+     * The taskId to be started
+     * @type number
+     * @memberof RagApistartRagTask
+     */
+    taskId: number
+}
+
+export interface RagApiUpdateRagTaskRequest {
+    /**
+     * The taskId to be updated
+     * @type number
+     * @memberof RagApiupdateRagTask
+     */
+    taskId: number
+    /**
+     * The prompt task info to be updated
+     * @type RagTaskDTO
+     * @memberof RagApiupdateRagTask
+     */
+    ragTaskDTO: RagTaskDTO
+}
+
+export class ObjectRagApi {
+    private api: ObservableRagApi
+
+    public constructor(configuration: Configuration, requestFactory?: RagApiRequestFactory, responseProcessor?: RagApiResponseProcessor) {
+        this.api = new ObservableRagApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Cancel a RAG task.
+     * Cancel RAG Task
+     * @param param the request object
+     */
+    public cancelRagTaskWithHttpInfo(param: RagApiCancelRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.cancelRagTaskWithHttpInfo(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Cancel a RAG task.
+     * Cancel RAG Task
+     * @param param the request object
+     */
+    public cancelRagTask(param: RagApiCancelRagTaskRequest, options?: Configuration): Promise<boolean> {
+        return this.api.cancelRagTask(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Create a RAG task.
+     * Create RAG Task
+     * @param param the request object
+     */
+    public createRagTaskWithHttpInfo(param: RagApiCreateRagTaskRequest, options?: Configuration): Promise<HttpInfo<number>> {
+        return this.api.createRagTaskWithHttpInfo(param.characterId, param.ragTaskDTO,  options).toPromise();
+    }
+
+    /**
+     * Create a RAG task.
+     * Create RAG Task
+     * @param param the request object
+     */
+    public createRagTask(param: RagApiCreateRagTaskRequest, options?: Configuration): Promise<number> {
+        return this.api.createRagTask(param.characterId, param.ragTaskDTO,  options).toPromise();
+    }
+
+    /**
+     * Delete a RAG task.
+     * Delete RAG Task
+     * @param param the request object
+     */
+    public deleteRagTaskWithHttpInfo(param: RagApiDeleteRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteRagTaskWithHttpInfo(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Delete a RAG task.
+     * Delete RAG Task
+     * @param param the request object
+     */
+    public deleteRagTask(param: RagApiDeleteRagTaskRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteRagTask(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Get the RAG task details.
+     * Get RAG Task
+     * @param param the request object
+     */
+    public getRagTaskWithHttpInfo(param: RagApiGetRagTaskRequest, options?: Configuration): Promise<HttpInfo<RagTaskDetailsDTO>> {
+        return this.api.getRagTaskWithHttpInfo(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Get the RAG task details.
+     * Get RAG Task
+     * @param param the request object
+     */
+    public getRagTask(param: RagApiGetRagTaskRequest, options?: Configuration): Promise<RagTaskDetailsDTO> {
+        return this.api.getRagTask(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Get the RAG task execution status: pending | running | succeeded | failed | canceled.
+     * Get RAG Task Status
+     * @param param the request object
+     */
+    public getRagTaskStatusWithHttpInfo(param: RagApiGetRagTaskStatusRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.getRagTaskStatusWithHttpInfo(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Get the RAG task execution status: pending | running | succeeded | failed | canceled.
+     * Get RAG Task Status
+     * @param param the request object
+     */
+    public getRagTaskStatus(param: RagApiGetRagTaskStatusRequest, options?: Configuration): Promise<string> {
+        return this.api.getRagTaskStatus(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * List the RAG tasks by characterId.
+     * List RAG Tasks
+     * @param param the request object
+     */
+    public listRagTasksWithHttpInfo(param: RagApiListRagTasksRequest, options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
+        return this.api.listRagTasksWithHttpInfo(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * List the RAG tasks by characterId.
+     * List RAG Tasks
+     * @param param the request object
+     */
+    public listRagTasks(param: RagApiListRagTasksRequest, options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
+        return this.api.listRagTasks(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * Start a RAG task.
+     * Start RAG Task
+     * @param param the request object
+     */
+    public startRagTaskWithHttpInfo(param: RagApiStartRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.startRagTaskWithHttpInfo(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Start a RAG task.
+     * Start RAG Task
+     * @param param the request object
+     */
+    public startRagTask(param: RagApiStartRagTaskRequest, options?: Configuration): Promise<boolean> {
+        return this.api.startRagTask(param.taskId,  options).toPromise();
+    }
+
+    /**
+     * Update a RAG task.
+     * Update RAG Task
+     * @param param the request object
+     */
+    public updateRagTaskWithHttpInfo(param: RagApiUpdateRagTaskRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.updateRagTaskWithHttpInfo(param.taskId, param.ragTaskDTO,  options).toPromise();
+    }
+
+    /**
+     * Update a RAG task.
+     * Update RAG Task
+     * @param param the request object
+     */
+    public updateRagTask(param: RagApiUpdateRagTaskRequest, options?: Configuration): Promise<boolean> {
+        return this.api.updateRagTask(param.taskId, param.ragTaskDTO,  options).toPromise();
     }
 
 }

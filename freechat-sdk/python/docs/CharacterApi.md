@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**create_character**](CharacterApi.md#create_character) | **POST** /api/v1/character | Create Character
 [**delete_character**](CharacterApi.md#delete_character) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**delete_character_by_name**](CharacterApi.md#delete_character_by_name) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+[**delete_character_document**](CharacterApi.md#delete_character_document) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
 [**delete_character_picture**](CharacterApi.md#delete_character_picture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 [**exists_character_name**](CharacterApi.md#exists_character_name) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
 [**get_character_details**](CharacterApi.md#get_character_details) | **GET** /api/v1/character/details/{characterId} | Get Character Details
@@ -20,6 +21,7 @@ Method | HTTP request | Description
 [**get_default_character_backend**](CharacterApi.md#get_default_character_backend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
 [**list_character_backend_ids**](CharacterApi.md#list_character_backend_ids) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
 [**list_character_backends**](CharacterApi.md#list_character_backends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
+[**list_character_documents**](CharacterApi.md#list_character_documents) | **GET** /api/v1/character/documents/{characterId} | List Character Documents
 [**list_character_pictures**](CharacterApi.md#list_character_pictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
 [**list_character_versions_by_name**](CharacterApi.md#list_character_versions_by_name) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 [**new_character_name**](CharacterApi.md#new_character_name) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
@@ -32,6 +34,7 @@ Method | HTTP request | Description
 [**update_character**](CharacterApi.md#update_character) | **PUT** /api/v1/character/{characterId} | Update Character
 [**update_character_backend**](CharacterApi.md#update_character_backend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
 [**upload_character_avatar**](CharacterApi.md#upload_character_avatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
+[**upload_character_document**](CharacterApi.md#upload_character_document) | **POST** /api/v1/character/document/{characterId} | Upload Character Document
 [**upload_character_picture**](CharacterApi.md#upload_character_picture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
 
 
@@ -660,6 +663,83 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **delete_character_document**
+> bool delete_character_document(key)
+
+Delete Character Document
+
+Delete a document of the character by key.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    key = 'key_example' # str | Document key
+
+    try:
+        # Delete Character Document
+        api_response = api_instance.delete_character_document(key)
+        print("The response of CharacterApi->delete_character_document:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->delete_character_document: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | **str**| Document key | 
+
+### Return type
+
+**bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **delete_character_picture**
 > bool delete_character_picture(key)
 
@@ -1262,6 +1342,83 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List[CharacterBackendDetailsDTO]**](CharacterBackendDetailsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_character_documents**
+> List[str] list_character_documents(character_id)
+
+List Character Documents
+
+List documents of the character.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_id = 56 # int | Character identifier
+
+    try:
+        # List Character Documents
+        api_response = api_instance.list_character_documents(character_id)
+        print("The response of CharacterApi->list_character_documents:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->list_character_documents: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_id** | **int**| Character identifier | 
+
+### Return type
+
+**List[str]**
 
 ### Authorization
 
@@ -2197,6 +2354,85 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_id** | **int**| Character identifier | 
  **file** | **bytearray**| Character avatar | 
+
+### Return type
+
+**str**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: text/plain
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upload_character_document**
+> str upload_character_document(character_id, file)
+
+Upload Character Document
+
+Upload a document of the character.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_id = 56 # int | Character identifier
+    file = None # bytearray | Character document
+
+    try:
+        # Upload Character Document
+        api_response = api_instance.upload_character_document(character_id, file)
+        print("The response of CharacterApi->upload_character_document:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->upload_character_document: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_id** | **int**| Character identifier | 
+ **file** | **bytearray**| Character document | 
 
 ### Return type
 

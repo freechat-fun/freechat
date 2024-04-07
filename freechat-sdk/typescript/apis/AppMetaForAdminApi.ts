@@ -9,7 +9,6 @@ import {SecurityAuthentication} from '../auth/auth.js';
 
 
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
-import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { QwenParamDTO } from '../models/QwenParamDTO.js';
 
@@ -23,9 +22,8 @@ export class AppMetaForAdminApiRequestFactory extends BaseAPIRequestFactory {
      * Expose DTO definitions
      * @param openAiParam 
      * @param qwenParam 
-     * @param aiForPromptResult 
      */
-    public async expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, aiForPromptResult: LlmResultDTO, _options?: Configuration): Promise<RequestContext> {
+    public async expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'openAiParam' is not null or undefined
@@ -37,12 +35,6 @@ export class AppMetaForAdminApiRequestFactory extends BaseAPIRequestFactory {
         // verify required parameter 'qwenParam' is not null or undefined
         if (qwenParam === null || qwenParam === undefined) {
             throw new RequiredError("AppMetaForAdminApi", "expose", "qwenParam");
-        }
-
-
-        // verify required parameter 'aiForPromptResult' is not null or undefined
-        if (aiForPromptResult === null || aiForPromptResult === undefined) {
-            throw new RequiredError("AppMetaForAdminApi", "expose", "aiForPromptResult");
         }
 
 
@@ -61,11 +53,6 @@ export class AppMetaForAdminApiRequestFactory extends BaseAPIRequestFactory {
         // Query Params
         if (qwenParam !== undefined) {
             requestContext.setQueryParam("qwenParam", ObjectSerializer.serialize(qwenParam, "QwenParamDTO", ""));
-        }
-
-        // Query Params
-        if (aiForPromptResult !== undefined) {
-            requestContext.setQueryParam("aiForPromptResult", ObjectSerializer.serialize(aiForPromptResult, "LlmResultDTO", ""));
         }
 
 

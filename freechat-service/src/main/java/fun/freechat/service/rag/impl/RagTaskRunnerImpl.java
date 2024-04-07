@@ -22,7 +22,6 @@ import org.apache.tika.metadata.Metadata;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
@@ -38,17 +37,15 @@ import java.util.concurrent.TimeUnit;
 public class RagTaskRunnerImpl implements RagTaskRunner {
     private static final String LOCK_PREFIX = "RagTaskLock-";
 
-    @Value("${rag.maxSegmentSize}")
+    @Value("${chat.rag.maxSegmentSize}")
     private Integer maxSegmentSize;
-    @Value("${rag.maxOverlapSize}")
+    @Value("${chat.rag.maxOverlapSize}")
     private Integer maxOverlapSize;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    @Qualifier("inMemoryEmbeddingStoreService")
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
     @Autowired
-    @Qualifier("spiEmbeddingModelService")
     private EmbeddingModelService embeddingModelService;
     @Autowired
     private RedissonClient redisson;

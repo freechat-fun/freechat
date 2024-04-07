@@ -11,7 +11,8 @@ Method | HTTP request | Description
 [**disable_token**](AccountApi.md#disable_token) | **PUT** /api/v1/account/token/{token} | Disable API Token
 [**disable_token_by_id**](AccountApi.md#disable_token_by_id) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
 [**get_token_by_id**](AccountApi.md#get_token_by_id) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
-[**get_user_basic**](AccountApi.md#get_user_basic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
+[**get_user_basic**](AccountApi.md#get_user_basic) | **GET** /api/v1/account/basic | Get User Basic Information
+[**get_user_basic1**](AccountApi.md#get_user_basic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
 [**get_user_details**](AccountApi.md#get_user_details) | **GET** /api/v1/account/details | Get User Details
 [**list_tokens**](AccountApi.md#list_tokens) | **GET** /api/v1/account/tokens | List API Tokens
 [**update_user_info**](AccountApi.md#update_user_info) | **PUT** /api/v1/account/details | Update User Details
@@ -554,7 +555,81 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_user_basic**
-> UserBasicInfoDTO get_user_basic(username)
+> UserBasicInfoDTO get_user_basic()
+
+Get User Basic Information
+
+Return user basic information, including: username, nickname, avatar link.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.user_basic_info_dto import UserBasicInfoDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.AccountApi(api_client)
+
+    try:
+        # Get User Basic Information
+        api_response = api_instance.get_user_basic()
+        print("The response of AccountApi->get_user_basic:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AccountApi->get_user_basic: %s\n" % e)
+```
+
+
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**UserBasicInfoDTO**](UserBasicInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_user_basic1**
+> UserBasicInfoDTO get_user_basic1(username)
 
 Get User Basic Information
 
@@ -594,11 +669,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
     try:
         # Get User Basic Information
-        api_response = api_instance.get_user_basic(username)
-        print("The response of AccountApi->get_user_basic:\n")
+        api_response = api_instance.get_user_basic1(username)
+        print("The response of AccountApi->get_user_basic1:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AccountApi->get_user_basic: %s\n" % e)
+        print("Exception when calling AccountApi->get_user_basic1: %s\n" % e)
 ```
 
 

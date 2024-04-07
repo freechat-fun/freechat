@@ -9,7 +9,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { AddCircleRounded, DeleteForeverRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
+import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
 import { i18nConfig } from "../../configs/i18n-config";
 import { ChatIcon } from "../../components/icon";
 

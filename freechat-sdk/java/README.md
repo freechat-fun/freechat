@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.6.0
+- API version: 0.7.0
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.6.1</version>
+  <version>0.7.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.6.1"
+     implementation "fun.freechat:freechat-sdk:0.7.0"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.6.1.jar`
+* `target/freechat-sdk-0.7.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -124,7 +124,8 @@ Class | Method | HTTP request | Description
 *AccountApi* | [**disableToken**](docs/AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token
 *AccountApi* | [**disableTokenById**](docs/AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
 *AccountApi* | [**getTokenById**](docs/AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
-*AccountApi* | [**getUserBasic**](docs/AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
+*AccountApi* | [**getUserBasic**](docs/AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic | Get User Basic Information
+*AccountApi* | [**getUserBasic1**](docs/AccountApi.md#getUserBasic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
 *AccountApi* | [**getUserDetails**](docs/AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details
 *AccountApi* | [**listTokens**](docs/AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens
 *AccountApi* | [**updateUserInfo**](docs/AccountApi.md#updateUserInfo) | **PUT** /api/v1/account/details | Update User Details
@@ -183,6 +184,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 *CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 *CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+*CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
 *CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 *CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
@@ -191,6 +193,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
 *CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
 *CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
+*CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterId} | List Character Documents
 *CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
 *CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 *CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
@@ -203,6 +206,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**updateCharacter**](docs/CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 *CharacterApi* | [**updateCharacterBackend**](docs/CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
 *CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
+*CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterId} | Upload Character Document
 *CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
@@ -282,10 +286,18 @@ Class | Method | HTTP request | Description
 *PromptApi* | [**sendPrompt**](docs/PromptApi.md#sendPrompt) | **POST** /api/v1/prompt/send | Send Prompt
 *PromptApi* | [**streamSendPrompt**](docs/PromptApi.md#streamSendPrompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back
 *PromptApi* | [**updatePrompt**](docs/PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
-*PromptTaskApi* | [**createPromptTask**](docs/PromptTaskApi.md#createPromptTask) | **POST** /api/v1/prompt/task | Add Prompt Task
+*PromptTaskApi* | [**createPromptTask**](docs/PromptTaskApi.md#createPromptTask) | **POST** /api/v1/prompt/task | Create Prompt Task
 *PromptTaskApi* | [**deletePromptTask**](docs/PromptTaskApi.md#deletePromptTask) | **DELETE** /api/v1/prompt/task/{promptTaskId} | Delete Prompt Task
 *PromptTaskApi* | [**getPromptTask**](docs/PromptTaskApi.md#getPromptTask) | **GET** /api/v1/prompt/task/{promptTaskId} | Get Prompt Task
 *PromptTaskApi* | [**updatePromptTask**](docs/PromptTaskApi.md#updatePromptTask) | **PUT** /api/v1/prompt/task/{promptTaskId} | Update Prompt Task
+*RagApi* | [**cancelRagTask**](docs/RagApi.md#cancelRagTask) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task
+*RagApi* | [**createRagTask**](docs/RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterId} | Create RAG Task
+*RagApi* | [**deleteRagTask**](docs/RagApi.md#deleteRagTask) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task
+*RagApi* | [**getRagTask**](docs/RagApi.md#getRagTask) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task
+*RagApi* | [**getRagTaskStatus**](docs/RagApi.md#getRagTaskStatus) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status
+*RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterId} | List RAG Tasks
+*RagApi* | [**startRagTask**](docs/RagApi.md#startRagTask) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task
+*RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task
 
 
 ## Documentation for Models
@@ -350,6 +362,8 @@ Class | Method | HTTP request | Description
  - [PromptTemplateDTO](docs/PromptTemplateDTO.md)
  - [PromptUpdateDTO](docs/PromptUpdateDTO.md)
  - [QwenParamDTO](docs/QwenParamDTO.md)
+ - [RagTaskDTO](docs/RagTaskDTO.md)
+ - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
  - [SseEmitter](docs/SseEmitter.md)
  - [UserBasicInfoDTO](docs/UserBasicInfoDTO.md)
  - [UserDetailsDTO](docs/UserDetailsDTO.md)

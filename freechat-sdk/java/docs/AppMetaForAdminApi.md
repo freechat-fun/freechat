@@ -10,7 +10,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 <a id="expose"></a>
 # **expose**
-> String expose(openAiParam, qwenParam, aiForPromptResult)
+> String expose(openAiParam, qwenParam)
 
 Expose DTO definitions
 
@@ -38,9 +38,8 @@ public class Example {
     AppMetaForAdminApi apiInstance = new AppMetaForAdminApi(defaultClient);
     OpenAiParamDTO openAiParam = new OpenAiParamDTO(); // OpenAiParamDTO | 
     QwenParamDTO qwenParam = new QwenParamDTO(); // QwenParamDTO | 
-    LlmResultDTO aiForPromptResult = new LlmResultDTO(); // LlmResultDTO | 
     try {
-      String result = apiInstance.expose(openAiParam, qwenParam, aiForPromptResult);
+      String result = apiInstance.expose(openAiParam, qwenParam);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AppMetaForAdminApi#expose");
@@ -59,7 +58,6 @@ public class Example {
 |------------- | ------------- | ------------- | -------------|
 | **openAiParam** | [**OpenAiParamDTO**](.md)|  | |
 | **qwenParam** | [**QwenParamDTO**](.md)|  | |
-| **aiForPromptResult** | [**LlmResultDTO**](.md)|  | |
 
 ### Return type
 

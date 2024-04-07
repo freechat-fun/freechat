@@ -11,7 +11,8 @@ Method | HTTP request | Description
 [**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token
 [**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
 [**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
-[**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
+[**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic | Get User Basic Information
+[**getUserBasic1**](AccountApi.md#getUserBasic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
 [**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details
 [**listTokens**](AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens
 [**updateUserInfo**](AccountApi.md#updateUserInfo) | **PUT** /api/v1/account/details | Update User Details
@@ -405,12 +406,60 @@ import * as fs from 'fs';
 const configuration = .createConfiguration();
 const apiInstance = new .AccountApi(configuration);
 
-let body:.AccountApiGetUserBasicRequest = {
+let body:any = {};
+
+apiInstance.getUserBasic(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+This endpoint does not need any parameter.
+
+
+### Return type
+
+**UserBasicInfoDTO**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **getUserBasic1**
+> UserBasicInfoDTO getUserBasic1()
+
+Return user basic information, including: username, nickname, avatar link.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .AccountApi(configuration);
+
+let body:.AccountApiGetUserBasic1Request = {
   // string | Username
   username: "username_example",
 };
 
-apiInstance.getUserBasic(body).then((data:any) => {
+apiInstance.getUserBasic1(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```

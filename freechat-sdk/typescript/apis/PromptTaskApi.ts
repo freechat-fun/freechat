@@ -17,8 +17,8 @@ import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 export class PromptTaskApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
     public async createPromptTask(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Promise<RequestContext> {

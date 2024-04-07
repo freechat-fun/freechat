@@ -58,6 +58,8 @@ export * from '../models/PromptTaskDetailsDTO.js';
 export * from '../models/PromptTemplateDTO.js';
 export * from '../models/PromptUpdateDTO.js';
 export * from '../models/QwenParamDTO.js';
+export * from '../models/RagTaskDTO.js';
+export * from '../models/RagTaskDetailsDTO.js';
 export * from '../models/SseEmitter.js';
 export * from '../models/UserBasicInfoDTO.js';
 export * from '../models/UserDetailsDTO.js';
@@ -123,6 +125,8 @@ import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { QwenParamDTO } from '../models/QwenParamDTO.js';
+import { RagTaskDTO } from '../models/RagTaskDTO.js';
+import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -204,6 +208,8 @@ let typeMap: {[index: string]: any} = {
     "PromptTemplateDTO": PromptTemplateDTO,
     "PromptUpdateDTO": PromptUpdateDTO,
     "QwenParamDTO": QwenParamDTO,
+    "RagTaskDTO": RagTaskDTO,
+    "RagTaskDetailsDTO": RagTaskDetailsDTO,
     "SseEmitter": SseEmitter,
     "UserBasicInfoDTO": UserBasicInfoDTO,
     "UserDetailsDTO": UserDetailsDTO,

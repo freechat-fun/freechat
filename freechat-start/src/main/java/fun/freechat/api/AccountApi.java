@@ -67,11 +67,16 @@ public class AccountApi {
             summary = "Get User Basic Information",
             description = "Return user basic information, including: username, nickname, avatar link."
     )
-    @GetMapping("/basic/{username}")
+    @GetMapping(value = {"/basic/{username}", "/basic"})
     public UserBasicInfoDTO basic(
-            @Parameter(description = "Username") @PathVariable("username") @NotBlank
-            String username) {
-        User user = userService.loadByUsername(username);
+            @Parameter(description = "Username") @PathVariable("username")
+            Optional<String> username) {
+        User user;
+        if (username.isPresent()) {
+            user = userService.loadByUsername(username.get());
+        } else {
+            user = AccountUtils.currentUser();
+        }
         return UserBasicInfoDTO.from(user);
     }
 

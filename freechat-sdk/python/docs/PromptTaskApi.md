@@ -4,7 +4,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**create_prompt_task**](PromptTaskApi.md#create_prompt_task) | **POST** /api/v1/prompt/task | Add Prompt Task
+[**create_prompt_task**](PromptTaskApi.md#create_prompt_task) | **POST** /api/v1/prompt/task | Create Prompt Task
 [**delete_prompt_task**](PromptTaskApi.md#delete_prompt_task) | **DELETE** /api/v1/prompt/task/{promptTaskId} | Delete Prompt Task
 [**get_prompt_task**](PromptTaskApi.md#get_prompt_task) | **GET** /api/v1/prompt/task/{promptTaskId} | Get Prompt Task
 [**update_prompt_task**](PromptTaskApi.md#update_prompt_task) | **PUT** /api/v1/prompt/task/{promptTaskId} | Update Prompt Task
@@ -13,9 +13,9 @@ Method | HTTP request | Description
 # **create_prompt_task**
 > str create_prompt_task(prompt_task_dto)
 
-Add Prompt Task
+Create Prompt Task
 
-Add a prompt task.
+Create a prompt task.
 
 ### Example
 
@@ -50,7 +50,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     prompt_task_dto = freechat_sdk.PromptTaskDTO() # PromptTaskDTO | The prompt task to be added
 
     try:
-        # Add Prompt Task
+        # Create Prompt Task
         api_response = api_instance.create_prompt_task(prompt_task_dto)
         print("The response of PromptTaskApi->create_prompt_task:\n")
         pprint(api_response)

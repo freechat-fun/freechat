@@ -56,36 +56,6 @@ let body:.AppMetaForAdminApiExposeRequest = {
       "stop_example",
     ],
   },
-  // LlmResultDTO
-  aiForPromptResult: {
-    requestId: "requestId_example",
-    text: "text_example",
-    message: {
-      role: "role_example",
-      name: "name_example",
-      contents: [
-        {
-          type: "type_example",
-          content: "content_example",
-        },
-      ],
-      toolCalls: [
-        {
-          id: "id_example",
-          name: "name_example",
-          arguments: "arguments_example",
-        },
-      ],
-      context: "context_example",
-      contentText: "contentText_example",
-    },
-    finishReason: "finishReason_example",
-    tokenUsage: {
-      inputTokenCount: 1,
-      outputTokenCount: 1,
-      totalTokenCount: 1,
-    },
-  },
 };
 
 apiInstance.expose(body).then((data:any) => {
@@ -100,7 +70,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **openAiParam** | **OpenAiParamDTO** |  | defaults to undefined
  **qwenParam** | **QwenParamDTO** |  | defaults to undefined
- **aiForPromptResult** | **LlmResultDTO** |  | defaults to undefined
 
 
 ### Return type

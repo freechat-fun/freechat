@@ -9,8 +9,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded, ShareRounded, VisibilityRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
-import { processBackground } from "../../libs/ui_utils";
+import { processBackground, defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
 
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO,

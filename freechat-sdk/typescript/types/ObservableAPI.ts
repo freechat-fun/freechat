@@ -62,6 +62,8 @@ import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
 import { QwenParamDTO } from '../models/QwenParamDTO.js';
+import { RagTaskDTO } from '../models/RagTaskDTO.js';
+import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
@@ -663,10 +665,9 @@ export class ObservableAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
-     * @param username Username
      */
-    public getUserBasicWithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getUserBasic(username, _options);
+    public getUserBasicWithHttpInfo(_options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
+        const requestContextPromise = this.requestFactory.getUserBasic(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -687,10 +688,42 @@ export class ObservableAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
+     */
+    public getUserBasic(_options?: Configuration): Observable<UserBasicInfoDTO> {
+        return this.getUserBasicWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
      * @param username Username
      */
-    public getUserBasic(username: string, _options?: Configuration): Observable<UserBasicInfoDTO> {
-        return this.getUserBasicWithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
+    public getUserBasic1WithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
+        const requestContextPromise = this.requestFactory.getUserBasic1(username, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getUserBasic1WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     * @param username Username
+     */
+    public getUserBasic1(username: string, _options?: Configuration): Observable<UserBasicInfoDTO> {
+        return this.getUserBasic1WithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
     }
 
     /**
@@ -2028,10 +2061,9 @@ export class ObservableAppMetaForAdminApi {
      * Expose DTO definitions
      * @param openAiParam 
      * @param qwenParam 
-     * @param aiForPromptResult 
      */
-    public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, aiForPromptResult: LlmResultDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.expose(openAiParam, qwenParam, aiForPromptResult, _options);
+    public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.expose(openAiParam, qwenParam, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2054,10 +2086,9 @@ export class ObservableAppMetaForAdminApi {
      * Expose DTO definitions
      * @param openAiParam 
      * @param qwenParam 
-     * @param aiForPromptResult 
      */
-    public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, aiForPromptResult: LlmResultDTO, _options?: Configuration): Observable<string> {
-        return this.exposeWithHttpInfo(openAiParam, qwenParam, aiForPromptResult, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Observable<string> {
+        return this.exposeWithHttpInfo(openAiParam, qwenParam, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -2376,6 +2407,39 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Delete a document of the character by key.
+     * Delete Character Document
+     * @param key Document key
+     */
+    public deleteCharacterDocumentWithHttpInfo(key: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteCharacterDocument(key, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteCharacterDocumentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete a document of the character by key.
+     * Delete Character Document
+     * @param key Document key
+     */
+    public deleteCharacterDocument(key: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteCharacterDocumentWithHttpInfo(key, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
      * Delete a picture of the character by key.
      * Delete Character Picture
      * @param key Image key
@@ -2637,6 +2701,39 @@ export class ObservableCharacterApi {
      */
     public listCharacterBackends(characterId: number, _options?: Configuration): Observable<Array<CharacterBackendDetailsDTO>> {
         return this.listCharacterBackendsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterBackendDetailsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List documents of the character.
+     * List Character Documents
+     * @param characterId Character identifier
+     */
+    public listCharacterDocumentsWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.listCharacterDocuments(characterId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listCharacterDocumentsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List documents of the character.
+     * List Character Documents
+     * @param characterId Character identifier
+     */
+    public listCharacterDocuments(characterId: number, _options?: Configuration): Observable<Array<string>> {
+        return this.listCharacterDocumentsWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
     /**
@@ -3041,6 +3138,41 @@ export class ObservableCharacterApi {
      */
     public uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Observable<string> {
         return this.uploadCharacterAvatarWithHttpInfo(characterId, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Upload a document of the character.
+     * Upload Character Document
+     * @param characterId Character identifier
+     * @param file Character document
+     */
+    public uploadCharacterDocumentWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.uploadCharacterDocument(characterId, file, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.uploadCharacterDocumentWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Upload a document of the character.
+     * Upload Character Document
+     * @param characterId Character identifier
+     * @param file Character document
+     */
+    public uploadCharacterDocument(characterId: number, file: HttpFile, _options?: Configuration): Observable<string> {
+        return this.uploadCharacterDocumentWithHttpInfo(characterId, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -5877,8 +6009,8 @@ export class ObservablePromptTaskApi {
     }
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
     public createPromptTaskWithHttpInfo(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Observable<HttpInfo<string>> {
@@ -5901,8 +6033,8 @@ export class ObservablePromptTaskApi {
     }
 
     /**
-     * Add a prompt task.
-     * Add Prompt Task
+     * Create a prompt task.
+     * Create Prompt Task
      * @param promptTaskDTO The prompt task to be added
      */
     public createPromptTask(promptTaskDTO: PromptTaskDTO, _options?: Configuration): Observable<string> {
@@ -6008,6 +6140,292 @@ export class ObservablePromptTaskApi {
      */
     public updatePromptTask(promptTaskId: string, promptTaskDTO: PromptTaskDTO, _options?: Configuration): Observable<boolean> {
         return this.updatePromptTaskWithHttpInfo(promptTaskId, promptTaskDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+}
+
+import { RagApiRequestFactory, RagApiResponseProcessor} from "../apis/RagApi.js";
+export class ObservableRagApi {
+    private requestFactory: RagApiRequestFactory;
+    private responseProcessor: RagApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: RagApiRequestFactory,
+        responseProcessor?: RagApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new RagApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new RagApiResponseProcessor();
+    }
+
+    /**
+     * Cancel a RAG task.
+     * Cancel RAG Task
+     * @param taskId The taskId to be canceled
+     */
+    public cancelRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.cancelRagTask(taskId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.cancelRagTaskWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Cancel a RAG task.
+     * Cancel RAG Task
+     * @param taskId The taskId to be canceled
+     */
+    public cancelRagTask(taskId: number, _options?: Configuration): Observable<boolean> {
+        return this.cancelRagTaskWithHttpInfo(taskId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Create a RAG task.
+     * Create RAG Task
+     * @param characterId The characterId to be added a RAG task
+     * @param ragTaskDTO The RAG task to be added
+     */
+    public createRagTaskWithHttpInfo(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.createRagTask(characterId, ragTaskDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createRagTaskWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Create a RAG task.
+     * Create RAG Task
+     * @param characterId The characterId to be added a RAG task
+     * @param ragTaskDTO The RAG task to be added
+     */
+    public createRagTask(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Observable<number> {
+        return this.createRagTaskWithHttpInfo(characterId, ragTaskDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    }
+
+    /**
+     * Delete a RAG task.
+     * Delete RAG Task
+     * @param taskId The taskId to be deleted
+     */
+    public deleteRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteRagTask(taskId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteRagTaskWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete a RAG task.
+     * Delete RAG Task
+     * @param taskId The taskId to be deleted
+     */
+    public deleteRagTask(taskId: number, _options?: Configuration): Observable<boolean> {
+        return this.deleteRagTaskWithHttpInfo(taskId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Get the RAG task details.
+     * Get RAG Task
+     * @param taskId The taskId to be queried
+     */
+    public getRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Observable<HttpInfo<RagTaskDetailsDTO>> {
+        const requestContextPromise = this.requestFactory.getRagTask(taskId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getRagTaskWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get the RAG task details.
+     * Get RAG Task
+     * @param taskId The taskId to be queried
+     */
+    public getRagTask(taskId: number, _options?: Configuration): Observable<RagTaskDetailsDTO> {
+        return this.getRagTaskWithHttpInfo(taskId, _options).pipe(map((apiResponse: HttpInfo<RagTaskDetailsDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Get the RAG task execution status: pending | running | succeeded | failed | canceled.
+     * Get RAG Task Status
+     * @param taskId The taskId to be queried status
+     */
+    public getRagTaskStatusWithHttpInfo(taskId: number, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.getRagTaskStatus(taskId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getRagTaskStatusWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get the RAG task execution status: pending | running | succeeded | failed | canceled.
+     * Get RAG Task Status
+     * @param taskId The taskId to be queried status
+     */
+    public getRagTaskStatus(taskId: number, _options?: Configuration): Observable<string> {
+        return this.getRagTaskStatusWithHttpInfo(taskId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * List the RAG tasks by characterId.
+     * List RAG Tasks
+     * @param characterId The characterId to be queried
+     */
+    public listRagTasksWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<Array<RagTaskDetailsDTO>>> {
+        const requestContextPromise = this.requestFactory.listRagTasks(characterId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listRagTasksWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List the RAG tasks by characterId.
+     * List RAG Tasks
+     * @param characterId The characterId to be queried
+     */
+    public listRagTasks(characterId: number, _options?: Configuration): Observable<Array<RagTaskDetailsDTO>> {
+        return this.listRagTasksWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<Array<RagTaskDetailsDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Start a RAG task.
+     * Start RAG Task
+     * @param taskId The taskId to be started
+     */
+    public startRagTaskWithHttpInfo(taskId: number, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.startRagTask(taskId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.startRagTaskWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Start a RAG task.
+     * Start RAG Task
+     * @param taskId The taskId to be started
+     */
+    public startRagTask(taskId: number, _options?: Configuration): Observable<boolean> {
+        return this.startRagTaskWithHttpInfo(taskId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Update a RAG task.
+     * Update RAG Task
+     * @param taskId The taskId to be updated
+     * @param ragTaskDTO The prompt task info to be updated
+     */
+    public updateRagTaskWithHttpInfo(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.updateRagTask(taskId, ragTaskDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.updateRagTaskWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Update a RAG task.
+     * Update RAG Task
+     * @param taskId The taskId to be updated
+     * @param ragTaskDTO The prompt task info to be updated
+     */
+    public updateRagTask(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Observable<boolean> {
+        return this.updateRagTaskWithHttpInfo(taskId, ragTaskDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
 }

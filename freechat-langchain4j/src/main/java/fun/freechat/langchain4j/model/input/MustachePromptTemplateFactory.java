@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class MustachePromptTemplateFactory implements PromptTemplateFactory {
@@ -14,23 +16,34 @@ public class MustachePromptTemplateFactory implements PromptTemplateFactory {
         if (StringUtils.isBlank(input.getTemplate())) {
             return null;
         }
-        com.samskivert.mustache.Template template = Mustache.compiler()
+        return new MustacheTemplate(() -> Mustache.compiler()
                 .defaultValue("")
                 .emptyStringIsFalse(true)
-                .compile(input.getTemplate());
-        return new MustacheTemplate(template);
+                .compile(input.getTemplate()));
     }
 
     static class MustacheTemplate implements Template {
-        private final com.samskivert.mustache.Template template;
+        private final Supplier<com.samskivert.mustache.Template> templateProvider;
+        private com.samskivert.mustache.Template template;
 
-        MustacheTemplate(com.samskivert.mustache.Template template) {
-            this.template = template;
+        MustacheTemplate(Supplier<com.samskivert.mustache.Template> templateProvider) {
+            this.templateProvider = templateProvider;
+        }
+
+        private com.samskivert.mustache.Template template() {
+            if (Objects.isNull(template)) {
+                synchronized (this) {
+                    if (Objects.isNull(template)) {
+                        template = templateProvider.get();
+                    }
+                }
+            }
+            return template;
         }
 
         public String render(Map<String, Object> vars) {
             StringWriter writer = new StringWriter();
-            template.execute(vars, writer);
+            template().execute(vars, writer);
             return writer.toString();
         }
     }

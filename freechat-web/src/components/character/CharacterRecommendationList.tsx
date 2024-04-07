@@ -2,7 +2,7 @@ import { createRef, useEffect, useRef, useState } from "react";
 import { List, ListProps } from "@mui/joy";
 import { CharacterSummaryDTO } from "freechat-sdk";
 import { CharacterRecommendationListItem } from ".";
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/transition_utils";
+import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
 import { Transition } from "react-transition-group";
 
 

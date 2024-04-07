@@ -21,6 +21,7 @@ Name | Type | Description | Notes
 **picture** | **str** | Character picture url | [optional] 
 **gender** | **str** | Character gender: male | female | other | [optional] 
 **lang** | **str** | Character language: en (default) | zh | ... | [optional] 
+**greeting** | **str** | Character greeting | [optional] 
 **username** | **str** | Character owner | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 
 **view_count** | **int** | View count | [optional] 

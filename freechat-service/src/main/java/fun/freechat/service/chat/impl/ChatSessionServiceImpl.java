@@ -21,7 +21,6 @@ import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.*;
 import fun.freechat.service.account.SysUserService;
@@ -30,6 +29,7 @@ import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.ai.CloseableAiApiKey;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatSession;
 import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.enums.ChatVar;
@@ -43,7 +43,6 @@ import fun.freechat.service.rag.EmbeddingStoreService;
 import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.PromptUtils;
-import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.LangUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -81,9 +80,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     final static String CACHE_KEY_PREFIX = "ChatSessionService_";
     final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
-    @Value("${rag.maxResults}")
+    @Value("${chat.rag.maxResults}")
     private Integer maxResults;
-    @Value("${rag.minScore}")
+    @Value("${chat.rag.minScore}")
     private Double minScore;
     @Autowired
     private CharacterService characterService;
@@ -100,10 +99,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Autowired
     private AiModelInfoService aiModelInfoService;
     @Autowired
-    @Qualifier("inMemoryEmbeddingStoreService")
+    private ChatMemoryService chatMemoryService;
+    @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
     @Autowired
-    @Qualifier("spiEmbeddingModelService")
     private EmbeddingModelService embeddingModelService;
     @Autowired
     @Qualifier("defaultExecutor")
@@ -258,12 +257,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             variables.put(USER_NICKNAME.text(), userNickname);
             variables.put(CHAT_CONTEXT.text(), getOrBlank(context.getAbout()));
 
-            ChatMemoryStore chatMemoryStore = StoreUtils.defaultMemoryStore();
             Integer windowSize = backend.getMessageWindowSize();
             SystemAlwaysOnTopMessageWindowChatMemory chatMemory = SystemAlwaysOnTopMessageWindowChatMemory.builder()
                     .id(chatId)
                     .maxMessages(windowSize)
-                    .chatMemoryStore(chatMemoryStore)
+                    .chatMemoryStore(chatMemoryService)
                     .build();
 
             PromptFormat promptFormat = PromptFormat.of(promptInfo.getFormat());

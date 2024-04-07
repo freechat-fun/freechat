@@ -10,14 +10,16 @@ Name | Type | Description | Notes
 **task_id** | **str** | Prompt task identifier | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **gmt_modified** | **datetime** | Modification time | [optional] 
-**gmt_executed** | **datetime** | Latest executed time | [optional] 
+**gmt_start** | **datetime** | Task start execution time | [optional] 
+**gmt_end** | **datetime** | Task end execution time | [optional] 
 **prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) |  | [optional] 
 **model_id** | **str** | Model identifier | [optional] 
 **api_key_name** | **str** | API-KEY name | [optional] 
 **api_key_value** | **str** | API-KEY value | [optional] 
 **params** | **Dict[str, object]** | Model call parameters | [optional] 
 **cron** | **str** | Task scheduling configuration which compatible with Quartz cron format | [optional] 
-**status** | **str** | Task execution status: pending | running | succeeded | failed | [optional] 
+**status** | **str** | Task execution status: pending | running | succeeded | failed | canceled | [optional] 
+**ext** | **str** | Additional information, JSON format | [optional] 
 
 ## Example
 

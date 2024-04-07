@@ -23,10 +23,10 @@ Character detailed content
 |**picture** | **String** | Character picture url |  [optional] |
 |**gender** | **String** | Character gender: male | female | other |  [optional] |
 |**lang** | **String** | Character language: en (default) | zh | ... |  [optional] |
+|**greeting** | **String** | Character greeting |  [optional] |
 |**username** | **String** | Character owner |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
 |**profile** | **String** | Character profile |  [optional] |
-|**greeting** | **String** | Character greeting |  [optional] |
 |**chatStyle** | **String** | Character chat-style |  [optional] |
 |**chatExample** | **String** | Character chat-example |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |

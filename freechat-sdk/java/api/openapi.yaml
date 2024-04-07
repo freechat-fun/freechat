@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.6.0
+  version: 0.7.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -17,6 +17,87 @@ tags:
 - description: "Manage users, callable only by super administrators."
   name: Account Manager (for admin)
 paths:
+  /api/v1/rag/task/{taskId}:
+    delete:
+      description: Delete a RAG task.
+      operationId: deleteRagTask
+      parameters:
+      - description: The taskId to be deleted
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete RAG Task
+      tags:
+      - Rag
+      x-accepts: application/json
+    get:
+      description: Get the RAG task details.
+      operationId: getRagTask
+      parameters:
+      - description: The taskId to be queried
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RagTaskDetailsDTO'
+          description: OK
+      summary: Get RAG Task
+      tags:
+      - Rag
+      x-accepts: application/json
+    put:
+      description: Update a RAG task.
+      operationId: updateRagTask
+      parameters:
+      - description: The taskId to be updated
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RagTaskDTO'
+        description: The prompt task info to be updated
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Update RAG Task
+      tags:
+      - Rag
+      x-content-type: application/json
+      x-accepts: application/json
   /api/v1/prompt/{promptId}:
     delete:
       description: Delete prompt. Returns success or failure.
@@ -1275,6 +1356,90 @@ paths:
       tags:
       - Interactive Statistics
       x-accepts: application/json
+  /api/v1/rag/task/{characterId}:
+    post:
+      description: Create a RAG task.
+      operationId: createRagTask
+      parameters:
+      - description: The characterId to be added a RAG task
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RagTaskDTO'
+        description: The RAG task to be added
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Create RAG Task
+      tags:
+      - Rag
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/rag/task/start/{taskId}:
+    post:
+      description: Start a RAG task.
+      operationId: startRagTask
+      parameters:
+      - description: The taskId to be started
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Start RAG Task
+      tags:
+      - Rag
+      x-accepts: application/json
+  /api/v1/rag/task/cancel/{taskId}:
+    post:
+      description: Cancel a RAG task.
+      operationId: cancelRagTask
+      parameters:
+      - description: The taskId to be canceled
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Cancel RAG Task
+      tags:
+      - Rag
+      x-accepts: application/json
   /api/v1/prompt:
     post:
       description: |
@@ -1348,7 +1513,7 @@ paths:
       x-accepts: application/json
   /api/v1/prompt/task:
     post:
-      description: Add a prompt task.
+      description: Create a prompt task.
       operationId: createPromptTask
       requestBody:
         content:
@@ -1364,7 +1529,7 @@ paths:
               schema:
                 type: string
           description: OK
-      summary: Add Prompt Task
+      summary: Create Prompt Task
       tags:
       - Prompt Task
       x-content-type: application/json
@@ -2612,6 +2777,38 @@ paths:
       tags:
       - Character
       x-accepts: application/json
+  /api/v1/character/document/{characterId}:
+    post:
+      description: Upload a document of the character.
+      operationId: uploadCharacterDocument
+      parameters:
+      - description: Character identifier
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/uploadCharacterDocument_request'
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Upload Character Document
+      tags:
+      - Character
+      x-content-type: multipart/form-data
+      x-accepts: text/plain
   /api/v1/character/details/search:
     post:
       description: "Same as /api/v1/character/search, but returns detailed information\
@@ -4166,6 +4363,59 @@ paths:
       tags:
       - Interactive Statistics
       x-accepts: application/json
+  /api/v1/rag/tasks/{characterId}:
+    get:
+      description: List the RAG tasks by characterId.
+      operationId: listRagTasks
+      parameters:
+      - description: The characterId to be queried
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RagTaskDetailsDTO'
+                type: array
+          description: OK
+      summary: List RAG Tasks
+      tags:
+      - Rag
+      x-accepts: application/json
+  /api/v1/rag/task/status/{taskId}:
+    get:
+      description: "Get the RAG task execution status: pending | running | succeeded\
+        \ | failed | canceled."
+      operationId: getRagTaskStatus
+      parameters:
+      - description: The taskId to be queried status
+        explode: false
+        in: path
+        name: taskId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Get RAG Task Status
+      tags:
+      - Rag
+      x-accepts: text/plain
   /api/v1/prompt/summary/{promptId}:
     get:
       description: Get prompt summary information.
@@ -4627,6 +4877,33 @@ paths:
                 type: boolean
           description: OK
       summary: Check If Character Name Exists
+      tags:
+      - Character
+      x-accepts: application/json
+  /api/v1/character/documents/{characterId}:
+    get:
+      description: List documents of the character.
+      operationId: listCharacterDocuments
+      parameters:
+      - description: Character identifier
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: List Character Documents
       tags:
       - Character
       x-accepts: application/json
@@ -5231,13 +5508,6 @@ paths:
         schema:
           $ref: '#/components/schemas/QwenParamDTO'
         style: form
-      - explode: true
-        in: query
-        name: aiForPromptResult
-        required: true
-        schema:
-          $ref: '#/components/schemas/LlmResultDTO'
-        style: form
       responses:
         "200":
           content:
@@ -5325,11 +5595,28 @@ paths:
       tags:
       - Account
       x-accepts: application/json
-  /api/v1/account/basic/{username}:
+  /api/v1/account/basic:
     get:
       description: "Return user basic information, including: username, nickname,\
         \ avatar link."
       operationId: getUserBasic
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBasicInfoDTO'
+          description: OK
+      summary: Get User Basic Information
+      tags:
+      - Account
+      x-accepts: application/json
+  /api/v1/account/basic/{username}:
+    get:
+      description: "Return user basic information, including: username, nickname,\
+        \ avatar link."
+      operationId: getUserBasic_1
       parameters:
       - description: Username
         explode: false
@@ -5456,6 +5743,30 @@ paths:
       tags:
       - Character
       x-accepts: application/json
+  /api/v1/character/document/{key}:
+    delete:
+      description: Delete a document of the character by key.
+      operationId: deleteCharacterDocument
+      parameters:
+      - description: Document key
+        explode: false
+        in: path
+        name: key
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Character Document
+      tags:
+      - Character
+      x-accepts: application/json
   /api/v1/agent/batch/delete:
     delete:
       description: "Delete multiple agents. Ensure transactionality, return the list\
@@ -5488,6 +5799,19 @@ paths:
       x-accepts: application/json
 components:
   schemas:
+    RagTaskDTO:
+      description: RAG task information
+      example:
+        sourceType: sourceType
+        source: source
+      properties:
+        sourceType:
+          description: "Source type: file (default) | url"
+          type: string
+        source:
+          description: "Source information, url, or a key for file"
+          type: string
+      type: object
     ChatContentDTO:
       description: Chat content
       example:
@@ -7609,6 +7933,7 @@ components:
         name: name
         text: text
         lang: lang
+        priority: 0
         username: username
         tags:
         - tags
@@ -7642,6 +7967,10 @@ components:
             \ match is sufficient; public scope + general search for all users does\
             \ not guarantee real-time."
           type: string
+        priority:
+          description: "Character priority, usually 1"
+          format: int32
+          type: integer
       type: object
     CharacterQueryDTO:
       description: Character query request
@@ -7649,18 +7978,19 @@ components:
         orderBy:
         - orderBy
         - orderBy
-        pageSize: 6
+        pageSize: 1
         where:
           tagsOp: tagsOp
           visibility: visibility
           name: name
           text: text
           lang: lang
+          priority: 0
           username: username
           tags:
           - tags
           - tags
-        pageNum: 0
+        pageNum: 6
       properties:
         where:
           $ref: '#/components/schemas/CharacterQuery.Where'
@@ -7698,6 +8028,7 @@ components:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
         gender: gender
+        greeting: greeting
         description: description
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -7762,6 +8093,9 @@ components:
           type: string
         lang:
           description: "Character language: en (default) | zh | ..."
+          type: string
+        greeting:
+          description: Character greeting
           type: string
         username:
           description: Character owner
@@ -7841,8 +8175,8 @@ components:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
         gender: gender
-        profile: profile
         greeting: greeting
+        profile: profile
         description: description
         chatExample: chatExample
         avatar: avatar
@@ -7938,6 +8272,9 @@ components:
         lang:
           description: "Character language: en (default) | zh | ..."
           type: string
+        greeting:
+          description: Character greeting
+          type: string
         username:
           description: Character owner
           type: string
@@ -7949,9 +8286,6 @@ components:
           type: array
         profile:
           description: Character profile
-          type: string
-        greeting:
-          description: Character greeting
           type: string
         chatStyle:
           description: Character chat-style
@@ -8651,6 +8985,7 @@ components:
         visibility: visibility
         gender: gender
         scoreCount: 2
+        greeting: greeting
         description: description
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -8718,6 +9053,9 @@ components:
           type: string
         lang:
           description: "Character language: en (default) | zh | ..."
+          type: string
+        greeting:
+          description: Character greeting
           type: string
         username:
           description: Character owner
@@ -8859,11 +9197,67 @@ components:
           format: int64
           type: integer
       type: object
+    RagTaskDetailsDTO:
+      description: Prompt task detailed information
+      example:
+        ext: ext
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        gmtEnd: 2000-01-23T04:56:07.000+00:00
+        sourceType: sourceType
+        requestId: requestId
+        id: 0
+        source: source
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        characterUid: characterUid
+        gmtStart: 2000-01-23T04:56:07.000+00:00
+        status: status
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        id:
+          description: RAG task identifier
+          format: int64
+          type: integer
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        gmtStart:
+          description: Task start execution time
+          format: date-time
+          type: string
+        gmtEnd:
+          description: Task end execution time
+          format: date-time
+          type: string
+        characterUid:
+          description: Character identifier
+          type: string
+        sourceType:
+          description: "Source type: file (default) | url"
+          type: string
+        source:
+          description: "Source information, url, or a key for file"
+          type: string
+        status:
+          description: "Task execution status: pending | running | succeeded | failed\
+            \ | canceled"
+          type: string
+        ext:
+          description: "Additional information, JSON format"
+          type: string
+      type: object
     PromptTaskDetailsDTO:
       description: Prompt task detailed information
       example:
         apiKeyValue: apiKeyValue
         cron: cron
+        ext: ext
         gmtModified: 2000-01-23T04:56:07.000+00:00
         promptRef:
           variables:
@@ -8871,12 +9265,13 @@ components:
           promptId: 0
           draft: true
         modelId: modelId
-        requestId: requestId
-        gmtExecuted: 2000-01-23T04:56:07.000+00:00
         apiKeyName: apiKeyName
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         params:
           key: "{}"
+        gmtStart: 2000-01-23T04:56:07.000+00:00
+        gmtEnd: 2000-01-23T04:56:07.000+00:00
+        requestId: requestId
         taskId: taskId
         status: status
       properties:
@@ -8894,8 +9289,12 @@ components:
           description: Modification time
           format: date-time
           type: string
-        gmtExecuted:
-          description: Latest executed time
+        gmtStart:
+          description: Task start execution time
+          format: date-time
+          type: string
+        gmtEnd:
+          description: Task end execution time
           format: date-time
           type: string
         promptRef:
@@ -8920,7 +9319,11 @@ components:
             cron format
           type: string
         status:
-          description: "Task execution status: pending | running | succeeded | failed"
+          description: "Task execution status: pending | running | succeeded | failed\
+            \ | canceled"
+          type: string
+        ext:
+          description: "Additional information, JSON format"
           type: string
       type: object
     ChatContextDTO:
@@ -9023,6 +9426,7 @@ components:
           gmtModified: 2000-01-23T04:56:07.000+00:00
           visibility: visibility
           gender: gender
+          greeting: greeting
           description: description
           avatar: avatar
           gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -9412,6 +9816,15 @@ components:
       properties:
         file:
           description: Character picture
+          format: binary
+          type: string
+      required:
+      - file
+      type: object
+    uploadCharacterDocument_request:
+      properties:
+        file:
+          description: Character document
           format: binary
           type: string
       required:

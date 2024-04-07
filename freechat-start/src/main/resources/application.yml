@@ -28,19 +28,18 @@ auth:
     limits: 3
 chat:
   memory:
-    storeType: mysql
     maxMessageSize: 10000
     defaultWindowSize: 100
-    minWindowSize: 50
     maxWindowSize: 1000
+    minWindowSize: 50
+  rag:
+    maxSegmentSize: 300
+    maxOverlapSize: 30
+    maxResults: 3
+    minScore: 0.3
 file:
   storeType: local
   basePath: ${APP_HOME}/data
-rag:
-  maxSegmentSize: 300
-  maxOverlapSize: 30
-  maxResults: 3
-  minScore: 0.3
 redis:
   mode: single
   datasource:

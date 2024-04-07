@@ -23,6 +23,7 @@ Character summary content, including interactive statistical information
 |**picture** | **String** | Character picture url |  [optional] |
 |**gender** | **String** | Character gender: male | female | other |  [optional] |
 |**lang** | **String** | Character language: en (default) | zh | ... |  [optional] |
+|**greeting** | **String** | Character greeting |  [optional] |
 |**username** | **String** | Character owner |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
 |**viewCount** | **Long** | View count |  [optional] |

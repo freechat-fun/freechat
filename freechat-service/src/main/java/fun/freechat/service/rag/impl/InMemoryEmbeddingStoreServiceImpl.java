@@ -2,6 +2,7 @@ package fun.freechat.service.rag.impl;
 
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.rag.EmbeddingStoreService;
@@ -24,7 +25,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     }
 
     @Override
-    @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
+    @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public EmbeddingStore<TextSegment> from(Object memoryId) {
         if (Objects.nonNull(memoryId)) {
             String storePath = memoryIdToPath(memoryId);
@@ -37,6 +38,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     }
 
     @Override
+    @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public void save(Object memoryId, EmbeddingStore<TextSegment> store) {
         if (Objects.nonNull(memoryId) && store instanceof InMemoryEmbeddingStore<TextSegment> inMemoryStore) {
             String storePath = memoryIdToPath(memoryId);

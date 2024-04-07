@@ -11,7 +11,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token |
 | [**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id |
 | [**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id |
-| [**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic/{username} | Get User Basic Information |
+| [**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic | Get User Basic Information |
+| [**getUserBasic1**](AccountApi.md#getUserBasic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information |
 | [**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details |
 | [**listTokens**](AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens |
 | [**updateUserInfo**](AccountApi.md#updateUserInfo) | **PUT** /api/v1/account/details | Update User Details |
@@ -485,7 +486,70 @@ public class Example {
 
 <a id="getUserBasic"></a>
 # **getUserBasic**
-> UserBasicInfoDTO getUserBasic(username)
+> UserBasicInfoDTO getUserBasic()
+
+Get User Basic Information
+
+Return user basic information, including: username, nickname, avatar link.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountApi apiInstance = new AccountApi(defaultClient);
+    try {
+      UserBasicInfoDTO result = apiInstance.getUserBasic();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountApi#getUserBasic");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**UserBasicInfoDTO**](UserBasicInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="getUserBasic1"></a>
+# **getUserBasic1**
+> UserBasicInfoDTO getUserBasic1(username)
 
 Get User Basic Information
 
@@ -513,10 +577,10 @@ public class Example {
     AccountApi apiInstance = new AccountApi(defaultClient);
     String username = "username_example"; // String | Username
     try {
-      UserBasicInfoDTO result = apiInstance.getUserBasic(username);
+      UserBasicInfoDTO result = apiInstance.getUserBasic1(username);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling AccountApi#getUserBasic");
+      System.err.println("Exception when calling AccountApi#getUserBasic1");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
