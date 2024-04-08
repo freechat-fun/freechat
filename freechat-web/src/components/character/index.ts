@@ -1,12 +1,14 @@
 export { default as CharacterGuide } from './CharacterGuide';
 export { default as CharacterEditor } from './CharacterEditor';
-export { default as CharacterBackends } from './CharacterBackends';
+export { default as CharacterBackendsPane } from './CharacterBackendsPane';
 export { default as CharacterBackendSettings } from './CharacterBackendSettings';
 export { default as CharacterGallery } from './CharacterGallery';
-export { default as CharacterAlbum } from './CharacterAlbum';
+export { default as CharacterAlbumPane } from './CharacterAlbumPane';
 export { default as CharacterAlbumPicture } from './CharacterAlbumPicture';
 export { default as CharacterAlbumPictureUploader } from './CharacterAlbumPictureUploader';
 export { default as CharacterRecommendationList } from './CharacterRecommendationList';
 export { default as CharacterRecommendationListItem } from './CharacterRecommendationListItem';
 export { default as CharacterRecommendationPoster } from './CharacterRecommendationPoster';
 export { default as CharacterRecommendationPane } from './CharacterRecommendationPane';
+export { default as CharacterDocumentsPane } from './CharacterDocumentsPane';
+export { default as CharacterDocumentUploader } from './CharacterDocumentUploader';

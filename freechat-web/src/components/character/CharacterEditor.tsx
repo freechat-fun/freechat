@@ -8,7 +8,7 @@ import { locales } from "../../configs/i18n-config";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, OptionTooltip, RouterBlocker, TinyInput } from "../../components";
 import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Typography, switchClasses } from "@mui/joy";
 import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
-import { CharacterAlbum, CharacterBackendSettings, CharacterBackends, CharacterGuide } from "../../components/character";
+import { CharacterAlbumPane, CharacterBackendSettings, CharacterBackendsPane, CharacterDocumentsPane, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
 import { createPromptForCharacter } from "../../libs/chat_utils";
 import { getCompressedImage } from "../../libs/ui_utils";
@@ -619,13 +619,24 @@ export default function CharacterEditor ({
               onChange={(event) => setGreeting(event.target.value || undefined)}
             />
           </Card>
+          <LinePlaceholder />
 
-          <CharacterBackends
-            characterId={id}
-            defaultBackends={backends}
-            editMode={true}
-            onEdit={handleBackendEdit}
-          />
+          <Card>
+            <CharacterDocumentsPane
+              characterId={id}
+              editMode={true}
+            />
+          </Card>
+          <LinePlaceholder />
+
+          <Card>
+            <CharacterBackendsPane
+              characterId={id}
+              defaultBackends={backends}
+              editMode={true}
+              onEdit={handleBackendEdit}
+            />
+          </Card>
           <LinePlaceholder />
 
           <CommonBox>
@@ -636,7 +647,7 @@ export default function CharacterEditor ({
               <HelpIcon />
             </OptionTooltip>
           </CommonBox>
-          <CharacterAlbum
+          <CharacterAlbumPane
             characterId={id}
             picture={picture}
             setPicture={setPicture}

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DoneRounded, PhotoCameraRounded, SvgIconComponent, UndoRounded } from "@mui/icons-material";
 import { DialogActions, DialogContent, DialogTitle, IconButton, IconButtonProps, Input, Modal, ModalClose, ModalDialog, Stack } from "@mui/joy";
@@ -25,9 +25,14 @@ export default function ImagePicker(props: ImagePickerProps) {
   const [file, setFile] = useState<Blob | null>(null);
   const [open, setOpen] = useState(false);
 
-  const inputId = useRef(`image-upload-input-${idCounter++}`).current;
+  const inputId = useRef(`image-upload-input-${idCounter}`).current;
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const preview = { maxWidth: 'auto', maxHeight: 'auto', borderRadius: 0, ...previewProps };
+
+  useEffect(() => {
+    idCounter++;
+  }, []);
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
     const filePath = event.target.files && event.target.files[0];
@@ -43,18 +48,22 @@ export default function ImagePicker(props: ImagePickerProps) {
 
   function handleClose(_event: React.MouseEvent<HTMLButtonElement>, reason: string): void {
     if (reason !== 'backdropClick') {
+      setFile(null);
+      setImage(undefined);
       setOpen(false);
     }
   }
 
   function handleModify() {
-    if (typeof document !== 'undefined') {
-      document.getElementById(inputId)?.click();
+    if (inputRef.current) {
+      inputRef.current.click();
     }
   }
 
   function handleConfirm() {
     file && image && onImageSelect(file, extractFilenameFromUrl(image));
+    setFile(null);
+    setImage(undefined);
     setOpen(false);
   }
 
@@ -67,7 +76,8 @@ export default function ImagePicker(props: ImagePickerProps) {
         onChange={handleImageChange}
         sx={{ display: 'none' }}
         slotProps={{ input: {
-          accept: "image/*"
+          ref: inputRef,
+          accept: "image/*",
         }}}
       />
       <label htmlFor={inputId}>

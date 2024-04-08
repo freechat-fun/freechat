@@ -84,7 +84,9 @@ Name: {{USER_NICKNAME}}
 
 {{#RELEVANT_INFORMATION}}
 [[[Some additional reference information]]]
+'''
 {{{RELEVANT_INFORMATION}}}
+'''
 {{/RELEVANT_INFORMATION}}
 """;
 

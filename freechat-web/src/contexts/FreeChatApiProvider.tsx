@@ -19,6 +19,7 @@ import {
   PluginApi,
   PromptApi,
   PromptTaskApi,
+  RagApi,
 } from 'freechat-sdk';
 
 type FreeChatApiProps = {
@@ -42,6 +43,7 @@ type FreeChatApiContextValue = {
   pluginApi: PluginApi | undefined;
   promptApi: PromptApi | undefined;
   promptTaskApi: PromptTaskApi | undefined;
+  ragApi: RagApi | undefined;
 }
 
 const undefinedContext: FreeChatApiContextValue = {
@@ -61,6 +63,7 @@ const undefinedContext: FreeChatApiContextValue = {
   pluginApi: undefined,
   promptApi: undefined,
   promptTaskApi: undefined,
+  ragApi: undefined,
 }
 
 const FreeChatApiContext = createContext<FreeChatApiContextValue>(undefinedContext);
@@ -86,6 +89,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
   const pluginApi = new PluginApi(configuration);
   const promptApi = new PromptApi(configuration);
   const promptTaskApi = new PromptTaskApi(configuration);
+  const ragApi = new RagApi(configuration);
 
   return (
     <FreeChatApiContext.Provider value={{
@@ -105,6 +109,7 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
       pluginApi,
       promptApi,
       promptTaskApi,
+      ragApi,
     }}>
       {children}
     </FreeChatApiContext.Provider>

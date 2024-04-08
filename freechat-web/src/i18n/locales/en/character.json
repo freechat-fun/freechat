@@ -4,6 +4,7 @@
   "Chat Example": "Chat Example",
   "Greeting": "Greeting",
   "Character backends: (maximum of 3 backends allowed)": "Character backends: (maximum of 3 backends allowed)",
+  "Character documents: (A maximum of 3 documents are allowed, each document is less than 10M)": "Character documents: (A maximum of 3 documents are allowed, each document is less than 10M)",
   "Character's information, significantly influences chat feedback": "Character's information, significantly influences chat feedback",
   "Do you really want to delete this character?": "Do you really want to delete this character?",
   "Creation Time": "Creation Time",
@@ -13,6 +14,7 @@
   "As Default": "As Default",
   "Actions": "Actions",
   "Do you really want to delete this character backend?": "Do you really want to delete this character backend?",
+  "Do you really want to delete this document?": "Do you really want to delete this document?",
   "Character backend parameters": "Character backend parameters",
   "moderation model settings": "moderation model settings",
   "Set the maximum number of historical messages sent to the model.": "Set the maximum number of historical messages sent to the model.",
@@ -31,5 +33,16 @@
   "Model parameters": "Model parameters",
   "Moderation model": "Moderation model",
   "Set another backend": "Set another backend",
-  "Do you really want to delete this picture?": "Do you really want to delete this picture?"
+  "Do you really want to delete this picture?": "Do you really want to delete this picture?",
+  "Start Time": "Start Time",
+  "End Time": "End Time",
+  "Source": "Source",
+  "Status": "Status",
+  "Add Document": "Add Document",
+  "FILE": "FILE",
+  "URL": "URL",
+  "Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 10MB.": "Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 10MB.",
+  "Only publicly accessible URLs are supported.": "Only publicly accessible URLs are supported.",
+  "Invalid URL": "Invalid URL",
+  "File too large!": "File too large!"
 }

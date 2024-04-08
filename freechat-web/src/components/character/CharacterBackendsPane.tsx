@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CharacterBackendDetailsDTO } from "freechat-sdk";
-import { Box, IconButton, Radio, Stack, Table, Typography } from "@mui/joy";
+import { IconButton, Radio, Stack, Table, Typography } from "@mui/joy";
 import { SxProps } from "@mui/material";
 import { AddCircleRounded, ArticleRounded, DeleteForeverRounded, DeleteRounded, EditRounded } from "@mui/icons-material";
 import { formatDateTime } from "../../libs/date_utils";
-import { ConfirmModal } from "..";
+import { CommonBox, ConfirmModal } from "..";
 
-type CharacterBackendListProps = {
+type CharacterBackendsPaneProps = {
   characterId?: number;
   defaultBackends?: CharacterBackendDetailsDTO[];
   editMode?: boolean;
@@ -17,13 +17,13 @@ type CharacterBackendListProps = {
   onEdit?: (backend: CharacterBackendDetailsDTO, backends: CharacterBackendDetailsDTO[]) => void;
 }
 
-export default function CharacterBackends({
+export default function CharacterBackendsPane({
   characterId,
   defaultBackends = [],
   editMode = false,
   sx,
   onEdit,
-}: CharacterBackendListProps) {
+}: CharacterBackendsPaneProps) {
   const navigator = useNavigate();
   const { t } = useTranslation(['character', 'button']);
   const { characterApi, promptTaskApi } = useFreeChatApiContext();
@@ -73,12 +73,7 @@ export default function CharacterBackends({
 
   return (
     <Stack spacing={3} sx={{...sx}}>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'start',
-        alignItems: 'center',
-        gap: 3,
-      }}>
+      <CommonBox>
         <Typography level="title-md">{t('Character backends: (maximum of 3 backends allowed)')}</Typography>
         {editMode && (
           <IconButton
@@ -89,9 +84,9 @@ export default function CharacterBackends({
             <AddCircleRounded />
           </IconButton>
         )}
-      </Box>
+      </CommonBox>
 
-      <Table>
+      <Table sx={{ display: backends.length > 0 ? 'table' : 'none' }}>
         <thead>
           <tr>
             <th>#</th>
@@ -103,43 +98,41 @@ export default function CharacterBackends({
           </tr>
         </thead>
         <tbody>
-          {backends.map((backend, index) => {
-              return (
-                <tr
-                  tabIndex={-1}
-                  key={backend.backendId || `unknown-backend-${index}`}
-                >
-                  <td>{index}</td>
-                  <td>{formatDateTime(backend.gmtCreate)}</td>
-                  <td>{backend.messageWindowSize}</td>
-                  <td>{backend.moderationModelId}</td>
-                  <td>
-                    <Radio
-                      disabled={!editMode}
-                      value={backend.backendId}
-                      checked={backend.isDefault}
-                      name="backend-default"
-                      onChange={(event) => handleDefaultChange(event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <IconButton disabled={!backend.chatPromptTaskId} onClick={() => handleView(backend)}>
-                      <ArticleRounded fontSize="small" />
+          {backends.map((backend, index) => (
+            <tr
+              tabIndex={-1}
+              key={`backend-${backend.backendId ?? index}`}
+            >
+              <td>{index}</td>
+              <td>{formatDateTime(backend.gmtCreate)}</td>
+              <td>{backend.messageWindowSize}</td>
+              <td>{backend.moderationModelId}</td>
+              <td>
+                <Radio
+                  disabled={!editMode}
+                  value={backend.backendId}
+                  checked={backend.isDefault}
+                  name="backend-default"
+                  onChange={(event) => handleDefaultChange(event.target.value)}
+                />
+              </td>
+              <td>
+                <IconButton disabled={!backend.chatPromptTaskId} onClick={() => handleView(backend)}>
+                  <ArticleRounded fontSize="small" />
+                </IconButton>
+                {editMode && (
+                  <Fragment>
+                    <IconButton onClick={() => onEdit?.({...backend}, [...backends])}>
+                      <EditRounded fontSize="small" />
                     </IconButton>
-                    {editMode && (
-                      <Fragment>
-                        <IconButton onClick={() => onEdit?.({...backend}, [...backends])}>
-                          <EditRounded fontSize="small" />
-                        </IconButton>
-                        <IconButton onClick={() => handleTryDelete(backend.backendId)}>
-                          <DeleteRounded fontSize="small" />
-                        </IconButton>
-                      </Fragment>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
+                    <IconButton onClick={() => handleTryDelete(backend.backendId)}>
+                      <DeleteRounded fontSize="small" />
+                    </IconButton>
+                  </Fragment>
+                )}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
 

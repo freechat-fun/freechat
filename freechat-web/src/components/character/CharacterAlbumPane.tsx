@@ -9,17 +9,17 @@ import { ConfirmModal, ImagePreview, ImagePreviewWindow } from "..";
 import { DeleteForeverRounded } from "@mui/icons-material";
 import { extractFilenameFromUrl } from "../../libs/url_utils";
 
-type CharacterAlbumProps = {
+type CharacterAlbumPaneProps = {
   characterId?: number;
   picture?: string | undefined;
   setPicture?: (url: string | undefined) => void;
 }
 
-export default function CharacterAlbum({
+export default function CharacterAlbumPane({
   characterId,
   picture,
   setPicture,
-}: CharacterAlbumProps) {
+}: CharacterAlbumPaneProps) {
   const { t } = useTranslation('character');
   const { characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();

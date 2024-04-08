@@ -9,7 +9,7 @@ spec:
   accessModes: {{ default "[ReadWriteOnce]" .Values.deployment.pvc.accessModes }}
   resources:
     requests:
-      storage: {{ default "120Gi" .Values.deployment.pvc.storage }}
+      storage: {{ default "60Gi" .Values.deployment.pvc.storage }}
   {{- include "helpers.storageClass" . | nindent 2 }}
   volumeMode: Filesystem
 {{- end }}

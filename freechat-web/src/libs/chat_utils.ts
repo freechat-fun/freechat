@@ -173,7 +173,9 @@ Name: {{USER_NICKNAME}}
 
 {{#RELEVANT_INFORMATION}}
 [[[Some additional reference information]]]
+"""
 {{{RELEVANT_INFORMATION}}}
+"""
 {{/RELEVANT_INFORMATION}}
 `;
 
@@ -247,7 +249,9 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `你扮演一个健谈的人。
 
 {{#RELEVANT_INFORMATION}}
 【一些额外的参考信息】
+"""
 {{{RELEVANT_INFORMATION}}}
+"""
 {{/RELEVANT_INFORMATION}}
 `;
 
