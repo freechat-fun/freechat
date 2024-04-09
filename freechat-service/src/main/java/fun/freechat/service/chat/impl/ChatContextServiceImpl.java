@@ -8,6 +8,7 @@ import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.common.EncryptionService;
 import fun.freechat.util.IdUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,8 @@ public class ChatContextServiceImpl implements ChatContextService {
     private ChatContextMapper chatContextMapper;
     @Autowired
     private CharacterService characterService;
+    @Autowired
+    private EncryptionService encryptionService;
 
     private List<String> getCacheKeysByBackendId(String backendId) {
         List<ChatContext> rows = chatContextMapper.select(c ->
@@ -70,11 +73,13 @@ public class ChatContextServiceImpl implements ChatContextService {
 
         Date now = new Date();
         String id = IdUtils.newId();
+        String origApiKeyValue = context.getApiKeyValue();
         int rows = chatContextMapper.insertSelective(context
+                .withApiKeyValue(encryptionService.encrypt(origApiKeyValue))
                 .withGmtCreate(now)
                 .withGmtModified(now)
                 .withChatId(id));
-        return rows > 0 ? context : null;
+        return rows > 0 ? context.withApiKeyValue(origApiKeyValue) : null;
     }
 
     @Override
@@ -84,7 +89,12 @@ public class ChatContextServiceImpl implements ChatContextService {
             key = ChatSessionServiceImpl.CACHE_KEY_SPEL_PREFIX + "#p0.chatId"
     )
     public boolean update(ChatContext context) {
-        return chatContextMapper.updateByPrimaryKeySelective(context.withGmtModified(new Date())) > 0;
+        String origApiKeyValue = context.getApiKeyValue();
+        int rows = chatContextMapper.updateByPrimaryKeySelective(context
+                .withApiKeyValue(encryptionService.encrypt(origApiKeyValue))
+                .withGmtModified(new Date()));
+        context.setApiKeyValue(origApiKeyValue);
+        return rows > 0;
     }
 
     @Override
@@ -100,14 +110,19 @@ public class ChatContextServiceImpl implements ChatContextService {
     @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public ChatContext get(String chatId) {
-        return chatContextMapper.selectByPrimaryKey(chatId).orElse(null);
+        return chatContextMapper.selectByPrimaryKey(chatId)
+                .map(context -> context.withApiKeyValue(encryptionService.decrypt(context.getApiKeyValue())))
+                .orElse(null);
     }
 
     @Override
     public List<ChatContext> list(String userId) {
         return chatContextMapper.select(c -> c.where(ChatContextDynamicSqlSupport.userId, isEqualTo(userId))
                 .orderBy(ChatContextDynamicSqlSupport.gmtRead.descending(),
-                        ChatContextDynamicSqlSupport.gmtCreate.descending()));
+                        ChatContextDynamicSqlSupport.gmtCreate.descending()))
+                .stream()
+                .peek(context -> context.setApiKeyValue(encryptionService.decrypt(context.getApiKeyValue())))
+                .toList();
     }
 
     @Override

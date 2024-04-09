@@ -39,6 +39,12 @@ public class CharacterBackend implements Serializable {
     private Integer messageWindowSize;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Long initQuota;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String quotaType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String moderationParams;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -221,6 +227,38 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Long getInitQuota() {
+        return initQuota;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withInitQuota(Long initQuota) {
+        this.setInitQuota(initQuota);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setInitQuota(Long initQuota) {
+        this.initQuota = initQuota;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getQuotaType() {
+        return quotaType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withQuotaType(String quotaType) {
+        this.setQuotaType(quotaType);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setQuotaType(String quotaType) {
+        this.quotaType = quotaType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModerationParams() {
         return moderationParams;
     }
@@ -260,6 +298,8 @@ public class CharacterBackend implements Serializable {
             && (this.getModerationApiKeyName() == null ? other.getModerationApiKeyName() == null : this.getModerationApiKeyName().equals(other.getModerationApiKeyName()))
             && (this.getForwardToUser() == null ? other.getForwardToUser() == null : this.getForwardToUser().equals(other.getForwardToUser()))
             && (this.getMessageWindowSize() == null ? other.getMessageWindowSize() == null : this.getMessageWindowSize().equals(other.getMessageWindowSize()))
+            && (this.getInitQuota() == null ? other.getInitQuota() == null : this.getInitQuota().equals(other.getInitQuota()))
+            && (this.getQuotaType() == null ? other.getQuotaType() == null : this.getQuotaType().equals(other.getQuotaType()))
             && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
     }
 
@@ -279,6 +319,8 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getModerationApiKeyName() == null) ? 0 : getModerationApiKeyName().hashCode());
         result = prime * result + ((getForwardToUser() == null) ? 0 : getForwardToUser().hashCode());
         result = prime * result + ((getMessageWindowSize() == null) ? 0 : getMessageWindowSize().hashCode());
+        result = prime * result + ((getInitQuota() == null) ? 0 : getInitQuota().hashCode());
+        result = prime * result + ((getQuotaType() == null) ? 0 : getQuotaType().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
         return result;
     }
@@ -301,6 +343,8 @@ public class CharacterBackend implements Serializable {
         sb.append(", moderationApiKeyName=").append(moderationApiKeyName);
         sb.append(", forwardToUser=").append(forwardToUser);
         sb.append(", messageWindowSize=").append(messageWindowSize);
+        sb.append(", initQuota=").append(initQuota);
+        sb.append(", quotaType=").append(quotaType);
         sb.append(", moderationParams=").append(moderationParams);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

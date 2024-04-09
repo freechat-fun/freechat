@@ -225,6 +225,8 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `moderation_params` json DEFAULT NULL,
   `forward_to_user` tinyint NOT NULL DEFAULT 0,
   `message_window_size` int NOT NULL DEFAULT 100,
+  `init_quota` bigint unsigned DEFAULT 0,
+  `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   PRIMARY KEY (`backend_id`),
   INDEX `idx_character` (`character_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character backend table'
@@ -263,6 +265,10 @@ CREATE TABLE IF NOT EXISTS `chat_context` (
   `backend_id` varchar(32) NOT NULL,
   `character_nickname` varchar(128) DEFAULT NULL,
   `about` text DEFAULT NULL,
+  `api_key_name` varchar(64) DEFAULT NULL,
+  `api_key_value` text DEFAULT NULL,
+  `quota` bigint unsigned DEFAULT 0,
+  `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`chat_id`),
   INDEX `idx_user` (`user_id`)

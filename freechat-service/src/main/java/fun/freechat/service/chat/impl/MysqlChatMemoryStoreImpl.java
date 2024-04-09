@@ -8,6 +8,7 @@ import fun.freechat.model.ChatHistory;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatMessageRecord;
+import fun.freechat.service.chat.MemoryUsage;
 import fun.freechat.service.util.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -194,6 +195,22 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
         cache().evict(CACHE_KEY_PREFIX + memoryId);
         return ids;
+    }
+
+    @Override
+    public MemoryUsage usage(Object memoryId) {
+        return chatHistoryMapper.select(c -> c.where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+                        .and(ChatHistoryDynamicSqlSupport.message, isNotNull()))
+                .stream()
+                .filter(history -> {
+                    ChatMessage message = historyToMessage(history);
+                    return Objects.nonNull(message) && message.type() == AI;
+                })
+                .map(ChatHistory::getExt)
+                .map(InfoUtils::deserialize)
+                .reduce(new MemoryUsage(null, null),
+                        (acc, tokenUsage) -> acc.add(1L, tokenUsage),
+                        MemoryUsage::add);
     }
 
     private List<ChatHistory> loadHistories(Object memoryId) {

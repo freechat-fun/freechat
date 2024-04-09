@@ -59,7 +59,7 @@ public class ChatServiceImpl implements ChatService {
     private CharacterService characterService;
     @Autowired
     private OrgService orgService;
-    
+
     @Override
     public String start(User user,
                         String userNickname,
@@ -67,19 +67,30 @@ public class ChatServiceImpl implements ChatService {
                         String characterNickname,
                         String about,
                         String backendId,
+                        String apiKeyName,
+                        String apiKeyValue,
                         String ext) {
         String chatId = chatContextService.getIdByBackend(user.getUserId(), backendId);
         if (StringUtils.isNotBlank(chatId)) {
             return chatId;
         }
 
+        CharacterBackend backend = characterService.getBackend(backendId);
+        if (Objects.isNull(backend)) {
+            return null;
+        }
+
         ChatContext context = new ChatContext()
+                .withApiKeyName(apiKeyName)
+                .withApiKeyValue(apiKeyValue)
                 .withUserId(user.getUserId())
                 .withUserNickname(userNickname)
                 .withUserProfile(userProfile)
                 .withCharacterNickname(characterNickname)
                 .withAbout(about)
                 .withBackendId(backendId)
+                .withQuota(backend.getInitQuota())
+                .withQuotaType(backend.getQuotaType())
                 .withExt(ext);
 
         ChatContext persistentContext = chatContextService.create(context);
@@ -171,6 +182,7 @@ public class ChatServiceImpl implements ChatService {
                     chatMemory.add(response.content());
                 }
 
+                session.addMemoryUsage(1L, response.tokenUsage());
                 AiMessage aiMessage = response.content();
 
                 if (!aiMessage.hasToolExecutionRequests()) {
@@ -190,7 +202,7 @@ public class ChatServiceImpl implements ChatService {
             }
 
             session.getProcessing().set(false);
-            return response;
+            return Response.from(response.content(), tokenUsageAccumulator, response.finishReason());
         } finally {
             session.release();
         }

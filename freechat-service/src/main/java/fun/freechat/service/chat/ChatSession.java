@@ -8,19 +8,18 @@ import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.moderation.ModerationModel;
+import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServiceContext;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,6 +34,9 @@ public class ChatSession {
     private final Map<String, Object> variables;
     private final AtomicBoolean processing = new AtomicBoolean(false);
 
+    @Setter
+    private MemoryUsage memoryUsage;
+
     @Builder
     public ChatSession(ChatLanguageModel chatModel,
                        StreamingChatLanguageModel streamingChatModel,
@@ -43,7 +45,8 @@ public class ChatSession {
                        ChatPromptContent prompt,
                        PromptFormat promptFormat,
                        Map<String, Object> variables,
-                       RetrievalAugmentor retriever) {
+                       RetrievalAugmentor retriever,
+                       MemoryUsage memoryUsage) {
         aiServiceContext = new AiServiceContext(null);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
@@ -55,6 +58,7 @@ public class ChatSession {
         this.prompt = prompt;
         this.promptFormat = promptFormat;
         this.variables = variables;
+        this.memoryUsage = memoryUsage;
     }
 
     @SuppressWarnings("unused")
@@ -102,6 +106,14 @@ public class ChatSession {
 
     public RetrievalAugmentor getRetrieverAugmentor() {
         return aiServiceContext.retrievalAugmentor;
+    }
+
+    public void addMemoryUsage(Long messageUsage, TokenUsage tokenUsage) {
+        if (Objects.isNull(memoryUsage)) {
+            memoryUsage = new MemoryUsage(messageUsage, tokenUsage);
+        } else {
+            memoryUsage = memoryUsage.add(messageUsage, tokenUsage);
+        }
     }
 
     public boolean acquire() {

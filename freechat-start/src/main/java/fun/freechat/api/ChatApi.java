@@ -2,6 +2,7 @@ package fun.freechat.api;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
+import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.*;
@@ -12,6 +13,7 @@ import fun.freechat.model.ChatContext;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
 import fun.freechat.service.enums.ChatVar;
+import fun.freechat.service.enums.QuotaType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +60,36 @@ public class ChatApi {
     @Autowired
     private OrgService orgService;
 
+    private void checkQuotaValue(long usage, long limit) {
+        if (usage >= limit) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS,
+                    "Usage " + usage + " exceeds limit " + limit);
+        }
+    }
+
+    private void checkQuota(String chatId) {
+        ChatContext context = chatContextService.get(chatId);
+
+        if (StringUtils.isNotBlank(context.getApiKeyName()) ||
+                StringUtils.isNotBlank(context.getApiKeyValue())) {
+            // use the chatter's own credentials
+            return;
+        }
+
+        ChatSession session = chatSessionService.get(chatId);
+        Long limit = Utils.getOrDefault(context.getQuota(), 0L);
+        switch (QuotaType.of(context.getQuotaType())) {
+            case MESSAGES -> {
+                Long usage = Utils.getOrDefault(session.getMemoryUsage().messageUsage(), 0L);
+                checkQuotaValue(usage, limit);
+            }
+            case TOKENS -> {
+                Integer usage = Utils.getOrDefault(session.getMemoryUsage().tokenUsage().totalTokenCount(), 0);
+                checkQuotaValue(usage.longValue(), limit);
+            }
+        }
+    }
+
     @Operation(
             operationId = "startChat",
             summary = "Start Chat Session",
@@ -94,6 +126,8 @@ public class ChatApi {
                 chatCreateParams.getCharacterNickname(),
                 chatCreateParams.getAbout(),
                 backendId,
+                chatCreateParams.getApiKeyName(),
+                chatCreateParams.getApiKeyValue(),
                 chatCreateParams.getExt());
         if (StringUtils.isBlank(chatId)) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Failed to start a chat.");
@@ -215,6 +249,7 @@ public class ChatApi {
     public LlmResultDTO send(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
+        checkQuota(chatId);
         Response<AiMessage> response = chatService.send(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
@@ -235,6 +270,7 @@ public class ChatApi {
     public SseEmitter streamSend(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
+        checkQuota(chatId);
         SseEmitter sseEmitter = new SseEmitter();
         TokenStream tokenStream = chatService.streamSend(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
@@ -242,6 +278,8 @@ public class ChatApi {
         if (Objects.isNull(tokenStream)) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
         }
+
+        ChatSession session = chatSessionService.get(chatId);
 
         tokenStream.onNext(partialResult -> {
             try {
@@ -251,11 +289,12 @@ public class ChatApi {
                 sseEmitter.send(result);
             } catch (NullPointerException | IOException e) {
                 log.error("Error when sending message.", e);
-                chatSessionService.get(chatId).release();
+                session.release();
                 sseEmitter.completeWithError(e);
             }
         }).onComplete(response -> {
             try {
+                session.addMemoryUsage(1L, response.tokenUsage());
                 chatMemoryService.updateChatMessageTokenUsage(chatId, response.content(), response.tokenUsage());
                 LlmResultDTO result = LlmResultDTO.from(response);
                 Objects.requireNonNull(result).setText(null);
@@ -266,14 +305,14 @@ public class ChatApi {
                 log.error("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
             } finally {
-                chatSessionService.get(chatId).release();
+                session.release();
             }
         }).onError(ex -> {
             try {
                 log.error("SSE exception.", ex);
                 sseEmitter.completeWithError(ex);
             } finally {
-                chatSessionService.get(chatId).release();
+                session.release();
             }
         }).start();
 
@@ -341,5 +380,17 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @Parameter(description = "Message count to be rolled back") @PathVariable("count") @Positive Integer count) {
         return chatMemoryService.rollback(chatId, count);
+    }
+
+    @Operation(
+            operationId = "getMemoryUsage",
+            summary = "Get Memory Usage",
+            description = "Get memory usage of a chat."
+    )
+    @GetMapping("/memory/usage/{chatId}")
+    @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
+    public MemoryUsageDTO getMemoryUsage(
+            @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId) {
+        return MemoryUsageDTO.from(chatMemoryService.usage(chatId));
     }
 }

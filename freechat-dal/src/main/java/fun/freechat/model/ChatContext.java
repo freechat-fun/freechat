@@ -33,10 +33,22 @@ public class ChatContext implements Serializable {
     private String characterNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String apiKeyName;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Long quota;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String quotaType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String userProfile;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String about;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String apiKeyValue;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
@@ -189,6 +201,54 @@ public class ChatContext implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getApiKeyName() {
+        return apiKeyName;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withApiKeyName(String apiKeyName) {
+        this.setApiKeyName(apiKeyName);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setApiKeyName(String apiKeyName) {
+        this.apiKeyName = apiKeyName;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Long getQuota() {
+        return quota;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withQuota(Long quota) {
+        this.setQuota(quota);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setQuota(Long quota) {
+        this.quota = quota;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getQuotaType() {
+        return quotaType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withQuotaType(String quotaType) {
+        this.setQuotaType(quotaType);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setQuotaType(String quotaType) {
+        this.quotaType = quotaType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getUserProfile() {
         return userProfile;
     }
@@ -218,6 +278,22 @@ public class ChatContext implements Serializable {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getApiKeyValue() {
+        return apiKeyValue;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public ChatContext withApiKeyValue(String apiKeyValue) {
+        this.setApiKeyValue(apiKeyValue);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setApiKeyValue(String apiKeyValue) {
+        this.apiKeyValue = apiKeyValue;
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -257,7 +333,10 @@ public class ChatContext implements Serializable {
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getUserNickname() == null ? other.getUserNickname() == null : this.getUserNickname().equals(other.getUserNickname()))
             && (this.getBackendId() == null ? other.getBackendId() == null : this.getBackendId().equals(other.getBackendId()))
-            && (this.getCharacterNickname() == null ? other.getCharacterNickname() == null : this.getCharacterNickname().equals(other.getCharacterNickname()));
+            && (this.getCharacterNickname() == null ? other.getCharacterNickname() == null : this.getCharacterNickname().equals(other.getCharacterNickname()))
+            && (this.getApiKeyName() == null ? other.getApiKeyName() == null : this.getApiKeyName().equals(other.getApiKeyName()))
+            && (this.getQuota() == null ? other.getQuota() == null : this.getQuota().equals(other.getQuota()))
+            && (this.getQuotaType() == null ? other.getQuotaType() == null : this.getQuotaType().equals(other.getQuotaType()));
     }
 
     @Override
@@ -274,6 +353,9 @@ public class ChatContext implements Serializable {
         result = prime * result + ((getUserNickname() == null) ? 0 : getUserNickname().hashCode());
         result = prime * result + ((getBackendId() == null) ? 0 : getBackendId().hashCode());
         result = prime * result + ((getCharacterNickname() == null) ? 0 : getCharacterNickname().hashCode());
+        result = prime * result + ((getApiKeyName() == null) ? 0 : getApiKeyName().hashCode());
+        result = prime * result + ((getQuota() == null) ? 0 : getQuota().hashCode());
+        result = prime * result + ((getQuotaType() == null) ? 0 : getQuotaType().hashCode());
         return result;
     }
 
@@ -293,8 +375,12 @@ public class ChatContext implements Serializable {
         sb.append(", userNickname=").append(userNickname);
         sb.append(", backendId=").append(backendId);
         sb.append(", characterNickname=").append(characterNickname);
+        sb.append(", apiKeyName=").append(apiKeyName);
+        sb.append(", quota=").append(quota);
+        sb.append(", quotaType=").append(quotaType);
         sb.append(", userProfile=").append(userProfile);
         sb.append(", about=").append(about);
+        sb.append(", apiKeyValue=").append(apiKeyValue);
         sb.append(", ext=").append(ext);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

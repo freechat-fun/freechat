@@ -38,10 +38,22 @@ public final class ChatContextDynamicSqlSupport {
     public static final SqlColumn<String> characterNickname = chatContext.characterNickname;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> apiKeyName = chatContext.apiKeyName;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Long> quota = chatContext.quota;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> quotaType = chatContext.quotaType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> userProfile = chatContext.userProfile;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> about = chatContext.about;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> apiKeyValue = chatContext.apiKeyValue;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = chatContext.ext;
@@ -66,9 +78,17 @@ public final class ChatContextDynamicSqlSupport {
 
         public final SqlColumn<String> characterNickname = column("character_nickname", JDBCType.VARCHAR);
 
+        public final SqlColumn<String> apiKeyName = column("api_key_name", JDBCType.VARCHAR);
+
+        public final SqlColumn<Long> quota = column("quota", JDBCType.BIGINT);
+
+        public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR);
+
         public final SqlColumn<String> userProfile = column("user_profile", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> about = column("about", JDBCType.LONGVARCHAR);
+
+        public final SqlColumn<String> apiKeyValue = column("api_key_value", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
 

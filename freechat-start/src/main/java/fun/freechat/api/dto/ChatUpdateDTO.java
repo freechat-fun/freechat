@@ -21,6 +21,8 @@ public class ChatUpdateDTO extends ChatCreateDTO {
                 .withCharacterNickname(getCharacterNickname())
                 .withUserNickname(getUserNickname())
                 .withUserProfile(getUserProfile())
+                .withApiKeyName(getApiKeyName())
+                .withApiKeyValue(getApiKeyValue())
                 .withGmtRead(getGmtRead());
     }
 }

@@ -44,6 +44,12 @@ public final class CharacterBackendDynamicSqlSupport {
     public static final SqlColumn<Integer> messageWindowSize = characterBackend.messageWindowSize;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Long> initQuota = characterBackend.initQuota;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> quotaType = characterBackend.quotaType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> moderationParams = characterBackend.moderationParams;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -69,6 +75,10 @@ public final class CharacterBackendDynamicSqlSupport {
         public final SqlColumn<Byte> forwardToUser = column("forward_to_user", JDBCType.TINYINT);
 
         public final SqlColumn<Integer> messageWindowSize = column("message_window_size", JDBCType.INTEGER);
+
+        public final SqlColumn<Long> initQuota = column("init_quota", JDBCType.BIGINT);
+
+        public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR);
 
         public final SqlColumn<String> moderationParams = column("moderation_params", JDBCType.LONGVARCHAR);
 

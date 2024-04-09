@@ -28,10 +28,7 @@ import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.ai.CloseableAiApiKey;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.ChatContextService;
-import fun.freechat.service.chat.ChatMemoryService;
-import fun.freechat.service.chat.ChatSession;
-import fun.freechat.service.chat.ChatSessionService;
+import fun.freechat.service.chat.*;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.PromptFormat;
@@ -115,10 +112,19 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         return cache.get(CACHE_KEY_PREFIX + "_lock_" + chatId, ReentrantLock::new);
     }
 
-    private CloseableAiApiKey getCloseableAiApiKey(String userId, PromptTask promptTask) {
-        return StringUtils.isBlank(promptTask.getApiKeyName()) ?
-                aiApiKeyService.use(promptTask.getApiKeyValue()) :
-                aiApiKeyService.use(userId, promptTask.getApiKeyName());
+    private CloseableAiApiKey getCloseableAiApiKey(ChatContext context, String userId, PromptTask promptTask) {
+        String apiKeyOwner = context.getUserId();
+        String apiKeyName = context.getApiKeyName();
+        String apiKeyValue = context.getApiKeyValue();
+        if (StringUtils.isBlank(apiKeyName) && StringUtils.isBlank(apiKeyValue)) {
+            apiKeyOwner = userId;
+            apiKeyName = promptTask.getApiKeyName();
+            apiKeyValue = promptTask.getApiKeyValue();
+        }
+
+        return StringUtils.isBlank(apiKeyName) ?
+                aiApiKeyService.use(apiKeyValue) :
+                aiApiKeyService.use(apiKeyOwner, apiKeyName);
     }
 
     @Override
@@ -163,7 +169,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             ChatLanguageModel chatModel;
             StreamingChatLanguageModel streamingChatModel;
-            try (var apiKeyClient = getCloseableAiApiKey(ownerId, promptTask)) {
+            try (var apiKeyClient = getCloseableAiApiKey(context, ownerId, promptTask)) {
                 switch (provider) {
                     case OPEN_AI -> {
                         chatModel = createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
@@ -301,6 +307,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .executor(executor)
                     .build();
 
+            MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
+
             return ChatSession.builder()
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
@@ -310,6 +318,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .promptFormat(promptFormat)
                     .variables(variables)
                     .retriever(retrievalAugmentor)
+                    .memoryUsage(memoryUsage)
                     .build();
         } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {
             log.warn("Failed to build chat session of {}", chatId, e);

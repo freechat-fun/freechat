@@ -20,6 +20,10 @@ public class ChatCreateDTO {
     private Long characterId;
     @Schema(description = "Character backend for this session")
     private String backendId;
+    @Schema(description = "API-KEY name, priority: apiKeyName > apiKeyValue")
+    private String apiKeyName;
+    @Schema(description = "API-KEY value")
+    private String apiKeyValue;
     @Schema(description = "Extra info for this session")
     private String ext;
 }

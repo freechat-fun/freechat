@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, initQuota, quotaType, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -48,6 +48,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="moderation_api_key_name", property="moderationApiKeyName", jdbcType=JdbcType.VARCHAR),
         @Result(column="forward_to_user", property="forwardToUser", jdbcType=JdbcType.TINYINT),
         @Result(column="message_window_size", property="messageWindowSize", jdbcType=JdbcType.INTEGER),
+        @Result(column="init_quota", property="initQuota", jdbcType=JdbcType.BIGINT),
+        @Result(column="quota_type", property="quotaType", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<CharacterBackend> selectMany(SelectStatementProvider selectStatement);
@@ -88,6 +90,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(moderationApiKeyName).toProperty("moderationApiKeyName")
             .map(forwardToUser).toProperty("forwardToUser")
             .map(messageWindowSize).toProperty("messageWindowSize")
+            .map(initQuota).toProperty("initQuota")
+            .map(quotaType).toProperty("quotaType")
             .map(moderationParams).toProperty("moderationParams")
         );
     }
@@ -106,6 +110,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(moderationApiKeyName).toProperty("moderationApiKeyName")
             .map(forwardToUser).toProperty("forwardToUser")
             .map(messageWindowSize).toProperty("messageWindowSize")
+            .map(initQuota).toProperty("initQuota")
+            .map(quotaType).toProperty("quotaType")
             .map(moderationParams).toProperty("moderationParams")
         );
     }
@@ -124,6 +130,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(moderationApiKeyName).toPropertyWhenPresent("moderationApiKeyName", row::getModerationApiKeyName)
             .map(forwardToUser).toPropertyWhenPresent("forwardToUser", row::getForwardToUser)
             .map(messageWindowSize).toPropertyWhenPresent("messageWindowSize", row::getMessageWindowSize)
+            .map(initQuota).toPropertyWhenPresent("initQuota", row::getInitQuota)
+            .map(quotaType).toPropertyWhenPresent("quotaType", row::getQuotaType)
             .map(moderationParams).toPropertyWhenPresent("moderationParams", row::getModerationParams)
         );
     }
@@ -168,6 +176,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
                 .set(forwardToUser).equalTo(row::getForwardToUser)
                 .set(messageWindowSize).equalTo(row::getMessageWindowSize)
+                .set(initQuota).equalTo(row::getInitQuota)
+                .set(quotaType).equalTo(row::getQuotaType)
                 .set(moderationParams).equalTo(row::getModerationParams);
     }
 
@@ -184,6 +194,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
                 .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
                 .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
+                .set(initQuota).equalToWhenPresent(row::getInitQuota)
+                .set(quotaType).equalToWhenPresent(row::getQuotaType)
                 .set(moderationParams).equalToWhenPresent(row::getModerationParams);
     }
 
@@ -200,6 +212,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
             .set(forwardToUser).equalTo(row::getForwardToUser)
             .set(messageWindowSize).equalTo(row::getMessageWindowSize)
+            .set(initQuota).equalTo(row::getInitQuota)
+            .set(quotaType).equalTo(row::getQuotaType)
             .set(moderationParams).equalTo(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
@@ -218,6 +232,8 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
             .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
             .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
+            .set(initQuota).equalToWhenPresent(row::getInitQuota)
+            .set(quotaType).equalToWhenPresent(row::getQuotaType)
             .set(moderationParams).equalToWhenPresent(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );

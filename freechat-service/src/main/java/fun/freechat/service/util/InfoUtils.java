@@ -1,7 +1,10 @@
 package fun.freechat.service.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.model.output.TokenUsage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -11,6 +14,7 @@ import java.util.Optional;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
+@Slf4j
 public class InfoUtils {
     private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper()
             .disable(FAIL_ON_UNKNOWN_PROPERTIES)
@@ -50,5 +54,33 @@ public class InfoUtils {
                 tokenUsage.inputTokenCount(),
                 tokenUsage.outputTokenCount(),
                 tokenUsage.totalTokenCount());
+    }
+
+    public static TokenUsage deserialize(String text) {
+        if (StringUtils.isBlank(text)) {
+            return null;
+        }
+        try {
+            List<Integer> usageInfo = defaultMapper().readValue(text, new TypeReference<>() {});
+            return switch (usageInfo.size()) {
+                case 1 -> new TokenUsage(usageInfo.getFirst());
+                case 2 -> new TokenUsage(usageInfo.getFirst(), usageInfo.getLast());
+                case 3 -> new TokenUsage(usageInfo.get(0), usageInfo.get(1), usageInfo.get(2));
+                default -> null;
+            };
+        } catch (JsonProcessingException e) {
+            log.warn("Failed to deserialize TokenUsage from {}", text, e);
+            return null;
+        }
+    }
+
+    private static Integer getOrDefault(List<Integer> info, int index, Integer defaultValue) {
+        return info.size() > index ? info.get(index) : defaultValue;
+    }
+
+    public static void main(String[] args) throws JsonProcessingException {
+        String text = "[1,2,3]";
+        List<Integer> usage = defaultMapper().readValue(text, new TypeReference<>() {});
+        System.out.println(usage);
     }
 }

@@ -133,7 +133,7 @@ export default function CharacterDocumentsPane({
     <Stack spacing={3} sx={{...sx}}>
       <CommonBox>
         <Typography level="title-md">
-          {t('Character documents: (A maximum of 3 documents are allowed, each document is less than 10M)')}
+          {t('Character documents: (A maximum of 10 documents are allowed, each document is less than 10M)')}
         </Typography>
         <IconButton onClick={() =>handleRefreshTasks()}>
           <RefreshRounded />
@@ -141,7 +141,7 @@ export default function CharacterDocumentsPane({
 
         {editMode && (
           <IconButton
-            disabled={ragTasks.length >= 3}
+            disabled={ragTasks.length >= 10}
             color="primary"
             onClick={() => setNewTask(true)}
           >

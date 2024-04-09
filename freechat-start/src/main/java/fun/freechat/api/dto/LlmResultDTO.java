@@ -21,12 +21,12 @@ public class LlmResultDTO extends TraceableDTO {
     @Schema(description = "Model end reason: stop | length | tool_execution | content_filter")
     private String finishReason;
     @Schema(description = "Token usage information")
-    private LlmTokenUsageDTO tokenUsage;
+    private TokenUsageDTO tokenUsage;
 
     public static LlmResultDTO from(String text,
                                     ChatMessageDTO message,
                                     String finishReason,
-                                    LlmTokenUsageDTO usage) {
+                                    TokenUsageDTO usage) {
         LlmResultDTO dto = new LlmResultDTO();
         dto.setText(text);
         dto.setMessage(message);
@@ -83,6 +83,6 @@ public class LlmResultDTO extends TraceableDTO {
                 text,
                 message,
                 finishReason,
-                LlmTokenUsageDTO.from(response.tokenUsage()));
+                TokenUsageDTO.from(response.tokenUsage()));
     }
 }

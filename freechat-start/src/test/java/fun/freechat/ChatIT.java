@@ -1,16 +1,14 @@
 package fun.freechat;
 
 import fun.freechat.api.dto.*;
-import fun.freechat.service.enums.GenderType;
-import fun.freechat.service.enums.ModelProvider;
-import fun.freechat.service.enums.PromptFormat;
-import fun.freechat.service.enums.Visibility;
+import fun.freechat.service.enums.*;
 import fun.freechat.util.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -200,6 +198,8 @@ public class ChatIT extends AbstractIntegrationTest{
         dto.setChatPromptTaskId(promptTaskId);
         dto.setIsDefault(true);
         dto.setMessageWindowSize(50);
+        dto.setInitQuota(2L);
+        dto.setQuotaType(QuotaType.MESSAGES.text());
 
         backendId = testClient.post().uri("/api/v1/character/backend/" + characterId)
                 .accept(MediaType.TEXT_PLAIN)
@@ -327,6 +327,79 @@ public class ChatIT extends AbstractIntegrationTest{
 
         String answer = futureAnswer.get(1, MINUTES);
         System.out.println(CHARACTER_NICKNAME + ": " + answer);
+    }
+
+    private void testMemoryUsage() {
+        MemoryUsageDTO usage = testClient.get().uri("/api/v1/chat/memory/usage/" + chatId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(MemoryUsageDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(usage);
+        assertNotNull(usage.getMessageUsage());
+        assertThat(usage.getMessageUsage()).isEqualTo(2L);
+    }
+
+    private void testSendMessageFailedByQuota() {
+        ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
+
+        testClient.post().uri("/api/v1/chat/send/" + chatId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+
+        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    private void testResendMessageWithSpecializedApiKey() {
+        ChatUpdateDTO updateDto = new ChatUpdateDTO();
+        updateDto.setApiKeyValue(TestAiApiKeyUtils.apiKeyOfOpenAI());
+
+        testClient.put().uri("/api/v1/chat/" + chatId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(updateDto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .isEqualTo(Boolean.TRUE);
+
+        ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
+
+        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/" + chatId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LlmResultDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(result);
+        assertNotNull(result.getMessage());
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
+                " (" + result.getTokenUsage() + ")");
     }
 
     private void testListMessagesFailed() {
@@ -480,6 +553,15 @@ public class ChatIT extends AbstractIntegrationTest{
         TestCommonUtils.waitAWhile();
 
         testSendMessage();
+        TestCommonUtils.waitAWhile();
+
+        testMemoryUsage();
+        TestCommonUtils.waitAWhile();
+
+        testSendMessageFailedByQuota();
+        TestCommonUtils.waitAWhile();
+
+        testResendMessageWithSpecializedApiKey();
         TestCommonUtils.waitAWhile();
 
         testStreamSendMessage();

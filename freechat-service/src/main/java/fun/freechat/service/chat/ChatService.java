@@ -20,6 +20,8 @@ public interface ChatService {
                  String characterNickname,
                  String about,
                  String backendId,
+                 String apiKeyName,
+                 String apiKeyValue,
                  String ext);
     boolean delete(String chatId);
     List<Triple<ChatContext, CharacterInfo, ChatMessageRecord>> list(User user);

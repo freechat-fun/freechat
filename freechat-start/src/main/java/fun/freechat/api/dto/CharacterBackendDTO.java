@@ -24,6 +24,10 @@ public class CharacterBackendDTO {
     private String moderationParams;
     @Schema(description = "Max messages in the character's memory")
     private Integer messageWindowSize;
+    @Schema(description = "Initial quota when opening a chat")
+    private Long initQuota;
+    @Schema(description = "Quota type: messages | tokens | none (not limited)")
+    private String quotaType;
     @Schema(description = "Weather to forward messages to the character owner")
     private Boolean forwardToUser;
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Schema(description = "Token usage information")
 @Data
-public class LlmTokenUsageDTO {
+public class TokenUsageDTO {
     @Schema(description = "Input token count")
     private Integer inputTokenCount;
     @Schema(description = "Output token count")
@@ -16,11 +16,11 @@ public class LlmTokenUsageDTO {
     @Schema(description = "Total token count")
     private Integer totalTokenCount;
 
-    public static LlmTokenUsageDTO from(TokenUsage tokenUsage) {
+    public static TokenUsageDTO from(TokenUsage tokenUsage) {
         if (Objects.isNull(tokenUsage)) {
             return null;
         }
-        LlmTokenUsageDTO dto = new LlmTokenUsageDTO();
+        TokenUsageDTO dto = new TokenUsageDTO();
         dto.setInputTokenCount(tokenUsage.inputTokenCount());
         dto.setOutputTokenCount(tokenUsage.outputTokenCount());
         dto.setTotalTokenCount(tokenUsage.totalTokenCount());
