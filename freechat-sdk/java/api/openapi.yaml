@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   description: https://github.com/freechat-fun/freechat
   title: FreeChat OpenAPI Definition
-  version: 0.7.0
+  version: 0.8.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -4804,6 +4804,30 @@ paths:
       tags:
       - Chat
       x-accepts: application/json
+  /api/v1/chat/memory/usage/{chatId}:
+    get:
+      description: Get memory usage of a chat.
+      operationId: getMemoryUsage
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryUsageDTO'
+          description: OK
+      summary: Get Memory Usage
+      tags:
+      - Chat
+      x-accepts: application/json
   /api/v1/character/summary/{characterId}:
     get:
       description: Get character summary information.
@@ -6209,10 +6233,12 @@ components:
       description: Request data for updating a chat session
       example:
         characterNickname: characterNickname
+        apiKeyValue: apiKeyValue
         ext: ext
         about: about
         userNickname: userNickname
         backendId: backendId
+        apiKeyName: apiKeyName
         characterId: 0
         userProfile: userProfile
         gmtRead: 2000-01-23T04:56:07.000+00:00
@@ -6235,6 +6261,12 @@ components:
           type: integer
         backendId:
           description: Character backend for this session
+          type: string
+        apiKeyName:
+          description: "API-KEY name, priority: apiKeyName > apiKeyValue"
+          type: string
+        apiKeyValue:
+          description: API-KEY value
           type: string
         ext:
           description: Extra info for this session
@@ -6326,10 +6358,12 @@ components:
       description: Character backend information
       example:
         moderationApiKeyName: moderationApiKeyName
+        quotaType: quotaType
         isDefault: true
         moderationParams: moderationParams
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
+        initQuota: 6
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 0
         forwardToUser: true
@@ -6356,6 +6390,13 @@ components:
           description: Max messages in the character's memory
           format: int32
           type: integer
+        initQuota:
+          description: Initial quota when opening a chat
+          format: int64
+          type: integer
+        quotaType:
+          description: "Quota type: messages | tokens | none (not limited)"
+          type: string
         forwardToUser:
           description: Weather to forward messages to the character owner
           type: boolean
@@ -6999,9 +7040,9 @@ components:
           description: "Model end reason: stop | length | tool_execution | content_filter"
           type: string
         tokenUsage:
-          $ref: '#/components/schemas/LlmTokenUsageDTO'
+          $ref: '#/components/schemas/TokenUsageDTO'
       type: object
-    LlmTokenUsageDTO:
+    TokenUsageDTO:
       description: Token usage information
       example:
         inputTokenCount: 0
@@ -7789,10 +7830,12 @@ components:
       description: Request data for starting a chat session
       example:
         characterNickname: characterNickname
+        apiKeyValue: apiKeyValue
         ext: ext
         about: about
         userNickname: userNickname
         backendId: backendId
+        apiKeyName: apiKeyName
         characterId: 0
         userProfile: userProfile
       properties:
@@ -7814,6 +7857,12 @@ components:
           type: integer
         backendId:
           description: Character backend for this session
+          type: string
+        apiKeyName:
+          description: "API-KEY name, priority: apiKeyName > apiKeyValue"
+          type: string
+        apiKeyValue:
+          description: API-KEY value
           type: string
         ext:
           description: Extra info for this session
@@ -8032,7 +8081,7 @@ components:
         description: description
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
-        version: 6
+        version: 1
         picture: picture
         tags:
         - tags
@@ -8041,7 +8090,7 @@ components:
         name: name
         nickname: nickname
         lang: lang
-        characterId: 0
+        characterId: 6
         characterUid: characterUid
         username: username
       properties:
@@ -8117,8 +8166,10 @@ components:
         moderationModelId: moderationModelId
         backendId: backendId
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        quotaType: quotaType
         isDefault: true
         requestId: requestId
+        initQuota: 5
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 1
         characterUid: characterUid
@@ -8163,6 +8214,13 @@ components:
           description: Max messages in the character's memory
           format: int32
           type: integer
+        initQuota:
+          description: Initial quota when opening a chat
+          format: int64
+          type: integer
+        quotaType:
+          description: "Quota type: messages | tokens | none (not limited)"
+          type: string
         forwardToUser:
           description: Whether to forward messages to the character owner
           type: boolean
@@ -8190,8 +8248,10 @@ components:
           moderationModelId: moderationModelId
           backendId: backendId
           gmtCreate: 2000-01-23T04:56:07.000+00:00
+          quotaType: quotaType
           isDefault: true
           requestId: requestId
+          initQuota: 5
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 1
           characterUid: characterUid
@@ -8203,8 +8263,10 @@ components:
           moderationModelId: moderationModelId
           backendId: backendId
           gmtCreate: 2000-01-23T04:56:07.000+00:00
+          quotaType: quotaType
           isDefault: true
           requestId: requestId
+          initQuota: 5
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 1
           characterUid: characterUid
@@ -9330,16 +9392,20 @@ components:
       description: Chat context
       example:
         characterNickname: characterNickname
+        apiKeyValue: apiKeyValue
         ext: ext
         gmtModified: 2000-01-23T04:56:07.000+00:00
         chatId: chatId
-        requestId: requestId
         about: about
         userNickname: userNickname
         backendId: backendId
+        apiKeyName: apiKeyName
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         userProfile: userProfile
         gmtRead: 2000-01-23T04:56:07.000+00:00
+        quotaType: quotaType
+        requestId: requestId
+        quota: 0
       properties:
         requestId:
           description: Request identifier
@@ -9374,6 +9440,19 @@ components:
         backendId:
           description: Character backend for this session
           type: string
+        apiKeyName:
+          description: "API-KEY name, priority: apiKeyName > apiKeyValue"
+          type: string
+        apiKeyValue:
+          description: API-KEY value
+          type: string
+        quota:
+          description: Quota of this chat
+          format: int64
+          type: integer
+        quotaType:
+          description: "Quota type: messages | tokens | none (not limited)"
+          type: string
         ext:
           description: Extra info for this session
           type: string
@@ -9384,7 +9463,7 @@ components:
       description: Chat message record
       example:
         ext: ext
-        messageId: 1
+        messageId: 5
         message:
           role: role
           contents:
@@ -9430,7 +9509,7 @@ components:
           description: description
           avatar: avatar
           gmtCreate: 2000-01-23T04:56:07.000+00:00
-          version: 6
+          version: 1
           picture: picture
           tags:
           - tags
@@ -9439,26 +9518,30 @@ components:
           name: name
           nickname: nickname
           lang: lang
-          characterId: 0
+          characterId: 6
           characterUid: characterUid
           username: username
         senderStatus: senderStatus
         context:
           characterNickname: characterNickname
+          apiKeyValue: apiKeyValue
           ext: ext
           gmtModified: 2000-01-23T04:56:07.000+00:00
           chatId: chatId
-          requestId: requestId
           about: about
           userNickname: userNickname
           backendId: backendId
+          apiKeyName: apiKeyName
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           userProfile: userProfile
           gmtRead: 2000-01-23T04:56:07.000+00:00
+          quotaType: quotaType
+          requestId: requestId
+          quota: 0
         isDebugEnabled: true
         latestMessageRecord:
           ext: ext
-          messageId: 1
+          messageId: 5
           message:
             role: role
             contents:
@@ -9490,6 +9573,26 @@ components:
         isDebugEnabled:
           description: Is it possible to debug
           type: boolean
+      type: object
+    MemoryUsageDTO:
+      description: Memory usage information
+      example:
+        messageUsage: 0
+        requestId: requestId
+        tokenUsage:
+          inputTokenCount: 0
+          totalTokenCount: 1
+          outputTokenCount: 6
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        messageUsage:
+          description: Messages usage information
+          format: int64
+          type: integer
+        tokenUsage:
+          $ref: '#/components/schemas/TokenUsageDTO'
       type: object
     AiApiKeyInfoDTO:
       description: Model credential information

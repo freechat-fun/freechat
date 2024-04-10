@@ -12,7 +12,7 @@ export MYSQL_PASSWORD=hello1234
 export MYSQL_NAME=${PROJECT_NAME}-mysql
 export MYSQL_PORT=3306
 export MYSQL_HOST_PORT=3307
-export MYSQL_DATA=$(mktemp -d)
+export MYSQL_DATA=${PROJECT_PATH}/local-data/mysql
 
 export REDIS_VER=latest
 export REDIS_PASSWORD=hello1234
@@ -26,7 +26,8 @@ if [[ " ${ARGS[*]} " =~ " --start " ]]; then
   echo -e "[client]\ndefault_character_set=utf8\n[mysqld]\ncollation_server=utf8mb4_unicode_ci\ncharacter_set_server=utf8mb4\n" > ${MYSQL_DATA}/conf.d/my.conf
 
   mkdir -p ${MYSQL_DATA}/docker-entrypoint-initdb.d
-  cp -f ${RESOURCE_PATH}/sql/schema.sql ${MYSQL_DATA}/docker-entrypoint-initdb.d/
+  cp -f ${RESOURCE_PATH}/sql/schema.sql ${MYSQL_DATA}/docker-entrypoint-initdb.d/initdb-1.sql
+  cp -f ${RESOURCE_PATH}/sql/data.sql ${MYSQL_DATA}/docker-entrypoint-initdb.d/initdb-2.sql
 
   docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICES_NAME}
 elif [[ " ${ARGS[*]} " =~ " --stop " ]]; then

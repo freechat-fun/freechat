@@ -65,6 +65,8 @@ let body:.CharacterApiAddCharacterBackendRequest = {
     moderationApiKeyName: "moderationApiKeyName_example",
     moderationParams: "moderationParams_example",
     messageWindowSize: 1,
+    initQuota: 1,
+    quotaType: "quotaType_example",
     forwardToUser: true,
   },
 };
@@ -1727,6 +1729,8 @@ let body:.CharacterApiUpdateCharacterBackendRequest = {
     moderationApiKeyName: "moderationApiKeyName_example",
     moderationParams: "moderationParams_example",
     messageWindowSize: 1,
+    initQuota: 1,
+    quotaType: "quotaType_example",
     forwardToUser: true,
   },
 };

@@ -1,6 +1,6 @@
 
 
-# LlmTokenUsageDTO
+# TokenUsageDTO
 
 Token usage information
 

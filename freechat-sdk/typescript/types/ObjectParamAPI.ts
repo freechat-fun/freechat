@@ -38,7 +38,7 @@ import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
-import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
+import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
 import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
@@ -64,6 +64,7 @@ import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
@@ -2681,6 +2682,15 @@ export interface ChatApiGetDefaultChatIdRequest {
     characterId: number
 }
 
+export interface ChatApiGetMemoryUsageRequest {
+    /**
+     * Chat session identifier
+     * @type string
+     * @memberof ChatApigetMemoryUsage
+     */
+    chatId: string
+}
+
 export interface ChatApiListChatsRequest {
 }
 
@@ -2857,6 +2867,24 @@ export class ObjectChatApi {
      */
     public getDefaultChatId(param: ChatApiGetDefaultChatIdRequest, options?: Configuration): Promise<string> {
         return this.api.getDefaultChatId(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * Get memory usage of a chat.
+     * Get Memory Usage
+     * @param param the request object
+     */
+    public getMemoryUsageWithHttpInfo(param: ChatApiGetMemoryUsageRequest, options?: Configuration): Promise<HttpInfo<MemoryUsageDTO>> {
+        return this.api.getMemoryUsageWithHttpInfo(param.chatId,  options).toPromise();
+    }
+
+    /**
+     * Get memory usage of a chat.
+     * Get Memory Usage
+     * @param param the request object
+     */
+    public getMemoryUsage(param: ChatApiGetMemoryUsageRequest, options?: Configuration): Promise<MemoryUsageDTO> {
+        return this.api.getMemoryUsage(param.chatId,  options).toPromise();
     }
 
     /**

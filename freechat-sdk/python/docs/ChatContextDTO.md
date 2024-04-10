@@ -16,6 +16,10 @@ Name | Type | Description | Notes
 **character_nickname** | **str** | Character nickname for this session | [optional] 
 **about** | **str** | Anything about this session | [optional] 
 **backend_id** | **str** | Character backend for this session | 
+**api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional] 
+**api_key_value** | **str** | API-KEY value | [optional] 
+**quota** | **int** | Quota of this chat | [optional] 
+**quota_type** | **str** | Quota type: messages | tokens | none (not limited) | [optional] 
 **ext** | **str** | Extra info for this session | [optional] 
 
 ## Example

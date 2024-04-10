@@ -66,6 +66,7 @@ public class CharacterQueryDTO {
                         .name(getWhere().getName())
                         .lang(getWhere().getLang())
                         .text(getWhere().getText())
+                        .priority(getWhere().getPriority())
                         .build())
                 .orderBy(getOrderBy())
                 .limit(getPageSize())

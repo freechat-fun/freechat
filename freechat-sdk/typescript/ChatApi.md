@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
 [**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
 [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
+[**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
 [**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
 [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
@@ -171,6 +172,60 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: Not defined
  - **Accept**: text/plain
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **getMemoryUsage**
+> MemoryUsageDTO getMemoryUsage()
+
+Get memory usage of a chat.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .ChatApi(configuration);
+
+let body:.ChatApiGetMemoryUsageRequest = {
+  // string | Chat session identifier
+  chatId: "chatId_example",
+};
+
+apiInstance.getMemoryUsage(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chatId** | [**string**] | Chat session identifier | defaults to undefined
+
+
+### Return type
+
+**MemoryUsageDTO**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -555,6 +610,8 @@ let body:.ChatApiStartChatRequest = {
     about: "about_example",
     characterId: 1,
     backendId: "backendId_example",
+    apiKeyName: "apiKeyName_example",
+    apiKeyValue: "apiKeyValue_example",
     ext: "ext_example",
   },
 };
@@ -694,6 +751,8 @@ let body:.ChatApiUpdateChatRequest = {
     about: "about_example",
     characterId: 1,
     backendId: "backendId_example",
+    apiKeyName: "apiKeyName_example",
+    apiKeyValue: "apiKeyValue_example",
     ext: "ext_example",
     gmtRead: new Date('1970-01-01T00:00:00.00Z'),
   },

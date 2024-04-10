@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 0.7.0
+- API version: 0.8.0
 
 https://github.com/freechat-fun/freechat
 
@@ -39,7 +39,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>0.7.0</version>
+  <version>0.8.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -55,7 +55,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:0.7.0"
+     implementation "fun.freechat:freechat-sdk:0.8.0"
   }
 ```
 
@@ -69,7 +69,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-0.7.0.jar`
+* `target/freechat-sdk-0.8.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -211,6 +211,7 @@ Class | Method | HTTP request | Description
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
 *ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
+*ChatApi* | [**getMemoryUsage**](docs/ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
 *ChatApi* | [**listChats**](docs/ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
 *ChatApi* | [**listMessages**](docs/ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 *ChatApi* | [**listMessages1**](docs/ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
@@ -339,7 +340,7 @@ Class | Method | HTTP request | Description
  - [HotTagDTO](docs/HotTagDTO.md)
  - [InteractiveStatsDTO](docs/InteractiveStatsDTO.md)
  - [LlmResultDTO](docs/LlmResultDTO.md)
- - [LlmTokenUsageDTO](docs/LlmTokenUsageDTO.md)
+ - [MemoryUsageDTO](docs/MemoryUsageDTO.md)
  - [OpenAiParamDTO](docs/OpenAiParamDTO.md)
  - [PluginCreateDTO](docs/PluginCreateDTO.md)
  - [PluginDetailsDTO](docs/PluginDetailsDTO.md)
@@ -365,6 +366,7 @@ Class | Method | HTTP request | Description
  - [RagTaskDTO](docs/RagTaskDTO.md)
  - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
  - [SseEmitter](docs/SseEmitter.md)
+ - [TokenUsageDTO](docs/TokenUsageDTO.md)
  - [UserBasicInfoDTO](docs/UserBasicInfoDTO.md)
  - [UserDetailsDTO](docs/UserDetailsDTO.md)
  - [UserFullDetailsDTO](docs/UserFullDetailsDTO.md)

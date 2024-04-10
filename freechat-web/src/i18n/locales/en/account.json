@@ -30,8 +30,9 @@
   "Valid until": "Valid until",
   "Never expires": "Never expires",
   "API keys: (maximum of 3 keys allowed)": "API keys: (maximum of 3 keys allowed)",
-  "API key": "API Key",
+  "API Key": "API Key",
   "Last Used Time": "Last Used Time",
   "API Key Information": "API Key Information",
-  "Add API Key": "Add API Key"
+  "Add API Key": "Add API Key",
+  "My API Key": "My API Key"
 }

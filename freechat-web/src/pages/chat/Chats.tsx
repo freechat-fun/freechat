@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Sheet, Typography } from "@mui/joy";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ChatSessionDTO, ChatUpdateDTO } from "freechat-sdk";
+import { ChatSessionDTO, ChatUpdateDTO, LlmResultDTO, MemoryUsageDTO, TokenUsageDTO } from "freechat-sdk";
 import { ChatInfoPane, ChatsPane, MessagesPane } from "../../components/chat";
 import { ConfirmModal } from "../../components";
 import { useTranslation } from "react-i18next";
@@ -21,10 +21,17 @@ export default function Chats() {
   const [sessions, setSessions] = useState<ChatSessionDTO[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | undefined>(defaultChatId);
   const [chatIdDeleted, setChatIdDeleted] = useState<string | null>();
+  const [selectedSession, setSelectedSession] = useState<ChatSessionDTO>();
+  const [apiKeyValue, setApiKeyValue] = useState('');
+  const [memoryUsage, setMemoryUsage] = useState<MemoryUsageDTO>();
 
-  const selectedSession = useMemo(() => {
-    return sessions.find(session => session.context?.chatId === selectedChatId);
-  }, [selectedChatId, sessions]);
+  useEffect(() => {
+    const newSelectedSession = sessions.find(session => session.context?.chatId === selectedChatId);
+    setApiKeyValue(newSelectedSession?.context?.apiKeyValue ?? '');
+    setSelectedSession(newSelectedSession);
+    selectedChatId && chatApi?.getMemoryUsage(selectedChatId)
+      .then(setMemoryUsage);
+  }, [chatApi, selectedChatId, sessions]);
 
   useEffect(() => {
     chatApi?.listChats()
@@ -44,6 +51,26 @@ export default function Chats() {
       setSelectedChatId(sessions[0].context?.chatId);
     }
   }, [defaultChatId, sessions]);
+
+  function handleApiKeyChanged(key: string): void {
+    if (!selectedChatId) {
+      return;
+    }
+
+    const request = new ChatUpdateDTO();
+    request.apiKeyValue = key;
+
+    chatApi?.updateChat(selectedChatId, request)
+      .then(resp => {
+        if (!resp || !selectedSession?.context) {
+          return;
+        }
+
+        const context = {...selectedSession.context, apiKeyValue: key};
+        const newSelectedSession = {...selectedSession, context};
+        setSelectedSession(newSelectedSession);
+      });
+  }
 
   function handleChatUpdate(
     userNickname: string,
@@ -68,11 +95,9 @@ export default function Chats() {
           return;
         }
 
-        selectedSession.context.userNickname = userNickname;
-        selectedSession.context.userProfile = userProfile;
-        selectedSession.context.characterNickname = characterNickname;
-        selectedSession.context.about = about;
-
+        const context = {...selectedSession.context, userNickname, userProfile, characterNickname, about};
+        const newSelectedSession = {...selectedSession, context};
+        setSelectedSession(newSelectedSession);
         onSaved();
       });
   }
@@ -93,6 +118,29 @@ export default function Chats() {
 
         selectedSession.context.gmtRead = request.gmtRead;
       });
+  }
+
+  function handleReceivedMessage(result: LlmResultDTO): void {
+    const preMessages = memoryUsage?.messageUsage ?? 0;
+    const preInputTokens = memoryUsage?.tokenUsage?.inputTokenCount ?? 0;
+    const preOutputTokens = memoryUsage?.tokenUsage?.outputTokenCount ?? 0;
+    const preTotalTokens = memoryUsage?.tokenUsage?.totalTokenCount ?? 0;
+
+    const deltaMessage = 1;
+    const deltaInputTokens = result.tokenUsage?.inputTokenCount ?? 0;
+    const deltaOutputTokens = result.tokenUsage?.outputTokenCount ?? 0;
+    const deltaTotalTokens = result.tokenUsage?.totalTokenCount ?? (deltaInputTokens + deltaOutputTokens);
+    
+    const newTokenUsage = new TokenUsageDTO();
+    newTokenUsage.inputTokenCount = preInputTokens + deltaInputTokens;
+    newTokenUsage.outputTokenCount = preOutputTokens + deltaOutputTokens;
+    newTokenUsage.totalTokenCount = preTotalTokens + deltaTotalTokens;
+
+    const newMemoryUsage = new MemoryUsageDTO();
+    newMemoryUsage.messageUsage = preMessages + deltaMessage;
+    newMemoryUsage.tokenUsage = newTokenUsage;
+
+    setMemoryUsage(newMemoryUsage);
   }
 
   function handleChatDelete(chatId?: string): void {
@@ -161,6 +209,7 @@ export default function Chats() {
         session={selectedSession}
         defaultDebugMode={defaultDebugMode}
         onOpen={handleMessagesPaneOpen}
+        onReceivedMessage={handleReceivedMessage}
       />
 
       <Sheet
@@ -171,6 +220,9 @@ export default function Chats() {
       >
         <ChatInfoPane
           session={selectedSession}
+          memoryUsage={memoryUsage}
+          apiKeyValue={apiKeyValue}
+          onApiKeyChanged={handleApiKeyChanged}
           onSave={handleChatUpdate}
         />
       </Sheet>

@@ -289,7 +289,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
             startDecorator={<KeyRounded />}
             onClick={() => setOpenApiKeySetting(true)}
           >
-            {t('API key')}
+            {t('API Key')}
           </Button>
           <Button
             variant="soft"

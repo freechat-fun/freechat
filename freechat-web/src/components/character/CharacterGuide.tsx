@@ -67,13 +67,16 @@ export default function CharacterGuide(props: CardProps) {
           <Typography level="body-sm">{t('History messages window size')}</Typography>
         </Step>
         <Step>
-          <Typography level="body-sm">{t('Prompt template')}</Typography>
+          <Typography level="body-sm">{t('Quota limit')}</Typography>
         </Step>
         <Step>
           <Typography level="body-sm">{t('Model parameters')}</Typography>
         </Step>
         <Step>
           <Typography level="body-sm">{t('Moderation model')}</Typography>
+        </Step>
+        <Step>
+          <Typography level="body-sm">{t('Prompt template')}</Typography>
         </Step>
         <Step indicator={
           <StepIndicator color="primary">

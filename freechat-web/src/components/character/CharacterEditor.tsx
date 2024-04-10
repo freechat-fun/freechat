@@ -284,6 +284,8 @@ export default function CharacterEditor ({
     request.moderationApiKeyName = backend.moderationApiKeyName;
     request.moderationModelId = backend.moderationModelId;
     request.moderationParams = backend.moderationParams;
+    request.quotaType = backend.quotaType;
+    request.initQuota = backend.initQuota;
 
     const updateBackend = (backendId: string | undefined, req: CharacterBackendDTO) => {
       if (backendId) {

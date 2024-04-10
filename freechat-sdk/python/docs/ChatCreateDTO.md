@@ -12,6 +12,8 @@ Name | Type | Description | Notes
 **about** | **str** | Anything about this session | [optional] 
 **character_id** | **int** | Character id for this session | 
 **backend_id** | **str** | Character backend for this session | [optional] 
+**api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional] 
+**api_key_value** | **str** | API-KEY value | [optional] 
 **ext** | **str** | Extra info for this session | [optional] 
 
 ## Example

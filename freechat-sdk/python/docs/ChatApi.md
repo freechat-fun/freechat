@@ -7,6 +7,7 @@ Method | HTTP request | Description
 [**clear_memory**](ChatApi.md#clear_memory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
 [**delete_chat**](ChatApi.md#delete_chat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
 [**get_default_chat_id**](ChatApi.md#get_default_chat_id) | **GET** /api/v1/chat/{characterId} | Get Default Chat
+[**get_memory_usage**](ChatApi.md#get_memory_usage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
 [**list_chats**](ChatApi.md#list_chats) | **GET** /api/v1/chat | List Chats
 [**list_messages**](ChatApi.md#list_messages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 [**list_messages1**](ChatApi.md#list_messages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
@@ -241,6 +242,84 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: Not defined
  - **Accept**: text/plain
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_memory_usage**
+> MemoryUsageDTO get_memory_usage(chat_id)
+
+Get Memory Usage
+
+Get memory usage of a chat.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.memory_usage_dto import MemoryUsageDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.ChatApi(api_client)
+    chat_id = 'chat_id_example' # str | Chat session identifier
+
+    try:
+        # Get Memory Usage
+        api_response = api_instance.get_memory_usage(chat_id)
+        print("The response of ChatApi->get_memory_usage:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ChatApi->get_memory_usage: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chat_id** | **str**| Chat session identifier | 
+
+### Return type
+
+[**MemoryUsageDTO**](MemoryUsageDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 ### HTTP response details
 

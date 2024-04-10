@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Card, Divider, Input, Typography } from "@mui/joy";
-import { ChatSessionDTO } from "freechat-sdk";
+import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
 import { CommonGridBox, ContentTextarea, LinePlaceholder, TextareaTypography } from "..";
 import { CheckRounded, SaveAltRounded } from "@mui/icons-material";
 import { getLocaleLabel } from "../../configs/i18n-config";
+import { ChatInfoUsage } from ".";
 
 type ChatInfoPaneProps = {
   session?: ChatSessionDTO;
+  memoryUsage?: MemoryUsageDTO;
+  apiKeyValue?: string;
+  onApiKeyChanged?: (key: string) => void;
   onSave?: (
     userNickname: string,
     userProfile: string,
@@ -18,9 +22,9 @@ type ChatInfoPaneProps = {
 }
 
 export default function ChatInfoPane(props: ChatInfoPaneProps) {
-  const { t } = useTranslation('chat');
+  const { t } = useTranslation(['chat', 'character']);
 
-  const { session, onSave } = props;
+  const { session, memoryUsage, apiKeyValue, onApiKeyChanged, onSave } = props;
 
   const [userNickname, setUserNickname] = useState(session?.context?.userNickname ?? '');
   const [userProfile, setUserProfile] = useState(session?.context?.userProfile ?? '');
@@ -57,6 +61,15 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       height: '100dvh',
       overflowY: 'auto',
     }}>
+      <ChatInfoUsage
+        session={session}
+        memoryUsage={memoryUsage}
+        apiKeyValue={apiKeyValue}
+        setApiKeyValue={onApiKeyChanged}
+      />
+
+      <Divider sx={{ my: 2 }}>{t('Character information')}</Divider>
+
       <CommonGridBox>
         <Typography level="title-sm" textColor="neutral">
           {t('Name')}

@@ -38,7 +38,7 @@ import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
-import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
+import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
 import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
@@ -64,6 +64,7 @@ import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
@@ -2105,6 +2106,26 @@ export class PromiseChatApi {
      */
     public getDefaultChatId(characterId: number, _options?: Configuration): Promise<string> {
         const result = this.api.getDefaultChatId(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get memory usage of a chat.
+     * Get Memory Usage
+     * @param chatId Chat session identifier
+     */
+    public getMemoryUsageWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<MemoryUsageDTO>> {
+        const result = this.api.getMemoryUsageWithHttpInfo(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Get memory usage of a chat.
+     * Get Memory Usage
+     * @param chatId Chat session identifier
+     */
+    public getMemoryUsage(chatId: string, _options?: Configuration): Promise<MemoryUsageDTO> {
+        const result = this.api.getMemoryUsage(chatId, _options);
         return result.toPromise();
     }
 

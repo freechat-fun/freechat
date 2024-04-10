@@ -35,7 +35,7 @@ export * from '../models/ChatUpdateDTO.js';
 export * from '../models/HotTagDTO.js';
 export * from '../models/InteractiveStatsDTO.js';
 export * from '../models/LlmResultDTO.js';
-export * from '../models/LlmTokenUsageDTO.js';
+export * from '../models/MemoryUsageDTO.js';
 export * from '../models/OpenAiParamDTO.js';
 export * from '../models/PluginCreateDTO.js';
 export * from '../models/PluginDetailsDTO.js';
@@ -61,6 +61,7 @@ export * from '../models/QwenParamDTO.js';
 export * from '../models/RagTaskDTO.js';
 export * from '../models/RagTaskDetailsDTO.js';
 export * from '../models/SseEmitter.js';
+export * from '../models/TokenUsageDTO.js';
 export * from '../models/UserBasicInfoDTO.js';
 export * from '../models/UserDetailsDTO.js';
 export * from '../models/UserFullDetailsDTO.js';
@@ -102,7 +103,7 @@ import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
-import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
+import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
 import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
@@ -128,6 +129,7 @@ import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
@@ -185,7 +187,7 @@ let typeMap: {[index: string]: any} = {
     "HotTagDTO": HotTagDTO,
     "InteractiveStatsDTO": InteractiveStatsDTO,
     "LlmResultDTO": LlmResultDTO,
-    "LlmTokenUsageDTO": LlmTokenUsageDTO,
+    "MemoryUsageDTO": MemoryUsageDTO,
     "OpenAiParamDTO": OpenAiParamDTO,
     "PluginCreateDTO": PluginCreateDTO,
     "PluginDetailsDTO": PluginDetailsDTO,
@@ -211,6 +213,7 @@ let typeMap: {[index: string]: any} = {
     "RagTaskDTO": RagTaskDTO,
     "RagTaskDetailsDTO": RagTaskDetailsDTO,
     "SseEmitter": SseEmitter,
+    "TokenUsageDTO": TokenUsageDTO,
     "UserBasicInfoDTO": UserBasicInfoDTO,
     "UserDetailsDTO": UserDetailsDTO,
     "UserFullDetailsDTO": UserFullDetailsDTO,

@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source';
 import { useErrorMessageBusContext } from "../contexts";
-import { LlmResultDTO, LlmTokenUsageDTO } from 'freechat-sdk';
+import { LlmResultDTO, TokenUsageDTO } from 'freechat-sdk';
 import { SxProps } from '@mui/joy/styles/types';
 import { LinePlaceholder, MarkdownContent } from '.';
 import { Box, Chip, Divider, IconButton, Typography } from '@mui/joy';
@@ -35,11 +35,11 @@ export default function ChatContent({
   onClose,
   onError
 }: ChatContentProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('chat');
   const { handleError } = useErrorMessageBusContext();
 
   const [data, setData] = useState(initialData || '');
-  const [usage, setUsage] = useState<LlmTokenUsageDTO>();
+  const [usage, setUsage] = useState<TokenUsageDTO>();
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -59,11 +59,21 @@ export default function ChatContent({
           },
           body: body,
           signal: controller.signal,
-          onopen() {
-            setData('');
-            setUsage(undefined);
-            setCopied(false);
+          async onopen(response) {
+            if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
+              setData('');
+              setUsage(undefined);
+              setCopied(false);
             return Promise.resolve();
+            } else if (response.status === 429) {
+              setData(t('[Quota has been used up, you can use your API key to continue chatting.]'));
+              setUsage(undefined);
+              setCopied(false);
+            } else {
+              setData(`[${response.statusText}]`);
+              setUsage(undefined);
+              setCopied(false);
+            }
           },
           onmessage(event) {
             const result = JSON.parse(event.data) as LlmResultDTO;
@@ -78,9 +88,12 @@ export default function ChatContent({
             }
           },
           onerror(error) {
+            console.log('onerror');
+            console.error(JSON.stringify(error));
             onError ? onError(error) : handleError(error);
           },
           onclose() {
+            console.log('onclose');
             onClose?.();
           }
         });
@@ -95,7 +108,7 @@ export default function ChatContent({
       controller.abort();
     };
     
-  }, [url, body, onFinish, onMessage, onError, onClose, handleError, disabled]);
+  }, [url, body, onFinish, onMessage, onError, onClose, handleError, disabled, t]);
 
   return (
     <Fragment>

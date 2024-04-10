@@ -12,10 +12,11 @@ type MessagesPaneProps = SheetProps & {
   session?: ChatSessionDTO;
   defaultDebugMode?: boolean;
   onOpen?: () => void;
+  onReceivedMessage?: (result: LlmResultDTO) => void;
 };
 
 export default function MessagesPane(props: MessagesPaneProps) {
-  const { session, defaultDebugMode = false, onOpen, sx, ...others } = props;
+  const { session, defaultDebugMode = false, onOpen, onReceivedMessage, sx, ...others } = props;
   const { t } = useTranslation('chat');
   const { mode } = useColorScheme();
   const { chatApi } = useFreeChatApiContext();
@@ -118,6 +119,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
     });
 
     setMessageToSend(null);
+    onReceivedMessage?.(result);
   }
 
   function handleReceiveError(): void {
@@ -183,12 +185,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
         }}
       >
         <Stack spacing={2} justifyContent="flex-end">
-          {chatMessages.filter(record => !!record.message).map((record: ChatMessageRecordDTO, index: number) => {
+          {chatMessages.filter(record => !!record.message).map((record, index) => {
             const message = record.message as ChatMessageDTO;
             const isYou = message.role === 'user';
             return (
               <Stack
-                key={`message-container-${record.messageId ?? index}`}
+                key={`message-container-${record.messageId ?? '$' + index}`}
                 direction="row"
                 spacing={2}
                 flexDirection={isYou ? 'row-reverse' : 'row'}

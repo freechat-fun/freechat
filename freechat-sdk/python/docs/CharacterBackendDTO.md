@@ -13,6 +13,8 @@ Name | Type | Description | Notes
 **moderation_api_key_name** | **str** | Api key name for moderation model | [optional] 
 **moderation_params** | **str** | Parameters for moderation model | [optional] 
 **message_window_size** | **int** | Max messages in the character&#39;s memory | [optional] 
+**init_quota** | **int** | Initial quota when opening a chat | [optional] 
+**quota_type** | **str** | Quota type: messages | tokens | none (not limited) | [optional] 
 **forward_to_user** | **bool** | Weather to forward messages to the character owner | [optional] 
 
 ## Example

@@ -7,6 +7,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory |
 | [**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session |
 | [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat |
+| [**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage |
 | [**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats |
 | [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages |
 | [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages |
@@ -213,6 +214,73 @@ public class Example {
 
  - **Content-Type**: Not defined
  - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="getMemoryUsage"></a>
+# **getMemoryUsage**
+> MemoryUsageDTO getMemoryUsage(chatId)
+
+Get Memory Usage
+
+Get memory usage of a chat.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    try {
+      MemoryUsageDTO result = apiInstance.getMemoryUsage(chatId);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#getMemoryUsage");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+
+### Return type
+
+[**MemoryUsageDTO**](MemoryUsageDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |

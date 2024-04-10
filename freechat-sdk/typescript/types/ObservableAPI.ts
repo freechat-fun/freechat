@@ -39,7 +39,7 @@ import { ChatUpdateDTO } from '../models/ChatUpdateDTO.js';
 import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
-import { LlmTokenUsageDTO } from '../models/LlmTokenUsageDTO.js';
+import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
 import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
@@ -65,6 +65,7 @@ import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
+import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
@@ -3325,6 +3326,39 @@ export class ObservableChatApi {
      */
     public getDefaultChatId(characterId: number, _options?: Configuration): Observable<string> {
         return this.getDefaultChatIdWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Get memory usage of a chat.
+     * Get Memory Usage
+     * @param chatId Chat session identifier
+     */
+    public getMemoryUsageWithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<MemoryUsageDTO>> {
+        const requestContextPromise = this.requestFactory.getMemoryUsage(chatId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getMemoryUsageWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Get memory usage of a chat.
+     * Get Memory Usage
+     * @param chatId Chat session identifier
+     */
+    public getMemoryUsage(chatId: string, _options?: Configuration): Observable<MemoryUsageDTO> {
+        return this.getMemoryUsageWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<MemoryUsageDTO>) => apiResponse.data));
     }
 
     /**

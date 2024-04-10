@@ -18,6 +18,10 @@ Chat context
 |**characterNickname** | **String** | Character nickname for this session |  [optional] |
 |**about** | **String** | Anything about this session |  [optional] |
 |**backendId** | **String** | Character backend for this session |  |
+|**apiKeyName** | **String** | API-KEY name, priority: apiKeyName &gt; apiKeyValue |  [optional] |
+|**apiKeyValue** | **String** | API-KEY value |  [optional] |
+|**quota** | **Long** | Quota of this chat |  [optional] |
+|**quotaType** | **String** | Quota type: messages | tokens | none (not limited) |  [optional] |
 |**ext** | **String** | Extra info for this session |  [optional] |
 
 
