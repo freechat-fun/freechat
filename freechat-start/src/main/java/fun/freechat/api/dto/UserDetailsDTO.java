@@ -42,10 +42,10 @@ public class UserDetailsDTO extends TraceableDTO {
         if (Objects.isNull(user)) {
             return null;
         }
-        UserDetailsDTO userDetailsDTO = CommonUtils.convert(user, UserDetailsDTO.class);
-        userDetailsDTO.setLocked(user.getLocked() != (byte)0);
-        userDetailsDTO.setEnabled(user.getEnabled() != (byte)0);
-        return userDetailsDTO;
+        UserDetailsDTO dto = CommonUtils.convert(user, UserDetailsDTO.class);
+        dto.setLocked(user.getLocked() != (byte)0);
+        dto.setEnabled(user.getEnabled() != (byte)0);
+        return dto;
     }
 
     public User toUser() {

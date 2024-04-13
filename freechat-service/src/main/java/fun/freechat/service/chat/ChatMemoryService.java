@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ChatMemoryService extends TokenUsageChatMemoryStore {
     void updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage);
-    List<ChatMessageRecord> listChatMessages(Object memoryId);
+    List<ChatMessageRecord> listAllChatMessages(Object memoryId);
     ChatMessageRecord getLatestChatMessage(Object memoryId);
     List<Long> rollback(Object memoryId, Integer count);
     MemoryUsage usage(Object memoryId);

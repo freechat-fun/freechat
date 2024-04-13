@@ -39,6 +39,12 @@ public class CharacterBackend implements Serializable {
     private Integer messageWindowSize;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Byte longTermMemoryEnabled;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer longTermMemoryWindowSize;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long initQuota;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -227,6 +233,38 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Byte getLongTermMemoryEnabled() {
+        return longTermMemoryEnabled;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withLongTermMemoryEnabled(Byte longTermMemoryEnabled) {
+        this.setLongTermMemoryEnabled(longTermMemoryEnabled);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setLongTermMemoryEnabled(Byte longTermMemoryEnabled) {
+        this.longTermMemoryEnabled = longTermMemoryEnabled;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getLongTermMemoryWindowSize() {
+        return longTermMemoryWindowSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withLongTermMemoryWindowSize(Integer longTermMemoryWindowSize) {
+        this.setLongTermMemoryWindowSize(longTermMemoryWindowSize);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setLongTermMemoryWindowSize(Integer longTermMemoryWindowSize) {
+        this.longTermMemoryWindowSize = longTermMemoryWindowSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getInitQuota() {
         return initQuota;
     }
@@ -298,6 +336,8 @@ public class CharacterBackend implements Serializable {
             && (this.getModerationApiKeyName() == null ? other.getModerationApiKeyName() == null : this.getModerationApiKeyName().equals(other.getModerationApiKeyName()))
             && (this.getForwardToUser() == null ? other.getForwardToUser() == null : this.getForwardToUser().equals(other.getForwardToUser()))
             && (this.getMessageWindowSize() == null ? other.getMessageWindowSize() == null : this.getMessageWindowSize().equals(other.getMessageWindowSize()))
+            && (this.getLongTermMemoryEnabled() == null ? other.getLongTermMemoryEnabled() == null : this.getLongTermMemoryEnabled().equals(other.getLongTermMemoryEnabled()))
+            && (this.getLongTermMemoryWindowSize() == null ? other.getLongTermMemoryWindowSize() == null : this.getLongTermMemoryWindowSize().equals(other.getLongTermMemoryWindowSize()))
             && (this.getInitQuota() == null ? other.getInitQuota() == null : this.getInitQuota().equals(other.getInitQuota()))
             && (this.getQuotaType() == null ? other.getQuotaType() == null : this.getQuotaType().equals(other.getQuotaType()))
             && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
@@ -319,6 +359,8 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getModerationApiKeyName() == null) ? 0 : getModerationApiKeyName().hashCode());
         result = prime * result + ((getForwardToUser() == null) ? 0 : getForwardToUser().hashCode());
         result = prime * result + ((getMessageWindowSize() == null) ? 0 : getMessageWindowSize().hashCode());
+        result = prime * result + ((getLongTermMemoryEnabled() == null) ? 0 : getLongTermMemoryEnabled().hashCode());
+        result = prime * result + ((getLongTermMemoryWindowSize() == null) ? 0 : getLongTermMemoryWindowSize().hashCode());
         result = prime * result + ((getInitQuota() == null) ? 0 : getInitQuota().hashCode());
         result = prime * result + ((getQuotaType() == null) ? 0 : getQuotaType().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
@@ -343,6 +385,8 @@ public class CharacterBackend implements Serializable {
         sb.append(", moderationApiKeyName=").append(moderationApiKeyName);
         sb.append(", forwardToUser=").append(forwardToUser);
         sb.append(", messageWindowSize=").append(messageWindowSize);
+        sb.append(", longTermMemoryEnabled=").append(longTermMemoryEnabled);
+        sb.append(", longTermMemoryWindowSize=").append(longTermMemoryWindowSize);
         sb.append(", initQuota=").append(initQuota);
         sb.append(", quotaType=").append(quotaType);
         sb.append(", moderationParams=").append(moderationParams);

@@ -83,7 +83,7 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     }
 
     private static void ensureCapacity(List<ChatMessage> messages, int maxMessages) {
-        if (messages.size() <= 1) {
+        if (maxMessages < 1 || messages.size() <= maxMessages) {
             return;
         }
         int firstIndex = firstNonSystemMessageIndex(messages);

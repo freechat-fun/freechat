@@ -53,7 +53,7 @@ type ChatBubbleProps = {
   variant: 'sent' | 'received';
   debugMode?: boolean;
   apiPath?: string;
-  onFinish?: (result: LlmResultDTO) => void;
+  onFinish?: (result: LlmResultDTO | undefined) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onError?: (reason: any) => void;
   onReplay?: () => void;

@@ -327,23 +327,23 @@ export default function PromptRunner(props: PromptRunnerProps) {
             url={getServiceUrl()}
             body={JSON.stringify(aiRequest)}
             initialData={defaultOutputText}
-            onFinish={result => output.current = result}
-            onClose={() => {
-              onPlaySuccess?.(aiRequest, output.current);
+            onFinish={result => {
+              output.current = result;
+              onPlaySuccess?.(aiRequest, result);
               setPlaying(false);
             }}
+            onClose={() => setPlaying(false)}
             onError={(error) => {
               onPlayFailure?.(aiRequest, error);
               setPlaying(false);
               setAiRequest(undefined);
-              handleError(error);
             }}
           />
         </TextareaTypography>
         <CommonContainer sx={{
           justifyContent: 'flex-end',
         }}>
-          {onExampleSave && output.current && (
+          {onExampleSave && output.current && aiRequest && (
             <Button
               size="sm"
               variant="outlined"

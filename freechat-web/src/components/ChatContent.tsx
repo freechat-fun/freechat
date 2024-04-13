@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useErrorMessageBusContext } from "../contexts";
 import { LlmResultDTO, TokenUsageDTO } from 'freechat-sdk';
 import { SxProps } from '@mui/joy/styles/types';
@@ -17,7 +17,7 @@ type ChatContentProps = {
   initialData?: string;
   sx?: SxProps;
   onMessage?: (partialResult: LlmResultDTO) => boolean;
-  onFinish?: (result: LlmResultDTO) => void;
+  onFinish?: (result: LlmResultDTO | undefined) => void;
   onClose?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onError?: (reason: any) => void;
@@ -60,20 +60,22 @@ export default function ChatContent({
           body: body,
           signal: controller.signal,
           async onopen(response) {
-            if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
+            setUsage(undefined);
+            setCopied(false);
+            if (response.ok) {
               setData('');
-              setUsage(undefined);
-              setCopied(false);
-            return Promise.resolve();
             } else if (response.status === 429) {
-              setData(t('[Quota has been used up, you can use your API key to continue chatting.]'));
-              setUsage(undefined);
-              setCopied(false);
+              const message = `[${t('Quota has been used up, you can use your API key to continue chatting.')}]`;
+              const error = { code: response.status, message: message }
+              setData(message);
+              onError?.(error);
             } else {
-              setData(`[${response.statusText}]`);
-              setUsage(undefined);
-              setCopied(false);
+              const message = `[${response.statusText}]`;
+              const error = { code: response.status, message: message }
+              setData(message);
+              onError?.(error);
             }
+            return Promise.resolve();
           },
           onmessage(event) {
             const result = JSON.parse(event.data) as LlmResultDTO;
@@ -88,12 +90,9 @@ export default function ChatContent({
             }
           },
           onerror(error) {
-            console.log('onerror');
-            console.error(JSON.stringify(error));
             onError ? onError(error) : handleError(error);
           },
           onclose() {
-            console.log('onclose');
             onClose?.();
           }
         });

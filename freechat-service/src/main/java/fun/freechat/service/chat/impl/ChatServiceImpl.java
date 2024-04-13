@@ -128,7 +128,7 @@ public class ChatServiceImpl implements ChatService {
                     if (StringUtils.isBlank(characterUid)) {
                         return null;
                     }
-                    Long characterId = characterService.getLatestIdByUid(characterUid, user);
+                    Long characterId = characterService.getLatestIdByUid(characterUid, null);
                     CharacterInfo summary = characterService.summary(characterId);
 
                     String chatId = chatContext.getChatId();

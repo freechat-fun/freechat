@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -53,8 +54,10 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
     private static final Pattern HEADER_PATTERN = Pattern.compile("([^:@]*)[:]?([^:@]*)[@]?([^:@]*)");
     private static final String CHAIN_ATTR_NAME = ApiSwitchUserFilter.class.getName() + "_chain";
 
+    @Setter
     private String headerName;
     private boolean enableAutoRegister;
+    @Setter
     private OrgService orgService;
     private SysUserDetailsManager sysUserDetailsManager;
     private SysUserService sysUserService;
@@ -368,16 +371,8 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         this.securityContextHolderStrategy = securityContextHolderStrategy;
     }
 
-    public void setHeaderName(String headerName) {
-        this.headerName = headerName;
-    }
-
     public void setAutoRegister(boolean enableAutoRegister) {
         this.enableAutoRegister = enableAutoRegister;
-    }
-
-    public void setOrgService(OrgService orgService) {
-        this.orgService = orgService;
     }
 
     public static void main(String[] args) {

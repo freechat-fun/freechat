@@ -245,6 +245,8 @@ public class CharacterServiceImpl implements CharacterService {
         // priority
         conditions.and(Info.priority,
                 isEqualTo(query.getWhere().getPriority()).filter(Objects::nonNull));
+        // version
+        conditions.and(Info.version, isGreaterThan(0));
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
@@ -322,6 +324,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
   and c.name like '{name}%' \
   and c.lang = '{lang}' \
   and c.priority = {priority} \
+  and c.version > 0 \
   and (c.name like '%{text}%' or \
     c.description like '%{text}%' or \
     c.profile like '%{text}%' or \
@@ -601,10 +604,11 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     public Long getLatestIdByUid(String characterUid, User user) {
+        String userId = Objects.nonNull(user) ? user.getUserId() : null;
         var statement = select(Info.characterId, Info.version)
                 .from(Info.table)
                 .where(Info.characterUid, isEqualTo(characterUid))
-                .and(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.userId, isEqualTo(userId).filter(Objects::nonNull))
                 .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
                 .orderBy(Info.version.descending())
                 .limit(1)

@@ -38,13 +38,16 @@ public class SysUserServiceImpl implements SysUserService {
                 .withGmtModified(now)
                 .withPassword(encryptedPassword)
                 .withUserId(IdUtils.newId()));
+
+        user.setPassword(plainPassword);
+
         if (rows == 0) {
             user.withUserId(null)
-                    .withPassword(plainPassword)
                     .withGmtCreate(null)
                     .withGmtModified(null);
             return false;
         }
+
         if (Objects.isNull(user.getPlatform())) {
             user.setPlatform("system");
         }

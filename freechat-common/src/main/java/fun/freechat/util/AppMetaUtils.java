@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 
 @SuppressWarnings("unused")
@@ -112,30 +111,13 @@ public class AppMetaUtils {
 
     public static String getRunningEnv() {
         String activeProfile = System.getProperty("spring.profiles.active");
-        if (StringUtils.isNotBlank(activeProfile)) {
-            return activeProfile;
-        }
-
-        String envUrl = "http://jmenv.tbsite.net:8080/env";
-        return Optional.ofNullable(HttpUtils.get(envUrl)).map(String::trim).orElse("daily");
+        return StringUtils.isBlank(activeProfile) ? "online" : activeProfile;
 
     }
 
-    public static boolean isDaily() {
+    public static boolean isTestingEnv() {
         String runningEnv = getRunningEnv();
-        return "testing".equalsIgnoreCase(runningEnv) ||
-                "testing-ncloud".equalsIgnoreCase(runningEnv) ||
-                "daily".equalsIgnoreCase(runningEnv) ||
-                "local".equalsIgnoreCase(runningEnv);
-    }
-
-    public static boolean isPre() {
-        String runningEnv = getRunningEnv();
-        return "staging".equalsIgnoreCase(runningEnv) ||
-                "staging-ncloud".equalsIgnoreCase(runningEnv) ||
-                "pre".equalsIgnoreCase(runningEnv) ||
-                "prepub".equalsIgnoreCase(runningEnv) ||
-                "prepub-ncloud".equalsIgnoreCase(runningEnv);
+        return "testing".equalsIgnoreCase(runningEnv) || "local".equalsIgnoreCase(runningEnv);
     }
 
     public static void main(String[] args) {
@@ -145,5 +127,6 @@ public class AppMetaUtils {
         log.info(AppMetaUtils.getBuildNumber());
         log.info(AppMetaUtils.getScmUrl());
         log.info(AppMetaUtils.getUrl());
+        log.info(AppMetaUtils.getRunningEnv());
     }
 }

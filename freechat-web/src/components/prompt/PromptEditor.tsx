@@ -255,6 +255,21 @@ export default function PromptEditor({
     setDefaultOutputText(getMessageText(response?.message) ?? response?.text);
   }
 
+  function handlePlayFailure(request: PromptAiParamDTO | undefined, error: any): void {
+    request?.params && Object.keys(request?.params).length > 0 ?
+      setDefaultParameters(request?.params) : setDefaultParameters(undefined);
+
+    if (request?.promptRef?.variables && Object.keys(request?.promptRef?.variables).length > 0) {
+      setDefaultVariables(request?.promptRef?.variables); 
+    } else if (request?.promptTemplate?.variables && Object.keys(request?.promptTemplate?.variables).length > 0) {
+      setDefaultVariables(request?.promptTemplate?.variables);
+    } else {
+      setDefaultVariables(undefined);
+    }
+
+    setDefaultOutputText(error?.message ?? error?.code ?? '');
+  }
+
   function handleNameChange(): void {
     if (editRecordNameError) {
       return;
@@ -1062,6 +1077,7 @@ export default function PromptEditor({
             defaultParameters={defaultParameters}
             defaultOutputText={defaultOutputText}
             onPlaySuccess={handlePlaySuccess}
+            onPlayFailure={handlePlayFailure}
             onExampleSave={handleExampleGenerate}
           />
         }

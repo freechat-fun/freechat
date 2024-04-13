@@ -1,25 +1,82 @@
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon  } from '../../components/icon';
-import { useMetaInfoContext } from '../../contexts';
+import { useErrorMessageBusContext, useMetaInfoContext } from '../../contexts';
+import { UserFullDetailsDTO } from 'freechat-sdk';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
-  const { csrfToken, registrations } = useMetaInfoContext();
+  const { csrfToken, csrfHeaderName, registrations } = useMetaInfoContext();
+  const { handleError } = useErrorMessageBusContext();
+
+  const [guestFormState, setGuestFormState] = useState({
+    guestUsername: '',
+    guestPassword: '',
+    isFormReadyToSubmit: false,
+  });
+
+  const guestFormRef = useRef<HTMLFormElement | null>(null);
 
   const protocol = window.location.protocol;
   const host = window.location.hostname;
   const port = window.location.port;
-  const guestUsername = 'guest';
-  const guestPassword = 'guest';
 
-  function toUrl(path: string) {
+  const GUEST_USERNAME_KEY = 'SignIn.guestUsername';
+  const GUEST_PASSWORD_KEY = 'SignIn.guestPassword';
+
+  useEffect(() => {
+    const guestUsername = localStorage.getItem(GUEST_USERNAME_KEY) ?? '';
+    const guestPassword = localStorage.getItem(GUEST_PASSWORD_KEY) ?? '';
+
+    setGuestFormState(prevState => ({ ...prevState, guestUsername, guestPassword }));
+  }, []);
+
+  useEffect(() => {
+    if (guestFormState.isFormReadyToSubmit) {
+      guestFormRef.current?.submit();
+      setGuestFormState(prevState => ({...prevState, isFormReadyToSubmit: false}));
+    }
+  }, [guestFormState]);
+
+  function toUrl(path: string): string {
     return `${protocol}//${host}${port ? `:${port}` : ''}${path}`;
   }
 
-  function handleClick(path: string) {
-    return window.location.href = toUrl(path);
+  function handleOAuth2Click(path: string): void {
+    window.location.href = toUrl(path);
+  }
+
+  function handleGuestClick(): void {
+    if (!guestFormState.guestUsername || !guestFormState.guestPassword) {
+      fetch('/public/register/guest', {
+        method: 'POST',
+        credentials: host === 'localhost' ? 'include' : 'same-origin',
+        headers: {
+          'Accept': 'application/json',
+          [csrfHeaderName]: csrfToken ?? '',
+        },
+      }).then(resp => {
+        if (!resp.ok) {
+          handleError({ code: resp.status, message: resp.statusText });
+          return null;
+        }
+        return resp.json();
+      }).then((userInfo: UserFullDetailsDTO | null) => {
+        if (userInfo?.username && userInfo.password) {
+          localStorage.setItem(GUEST_USERNAME_KEY, userInfo.username);
+          localStorage.setItem(GUEST_PASSWORD_KEY, userInfo.password);
+          setGuestFormState({
+            guestUsername: userInfo.username,
+            guestPassword: userInfo.password,
+            isFormReadyToSubmit: true,
+          });
+        }
+      }).catch(handleError);
+    } else {
+      setGuestFormState(prevState => ({...prevState, isFormReadyToSubmit: true}));
+    }
   }
 
   return (
@@ -90,7 +147,7 @@ export default function SignIn() {
                   color="neutral"
                   fullWidth
                   startDecorator={<GitHub />}
-                  onClick={() => handleClick('/oauth2/authorization/github')}
+                  onClick={() => handleOAuth2Click('/oauth2/authorization/github')}
                 >
                   {t('Continue with GitHub')}
                 </Button>
@@ -102,7 +159,7 @@ export default function SignIn() {
                   color="neutral"
                   fullWidth
                   startDecorator={<Google />}
-                  onClick={() => handleClick('/oauth2/authorization/google')}
+                  onClick={() => handleOAuth2Click('/oauth2/authorization/google')}
                 >
                   {t('Continue with Google')}
                 </Button>
@@ -114,7 +171,7 @@ export default function SignIn() {
                   color="neutral"
                   fullWidth
                   startDecorator={<AliyunIcon />}
-                  onClick={() => handleClick('/oauth2/authorization/aliyun')}
+                  onClick={() => handleOAuth2Click('/oauth2/authorization/aliyun')}
                 >
                   {t('Continue with Aliyun')}
                 </Button>
@@ -139,14 +196,14 @@ export default function SignIn() {
                 <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
               </form>
 
-              <form method="post" action="/login">
-                <input type="hidden" value={guestUsername} id="username" name="username" />
-                <input type="hidden" value={guestPassword} id="password" name="password" />
+              <form method="post" action="/login" ref={guestFormRef}>
+                <input type="hidden" value={guestFormState.guestUsername} id="username" name="username" />
+                <input type="hidden" value={guestFormState.guestPassword} id="password" name="password" />
                 <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
                 <Button
-                  type="submit"
                   variant="plain"
                   color="primary"
+                  onClick={handleGuestClick}
                   sx={{
                     textDecoration: 'underline',
                     p: 0,
@@ -157,7 +214,6 @@ export default function SignIn() {
                   {t('I\'m a guest')}
                 </Button>
               </form>
-
             </Stack>
             {/* <Divider
               sx={(theme) => ({

@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IconButton, Input, Stack, Typography } from "@mui/joy";
+import { CheckRounded, KeyRounded, TuneRounded } from "@mui/icons-material";
 import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
 import { CommonBox, CommonGridBox, ConfirmModal } from "..";
-import { CheckRounded, KeyRounded, TuneRounded } from "@mui/icons-material";
+import { providers as modelProviders } from "../../configs/model-providers-config";
 
 type ChatInfoUsageProps = {
   session?: ChatSessionDTO;
@@ -39,11 +40,22 @@ export default function ChatInfoUsage({
     return `${usage}/${session?.context?.quota}`;
   }
 
+  function getProviderLabel(): string {
+    if (!session?.provider) {
+      return '';
+    }
+
+    const providerLabel = modelProviders.filter(provider => provider.provider === session.provider)
+      .map(provider => provider.label) ?? session.provider;
+
+    return ` - ${providerLabel}`;
+  }
+
   return (
     <Fragment>
       <CommonGridBox>
         <Typography level="title-sm" textColor="neutral">
-          {t('My API Key')}
+          {t('My API Key', { ns: 'account' })}
         </Typography>
         <CommonBox sx={{ ml: 'auto' }}>
           <IconButton onClick={() => setApiKeySettingOpen(true)}>
@@ -63,7 +75,7 @@ export default function ChatInfoUsage({
         open={apiKeySettingOpen}
         onClose={(reason) => reason !== 'backdropClick' && setApiKeySettingOpen(false)}
         dialog={{
-          title: t('Set API Key'),
+          title: `${t('Set API Key', { ns: 'prompt' })}${getProviderLabel()}`,
         }}
         button={{
           text: t('button:Confirm'),

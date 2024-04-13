@@ -184,6 +184,21 @@ export default function PromptViewer({
 
               setDefaultOutputText(getMessageText(response?.message) ?? response?.text);
             }}
+            onPlayFailure={(request, error) => {
+              request?.params && Object.keys(request?.params).length > 0 ?
+                setDefaultParameters(request?.params) :
+                setDefaultParameters(undefined);
+          
+              if (request?.promptRef?.variables && Object.keys(request?.promptRef?.variables).length > 0) {
+                setDefaultVariables(request?.promptRef?.variables); 
+              } else if (request?.promptTemplate?.variables && Object.keys(request?.promptTemplate?.variables).length > 0) {
+                setDefaultVariables(request?.promptTemplate?.variables);
+              } else {
+                setDefaultVariables(undefined);
+              }
+          
+              setDefaultOutputText(error?.message ?? error?.code ?? '');
+            }}
           /> :
           <PromptMeta record={record} history={history} />}
       </CommonContainer>

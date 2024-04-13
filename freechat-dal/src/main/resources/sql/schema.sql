@@ -225,6 +225,8 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `moderation_params` json DEFAULT NULL,
   `forward_to_user` tinyint NOT NULL DEFAULT 0,
   `message_window_size` int NOT NULL DEFAULT 100,
+  `long_term_memory_enabled` tinyint NOT NULL DEFAULT 1,
+  `long_term_memory_window_size` int NOT NULL DEFAULT 10,
   `init_quota` bigint unsigned DEFAULT 0,
   `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   PRIMARY KEY (`backend_id`),

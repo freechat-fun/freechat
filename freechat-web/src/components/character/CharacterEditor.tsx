@@ -277,7 +277,6 @@ export default function CharacterEditor ({
   ) {
     const request = new CharacterBackendDTO();
     request.chatPromptTaskId = backend.chatPromptTaskId;
-    request.forwardToUser = backend.forwardToUser;
     request.greetingPromptTaskId = backend.greetingPromptTaskId;
     request.isDefault = backend.isDefault;
     request.messageWindowSize = backend.messageWindowSize;

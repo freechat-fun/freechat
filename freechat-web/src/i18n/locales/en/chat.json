@@ -17,10 +17,10 @@
   "Your Profile": "Your Profile",
   "Character Nickname": "Character Nickname",
   "Anything about this chat": "Anything about this chat",
-  "Influence chat feedback": "Influence chat feedback",
+  "Settings that affect chat feedback": "Settings that affect chat feedback",
   "The settings only apply to this chat": "The settings only apply to this chat",
   "Do you really want to delete this chat?": "Do you really want to delete this chat?",
   "Maximum of 10 pictures are allowed, one of which can be selected as the chat background": "Maximum of 10 pictures are allowed, one of which can be selected as the chat background",
-  "[Quota has been used up, you can use your API key to continue chatting.]": "[Quota has been used up, you can use your API key to continue chatting.]",
+  "Quota has been used up, you can use your API key to continue chatting.": "Quota has been used up, you can use your API key to continue chatting.",
   "Your API key is only used for this chat and will not be obtained by anyone else.": "Your API key is only used for this chat and will not be obtained by anyone else."
 }

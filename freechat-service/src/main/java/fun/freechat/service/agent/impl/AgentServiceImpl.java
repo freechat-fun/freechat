@@ -2,13 +2,13 @@ package fun.freechat.service.agent.impl;
 
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
+import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.enums.AgentFormat;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
-import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.util.CacheUtils;
 import fun.freechat.service.util.InfoUtils;
@@ -253,6 +253,8 @@ public class AgentServiceImpl implements AgentService {
         // name
         conditions.and(Info.name,
                 isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
+        // version
+        conditions.and(Info.version, isGreaterThan(0));
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
@@ -325,6 +327,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
   and t.content in '{tags}' \
   and m.model_id in '{modelIds}' \
   and a.name like '{name}%' \
+  and a.version > 0 \
   and (a.name like '%{text}%' or \
     a.description like '%{text}%' or \
     a.example like '%{text}%' \

@@ -29,9 +29,12 @@ auth:
 chat:
   memory:
     maxMessageSize: 10000
-    defaultWindowSize: 100
-    maxWindowSize: 1000
-    minWindowSize: 50
+    defaultMessageWindowSize: 100
+    maxMessageWindowSize: 1000
+    minMessageWindowSize: 50
+    defaultLongTermMemoryWindowSize: 10
+    maxLongTermMemoryWindowSize: 50
+    minLongTermMemoryWindowSize: 1
   rag:
     maxSegmentSize: 300
     maxOverlapSize: 30

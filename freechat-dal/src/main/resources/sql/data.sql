@@ -1,6 +1,6 @@
 USE `freechat`;
 
-INSERT IGNORE INTO `user` (`gmt_create`, `gmt_modified`, `user_id`, `username`, `password`, `nickname`) VALUE ('2023-08-20 19:11:32', '2023-08-20 19:11:32', '2', 'guest', 'L1o3DFwMm5GPPLIQR60sXQ==', 'Guest');
+INSERT IGNORE INTO `user` (`gmt_create`, `gmt_modified`, `user_id`, `username`, `password`, `nickname`, `platform`) VALUE ('2023-08-20 19:11:32', '2023-08-20 19:11:32', '2', 'guest', 'L1o3DFwMm5GPPLIQR60sXQ==', 'Guest', 'guest');
 INSERT IGNORE INTO `api_token` (`gmt_create`, `gmt_modified`, `user_id`, `token`, `policy`, `issued_at`) VALUE ('2023-08-20 19:11:32', '2023-08-20 19:11:32', '2', 'fc-guest', '*', '2023-08-20 19:11:32');
 
 INSERT IGNORE INTO `ai_model_info` (`model_id`, `gmt_create`, `gmt_modified`, `name`, `description`, `provider`, `type`) VALUES

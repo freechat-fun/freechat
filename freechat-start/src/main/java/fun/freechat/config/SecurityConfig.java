@@ -11,6 +11,7 @@ import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysBindService;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.organization.OrgService;
+import fun.freechat.util.AppMetaUtils;
 import fun.freechat.util.AuthorityUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -216,17 +217,21 @@ public class SecurityConfig {
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration =new CorsConfiguration();
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.applyPermitDefaultValues();
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        for (String uri : apiUri) {
-            source.registerCorsConfiguration(uri, configuration);
+
+        if (AppMetaUtils.isTestingEnv()) {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedMethods(List.of("*"));
+            configuration.applyPermitDefaultValues();
+
+            for (String uri : apiUri) {
+                source.registerCorsConfiguration(uri, configuration);
+            }
+            for (String uri : publicUri) {
+                source.registerCorsConfiguration(uri, configuration);
+            }
         }
-        for (String uri : publicUri) {
-            source.registerCorsConfiguration(uri, configuration);
-        }
+
         return source;
     }
 }

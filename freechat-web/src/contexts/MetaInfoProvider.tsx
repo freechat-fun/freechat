@@ -6,6 +6,7 @@ type MetaInfoContextValue = {
   username: string | null | undefined,
   platform: string | null | undefined,
   csrfToken: string | null | undefined,
+  csrfHeaderName: string,
   registrations: string[],
   resetUser: (
     name: string | null | undefined,
@@ -19,6 +20,7 @@ const anonymous: MetaInfoContextValue = {
   username: undefined,
   platform: undefined,
   csrfToken: undefined,
+  csrfHeaderName: 'X-CSRF-TOKEN',
   registrations: [],
   resetUser: () => {},
   isAuthorized: () => false,
@@ -31,6 +33,7 @@ const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const metaUsername = document.querySelector('meta[name="_username"]')?.getAttribute('content');
   const metaPlatform = document.querySelector('meta[name="_platform"]')?.getAttribute('content');
   const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+  const csrfHeaderName = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') ?? 'X-CSRF-TOKEN';
   const metaRegistrations = document.querySelector('meta[name="_registrations"]')?.getAttribute('content');
   const [username, setUsername] = useState(metaUsername);
   const [platform, setPlatform] = useState(metaPlatform);
@@ -49,7 +52,7 @@ const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   const isGuest = () => {
-    return username === 'guest';
+    return platform === 'guest';
   }
 
   return (
@@ -57,6 +60,7 @@ const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
         username,
         platform,
         csrfToken,
+        csrfHeaderName,
         registrations,
         resetUser,
         isAuthorized,

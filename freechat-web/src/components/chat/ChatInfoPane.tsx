@@ -68,7 +68,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         setApiKeyValue={onApiKeyChanged}
       />
 
-      <Divider sx={{ my: 2 }}>{t('Character information')}</Divider>
+      <Divider sx={{ my: 2 }}>{t('Character information', { ns: 'character' })}</Divider>
 
       <CommonGridBox>
         <Typography level="title-sm" textColor="neutral">
@@ -101,7 +101,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         {session?.character?.description}
       </TextareaTypography>
 
-      <Divider sx={{ my: 2 }}>{t('Influence chat feedback')}</Divider>
+      <Divider sx={{ my: 2 }}>{t('Settings that affect chat feedback')}</Divider>
 
       <CommonGridBox>
         <Typography level="title-sm" textColor="neutral">

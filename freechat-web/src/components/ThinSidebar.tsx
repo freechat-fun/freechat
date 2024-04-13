@@ -67,7 +67,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
 export default function ThinSidebar() {
   const theme = useTheme();
   const { t } = useTranslation('sidebar');
-  const { csrfToken, isAuthorized, isGuest } = useMetaInfoContext();
+  const { csrfToken, isAuthorized } = useMetaInfoContext();
   
   return (
     <Box
@@ -168,7 +168,7 @@ export default function ThinSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Profile')}>
-              <ItemButton href="/w/profile" disabled={!isAuthorized() || isGuest()}>
+              <ItemButton href="/w/profile" disabled={!isAuthorized()}>
                 <ManageAccountsRounded />
               </ItemButton>
             </ItemTooltip>
@@ -176,7 +176,7 @@ export default function ThinSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Secrets & API keys')}>
-              <ItemButton href="/w/credentials" disabled={!isAuthorized() || isGuest()}>
+              <ItemButton href="/w/credentials" disabled={!isAuthorized()}>
                 <KeyRounded />
               </ItemButton>
             </ItemTooltip>

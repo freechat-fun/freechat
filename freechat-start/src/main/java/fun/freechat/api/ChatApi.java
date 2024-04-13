@@ -7,15 +7,15 @@ import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.model.CharacterBackend;
-import fun.freechat.model.CharacterInfo;
-import fun.freechat.model.ChatContext;
+import fun.freechat.model.*;
+import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.QuotaType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
+import fun.freechat.service.prompt.PromptTaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,6 +59,10 @@ public class ChatApi {
     private ChatSessionService chatSessionService;
     @Autowired
     private OrgService orgService;
+    @Autowired
+    private PromptTaskService promptTaskService;
+    @Autowired
+    private AiModelInfoService aiModelInfoService;
 
     private void checkQuotaValue(long usage, long limit) {
         if (usage >= limit) {
@@ -163,9 +167,17 @@ public class ChatApi {
                     String characterOwner = chatContextService.getCharacterOwner(chatContext.getChatId());
                     String currentUserId = AccountUtils.currentUser().getUserId();
                     Boolean isDebugEnabled =currentUserId.equals(chatOwner) && currentUserId.equals(characterOwner);
+                    String provider = Optional.ofNullable(chatContext.getBackendId())
+                            .map(characterService::getBackend)
+                            .map(CharacterBackend::getChatPromptTaskId)
+                            .map(promptTaskService::get)
+                            .map(PromptTask::getModelId)
+                            .map(aiModelInfoService::get)
+                            .map(AiModelInfo::getProvider)
+                            .orElse(null);
 
                     String senderStatus;
-                    if (StringUtils.isBlank(characterOwner)) {
+                    if (Objects.isNull(characterInfo) || StringUtils.isBlank(characterOwner)) {
                         // The character or backend no longer exists.
                         senderStatus = "offline";
                     } else {
@@ -193,7 +205,7 @@ public class ChatApi {
                         }
                         chatInfo = Triple.of(chatInfo.getLeft(), chatInfo.getMiddle(), replacedMessage);
                     }
-                    return ChatSessionDTO.from(chatInfo, senderStatus, isDebugEnabled);
+                    return ChatSessionDTO.from(chatInfo, provider, senderStatus, isDebugEnabled);
                 })
                 .filter(Objects::nonNull)
                 .toList();
@@ -336,7 +348,7 @@ public class ChatApi {
         int messagesLimit = limit.orElse(Integer.MAX_VALUE);
         int messagesOffset = Math.max(0, offset.orElse(0));
 
-        var messages = chatMemoryService.listChatMessages(chatId);
+        var messages = chatMemoryService.listAllChatMessages(chatId);
         if (CollectionUtils.isEmpty(messages) || messages.size() <= messagesOffset) {
             return Collections.emptyList();
         }

@@ -256,6 +256,8 @@ public class PromptServiceImpl implements PromptService {
         // lang
         conditions.and(Info.lang,
                 isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
+        // version
+        conditions.and(Info.version, isGreaterThan(0));
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
@@ -329,6 +331,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
   and m.model_id in '{modelIds}' \
   and p.name like '{name}%' \
   and p.lang = '{lang}' \
+  and p.version > 0 \
   and (p.name like '%{text}%' or \
     p.description like '%{text}%' or \
     p.template like '%{text}%' or \

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useReducer } from "react";
+import { useMetaInfoContext } from "./MetaInfoProvider";
 
 const MAX_ERRORS = 1;
 
@@ -35,6 +36,8 @@ const emptyMessageList = {
 const ErrorMessageBusContext = createContext<ErrorMessageBusContextValue>(emptyMessageList);
 
 const ErrorMessageBusProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const { resetUser } = useMetaInfoContext();
+
   const [messages, dispatch] = useReducer(messagesReducer, []);
 
   const putMessage = (message: ErrorMessage) => {
@@ -51,7 +54,12 @@ const ErrorMessageBusProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
     const code = reason?.code || -1;
     const message = reason?.message || 'Unknown Error';
-    putMessage({code: code, message: message});
+
+    if (code === 401) {
+      resetUser(null, null);
+    } else {
+      putMessage({code: code, message: message});
+    }
   }
 
   return (

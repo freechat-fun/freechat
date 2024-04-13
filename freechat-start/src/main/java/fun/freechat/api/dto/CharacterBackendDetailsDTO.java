@@ -35,12 +35,14 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private String moderationParams;
     @Schema(description = "Max messages in the character's memory")
     private Integer messageWindowSize;
+    @Schema(description = "Whether to enable long-term memory")
+    private Boolean longTermMemoryEnabled;
+    @Schema(description = "Max rounds (a round includes a user message and an assistant message) in the character's long term memory")
+    private Integer longTermMemoryWindowSize;
     @Schema(description = "Initial quota when opening a chat")
     private Long initQuota;
     @Schema(description = "Quota type: messages | tokens | none (not limited)")
     private String quotaType;
-    @Schema(description = "Whether to forward messages to the character owner")
-    private Boolean forwardToUser;
 
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (Objects.isNull(backend)) {
@@ -48,7 +50,7 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
         }
         CharacterBackendDetailsDTO dto = CommonUtils.convert(backend, CharacterBackendDetailsDTO.class);
         dto.setIsDefault(backend.getIsDefault() == (byte) 1);
-        dto.setForwardToUser(backend.getForwardToUser() == (byte) 1);
+        dto.setLongTermMemoryEnabled(backend.getLongTermMemoryEnabled() == (byte) 1);
         return dto;
     }
 }

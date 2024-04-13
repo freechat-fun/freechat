@@ -1,11 +1,10 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, IconButton, Sheet, SheetProps, Stack, useColorScheme } from "@mui/joy";
+import { Box, Sheet, SheetProps, Stack, useColorScheme } from "@mui/joy";
 import { AvatarWithStatus, ChatBubble, MessageInput, MessagesPaneHeader } from "."
 import { ChatContentDTO, ChatMessageDTO, ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { getSenderName, getSenderStatus } from "../../libs/chat_utils";
-import { ReplayCircleFilledRounded } from "@mui/icons-material";
 import { processBackground } from "../../libs/ui_utils";
 
 type MessagesPaneProps = SheetProps & {
@@ -25,7 +24,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const [chatMessages, setChatMessages] = useState<ChatMessageRecordDTO[]>([]);
   const [textAreaValue, setTextAreaValue] = useState('');
   const [messageToSend, setMessageToSend] = useState<ChatMessageRecordDTO | null>(null);
-  const [failedToSend, setFailedToSend] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [debugMode, setDebugMode] = useState(defaultDebugMode);
   const [background, setBackground] = useState('');
   const [enableBackground, setEnableBackground] = useState(true);
@@ -33,18 +32,18 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const sender = session?.character;
   const context = session?.context;
 
-  const errorMessage = useCallback(() => {
+  const errorMessageRecord = useCallback((message?: string) => {
     const content = new ChatContentDTO();
     content.type = 'text';
-    content.content = t('Sorry, something went wrong!');
+    content.content = message || t('Sorry, something went wrong!');
 
-    const message = new ChatMessageDTO();
-    message.contents = [content];
-    message.role = 'assistant';
-    message.name = getSenderName(sender);
+    const chatMessage = new ChatMessageDTO();
+    chatMessage.contents = [content];
+    chatMessage.role = 'assistant';
+    chatMessage.name = getSenderName(sender);
     
     const record = new ChatMessageRecordDTO();
-    record.message = message;
+    record.message = chatMessage;
 
     return record;
   }, [sender, t]);
@@ -104,9 +103,25 @@ export default function MessagesPane(props: MessagesPaneProps) {
     });
 
     setMessageToSend(messageRecord);
+    setErrorMessage('');
   }
 
-  function handleReceiveFinish(result: LlmResultDTO): void {
+  function handleResend(): void {
+    if (!context?.chatId) {
+      return;
+    }
+    if (chatMessages.length > 0) {
+      setMessageToSend(chatMessages[chatMessages.length - 1]);
+    }
+    setErrorMessage('');
+  }
+
+  function handleReceiveFinish(result: LlmResultDTO | undefined): void {
+    setMessageToSend(null);
+
+    if (!result) {
+      return;
+    }
     const messageRecord = new ChatMessageRecordDTO();
     messageRecord.message = result.message;
     messageRecord.gmtCreate = new Date();
@@ -114,17 +129,14 @@ export default function MessagesPane(props: MessagesPaneProps) {
       messageRecord.ext = `[${result.tokenUsage?.inputTokenCount},${result.tokenUsage?.outputTokenCount},${result.tokenUsage?.outputTokenCount}]`;
     }
 
-    setChatMessages((prevMessages) => {
-      return [...prevMessages, messageRecord];
-    });
-
-    setMessageToSend(null);
+    setChatMessages((prevMessages) => [...prevMessages, messageRecord]);
     onReceivedMessage?.(result);
   }
 
-  function handleReceiveError(): void {
-    setFailedToSend(true);
-    // handleError(reason);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleReceiveError(reason: any): void {
+    setMessageToSend(null);
+    setErrorMessage(reason?.message ?? '');
   }
 
   function handleChatReplay(index: number): void {
@@ -214,7 +226,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
           })}
 
           {/* streaming message */}
-          {messageToSend && context?.chatId && (
+          {(messageToSend || errorMessage) && context?.chatId && (
             <Stack
               direction="row"
               spacing={2}
@@ -224,18 +236,14 @@ export default function MessagesPane(props: MessagesPaneProps) {
                 status={getSenderStatus(session)}
                 src={sender?.avatar}
               />
-              {failedToSend ? (
-                <Fragment>
-                  <ChatBubble
-                    session={session}
-                    record={errorMessage()}
-                    variant="received"
-                  />
-                  <IconButton onClick={() => setFailedToSend(false)}>
-                    <ReplayCircleFilledRounded fontSize="small" />
-                  </IconButton>
-                </Fragment>
-              ) : (
+              {errorMessage ? (
+                <ChatBubble
+                  session={session}
+                  record={errorMessageRecord(errorMessage)}
+                  variant="received"
+                  onReplay={handleResend}
+                />
+              ) : ( messageToSend && 
                 <ChatBubble
                   session={session}
                   record={messageToSend}

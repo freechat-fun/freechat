@@ -21,6 +21,8 @@ public class ChatSessionDTO {
     private ChatContextDTO context;
     @Schema(description = "Character summary info")
     private CharacterSummaryDTO character;
+    @Schema(description = "Model provider: hugging_face | open_ai | local_ai | in_process | dash_scope | unknown")
+    private String provider;
     @Schema(description = "Latest message record")
     private ChatMessageRecordDTO latestMessageRecord;
     @Schema(description = "Sender status: online | offline | invisible")
@@ -30,6 +32,7 @@ public class ChatSessionDTO {
 
     public static ChatSessionDTO from(
             Triple<ChatContext, CharacterInfo, ChatMessageRecord> chatItem,
+            String provider,
             String senderStatus,
             Boolean isDebugEnabled) {
         if (Objects.isNull(chatItem) || Objects.isNull(chatItem.getLeft())) {
@@ -42,6 +45,7 @@ public class ChatSessionDTO {
         dto.setContext(context);
         dto.setCharacter(CharacterSummaryDTO.from(Pair.of(chatItem.getMiddle(), null)));
         dto.setLatestMessageRecord(ChatMessageRecordDTO.from(chatItem.getRight()));
+        dto.setProvider(provider);
         dto.setSenderStatus(senderStatus);
         dto.setIsDebugEnabled(isDebugEnabled);
         return dto;
