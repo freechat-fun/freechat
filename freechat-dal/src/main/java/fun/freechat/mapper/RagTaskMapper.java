@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, gmtStart, gmtEnd, characterUid, sourceType, status, source, ext);
+    BasicColumn[] selectList = BasicColumn.columnList(id, gmtCreate, gmtModified, gmtStart, gmtEnd, characterUid, sourceType, maxSegmentSize, maxOverlapSize, status, source, ext);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
@@ -50,6 +50,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
         @Result(column="gmt_end", property="gmtEnd", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="character_uid", property="characterUid", jdbcType=JdbcType.VARCHAR),
         @Result(column="source_type", property="sourceType", jdbcType=JdbcType.VARCHAR),
+        @Result(column="max_segment_size", property="maxSegmentSize", jdbcType=JdbcType.INTEGER),
+        @Result(column="max_overlap_size", property="maxOverlapSize", jdbcType=JdbcType.INTEGER),
         @Result(column="status", property="status", jdbcType=JdbcType.VARCHAR),
         @Result(column="source", property="source", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR)
@@ -87,6 +89,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
             .map(gmtEnd).toProperty("gmtEnd")
             .map(characterUid).toProperty("characterUid")
             .map(sourceType).toProperty("sourceType")
+            .map(maxSegmentSize).toProperty("maxSegmentSize")
+            .map(maxOverlapSize).toProperty("maxOverlapSize")
             .map(status).toProperty("status")
             .map(source).toProperty("source")
             .map(ext).toProperty("ext")
@@ -102,6 +106,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
             .map(gmtEnd).toPropertyWhenPresent("gmtEnd", row::getGmtEnd)
             .map(characterUid).toPropertyWhenPresent("characterUid", row::getCharacterUid)
             .map(sourceType).toPropertyWhenPresent("sourceType", row::getSourceType)
+            .map(maxSegmentSize).toPropertyWhenPresent("maxSegmentSize", row::getMaxSegmentSize)
+            .map(maxOverlapSize).toPropertyWhenPresent("maxOverlapSize", row::getMaxOverlapSize)
             .map(status).toPropertyWhenPresent("status", row::getStatus)
             .map(source).toPropertyWhenPresent("source", row::getSource)
             .map(ext).toPropertyWhenPresent("ext", row::getExt)
@@ -143,6 +149,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
                 .set(gmtEnd).equalTo(row::getGmtEnd)
                 .set(characterUid).equalTo(row::getCharacterUid)
                 .set(sourceType).equalTo(row::getSourceType)
+                .set(maxSegmentSize).equalTo(row::getMaxSegmentSize)
+                .set(maxOverlapSize).equalTo(row::getMaxOverlapSize)
                 .set(status).equalTo(row::getStatus)
                 .set(source).equalTo(row::getSource)
                 .set(ext).equalTo(row::getExt);
@@ -156,6 +164,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
                 .set(gmtEnd).equalToWhenPresent(row::getGmtEnd)
                 .set(characterUid).equalToWhenPresent(row::getCharacterUid)
                 .set(sourceType).equalToWhenPresent(row::getSourceType)
+                .set(maxSegmentSize).equalToWhenPresent(row::getMaxSegmentSize)
+                .set(maxOverlapSize).equalToWhenPresent(row::getMaxOverlapSize)
                 .set(status).equalToWhenPresent(row::getStatus)
                 .set(source).equalToWhenPresent(row::getSource)
                 .set(ext).equalToWhenPresent(row::getExt);
@@ -170,6 +180,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
             .set(gmtEnd).equalTo(row::getGmtEnd)
             .set(characterUid).equalTo(row::getCharacterUid)
             .set(sourceType).equalTo(row::getSourceType)
+            .set(maxSegmentSize).equalTo(row::getMaxSegmentSize)
+            .set(maxOverlapSize).equalTo(row::getMaxOverlapSize)
             .set(status).equalTo(row::getStatus)
             .set(source).equalTo(row::getSource)
             .set(ext).equalTo(row::getExt)
@@ -186,6 +198,8 @@ public interface RagTaskMapper extends CommonCountMapper, CommonDeleteMapper, Co
             .set(gmtEnd).equalToWhenPresent(row::getGmtEnd)
             .set(characterUid).equalToWhenPresent(row::getCharacterUid)
             .set(sourceType).equalToWhenPresent(row::getSourceType)
+            .set(maxSegmentSize).equalToWhenPresent(row::getMaxSegmentSize)
+            .set(maxOverlapSize).equalToWhenPresent(row::getMaxOverlapSize)
             .set(status).equalToWhenPresent(row::getStatus)
             .set(source).equalToWhenPresent(row::getSource)
             .set(ext).equalToWhenPresent(row::getExt)

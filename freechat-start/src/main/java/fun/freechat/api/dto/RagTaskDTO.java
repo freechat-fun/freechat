@@ -18,6 +18,10 @@ public class RagTaskDTO {
     private String sourceType;
     @Schema(description = "Source information, url, or a key for file")
     private String source;
+    @Schema(description = "The maximum size of a segment in tokens.")
+    private Integer maxSegmentSize;
+    @Schema(description = "The maximum size of the overlap between segments in tokens.")
+    private Integer maxOverlapSize;
 
     public RagTask toRagTask(String characterUid) {
         if (StringUtils.isBlank(characterUid)) {

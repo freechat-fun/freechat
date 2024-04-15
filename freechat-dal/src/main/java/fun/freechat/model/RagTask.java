@@ -27,6 +27,12 @@ public class RagTask implements Serializable {
     private String sourceType;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer maxSegmentSize;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer maxOverlapSize;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String status;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -151,6 +157,38 @@ public class RagTask implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getMaxSegmentSize() {
+        return maxSegmentSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public RagTask withMaxSegmentSize(Integer maxSegmentSize) {
+        this.setMaxSegmentSize(maxSegmentSize);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setMaxSegmentSize(Integer maxSegmentSize) {
+        this.maxSegmentSize = maxSegmentSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getMaxOverlapSize() {
+        return maxOverlapSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public RagTask withMaxOverlapSize(Integer maxOverlapSize) {
+        this.setMaxOverlapSize(maxOverlapSize);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setMaxOverlapSize(Integer maxOverlapSize) {
+        this.maxOverlapSize = maxOverlapSize;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getStatus() {
         return status;
     }
@@ -218,6 +256,8 @@ public class RagTask implements Serializable {
             && (this.getGmtEnd() == null ? other.getGmtEnd() == null : this.getGmtEnd().equals(other.getGmtEnd()))
             && (this.getCharacterUid() == null ? other.getCharacterUid() == null : this.getCharacterUid().equals(other.getCharacterUid()))
             && (this.getSourceType() == null ? other.getSourceType() == null : this.getSourceType().equals(other.getSourceType()))
+            && (this.getMaxSegmentSize() == null ? other.getMaxSegmentSize() == null : this.getMaxSegmentSize().equals(other.getMaxSegmentSize()))
+            && (this.getMaxOverlapSize() == null ? other.getMaxOverlapSize() == null : this.getMaxOverlapSize().equals(other.getMaxOverlapSize()))
             && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
     }
 
@@ -233,6 +273,8 @@ public class RagTask implements Serializable {
         result = prime * result + ((getGmtEnd() == null) ? 0 : getGmtEnd().hashCode());
         result = prime * result + ((getCharacterUid() == null) ? 0 : getCharacterUid().hashCode());
         result = prime * result + ((getSourceType() == null) ? 0 : getSourceType().hashCode());
+        result = prime * result + ((getMaxSegmentSize() == null) ? 0 : getMaxSegmentSize().hashCode());
+        result = prime * result + ((getMaxOverlapSize() == null) ? 0 : getMaxOverlapSize().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         return result;
     }
@@ -251,6 +293,8 @@ public class RagTask implements Serializable {
         sb.append(", gmtEnd=").append(gmtEnd);
         sb.append(", characterUid=").append(characterUid);
         sb.append(", sourceType=").append(sourceType);
+        sb.append(", maxSegmentSize=").append(maxSegmentSize);
+        sb.append(", maxOverlapSize=").append(maxOverlapSize);
         sb.append(", status=").append(status);
         sb.append(", source=").append(source);
         sb.append(", ext=").append(ext);

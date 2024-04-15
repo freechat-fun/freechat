@@ -24,9 +24,7 @@ public class CharacterBackendDTO {
     private String moderationParams;
     @Schema(description = "Max messages in the character's memory")
     private Integer messageWindowSize;
-    @Schema(description = "Whether to enable long-term memory")
-    private Boolean longTermMemoryEnabled;
-    @Schema(description = "Max rounds (a round includes a user message and an assistant message) in the character's long term memory")
+    @Schema(description = "Max rounds (a round includes a user message and a character reply) in the character's long term memory, 0 to disable")
     private Integer longTermMemoryWindowSize;
     @Schema(description = "Initial quota when opening a chat")
     private Long initQuota;
@@ -39,7 +37,6 @@ public class CharacterBackendDTO {
         }
         CharacterBackend backend = CommonUtils.convert(this, CharacterBackend.class).withCharacterUid(characterUid);
         backend.setIsDefault(BooleanUtils.isTrue(getIsDefault()) ? (byte) 1 : (byte) 0);
-        backend.setLongTermMemoryEnabled(BooleanUtils.isNotFalse(getLongTermMemoryEnabled()) ? (byte) 1 : (byte) 0);
         return backend;
     }
 }

@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CommonBox, ConfirmModal } from "..";
+import { CommonBox, CommonContainer, ConfirmModal, OptionCard, OptionTooltip, TinyInput } from "..";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CircularProgress, FormControl, FormHelperText, IconButton, Input, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses } from "@mui/joy";
+import { Chip, CircularProgress, Divider, FormControl, FormHelperText, IconButton, Input, Slider, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses } from "@mui/joy";
 import { FileUploadRounded } from "@mui/icons-material";
 import { extractFilenameFromUrl } from "../../libs/url_utils";
 import { RagTaskDTO } from "freechat-sdk";
 import { SxProps } from "@mui/joy/styles/types";
+import { HelpIcon } from "../icon";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 let idCounter = 0;
@@ -29,14 +30,17 @@ export default function CharacterDocumentUploader({
   const { handleError } = useErrorMessageBusContext();
 
   const [documentFile, setDocumentFile] = useState<File>();
-  const [documentUrl, setDocumentUrl] = useState<string>('');
+  const [documentUrl, setDocumentUrl] = useState('');
   const [documentType, setDocumentType] = useState<'file' | 'url'>('file');
-  const [documentUploading, setDocumentUploading] = useState<boolean>(false);
-  const [documentFileInvalid, setDocumentFileInvalid] = useState<boolean>(false);
-  const [documentUrlInvalid, setDocumentUrlInvalid] = useState<boolean>(false);
+  const [documentUploading, setDocumentUploading] = useState(false);
+  const [documentFileInvalid, setDocumentFileInvalid] = useState(false);
+  const [documentUrlInvalid, setDocumentUrlInvalid] = useState(false);
+  const [documentMaxSegmentSize, setDocumentMaxSegmentSize] = useState(300);
+  const [documentMaxOverlapSize, setDocumentMaxOverlapSize] = useState(30);
 
-  const inputId = useRef(`file-upload-input-${idCounter}`).current;
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputId = useRef(`file-upload-input-${idCounter}`).current;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const splitterInputRefs = useRef(Array(2).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
     idCounter++;
@@ -67,8 +71,8 @@ export default function CharacterDocumentUploader({
   }
 
   function handleDocumentFileModify(): void {
-    if (inputRef.current) {
-      inputRef.current.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   }
 
@@ -91,6 +95,8 @@ export default function CharacterDocumentUploader({
       const request = new RagTaskDTO();
       request.source = source;
       request.sourceType = sourceType;
+      request.maxSegmentSize = documentMaxSegmentSize;
+      request.maxOverlapSize = documentMaxOverlapSize
       ragApi?.createRagTask(characterId, request)
         .then(taskId => {
           ragApi.startRagTask(taskId)
@@ -123,95 +129,164 @@ export default function CharacterDocumentUploader({
       onConfirm={handleDocumentConfirm}
       sx={sx}
     >
-      <Tabs
-        defaultValue={0}
-        onChange={(_event, newValue) => setDocumentType(newValue === 0 ? 'file' : 'url')}
-        sx={{
-          bgcolor: 'transparent',
-        }}
-      >
-        <TabList
-          tabFlex={1}
-          size="sm"
+      <Stack spacing={2}>
+        <Tabs
+          defaultValue={0}
+          onChange={(_event, newValue) => setDocumentType(newValue === 0 ? 'file' : 'url')}
           sx={{
-            pl: { xs: 0, md: 4 },
-            justifyContent: 'left',
-            [`&& .${tabClasses.root}`]: {
-              fontWeight: '600',
-              flex: 'initial',
-              color: 'text.tertiary',
-              [`&.${tabClasses.selected}`]: {
-                bgcolor: 'transparent',
-                color: 'text.primary',
-                '&::after': {
-                  height: '2px',
-                  bgcolor: 'primary.500',
-                },
-              },
-            },
+            bgcolor: 'transparent',
+            minWidth: '760px',
           }}
         >
-          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0}>
-            {t('FILE')}
-          </Tab>
-          <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={1}>
-            {t('URL')}
-          </Tab>
-        </TabList>
-        <TabPanel value={0}>
-          <Stack spacing={2}>
-            <Typography level="body-sm">
-              {t('Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 10MB.')}
-            </Typography>
-            <CommonBox>
-              <Typography>{documentFile?.name}</Typography>
-              {documentUploading ? (
-                <CircularProgress />
-              ) : (
-                <FormControl>
-                  <Input
-                    type="file"
-                    id={inputId}
-                    onChange={handleDocumentFileChange}
-                    sx={{ display: 'none' }}
-                    slotProps={{ input: {
-                      ref: inputRef,
-                      accept: "*/*",
-                    }}}
-                  />
-                  <label htmlFor={inputId}>
-                    <IconButton onClick={handleDocumentFileModify}>
-                      <FileUploadRounded />
-                    </IconButton>
-                  </label>
-                  <FormHelperText sx={{ display: documentFileInvalid ? 'unset' : 'none' }}>
-                    {t('File too large!')}
-                  </FormHelperText>
-                </FormControl>
-              )}
-            </CommonBox>
-          </Stack>
-        </TabPanel>
+          <TabList
+            tabFlex={1}
+            size="sm"
+            sx={{
+              pl: { xs: 0, md: 4 },
+              justifyContent: 'left',
+              [`&& .${tabClasses.root}`]: {
+                fontWeight: '600',
+                flex: 'initial',
+                color: 'text.tertiary',
+                [`&.${tabClasses.selected}`]: {
+                  bgcolor: 'transparent',
+                  color: 'text.primary',
+                  '&::after': {
+                    height: '2px',
+                    bgcolor: 'primary.500',
+                  },
+                },
+              },
+            }}
+          >
+            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0}>
+              {t('FILE')}
+            </Tab>
+            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={1}>
+              {t('URL')}
+            </Tab>
+          </TabList>
+          <TabPanel value={0}>
+            <Stack spacing={2}>
+              <Typography level="body-sm">
+                {t('Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 10MB.')}
+              </Typography>
+              <CommonBox>
+                <Chip sx={{ display: documentFile?.name ? 'unset' : 'none'}}>{documentFile?.name}</Chip>
+                {documentUploading ? (
+                  <CircularProgress />
+                ) : (
+                  <FormControl>
+                    <Input
+                      type="file"
+                      id={fileInputId}
+                      onChange={handleDocumentFileChange}
+                      sx={{ display: 'none' }}
+                      slotProps={{ input: {
+                        ref: fileInputRef,
+                        accept: "*/*",
+                      }}}
+                    />
+                    <label htmlFor={fileInputId}>
+                      <IconButton onClick={handleDocumentFileModify}>
+                        <FileUploadRounded />
+                      </IconButton>
+                    </label>
+                    <FormHelperText sx={{ display: documentFileInvalid ? 'unset' : 'none' }}>
+                      {t('File too large!')}
+                    </FormHelperText>
+                  </FormControl>
+                )}
+              </CommonBox>
+            </Stack>
+          </TabPanel>
 
-        <TabPanel value={1}>
-          <Stack spacing={2}>
-            <Typography level="body-sm">
-              {t('Only publicly accessible URLs are supported.')}
+          <TabPanel value={1}>
+            <Stack spacing={2}>
+              <Typography level="body-sm">
+                {t('Only publicly accessible URLs are supported.')}
+              </Typography>
+              <FormControl>
+                <Input
+                  autoFocus
+                  type="text"
+                  value={documentUrl}
+                  onChange={(event => handleDocumentUrlModify(event.target.value))}
+                />
+                <FormHelperText sx={{ display: documentUrlInvalid ? 'unset' : 'none' }}>
+                  {t('Invalid URL')}
+                </FormHelperText>
+              </FormControl>
+            </Stack>
+          </TabPanel>
+        </Tabs>
+        
+        <Divider sx={{ mt: 'auto', mx: 2 }}>{t('Splitter Settings')}</Divider>
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
+              {t('Max Segment Size')}
             </Typography>
-            <FormControl>
-              <Input
-                autoFocus
-                type="text"
-                value={documentUrl}
-                onChange={(event => handleDocumentUrlModify(event.target.value))}
-              />
-              <FormHelperText sx={{ display: documentUrlInvalid ? 'unset' : 'none' }}>
-                {t('Invalid URL')}
-              </FormHelperText>
-            </FormControl>
-          </Stack>
-        </TabPanel>
-      </Tabs>
+            <OptionTooltip title={t('The maximum size of a segment in tokens.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: splitterInputRefs.current[0],
+                    step: 100,
+                    min: 0,
+                    max: 1000,
+                  },
+                }}
+                value={documentMaxSegmentSize}
+                onChange={(event => setDocumentMaxSegmentSize(+event.target.value))} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            value={documentMaxSegmentSize}
+            step={100}
+            min={0}
+            max={1000}
+            valueLabelDisplay="auto"
+            onChange={(_event, newValue) => setDocumentMaxSegmentSize(newValue as number)} />
+        </OptionCard>
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
+              {t('Max Overlap Size')}
+            </Typography>
+            <OptionTooltip title={t('The maximum size of the overlap between segments in tokens.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: splitterInputRefs.current[1],
+                    step: 10,
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+                value={documentMaxOverlapSize}
+                onChange={(event => setDocumentMaxOverlapSize(+event.target.value))} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            value={documentMaxOverlapSize}
+            step={10}
+            min={0}
+            max={100}
+            valueLabelDisplay="auto"
+            onChange={(_event, newValue) => setDocumentMaxOverlapSize(newValue as number)} />
+        </OptionCard>
+      </Stack>
     </ConfirmModal>
   );
 }

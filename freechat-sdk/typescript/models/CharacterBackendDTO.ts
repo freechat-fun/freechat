@@ -45,11 +45,7 @@ export class CharacterBackendDTO {
     */
     'messageWindowSize'?: number;
     /**
-    * Whether to enable long-term memory
-    */
-    'longTermMemoryEnabled'?: boolean;
-    /**
-    * Max rounds (a round includes a user message and an assistant message) in the character\'s long term memory
+    * Max rounds (a round includes a user message and a character reply) in the character\'s long term memory, 0 to disable
     */
     'longTermMemoryWindowSize'?: number;
     /**
@@ -105,12 +101,6 @@ export class CharacterBackendDTO {
             "baseName": "messageWindowSize",
             "type": "number",
             "format": "int32"
-        },
-        {
-            "name": "longTermMemoryEnabled",
-            "baseName": "longTermMemoryEnabled",
-            "type": "boolean",
-            "format": ""
         },
         {
             "name": "longTermMemoryWindowSize",

@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryEnabled, longTermMemoryWindowSize, initQuota, quotaType, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, initQuota, quotaType, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -48,7 +48,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="moderation_api_key_name", property="moderationApiKeyName", jdbcType=JdbcType.VARCHAR),
         @Result(column="forward_to_user", property="forwardToUser", jdbcType=JdbcType.TINYINT),
         @Result(column="message_window_size", property="messageWindowSize", jdbcType=JdbcType.INTEGER),
-        @Result(column="long_term_memory_enabled", property="longTermMemoryEnabled", jdbcType=JdbcType.TINYINT),
         @Result(column="long_term_memory_window_size", property="longTermMemoryWindowSize", jdbcType=JdbcType.INTEGER),
         @Result(column="init_quota", property="initQuota", jdbcType=JdbcType.BIGINT),
         @Result(column="quota_type", property="quotaType", jdbcType=JdbcType.VARCHAR),
@@ -92,7 +91,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(moderationApiKeyName).toProperty("moderationApiKeyName")
             .map(forwardToUser).toProperty("forwardToUser")
             .map(messageWindowSize).toProperty("messageWindowSize")
-            .map(longTermMemoryEnabled).toProperty("longTermMemoryEnabled")
             .map(longTermMemoryWindowSize).toProperty("longTermMemoryWindowSize")
             .map(initQuota).toProperty("initQuota")
             .map(quotaType).toProperty("quotaType")
@@ -114,7 +112,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(moderationApiKeyName).toProperty("moderationApiKeyName")
             .map(forwardToUser).toProperty("forwardToUser")
             .map(messageWindowSize).toProperty("messageWindowSize")
-            .map(longTermMemoryEnabled).toProperty("longTermMemoryEnabled")
             .map(longTermMemoryWindowSize).toProperty("longTermMemoryWindowSize")
             .map(initQuota).toProperty("initQuota")
             .map(quotaType).toProperty("quotaType")
@@ -136,7 +133,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(moderationApiKeyName).toPropertyWhenPresent("moderationApiKeyName", row::getModerationApiKeyName)
             .map(forwardToUser).toPropertyWhenPresent("forwardToUser", row::getForwardToUser)
             .map(messageWindowSize).toPropertyWhenPresent("messageWindowSize", row::getMessageWindowSize)
-            .map(longTermMemoryEnabled).toPropertyWhenPresent("longTermMemoryEnabled", row::getLongTermMemoryEnabled)
             .map(longTermMemoryWindowSize).toPropertyWhenPresent("longTermMemoryWindowSize", row::getLongTermMemoryWindowSize)
             .map(initQuota).toPropertyWhenPresent("initQuota", row::getInitQuota)
             .map(quotaType).toPropertyWhenPresent("quotaType", row::getQuotaType)
@@ -184,7 +180,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
                 .set(forwardToUser).equalTo(row::getForwardToUser)
                 .set(messageWindowSize).equalTo(row::getMessageWindowSize)
-                .set(longTermMemoryEnabled).equalTo(row::getLongTermMemoryEnabled)
                 .set(longTermMemoryWindowSize).equalTo(row::getLongTermMemoryWindowSize)
                 .set(initQuota).equalTo(row::getInitQuota)
                 .set(quotaType).equalTo(row::getQuotaType)
@@ -204,7 +199,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
                 .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
                 .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
-                .set(longTermMemoryEnabled).equalToWhenPresent(row::getLongTermMemoryEnabled)
                 .set(longTermMemoryWindowSize).equalToWhenPresent(row::getLongTermMemoryWindowSize)
                 .set(initQuota).equalToWhenPresent(row::getInitQuota)
                 .set(quotaType).equalToWhenPresent(row::getQuotaType)
@@ -224,7 +218,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(moderationApiKeyName).equalTo(row::getModerationApiKeyName)
             .set(forwardToUser).equalTo(row::getForwardToUser)
             .set(messageWindowSize).equalTo(row::getMessageWindowSize)
-            .set(longTermMemoryEnabled).equalTo(row::getLongTermMemoryEnabled)
             .set(longTermMemoryWindowSize).equalTo(row::getLongTermMemoryWindowSize)
             .set(initQuota).equalTo(row::getInitQuota)
             .set(quotaType).equalTo(row::getQuotaType)
@@ -246,7 +239,6 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(moderationApiKeyName).equalToWhenPresent(row::getModerationApiKeyName)
             .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
             .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
-            .set(longTermMemoryEnabled).equalToWhenPresent(row::getLongTermMemoryEnabled)
             .set(longTermMemoryWindowSize).equalToWhenPresent(row::getLongTermMemoryWindowSize)
             .set(initQuota).equalToWhenPresent(row::getInitQuota)
             .set(quotaType).equalToWhenPresent(row::getQuotaType)

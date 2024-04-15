@@ -24,6 +24,14 @@ export class RagTaskDTO {
     * Source information, url, or a key for file
     */
     'source'?: string;
+    /**
+    * The maximum size of a segment in tokens.
+    */
+    'maxSegmentSize'?: number;
+    /**
+    * The maximum size of the overlap between segments in tokens.
+    */
+    'maxOverlapSize'?: number;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -39,6 +47,18 @@ export class RagTaskDTO {
             "baseName": "source",
             "type": "string",
             "format": ""
+        },
+        {
+            "name": "maxSegmentSize",
+            "baseName": "maxSegmentSize",
+            "type": "number",
+            "format": "int32"
+        },
+        {
+            "name": "maxOverlapSize",
+            "baseName": "maxOverlapSize",
+            "type": "number",
+            "format": "int32"
         }    ];
 
     static getAttributeTypeMap() {

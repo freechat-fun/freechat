@@ -34,6 +34,10 @@ public class RagTaskDetailsDTO extends TraceableDTO {
     private String sourceType;
     @Schema(description = "Source information, url, or a key for file")
     private String source;
+    @Schema(description = "The maximum size of a segment in tokens.")
+    private Integer maxSegmentSize;
+    @Schema(description = "The maximum size of the overlap between segments in tokens.")
+    private Integer maxOverlapSize;
     @Schema(description = "Task execution status: pending | running | succeeded | failed | canceled")
     private String status;
     @Schema(description = "Additional information, JSON format")

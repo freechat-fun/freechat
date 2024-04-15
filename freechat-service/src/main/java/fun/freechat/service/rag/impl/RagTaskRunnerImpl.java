@@ -7,6 +7,7 @@ import dev.langchain4j.data.document.source.UrlSource;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.document.transformer.HtmlTextExtractor;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.HuggingFaceTokenizer;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -37,10 +38,10 @@ import java.util.concurrent.TimeUnit;
 public class RagTaskRunnerImpl implements RagTaskRunner {
     private static final String LOCK_PREFIX = "RagTaskLock-";
 
-    @Value("${chat.rag.maxSegmentSize}")
-    private Integer maxSegmentSize;
-    @Value("${chat.rag.maxOverlapSize}")
-    private Integer maxOverlapSize;
+    @Value("${chat.rag.defaultMaxSegmentSize}")
+    private Integer defaultMaxSegmentSize;
+    @Value("${chat.rag.defaultMaxOverlapSize}")
+    private Integer defaultMaxOverlapSize;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
@@ -68,6 +69,8 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
                 case URL -> UrlSource.from(task.getSource());
                 default -> throw new NotImplementedException("Not implemented.");
             };
+            Integer maxSegmentSize = Utils.getOrDefault(task.getMaxSegmentSize(), defaultMaxSegmentSize);
+            Integer maxOverlapSize = Utils.getOrDefault(task.getMaxOverlapSize(), defaultMaxOverlapSize);
 
             Metadata tikaMetadata = new Metadata();
             DocumentParser parser = new ApacheTikaDocumentParser(null, null, tikaMetadata, null);

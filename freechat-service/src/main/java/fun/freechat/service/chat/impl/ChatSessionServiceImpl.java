@@ -19,6 +19,8 @@ import dev.langchain4j.rag.content.injector.ContentInjector;
 import dev.langchain4j.rag.content.injector.DefaultContentInjector;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
+import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer;
+import dev.langchain4j.rag.query.transformer.QueryTransformer;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
@@ -288,7 +290,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             EmbeddingModel embeddingModel = embeddingModelService.from(characterUid);
             EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(characterUid);
 
-            // todo: long-term memory
+            QueryTransformer queryTransformer = CompressingQueryTransformer.builder()
+                    .chatLanguageModel(chatModel)
+                    .build();
 
             ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
                     .embeddingModel(embeddingModel)
@@ -302,10 +306,13 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .build();
 
             RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
+                    .queryTransformer(queryTransformer)
                     .contentRetriever(contentRetriever)
                     .contentInjector(contentInjector)
                     .executor(executor)
                     .build();
+
+            // todo: long-term memory
 
             MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
 

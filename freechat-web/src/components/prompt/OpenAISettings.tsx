@@ -210,7 +210,7 @@ export default function OpenAISettings(props: {
             min={0}
             max={1}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setTopP(newValue as number)}
+            onChange={(_event, newValue) => setTopP(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -298,7 +298,7 @@ export default function OpenAISettings(props: {
             min={-2}
             max={2}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setPresencePenalty(newValue as number)}
+            onChange={(_event, newValue) => setPresencePenalty(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -334,7 +334,7 @@ export default function OpenAISettings(props: {
             min={-2}
             max={2}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setFrequencyPenalty(newValue as number)}
+            onChange={(_event, newValue) => setFrequencyPenalty(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -370,7 +370,7 @@ export default function OpenAISettings(props: {
             min={0}
             max={2}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setTemperature(newValue as number)}
+            onChange={(_event, newValue) => setTemperature(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />

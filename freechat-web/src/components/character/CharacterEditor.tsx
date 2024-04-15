@@ -280,6 +280,7 @@ export default function CharacterEditor ({
     request.greetingPromptTaskId = backend.greetingPromptTaskId;
     request.isDefault = backend.isDefault;
     request.messageWindowSize = backend.messageWindowSize;
+    request.longTermMemoryWindowSize = backend.longTermMemoryWindowSize;
     request.moderationApiKeyName = backend.moderationApiKeyName;
     request.moderationModelId = backend.moderationModelId;
     request.moderationParams = backend.moderationParams;

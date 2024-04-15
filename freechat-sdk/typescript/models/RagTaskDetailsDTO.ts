@@ -53,6 +53,14 @@ export class RagTaskDetailsDTO {
     */
     'source'?: string;
     /**
+    * The maximum size of a segment in tokens.
+    */
+    'maxSegmentSize'?: number;
+    /**
+    * The maximum size of the overlap between segments in tokens.
+    */
+    'maxOverlapSize'?: number;
+    /**
     * Task execution status: pending | running | succeeded | failed | canceled
     */
     'status'?: string;
@@ -117,6 +125,18 @@ export class RagTaskDetailsDTO {
             "baseName": "source",
             "type": "string",
             "format": ""
+        },
+        {
+            "name": "maxSegmentSize",
+            "baseName": "maxSegmentSize",
+            "type": "number",
+            "format": "int32"
+        },
+        {
+            "name": "maxOverlapSize",
+            "baseName": "maxOverlapSize",
+            "type": "number",
+            "format": "int32"
         },
         {
             "name": "status",

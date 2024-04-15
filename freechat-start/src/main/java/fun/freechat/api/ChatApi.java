@@ -313,7 +313,7 @@ public class ChatApi {
                 result.setRequestId(null);
                 sseEmitter.send(result);
                 sseEmitter.complete();
-            } catch (NullPointerException | IOException e) {
+            } catch (Exception e) {
                 log.error("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
             } finally {

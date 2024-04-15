@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @Tag(name = "Rag")
@@ -29,6 +31,18 @@ import java.util.List;
 @Validated
 @SuppressWarnings("unused")
 public class RagApi {
+    @Value("${chat.rag.maxMaxSegmentSize:1000}")
+    private Integer maxMaxSegmentSize;
+    @Value("${chat.rag.minMaxSegmentSize:0}")
+    private Integer minMaxSegmentSize;
+    @Value("${chat.rag.defaultMaxSegmentSize:300}")
+    private Integer defaultMaxSegmentSize;
+    @Value("${chat.rag.maxMaxOverlapSize:100}")
+    private Integer maxMaxOverlapSize;
+    @Value("${chat.rag.minMaxOverlapSize:0}")
+    private Integer minMaxOverlapSize;
+    @Value("${chat.rag.defaultMaxOverlapSize:30}")
+    private Integer defaultMaxOverlapSize;
     @Autowired
     private CharacterService characterService;
     @Autowired
@@ -50,6 +64,23 @@ public class RagApi {
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No character found.");
         }
+
+        Integer maxSegmentSize = task.getMaxSegmentSize();
+        if (Objects.isNull(maxSegmentSize)) {
+            task.setMaxSegmentSize(defaultMaxSegmentSize);
+        } else if (maxSegmentSize < minMaxSegmentSize || maxSegmentSize > maxMaxSegmentSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Max segment size should be between " + minMaxSegmentSize + " and " + maxMaxSegmentSize);
+        }
+
+        Integer maxOverlapSize = task.getMaxOverlapSize();
+        if (Objects.isNull(maxOverlapSize)) {
+            task.setMaxOverlapSize(defaultMaxOverlapSize);
+        } else if (maxOverlapSize < minMaxOverlapSize || maxOverlapSize > maxMaxOverlapSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Max overlap size should be between " + minMaxOverlapSize + " and " + maxMaxOverlapSize);
+        }
+
         RagTask ragTask = task.toRagTask(characterUid);
         if (!ragTaskService.create(ragTask)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create RAG task.");
@@ -73,6 +104,21 @@ public class RagApi {
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No task found.");
         }
+
+        Integer maxSegmentSize = task.getMaxSegmentSize();
+        if (Objects.nonNull(maxSegmentSize) &&
+                (maxSegmentSize < minMaxSegmentSize || maxSegmentSize > maxMaxSegmentSize)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Max segment size should be between " + minMaxSegmentSize + " and " + maxMaxSegmentSize);
+        }
+
+        Integer maxOverlapSize = task.getMaxOverlapSize();
+        if (Objects.nonNull(maxOverlapSize) &&
+                (maxOverlapSize < minMaxOverlapSize || maxOverlapSize > maxMaxOverlapSize)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Max overlap size should be between " + minMaxOverlapSize + " and " + maxMaxOverlapSize);
+        }
+
         RagTask ragTask = task.toRagTask(characterUid);
         return ragTaskService.update(ragTask);
     }

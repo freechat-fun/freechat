@@ -70,11 +70,11 @@ public class CharacterApi {
     private Integer maxMessageWindowSize;
     @Value("${chat.memory.defaultMessageWindowSize:100}")
     private Integer defaultMessageWindowSize;
-    @Value("${chat.memory.minLongTermMemoryWindowSize:1}")
+    @Value("${chat.memory.minLongTermMemoryWindowSize:0}")
     private Integer minLongTermMemoryWindowSize;
-    @Value("${chat.memory.maxLongTermMemoryWindowSize:50}")
+    @Value("${chat.memory.maxLongTermMemoryWindowSize:30}")
     private Integer maxLongTermMemoryWindowSize;
-    @Value("${chat.memory.defaultLongTermMemoryWindowSize:10}")
+    @Value("${chat.memory.defaultLongTermMemoryWindowSize:5}")
     private Integer defaultLongTermMemoryWindowSize;
     @Autowired
     private CharacterService characterService;
@@ -559,17 +559,15 @@ public class CharacterApi {
         }
         Integer messageWindowSize = characterBackend.getMessageWindowSize();
         if (Objects.isNull(messageWindowSize)) {
-            messageWindowSize = defaultMessageWindowSize;
-        }
-        if (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize) {
+            characterBackend.setMessageWindowSize(defaultMessageWindowSize);
+        } else if (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Message window size should be between " + minMessageWindowSize + " and " + maxMessageWindowSize);
         }
         Integer longTermMemoryWindowSize = characterBackend.getLongTermMemoryWindowSize();
         if (Objects.isNull(longTermMemoryWindowSize)) {
-            longTermMemoryWindowSize = defaultLongTermMemoryWindowSize;
-        }
-        if (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
+            characterBackend.setLongTermMemoryWindowSize(defaultLongTermMemoryWindowSize);
+        } else if (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
                 longTermMemoryWindowSize > maxLongTermMemoryWindowSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Long term memory window size should be between " + minLongTermMemoryWindowSize +
@@ -597,6 +595,23 @@ public class CharacterApi {
 
         CharacterBackend updatedBackend = backend.toCharacterBackend(characterBackend.getCharacterUid());
         updatedBackend.setBackendId(characterBackend.getBackendId());
+
+        Integer messageWindowSize = updatedBackend.getMessageWindowSize();
+        if (Objects.nonNull(messageWindowSize) &&
+                (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Message window size should be between " + minMessageWindowSize + " and " + maxMessageWindowSize);
+        }
+
+        Integer longTermMemoryWindowSize = updatedBackend.getLongTermMemoryWindowSize();
+        if (Objects.nonNull(longTermMemoryWindowSize) &&
+                (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
+                        longTermMemoryWindowSize > maxLongTermMemoryWindowSize)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Long term memory window size should be between " + minLongTermMemoryWindowSize +
+                            " and " + maxLongTermMemoryWindowSize);
+        }
+
         return characterService.updateBackend(updatedBackend);
     }
 

@@ -32,6 +32,12 @@ public final class RagTaskDynamicSqlSupport {
     public static final SqlColumn<String> sourceType = ragTask.sourceType;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> maxSegmentSize = ragTask.maxSegmentSize;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> maxOverlapSize = ragTask.maxOverlapSize;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> status = ragTask.status;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -55,6 +61,10 @@ public final class RagTaskDynamicSqlSupport {
         public final SqlColumn<String> characterUid = column("character_uid", JDBCType.VARCHAR);
 
         public final SqlColumn<String> sourceType = column("source_type", JDBCType.VARCHAR);
+
+        public final SqlColumn<Integer> maxSegmentSize = column("max_segment_size", JDBCType.INTEGER);
+
+        public final SqlColumn<Integer> maxOverlapSize = column("max_overlap_size", JDBCType.INTEGER);
 
         public final SqlColumn<String> status = column("status", JDBCType.VARCHAR);
 

@@ -319,9 +319,31 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     private static BiFunction<LinkedList<ChatMessageRecord>, ChatMessageRecord, LinkedList<ChatMessageRecord>> messageRecordAccumulator() {
         return (acc, record) -> {
-            if (!acc.isEmpty() && acc.getLast().getMessage().type() == record.getMessage().type()) {
+            ChatMessageType type = record.getMessage().type();
+            if (acc.isEmpty()) {
+                if (type == SYSTEM) {
+                    acc.add(record);
+                }
+                return acc;
+            }
+
+            ChatMessageType lastedType = acc.getLast().getMessage().type();
+            if (type == AI && lastedType == SYSTEM) {
+                // The first non-system message must be a user message.
+                return acc;
+            }
+
+            if (type == AI && lastedType == USER && ((AiMessage) record.getMessage()).text().isBlank()) {
+                // Invalid ai message. Ignore the ai message and the corresponding user message.
+                acc.removeLast();
+                return acc;
+            }
+
+            if (type == lastedType) {
+                // The list must be user and ai alternating messages. Use the newest one when duplicated.
                 acc.removeLast();
             }
+
             acc.add(record);
             return acc;
         };
@@ -344,7 +366,8 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
         List<ChatMessageRecord> removedRecords = new LinkedList<>();
         int firstIndex = firstNonSystemMessageRecordIndex(records);
-        while (records.size() > maxRecords || records.get(firstIndex).getMessage().type() != USER) {
+        while (records.size() > maxRecords ||
+                (records.size() > firstIndex && records.get(firstIndex).getMessage().type() != USER)) {
             removedRecords.add(records.remove(firstIndex));
         }
         return removedRecords;

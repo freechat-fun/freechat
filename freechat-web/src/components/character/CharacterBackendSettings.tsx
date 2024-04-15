@@ -28,6 +28,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
   const { backend, onSave, onCancel, sx, ...others } = props;
 
   const [messageWindowSize, setMessageWindowSize] = useState(backend?.messageWindowSize ?? 50);
+  const [longTermMemoryWindowSize, setLongTermMemoryWindowSize] = useState(backend?.longTermMemoryWindowSize ?? 5);
   const [initQuota, setInitQuota] = useState(backend?.initQuota ?? 0);
   const [quotaType, setQuotaType] = useState(backend?.quotaType ==='tokens' ? backend?.quotaType : 'messages');
   const [enableQuota, setEnableQuota] = useState(backend?.quotaType === 'messages' || backend?.quotaType === 'tokens');
@@ -44,7 +45,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
   const [modelSetting, setModelSetting] = useState(false);
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
 
-  const inputRefs = useRef(Array(2).fill(createRef<HTMLInputElement | null>()));
+  const inputRefs = useRef(Array(3).fill(createRef<HTMLInputElement | null>()));
 
   const matchingModels = useMemo(() => {
     return provider && models ? models.filter(
@@ -108,10 +109,11 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
   function handleSave(redirectToChatPrompt: boolean = false) {
     let editBackend;
     if (backend) {
-      editBackend = { ...backend, messageWindowSize };
+      editBackend = { ...backend, messageWindowSize, longTermMemoryWindowSize };
     } else {
       editBackend = new CharacterBackendDetailsDTO();
       editBackend.messageWindowSize = messageWindowSize;
+      editBackend.longTermMemoryWindowSize = longTermMemoryWindowSize;
     }
 
     if (enableQuota) {
@@ -170,7 +172,39 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
             min={10}
             max={200}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setMessageWindowSize(newValue as number)} />
+            onChange={(_event, newValue) => setMessageWindowSize(newValue as number)} />
+        </OptionCard>
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
+              {t('Long Term Memory Window')}
+            </Typography>
+            <OptionTooltip title={t('Set the maximum number of long term memory rounds (a round includes a user message and an character message) sent to the model, 0 to disable.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[1],
+                    min: 0,
+                    max: 30,
+                    step: 1,
+                  },
+                }}
+                value={longTermMemoryWindowSize}
+                onChange={(event => setLongTermMemoryWindowSize(+event.target.value))} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            value={longTermMemoryWindowSize}
+            step={1}
+            min={0}
+            max={30}
+            valueLabelDisplay="auto"
+            onChange={(_event, newValue) => setLongTermMemoryWindowSize(newValue as number)} />
         </OptionCard>
 
         <OptionCard>
@@ -236,7 +270,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
                 type="number"
                 slotProps={{
                   input: {
-                    ref: inputRefs.current[1],
+                    ref: inputRefs.current[2],
                     min: 0,
                     max: 10000,
                     step: 10,

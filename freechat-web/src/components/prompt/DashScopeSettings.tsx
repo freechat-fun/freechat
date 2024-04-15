@@ -193,7 +193,7 @@ export default function DashScopeSettings(props: {
             min={0}
             max={1}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setTopP(newValue as number)}
+            onChange={(_event, newValue) => setTopP(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -229,7 +229,7 @@ export default function DashScopeSettings(props: {
             min={0}
             max={100}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setTopK(newValue as number)}
+            onChange={(_event, newValue) => setTopK(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -356,7 +356,7 @@ export default function DashScopeSettings(props: {
             min={0}
             max={2}
             valueLabelDisplay="auto"
-            onChange={(_event: Event, newValue: number | number[]) => setTemperature(newValue as number)}
+            onChange={(_event, newValue) => setTemperature(newValue as number)}
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />

@@ -90,6 +90,8 @@ let body:.RagApiCreateRagTaskRequest = {
   ragTaskDTO: {
     sourceType: "sourceType_example",
     source: "source_example",
+    maxSegmentSize: 1,
+    maxOverlapSize: 1,
   },
 };
 
@@ -420,6 +422,8 @@ let body:.RagApiUpdateRagTaskRequest = {
   ragTaskDTO: {
     sourceType: "sourceType_example",
     source: "source_example",
+    maxSegmentSize: 1,
+    maxOverlapSize: 1,
   },
 };
 

@@ -29,15 +29,19 @@ auth:
 chat:
   memory:
     maxMessageSize: 10000
-    defaultMessageWindowSize: 100
     maxMessageWindowSize: 1000
     minMessageWindowSize: 50
-    defaultLongTermMemoryWindowSize: 10
-    maxLongTermMemoryWindowSize: 50
-    minLongTermMemoryWindowSize: 1
+    defaultMessageWindowSize: 100
+    maxLongTermMemoryWindowSize: 30
+    minLongTermMemoryWindowSize: 0
+    defaultLongTermMemoryWindowSize: 5
   rag:
-    maxSegmentSize: 300
-    maxOverlapSize: 30
+    maxMaxSegmentSize: 1000
+    minMaxSegmentSize: 0
+    defaultMaxSegmentSize: 300
+    maxMaxOverlapSize: 100
+    minMaxOverlapSize: 0
+    defaultMaxOverlapSize: 30
     maxResults: 3
     minScore: 0.3
 file:
