@@ -64,11 +64,11 @@ public class CharacterApi {
     private static final long DEFAULT_DOCUMENT_MAX_SIZE = 10 * 1024 * 1024;
     private static final int DEFAULT_DOCUMENT_MAX_COUNT = 5;
 
-    @Value("${chat.memory.minMessageWindowSize:50}")
+    @Value("${chat.memory.minMessageWindowSize:10}")
     private Integer minMessageWindowSize;
-    @Value("${chat.memory.maxMessageWindowSize:1000}")
+    @Value("${chat.memory.maxMessageWindowSize:500}")
     private Integer maxMessageWindowSize;
-    @Value("${chat.memory.defaultMessageWindowSize:100}")
+    @Value("${chat.memory.defaultMessageWindowSize:50}")
     private Integer defaultMessageWindowSize;
     @Value("${chat.memory.minLongTermMemoryWindowSize:0}")
     private Integer minLongTermMemoryWindowSize;
@@ -438,6 +438,7 @@ public class CharacterApi {
     public Boolean delete(
             @Parameter(description = "The characterId to be deleted") @PathVariable("characterId") @Positive
             Long characterId) {
+
         return characterService.delete(characterId, AccountUtils.currentUser());
     }
 

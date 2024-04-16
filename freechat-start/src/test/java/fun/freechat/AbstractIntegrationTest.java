@@ -20,7 +20,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "20000")
 @ActiveProfiles("local")
 @TestPropertySource(properties = "APP_HOME=${TMPDIR}")
 @Sql({"classpath:/sql/data.sql"})

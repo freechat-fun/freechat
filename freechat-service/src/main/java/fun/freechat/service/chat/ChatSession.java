@@ -32,6 +32,7 @@ public class ChatSession {
     private final ChatPromptContent prompt;
     private final PromptFormat promptFormat;
     private final Map<String, Object> variables;
+    private final RetrievalAugmentor longTermMemoryRetriever;
     private final AtomicBoolean processing = new AtomicBoolean(false);
 
     @Setter
@@ -46,6 +47,7 @@ public class ChatSession {
                        PromptFormat promptFormat,
                        Map<String, Object> variables,
                        RetrievalAugmentor retriever,
+                       RetrievalAugmentor longTermMemoryRetriever,
                        MemoryUsage memoryUsage) {
         aiServiceContext = new AiServiceContext(null);
         aiServiceContext.chatModel = chatModel;
@@ -58,6 +60,7 @@ public class ChatSession {
         this.prompt = prompt;
         this.promptFormat = promptFormat;
         this.variables = variables;
+        this.longTermMemoryRetriever = longTermMemoryRetriever;
         this.memoryUsage = memoryUsage;
     }
 
@@ -104,7 +107,7 @@ public class ChatSession {
         return aiServiceContext.toolExecutors;
     }
 
-    public RetrievalAugmentor getRetrieverAugmentor() {
+    public RetrievalAugmentor getRetriever() {
         return aiServiceContext.retrievalAugmentor;
     }
 

@@ -55,4 +55,16 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
             }
         }
     }
+
+    @Override
+    @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
+    public void delete(Object memoryId) {
+        if (Objects.nonNull(memoryId)) {
+            String storePath = memoryIdToPath(memoryId);
+            FileStore fileStore = StoreUtils.defaultFileStore();
+            if (Objects.nonNull(fileStore)) {
+                fileStore.tryDelete(storePath);
+            }
+        }
+    }
 }

@@ -9,6 +9,7 @@ import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
+import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -53,6 +55,8 @@ public class ChatServiceImpl implements ChatService {
     private ChatSessionService chatSessionService;
     @Autowired
     private ChatMemoryService chatMemoryService;
+    @Autowired
+    private LongTermChatMemoryStore longTermChatMemoryStore;
     @Autowired
     private PromptService promptService;
     @Autowired
@@ -252,15 +256,29 @@ public class ChatServiceImpl implements ChatService {
         variables.put(MESSAGE_CONTEXT.text(), getOrBlank(context));
         variables.put(CURRENT_TIME.text(),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        variables.put(LONG_TERM_MEMORY.text(), "");
 
         String relevantConcatenated = null;
-        if (message.type() == USER && Objects.nonNull(session.getRetrieverAugmentor())) {
+        List<ChatMessage> longTermMemoryMessages = null;
+        RetrievalAugmentor knowledgeRetriever = session.getRetriever();
+        RetrievalAugmentor longTermMemoryRetriever = session.getLongTermMemoryRetriever();
+        if (message.type() == USER &&
+                (Objects.nonNull(knowledgeRetriever) || Objects.nonNull(longTermMemoryRetriever))) {
+            List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
-            Metadata metadata = Metadata.from(userMessage, memoryId, chatMemory.messages());
-            UserMessage relevantMessage =
-                    session.getRetrieverAugmentor().augment(userMessage, metadata);
-            relevantConcatenated = toSingleText(relevantMessage);
+
+            if (Objects.nonNull(knowledgeRetriever)) {
+                Metadata metadata = Metadata.from(userMessage, memoryId, messages);
+                UserMessage relevantMessage =
+                        session.getRetriever().augment(userMessage, metadata);
+                if (relevantMessage != userMessage) {
+                    relevantConcatenated = toSingleText(relevantMessage);
+                }
+            }
+
+            if (Objects.nonNull(longTermMemoryRetriever)) {
+                longTermMemoryMessages = longTermChatMemoryStore.getMessages(
+                        memoryId, userMessage, messages, longTermMemoryRetriever);
+            }
         }
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
@@ -283,10 +301,27 @@ public class ChatServiceImpl implements ChatService {
         chatMemory.add(systemMessage);
         chatMemory.add(messageToSend);
 
-        return chatMemory.messages();
+        return mergeMessages(chatMemory.messages(), longTermMemoryMessages);
     }
 
-    private String getOrBlank(String content) {
+    private static String getOrBlank(String content) {
         return StringUtils.isBlank(content) ? "" : content;
+    }
+
+    private static List<ChatMessage> mergeMessages(List<ChatMessage> messages,
+                                                   List<ChatMessage> longTermMemoryMessages) {
+        if (CollectionUtils.isEmpty(longTermMemoryMessages) || CollectionUtils.isEmpty(messages)) {
+            return messages;
+        }
+
+        List<ChatMessage> allMessages = new LinkedList<>();
+        // add the system message at first
+        allMessages.add(messages.getFirst());
+        // add the long term memory messages
+        allMessages.addAll(longTermMemoryMessages);
+        // add the rest messages
+        allMessages.addAll(messages.subList(1, messages.size()));
+
+        return allMessages;
     }
 }

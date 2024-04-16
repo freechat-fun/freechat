@@ -28,10 +28,10 @@ auth:
     limits: 3
 chat:
   memory:
-    maxMessageSize: 10000
-    maxMessageWindowSize: 1000
-    minMessageWindowSize: 50
-    defaultMessageWindowSize: 100
+    maxMessageSize: 1000
+    maxMessageWindowSize: 500
+    minMessageWindowSize: 5
+    defaultMessageWindowSize: 50
     maxLongTermMemoryWindowSize: 30
     minLongTermMemoryWindowSize: 0
     defaultLongTermMemoryWindowSize: 5

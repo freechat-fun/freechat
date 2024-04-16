@@ -156,13 +156,6 @@ Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
 Name: {{USER_NICKNAME}}
 {{{USER_PROFILE}}}
 
-{{#LONG_TERM_MEMORY}}
-[[[Conversations you have had about this topic]]]
-"""
-{{{LONG_TERM_MEMORY}}}
-"""
-{{/LONG_TERM_MEMORY}}
-
 [[[Current time]]]
 {{CURRENT_TIME}}
 
@@ -232,13 +225,6 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `你扮演一个健谈的人。
 姓名：{{USER_NICKNAME}}
 {{{USER_PROFILE}}}
 
-{{#LONG_TERM_MEMORY}}
-【关于这个话题你们曾经发生过的对话】
-"""
-{{{LONG_TERM_MEMORY}}}
-"""
-{{/LONG_TERM_MEMORY}}
-
 【当前时间】
 {{CURRENT_TIME}}
 
@@ -285,7 +271,6 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['USER_NICKNAME'] = '*（预设的用户昵称，可在创建聊天时变更此设置）*';
     variables['USER_PROFILE'] = '*（预设的用户档案，可在创建聊天时变更此设置）*';
     variables['RELEVANT_INFORMATION'] = '*（每轮对话搜索出来的相关性信息）*';
-    variables['LONG_TERM_MEMORY'] = '*（当前轮次对话中角色回忆出来的长期记忆片段）*';
     variables['CHAT_CONTEXT'] = '*（聊天相关信息，可在创建聊天时设置）*';
     variables['MESSAGE_CONTEXT'] = '*（注入的当前轮次对话的相关信息）*';
     variables['CURRENT_TIME'] = '*（当前时间，格式：yyyy-MM-dd HH:mm:ss）*';

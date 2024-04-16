@@ -14,12 +14,13 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static fun.freechat.util.TestChatUtils.modelParams;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
@@ -197,7 +198,8 @@ public class ChatIT extends AbstractIntegrationTest{
         CharacterBackendDTO dto = new CharacterBackendDTO();
         dto.setChatPromptTaskId(promptTaskId);
         dto.setIsDefault(true);
-        dto.setMessageWindowSize(50);
+        dto.setMessageWindowSize(5);
+        dto.setLongTermMemoryWindowSize(0);
         dto.setInitQuota(2L);
         dto.setQuotaType(QuotaType.MESSAGES.text());
 
@@ -212,6 +214,19 @@ public class ChatIT extends AbstractIntegrationTest{
                 .getResponseBody();
 
         assertNotNull(backendId);
+    }
+
+    private void testUpdateBackend() {
+        CharacterBackendDTO dto = new CharacterBackendDTO();
+        dto.setLongTermMemoryWindowSize(2);
+
+        testClient.put().uri("/api/v1/character/backend/" + backendId)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .isEqualTo(true);
     }
 
     private void testCreateChatFailed() {
@@ -252,7 +267,7 @@ public class ChatIT extends AbstractIntegrationTest{
     }
 
     private void testSendMessage() {
-        ChatContentDTO content = ChatContentDTO.fromText("Did you married? If you had a wife, what's her name?");
+        ChatContentDTO content = ChatContentDTO.fromText("My wife's name is Lily! Did you married? If you had a wife, what's her name?");
 
         ChatMessageDTO dto = new ChatMessageDTO();
         dto.setContents(List.of(content));
@@ -291,42 +306,6 @@ public class ChatIT extends AbstractIntegrationTest{
         System.out.println(USER_NICKNAME + ": " + content.getContent());
         System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
                 " (" + result.getTokenUsage() + ")");
-    }
-
-    private void testStreamSendMessage() throws Exception {
-        ChatContentDTO content = ChatContentDTO.fromText("OK. Nice to meet you. Bye!");
-
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
-
-        StringBuilder answerBuilder = new StringBuilder();
-        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
-
-        System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
-                .accept(MediaType.TEXT_EVENT_STREAM)
-                .header(AUTHORIZATION, "Bearer " + userApiKey)
-                .bodyValue(dto)
-                .exchange()
-                .expectStatus().isOk()
-                .returnResult(LlmResultDTO.class)
-                .getResponseBody()
-                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
-                .subscribe(event -> {
-                    String text = event.getText();
-                    if (Objects.isNull(text)) {
-                        // last event
-                        answerBuilder.append(" (")
-                                .append(event.getTokenUsage().toString())
-                                .append(")");
-                    } else {
-                        answerBuilder.append(text);
-                    }
-                });
-
-        String answer = futureAnswer.get(1, MINUTES);
-        System.out.println(CHARACTER_NICKNAME + ": " + answer);
     }
 
     private void testMemoryUsage() {
@@ -400,6 +379,108 @@ public class ChatIT extends AbstractIntegrationTest{
         System.out.println(USER_NICKNAME + ": " + content.getContent());
         System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
                 " (" + result.getTokenUsage() + ")");
+    }
+
+    private void testSendMessageWithoutLongTermMemory() {
+        ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
+
+        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/" + chatId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LlmResultDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(result);
+        assertNotNull(result.getMessage());
+        assertThat(result.getMessage().getContents()).isNotEmpty();
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
+                " (" + result.getTokenUsage() + ")");
+
+        assertFalse(result.getMessage().getContents().getFirst().getContent().contains("Lily"));
+    }
+
+    private void testStreamSendMessageWithoutLongTermMemory() throws ExecutionException, InterruptedException, TimeoutException {
+        ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
+
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (Objects.isNull(text)) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
+
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + ": " + answer);
+        assertFalse(answer.contains("Lily"));
+    }
+
+    private void testStreamSendMessageWithLongTermMemory() throws Exception {
+
+        ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
+
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setContents(List.of(content));
+        dto.setRole("user");
+
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (Objects.isNull(text)) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
+
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + ": " + answer);
+        assertTrue(answer.contains("Lily"));
     }
 
     private void testListMessagesFailed() {
@@ -564,16 +645,28 @@ public class ChatIT extends AbstractIntegrationTest{
         testResendMessageWithSpecializedApiKey();
         TestCommonUtils.waitAWhile();
 
-        testStreamSendMessage();
+        testSendMessageWithoutLongTermMemory();
+        TestCommonUtils.waitAWhile();
+
+        testRollbackMessages();
+        TestCommonUtils.waitAWhile();
+
+        testStreamSendMessageWithoutLongTermMemory();
+        TestCommonUtils.waitAWhile();
+
+        testRollbackMessages();
+        TestCommonUtils.waitAWhile();
+
+        testUpdateBackend();
+        TestCommonUtils.waitAWhile();
+
+        testStreamSendMessageWithLongTermMemory();
         TestCommonUtils.waitAWhile();
 
         testListMessagesFailed();
         TestCommonUtils.waitAWhile();
 
         testListMessages();
-        TestCommonUtils.waitAWhile();
-
-        testRollbackMessages();
         TestCommonUtils.waitAWhile();
 
         testDeleteChatFailed();

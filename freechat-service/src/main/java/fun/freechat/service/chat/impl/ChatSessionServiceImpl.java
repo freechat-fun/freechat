@@ -302,7 +302,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .build();
 
             ContentInjector contentInjector = DefaultContentInjector.builder()
-                    .promptTemplate(PromptTemplate.from("{{contents}}"))
+                    .promptTemplate(PromptTemplate.from("{{{contents}}}"))
                     .build();
 
             RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
@@ -313,6 +313,27 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .build();
 
             // todo: long-term memory
+            RetrievalAugmentor longTermMemoryRetrievalAugmentor = null;
+            Integer longTermMemoryWindowSize = backend.getLongTermMemoryWindowSize();
+
+            if (Objects.nonNull(longTermMemoryWindowSize) && longTermMemoryWindowSize > 0L) {
+                EmbeddingModel longTermMemoryEmbeddingModel = embeddingModelService.from(chatId);
+                EmbeddingStore<TextSegment> longTermMemoryEmbeddingStore = embeddingStoreService.from(chatId);
+
+                ContentRetriever longTermMemoryContentRetriever = EmbeddingStoreContentRetriever.builder()
+                        .embeddingModel(longTermMemoryEmbeddingModel)
+                        .embeddingStore(longTermMemoryEmbeddingStore)
+                        .maxResults(longTermMemoryWindowSize)
+                        .minScore(minScore)
+                        .build();
+
+                longTermMemoryRetrievalAugmentor = DefaultRetrievalAugmentor.builder()
+                        .queryTransformer(queryTransformer)
+                        .contentRetriever(longTermMemoryContentRetriever)
+                        .contentInjector(contentInjector)
+                        .executor(executor)
+                        .build();
+            }
 
             MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
 
@@ -325,6 +346,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .promptFormat(promptFormat)
                     .variables(variables)
                     .retriever(retrievalAugmentor)
+                    .longTermMemoryRetriever(longTermMemoryRetrievalAugmentor)
                     .memoryUsage(memoryUsage)
                     .build();
         } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {

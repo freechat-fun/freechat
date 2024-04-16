@@ -67,13 +67,6 @@ Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
 Name: {{USER_NICKNAME}}
 {{{USER_PROFILE}}}
 
-{{#LONG_TERM_MEMORY}}
-[[[Conversations you have had about this topic]]]
-'''
-{{{LONG_TERM_MEMORY}}}
-'''
-{{/LONG_TERM_MEMORY}}
-
 [[[Current time]]]
 {{CURRENT_TIME}}
 
@@ -114,7 +107,6 @@ Name: {{USER_NICKNAME}}
             param.put("seed", new Random().nextInt(0, Integer.MAX_VALUE));
         } else if (modelId.startsWith("[open_ai]")) {
             param.put("baseUrl", "https://api.openai-proxy.com/v1");
-            param.put("maxTokens", 100);
             param.put("temperature", 0.7d);
         }
         return param;

@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @SuppressWarnings("unused")
 public class RagTaskRunnerImpl implements RagTaskRunner {
-    private static final String LOCK_PREFIX = "RagTaskLock-";
+    private static final String LOCK_PREFIX = "RagTaskRunnerLock-";
 
     @Value("${chat.rag.defaultMaxSegmentSize}")
     private Integer defaultMaxSegmentSize;
@@ -81,7 +81,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
 
             EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
             EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId);
-            DocumentTransformer documentTransformer = isHtml( document) ? new HtmlTextExtractor() : null;
+            DocumentTransformer documentTransformer = isHtml(document) ? new HtmlTextExtractor() : null;
             DocumentSplitter documentSplitter = DocumentSplitters.recursive(
                     maxSegmentSize, maxOverlapSize, new HuggingFaceTokenizer());
 

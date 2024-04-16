@@ -33,7 +33,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private final static String CACHE_KEY_PREFIX = "MysqlChatMemoryStoreImpl_";
 
-    @Value("${chat.memory.maxMessageSize:10000}")
+    @Value("${chat.memory.maxMessageSize:1000}")
     private Integer maxSize;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -60,12 +60,12 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
         var firstMessage = messages.getFirst();
         var lastMessage = messages.getLast();
+        LinkedList<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
 
         SystemMessage systemMessage = firstMessage.type() == SYSTEM ? (SystemMessage) firstMessage : null;
         ChatHistory history = messageToHistory(memoryId, lastMessage, systemMessage, null);
         chatHistoryMapper.insertSelective(history);
         if (Objects.nonNull(history.getId())) {
-            LinkedList<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
             cachedList.add(ChatMessageRecord.builder()
                     .id(history.getId())
                     .message(lastMessage)

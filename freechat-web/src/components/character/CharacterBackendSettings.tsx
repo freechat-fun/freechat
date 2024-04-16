@@ -158,8 +158,8 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
                   input: {
                     ref: inputRefs.current[0],
                     min: 10,
-                    max: 200,
-                    step: 1,
+                    max: 500,
+                    step: 10,
                   },
                 }}
                 value={messageWindowSize}
@@ -168,9 +168,9 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
           </CommonContainer>
           <Slider
             value={messageWindowSize}
-            step={1}
             min={10}
-            max={200}
+            max={500}
+            step={10}
             valueLabelDisplay="auto"
             onChange={(_event, newValue) => setMessageWindowSize(newValue as number)} />
         </OptionCard>
@@ -280,7 +280,6 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
                 onChange={(event => setInitQuota(+event.target.value))}
               />
               <Typography sx={{
-                
                 display: quotaType === 'tokens' ? 'block' : 'none'
               }}>
                 K
