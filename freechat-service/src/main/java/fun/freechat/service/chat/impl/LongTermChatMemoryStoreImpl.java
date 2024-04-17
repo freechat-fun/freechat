@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import static dev.langchain4j.data.message.ChatMessageType.AI;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
+import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
 @Service
@@ -81,7 +82,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
         try {
             locked = lock.tryLock(30, 60, TimeUnit.SECONDS);
             EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId);
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, LONG_TERM_MEMORY);
 
             ChatMessageRecord userRecord = null;
             for (ChatMessageRecord record: messages) {
@@ -118,7 +119,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                     userRecord = null;
                 }
             }
-            embeddingStoreService.save(memoryId, embeddingStore);
+            embeddingStoreService.save(memoryId, LONG_TERM_MEMORY, embeddingStore);
         } catch (Exception ex) {
             log.error("Failed to update long term memory for [{}]", memoryId, ex);
         } finally {
@@ -133,7 +134,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
         if (Objects.isNull(memoryId)) {
             return;
         }
-        embeddingStoreService.delete(memoryId);
+        embeddingStoreService.delete(memoryId, LONG_TERM_MEMORY);
     }
 
     @EventListener
