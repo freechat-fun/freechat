@@ -89,7 +89,7 @@ export default function CharacterBackendsPane({
       <Table sx={{ display: backends.length > 0 ? 'table' : 'none' }}>
         <thead>
           <tr>
-            <th>#</th>
+            <th style={{ width: '10%' }}>#</th>
             <th>{t('Creation Time')}</th>
             <th>{t('Message Window')}</th>
             <th>{t('Moderation Model')}</th>

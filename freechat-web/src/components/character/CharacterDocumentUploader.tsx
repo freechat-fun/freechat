@@ -1,6 +1,6 @@
 import { createRef, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CommonBox, CommonContainer, ConfirmModal, OptionCard, OptionTooltip, TinyInput } from "..";
+import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, OptionCard, OptionTooltip, TinyInput } from "..";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { Chip, CircularProgress, Divider, FormControl, FormHelperText, IconButton, Input, Slider, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses } from "@mui/joy";
 import { FileUploadRounded } from "@mui/icons-material";
@@ -223,69 +223,71 @@ export default function CharacterDocumentUploader({
         
         <Divider sx={{ mt: 'auto', mx: 2 }}>{t('Splitter Settings')}</Divider>
 
-        <OptionCard>
-          <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
-              {t('Max Segment Size')}
-            </Typography>
-            <OptionTooltip title={t('The maximum size of a segment in tokens.')}>
-              <HelpIcon />
-            </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
-              <TinyInput
-                type="number"
-                slotProps={{
-                  input: {
-                    ref: splitterInputRefs.current[0],
-                    step: 100,
-                    min: 0,
-                    max: 1000,
-                  },
-                }}
-                value={documentMaxSegmentSize}
-                onChange={(event => setDocumentMaxSegmentSize(+event.target.value))} />
+        <CommonGridBox sx={{ gridTemplateColumns: '1fr 1fr' }}>
+          <OptionCard>
+            <CommonContainer>
+              <Typography level="title-sm" textColor="neutral">
+                {t('Max Segment Size')}
+              </Typography>
+              <OptionTooltip title={t('The maximum size of a segment in tokens.')}>
+                <HelpIcon />
+              </OptionTooltip>
+              <CommonContainer sx={{ ml: 'auto' }}>
+                <TinyInput
+                  type="number"
+                  slotProps={{
+                    input: {
+                      ref: splitterInputRefs.current[0],
+                      step: 100,
+                      min: 0,
+                      max: 1000,
+                    },
+                  }}
+                  value={documentMaxSegmentSize}
+                  onChange={(event => setDocumentMaxSegmentSize(+event.target.value))} />
+              </CommonContainer>
             </CommonContainer>
-          </CommonContainer>
-          <Slider
-            value={documentMaxSegmentSize}
-            step={100}
-            min={0}
-            max={1000}
-            valueLabelDisplay="auto"
-            onChange={(_event, newValue) => setDocumentMaxSegmentSize(newValue as number)} />
-        </OptionCard>
+            <Slider
+              value={documentMaxSegmentSize}
+              step={100}
+              min={0}
+              max={1000}
+              valueLabelDisplay="auto"
+              onChange={(_event, newValue) => setDocumentMaxSegmentSize(newValue as number)} />
+          </OptionCard>
 
-        <OptionCard>
-          <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
-              {t('Max Overlap Size')}
-            </Typography>
-            <OptionTooltip title={t('The maximum size of the overlap between segments in tokens.')}>
-              <HelpIcon />
-            </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
-              <TinyInput
-                type="number"
-                slotProps={{
-                  input: {
-                    ref: splitterInputRefs.current[1],
-                    step: 10,
-                    min: 0,
-                    max: 100,
-                  },
-                }}
-                value={documentMaxOverlapSize}
-                onChange={(event => setDocumentMaxOverlapSize(+event.target.value))} />
+          <OptionCard>
+            <CommonContainer>
+              <Typography level="title-sm" textColor="neutral">
+                {t('Max Overlap Size')}
+              </Typography>
+              <OptionTooltip title={t('The maximum size of the overlap between segments in tokens.')}>
+                <HelpIcon />
+              </OptionTooltip>
+              <CommonContainer sx={{ ml: 'auto' }}>
+                <TinyInput
+                  type="number"
+                  slotProps={{
+                    input: {
+                      ref: splitterInputRefs.current[1],
+                      step: 10,
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                  value={documentMaxOverlapSize}
+                  onChange={(event => setDocumentMaxOverlapSize(+event.target.value))} />
+              </CommonContainer>
             </CommonContainer>
-          </CommonContainer>
-          <Slider
-            value={documentMaxOverlapSize}
-            step={10}
-            min={0}
-            max={100}
-            valueLabelDisplay="auto"
-            onChange={(_event, newValue) => setDocumentMaxOverlapSize(newValue as number)} />
-        </OptionCard>
+            <Slider
+              value={documentMaxOverlapSize}
+              step={10}
+              min={0}
+              max={100}
+              valueLabelDisplay="auto"
+              onChange={(_event, newValue) => setDocumentMaxOverlapSize(newValue as number)} />
+          </OptionCard>
+        </CommonGridBox>
       </Stack>
     </ConfirmModal>
   );

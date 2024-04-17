@@ -37,6 +37,8 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unused")
 public class RagTaskRunnerImpl implements RagTaskRunner {
     private static final String LOCK_PREFIX = "RagTaskRunnerLock-";
+    private static final String MEMORY_ID_KEY = "Memory-Id";
+    private static final String TASK_ID_KEY = "Task-Id";
 
     @Value("${chat.rag.defaultMaxSegmentSize}")
     private Integer defaultMaxSegmentSize;
@@ -78,6 +80,8 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             for (String metaName: tikaMetadata.names()) {
                 document.metadata().add(metaName, tikaMetadata.get(metaName));
             }
+            document.metadata().add(MEMORY_ID_KEY, memoryId);
+            document.metadata().add(TASK_ID_KEY, task.getId());
 
             EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
             EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId);

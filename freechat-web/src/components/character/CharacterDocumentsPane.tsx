@@ -153,7 +153,7 @@ export default function CharacterDocumentsPane({
       <Table sx={{ display: ragTasks.length > 0 ? 'table' : 'none' }}>
         <thead>
           <tr>
-            <th>#</th>
+            <th style={{ width: '10%' }}>#</th>
             <th>{t('Creation Time')}</th>
             <th>{t('Start Time')}</th>
             <th>{t('End Time')}</th>

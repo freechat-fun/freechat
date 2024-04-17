@@ -180,7 +180,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
             <Typography level="title-sm" textColor="neutral">
               {t('Long Term Memory Window')}
             </Typography>
-            <OptionTooltip title={t('Set the maximum number of long term memory rounds (a round includes a user message and an character message) sent to the model, 0 to disable.')}>
+            <OptionTooltip title={t('Set the maximum number of long term memory rounds (a round includes a user message and a character reply) sent to the model, 0 to disable. Recalled long-term memory messages will be placed at the top of the historical message window.')}>
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -191,7 +191,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
                     ref: inputRefs.current[1],
                     min: 0,
                     max: 30,
-                    step: 1,
+                    step: 5,
                   },
                 }}
                 value={longTermMemoryWindowSize}
@@ -200,7 +200,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
           </CommonContainer>
           <Slider
             value={longTermMemoryWindowSize}
-            step={1}
+            step={5}
             min={0}
             max={30}
             valueLabelDisplay="auto"

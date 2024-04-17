@@ -37,9 +37,9 @@ import static fun.freechat.service.util.PromptUtils.toSingleText;
 @SuppressWarnings("unused")
 public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
     private static final String LOCK_PREFIX = "LongTermChatMemoryStoreLock-";
-    private static final String MEMORY_ID_KEY = "memory_id";
-    private static final String USER_MESSAGE_ID = "user_message_id";
-    private static final String AI_MESSAGE_ID = "ai_message_id";
+    private static final String MEMORY_ID_KEY = "Memory-Id";
+    private static final String USER_MESSAGE_ID = "User-Message-Id";
+    private static final String AI_MESSAGE_ID = "AI-Message-Id";
 
     @Autowired
     private RedissonClient redisson;

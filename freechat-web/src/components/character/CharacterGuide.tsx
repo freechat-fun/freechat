@@ -64,7 +64,10 @@ export default function CharacterGuide(props: CardProps) {
           </div>
         </Step>
         <Step>
-          <Typography level="body-sm">{t('History messages window size')}</Typography>
+          <Typography level="body-sm">{t('History messages')}</Typography>
+        </Step>
+        <Step>
+          <Typography level="body-sm">{t('Long term memory')}</Typography>
         </Step>
         <Step>
           <Typography level="body-sm">{t('Quota limit')}</Typography>
