@@ -1,0 +1,23 @@
+services:
+  freechat:
+    image: ${REPOSITORY}:${TAG}
+    ports:
+      - ${HOST_PORT}:8080
+    container_name: ${APP_NAME}-main
+    volumes:
+      - ${APP_VOLUME}/logs:/home/admin/logs
+      - ${APP_VOLUME}/data:/home/admin/data
+    environment:
+      - APP_NAME=${APP_NAME}
+      - SERVICE_OPTS=${SERVICE_OPTS}
+      - TEE_JAVA_LOG=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/public/check/ready"]
+      interval: 10s
+      timeout: 20s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      - "mysql"
+      - "redis"
+      - "milvus"

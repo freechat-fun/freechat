@@ -44,6 +44,10 @@ chat:
     defaultMaxOverlapSize: 30
     maxResults: 3
     minScore: 0.3
+embedding:
+  milvus:
+    dimension: 384
+    retrieveEmbeddingsOnSearch: false
 file:
   storeType: local
   basePath: ${APP_HOME}/data
@@ -65,13 +69,6 @@ spring:
             tokenUri: https://oauth.aliyun.com/v1/token
             userInfoUri: https://oauth.aliyun.com/v1/userinfo
             userNameAttribute: sub
-        registration:
-          aliyun:
-            authorizationGrantType: authorization_code
-            clientAuthenticationMethod: client_secret_basic
-            clientName: Aliyun
-            redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid
   servlet:
     multipart:
       max-file-size: 10MB

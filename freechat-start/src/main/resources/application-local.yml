@@ -1,10 +1,23 @@
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3307/freechat?useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: hello1234
+auth:
+  aes:
+    key: 6034a30c93dd4342a3e2d1973bc13ee5
+embedding:
+  milvus:
+    url: http://localhost:19530
 redis:
   mode: single
   datasource:
-    url: redis://localhost:6380
+    url: redis://localhost:6379
     password: hello1234
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/freechat?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: hello1234
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: 'fakeId'
+            clientSecret: 'fakeSecret'

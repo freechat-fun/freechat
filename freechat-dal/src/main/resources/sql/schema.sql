@@ -1,5 +1,4 @@
 CREATE DATABASE IF NOT EXISTS `freechat` CHARACTER SET utf8mb4;
-
 USE `freechat`;
 
 CREATE TABLE IF NOT EXISTS `user` (

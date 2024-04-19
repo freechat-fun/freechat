@@ -119,7 +119,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                     userRecord = null;
                 }
             }
-            embeddingStoreService.save(memoryId, LONG_TERM_MEMORY, embeddingStore);
+            embeddingStoreService.flush(memoryId, LONG_TERM_MEMORY, embeddingStore);
         } catch (Exception ex) {
             log.error("Failed to update long term memory for [{}]", memoryId, ex);
         } finally {

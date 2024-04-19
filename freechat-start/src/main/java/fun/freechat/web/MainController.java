@@ -5,6 +5,7 @@ import fun.freechat.model.User;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.util.ConfigUtils;
+import fun.freechat.util.AppMetaUtils;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,9 @@ public class MainController {
             script = "/asserts/index-" + webVersion + ".js";
         }
         model.addAttribute("script", script);
-        model.addAttribute("registrations", registrations);
+        if (!AppMetaUtils.isTestingEnv()) {
+            model.addAttribute("registrations", registrations);
+        }
 
         return "index";
     }

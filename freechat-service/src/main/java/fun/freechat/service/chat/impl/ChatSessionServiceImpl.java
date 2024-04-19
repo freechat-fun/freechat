@@ -68,7 +68,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static fun.freechat.service.ai.LanguageModelFactory.*;
 import static fun.freechat.service.enums.ChatVar.*;
-import static fun.freechat.service.enums.EmbeddingStoreType.DOCUMENT;
+import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
 import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
@@ -290,7 +290,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             // knowledge
             EmbeddingModel embeddingModel = embeddingModelService.from(characterUid);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(characterUid, DOCUMENT);
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(characterUid, CHARACTER_DOCUMENT);
 
             QueryTransformer queryTransformer = CompressingQueryTransformer.builder()
                     .chatLanguageModel(chatModel)

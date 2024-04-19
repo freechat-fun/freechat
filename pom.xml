@@ -9,13 +9,13 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <revision>0.9.0</revision>
+        <revision>0.10.0</revision>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!--dependency versions-->
-        <spring-boot.version>3.2.4</spring-boot.version>
+        <spring-boot.version>3.2.5</spring-boot.version>
         <springdoc.version>2.5.0</springdoc.version>
         <mybatis.version>3.5.15</mybatis.version>
         <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
@@ -124,32 +124,10 @@
             <!--langchain4j-->
             <dependency>
                 <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j</artifactId>
+                <artifactId>langchain4j-bom</artifactId>
                 <version>${langchain4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-open-ai</artifactId>
-                <version>${langchain4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-dashscope</artifactId>
-                <version>${langchain4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-embeddings-all-minilm-l6-v2-q</artifactId>
-                <version>${langchain4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>dev.langchain4j</groupId>
-                <artifactId>langchain4j-document-parser-apache-tika</artifactId>
-                <version>${langchain4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!--commons-->

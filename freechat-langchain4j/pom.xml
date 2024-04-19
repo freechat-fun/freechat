@@ -58,6 +58,11 @@
         </dependency>
 
         <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-milvus</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.samskivert</groupId>
             <artifactId>jmustache</artifactId>
         </dependency>

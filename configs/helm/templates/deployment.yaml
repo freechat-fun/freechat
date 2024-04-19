@@ -1,0 +1,114 @@
+{{- if .Values.deployment.backend.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helpers.fullname" . }}-main
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helpers.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helpers.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helpers.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: dependencies-listener
+          image: busybox
+          command:
+            - sh
+            - -ec
+            - |
+              for i in $(seq 1 200); do
+                nc -z -v -w3 {{ include "helpers.extractHostPort" .Values.mysql.url }} && \
+                nc -z -v -w3 {{ include "helpers.extractHostPort" .Values.redis.url }} && \
+                nc -z -v -w3 {{ include "helpers.extractHostPort" .Values.milvus.url }} && \
+                sleep 30 && exit 0 || sleep 3
+              done
+              exit 1
+      containers:
+        - name: main
+          env:
+            - name: SERVICE_OPTS
+              value: '-Dspring.config.location=classpath:/application.yml,/home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config/application-private.yml -Dspring.profiles.active=online'
+            - name: TEE_JAVA_LOG
+              value: "1"
+            {{- if .Values.debug.jpda.enabled }}
+            - name: JPDA_ENABLE
+              value: "true"
+            - name: JPDA_PORT
+              value: {{ default "5005" .Values.debug.jpda.port | quote }}
+            {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            {{- if .Values.debug.jpda.enabled }}
+            - name: jpda
+              containerPort: {{ default 5005 .Values.debug.jpda.port }}
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: public/check/live
+              port: http
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: public/check/ready
+              port: http
+            failureThreshold: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config
+              name: config
+            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
+              name: logs
+            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/data
+              name: data
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ include "helpers.fullname" . }}-spring-properties
+            items:
+              - key: application-private.yml
+                path: application-private.yml
+        - name: logs
+          emptyDir: {}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "helpers.fullname" . }}-pvc
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

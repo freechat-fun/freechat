@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: bitnami/mysql:${MYSQL_TAG}
+    ports: 
+      - ${MYSQL_HOST_PORT}:${MYSQL_PORT}
+    container_name: ${MYSQL_NAME}
+    volumes:
+      - ${MYSQL_VOLUME}/conf.d:/etc/mysql/conf.d
+      - ${MYSQL_VOLUME}/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ${MYSQL_VOLUME}/data:/bitnami/mysql/data
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
+      interval: 10s
+      timeout: 20s
+      retries: 3
+
+  redis:
+    image: bitnami/redis:${REDIS_TAG}
+    ports:
+      - ${REDIS_HOST_PORT}:${REDIS_PORT}
+    container_name: ${REDIS_NAME}
+    volumes:
+      - ${REDIS_VOLUME}:/bitnami/redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 20s
+      retries: 3
+
+  milvus:
+    image: bitnami/milvus:${MILVUS_TAG}
+    ports:
+      - ${MILVUS_HOST_PORT}:${MILVUS_PORT}
+      - ${MILVUS_CONTROL_HOST_PORT}:${MILVUS_CONTROL_PORT}
+    container_name: ${MILVUS_NAME}
+    volumes:
+      - ${MILVUS_VOLUME}:/var/lib/milvus
+    environment:
+      - COMMON_STORAGETYPE=local
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/var/lib/milvus/configs/embedEtcd.yaml
+    entrypoint: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:${MILVUS_CONTROL_PORT}/healthz" ]
+#      interval: 10s
+#      timeout: 20s
+#      retries: 3

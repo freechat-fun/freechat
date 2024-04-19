@@ -1,0 +1,135 @@
+global:
+  redis:
+    password: ''
+  storageClass: 'default'
+auth:
+  aes:
+    key: ''
+  oauth2:
+    aliyun:
+      enable: true
+      authorizationGrantType: authorization_code
+      clientAuthenticationMethod: client_secret_basic
+      clientName: Aliyun
+      scope: openid
+      clientId: ''
+      clientSecret: ''
+    github:
+      enable: true
+      scope: ''
+      clientId: ''
+      clientSecret: ''
+    google:
+      enable: true
+      scope: openid,profile,email
+      clientId: ''
+      clientSecret: ''
+autoscaling:
+  enabled: false
+bitnami:
+  mysql:
+    enabled: true
+  redis:
+    enabled: true
+  milvus:
+    enabled: true
+cert:
+  manager:
+    namespace: cert-manager
+    version: v1.14.4
+  clusterIssuer:
+    enabled: false
+  email: dev.freechat.fun@gmail.com
+debug:
+  jpda:
+    enabled: false
+    port: 5005
+deployment:
+  backend:
+    enabled: true
+  frontend:
+    enabled: false
+  pvc:
+    enabled: false
+    accessModes: [ReadWriteOnce]
+    storage: 60Gi
+image:
+  backend:
+    pullPolicy: Always
+    repository: freechatfun/freechat
+    tag: 'latest'
+  frontend:
+    pullPolicy: Always
+    repository: freechatfun/freechat-web
+    tag: 'latest'
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+  hosts:
+    - host: freechat.fun
+      backend:
+        paths:
+          - path: /
+            pathType: Prefix
+      frontend:
+        paths:
+          - path: /assets
+            pathType: Prefix
+  tls:
+    enabled: true
+milvus:
+  url: http://freechat-milvus-proxy:19530
+  milvus:
+    auth:
+      enabled: true
+      username: freechat
+      password: ''
+      rootPassword: ''
+  etcd:
+    replicaCount: 1
+  proxy:
+    service:
+      type: ClusterIP
+  attu:
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: true
+      hostname: milvus.freechat.fun
+      ingressClassName: nginx
+      tls: true
+      annotations:
+        cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+mysql:
+  url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8
+  auth:
+    database: freechat
+    username: freechat
+    password: ''
+    rootPassword: ''
+  initdbScripts:
+    1-schema.sql: ''
+    2-data.sql: ''
+redis:
+  url: redis://freechat-redis-master:6379
+  replica:
+    replicaCount: 0
+replicaCount: 2
+resources:
+  limits: {}
+  requests: {}
+podSecurityContext:
+  fsGroup: 2024
+securityContext:
+  runAsUser: 2024
+  runAsGroup: 2024
+service:
+  ports:
+    http: 80
+  type: ClusterIP
+serviceAccount:
+  create: true
+systemAccount: admin
+spring: {}

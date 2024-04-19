@@ -314,7 +314,7 @@ public class PromptAiIT extends AbstractIntegrationTest {
 
     static Stream<Arguments> testChatPrompt() {
         return Stream.of(
-                Arguments.of("[dash_scope]qwen-vl-max", TestAiApiKeyUtils.apiKeyOfDashScope()),
+                Arguments.of("[dash_scope]qwen-max", TestAiApiKeyUtils.apiKeyOfDashScope()),
                 Arguments.of("[open_ai]gpt-3.5-turbo", TestAiApiKeyUtils.apiKeyOfOpenAI())
         );
     }

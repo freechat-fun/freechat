@@ -40,7 +40,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public void save(Object memoryId, EmbeddingStoreType storeType, EmbeddingStore<TextSegment> store) {
+    public void flush(Object memoryId, EmbeddingStoreType storeType, EmbeddingStore<TextSegment> store) {
         if (Objects.nonNull(memoryId) && store instanceof InMemoryEmbeddingStore<TextSegment> inMemoryStore) {
             String storePath = memoryIdToPath(memoryId, storeType);
             FileStore fileStore = StoreUtils.defaultFileStore();

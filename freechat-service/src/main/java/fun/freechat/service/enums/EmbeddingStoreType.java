@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.commons.lang3.StringUtils;
 
 public enum EmbeddingStoreType {
-    DOCUMENT,
+    CHARACTER_DOCUMENT,
     LONG_TERM_MEMORY;
     public static EmbeddingStoreType of(String text) {
         if (StringUtils.isBlank(text)) {
-            return DOCUMENT;
+            return CHARACTER_DOCUMENT;
         }
         try {
             return EmbeddingStoreType.valueOf(text.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return DOCUMENT;
+            return CHARACTER_DOCUMENT;
         }
     }
 

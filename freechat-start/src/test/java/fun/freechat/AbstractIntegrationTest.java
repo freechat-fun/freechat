@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -29,13 +30,14 @@ public class AbstractIntegrationTest {
     static GenericContainer<?> redis;
     static MySQLContainer<?> mysql;
 
-    static {
-        redis = new GenericContainer<>(DockerImageName.parse("redis:latest"))
-                .withExposedPorts(6379)
-                .withEnv("REDIS_PASSWORD", "hello1234")
-                .withCommand("redis-server", "--appendonly", "yes", "--requirepass", "hello1234");
+    static MilvusContainer milvus;
 
-        mysql = (MySQLContainer<?>) new MySQLContainer(DockerImageName.parse("mysql:latest"))
+    static {
+        redis = new GenericContainer<>(redisImageName())
+                .withExposedPorts(6379)
+                .withEnv("REDIS_PASSWORD", "hello1234");
+
+        mysql = (MySQLContainer<?>) new MySQLContainer(mysqlImageName())
                 .withInitScript("sql/schema.sql")
                 .withDatabaseName("freechat")
                 .withUsername("root")
@@ -44,6 +46,9 @@ public class AbstractIntegrationTest {
                 .withUrlParam("characterEncoding", "utf-8")
                 .withExposedPorts(3306)
                 .withEnv("MYSQL_ROOT_PASSWORD", "hello1234");
+
+        milvus =  new MilvusContainer(milvusImageName())
+                .withCommand( "run", "standalone");
     }
 
     @Autowired
@@ -60,8 +65,27 @@ public class AbstractIntegrationTest {
     static void redisProperties(DynamicPropertyRegistry registry) {
         redis.start();
         mysql.start();
+        milvus.start();;
         registry.add("redis.datasource.url",
                 () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("embedding.milvus.url", milvus::getEndpoint);
+    }
+
+
+    // In order to unify with the k8s environment, use the bitnami images for testing.
+    private static DockerImageName redisImageName() {
+        return DockerImageName.parse("bitnami/redis:latest")
+                .asCompatibleSubstituteFor("redis");
+    }
+
+    private static DockerImageName mysqlImageName() {
+        return DockerImageName.parse("bitnami/mysql:latest")
+                .asCompatibleSubstituteFor("mysql");
+    }
+
+    private static DockerImageName milvusImageName() {
+        return DockerImageName.parse("bitnami/milvus:latest")
+                .asCompatibleSubstituteFor("milvusdb/milvus");
     }
 }

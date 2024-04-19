@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static fun.freechat.service.enums.EmbeddingStoreType.DOCUMENT;
+import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
 
 @Service
 @Slf4j
@@ -86,7 +86,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             document.metadata().add(TASK_ID_KEY, task.getId());
 
             EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, DOCUMENT);
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, CHARACTER_DOCUMENT);
             DocumentTransformer documentTransformer = isHtml(document) ? new HtmlTextExtractor() : null;
             DocumentSplitter documentSplitter = DocumentSplitters.recursive(
                     maxSegmentSize, maxOverlapSize, new HuggingFaceTokenizer());
@@ -99,7 +99,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
                     .build()
                     .ingest(document);
 
-            embeddingStoreService.save(memoryId, DOCUMENT, embeddingStore);
+            embeddingStoreService.flush(memoryId, CHARACTER_DOCUMENT, embeddingStore);
 
             eventPublisher.publishEvent(new RagTaskSucceededEvent(task));
             return CompletableFuture.completedFuture(null);
