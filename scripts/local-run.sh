@@ -43,7 +43,7 @@ do
       shift
       shift
       ;;
-    --name)
+    -n|--name)
       APP_NAME=$2
       shift
       shift
@@ -51,6 +51,25 @@ do
     -D*)
       APP_ARGS+=("$1")
       shift
+      ;;
+    --help)
+      cat - <<EOF
+Run freechat locally.
+
+Options：
+      --start           Start freechat.
+      --stop            Stop freechat.
+      --update          Update the image and restart freechat.
+      --top             Print the status of freechat and its dependent containers.
+  -n, --name            Service name, default is 'freechat'.
+  -p, --port            Port number the service runs on, default is 80.
+  -t, --tag             Tag of the image used by freechat, default is latest.
+      -D*               Override any application property.
+                        E.g. '-Dapp.logging.level=debug' sets the logging level to debug.
+                        Refer to the properties in freechat-start/src/main/resources/application.yml
+      --help            Print usage.
+EOF
+      exit 0
       ;;
     *)
       OTHER_ARGS+=("$1")
