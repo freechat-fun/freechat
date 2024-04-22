@@ -52,7 +52,7 @@ deployment:
   pvc:
     enabled: false
     accessModes: [ReadWriteOnce]
-    storage: 60Gi
+    storage: 8Gi
 image:
   backend:
     pullPolicy: Always

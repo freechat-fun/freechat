@@ -2,11 +2,12 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
-DEP_CONFIG=local-deps.yml
-APP_CONFIG=local-app.yml
+which docker &>/dev/null || die "ERROR: You need to have the docker toolset in your PATH."
 
 set -- "${ARGS[@]}"
 
+DEP_CONFIG=local-deps.yml
+APP_CONFIG=local-app.yml
 COMMAND=start
 HOST_PORT=80
 TAG=latest
@@ -53,17 +54,17 @@ do
       shift
       ;;
     --help)
-      cat - <<EOF
-Run freechat locally.
+      cat <<EOF
+Run freechat.fun locally.
 
 Options：
-      --start           Start freechat.
-      --stop            Stop freechat.
-      --update          Update the image and restart freechat.
-      --top             Print the status of freechat and its dependent containers.
+      --start           Start freechat.fun.
+      --stop            Stop freechat.fun.
+      --update          Update the image and restart freechat.fun.
+      --top             Print the status of freechat.fun's containers.
   -n, --name            Service name, default is 'freechat'.
   -p, --port            Port number the service runs on, default is 80.
-  -t, --tag             Tag of the image used by freechat, default is latest.
+  -t, --tag             Tag of the image used by freechat.fun, default is latest.
       -D*               Override any application property.
                         E.g. '-Dapp.logging.level=debug' sets the logging level to debug.
                         Refer to the properties in freechat-start/src/main/resources/application.yml

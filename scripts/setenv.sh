@@ -92,3 +92,8 @@ if [[ -z "${NAMESPACE}" ]]; then
   fi
 fi
 
+die () {
+    echo "$*"
+    echo
+    exit 1
+} >&2
