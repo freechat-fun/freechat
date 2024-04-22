@@ -31,9 +31,9 @@
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${TRACE_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
-            <maxHistory>7</maxHistory>
-            <maxFileSize>10GB</maxFileSize>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxHistory>3</maxHistory>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="TRACE_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
@@ -57,7 +57,7 @@
             <fileNamePattern>${DEBUG_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxHistory>3</maxHistory>
             <maxFileSize>1GB</maxFileSize>
-            <totalSizeCap>10GB</totalSizeCap>
+            <totalSizeCap>4GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="DEBUG_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
@@ -80,8 +80,8 @@
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${INFO_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <maxFileSize>10GB</maxFileSize>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="INFO_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
@@ -104,8 +104,8 @@
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${WARN_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <maxFileSize>10GB</maxFileSize>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="WARN_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
@@ -128,8 +128,8 @@
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${ERROR_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxHistory>30</maxHistory>
-            <maxFileSize>10GB</maxFileSize>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="ERROR_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
@@ -147,8 +147,8 @@
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${PERF_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <maxFileSize>10GB</maxFileSize>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="PERF_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
@@ -166,8 +166,8 @@
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${ACCESS_LOG_FILE}.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <maxFileSize>10GB</maxFileSize>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>1GB</maxFileSize>
+            <totalSizeCap>8GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <appender name ="ACCESS_ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
