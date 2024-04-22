@@ -63,7 +63,6 @@ image:
     repository: freechatfun/freechat-web
     tag: 'latest'
 ingress:
-  enabled: true
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: freechat-letsencrypt-http01

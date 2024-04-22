@@ -45,6 +45,7 @@ EOF
   mkdir -p ${MYSQL_VOLUME}/docker-entrypoint-initdb.d
   cp -f ${RESOURCE_PATH}/sql/schema.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-1.sql
   cp -f ${RESOURCE_PATH}/sql/data.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-2.sql
+  cp -f ${RESOURCE_PATH}/sql/data-local.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-3.sql
 
   # config milvus
   mkdir -p ${MILVUS_VOLUME}/configs
