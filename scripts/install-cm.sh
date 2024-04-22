@@ -2,6 +2,8 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_helm
+
 helm repo add jetstack https://charts.jetstack.io &>/dev/null
 helm repo update
 helm --kubeconfig ${KUBE_CONFIG} install --create-namespace -f ${values_yaml} \

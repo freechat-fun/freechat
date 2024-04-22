@@ -2,6 +2,8 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_docker
+
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
 SERVICE_NAMES="mysql redis milvus"

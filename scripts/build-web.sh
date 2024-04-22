@@ -2,14 +2,14 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_docker
+
 COMPOSE_CONFIG=$(mktemp -d)/build-web.yml
 
 cd ${PROJECT_PATH}/${WEB_MODULE}
 rm -rf dist
 npm run build;ret=$?
-if [[ ${ret} -ne 0 ]]; then
-  exit 1
-fi
+test ${ret} -eq 0 || die "ERROR: Failed to build ${WEB_MODULE}!"
 
 web_version=$(awk -F'"' '/"version":/ {print $4}' package.json)
 if [[ -n "${web_version}" ]]; then

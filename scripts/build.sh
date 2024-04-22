@@ -2,15 +2,16 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_docker
+check_helm
+
 COMPOSE_CONFIG=$(mktemp -d)/build.yml
 
 cd ${PROJECT_PATH}/${WEB_MODULE}
 
 rm -rf dist
 npm run build;ret=$?
-if [[ ${ret} -ne 0 ]]; then
-  exit 1
-fi
+test ${ret} -eq 0 || die "ERROR: Failed to build ${WEB_MODULE}!"
 
 web_version=$(awk -F'"' '/"version":/ {print $4}' package.json)
 if [[ -n "${web_version}" ]]; then
@@ -25,9 +26,7 @@ cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/img ${PROJECT_PATH}/${STARTER_MODULE
 cd ${SCRIPTS_PATH}
 
 mvn clean package -Dmaven.test.skip=true -f ${PROJECT_PATH}/pom.xml;ret=$?
-if [[ ${ret} -ne 0 ]]; then
-  exit 1
-fi
+test ${ret} -eq 0 || die "ERROR: Failed to build ${PROJECT_NAME}!"
 
 cp -f ${PROJECT_PATH}/${STARTER_MODULE}/target/${STARTER_MODULE}-${VERSION}.jar ${DOCKER_CONFIG_HOME}/${PROJECT_NAME}.jar
 

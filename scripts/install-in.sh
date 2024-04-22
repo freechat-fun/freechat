@@ -2,6 +2,8 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_helm
+
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx &>/dev/null
 helm repo update
 

@@ -2,7 +2,7 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
-which docker &>/dev/null || die "ERROR: You need to have the docker toolset in your PATH."
+check_docker
 
 set -- "${ARGS[@]}"
 

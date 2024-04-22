@@ -2,6 +2,8 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_helm
+
 helm upgrade --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} --create-namespace -f ${values_yaml} \
   --set bitnami.milvus.enabled=false \
   --set bitnami.mysql.enabled=false \
