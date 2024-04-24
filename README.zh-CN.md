@@ -199,6 +199,7 @@ npm install freechat-sdk --save
 ```
 
 - **示例**
+
 参考 [FreeChatApiContext.tsx]https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)
 
 ## 系统依赖

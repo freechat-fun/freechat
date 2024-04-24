@@ -7,7 +7,7 @@ Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializ
 
 ## Features
 - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**.
-- oasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the "organization" concept and related permission constraint functions.
+- Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the "organization" concept and related permission constraint functions.
 - Extensively employs **distributed technologies and caching** to support **high concurrency** access.
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
 - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users.
@@ -199,6 +199,7 @@ npm install freechat-sdk --save
 ```
 
 - **Example**
+
 Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)
 
 ## System Dependencies
