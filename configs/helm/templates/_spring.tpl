@@ -66,8 +66,12 @@ embedding:
     {{- with .Values.milvus }}
     url: {{ default "http://milvus:19530" .url }}
     {{- if .milvus.auth.enabled }}
+    {{- if .milvus.auth.token }}
+    token: {{ .milvus.auth.token }}
+    {{- else }}
     username: root
     password: {{ default "Milvus" .milvus.auth.rootPassword }}
+    {{- end }}
     {{- end }}
     {{- end }}
 {{ end }}

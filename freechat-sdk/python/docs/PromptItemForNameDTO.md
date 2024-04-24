@@ -20,12 +20,12 @@ json = "{}"
 # create an instance of PromptItemForNameDTO from a JSON string
 prompt_item_for_name_dto_instance = PromptItemForNameDTO.from_json(json)
 # print the JSON string representation of the object
-print PromptItemForNameDTO.to_json()
+print(PromptItemForNameDTO.to_json())
 
 # convert the object into a dict
 prompt_item_for_name_dto_dict = prompt_item_for_name_dto_instance.to_dict()
 # create an instance of PromptItemForNameDTO from a dict
-prompt_item_for_name_dto_form_dict = prompt_item_for_name_dto.from_dict(prompt_item_for_name_dto_dict)
+prompt_item_for_name_dto_from_dict = PromptItemForNameDTO.from_dict(prompt_item_for_name_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -24,12 +24,12 @@ json = "{}"
 # create an instance of AppMetaDTO from a JSON string
 app_meta_dto_instance = AppMetaDTO.from_json(json)
 # print the JSON string representation of the object
-print AppMetaDTO.to_json()
+print(AppMetaDTO.to_json())
 
 # convert the object into a dict
 app_meta_dto_dict = app_meta_dto_instance.to_dict()
 # create an instance of AppMetaDTO from a dict
-app_meta_dto_form_dict = app_meta_dto.from_dict(app_meta_dto_dict)
+app_meta_dto_from_dict = AppMetaDTO.from_dict(app_meta_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

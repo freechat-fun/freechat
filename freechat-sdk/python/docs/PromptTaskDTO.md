@@ -24,12 +24,12 @@ json = "{}"
 # create an instance of PromptTaskDTO from a JSON string
 prompt_task_dto_instance = PromptTaskDTO.from_json(json)
 # print the JSON string representation of the object
-print PromptTaskDTO.to_json()
+print(PromptTaskDTO.to_json())
 
 # convert the object into a dict
 prompt_task_dto_dict = prompt_task_dto_instance.to_dict()
 # create an instance of PromptTaskDTO from a dict
-prompt_task_dto_form_dict = prompt_task_dto.from_dict(prompt_task_dto_dict)
+prompt_task_dto_from_dict = PromptTaskDTO.from_dict(prompt_task_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

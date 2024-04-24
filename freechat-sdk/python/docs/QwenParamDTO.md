@@ -28,12 +28,12 @@ json = "{}"
 # create an instance of QwenParamDTO from a JSON string
 qwen_param_dto_instance = QwenParamDTO.from_json(json)
 # print the JSON string representation of the object
-print QwenParamDTO.to_json()
+print(QwenParamDTO.to_json())
 
 # convert the object into a dict
 qwen_param_dto_dict = qwen_param_dto_instance.to_dict()
 # create an instance of QwenParamDTO from a dict
-qwen_param_dto_form_dict = qwen_param_dto.from_dict(qwen_param_dto_dict)
+qwen_param_dto_from_dict = QwenParamDTO.from_dict(qwen_param_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

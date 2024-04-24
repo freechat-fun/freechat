@@ -19,12 +19,12 @@ json = "{}"
 # create an instance of HotTagDTO from a JSON string
 hot_tag_dto_instance = HotTagDTO.from_json(json)
 # print the JSON string representation of the object
-print HotTagDTO.to_json()
+print(HotTagDTO.to_json())
 
 # convert the object into a dict
 hot_tag_dto_dict = hot_tag_dto_instance.to_dict()
 # create an instance of HotTagDTO from a dict
-hot_tag_dto_form_dict = hot_tag_dto.from_dict(hot_tag_dto_dict)
+hot_tag_dto_from_dict = HotTagDTO.from_dict(hot_tag_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -13,9 +13,9 @@ Name | Type | Description | Notes
 **moderation_api_key_name** | **str** | Api key name for moderation model | [optional] 
 **moderation_params** | **str** | Parameters for moderation model | [optional] 
 **message_window_size** | **int** | Max messages in the character&#39;s memory | [optional] 
+**long_term_memory_window_size** | **int** | Max rounds (a round includes a user message and a character reply) in the character&#39;s long term memory, 0 to disable | [optional] 
 **init_quota** | **int** | Initial quota when opening a chat | [optional] 
 **quota_type** | **str** | Quota type: messages | tokens | none (not limited) | [optional] 
-**forward_to_user** | **bool** | Weather to forward messages to the character owner | [optional] 
 
 ## Example
 
@@ -27,12 +27,12 @@ json = "{}"
 # create an instance of CharacterBackendDTO from a JSON string
 character_backend_dto_instance = CharacterBackendDTO.from_json(json)
 # print the JSON string representation of the object
-print CharacterBackendDTO.to_json()
+print(CharacterBackendDTO.to_json())
 
 # convert the object into a dict
 character_backend_dto_dict = character_backend_dto_instance.to_dict()
 # create an instance of CharacterBackendDTO from a dict
-character_backend_dto_form_dict = character_backend_dto.from_dict(character_backend_dto_dict)
+character_backend_dto_from_dict = CharacterBackendDTO.from_dict(character_backend_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

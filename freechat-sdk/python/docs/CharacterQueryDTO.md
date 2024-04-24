@@ -21,12 +21,12 @@ json = "{}"
 # create an instance of CharacterQueryDTO from a JSON string
 character_query_dto_instance = CharacterQueryDTO.from_json(json)
 # print the JSON string representation of the object
-print CharacterQueryDTO.to_json()
+print(CharacterQueryDTO.to_json())
 
 # convert the object into a dict
 character_query_dto_dict = character_query_dto_instance.to_dict()
 # create an instance of CharacterQueryDTO from a dict
-character_query_dto_form_dict = character_query_dto.from_dict(character_query_dto_dict)
+character_query_dto_from_dict = CharacterQueryDTO.from_dict(character_query_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

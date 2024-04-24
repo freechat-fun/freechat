@@ -27,12 +27,12 @@ json = "{}"
 # create an instance of PluginUpdateDTO from a JSON string
 plugin_update_dto_instance = PluginUpdateDTO.from_json(json)
 # print the JSON string representation of the object
-print PluginUpdateDTO.to_json()
+print(PluginUpdateDTO.to_json())
 
 # convert the object into a dict
 plugin_update_dto_dict = plugin_update_dto_instance.to_dict()
 # create an instance of PluginUpdateDTO from a dict
-plugin_update_dto_form_dict = plugin_update_dto.from_dict(plugin_update_dto_dict)
+plugin_update_dto_from_dict = PluginUpdateDTO.from_dict(plugin_update_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

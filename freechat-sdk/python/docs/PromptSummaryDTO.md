@@ -33,12 +33,12 @@ json = "{}"
 # create an instance of PromptSummaryDTO from a JSON string
 prompt_summary_dto_instance = PromptSummaryDTO.from_json(json)
 # print the JSON string representation of the object
-print PromptSummaryDTO.to_json()
+print(PromptSummaryDTO.to_json())
 
 # convert the object into a dict
 prompt_summary_dto_dict = prompt_summary_dto_instance.to_dict()
 # create an instance of PromptSummaryDTO from a dict
-prompt_summary_dto_form_dict = prompt_summary_dto.from_dict(prompt_summary_dto_dict)
+prompt_summary_dto_from_dict = PromptSummaryDTO.from_dict(prompt_summary_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

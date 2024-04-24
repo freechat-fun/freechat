@@ -33,12 +33,12 @@ json = "{}"
 # create an instance of CharacterUpdateDTO from a JSON string
 character_update_dto_instance = CharacterUpdateDTO.from_json(json)
 # print the JSON string representation of the object
-print CharacterUpdateDTO.to_json()
+print(CharacterUpdateDTO.to_json())
 
 # convert the object into a dict
 character_update_dto_dict = character_update_dto_instance.to_dict()
 # create an instance of CharacterUpdateDTO from a dict
-character_update_dto_form_dict = character_update_dto.from_dict(character_update_dto_dict)
+character_update_dto_from_dict = CharacterUpdateDTO.from_dict(character_update_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

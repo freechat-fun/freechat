@@ -1,8 +1,136 @@
 openapi: 3.0.1
 info:
-  description: https://github.com/freechat-fun/freechat
+  description: "# FreeChat: Create Some Friends for Yourself with AI\n\nEnglish |\
+    \ [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)\n\n\
+    ## Introduction\nWelcome! FreeChat aims to build a cloud-native, robust, and quickly\
+    \ commercializable enterprise-level AI virtual character platform.\n\n## Features\n\
+    - Primarily uses Java and emphasizes **security, robustness, scalability, traceability,\
+    \ and maintainability**.\n- oasts **account systems and permission management**,\
+    \ supporting OAuth2 authentication. Introduces the \"organization\" concept and\
+    \ related permission constraint functions.\n- Extensively employs **distributed\
+    \ technologies and caching** to support **high concurrency** access.\n- Provides\
+    \ flexible character customization options, supports direct intervention in prompts,\
+    \ and supports **configuring multiple backends for each character**.\n- **Offers\
+    \ a comprehensive range of Open APIs**, with more than 180 interfaces and provides\
+    \ java/python/typescript SDKs. These interfaces enable easy construction of systems\
+    \ for end-users.\n- Supports setting **RAG** (Retrieval Augmented Generation)\
+    \ for characters.\n- Supports **long-term memory** for characters.\n- Supports\
+    \ setting **quota limits** for characters.\n\n## System Snapshots\n\n## Character\
+    \ Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n    A -->\
+    \ C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A --> F(Backend-n...)\n\
+    \    E --> G(Message Window)\n    E --> H(Long Term Memory Settings)\n    E -->\
+    \ I(Quota Limit)\n    E --> J(Chat Prompt Task)\n    E --> K(Greeting Prompt Task)\n\
+    \    E --> L(Moderation Settings)\n    J --> M(Model & Parameters)\n    J -->\
+    \ N(API Keys)\n    J --> O(Prompt Refence)\n    J --> P(Tool Specifications)\n\
+    \    O --> Q(Template)\n    O --> R(Variables)\n    O --> S(Version)\n    O -->\
+    \ T(...)\n    style K stroke-dasharray: 5, 5\n    style L stroke-dasharray: 5,\
+    \ 5\n    style P stroke-dasharray: 5, 5\n```\n\nAfter setting up a unified persona\
+    \ and knowledge for a character, different backends can be configured. For example,\
+    \ different model may be adopted for different users based on cost considerations.\n\
+    \n## How to Play\n### Online Website\nYou can visit [freechat.fun](https://freechat.fun)\
+    \ to experience FreeChat. Share your designed AI character!\n\n### Running in\
+    \ a Kubernetes Cluster\nFreeChat is dedicated to the principles of cloud-native\
+    \ design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment\
+    \ by following these steps:\n\n1. Put the Kubernetes configuration file in the\
+    \ `configs/helm/` directory, named `kube-private.conf`.\n2. Place the Helm configuration\
+    \ file in the same directory, named `values-private.yaml`. Make sure to reference\
+    \ the default `values.yaml` and customize the variables as needed.\n3. Switch\
+    \ to the `scripts/` directory.\n4. If needed, execute `install-in.sh` to deploy\
+    \ `ingress-nginx` to the Kubernetes cluster.\n5. If needed, run `install-cm.sh`\
+    \ to deploy `cert-manager` on the Kubernetes cluster, which automatically issues\
+    \ certificates for domains specified in `ingress.hosts`.\n6. Run `install-pvc.sh`\
+    \ to install PersistentVolumeClaim resources.\n\n    > By default, FreeChat operates\
+    \ files by accessing the \"local file system.\" You may want to use high-availability\
+    \ distributed storage in the cloud. As a cloud-native-designed system, we recommend\
+    \ interfacing through Kubernetes CSI to avoid individually adapting storage products\
+    \ for each cloud platform. Most cloud service providers offer cloud storage drivers\
+    \ for Kubernetes, with a series of predefined StorageClass resources. Please choose\
+    \ the appropriate configuration according to your actual needs and set it in Helm's\
+    \ `global.storageClass` option.\n    > \n    > *In the future, FreeChat may be\
+    \ refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes\
+    \ cluster as a dependency (serving Milvus).*\n\n7. Execute the `install.sh` script\
+    \ to install FreeChat and its dependencies.\n8. FreeChat aims to provide Open\
+    \ API services. If you like the interactive experience of [freechat.fun](https://freechat.fun),\
+    \ run `install-web.sh` to deploy the front-end application.\n9. Execute `restart.sh`\
+    \ to restart the service.\n10. If you modified any Helm configuration files, use\
+    \ `upgrade.sh` to update the corresponding Kubernetes resources.\n11. To remove\
+    \ specific resources, run the `uninstall*.sh` script corresponding to the resource\
+    \ you want to uninstall.\n\nAs a cloud-native application, the services FreeChat\
+    \ relies on are obtained and deployed to your cluster through the helm repository.\n\
+    \nIf you prefer cloud services with SLA (Service Level Agreement) guarantees,\
+    \ simply make the relevant settings in `configs/helm/values-private.yaml`:\n```yaml\n\
+    bitnami:\n  mysql:\n    enabled: false\n  redis:\n    enabled: false\n  milvus:\n\
+    \    enabled: false\n\nmysql:\n  url: <your mysql url>\n  auth:\n    rootPassword:\
+    \ <your mysql root password>\n    username: <your mysql username>\n    password:\
+    \ <your mysql password for the username>\n\nredis:\n  url: <your redis url>\n\
+    \  auth:\n    password: <your redis password>\n\n\nmilvus:\n  url: <your milvus\
+    \ url>\n  milvus:\n    auth:\n      token: <your milvus api-key>\n```\n\nWith\
+    \ this, FreeChat will not automatically install these services, but rather use\
+    \ the configuration information to connect directly.\n\n### Running Locally\n\
+    You can also run FreeChat locally. Currently supported on MacOS and Linux (although\
+    \ only tested on MacOS). You need to install the Docker toolset and have a network\
+    \ that can access [Docker Hub](https://hub.docker.com/).\n\nOnce ready, enter\
+    \ the `scripts/` directory and run `local-run.sh`, which will download and run\
+    \ the necessary docker containers. After a successful startup, you can access\
+    \ `http://localhost` via a browser to see the locally running freechat.fun. Use\
+    \ `local-run.sh --help` to view the supported options of the script. Good luck!\n\
+    \n### Running in an IDE\nTo run FreeChat in an IDE, you need to start all dependent\
+    \ services first but do not need to run the container for the FreeChat application\
+    \ itself. You can execute the `scripts/local-deps.sh` script to start services\
+    \ like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
+    Make sure you have set the following startup parameters:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
+    \ \\\n-DAPP_HOME=local-data/freechat \\\n-Dspring.profiles.active=local\n```\n\
+    \n### 使用 SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
+    \  <artifactId>freechat-sdk</artifactId>\n  <version>${freechat-sdk.version}</version>\n\
+    </dependency>\n```\n\n- **Example**\n```java\nimport fun.freechat.client.ApiClient;\n\
+    import fun.freechat.client.ApiException;\nimport fun.freechat.client.Configuration;\n\
+    import fun.freechat.client.api.AccountApi;\nimport fun.freechat.client.auth.ApiKeyAuth;\n\
+    import fun.freechat.client.model.UserDetailsDTO;\n\npublic class AccountClientExample\
+    \ {\n    public static void main(String[] args) {\n        ApiClient defaultClient\
+    \ = Configuration.getDefaultApiClient();\n        defaultClient.setBasePath(\"\
+    https://freechat.fun\");\n        \n        // Configure HTTP bearer authorization:\
+    \ bearerAuth\n        HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"\
+    bearerAuth\");\n        bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");\n\n   \
+    \     AccountApi apiInstance = new AccountApi(defaultClient);\n        try {\n\
+    \            UserDetailsDTO result = apiInstance.getUserDetails();\n         \
+    \   System.out.println(result);\n        } catch (ApiException e) {\n        \
+    \    e.printStackTrace();\n        }\n    }\n}\n```\n\n#### Python\n- **Installation**\n\
+    ```shell\npip install freechat-sdk\n```\n\n- **Example**\n```python\nimport freechat_sdk\n\
+    from freechat_sdk.rest import ApiException\nfrom pprint import pprint\n\n# Defining\
+    \ the host is optional and defaults to https://freechat.fun\n# See configuration.py\
+    \ for a list of all supported configuration parameters.\nconfiguration = freechat_sdk.Configuration(\n\
+    \    host = \"https://freechat.fun\"\n)\n\n# Configure Bearer authorization: bearerAuth\n\
+    configuration = freechat_sdk.Configuration(\n    access_token = os.environ[\"\
+    FREECHAT_TOKEN\"]\n)\n\n# Enter a context with an instance of the API client\n\
+    with freechat_sdk.ApiClient(configuration) as api_client:\n    # Create an instance\
+    \ of the API class\n    api_instance = freechat_sdk.AccountApi(api_client)\n\n\
+    \    try:\n        details = api_instance.get_user_details()\n        pprint(details)\n\
+    \    except ApiException as e:\n        print(\"Exception when calling AccountClient->get_user_details:\
+    \ %s\\n\" % e)\n```\n\n#### TypeScript\n- **Installation**\n```shell\nnpm install\
+    \ freechat-sdk --save\n```\n\n- **Example**\nRefer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)\n\
+    \n## System Dependencies\n| | Projects\n| ---- | ----\n| Application Framework\
+    \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
+    \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
+    \ [DashScope](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
+    \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| OpenAPI Tools |\
+    \ [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
+    \ [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)\n\
+    \n## Collaboration\n### Application Integration\nThe FreeChat system is entirely\
+    \ oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is\
+    \ developed using its TypeScript SDK and hardly depends on private interfaces.\
+    \ You can use these online interfaces to develop your own applications or sites,\
+    \ making them fit your preferences. Currently, FreeChat is completely free with\
+    \ no paid plans (after all, users use their own API Key to call LLM services).\n\
+    \n### Model Integration\nFreeChat aims to explore AI virtual character technology\
+    \ with anthropomorphic characteristics. So far, it supports model services from\
+    \ OpenAI and DashScope ([HuggingFace](https://huggingface.co/) is also expected\
+    \ to be supported soon). However, we are more interested in supporting models\
+    \ that are under research and can endow AI with more personality traits. If you\
+    \ are researching this area and hope FreeChat supports your model, please contact\
+    \ us. We look forward to AI technology helping people create their own \"soul\
+    \ mates\" in the future."
   title: FreeChat OpenAPI Definition
-  version: 0.8.0
+  version: 1.0.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -41,7 +169,8 @@ paths:
       summary: Delete RAG Task
       tags:
       - Rag
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     get:
       description: Get the RAG task details.
       operationId: getRagTask
@@ -65,7 +194,8 @@ paths:
       summary: Get RAG Task
       tags:
       - Rag
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update a RAG task.
       operationId: updateRagTask
@@ -97,7 +227,8 @@ paths:
       tags:
       - Rag
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/{promptId}:
     delete:
       description: Delete prompt. Returns success or failure.
@@ -122,7 +253,8 @@ paths:
       summary: Delete Prompt
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Update prompt, refer to /api/v1/prompt/create, required field:\
         \ promptId. Returns success or failure."
@@ -169,7 +301,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/task/{promptTaskId}:
     delete:
       description: Delete a prompt task.
@@ -193,7 +326,8 @@ paths:
       summary: Delete Prompt Task
       tags:
       - Prompt Task
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     get:
       description: Get the prompt task details.
       operationId: getPromptTask
@@ -216,7 +350,8 @@ paths:
       summary: Get Prompt Task
       tags:
       - Prompt Task
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update a prompt task.
       operationId: updatePromptTask
@@ -247,7 +382,8 @@ paths:
       tags:
       - Prompt Task
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/{pluginId}:
     delete:
       description: Delete plugin. Returns success or failure.
@@ -272,7 +408,8 @@ paths:
       summary: Delete Plugin
       tags:
       - Plugin
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Update plugin, refer to /api/v1/plugin/create, required field:\
         \ pluginId. Returns success or failure."
@@ -312,7 +449,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/refresh/{pluginId}:
     put:
       description: "For online manifest, api-docs information provided at the time\
@@ -338,7 +476,8 @@ paths:
       summary: Refresh Plugin Information
       tags:
       - Plugin
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/manage/{username}/subordinates:
     delete:
       description: Fully delete the direct subordinate relationship of the subordinate
@@ -364,7 +503,8 @@ paths:
       summary: Clear Subordinate Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     get:
       description: "Get the subordinate relationship of the subordinate account, including\
         \ direct and indirect subordinates, default does not include virtual managed\
@@ -402,7 +542,8 @@ paths:
       summary: Get Subordinate Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Fully update the direct subordinate relationship of the subordinate\
         \ account (i.e., will delete the relationship that existed before but is not\
@@ -440,7 +581,8 @@ paths:
       tags:
       - Organization
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/manage/{username}/owners:
     get:
       description: |
@@ -477,7 +619,8 @@ paths:
       summary: Get Superior Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Fully update the direct superior relationship of the subordinate\
         \ account (i.e., will delete the relationship that existed before but is not\
@@ -515,7 +658,8 @@ paths:
       tags:
       - Organization
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/authority/{username}:
     get:
       description: List the permission list of the subordinate account.
@@ -541,7 +685,8 @@ paths:
       summary: List Subordinate Permissions
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Update the permission list of the subordinate account, the granted\
         \ permissions cannot be higher than the permissions owned by oneself, for\
@@ -578,7 +723,8 @@ paths:
       tags:
       - Organization
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/{chatId}:
     delete:
       description: Delete the chat session.
@@ -602,7 +748,8 @@ paths:
       summary: Delete Chat Session
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update the chat session.
       operationId: updateChat
@@ -633,7 +780,8 @@ paths:
       tags:
       - Chat
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/{characterId}:
     delete:
       description: Delete character. Returns success or failure.
@@ -658,7 +806,8 @@ paths:
       summary: Delete Character
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Update character, refer to /api/v1/character/create, required\
         \ field: characterId. Returns success or failure."
@@ -701,7 +850,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/backend/{characterBackendId}:
     delete:
       description: Remove a backend configuration.
@@ -725,7 +875,8 @@ paths:
       summary: Remove Character Backend
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update a backend configuration.
       operationId: updateCharacterBackend
@@ -756,7 +907,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/backend/default/{characterBackendId}:
     put:
       description: Set the default backend configuration.
@@ -780,7 +932,8 @@ paths:
       summary: Set Default Character Backend
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/apikey/enable/{id}:
     put:
       description: Enable the credential information of the model provider.
@@ -805,7 +958,8 @@ paths:
       summary: Enable Model Provider Credential
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/apikey/disable/{id}:
     put:
       description: Disable the credential information of the model provider.
@@ -830,7 +984,8 @@ paths:
       summary: Disable Model Provider Credential
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/{agentId}:
     delete:
       description: Delete agent. Return success or failure.
@@ -855,7 +1010,8 @@ paths:
       summary: Delete Agent
       tags:
       - Agent
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: "Update agent, refer to /api/v1/agent/create, required field: agentId.\
         \ Return success or failure."
@@ -902,7 +1058,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/user:
     post:
       description: Create user.
@@ -929,7 +1086,8 @@ paths:
       tags:
       - Account Manager (for admin)
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update user information.
       operationId: updateUser
@@ -951,7 +1109,8 @@ paths:
       tags:
       - Account Manager (for admin)
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/token/{token}:
     delete:
       description: Delete the specified API Token.
@@ -975,7 +1134,8 @@ paths:
       summary: Delete API Token
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Disable the specified API Token.
       operationId: disableTokenForUser
@@ -998,7 +1158,8 @@ paths:
       summary: Disable API Token
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/authority/{username}:
     get:
       description: List the user's permissions.
@@ -1025,7 +1186,8 @@ paths:
       summary: List User Permissions
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update the user's permission list.
       operationId: updateAuthoritiesOfUser
@@ -1059,7 +1221,8 @@ paths:
       tags:
       - Account Manager (for admin)
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/account/token/{token}:
     delete:
       description: Delete an API Token.
@@ -1083,7 +1246,8 @@ paths:
       summary: Delete API Token
       tags:
       - Account
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
     put:
       description: "Disable an API Token, the token is not deleted."
       operationId: disableToken
@@ -1106,7 +1270,8 @@ paths:
       summary: Disable API Token
       tags:
       - Account
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/account/token/id/{id}:
     delete:
       description: Delete the API token by id.
@@ -1131,7 +1296,8 @@ paths:
       summary: Delete API Token by Id
       tags:
       - Account
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     get:
       description: Get the API token by id.
       operationId: getTokenById
@@ -1155,7 +1321,8 @@ paths:
       summary: Get API Token by Id
       tags:
       - Account
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
     put:
       description: Disable the API token by id.
       operationId: disableTokenById
@@ -1179,7 +1346,8 @@ paths:
       summary: Disable API Token by Id
       tags:
       - Account
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/account/details:
     get:
       description: "Return the detailed user information of the current account, the\
@@ -1196,7 +1364,8 @@ paths:
       summary: Get User Details
       tags:
       - Account
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     put:
       description: Update the detailed user information of the current account.
       operationId: updateUserInfo
@@ -1218,7 +1387,8 @@ paths:
       tags:
       - Account
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/{infoType}/{infoId}/{statsType}:
     get:
       description: Get the statistics of the corresponding metrics of the corresponding
@@ -1261,7 +1431,8 @@ paths:
       summary: Get Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     post:
       description: Increase the statistics of the corresponding metrics of the corresponding
         resources by one. Return the latest statistics.
@@ -1303,7 +1474,8 @@ paths:
       summary: Increase Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta}:
     post:
       description: Add the statistics of the corresponding metrics of the corresponding
@@ -1355,7 +1527,8 @@ paths:
       summary: Add Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/rag/task/{characterId}:
     post:
       description: Create a RAG task.
@@ -1389,7 +1562,8 @@ paths:
       tags:
       - Rag
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/rag/task/start/{taskId}:
     post:
       description: Start a RAG task.
@@ -1414,7 +1588,8 @@ paths:
       summary: Start RAG Task
       tags:
       - Rag
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/rag/task/cancel/{taskId}:
     post:
       description: Cancel a RAG task.
@@ -1439,7 +1614,8 @@ paths:
       summary: Cancel RAG Task
       tags:
       - Rag
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt:
     post:
       description: |
@@ -1484,7 +1660,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/versions/{name}:
     post:
       description: List the versions and corresponding promptIds by prompt name.
@@ -1510,7 +1687,8 @@ paths:
       summary: List Versions by Prompt Name
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/task:
     post:
       description: Create a prompt task.
@@ -1533,7 +1711,8 @@ paths:
       tags:
       - Prompt Task
       x-content-type: application/json
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/prompt/send:
     post:
       description: "Send the prompt to the AI service. Note that if the embedding\
@@ -1563,7 +1742,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/send/stream:
     post:
       description: "Refer to /api/v1/prompt/send, stream back chunks of the response."
@@ -1591,7 +1771,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: text/event-stream
+      x-accepts:
+      - text/event-stream
   /api/v1/prompt/search:
     post:
       description: |
@@ -1644,7 +1825,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/publish/{promptId}/{visibility}:
     post:
       description: "Publish prompt, draft content becomes formal content, version\
@@ -1680,7 +1862,8 @@ paths:
       summary: Publish Prompt
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/details/search:
     post:
       description: "Same as /api/v1/prompt/search, but returns detailed information\
@@ -1721,7 +1904,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/count:
     post:
       description: Calculate the number of prompts according to the specified query
@@ -1746,7 +1930,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/clone/{promptId}:
     post:
       description: |
@@ -1780,7 +1965,8 @@ paths:
       summary: Clone Prompt
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/batch:
     delete:
       description: "Delete multiple prompts. Ensure transactionality, return the list\
@@ -1810,7 +1996,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     post:
       description: "Batch create multiple prompts. Ensure transactionality, return\
         \ the promptId list after success."
@@ -1859,7 +2046,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/batch/search:
     post:
       description: Batch call shortcut for /api/v1/prompt/search.
@@ -1919,7 +2107,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/batch/details/search:
     post:
       description: Batch call shortcut for /api/v1/prompt/details/search.
@@ -1979,7 +2168,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/batch/clone:
     post:
       description: "Batch clone multiple prompts. Ensure transactionality, return\
@@ -2009,7 +2199,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/apply/template:
     post:
       description: Apply parameters to prompt template.
@@ -2032,7 +2223,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/prompt/apply/ref:
     post:
       description: Apply parameters to prompt record.
@@ -2055,7 +2247,8 @@ paths:
       tags:
       - Prompt
       x-content-type: application/json
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/plugin:
     post:
       description: |
@@ -2096,7 +2289,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/search:
     post:
       description: |
@@ -2148,7 +2342,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/details/search:
     post:
       description: "Same as /api/v1/plugin/search, but returns detailed information\
@@ -2186,7 +2381,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/count:
     post:
       description: Calculate the number of plugins according to the specified query
@@ -2211,7 +2407,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/batch:
     delete:
       description: "Delete multiple plugins. Ensure transactionality, return the list\
@@ -2241,7 +2438,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     post:
       description: "Batch create multiple plugins. Ensure transactionality, return\
         \ the pluginId list after success."
@@ -2287,7 +2485,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/batch/search:
     post:
       description: Batch call shortcut for /api/v1/plugin/search.
@@ -2348,7 +2547,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/batch/details/search:
     post:
       description: Batch call shortcut for /api/v1/plugin/details/search.
@@ -2409,7 +2609,8 @@ paths:
       tags:
       - Plugin
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat:
     get:
       description: List chats of current user.
@@ -2426,7 +2627,8 @@ paths:
       summary: List Chats
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     post:
       description: Start a chat session.
       operationId: startChat
@@ -2448,7 +2650,8 @@ paths:
       tags:
       - Chat
       x-content-type: application/json
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/chat/send/{chatId}:
     post:
       description: Send a chat message to character.
@@ -2480,7 +2683,8 @@ paths:
       tags:
       - Chat
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/send/stream/{chatId}:
     post:
       description: "Refer to /api/v1/chat/send/{chatId}, stream back chunks of the\
@@ -2513,7 +2717,8 @@ paths:
       tags:
       - Chat
       x-content-type: application/json
-      x-accepts: text/event-stream
+      x-accepts:
+      - text/event-stream
   /api/v1/chat/messages/rollback/{chatId}/{count}:
     post:
       description: Rollback messages of a chat.
@@ -2549,7 +2754,8 @@ paths:
       summary: Rollback Chat Messages
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character:
     post:
       description: Create a character.
@@ -2580,7 +2786,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/versions/{name}:
     post:
       description: List the versions and corresponding characterIds by character name.
@@ -2606,7 +2813,8 @@ paths:
       summary: List Versions by Character Name
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/search:
     post:
       description: |
@@ -2655,7 +2863,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/publish/{characterId}:
     post:
       description: "Publish character, draft content becomes formal content, version\
@@ -2683,7 +2892,8 @@ paths:
       summary: Publish Character
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/publish/{characterId}/{visibility}:
     post:
       description: "Publish character, draft content becomes formal content, version\
@@ -2719,7 +2929,8 @@ paths:
       summary: Publish Character
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/picture/{characterId}:
     post:
       description: Upload a picture of the character.
@@ -2751,7 +2962,8 @@ paths:
       tags:
       - Character
       x-content-type: multipart/form-data
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/character/latest/{name}:
     post:
       description: Get latest characterId by character name.
@@ -2776,7 +2988,8 @@ paths:
       summary: Get Latest Character Id by Name
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/document/{characterId}:
     post:
       description: Upload a document of the character.
@@ -2808,7 +3021,8 @@ paths:
       tags:
       - Character
       x-content-type: multipart/form-data
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/character/details/search:
     post:
       description: "Same as /api/v1/character/search, but returns detailed information\
@@ -2847,7 +3061,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/count:
     post:
       description: Calculate the number of characters according to the specified query
@@ -2872,7 +3087,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/clone/{characterId}:
     post:
       description: |
@@ -2906,7 +3122,8 @@ paths:
       summary: Clone Character
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/batch/search:
     post:
       description: Batch call shortcut for /api/v1/character/search.
@@ -2964,7 +3181,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/batch/details/search:
     post:
       description: Batch call shortcut for /api/v1/character/details/search.
@@ -3022,7 +3240,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/backend/{characterId}:
     post:
       description: Add a backend configuration for a character.
@@ -3055,7 +3274,8 @@ paths:
       tags:
       - Character
       x-content-type: application/json
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/character/avatar/{characterId}:
     post:
       description: Upload an avatar of the character.
@@ -3087,7 +3307,8 @@ paths:
       tags:
       - Character
       x-content-type: multipart/form-data
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/ai/apikey:
     post:
       description: Add a credential for the model service.
@@ -3111,7 +3332,8 @@ paths:
       tags:
       - AI Service
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent:
     post:
       description: |
@@ -3156,7 +3378,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/versions/{name}:
     post:
       description: List the versions and corresponding agentIds by agent name.
@@ -3182,7 +3405,8 @@ paths:
       summary: List Versions by Agent Name
       tags:
       - Agent
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/search:
     post:
       description: |
@@ -3235,7 +3459,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/publish/{agentId}/{visibility}:
     post:
       description: "Publish agent, draft content becomes formal content, version number\
@@ -3271,7 +3496,8 @@ paths:
       summary: Publish Agent
       tags:
       - Agent
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/details/search:
     post:
       description: "Same as /api/v1/agent/search, but returns detailed information\
@@ -3313,7 +3539,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/count:
     post:
       description: Calculate the number of agents according to the specified query
@@ -3338,7 +3565,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/clone/{agentId}:
     post:
       description: |
@@ -3372,7 +3600,8 @@ paths:
       summary: Clone Agent
       tags:
       - Agent
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/batch:
     post:
       description: "Batch create multiple agents. Ensure transactionality, return\
@@ -3424,7 +3653,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/batch/search:
     post:
       description: Batch call shortcut for /api/v1/agent/search.
@@ -3485,7 +3715,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/batch/details/search:
     post:
       description: Batch call shortcut for /api/v1/agent/details/search.
@@ -3546,7 +3777,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/batch/clone:
     post:
       description: "Batch clone multiple agents. Ensure transactionality, return the\
@@ -3576,7 +3808,8 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/token/{username}/{duration}:
     post:
       description: "Create an API Token for a specified user, valid for duration seconds."
@@ -3610,7 +3843,8 @@ paths:
       summary: Create API Token for User.
       tags:
       - Account Manager (for admin)
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/admin/app/configs:
     post:
       description: List all application configuration names.
@@ -3627,7 +3861,8 @@ paths:
       summary: List Configuration Names
       tags:
       - App Config (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/app/config:
     post:
       description: "Publish application configuration, return configuration version."
@@ -3651,7 +3886,8 @@ paths:
       tags:
       - App Config (for admin)
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/account/token:
     post:
       description: "Create a timed API Token, valid for {duration} seconds."
@@ -3667,7 +3903,8 @@ paths:
       summary: Create API Token
       tags:
       - Account
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/account/token/{duration}:
     post:
       description: "Create a timed API Token, valid for {duration} seconds."
@@ -3692,7 +3929,8 @@ paths:
       summary: Create API Token
       tags:
       - Account
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/account/picture:
     post:
       description: Upload a picture of the user.
@@ -3714,7 +3952,8 @@ paths:
       tags:
       - Account
       x-content-type: multipart/form-data
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/tags/hot/{infoType}/{pageSize}:
     get:
       description: Get popular tags for a specified info type.
@@ -3757,7 +3996,8 @@ paths:
       summary: Hot Tags
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/{infoType}/{infoId}:
     get:
       description: Get all statistics of the corresponding resources.
@@ -3789,7 +4029,8 @@ paths:
       summary: Get All Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/prompts/by/{statsType}/{pageSize}:
     get:
       description: "List prompts based on statistics, including interactive statistical\
@@ -3834,7 +4075,8 @@ paths:
       summary: List Prompts by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/prompts/by/{statsType}/{pageSize}/{pageNum}:
     get:
       description: "List prompts based on statistics, including interactive statistical\
@@ -3888,7 +4130,8 @@ paths:
       summary: List Prompts by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/prompts/by/{statsType}:
     get:
       description: "List prompts based on statistics, including interactive statistical\
@@ -3924,7 +4167,8 @@ paths:
       summary: List Prompts by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum}:
     get:
       description: "List plugins based on statistics, including interactive statistical\
@@ -3978,7 +4222,8 @@ paths:
       summary: List Plugins by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/plugins/by/{statsType}/{pageSize}:
     get:
       description: "List plugins based on statistics, including interactive statistical\
@@ -4023,7 +4268,8 @@ paths:
       summary: List Plugins by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/plugins/by/{statsType}:
     get:
       description: "List plugins based on statistics, including interactive statistical\
@@ -4059,7 +4305,8 @@ paths:
       summary: List Plugins by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/characters/by/{statsType}/{pageSize}:
     get:
       description: "List characters based on statistics, including interactive statistical\
@@ -4104,7 +4351,8 @@ paths:
       summary: List Characters by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum}:
     get:
       description: "List characters based on statistics, including interactive statistical\
@@ -4158,7 +4406,8 @@ paths:
       summary: List Characters by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/characters/by/{statsType}:
     get:
       description: "List characters based on statistics, including interactive statistical\
@@ -4194,7 +4443,8 @@ paths:
       summary: List Characters by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/agents/by/{statsType}:
     get:
       description: "List agents based on statistics, including interactive statistical\
@@ -4230,7 +4480,8 @@ paths:
       summary: List Agents by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/agents/by/{statsType}/{pageSize}:
     get:
       description: "List agents based on statistics, including interactive statistical\
@@ -4275,7 +4526,8 @@ paths:
       summary: List Agents by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}:
     get:
       description: "List agents based on statistics, including interactive statistical\
@@ -4329,7 +4581,8 @@ paths:
       summary: List Agents by Statistics
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/score/{infoType}/{infoId}:
     get:
       description: Get the current user's score for the corresponding resource.
@@ -4362,7 +4615,8 @@ paths:
       summary: Get Score for Resource
       tags:
       - Interactive Statistics
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/rag/tasks/{characterId}:
     get:
       description: List the RAG tasks by characterId.
@@ -4389,7 +4643,8 @@ paths:
       summary: List RAG Tasks
       tags:
       - Rag
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/rag/task/status/{taskId}:
     get:
       description: "Get the RAG task execution status: pending | running | succeeded\
@@ -4415,7 +4670,8 @@ paths:
       summary: Get RAG Task Status
       tags:
       - Rag
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/prompt/summary/{promptId}:
     get:
       description: Get prompt summary information.
@@ -4440,7 +4696,8 @@ paths:
       summary: Get Prompt Summary
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/exists/name/{name}:
     get:
       description: Check if the prompt name already exists.
@@ -4464,7 +4721,8 @@ paths:
       summary: Check If Prompt Name Exists
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/details/{promptId}:
     get:
       description: Get prompt detailed information.
@@ -4489,7 +4747,8 @@ paths:
       summary: Get Prompt Details
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/create/name/{desired}:
     get:
       description: Create a new prompt name starting with a desired name.
@@ -4513,7 +4772,8 @@ paths:
       summary: Create New Prompt Name
       tags:
       - Prompt
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/plugin/summary/{pluginId}:
     get:
       description: Get plugin summary information.
@@ -4538,7 +4798,8 @@ paths:
       summary: Get Plugin Summary
       tags:
       - Plugin
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/plugin/details/{pluginId}:
     get:
       description: Get plugin detailed information.
@@ -4563,7 +4824,8 @@ paths:
       summary: Get Plugin Details
       tags:
       - Plugin
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/subordinates:
     get:
       description: "Get the subordinate relationships of the current account, including\
@@ -4593,7 +4855,8 @@ paths:
       summary: Get My Subordinate Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/subordinates/dot:
     get:
       description: "Same as /api/v1/org/subordinates, but returns a DOT format view,\
@@ -4618,7 +4881,8 @@ paths:
       summary: Get DOT of Subordinate Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/owners:
     get:
       description: "Get the superior relationships of the current account, including\
@@ -4648,7 +4912,8 @@ paths:
       summary: Get My Superior Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/org/owners/dot:
     get:
       description: "Same as /api/v1/org/owners, but returns a DOT format view, DOT\
@@ -4673,7 +4938,8 @@ paths:
       summary: Get DOT of Superior Relationship
       tags:
       - Organization
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/{characterId}:
     get:
       description: Get default chat id of current user and the character.
@@ -4698,7 +4964,8 @@ paths:
       summary: Get Default Chat
       tags:
       - Chat
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/chat/messages/{chatId}:
     get:
       description: List messages of a chat.
@@ -4724,7 +4991,8 @@ paths:
       summary: List Chat Messages
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/messages/{chatId}/{limit}/{offset}:
     get:
       description: List messages of a chat.
@@ -4768,7 +5036,8 @@ paths:
       summary: List Chat Messages
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/messages/{chatId}/{limit}:
     get:
       description: List messages of a chat.
@@ -4803,7 +5072,8 @@ paths:
       summary: List Chat Messages
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/memory/usage/{chatId}:
     get:
       description: Get memory usage of a chat.
@@ -4827,7 +5097,8 @@ paths:
       summary: Get Memory Usage
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/summary/{characterId}:
     get:
       description: Get character summary information.
@@ -4852,7 +5123,8 @@ paths:
       summary: Get Character Summary
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/pictures/{characterId}:
     get:
       description: List pictures of the character.
@@ -4879,7 +5151,8 @@ paths:
       summary: List Character Pictures
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/exists/name/{name}:
     get:
       description: Check if the character name already exists.
@@ -4903,7 +5176,8 @@ paths:
       summary: Check If Character Name Exists
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/documents/{characterId}:
     get:
       description: List documents of the character.
@@ -4930,7 +5204,8 @@ paths:
       summary: List Character Documents
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/details/{characterId}:
     get:
       description: Get character detailed information.
@@ -4955,7 +5230,8 @@ paths:
       summary: Get Character Details
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/create/name/{desired}:
     get:
       description: Create a new character name starting with a desired name.
@@ -4979,7 +5255,8 @@ paths:
       summary: Create New Character Name
       tags:
       - Character
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/character/backends/{characterId}:
     get:
       description: List character backends.
@@ -5006,7 +5283,8 @@ paths:
       summary: List Character Backends
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/backend/ids/{characterId}:
     get:
       description: List character backend identifiers.
@@ -5033,7 +5311,8 @@ paths:
       summary: List Character Backend ids
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/backend/default/{characterId}:
     get:
       description: Get the default backend configuration.
@@ -5058,7 +5337,8 @@ paths:
       summary: Get Default Character Backend
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/models/{pageSize}:
     get:
       description: "Return model information by page, return the pageNum page, up\
@@ -5086,7 +5366,8 @@ paths:
       summary: List Models
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/models:
     get:
       description: "Return model information by page, return the pageNum page, up\
@@ -5105,7 +5386,8 @@ paths:
       summary: List Models
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/models/{pageSize}/{pageNum}:
     get:
       description: "Return model information by page, return the pageNum page, up\
@@ -5142,7 +5424,8 @@ paths:
       summary: List Models
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/model/{modelId}:
     get:
       description: Return specific model information.
@@ -5166,7 +5449,8 @@ paths:
       summary: Get Model Information
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/apikeys/{provider}:
     get:
       description: List all credential information of the model provider.
@@ -5192,7 +5476,8 @@ paths:
       summary: List Credentials of Model Provider
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/ai/apikey/{id}:
     delete:
       description: Delete the credential information of the model provider.
@@ -5217,7 +5502,8 @@ paths:
       summary: Delete Credential of Model Provider
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     get:
       description: Get the credential information of the model provider.
       operationId: getAiApiKey
@@ -5241,7 +5527,8 @@ paths:
       summary: Get credential of Model Provider
       tags:
       - AI Service
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/summary/{agentId}:
     get:
       description: Get agent summary information.
@@ -5266,7 +5553,8 @@ paths:
       summary: Get Agent Summary
       tags:
       - Agent
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/details/{agentId}:
     get:
       description: Get agent detailed information.
@@ -5291,7 +5579,8 @@ paths:
       summary: Get Agent Details
       tags:
       - Agent
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/users/{pageSize}/{pageNum}:
     get:
       description: "Return user information by page, return the pageNum page, up to\
@@ -5328,7 +5617,8 @@ paths:
       summary: List User Information
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/users/{pageSize}:
     get:
       description: "Return user information by page, return the pageNum page, up to\
@@ -5356,7 +5646,8 @@ paths:
       summary: List User Information
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/users:
     get:
       description: "Return user information by page, return the pageNum page, up to\
@@ -5375,7 +5666,8 @@ paths:
       summary: List User Information
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/user/{username}:
     delete:
       description: Delete user by username.
@@ -5399,7 +5691,8 @@ paths:
       summary: Delete User
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
     get:
       description: Return detailed user information.
       operationId: getDetailsOfUser
@@ -5422,7 +5715,8 @@ paths:
       summary: Get User Details
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/tokenBy/{token}:
     get:
       description: Get the detailed user information corresponding to the API Token.
@@ -5446,7 +5740,8 @@ paths:
       summary: Get User by API Token
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/token/{username}:
     get:
       description: Get the list of API Tokens of the user.
@@ -5472,7 +5767,8 @@ paths:
       summary: Get API Token of User
       tags:
       - Account Manager (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/encryption/encrypt/{text}:
     get:
       description: Encrypt a piece of text with the built-in key.
@@ -5496,7 +5792,8 @@ paths:
       summary: Encrypt Text
       tags:
       - Encryption Manager (for admin)
-      x-accepts: text/plain
+      x-accepts:
+      - text/plain
   /api/v1/admin/app/meta:
     get:
       description: Get application information to accurately locate the corresponding
@@ -5512,7 +5809,8 @@ paths:
       summary: Get Application Information
       tags:
       - App Meta (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/app/expose:
     get:
       description: This method does nothing.
@@ -5542,7 +5840,8 @@ paths:
       summary: Expose DTO definitions
       tags:
       - App Meta (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/app/config/{name}:
     get:
       description: Get the latest configuration information of the application by
@@ -5567,7 +5866,8 @@ paths:
       summary: Get Configuration
       tags:
       - App Config (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/admin/app/config/{name}/{version}:
     get:
       description: Get the configuration information of the application by name and
@@ -5601,7 +5901,8 @@ paths:
       summary: Get Specified Version of Configuration
       tags:
       - App Config (for admin)
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/account/tokens:
     get:
       description: List currently valid tokens.
@@ -5618,7 +5919,8 @@ paths:
       summary: List API Tokens
       tags:
       - Account
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/account/basic:
     get:
       description: "Return user basic information, including: username, nickname,\
@@ -5635,7 +5937,8 @@ paths:
       summary: Get User Basic Information
       tags:
       - Account
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/account/basic/{username}:
     get:
       description: "Return user basic information, including: username, nickname,\
@@ -5660,7 +5963,8 @@ paths:
       summary: Get User Basic Information
       tags:
       - Account
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/prompt/name/{name}:
     delete:
       description: Delete prompt by name. return the list of successfully deleted
@@ -5688,7 +5992,8 @@ paths:
       summary: Delete Prompt by Name
       tags:
       - Prompt
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/chat/memory/{chatId}:
     delete:
       description: Clear memory of the chat session.
@@ -5714,7 +6019,8 @@ paths:
       summary: Clear Memory
       tags:
       - Chat
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/picture/{key}:
     delete:
       description: Delete a picture of the character by key.
@@ -5738,7 +6044,8 @@ paths:
       summary: Delete Character Picture
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/name/{name}:
     delete:
       description: Delete character by name. return the list of successfully deleted
@@ -5766,7 +6073,8 @@ paths:
       summary: Delete Character by Name
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/character/document/{key}:
     delete:
       description: Delete a document of the character by key.
@@ -5790,7 +6098,8 @@ paths:
       summary: Delete Character Document
       tags:
       - Character
-      x-accepts: application/json
+      x-accepts:
+      - application/json
   /api/v1/agent/batch/delete:
     delete:
       description: "Delete multiple agents. Ensure transactionality, return the list\
@@ -5820,13 +6129,16 @@ paths:
       tags:
       - Agent
       x-content-type: application/json
-      x-accepts: application/json
+      x-accepts:
+      - application/json
 components:
   schemas:
     RagTaskDTO:
       description: RAG task information
       example:
+        maxOverlapSize: 6
         sourceType: sourceType
+        maxSegmentSize: 0
         source: source
       properties:
         sourceType:
@@ -5835,6 +6147,14 @@ components:
         source:
           description: "Source information, url, or a key for file"
           type: string
+        maxSegmentSize:
+          description: The maximum size of a segment in tokens.
+          format: int32
+          type: integer
+        maxOverlapSize:
+          description: The maximum size of the overlap between segments in tokens.
+          format: int32
+          type: integer
       type: object
     ChatContentDTO:
       description: Chat content
@@ -6363,10 +6683,10 @@ components:
         moderationParams: moderationParams
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
-        initQuota: 6
+        initQuota: 1
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 0
-        forwardToUser: true
+        longTermMemoryWindowSize: 6
       properties:
         isDefault:
           description: Whether it is the default backend
@@ -6390,6 +6710,11 @@ components:
           description: Max messages in the character's memory
           format: int32
           type: integer
+        longTermMemoryWindowSize:
+          description: "Max rounds (a round includes a user message and a character\
+            \ reply) in the character's long term memory, 0 to disable"
+          format: int32
+          type: integer
         initQuota:
           description: Initial quota when opening a chat
           format: int64
@@ -6397,9 +6722,6 @@ components:
         quotaType:
           description: "Quota type: messages | tokens | none (not limited)"
           type: string
-        forwardToUser:
-          description: Weather to forward messages to the character owner
-          type: boolean
       type: object
     AgentUpdateDTO:
       description: Request data for updating agent information
@@ -8172,8 +8494,8 @@ components:
         initQuota: 5
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 1
+        longTermMemoryWindowSize: 5
         characterUid: characterUid
-        forwardToUser: true
       properties:
         requestId:
           description: Request identifier
@@ -8214,6 +8536,11 @@ components:
           description: Max messages in the character's memory
           format: int32
           type: integer
+        longTermMemoryWindowSize:
+          description: Max rounds (a round includes a user message and a character
+            reply) in the character's long term memory
+          format: int32
+          type: integer
         initQuota:
           description: Initial quota when opening a chat
           format: int64
@@ -8221,9 +8548,6 @@ components:
         quotaType:
           description: "Quota type: messages | tokens | none (not limited)"
           type: string
-        forwardToUser:
-          description: Whether to forward messages to the character owner
-          type: boolean
       type: object
     CharacterDetailsDTO:
       description: Character detailed content
@@ -8254,8 +8578,8 @@ components:
           initQuota: 5
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 1
+          longTermMemoryWindowSize: 5
           characterUid: characterUid
-          forwardToUser: true
         - moderationApiKeyName: moderationApiKeyName
           gmtModified: 2000-01-23T04:56:07.000+00:00
           moderationParams: moderationParams
@@ -8269,8 +8593,8 @@ components:
           initQuota: 5
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 1
+          longTermMemoryWindowSize: 5
           characterUid: characterUid
-          forwardToUser: true
         picture: picture
         tags:
         - tags
@@ -9263,15 +9587,17 @@ components:
       description: Prompt task detailed information
       example:
         ext: ext
+        maxOverlapSize: 1
         gmtModified: 2000-01-23T04:56:07.000+00:00
+        maxSegmentSize: 6
+        source: source
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtStart: 2000-01-23T04:56:07.000+00:00
         gmtEnd: 2000-01-23T04:56:07.000+00:00
         sourceType: sourceType
         requestId: requestId
         id: 0
-        source: source
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
         characterUid: characterUid
-        gmtStart: 2000-01-23T04:56:07.000+00:00
         status: status
       properties:
         requestId:
@@ -9306,6 +9632,14 @@ components:
         source:
           description: "Source information, url, or a key for file"
           type: string
+        maxSegmentSize:
+          description: The maximum size of a segment in tokens.
+          format: int32
+          type: integer
+        maxOverlapSize:
+          description: The maximum size of the overlap between segments in tokens.
+          format: int32
+          type: integer
         status:
           description: "Task execution status: pending | running | succeeded | failed\
             \ | canceled"
@@ -9521,6 +9855,7 @@ components:
           characterId: 6
           characterUid: characterUid
           username: username
+        provider: provider
         senderStatus: senderStatus
         context:
           characterNickname: characterNickname
@@ -9565,6 +9900,10 @@ components:
           $ref: '#/components/schemas/ChatContextDTO'
         character:
           $ref: '#/components/schemas/CharacterSummaryDTO'
+        provider:
+          description: "Model provider: hugging_face | open_ai | local_ai | in_process\
+            \ | dash_scope | unknown"
+          type: string
         latestMessageRecord:
           $ref: '#/components/schemas/ChatMessageRecordDTO'
         senderStatus:

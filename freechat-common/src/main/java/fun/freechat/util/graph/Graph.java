@@ -111,13 +111,13 @@ public interface Graph<T> extends SortedSet<T>, Serializable {
     boolean remove(Object o);
     /**
      * Outputs the graph content in DOT syntax. Introduction to DOT language:
-     * @link <a href="https://zhuanlan.zhihu.com/p/21993254">Graphviz Beginner's Guide</a>
+     * @link <a href=https://www.graphviz.org/">Graphviz Beginner's Guide</a>
      * @return The graph description in dot format.
      */
     String toDot();
     /**
      * Outputs the graph content in DOT syntax. Introduction to DOT language:
-     * @link <a href="https://zhuanlan.zhihu.com/p/21993254">Graphviz Beginner's Guide</a>
+     * @link <a href=https://www.graphviz.org/">Graphviz Beginner's Guide</a>
      * Allows the content to be converted with the specified converter before output.
      * @param converter The method to map objects in the nodes to strings. The default is Object::toString.
      * @return The graph description in dot format.

@@ -28,12 +28,12 @@ json = "{}"
 # create an instance of OpenAiParamDTO from a JSON string
 open_ai_param_dto_instance = OpenAiParamDTO.from_json(json)
 # print the JSON string representation of the object
-print OpenAiParamDTO.to_json()
+print(OpenAiParamDTO.to_json())
 
 # convert the object into a dict
 open_ai_param_dto_dict = open_ai_param_dto_instance.to_dict()
 # create an instance of OpenAiParamDTO from a dict
-open_ai_param_dto_form_dict = open_ai_param_dto.from_dict(open_ai_param_dto_dict)
+open_ai_param_dto_from_dict = OpenAiParamDTO.from_dict(open_ai_param_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

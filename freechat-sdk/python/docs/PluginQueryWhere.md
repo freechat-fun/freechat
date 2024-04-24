@@ -28,12 +28,12 @@ json = "{}"
 # create an instance of PluginQueryWhere from a JSON string
 plugin_query_where_instance = PluginQueryWhere.from_json(json)
 # print the JSON string representation of the object
-print PluginQueryWhere.to_json()
+print(PluginQueryWhere.to_json())
 
 # convert the object into a dict
 plugin_query_where_dict = plugin_query_where_instance.to_dict()
 # create an instance of PluginQueryWhere from a dict
-plugin_query_where_form_dict = plugin_query_where.from_dict(plugin_query_where_dict)
+plugin_query_where_from_dict = PluginQueryWhere.from_dict(plugin_query_where_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -86,6 +86,7 @@ milvus:
       username: freechat
       password: ''
       rootPassword: ''
+      token: ''
   etcd:
     replicaCount: 1
   proxy:

@@ -27,12 +27,12 @@ json = "{}"
 # create an instance of InteractiveStatsDTO from a JSON string
 interactive_stats_dto_instance = InteractiveStatsDTO.from_json(json)
 # print the JSON string representation of the object
-print InteractiveStatsDTO.to_json()
+print(InteractiveStatsDTO.to_json())
 
 # convert the object into a dict
 interactive_stats_dto_dict = interactive_stats_dto_instance.to_dict()
 # create an instance of InteractiveStatsDTO from a dict
-interactive_stats_dto_form_dict = interactive_stats_dto.from_dict(interactive_stats_dto_dict)
+interactive_stats_dto_from_dict = InteractiveStatsDTO.from_dict(interactive_stats_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -2,7 +2,7 @@ lazy val root = (project in file(".")).
   settings(
     organization := "fun.freechat",
     name := "freechat-sdk",
-    version := "0.8.0",
+    version := "1.0.0",
     scalaVersion := "2.11.4",
     scalacOptions ++= Seq("-feature"),
     javacOptions in compile ++= Seq("-Xlint:deprecation"),
@@ -10,8 +10,8 @@ lazy val root = (project in file(".")).
     resolvers += Resolver.mavenLocal,
     libraryDependencies ++= Seq(
       "io.swagger" % "swagger-annotations" % "1.6.5",
-      "com.squareup.okhttp3" % "okhttp" % "4.10.0",
-      "com.squareup.okhttp3" % "logging-interceptor" % "4.10.0",
+      "com.squareup.okhttp3" % "okhttp" % "4.12.0",
+      "com.squareup.okhttp3" % "logging-interceptor" % "4.12.0",
       "com.google.code.gson" % "gson" % "2.9.1",
       "org.apache.commons" % "commons-lang3" % "3.12.0",
       "javax.ws.rs" % "jsr311-api" % "1.1.1",

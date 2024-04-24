@@ -27,12 +27,12 @@ json = "{}"
 # create an instance of ApiTokenInfoDTO from a JSON string
 api_token_info_dto_instance = ApiTokenInfoDTO.from_json(json)
 # print the JSON string representation of the object
-print ApiTokenInfoDTO.to_json()
+print(ApiTokenInfoDTO.to_json())
 
 # convert the object into a dict
 api_token_info_dto_dict = api_token_info_dto_instance.to_dict()
 # create an instance of ApiTokenInfoDTO from a dict
-api_token_info_dto_form_dict = api_token_info_dto.from_dict(api_token_info_dto_dict)
+api_token_info_dto_from_dict = ApiTokenInfoDTO.from_dict(api_token_info_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

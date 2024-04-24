@@ -21,12 +21,12 @@ json = "{}"
 # create an instance of PromptQueryDTO from a JSON string
 prompt_query_dto_instance = PromptQueryDTO.from_json(json)
 # print the JSON string representation of the object
-print PromptQueryDTO.to_json()
+print(PromptQueryDTO.to_json())
 
 # convert the object into a dict
 prompt_query_dto_dict = prompt_query_dto_instance.to_dict()
 # create an instance of PromptQueryDTO from a dict
-prompt_query_dto_form_dict = prompt_query_dto.from_dict(prompt_query_dto_dict)
+prompt_query_dto_from_dict = PromptQueryDTO.from_dict(prompt_query_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

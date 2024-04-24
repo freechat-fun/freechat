@@ -35,12 +35,12 @@ json = "{}"
 # create an instance of PluginSummaryStatsDTO from a JSON string
 plugin_summary_stats_dto_instance = PluginSummaryStatsDTO.from_json(json)
 # print the JSON string representation of the object
-print PluginSummaryStatsDTO.to_json()
+print(PluginSummaryStatsDTO.to_json())
 
 # convert the object into a dict
 plugin_summary_stats_dto_dict = plugin_summary_stats_dto_instance.to_dict()
 # create an instance of PluginSummaryStatsDTO from a dict
-plugin_summary_stats_dto_form_dict = plugin_summary_stats_dto.from_dict(plugin_summary_stats_dto_dict)
+plugin_summary_stats_dto_from_dict = PluginSummaryStatsDTO.from_dict(plugin_summary_stats_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

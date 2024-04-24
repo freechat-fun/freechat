@@ -36,12 +36,12 @@ json = "{}"
 # create an instance of AgentDetailsDTO from a JSON string
 agent_details_dto_instance = AgentDetailsDTO.from_json(json)
 # print the JSON string representation of the object
-print AgentDetailsDTO.to_json()
+print(AgentDetailsDTO.to_json())
 
 # convert the object into a dict
 agent_details_dto_dict = agent_details_dto_instance.to_dict()
 # create an instance of AgentDetailsDTO from a dict
-agent_details_dto_form_dict = agent_details_dto.from_dict(agent_details_dto_dict)
+agent_details_dto_from_dict = AgentDetailsDTO.from_dict(agent_details_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

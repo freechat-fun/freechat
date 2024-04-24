@@ -7,13 +7,19 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Configuration
+@Slf4j
 @SuppressWarnings("unused")
 public class OpenApiConfig {
     @Bean
@@ -51,10 +57,30 @@ public class OpenApiConfig {
 
         openAPI.info(new Info()
                         .title("FreeChat OpenAPI Definition")
-                        .description(AppMetaUtils.getUrl())
+                        .description(getReadmeContent())
                         .version(AppMetaUtils.getVersion()))
                 .addServersItem(new Server().url("/"));
 
         return openAPI;
+    }
+
+    private String getReadmeContent() {
+        String path = "/README.md";
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try (InputStream in = OpenApiConfig.class.getResourceAsStream(path)) {
+            if (Objects.isNull(in)) {
+                return AppMetaUtils.getUrl();
+            }
+            byte[] data = new byte[512];
+            int n;
+            while ((n = in.read(data)) != -1) {
+                buffer.write(data, 0, n);
+            }
+        } catch (IOException e) {
+            log.error("Failed to load {}", path, e);
+            return AppMetaUtils.getUrl();
+        }
+
+        return buffer.toString(StandardCharsets.UTF_8);
     }
 }

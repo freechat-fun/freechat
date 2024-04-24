@@ -58,7 +58,7 @@ do
 Run freechat.fun locally.
 
 Options：
-      --start           Start freechat.fun.
+      --start (default) Start freechat.fun.
       --stop            Stop freechat.fun.
       --update          Update the image and restart freechat.fun.
       --top             Print the status of freechat.fun's containers.

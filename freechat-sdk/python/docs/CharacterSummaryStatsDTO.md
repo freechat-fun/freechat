@@ -40,12 +40,12 @@ json = "{}"
 # create an instance of CharacterSummaryStatsDTO from a JSON string
 character_summary_stats_dto_instance = CharacterSummaryStatsDTO.from_json(json)
 # print the JSON string representation of the object
-print CharacterSummaryStatsDTO.to_json()
+print(CharacterSummaryStatsDTO.to_json())
 
 # convert the object into a dict
 character_summary_stats_dto_dict = character_summary_stats_dto_instance.to_dict()
 # create an instance of CharacterSummaryStatsDTO from a dict
-character_summary_stats_dto_form_dict = character_summary_stats_dto.from_dict(character_summary_stats_dto_dict)
+character_summary_stats_dto_from_dict = CharacterSummaryStatsDTO.from_dict(character_summary_stats_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

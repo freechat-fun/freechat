@@ -29,12 +29,12 @@ json = "{}"
 # create an instance of AgentCreateDTO from a JSON string
 agent_create_dto_instance = AgentCreateDTO.from_json(json)
 # print the JSON string representation of the object
-print AgentCreateDTO.to_json()
+print(AgentCreateDTO.to_json())
 
 # convert the object into a dict
 agent_create_dto_dict = agent_create_dto_instance.to_dict()
 # create an instance of AgentCreateDTO from a dict
-agent_create_dto_form_dict = agent_create_dto.from_dict(agent_create_dto_dict)
+agent_create_dto_from_dict = AgentCreateDTO.from_dict(agent_create_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

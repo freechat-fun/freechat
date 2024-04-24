@@ -26,12 +26,12 @@ json = "{}"
 # create an instance of ChatCreateDTO from a JSON string
 chat_create_dto_instance = ChatCreateDTO.from_json(json)
 # print the JSON string representation of the object
-print ChatCreateDTO.to_json()
+print(ChatCreateDTO.to_json())
 
 # convert the object into a dict
 chat_create_dto_dict = chat_create_dto_instance.to_dict()
 # create an instance of ChatCreateDTO from a dict
-chat_create_dto_form_dict = chat_create_dto.from_dict(chat_create_dto_dict)
+chat_create_dto_from_dict = ChatCreateDTO.from_dict(chat_create_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

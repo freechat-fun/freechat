@@ -25,12 +25,12 @@ json = "{}"
 # create an instance of CharacterQueryWhere from a JSON string
 character_query_where_instance = CharacterQueryWhere.from_json(json)
 # print the JSON string representation of the object
-print CharacterQueryWhere.to_json()
+print(CharacterQueryWhere.to_json())
 
 # convert the object into a dict
 character_query_where_dict = character_query_where_instance.to_dict()
 # create an instance of CharacterQueryWhere from a dict
-character_query_where_form_dict = character_query_where.from_dict(character_query_where_dict)
+character_query_where_from_dict = CharacterQueryWhere.from_dict(character_query_where_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

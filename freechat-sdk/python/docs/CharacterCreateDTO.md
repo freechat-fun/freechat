@@ -33,12 +33,12 @@ json = "{}"
 # create an instance of CharacterCreateDTO from a JSON string
 character_create_dto_instance = CharacterCreateDTO.from_json(json)
 # print the JSON string representation of the object
-print CharacterCreateDTO.to_json()
+print(CharacterCreateDTO.to_json())
 
 # convert the object into a dict
 character_create_dto_dict = character_create_dto_instance.to_dict()
 # create an instance of CharacterCreateDTO from a dict
-character_create_dto_form_dict = character_create_dto.from_dict(character_create_dto_dict)
+character_create_dto_from_dict = CharacterCreateDTO.from_dict(character_create_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -20,12 +20,12 @@ json = "{}"
 # create an instance of ChatPromptContentDTO from a JSON string
 chat_prompt_content_dto_instance = ChatPromptContentDTO.from_json(json)
 # print the JSON string representation of the object
-print ChatPromptContentDTO.to_json()
+print(ChatPromptContentDTO.to_json())
 
 # convert the object into a dict
 chat_prompt_content_dto_dict = chat_prompt_content_dto_instance.to_dict()
 # create an instance of ChatPromptContentDTO from a dict
-chat_prompt_content_dto_form_dict = chat_prompt_content_dto.from_dict(chat_prompt_content_dto_dict)
+chat_prompt_content_dto_from_dict = ChatPromptContentDTO.from_dict(chat_prompt_content_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

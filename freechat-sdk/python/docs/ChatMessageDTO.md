@@ -23,12 +23,12 @@ json = "{}"
 # create an instance of ChatMessageDTO from a JSON string
 chat_message_dto_instance = ChatMessageDTO.from_json(json)
 # print the JSON string representation of the object
-print ChatMessageDTO.to_json()
+print(ChatMessageDTO.to_json())
 
 # convert the object into a dict
 chat_message_dto_dict = chat_message_dto_instance.to_dict()
 # create an instance of ChatMessageDTO from a dict
-chat_message_dto_form_dict = chat_message_dto.from_dict(chat_message_dto_dict)
+chat_message_dto_from_dict = ChatMessageDTO.from_dict(chat_message_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

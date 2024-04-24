@@ -17,6 +17,8 @@ Prompt task detailed information
 |**characterUid** | **String** | Character identifier |  [optional] |
 |**sourceType** | **String** | Source type: file (default) | url |  [optional] |
 |**source** | **String** | Source information, url, or a key for file |  [optional] |
+|**maxSegmentSize** | **Integer** | The maximum size of a segment in tokens. |  [optional] |
+|**maxOverlapSize** | **Integer** | The maximum size of the overlap between segments in tokens. |  [optional] |
 |**status** | **String** | Task execution status: pending | running | succeeded | failed | canceled |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |
 

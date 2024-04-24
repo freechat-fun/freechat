@@ -21,12 +21,12 @@ json = "{}"
 # create an instance of PromptAiParamDTO from a JSON string
 prompt_ai_param_dto_instance = PromptAiParamDTO.from_json(json)
 # print the JSON string representation of the object
-print PromptAiParamDTO.to_json()
+print(PromptAiParamDTO.to_json())
 
 # convert the object into a dict
 prompt_ai_param_dto_dict = prompt_ai_param_dto_instance.to_dict()
 # create an instance of PromptAiParamDTO from a dict
-prompt_ai_param_dto_form_dict = prompt_ai_param_dto.from_dict(prompt_ai_param_dto_dict)
+prompt_ai_param_dto_from_dict = PromptAiParamDTO.from_dict(prompt_ai_param_dto_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
