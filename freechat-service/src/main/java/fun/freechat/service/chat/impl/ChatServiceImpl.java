@@ -32,10 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Future;
 
 import static dev.langchain4j.data.message.ChatMessageType.USER;
@@ -82,6 +79,14 @@ public class ChatServiceImpl implements ChatService {
         CharacterBackend backend = characterService.getBackend(backendId);
         if (Objects.isNull(backend)) {
             return null;
+        }
+
+        if (StringUtils.isBlank(about)) {
+            about = Optional.ofNullable(backend.getCharacterUid())
+                    .map(characterService::getLatestIdByUid)
+                    .map(characterService::summary)
+                    .map(CharacterInfo::getDefaultScene)
+                    .orElse(null);
         }
 
         ChatContext context = new ChatContext()
@@ -132,7 +137,7 @@ public class ChatServiceImpl implements ChatService {
                     if (StringUtils.isBlank(characterUid)) {
                         return null;
                     }
-                    Long characterId = characterService.getLatestIdByUid(characterUid, null);
+                    Long characterId = characterService.getLatestIdByUid(characterUid);
                     CharacterInfo summary = characterService.summary(characterId);
 
                     String chatId = chatContext.getChatId();

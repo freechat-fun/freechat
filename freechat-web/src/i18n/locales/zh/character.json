@@ -2,6 +2,8 @@
   "Profile": "角色档案",
   "Chat Style": "聊天风格",
   "Chat Example": "聊天示例",
+  "Default Scene": "默认场景",
+  "The default scene will be set as the default conversation background information when creating a new chat.": "在创建新聊天时，“默认场景”将被设置为默认的对话背景信息。",
   "Greeting": "问候语",
   "Character information": "角色信息",
   "Character backends: (maximum of 3 backends allowed)": "角色后端：(最多允许 3 个后端配置)",

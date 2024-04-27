@@ -60,6 +60,9 @@ public interface CharacterService {
     List<Triple<Long, Integer, InteractiveStats>> listVersionsByName(String name, User user);
     Long getLatestIdByName(String name, User user);
     Long getLatestIdByUid(String characterUid, User user);
+    default Long getLatestIdByUid(String characterUid) {
+        return getLatestIdByUid(characterUid, null);
+    }
     Long publish(Long characterId, Visibility visibility, User user);
     String getOwner(Long characterId);
     String getOwnerByUid(String characterUid);

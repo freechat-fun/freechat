@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **gender** | **str** | Character gender: male | female | other | [optional] 
 **lang** | **str** | Character language: en (default) | zh | ... | [optional] 
 **greeting** | **str** | Character greeting | [optional] 
+**default_scene** | **str** | Default scene, which will be set as the default conversation background information when creating a new chat | [optional] 
 **username** | **str** | Character owner | [optional] 
 **tags** | **List[str]** | Tag set | [optional] 
 **profile** | **str** | Character profile | [optional] 

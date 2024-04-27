@@ -2,6 +2,8 @@
   "Profile": "Profile",
   "Chat Style": "Chat Style",
   "Chat Example": "Chat Example",
+  "Default Scene": "Default Scene",
+  "The default scene will be set as the default conversation background information when creating a new chat.": "The default scene will be set as the default conversation background information when creating a new chat.",
   "Greeting": "Greeting",
   "Character information": "Character information",
   "Character backends: (maximum of 3 backends allowed)": "Character backends: (maximum of 3 backends allowed)",

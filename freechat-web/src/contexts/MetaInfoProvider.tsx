@@ -37,7 +37,7 @@ const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const metaRegistrations = document.querySelector('meta[name="_registrations"]')?.getAttribute('content');
   const [username, setUsername] = useState(metaUsername);
   const [platform, setPlatform] = useState(metaPlatform);
-  const registrations = metaRegistrations?.split(',') ?? [];
+  const registrations = metaRegistrations ? metaRegistrations.split(',') : [];
 
   const resetUser = (
     name: string | null | undefined,

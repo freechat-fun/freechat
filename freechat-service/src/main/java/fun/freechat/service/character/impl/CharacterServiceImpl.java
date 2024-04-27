@@ -246,7 +246,9 @@ public class CharacterServiceImpl implements CharacterService {
         conditions.and(Info.priority,
                 isEqualTo(query.getWhere().getPriority()).filter(Objects::nonNull));
         // version
-        conditions.and(Info.version, isGreaterThan(0));
+        if (!hasDraft) {
+            conditions.and(Info.version, isGreaterThan(0));
+        }
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {
@@ -934,6 +936,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
         public static final SqlColumn<String> greeting = CharacterInfoDynamicSqlSupport.greeting;
         public static final SqlColumn<String> chatStyle = CharacterInfoDynamicSqlSupport.chatStyle;
         public static final SqlColumn<String> chatExample = CharacterInfoDynamicSqlSupport.chatExample;
+        public static final SqlColumn<String> defaultScene = CharacterInfoDynamicSqlSupport.defaultScene;
         public static final SqlColumn<String> ext = CharacterInfoDynamicSqlSupport.ext;
         public static final SqlColumn<String> draft = CharacterInfoDynamicSqlSupport.draft;
         public static final SqlColumn<Integer> priority = CharacterInfoDynamicSqlSupport.priority;
@@ -953,6 +956,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.picture,
                     Info.gender,
                     Info.greeting,
+                    Info.defaultScene,
                     Info.description,
                     Info.lang,
                     Info.priority

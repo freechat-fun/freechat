@@ -41,6 +41,8 @@ public class CharacterCreateDTO {
     private String chatStyle;
     @Schema(description = "Character chat-example")
     private String chatExample;
+    @Schema(description = "Default scene, which will be set as the default conversation background information when creating a new chat")
+    private String defaultScene;
     @Schema(description = "Character language: en (default) | zh | ...")
     private String lang;
     @Schema(description = "Additional information, JSON format")

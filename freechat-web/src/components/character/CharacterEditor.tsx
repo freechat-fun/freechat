@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
@@ -41,6 +41,7 @@ export default function CharacterEditor ({
   const [greeting, setGreeting] = useState<string>();
   const [chatStyle, setChatStyle] = useState<string>();
   const [chatExample, setChatExample] = useState<string>();
+  const [defaultScene, setDefaultScene] = useState<string>();
 
   const [visibility, setVisibility] = useState<string>();
   const [tags, setTags] = useState<string[]>([]);
@@ -53,27 +54,6 @@ export default function CharacterEditor ({
   const [saved, setSaved] = useState(true);
 
   const originName = useRef('');
-
-  const getEditRecord = useCallback(() => {
-    const newRecord = new CharacterDetailsDTO();
-    newRecord.characterId = id;
-    newRecord.name = recordName ?? '';
-    newRecord.nickname = nickname;
-    newRecord.description = description;
-    newRecord.avatar = avatar;
-    newRecord.picture = picture;
-    newRecord.gender = gender;
-    newRecord.lang = lang;
-    newRecord.profile = profile;
-    newRecord.greeting = greeting;
-    newRecord.chatStyle = chatStyle;
-    newRecord.chatExample = chatExample;
-    newRecord.visibility = visibility;
-    newRecord.tags = [...tags];
-    newRecord.characterUid = origRecord.characterUid;
-
-    return newRecord;
-  }, [avatar, chatExample, chatStyle, description, gender, greeting, id, lang, nickname, origRecord.characterUid, picture, profile, recordName, tags, visibility]);
   
   useEffect(() => {
     if (id) {
@@ -114,6 +94,7 @@ export default function CharacterEditor ({
       setGreeting(draftRecord.greeting);
       setChatStyle(draftRecord.chatStyle);
       setChatExample(draftRecord.chatExample);
+      setDefaultScene(draftRecord.defaultScene);
       setVisibility(draftRecord.visibility ?? 'private');
       setTags(draftRecord.tags ?? []);
       setEditEnabled(true);
@@ -124,7 +105,7 @@ export default function CharacterEditor ({
     if (editEnabled) {
       setSaved(false);
     }
-  }, [editEnabled, nickname, description, avatar, picture, gender, lang, greeting, chatStyle, chatExample, visibility, tags]);
+  }, [editEnabled, nickname, description, avatar, picture, gender, lang, greeting, chatStyle, chatExample, defaultScene, visibility, tags]);
 
   function handleNameChange(): void {
     if (editRecordNameError) {
@@ -198,7 +179,7 @@ export default function CharacterEditor ({
     if (!id) {
       return;
     }
-    const onUpdated = (currentId: number, visibility: string, nickname: string) => {
+    const onUpdated = (currentId: number, visibility: string, nickname: string, about: string | undefined) => {
       characterApi?.publishCharacter1(currentId, visibility)
         .then(characterId => {
           chatApi?.getDefaultChatId(characterId)
@@ -213,6 +194,7 @@ export default function CharacterEditor ({
                   request.userProfile = userDetails.profile;
                   request.characterNickname = nickname;
                   request.characterId = characterId as number;
+                  request.about = about;
 
                   chatApi.startChat(request)
                     .then(chatId => {
@@ -236,6 +218,7 @@ export default function CharacterEditor ({
             editRecord.characterId as number,
             editRecord.visibility === 'private' ? 'private' : 'public',
             editRecord.nickname ?? editRecord.name ?? '',
+            editRecord.defaultScene,
           );
         }
       })
@@ -349,6 +332,28 @@ export default function CharacterEditor ({
         })
         .catch(handleError);
     }
+  }
+
+  function getEditRecord(): CharacterDetailsDTO {
+    const newRecord = new CharacterDetailsDTO();
+    newRecord.characterId = id;
+    newRecord.name = recordName ?? '';
+    newRecord.nickname = nickname;
+    newRecord.description = description;
+    newRecord.avatar = avatar;
+    newRecord.picture = picture;
+    newRecord.gender = gender;
+    newRecord.lang = lang;
+    newRecord.profile = profile;
+    newRecord.greeting = greeting;
+    newRecord.chatStyle = chatStyle;
+    newRecord.chatExample = chatExample;
+    newRecord.defaultScene = defaultScene;
+    newRecord.visibility = visibility;
+    newRecord.tags = [...tags];
+    newRecord.characterUid = origRecord.characterUid;
+
+    return newRecord;
   }
 
   return (
@@ -609,6 +614,21 @@ export default function CharacterEditor ({
               minRows={3}
               value={chatExample || ''}
               onChange={(event) => setChatExample(event.target.value || undefined)}
+            />
+
+            <CommonBox>
+              <LabelTypography>
+                {t('Default Scene')}
+              </LabelTypography>
+              <OptionTooltip placement="right" title={t('The default scene will be set as the default conversation background information when creating a new chat.')}>
+                <HelpIcon />
+              </OptionTooltip>
+            </CommonBox>
+            <ContentTextarea
+              name="info-default-scene"
+              minRows={1}
+              value={defaultScene || ''}
+              onChange={(event) => setDefaultScene(event.target.value || undefined)}
             />
 
             <LabelTypography>

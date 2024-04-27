@@ -20,6 +20,7 @@ Request data for updating character information
 |**greeting** | **String** | Character greeting |  [optional] |
 |**chatStyle** | **String** | Character chat-style |  [optional] |
 |**chatExample** | **String** | Character chat-example |  [optional] |
+|**defaultScene** | **String** | Default scene, which will be set as the default conversation background information when creating a new chat |  [optional] |
 |**lang** | **String** | Character language: en (default) | zh | ... |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |
 |**draft** | **String** | Character draft information |  [optional] |

@@ -188,6 +188,7 @@ export default function Characters() {
             request.userProfile = userDetails.profile;
             request.characterNickname = record.nickname ?? record.name;
             request.characterId = record.characterId as number;
+            request.about = record.defaultScene;
 
             chatApi.startChat(request)
               .then(chatId => {

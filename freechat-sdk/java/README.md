@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.0.0
+- API version: 1.0.1
   - Generator version: 7.5.0
 
 # FreeChat: Create Some Friends for Yourself with AI
@@ -13,8 +13,8 @@ Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializ
 
 ## Features
 - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**.
-- oasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions.
-- Extensively employs **distributed technologies and caching** to support **high concurrency** access.
+- Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions.
+- Extensively employs distributed technologies and caching to support **high concurrency** access.
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
 - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
@@ -205,6 +205,7 @@ npm install freechat-sdk --save
 ```
 
 - **Example**
+
 Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)
 
 ## System Dependencies
@@ -257,7 +258,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -273,7 +274,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.0.0"
+     implementation "fun.freechat:freechat-sdk:1.0.1"
   }
 ```
 
@@ -287,7 +288,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.0.0.jar`
+* `target/freechat-sdk-1.0.1.jar`
 * `target/lib/*.jar`
 
 ## Getting Started

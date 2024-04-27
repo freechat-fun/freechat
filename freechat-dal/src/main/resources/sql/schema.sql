@@ -197,6 +197,7 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `greeting` text DEFAULT NULL,
   `chat_style` text DEFAULT NULL,
   `chat_example` text DEFAULT NULL,
+  `default_scene` text DEFAULT NULL,
   `version` int unsigned DEFAULT 1,
   `ext` json DEFAULT NULL,
   `draft` text DEFAULT NULL,

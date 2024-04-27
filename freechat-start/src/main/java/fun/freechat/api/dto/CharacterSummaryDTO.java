@@ -46,6 +46,8 @@ public class CharacterSummaryDTO extends TraceableDTO {
     private String lang;
     @Schema(description = "Character greeting")
     private String greeting;
+    @Schema(description = "Default scene, which will be set as the default conversation background information when creating a new chat")
+    private String defaultScene;
     @Schema(description = "Character owner")
     private String username;
     @Schema(description = "Tag set")

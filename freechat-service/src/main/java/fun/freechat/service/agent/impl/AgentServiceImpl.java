@@ -254,7 +254,9 @@ public class AgentServiceImpl implements AgentService {
         conditions.and(Info.name,
                 isLike(query.getWhere().getName()).filter(StringUtils::isNotBlank).map(s -> s + "%"));
         // version
-        conditions.and(Info.version, isGreaterThan(0));
+        if (!hasDraft) {
+            conditions.and(Info.version, isGreaterThan(0));
+        }
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {

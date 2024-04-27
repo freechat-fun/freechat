@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, ext, draft);
+    BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, defaultScene, ext, draft);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
@@ -63,6 +63,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
         @Result(column="greeting", property="greeting", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="chat_style", property="chatStyle", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="chat_example", property="chatExample", jdbcType=JdbcType.LONGVARCHAR),
+        @Result(column="default_scene", property="defaultScene", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="ext", property="ext", jdbcType=JdbcType.LONGVARCHAR),
         @Result(column="draft", property="draft", jdbcType=JdbcType.LONGVARCHAR)
     })
@@ -112,6 +113,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(greeting).toProperty("greeting")
             .map(chatStyle).toProperty("chatStyle")
             .map(chatExample).toProperty("chatExample")
+            .map(defaultScene).toProperty("defaultScene")
             .map(ext).toProperty("ext")
             .map(draft).toProperty("draft")
         );
@@ -139,6 +141,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(greeting).toPropertyWhenPresent("greeting", row::getGreeting)
             .map(chatStyle).toPropertyWhenPresent("chatStyle", row::getChatStyle)
             .map(chatExample).toPropertyWhenPresent("chatExample", row::getChatExample)
+            .map(defaultScene).toPropertyWhenPresent("defaultScene", row::getDefaultScene)
             .map(ext).toPropertyWhenPresent("ext", row::getExt)
             .map(draft).toPropertyWhenPresent("draft", row::getDraft)
         );
@@ -192,6 +195,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(greeting).equalTo(row::getGreeting)
                 .set(chatStyle).equalTo(row::getChatStyle)
                 .set(chatExample).equalTo(row::getChatExample)
+                .set(defaultScene).equalTo(row::getDefaultScene)
                 .set(ext).equalTo(row::getExt)
                 .set(draft).equalTo(row::getDraft);
     }
@@ -217,6 +221,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(greeting).equalToWhenPresent(row::getGreeting)
                 .set(chatStyle).equalToWhenPresent(row::getChatStyle)
                 .set(chatExample).equalToWhenPresent(row::getChatExample)
+                .set(defaultScene).equalToWhenPresent(row::getDefaultScene)
                 .set(ext).equalToWhenPresent(row::getExt)
                 .set(draft).equalToWhenPresent(row::getDraft);
     }
@@ -243,6 +248,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(greeting).equalTo(row::getGreeting)
             .set(chatStyle).equalTo(row::getChatStyle)
             .set(chatExample).equalTo(row::getChatExample)
+            .set(defaultScene).equalTo(row::getDefaultScene)
             .set(ext).equalTo(row::getExt)
             .set(draft).equalTo(row::getDraft)
             .where(characterId, isEqualTo(row::getCharacterId))
@@ -271,6 +277,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(greeting).equalToWhenPresent(row::getGreeting)
             .set(chatStyle).equalToWhenPresent(row::getChatStyle)
             .set(chatExample).equalToWhenPresent(row::getChatExample)
+            .set(defaultScene).equalToWhenPresent(row::getDefaultScene)
             .set(ext).equalToWhenPresent(row::getExt)
             .set(draft).equalToWhenPresent(row::getDraft)
             .where(characterId, isEqualTo(row::getCharacterId))

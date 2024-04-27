@@ -7,13 +7,16 @@ import dev.langchain4j.model.input.PromptTemplate;
 import fun.freechat.langchain4j.model.input.FStringPromptTemplate;
 import fun.freechat.mapper.*;
 import fun.freechat.model.*;
-import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.cache.LongPeriodCacheEvict;
 import fun.freechat.service.enums.*;
 import fun.freechat.service.organization.OrgService;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
-import fun.freechat.service.util.*;
+import fun.freechat.service.util.CacheUtils;
+import fun.freechat.service.util.InfoUtils;
+import fun.freechat.service.util.PromptUtils;
+import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -257,7 +260,9 @@ public class PromptServiceImpl implements PromptService {
         conditions.and(Info.lang,
                 isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
         // version
-        conditions.and(Info.version, isGreaterThan(0));
+        if (!hasDraft) {
+            conditions.and(Info.version, isGreaterThan(0));
+        }
         // text
         String commonText = query.getWhere().getText();
         if (StringUtils.isNotBlank(commonText)) {

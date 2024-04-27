@@ -5,10 +5,10 @@ info:
     ## Introduction\nWelcome! FreeChat aims to build a cloud-native, robust, and quickly\
     \ commercializable enterprise-level AI virtual character platform.\n\n## Features\n\
     - Primarily uses Java and emphasizes **security, robustness, scalability, traceability,\
-    \ and maintainability**.\n- oasts **account systems and permission management**,\
+    \ and maintainability**.\n- Boasts **account systems and permission management**,\
     \ supporting OAuth2 authentication. Introduces the \"organization\" concept and\
-    \ related permission constraint functions.\n- Extensively employs **distributed\
-    \ technologies and caching** to support **high concurrency** access.\n- Provides\
+    \ related permission constraint functions.\n- Extensively employs distributed\
+    \ technologies and caching to support **high concurrency** access.\n- Provides\
     \ flexible character customization options, supports direct intervention in prompts,\
     \ and supports **configuring multiple backends for each character**.\n- **Offers\
     \ a comprehensive range of Open APIs**, with more than 180 interfaces and provides\
@@ -107,7 +107,7 @@ info:
     \    try:\n        details = api_instance.get_user_details()\n        pprint(details)\n\
     \    except ApiException as e:\n        print(\"Exception when calling AccountClient->get_user_details:\
     \ %s\\n\" % e)\n```\n\n#### TypeScript\n- **Installation**\n```shell\nnpm install\
-    \ freechat-sdk --save\n```\n\n- **Example**\nRefer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)\n\
+    \ freechat-sdk --save\n```\n\n- **Example**\n\nRefer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)\n\
     \n## System Dependencies\n| | Projects\n| ---- | ----\n| Application Framework\
     \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
     \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
@@ -130,7 +130,7 @@ info:
     \ us. We look forward to AI technology helping people create their own \"soul\
     \ mates\" in the future."
   title: FreeChat OpenAPI Definition
-  version: 1.0.0
+  version: 1.0.1
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -6605,6 +6605,7 @@ components:
         ext: ext
         visibility: visibility
         gender: gender
+        defaultScene: defaultScene
         profile: profile
         greeting: greeting
         description: description
@@ -6655,6 +6656,10 @@ components:
           type: string
         chatExample:
           description: Character chat-example
+          type: string
+        defaultScene:
+          description: "Default scene, which will be set as the default conversation\
+            \ background information when creating a new chat"
           type: string
         lang:
           description: "Character language: en (default) | zh | ..."
@@ -8199,6 +8204,7 @@ components:
         ext: ext
         visibility: visibility
         gender: gender
+        defaultScene: defaultScene
         profile: profile
         greeting: greeting
         description: description
@@ -8249,6 +8255,10 @@ components:
           type: string
         chatExample:
           description: Character chat-example
+          type: string
+        defaultScene:
+          description: "Default scene, which will be set as the default conversation\
+            \ background information when creating a new chat"
           type: string
         lang:
           description: "Character language: en (default) | zh | ..."
@@ -8399,6 +8409,7 @@ components:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
         gender: gender
+        defaultScene: defaultScene
         greeting: greeting
         description: description
         avatar: avatar
@@ -8467,6 +8478,10 @@ components:
           type: string
         greeting:
           description: Character greeting
+          type: string
+        defaultScene:
+          description: "Default scene, which will be set as the default conversation\
+            \ background information when creating a new chat"
           type: string
         username:
           description: Character owner
@@ -8552,14 +8567,22 @@ components:
     CharacterDetailsDTO:
       description: Character detailed content
       example:
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        gender: gender
+        defaultScene: defaultScene
+        greeting: greeting
+        description: description
+        requestId: requestId
+        draft: draft
+        nickname: nickname
+        lang: lang
+        characterId: 0
+        characterUid: characterUid
+        chatStyle: chatStyle
         parentUid: parentUid
         ext: ext
-        gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
-        gender: gender
-        greeting: greeting
         profile: profile
-        description: description
         chatExample: chatExample
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
@@ -8599,14 +8622,7 @@ components:
         tags:
         - tags
         - tags
-        requestId: requestId
-        draft: draft
         name: name
-        nickname: nickname
-        lang: lang
-        characterId: 0
-        characterUid: characterUid
-        chatStyle: chatStyle
         username: username
       properties:
         requestId:
@@ -8660,6 +8676,10 @@ components:
           type: string
         greeting:
           description: Character greeting
+          type: string
+        defaultScene:
+          description: "Default scene, which will be set as the default conversation\
+            \ background information when creating a new chat"
           type: string
         username:
           description: Character owner
@@ -9370,6 +9390,7 @@ components:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         visibility: visibility
         gender: gender
+        defaultScene: defaultScene
         scoreCount: 2
         greeting: greeting
         description: description
@@ -9442,6 +9463,10 @@ components:
           type: string
         greeting:
           description: Character greeting
+          type: string
+        defaultScene:
+          description: "Default scene, which will be set as the default conversation\
+            \ background information when creating a new chat"
           type: string
         username:
           description: Character owner
@@ -9839,6 +9864,7 @@ components:
           gmtModified: 2000-01-23T04:56:07.000+00:00
           visibility: visibility
           gender: gender
+          defaultScene: defaultScene
           greeting: greeting
           description: description
           avatar: avatar

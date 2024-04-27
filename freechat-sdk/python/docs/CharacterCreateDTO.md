@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **greeting** | **str** | Character greeting | [optional] 
 **chat_style** | **str** | Character chat-style | [optional] 
 **chat_example** | **str** | Character chat-example | [optional] 
+**default_scene** | **str** | Default scene, which will be set as the default conversation background information when creating a new chat | [optional] 
 **lang** | **str** | Character language: en (default) | zh | ... | [optional] 
 **ext** | **str** | Additional information, JSON format | [optional] 
 **draft** | **str** | Character draft information | [optional] 

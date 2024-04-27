@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Card, Divider, Input, Typography } from "@mui/joy";
+import { Box, Button, Card, Divider, FormControl, Input, Typography } from "@mui/joy";
 import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
 import { CommonGridBox, ContentTextarea, LinePlaceholder, TextareaTypography } from "..";
 import { CheckRounded, SaveAltRounded } from "@mui/icons-material";
@@ -116,15 +116,18 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
 
       <LinePlaceholder spacing={1} />
 
-      <Typography level="title-sm" textColor="neutral">
-        {t('Your Profile')}
-      </Typography>
-      <ContentTextarea
-        name="info-user-profile"
-        minRows={3}
-        value={userProfile}
-        onChange={(event) => setUserProfile(event.target.value)}
-      />
+      <FormControl sx={{ gap: 1 }}>
+        <Typography level="title-sm" textColor="neutral">
+          {t('Your Profile')}
+        </Typography>
+        <ContentTextarea
+          name="info-user-profile"
+          minRows={3}
+          maxRows={10}
+          value={userProfile}
+          onChange={(event) => setUserProfile(event.target.value)}
+        />
+      </FormControl>
 
       <LinePlaceholder spacing={1} />
 
@@ -141,15 +144,18 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
 
       <LinePlaceholder spacing={1} />
 
-      <Typography level="title-sm" textColor="neutral">
-        {t('Anything about this chat')}
-      </Typography>
-      <ContentTextarea
-        name="info-about"
-        minRows={3}
-        value={about}
-        onChange={(event) => setAbout(event.target.value)}
-      />
+      <FormControl sx={{ gap: 1 }}>
+        <Typography level="title-sm" textColor="neutral">
+          {t('Anything about this chat')}
+        </Typography>
+        <ContentTextarea
+          name="info-about"
+          minRows={3}
+          maxRows={10}
+          value={about}
+          onChange={(event) => setAbout(event.target.value)}
+        />
+      </FormControl>
 
       <Divider sx={{ my: 2 }}>{t('The settings only apply to this chat')}</Divider>
 

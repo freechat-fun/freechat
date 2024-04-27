@@ -66,6 +66,9 @@ public class CharacterInfo implements Serializable {
     private String chatExample;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String defaultScene;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -395,6 +398,22 @@ public class CharacterInfo implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getDefaultScene() {
+        return defaultScene;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterInfo withDefaultScene(String defaultScene) {
+        this.setDefaultScene(defaultScene);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setDefaultScene(String defaultScene) {
+        this.defaultScene = defaultScene;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getExt() {
         return ext;
     }
@@ -506,6 +525,7 @@ public class CharacterInfo implements Serializable {
         sb.append(", greeting=").append(greeting);
         sb.append(", chatStyle=").append(chatStyle);
         sb.append(", chatExample=").append(chatExample);
+        sb.append(", defaultScene=").append(defaultScene);
         sb.append(", ext=").append(ext);
         sb.append(", draft=").append(draft);
         sb.append(", serialVersionUID=").append(serialVersionUID);

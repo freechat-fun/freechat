@@ -71,6 +71,9 @@ public final class CharacterInfoDynamicSqlSupport {
     public static final SqlColumn<String> chatExample = characterInfo.chatExample;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> defaultScene = characterInfo.defaultScene;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> ext = characterInfo.ext;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -117,6 +120,8 @@ public final class CharacterInfoDynamicSqlSupport {
         public final SqlColumn<String> chatStyle = column("chat_style", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> chatExample = column("chat_example", JDBCType.LONGVARCHAR);
+
+        public final SqlColumn<String> defaultScene = column("default_scene", JDBCType.LONGVARCHAR);
 
         public final SqlColumn<String> ext = column("ext", JDBCType.LONGVARCHAR);
 
