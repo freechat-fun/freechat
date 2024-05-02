@@ -28,8 +28,8 @@ public class CharacterQueryDTO {
         private String lang;
         @Schema(description = "Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.")
         private String text;
-        @Schema(description = "Character priority, usually 1")
-        private Integer priority;
+        @Schema(description = "Character priority, greater than 1 indicates a high priority")
+        private Boolean highPriority;
     }
 
     @Schema(description = "Query condition")
@@ -66,7 +66,7 @@ public class CharacterQueryDTO {
                         .name(getWhere().getName())
                         .lang(getWhere().getLang())
                         .text(getWhere().getText())
-                        .priority(getWhere().getPriority())
+                        .highPriority(getWhere().getHighPriority())
                         .build())
                 .orderBy(getOrderBy())
                 .limit(getPageSize())

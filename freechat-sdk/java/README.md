@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.0.1
+- API version: 1.0.2
   - Generator version: 7.5.0
 
 # FreeChat: Create Some Friends for Yourself with AI
@@ -62,7 +62,7 @@ FreeChat is dedicated to the principles of cloud-native design. If you have a Ku
 1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`.
 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed.
 3. Switch to the `scripts/` directory.
-4. If needed, execute `install-in.sh` to deploy `ingress-nginx` to the Kubernetes cluster.
+4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster.
 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`.
 6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.
 
@@ -70,9 +70,9 @@ FreeChat is dedicated to the principles of cloud-native design. If you have a Ku
     > 
     > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*
 
-7. Execute the `install.sh` script to install FreeChat and its dependencies.
+7. Run `install.sh` script to install FreeChat and its dependencies.
 8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application.
-9. Execute `restart.sh` to restart the service.
+9. Run `restart.sh` to restart the service.
 10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources.
 11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.
 
@@ -258,7 +258,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -274,7 +274,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.0.1"
+     implementation "fun.freechat:freechat-sdk:1.0.2"
   }
 ```
 
@@ -288,7 +288,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.0.1.jar`
+* `target/freechat-sdk-1.0.2.jar`
 * `target/lib/*.jar`
 
 ## Getting Started

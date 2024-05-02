@@ -15,7 +15,7 @@ Query condition
 |**name** | **String** | Name, left match |  [optional] |
 |**lang** | **String** | Language, exact match |  [optional] |
 |**text** | **String** | Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time. |  [optional] |
-|**priority** | **Integer** | Character priority, usually 1 |  [optional] |
+|**highPriority** | **Boolean** | Character priority, greater than 1 indicates a high priority |  [optional] |
 
 
 

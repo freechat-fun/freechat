@@ -135,7 +135,7 @@ let body:.CharacterApiBatchSearchCharacterDetailsRequest = {
         name: "name_example",
         lang: "lang_example",
         text: "text_example",
-        priority: 1,
+        highPriority: true,
       },
       orderBy: [
         "orderBy_example",
@@ -209,7 +209,7 @@ let body:.CharacterApiBatchSearchCharacterSummaryRequest = {
         name: "name_example",
         lang: "lang_example",
         text: "text_example",
-        priority: 1,
+        highPriority: true,
       },
       orderBy: [
         "orderBy_example",
@@ -336,7 +336,7 @@ let body:.CharacterApiCountCharactersRequest = {
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
-      priority: 1,
+      highPriority: true,
     },
     orderBy: [
       "orderBy_example",
@@ -1457,7 +1457,7 @@ let body:.CharacterApiSearchCharacterDetailsRequest = {
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
-      priority: 1,
+      highPriority: true,
     },
     orderBy: [
       "orderBy_example",
@@ -1529,7 +1529,7 @@ let body:.CharacterApiSearchCharacterSummaryRequest = {
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
-      priority: 1,
+      highPriority: true,
     },
     orderBy: [
       "orderBy_example",

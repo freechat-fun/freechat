@@ -5,7 +5,7 @@
     <artifactId>freechat-sdk</artifactId>
     <packaging>jar</packaging>
     <name>freechat-sdk</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <url>https://freechat.fun/public/docs/api</url>
     <description>freechat-sdk</description>
     <scm>

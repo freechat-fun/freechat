@@ -19,6 +19,7 @@ import fun.freechat.util.IdUtils;
 import fun.freechat.util.PojoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -142,6 +143,7 @@ public class CharacterServiceImpl implements CharacterService {
             case "version" -> Info.version;
             case "modifyTime" -> Info.gmtModified;
             case "createTime" -> Info.gmtCreate;
+            case "priority" -> Info.priority;
             case "viewCount" -> InteractiveStatsDynamicSqlSupport.viewCount;
             case "referCount" -> InteractiveStatsDynamicSqlSupport.referCount;
             case "recommendCount" -> InteractiveStatsDynamicSqlSupport.recommendCount;
@@ -243,8 +245,11 @@ public class CharacterServiceImpl implements CharacterService {
         conditions.and(Info.lang,
                 isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
         // priority
-        conditions.and(Info.priority,
-                isEqualTo(query.getWhere().getPriority()).filter(Objects::nonNull));
+        if (BooleanUtils.isTrue(query.getWhere().getHighPriority())) {
+            conditions.and(Info.priority, isGreaterThan(1));
+        } else {
+            conditions.and(Info.priority, isEqualTo(1));
+        }
         // version
         if (!hasDraft) {
             conditions.and(Info.version, isGreaterThan(0));

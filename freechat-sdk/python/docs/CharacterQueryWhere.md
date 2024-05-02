@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **name** | **str** | Name, left match | [optional] 
 **lang** | **str** | Language, exact match | [optional] 
 **text** | **str** | Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time. | [optional] 
-**priority** | **int** | Character priority, usually 1 | [optional] 
+**high_priority** | **bool** | Character priority, greater than 1 indicates a high priority | [optional] 
 
 ## Example
 

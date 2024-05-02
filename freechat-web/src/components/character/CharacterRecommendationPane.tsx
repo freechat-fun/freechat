@@ -19,7 +19,7 @@ export default function CharacterRecommendationPane(props: SheetProps) {
     const newQuery = new CharacterQueryDTO();
     newQuery.where = new CharacterQueryWhere();
     newQuery.where.visibility = 'public';
-    newQuery.where.priority = 2;
+    newQuery.where.highPriority = true;
     newQuery.pageSize = pageSize;
     newQuery.pageNum = 0;
     newQuery.orderBy = ['modifyTime'];

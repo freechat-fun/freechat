@@ -4,7 +4,7 @@ apply plugin: 'java'
 apply plugin: 'com.diffplug.spotless'
 
 group = 'fun.freechat'
-version = '1.0.1'
+version = '1.0.2'
 
 buildscript {
     repositories {

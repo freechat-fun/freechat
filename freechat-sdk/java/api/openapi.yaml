@@ -35,49 +35,49 @@ info:
     \ `configs/helm/` directory, named `kube-private.conf`.\n2. Place the Helm configuration\
     \ file in the same directory, named `values-private.yaml`. Make sure to reference\
     \ the default `values.yaml` and customize the variables as needed.\n3. Switch\
-    \ to the `scripts/` directory.\n4. If needed, execute `install-in.sh` to deploy\
-    \ `ingress-nginx` to the Kubernetes cluster.\n5. If needed, run `install-cm.sh`\
-    \ to deploy `cert-manager` on the Kubernetes cluster, which automatically issues\
-    \ certificates for domains specified in `ingress.hosts`.\n6. Run `install-pvc.sh`\
-    \ to install PersistentVolumeClaim resources.\n\n    > By default, FreeChat operates\
-    \ files by accessing the \"local file system.\" You may want to use high-availability\
-    \ distributed storage in the cloud. As a cloud-native-designed system, we recommend\
-    \ interfacing through Kubernetes CSI to avoid individually adapting storage products\
-    \ for each cloud platform. Most cloud service providers offer cloud storage drivers\
-    \ for Kubernetes, with a series of predefined StorageClass resources. Please choose\
-    \ the appropriate configuration according to your actual needs and set it in Helm's\
-    \ `global.storageClass` option.\n    > \n    > *In the future, FreeChat may be\
-    \ refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes\
-    \ cluster as a dependency (serving Milvus).*\n\n7. Execute the `install.sh` script\
-    \ to install FreeChat and its dependencies.\n8. FreeChat aims to provide Open\
-    \ API services. If you like the interactive experience of [freechat.fun](https://freechat.fun),\
-    \ run `install-web.sh` to deploy the front-end application.\n9. Execute `restart.sh`\
-    \ to restart the service.\n10. If you modified any Helm configuration files, use\
-    \ `upgrade.sh` to update the corresponding Kubernetes resources.\n11. To remove\
-    \ specific resources, run the `uninstall*.sh` script corresponding to the resource\
-    \ you want to uninstall.\n\nAs a cloud-native application, the services FreeChat\
-    \ relies on are obtained and deployed to your cluster through the helm repository.\n\
-    \nIf you prefer cloud services with SLA (Service Level Agreement) guarantees,\
-    \ simply make the relevant settings in `configs/helm/values-private.yaml`:\n```yaml\n\
-    bitnami:\n  mysql:\n    enabled: false\n  redis:\n    enabled: false\n  milvus:\n\
-    \    enabled: false\n\nmysql:\n  url: <your mysql url>\n  auth:\n    rootPassword:\
-    \ <your mysql root password>\n    username: <your mysql username>\n    password:\
-    \ <your mysql password for the username>\n\nredis:\n  url: <your redis url>\n\
-    \  auth:\n    password: <your redis password>\n\n\nmilvus:\n  url: <your milvus\
-    \ url>\n  milvus:\n    auth:\n      token: <your milvus api-key>\n```\n\nWith\
-    \ this, FreeChat will not automatically install these services, but rather use\
-    \ the configuration information to connect directly.\n\n### Running Locally\n\
-    You can also run FreeChat locally. Currently supported on MacOS and Linux (although\
-    \ only tested on MacOS). You need to install the Docker toolset and have a network\
-    \ that can access [Docker Hub](https://hub.docker.com/).\n\nOnce ready, enter\
-    \ the `scripts/` directory and run `local-run.sh`, which will download and run\
-    \ the necessary docker containers. After a successful startup, you can access\
-    \ `http://localhost` via a browser to see the locally running freechat.fun. Use\
-    \ `local-run.sh --help` to view the supported options of the script. Good luck!\n\
-    \n### Running in an IDE\nTo run FreeChat in an IDE, you need to start all dependent\
-    \ services first but do not need to run the container for the FreeChat application\
-    \ itself. You can execute the `scripts/local-deps.sh` script to start services\
-    \ like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
+    \ to the `scripts/` directory.\n4. If needed, run `install-in.sh` to deploy `ingress-nginx`\
+    \ on the Kubernetes cluster.\n5. If needed, run `install-cm.sh` to deploy `cert-manager`\
+    \ on the Kubernetes cluster, which automatically issues certificates for domains\
+    \ specified in `ingress.hosts`.\n6. Run `install-pvc.sh` to install PersistentVolumeClaim\
+    \ resources.\n\n    > By default, FreeChat operates files by accessing the \"\
+    local file system.\" You may want to use high-availability distributed storage\
+    \ in the cloud. As a cloud-native-designed system, we recommend interfacing through\
+    \ Kubernetes CSI to avoid individually adapting storage products for each cloud\
+    \ platform. Most cloud service providers offer cloud storage drivers for Kubernetes,\
+    \ with a series of predefined StorageClass resources. Please choose the appropriate\
+    \ configuration according to your actual needs and set it in Helm's `global.storageClass`\
+    \ option.\n    > \n    > *In the future, FreeChat may be refactored to use MinIO's\
+    \ APIs directly, as it is now installed in the Kubernetes cluster as a dependency\
+    \ (serving Milvus).*\n\n7. Run `install.sh` script to install FreeChat and its\
+    \ dependencies.\n8. FreeChat aims to provide Open API services. If you like the\
+    \ interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh`\
+    \ to deploy the front-end application.\n9. Run `restart.sh` to restart the service.\n\
+    10. If you modified any Helm configuration files, use `upgrade.sh` to update the\
+    \ corresponding Kubernetes resources.\n11. To remove specific resources, run the\
+    \ `uninstall*.sh` script corresponding to the resource you want to uninstall.\n\
+    \nAs a cloud-native application, the services FreeChat relies on are obtained\
+    \ and deployed to your cluster through the helm repository.\n\nIf you prefer cloud\
+    \ services with SLA (Service Level Agreement) guarantees, simply make the relevant\
+    \ settings in `configs/helm/values-private.yaml`:\n```yaml\nbitnami:\n  mysql:\n\
+    \    enabled: false\n  redis:\n    enabled: false\n  milvus:\n    enabled: false\n\
+    \nmysql:\n  url: <your mysql url>\n  auth:\n    rootPassword: <your mysql root\
+    \ password>\n    username: <your mysql username>\n    password: <your mysql password\
+    \ for the username>\n\nredis:\n  url: <your redis url>\n  auth:\n    password:\
+    \ <your redis password>\n\n\nmilvus:\n  url: <your milvus url>\n  milvus:\n  \
+    \  auth:\n      token: <your milvus api-key>\n```\n\nWith this, FreeChat will\
+    \ not automatically install these services, but rather use the configuration information\
+    \ to connect directly.\n\n### Running Locally\nYou can also run FreeChat locally.\
+    \ Currently supported on MacOS and Linux (although only tested on MacOS). You\
+    \ need to install the Docker toolset and have a network that can access [Docker\
+    \ Hub](https://hub.docker.com/).\n\nOnce ready, enter the `scripts/` directory\
+    \ and run `local-run.sh`, which will download and run the necessary docker containers.\
+    \ After a successful startup, you can access `http://localhost` via a browser\
+    \ to see the locally running freechat.fun. Use `local-run.sh --help` to view the\
+    \ supported options of the script. Good luck!\n\n### Running in an IDE\nTo run\
+    \ FreeChat in an IDE, you need to start all dependent services first but do not\
+    \ need to run the container for the FreeChat application itself. You can execute\
+    \ the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`,\
+    \ `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
     Make sure you have set the following startup parameters:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
     \ \\\n-DAPP_HOME=local-data/freechat \\\n-Dspring.profiles.active=local\n```\n\
     \n### 使用 SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
@@ -130,7 +130,7 @@ info:
     \ us. We look forward to AI technology helping people create their own \"soul\
     \ mates\" in the future."
   title: FreeChat OpenAPI Definition
-  version: 1.0.1
+  version: 1.0.2
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -8309,12 +8309,12 @@ components:
     CharacterQuery.Where:
       description: Query condition
       example:
+        highPriority: true
         tagsOp: tagsOp
         visibility: visibility
         name: name
         text: text
         lang: lang
-        priority: 0
         username: username
         tags:
         - tags
@@ -8348,10 +8348,9 @@ components:
             \ match is sufficient; public scope + general search for all users does\
             \ not guarantee real-time."
           type: string
-        priority:
-          description: "Character priority, usually 1"
-          format: int32
-          type: integer
+        highPriority:
+          description: "Character priority, greater than 1 indicates a high priority"
+          type: boolean
       type: object
     CharacterQueryDTO:
       description: Character query request
@@ -8359,19 +8358,19 @@ components:
         orderBy:
         - orderBy
         - orderBy
-        pageSize: 1
+        pageSize: 6
         where:
+          highPriority: true
           tagsOp: tagsOp
           visibility: visibility
           name: name
           text: text
           lang: lang
-          priority: 0
           username: username
           tags:
           - tags
           - tags
-        pageNum: 6
+        pageNum: 0
       properties:
         where:
           $ref: '#/components/schemas/CharacterQuery.Where'
