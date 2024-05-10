@@ -212,8 +212,7 @@ export function generateExample(request: PromptAiParamDTO | undefined, response:
 }
 
 export function getMessageText(message: ChatMessageDTO | undefined): string | undefined {
-  return message?.contents
-    ?.filter(content => content.type === 'text')
+  return message?.contents?.filter(content => content.type === 'text')
     .map(content => content.content)
     .join('\n');
 }

@@ -3,6 +3,7 @@ package fun.freechat.service.rag.impl;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.milvus.MilvusEmbeddingStore;
+import fun.freechat.langchain4j.store.embedding.BatchDelegatedEmbeddingStore;
 import fun.freechat.service.enums.EmbeddingStoreType;
 import fun.freechat.service.rag.EmbeddingStoreService;
 import jakarta.annotation.PostConstruct;
@@ -32,12 +33,12 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
     @Value("${embedding.milvus.token:#{null}}")
     private String token;
 
-    private MilvusEmbeddingStore documentEmbeddingStore;
-    private MilvusEmbeddingStore longTermMemoryEmbeddingStore;
+    private BatchDelegatedEmbeddingStore documentEmbeddingStore;
+    private BatchDelegatedEmbeddingStore longTermMemoryEmbeddingStore;
 
     @PostConstruct
     public void init() {
-        documentEmbeddingStore = MilvusEmbeddingStore.builder()
+        MilvusEmbeddingStore documentMilvusEmbeddingStore = MilvusEmbeddingStore.builder()
                 .uri(url)
                 .username(username)
                 .password(password)
@@ -48,7 +49,7 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
                 .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
                 .build();
 
-        longTermMemoryEmbeddingStore = MilvusEmbeddingStore.builder()
+        MilvusEmbeddingStore longTermMemoryMilvusEmbeddingStore = MilvusEmbeddingStore.builder()
                 .uri(url)
                 .username(username)
                 .password(password)
@@ -57,6 +58,14 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
                 .collectionName(LONG_TERM_MEMORY.text())
                 .dimension(dimension)
                 .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
+                .build();
+
+        documentEmbeddingStore = BatchDelegatedEmbeddingStore.builder()
+                .embeddingStore(documentMilvusEmbeddingStore)
+                .build();
+
+        longTermMemoryEmbeddingStore = BatchDelegatedEmbeddingStore.builder()
+                .embeddingStore(longTermMemoryMilvusEmbeddingStore)
                 .build();
     }
 

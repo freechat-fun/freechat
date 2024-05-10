@@ -6,7 +6,7 @@ import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, Ico
 import { AttachmentRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
 import { CommonContainer, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
 import { AiApiKeySettings, DashScopeSettings, OpenAISettings } from ".";
-import { providers as modelProviders } from "../../configs/model-providers-config";
+import { defaultModels, providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
 import { extractModelProvider, extractVariables } from "../../libs/template_utils";
 import { HelpIcon } from "../icon";
@@ -75,13 +75,13 @@ export default function PromptRunner(props: PromptRunnerProps) {
     if (extractModelProvider(initialParameters?.modelId) === initialProvider) {
       return {...initialParameters};
     } else {
-      const defaultModelName = initialProvider === 'dash_scope' ? '[dash_scope]qwen-plus' : '[open_ai]gpt-4';
+      const defaultModelName = initialProvider === 'dash_scope' ? defaultModels.dash_scope : defaultModels.open_ai;
       const defaultModel = initialModels?.find(modelInfo => modelInfo?.modelId === defaultModelName);
       if (defaultModel) {
         const initialParameters: { [key: string]: any } = {};
         initialParameters['modelId'] = defaultModel.modelId;
         if (initialProvider === 'open_ai') {
-          initialParameters['baseUrl'] = 'https://api.openai-proxy.com/v1';
+          initialParameters['baseUrl'] = 'https://api.openai.com/v1';
         }
         return initialParameters;
       }
@@ -129,9 +129,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
     if (inputs && value !== inputs[key]) {
       const newInputs: { [key: string]: any } = {};
       Object.entries(inputs).filter(([k]) => k !== key).forEach(([k, v]) => newInputs[k] = v);
-      if (value) {
-        newInputs[key] = value;
-      }
+      newInputs[key] = value;
       setInputs(newInputs);
     }
   }
@@ -220,17 +218,20 @@ export default function PromptRunner(props: PromptRunnerProps) {
             gridTemplateColumns: 'auto 1fr',
             gap: 1,
           }}>
-            {Object.entries(inputs).filter(([k]) => k !== 'attachment').map(([k, v]) => (
-              <Fragment key={`input-${k}`}>
-                <FormLabel>{k}</FormLabel>
-                <Textarea
-                  name={`input-${k}`}
-                  value={v}
-                  required={k === 'input'}
-                  color={(k === 'input' && !v) ? 'danger' : "neutral"}
-                  onChange={(event) => handleInputChange(k, event.target.value)}
-                />
-              </Fragment>
+            {Object.entries(inputs)
+              .filter(([k]) => k !== 'attachment')
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([k, v]) => (
+                <Fragment key={`input-${k}`}>
+                  <FormLabel>{k}</FormLabel>
+                  <Textarea
+                    name={`input-${k}`}
+                    value={v}
+                    required={k === 'input'}
+                    color={(k === 'input' && !v) ? 'danger' : "neutral"}
+                    onChange={(event) => handleInputChange(k, event.target.value)}
+                  />
+                </Fragment>
             ))}
             <FormLabel>
               <Typography endDecorator={(
@@ -332,7 +333,6 @@ export default function PromptRunner(props: PromptRunnerProps) {
               onPlaySuccess?.(aiRequest, result);
               setPlaying(false);
             }}
-            onClose={() => setPlaying(false)}
             onError={(error) => {
               onPlayFailure?.(aiRequest, error);
               setPlaying(false);

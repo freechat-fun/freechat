@@ -9,7 +9,6 @@ import dev.langchain4j.data.document.transformer.HtmlTextExtractor;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.HuggingFaceTokenizer;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import fun.freechat.model.RagTask;
@@ -58,14 +57,14 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
     private Tika tika;
 
     @Override
-    @Async("defaultExecutor")
+    @Async("ragExecutor")
     public CompletableFuture<Void> start(RagTask task) {
         String memoryId = task.getCharacterUid();
         RLock lock = redisson.getLock(LOCK_PREFIX + memoryId);
         boolean locked = false;
 
         try {
-            locked = lock.tryLock(30, 60, TimeUnit.SECONDS);
+            locked = lock.tryLock(30, 3600, TimeUnit.SECONDS);
             eventPublisher.publishEvent(new RagTaskStartedEvent(task));
             SourceType sourceType = SourceType.of(task.getSourceType());
             DocumentSource source = switch (sourceType) {
@@ -89,7 +88,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, CHARACTER_DOCUMENT);
             DocumentTransformer documentTransformer = isHtml(document) ? new HtmlTextExtractor() : null;
             DocumentSplitter documentSplitter = DocumentSplitters.recursive(
-                    maxSegmentSize, maxOverlapSize, new HuggingFaceTokenizer());
+                    maxSegmentSize, maxOverlapSize, null);
 
             EmbeddingStoreIngestor.builder()
                     .embeddingModel(embeddingModel)
@@ -108,7 +107,11 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             return CompletableFuture.failedFuture(ex);
         } finally {
             if (locked) {
-                lock.unlock();
+                try {
+                    lock.unlock();
+                } catch (Throwable unlockEx) {
+                    log.warn("Unlock failed!", unlockEx);
+                }
             }
         }
     }

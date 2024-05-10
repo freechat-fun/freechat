@@ -107,7 +107,7 @@ milvus:
 ### 运行在本地
 您同样可以在本地运行 FreeChat。目前支持 MacOS 和 Linux（实际上，仅在 MacOS 上进行了测试）。您需要安装 Docker 工具集，并拥有能访问到 [Docker Hub](https://hub.docker.com/) 的网络。
 
-准备就绪后，进入 `scripts/` 目录，运行 `local-run.sh`，该脚本将下载并运行所需的 docker 容器。启动成功后，即可通过浏览器访问 `http://localhost` 查看本地运行的 freechat.fun。可以通过 `local-run.sh --help` 查看脚本所支持的选项。祝您顺利！
+准备就绪后，进入 `scripts/` 目录，运行 `local-run.sh`，该脚本将下载并运行所需的 docker 容器。启动成功后，即可通过浏览器访问 `http://localhost` 查看本地运行的 freechat.fun。内置的管理员账号与密码是“admin:freechat”。可以通过 `local-run.sh --help` 查看脚本所支持的选项。祝您顺利！
 
 ### 运行在 IDE
 要在 IDE 中运行 FreeChat，你需要先启动所有依赖服务，但不必运行 FreeChat 应用本身的容器。你可以执行 `scripts/local-deps.sh` 脚本来本地启动 `MySQL`、`Redis`、`Milvus` 等服务。完成后，在你的 IDE 中打开并调试 `freechat-start/src/main/java/fun/freechat/Application.java`。请确保你设置了以下的启动参数：

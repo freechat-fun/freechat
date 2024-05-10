@@ -13,6 +13,7 @@ import { locales } from "../../configs/i18n-config";
 import { extractVariables, generateExample, getMessageText, setMessageText } from "../../libs/template_utils";
 import { providers } from "../../configs/model-providers-config";
 import { HelpIcon } from "../../components/icon";
+import { objectsEqual } from "../../libs/js_utils";
 
 type MessageRound = {
   user: ChatMessageDTO;
@@ -69,7 +70,6 @@ export default function PromptEditor({
   const [editAssistantName, setEditAssistantName] = useState<string | undefined>('assistant')
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
-  const [saved, setSaved] = useState(true);
 
   const originName = useRef<string>();
 
@@ -99,7 +99,7 @@ export default function PromptEditor({
     borderRadius: '12px',
   });
 
-  const getEditRecord = useCallback((inputsJson: string | undefined) => {
+const getEditRecord = useCallback((inputsJson: string | undefined) => {
     const newRecord = new PromptDetailsDTO();
     newRecord.promptId = id;
     newRecord.name = recordName;
@@ -155,7 +155,7 @@ export default function PromptEditor({
         try {
           draft = (JSON.parse(origRecord.draft) as PromptDetailsDTO) ?? {};
         } catch (error) {
-          console.log(`[WARNING] Invalid draft content: ${origRecord.draft}`);
+          console.warn(`[WARNING] Invalid draft content: ${origRecord.draft}`);
         }
       }
 
@@ -192,14 +192,7 @@ export default function PromptEditor({
 
   useEffect(() => {
     if (originName.current) {
-      setSaved(false);
-    }
-  }, [description, system, example, visibility, lang, tags, models]);
-
-  useEffect(() => {
-    if (originName.current) {
       setInputs((prevInputs => extractVariables(getEditRecord(JSON.stringify(prevInputs)))));
-      setSaved(false);
     }
   }, [getEditRecord, userMessage, stringTemplate]);
 
@@ -207,7 +200,6 @@ export default function PromptEditor({
     if (originName.current) {
       setRounds(messagesToRounds(messages));
       setInputs((prevInputs => extractVariables(getEditRecord(JSON.stringify(prevInputs)))));
-      setSaved(false);
     }
   }, [getEditRecord, messages]);
 
@@ -222,7 +214,6 @@ export default function PromptEditor({
         });
         return {...inputs, ...filteredInputs};
       });
-      setSaved(false);
     }
   }, [inputs]);
 
@@ -421,7 +412,14 @@ export default function PromptEditor({
     request.draft = JSON.stringify(draftRecord);
 
     promptApi?.updatePrompt(id, request)
-      .then(setSaved)
+      .then(resp => {
+        if (!resp) {
+          return;
+        }
+        promptApi?.getPromptDetails(id)
+          .then(setOrigRecord)
+          .catch(handleError);
+      })
       .catch(handleError);
   }
 
@@ -445,7 +443,6 @@ export default function PromptEditor({
     const request = recordToUpdateRequest(editRecord);
     promptApi?.updatePrompt(id, request)
       .then(resp => {
-        setSaved(resp);
         if (resp) {
           onUpdated(id, editRecord.visibility === 'private' ? 'private' : 'public');
         }
@@ -524,6 +521,40 @@ export default function PromptEditor({
     return request;
   }
 
+  function isSaved(): boolean {
+    if (!origRecord) {
+      return false;
+    }
+    if (origRecord.username !== username) {
+      return false;
+    }
+    let draft: PromptDetailsDTO = {};
+    if (origRecord.draft) {
+      try {
+        draft = (JSON.parse(origRecord.draft) as PromptDetailsDTO) ?? {};
+      } catch (error) {
+        console.warn(`[WARNING] Invalid draft content: ${origRecord.draft}`);
+      }
+    }
+
+    const draftRecord = {...origRecord, ...draft};
+
+    return objectsEqual(draftRecord.name, recordName) &&
+      objectsEqual(draftRecord.description, description) &&
+      objectsEqual(draftRecord.template, stringTemplate) &&
+      objectsEqual(draftRecord.chatTemplate?.system, system) &&
+      objectsEqual((draftRecord.chatTemplate?.messageToSend?.name ?? 'user'), userName) &&
+      objectsEqual((draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
+        (draftRecord.format === 'f_string' ? '{input}' : '{{input}}')), userMessage) &&
+      objectsEqual((draftRecord.chatTemplate?.messages ?? []), messages) &&
+      objectsEqual(draftRecord.example, example) &&
+      objectsEqual((draftRecord.visibility ?? 'private'), visibility) &&
+      objectsEqual((draftRecord.format ?? 'mustache'), format) &&
+      objectsEqual((draftRecord.lang ? draftRecord.lang.split('_')[0] : 'en'), lang) &&
+      objectsEqual((draftRecord.tags ?? []), tags) &&
+      objectsEqual((draftRecord.aiModels ?? []), models);
+  }
+
   return (
     <>
       <LinePlaceholder />
@@ -559,8 +590,8 @@ export default function PromptEditor({
           borderRadius: '16px',
         }}>
           <Button
-            disabled={saved || visibility==='hidden'}
-            startDecorator={saved ? <CheckRounded /> : <SaveAltRounded />}
+            disabled={isSaved() || visibility==='hidden'}
+            startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
           >
             {t('button:Save')}
@@ -1113,7 +1144,7 @@ export default function PromptEditor({
       </ConfirmModal>
 
       <RouterBlocker
-        when={!saved}
+        when={!isSaved()}
         message={t('You may have unsaved changes. Are you sure you want to leave?')}
       />
     </>

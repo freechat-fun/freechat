@@ -34,6 +34,7 @@ usage() {
         JPDA_PORT=5005
       fi
       JVM_OPTS="${JVM_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${JPDA_PORT}"
+      # SERVICE_OPTS="${SERVICE_OPTS} -Dapp.logging.level=debug"
     fi
 
     local memTotal=`cat /proc/meminfo | grep MemTotal | awk '{printf "%d", $2/1024 }'`

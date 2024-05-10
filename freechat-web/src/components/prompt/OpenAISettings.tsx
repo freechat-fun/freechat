@@ -6,6 +6,7 @@ import { AddCircleRounded } from "@mui/icons-material";
 import { CommonContainer, OptionCard, OptionTooltip, Sidedrawer, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
 import { HelpIcon } from "../icon";
+import { defaultModels } from "../../configs/model-providers-config";
 
 function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
   return !!parameters && Object.keys(parameters).includes(key);
@@ -22,7 +23,7 @@ export default function OpenAISettings(props: {
   const { t } = useTranslation(['prompt']);
 
   const [model, setModel] = useState<AiModelInfoDTO | undefined>(
-    models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[open_ai]gpt-4')));
+    models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? defaultModels.open_ai)));
   
   const [baseUrl, setBaseUrl] = useState(defaultParameters?.baseUrl ?? 'https://api.openai.com/v1');
 
@@ -51,7 +52,7 @@ export default function OpenAISettings(props: {
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
-    setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[open_ai]gpt-4')));
+    setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? defaultModels.open_ai)));
     setBaseUrl(defaultParameters?.baseUrl ?? 'https://api.openai.com/v1');
 
     setTopP(defaultParameters?.topP ?? 0.8);

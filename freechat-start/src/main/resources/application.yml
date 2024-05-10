@@ -42,7 +42,7 @@ chat:
     maxMaxOverlapSize: 100
     minMaxOverlapSize: 0
     defaultMaxOverlapSize: 30
-    maxResults: 3
+    maxResults: 2
     minScore: 0.3
 embedding:
   milvus:
@@ -72,7 +72,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-      max-request-size: 10MB
+      max-request-size: 20MB
   task:
     defaultExecution:
       threadNamePrefix: default-task-
@@ -92,6 +92,17 @@ spring:
         maxSize: 4
         keepAlive: 60s
         queueCapacity: 1024
+        allowCoreThreadTimeout: true
+      shutdown:
+        awaitTermination: true
+        awaitTerminationPeriod: 60s
+    ragExecution:
+      threadNamePrefix: rag-task-
+      pool:
+        coreSize: 1
+        maxSize: 2
+        keepAlive: 60s
+        queueCapacity: 128
         allowCoreThreadTimeout: true
       shutdown:
         awaitTermination: true

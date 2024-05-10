@@ -6,6 +6,7 @@ import { AddCircleRounded } from "@mui/icons-material";
 import { CommonContainer, OptionCard, OptionTooltip, Sidedrawer, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
 import { HelpIcon } from "../icon";
+import { defaultModels } from "../../configs/model-providers-config";
 
 function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
   return !!parameters && Object.keys(parameters).includes(key);
@@ -22,7 +23,7 @@ export default function DashScopeSettings(props: {
   const { t } = useTranslation(['prompt']);
 
   const [model, setModel] = useState<AiModelInfoDTO | undefined>(
-    models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[dash_scope]qwen-plus')));
+    models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? defaultModels.dash_scope)));
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
   const [enableTopP, setEnableTopP] = useState(containsKey(defaultParameters, 'topP'));
@@ -51,7 +52,7 @@ export default function DashScopeSettings(props: {
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
-    setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? '[dash_scope]qwen-plus')));
+    setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? defaultModels.dash_scope)));
 
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));

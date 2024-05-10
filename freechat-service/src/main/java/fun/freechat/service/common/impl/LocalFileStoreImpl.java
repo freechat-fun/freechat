@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.util.List;
@@ -105,5 +102,12 @@ public class LocalFileStoreImpl implements FileStore {
     @Override
     public void delete(String path) throws IOException {
         Files.deleteIfExists(toPath(path));
+    }
+
+    @Override
+    public long getLastModifiedTime(String path) throws IOException {
+        Path filePath = toPath(path);
+        FileTime lastModifiedTime = Files.getLastModifiedTime(filePath, LinkOption.NOFOLLOW_LINKS);
+        return lastModifiedTime.toMillis();
     }
 }

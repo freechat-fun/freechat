@@ -34,3 +34,22 @@ export function useDynamicScript(src: string, onLoadCallback: () => void) {
 export function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+export function arraysEqual<T>(a: T[], b: T[]): boolean {
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+
+  return true;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function objectsEqual(a: any, b: any): boolean {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return arraysEqual(a, b);
+  } else {
+    return a === b;
+  }
+}

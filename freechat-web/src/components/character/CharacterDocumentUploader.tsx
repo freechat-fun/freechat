@@ -9,7 +9,7 @@ import { RagTaskDTO } from "freechat-sdk";
 import { SxProps } from "@mui/joy/styles/types";
 import { HelpIcon } from "../icon";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
 let idCounter = 0;
 
 type CharacterDocumentUploaderProps = {
@@ -169,7 +169,7 @@ export default function CharacterDocumentUploader({
           <TabPanel value={0}>
             <Stack spacing={2}>
               <Typography level="body-sm">
-                {t('Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 10MB.')}
+                {t('Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 3MB.')}
               </Typography>
               <CommonBox>
                 <Chip sx={{ display: documentFile?.name ? 'unset' : 'none'}}>{documentFile?.name}</Chip>
@@ -178,6 +178,7 @@ export default function CharacterDocumentUploader({
                 ) : (
                   <FormControl>
                     <Input
+                      disabled={documentUploading}
                       type="file"
                       id={fileInputId}
                       onChange={handleDocumentFileChange}
@@ -188,7 +189,7 @@ export default function CharacterDocumentUploader({
                       }}}
                     />
                     <label htmlFor={fileInputId}>
-                      <IconButton onClick={handleDocumentFileModify}>
+                      <IconButton onClick={handleDocumentFileModify} disabled={documentUploading}>
                         <FileUploadRounded />
                       </IconButton>
                     </label>
@@ -208,6 +209,7 @@ export default function CharacterDocumentUploader({
               </Typography>
               <FormControl>
                 <Input
+                  disabled={documentUploading}
                   autoFocus
                   type="text"
                   value={documentUrl}
@@ -234,6 +236,7 @@ export default function CharacterDocumentUploader({
               </OptionTooltip>
               <CommonContainer sx={{ ml: 'auto' }}>
                 <TinyInput
+                  disabled={documentUploading}
                   type="number"
                   slotProps={{
                     input: {
@@ -248,6 +251,7 @@ export default function CharacterDocumentUploader({
               </CommonContainer>
             </CommonContainer>
             <Slider
+              disabled={documentUploading}
               value={documentMaxSegmentSize}
               step={100}
               min={0}
@@ -266,6 +270,7 @@ export default function CharacterDocumentUploader({
               </OptionTooltip>
               <CommonContainer sx={{ ml: 'auto' }}>
                 <TinyInput
+                  disabled={documentUploading}
                   type="number"
                   slotProps={{
                     input: {
@@ -280,6 +285,7 @@ export default function CharacterDocumentUploader({
               </CommonContainer>
             </CommonContainer>
             <Slider
+              disabled={documentUploading}
               value={documentMaxOverlapSize}
               step={10}
               min={0}

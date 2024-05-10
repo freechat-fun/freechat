@@ -12,6 +12,7 @@ import { CharacterAlbumPane, CharacterBackendSettings, CharacterBackendsPane, Ch
 import { HelpIcon } from "../../components/icon";
 import { createPromptForCharacter } from "../../libs/chat_utils";
 import { getCompressedImage } from "../../libs/ui_utils";
+import { objectsEqual } from "../../libs/js_utils";
 
 type CharacterEditorProps = {
   id: number;
@@ -51,16 +52,13 @@ export default function CharacterEditor ({
   const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>([]);
 
   const [editEnabled, setEditEnabled] = useState(false);
-  const [saved, setSaved] = useState(true);
 
   const originName = useRef('');
   
   useEffect(() => {
     if (id) {
       characterApi?.getCharacterDetails(id)
-        .then(resp => {
-          setOrigRecord(resp);
-        })
+        .then(setOrigRecord)
         .catch(handleError);
     }
   }, [handleError, id, characterApi]);
@@ -100,12 +98,6 @@ export default function CharacterEditor ({
       setEditEnabled(true);
     }
   }, [origRecord, username]);
-
-  useEffect(() => {
-    if (editEnabled) {
-      setSaved(false);
-    }
-  }, [editEnabled, nickname, description, avatar, picture, gender, lang, greeting, chatStyle, chatExample, defaultScene, visibility, tags]);
 
   function handleNameChange(): void {
     if (editRecordNameError) {
@@ -171,7 +163,14 @@ export default function CharacterEditor ({
     request.draft = JSON.stringify(draftRecord);
 
     characterApi?.updateCharacter(id, request)
-      .then(setSaved)
+      .then(resp => {
+        if (!resp) {
+          return;
+        }
+        characterApi?.getCharacterDetails(id)
+          .then(setOrigRecord)
+          .catch(handleError);
+      })
       .catch(handleError);
   }
 
@@ -212,7 +211,6 @@ export default function CharacterEditor ({
     const request = recordToUpdateRequest(editRecord);
     characterApi?.updateCharacter(id, request)
       .then(resp => {
-        setSaved(resp);
         if (resp) {
           onUpdated(
             editRecord.characterId as number,
@@ -356,6 +354,41 @@ export default function CharacterEditor ({
     return newRecord;
   }
 
+  function isSaved(): boolean {
+    if (!origRecord) {
+      return false;
+    }
+    if (origRecord.username !== username) {
+      return false;
+    }
+
+    let draft = {};
+    if (origRecord.draft) {
+      try {
+        draft = (JSON.parse(origRecord.draft) as CharacterDetailsDTO) ?? {};
+      } catch (error) {
+        console.log(`[WARNING] Invalid draft content: ${origRecord.draft}`);
+      }
+    }
+
+    const draftRecord = {...origRecord, ...draft};
+
+    return objectsEqual(draftRecord.name ?? '', recordName) &&
+      objectsEqual(draftRecord.nickname, nickname) &&
+      objectsEqual(draftRecord.description, description) &&
+      objectsEqual(draftRecord.avatar, avatar) &&
+      objectsEqual(draftRecord.picture, picture) &&
+      objectsEqual(draftRecord.gender ?? 'other', gender) &&
+      objectsEqual(draftRecord.lang ?? 'English', lang) &&
+      objectsEqual(draftRecord.profile, profile) &&
+      objectsEqual(draftRecord.greeting, greeting) &&
+      objectsEqual(draftRecord.chatStyle, chatStyle) &&
+      objectsEqual(draftRecord.chatExample, chatExample) &&
+      objectsEqual(draftRecord.defaultScene, defaultScene) &&
+      objectsEqual(draftRecord.visibility ?? 'private', visibility) &&
+      objectsEqual(draftRecord.tags ?? [], tags);
+  }
+
   return (
     <>
       <LinePlaceholder />
@@ -391,8 +424,8 @@ export default function CharacterEditor ({
           borderRadius: '16px',
         }}>
           <Button
-            disabled={saved || visibility==='hidden'}
-            startDecorator={saved ? <CheckRounded /> : <SaveAltRounded />}
+            disabled={isSaved() || visibility==='hidden'}
+            startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
           >
             {t('button:Save')}
@@ -725,7 +758,7 @@ export default function CharacterEditor ({
       </ConfirmModal>
 
       <RouterBlocker
-        when={!saved}
+        when={!isSaved()}
         message={t('You may have unsaved changes. Are you sure you want to leave?')}
       />
     </>

@@ -8,6 +8,7 @@ import { LinePlaceholder, MarkdownContent } from '.';
 import { Box, Chip, Divider, IconButton, Typography } from '@mui/joy';
 import { ContentCopyRounded } from '@mui/icons-material';
 import { getSenderReply } from '../libs/chat_utils';
+import { getMessageText } from '../libs/template_utils';
 
 type ChatContentProps = {
   disabled?: boolean;
@@ -18,7 +19,6 @@ type ChatContentProps = {
   sx?: SxProps;
   onMessage?: (partialResult: LlmResultDTO) => boolean;
   onFinish?: (result: LlmResultDTO | undefined) => void;
-  onClose?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onError?: (reason: any) => void;
 }
@@ -32,7 +32,6 @@ export default function ChatContent({
   sx,
   onMessage,
   onFinish,
-  onClose,
   onError
 }: ChatContentProps) {
   const { t } = useTranslation('chat');
@@ -45,6 +44,7 @@ export default function ChatContent({
   useEffect(() => {
     const hasBody = body !== undefined;
     const controller = new AbortController();
+    let shouldReconnect = true;
 
     if (disabled || !url) {
       return;
@@ -79,21 +79,28 @@ export default function ChatContent({
           },
           onmessage(event) {
             const result = JSON.parse(event.data) as LlmResultDTO;
-            if (result.text) {
+            if (result.finishReason) {
+              const fullMessage = getMessageText(result.message);
+              if (fullMessage) {
+                setData(fullMessage);
+              }
+              setUsage(result.tokenUsage);
+              onFinish?.(result);
+            } else if (result.text) {
               if (onMessage === undefined || onMessage(result)) {
                 setData((currentData) => currentData + result.text);
               }
-            }
-            if (result.finishReason) {
-              setUsage(result.tokenUsage);
-              onFinish?.(result);
             }
           },
           onerror(error) {
             onError ? onError(error) : handleError(error);
           },
           onclose() {
-            onClose?.();
+            if (shouldReconnect) {
+              // console.log("Trying to reconnect...");
+              // setTimeout(startListening, 3000);
+              console.error("The connection has been closed...");
+            }
           }
         });
       } catch (error) {
@@ -104,10 +111,11 @@ export default function ChatContent({
     startListening();
     return () => {
       // console.log('ChatContent was closed!');
+      shouldReconnect = false;
       controller.abort();
     };
     
-  }, [url, body, onFinish, onMessage, onError, onClose, handleError, disabled, t]);
+  }, [url, body, onFinish, onMessage, onError, handleError, disabled, t]);
 
   return (
     <Fragment>

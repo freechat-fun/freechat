@@ -18,6 +18,7 @@ import java.util.Map;
 public class AsyncConfig {
     public static final String DEFAULT_EXECUTOR = "defaultExecutor";
     public static final String EVENT_EXECUTOR = "eventExecutor";
+    public static final String RAG_EXECUTOR = "ragExecutor";
 
     @Configuration
     public static class DefaultExecutorConfiguration {
@@ -44,6 +45,21 @@ public class AsyncConfig {
         }
 
         @Bean(name = EVENT_EXECUTOR)
+        public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+            return builderFor(taskExecutionProperties())
+                    .build(TraceThreadPoolTaskExecutor.class);
+        }
+    }
+
+    @Configuration
+    public static class RagExecutorConfiguration {
+        @Bean(name = RAG_EXECUTOR + "Properties")
+        @ConfigurationProperties(prefix = "spring.task.rag-execution")
+        public TaskExecutionProperties taskExecutionProperties() {
+            return new TaskExecutionProperties();
+        }
+
+        @Bean(name = RAG_EXECUTOR)
         public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
             return builderFor(taskExecutionProperties())
                     .build(TraceThreadPoolTaskExecutor.class);

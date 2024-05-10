@@ -9,8 +9,8 @@ helm repo update
 
 helm --kubeconfig ${KUBE_CONFIG} install --create-namespace \
   --namespace ingress-default \
-  --create-namespace \
   --set controller.extraArgs.enable-ssl-passthrough=true \
   --set controller.service.externalTrafficPolicy=Local \
+  --set controller.config.proxy-body-size=20m \
   ${ARGS[*]} \
   ${PROJECT_NAME} ingress-nginx/ingress-nginx

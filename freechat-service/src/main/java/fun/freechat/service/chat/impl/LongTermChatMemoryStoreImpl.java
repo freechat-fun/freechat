@@ -124,7 +124,11 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
             log.error("Failed to update long term memory for [{}]", memoryId, ex);
         } finally {
             if (locked) {
-                lock.unlock();
+                try {
+                    lock.unlock();
+                } catch (Throwable unlockEx) {
+                    log.warn("Unlock failed!", unlockEx);
+                }
             }
         }
     }

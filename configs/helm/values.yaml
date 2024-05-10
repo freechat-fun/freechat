@@ -66,6 +66,7 @@ ingress:
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+    nginx.ingress.kubernetes.io/proxy-body-size: "20M"
   hosts:
     - host: freechat.fun
       backend:

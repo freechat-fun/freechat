@@ -6,4 +6,9 @@ const providers = [{
   provider: 'dash_scope',
 }];
 
-export { providers };
+const defaultModels = {
+  'open_ai': '[open_ai]gpt-4-turbo',
+  'dash_scope': '[dash_scope]qwen-max-longcontext',
+}
+
+export { providers, defaultModels };

@@ -133,7 +133,7 @@ export default function CharacterDocumentsPane({
     <Stack spacing={3} sx={{...sx}}>
       <CommonBox>
         <Typography level="title-md">
-          {t('Character documents: (A maximum of 10 documents are allowed, each document is less than 10M)')}
+          {t('Character documents: (A maximum of 10 documents are allowed, each document is less than 3M)')}
         </Typography>
         <IconButton onClick={() =>handleRefreshTasks()}>
           <RefreshRounded />

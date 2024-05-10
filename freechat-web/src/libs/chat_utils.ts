@@ -113,7 +113,7 @@ Imitate conversations between people, which means:
 > [Conversation Time] {{CURRENT_TIME}}
 """
 {{#CHAT_CONTEXT}}
-  - The context information of the current conversation starts with "> [Conversation Context]". Here you need to quote the content in "[[[Context information of the current conversation]]]":
+  - The context information of the current conversation starts with "> [Conversation Context]". Here you need to refer to the content in "[[[Contextual information about the current conversation]]]" and historical messages to propose a summary:
 """
 > [Conversation Context] {{CHAT_CONTEXT}}
 """
@@ -140,10 +140,14 @@ Your name: {{CHARACTER_NICKNAME}}
 {{#CHARACTER_GENDER}}
 Your gender: {{CHARACTER_GENDER}}
 {{/CHARACTER_GENDER}}
-{{#CHARACTER_CHAT_STYLE}}
-Your chat style: {{{CHARACTER_CHAT_STYLE}}}.
-{{/CHARACTER_CHAT_STYLE}}
 {{{CHARACTER_PROFILE}}}
+
+{{#CHARACTER_CHAT_STYLE}}
+[[[Your chat style]]]
+"""
+{{{CHARACTER_CHAT_STYLE}}}
+"""
+{{/CHARACTER_CHAT_STYLE}}
 
 {{#CHARACTER_CHAT_EXAMPLE}}
 [[[Your chat examples]]]
@@ -159,17 +163,17 @@ Name: {{USER_NICKNAME}}
 [[[Current time]]]
 {{CURRENT_TIME}}
 
-{{#CHAT_CONTEXT}}
-[[[Context information of the current conversation]]]
-{{CHAT_CONTEXT}}
-{{/CHAT_CONTEXT}}
-
 {{#RELEVANT_INFORMATION}}
-[[[Some additional reference information]]]
+[[[Relevant fragments retrieved that may be relevant to the query]]]
 """
 {{{RELEVANT_INFORMATION}}}
 """
 {{/RELEVANT_INFORMATION}}
+
+{{#CHAT_CONTEXT}}
+[[[Contextual information about the current conversation. This information will be presented to the user. Therefore, in this information, "you" refers to the user you are talking to, not the role you play.]]]
+{{CHAT_CONTEXT}}
+{{/CHAT_CONTEXT}}
 `;
 
 const CHARACTER_PROMPT_TEMPLATE_ZH = `你扮演一个健谈的人。
@@ -184,7 +188,7 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `你扮演一个健谈的人。
 > [对话发生时间] {{CURRENT_TIME}}
 """
 {{#CHAT_CONTEXT}}
-  - 当前对话的上下文信息，以"> [对话上下文]"开始，这里需要引用"【当前对话的上下文信息】"中的内容：
+  - 当前对话的上下文信息，以"> [对话上下文]"开始。这里需要参考"【当前对话的上下文信息】"中的内容，以及历史信息，提出摘要：
 """
 > [对话上下文] {{CHAT_CONTEXT}}
 """
@@ -209,10 +213,14 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `你扮演一个健谈的人。
 {{#CHARACTER_GENDER}}
 你的性别：{{CHARACTER_GENDER}}
 {{/CHARACTER_GENDER}}
-{{#CHARACTER_CHAT_STYLE}}
-你的聊天风格：{{{CHARACTER_CHAT_STYLE}}}。
-{{/CHARACTER_CHAT_STYLE}}
 {{{CHARACTER_PROFILE}}}
+
+{{#CHARACTER_CHAT_STYLE}}
+【你的聊天风格】
+"""
+{{{CHARACTER_CHAT_STYLE}}}
+"""
+{{/CHARACTER_CHAT_STYLE}}
 
 {{#CHARACTER_CHAT_EXAMPLE}}
 【你的聊天示例】
@@ -228,17 +236,17 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `你扮演一个健谈的人。
 【当前时间】
 {{CURRENT_TIME}}
 
-{{#CHAT_CONTEXT}}
-【当前对话的上下文信息】
-{{CHAT_CONTEXT}}
-{{/CHAT_CONTEXT}}
-
 {{#RELEVANT_INFORMATION}}
-【一些额外的参考信息】
+【检索到的相关片段，可能与对话有关】
 """
 {{{RELEVANT_INFORMATION}}}
 """
 {{/RELEVANT_INFORMATION}}
+
+{{#CHAT_CONTEXT}}
+【当前对话的上下文信息，这段信息会向用户呈现，因此，在这段信息中，“你”指代的是与你对话的用户，而不是你扮演的角色】
+{{CHAT_CONTEXT}}
+{{/CHAT_CONTEXT}}
 `;
 
 export function createPromptForCharacter(characterName: string | undefined, lang: string | undefined): PromptCreateDTO {

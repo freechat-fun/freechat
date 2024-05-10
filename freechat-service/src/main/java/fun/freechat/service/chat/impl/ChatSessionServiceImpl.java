@@ -139,6 +139,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             unless="#result == null")
     public ChatSession get(String chatId) {
         ChatContext context = chatContextService.get(chatId);
+        if (Objects.isNull(context)) {
+            return null;
+        }
         return get(context);
     }
 
@@ -356,7 +359,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             log.warn("Failed to build chat session of {}", chatId, e);
             return null;
         } finally {
-            lock.unlock();
+            try {
+                lock.unlock();
+            } catch (Throwable unlockEx) {
+                log.warn("Unlock failed!", unlockEx);
+            }
         }
     }
 

@@ -11,6 +11,7 @@ import fun.freechat.service.rag.RagTaskRunner;
 import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.service.rag.RagTaskStartedEvent;
 import fun.freechat.service.util.CacheUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -28,6 +29,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 @Service
+@Slf4j
 @SuppressWarnings("unused")
 public class RagTaskServiceImpl implements RagTaskService {
     final static String CACHE_KEY_PREFIX = "RagTaskService_";
@@ -200,6 +202,9 @@ public class RagTaskServiceImpl implements RagTaskService {
                 setStatus(task, SUCCEEDED, null);
             } else {
                 TaskStatus status = throwable instanceof CancellationException ? CANCELED : FAILED;
+                if (status == FAILED) {
+                    log.error("RagTask {} failed with error.", taskId, throwable);
+                }
                 setStatus(task, status, new RagTaskExt(throwable.getMessage(), throwable));
             }
             if (Objects.nonNull(cache)) {
