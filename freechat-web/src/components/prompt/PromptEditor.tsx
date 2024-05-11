@@ -72,6 +72,8 @@ export default function PromptEditor({
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
 
   const originName = useRef<string>();
+  const systemRef = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLDivElement>(null);
 
   const FORMATS = [
     {
@@ -135,6 +137,24 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
       .then(setModelInfos)
       .catch(handleError);
   }, [handleError, id, promptApi, aiServiceApi]);
+
+  useEffect(() => {
+    const { hash } = window.location;
+    const delay = 200;
+    let handler: NodeJS.Timeout | undefined;
+    
+    if (hash === '#system' && systemRef.current) {
+      handler = setTimeout(() => systemRef.current?.scrollIntoView({ behavior: 'smooth' }), delay);
+    } else if (hash === '#messages' && messageRef.current) {
+      handler = setTimeout(() => messageRef.current?.scrollIntoView({ behavior: 'smooth' }), delay);
+    }
+
+    return () => {
+      if (handler) {
+        clearTimeout(handler);
+      }
+    };
+  }, [origRecord]);
 
   useEffect(() => {
     setDefaultParameters(parameters ? {...parameters} : undefined);
@@ -444,7 +464,12 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
     promptApi?.updatePrompt(id, request)
       .then(resp => {
         if (resp) {
-          onUpdated(id, editRecord.visibility === 'private' ? 'private' : 'public');
+          promptApi?.getPromptDetails(id)
+            .then(newRecord => {
+              setOrigRecord(newRecord);
+              onUpdated(id, editRecord.visibility === 'private' ? 'private' : 'public');
+            })
+            .catch(handleError);
         }
       })
       .catch(handleError);
@@ -522,9 +547,6 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
   }
 
   function isSaved(): boolean {
-    if (!origRecord) {
-      return false;
-    }
     if (origRecord.username !== username) {
       return false;
     }
@@ -654,7 +676,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                 <Stack spacing={1} sx={{
                   minWidth: { sm: '12rem' },
                 }}>
-                  <Chip variant="soft" color="primary">SYSTEM</Chip>
+                  <Chip ref={systemRef} variant="soft" color="primary">SYSTEM</Chip>
                   <ContentTextarea
                     name="system"
                     minRows={3}
@@ -665,7 +687,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                 <Stack spacing={1} sx={{
                   minWidth: { sm: '12rem' },
                 }}>
-                  <CommonBox>
+                  <CommonBox ref={messageRef}>
                     <Chip variant="soft" color="primary">MESSAGES</Chip>
                     <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('These messages will always be used as the starting message in the chat history')}>
                       <HelpIcon />

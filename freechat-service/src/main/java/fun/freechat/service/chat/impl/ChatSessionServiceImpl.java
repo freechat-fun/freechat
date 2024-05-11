@@ -317,7 +317,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .executor(executor)
                     .build();
 
-            // todo: long-term memory
+            // long-term memory
             RetrievalAugmentor longTermMemoryRetrievalAugmentor = null;
             Integer longTermMemoryWindowSize = backend.getLongTermMemoryWindowSize();
 

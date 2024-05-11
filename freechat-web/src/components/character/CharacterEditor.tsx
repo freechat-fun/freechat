@@ -54,6 +54,7 @@ export default function CharacterEditor ({
   const [editEnabled, setEditEnabled] = useState(false);
 
   const originName = useRef('');
+  const backendRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     if (id) {
@@ -98,6 +99,12 @@ export default function CharacterEditor ({
       setEditEnabled(true);
     }
   }, [origRecord, username]);
+
+  useEffect(() => {
+    if (editBackend && backendRef.current) {
+      backendRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [editBackend]);
 
   function handleNameChange(): void {
     if (editRecordNameError) {
@@ -212,12 +219,17 @@ export default function CharacterEditor ({
     characterApi?.updateCharacter(id, request)
       .then(resp => {
         if (resp) {
-          onUpdated(
-            editRecord.characterId as number,
-            editRecord.visibility === 'private' ? 'private' : 'public',
-            editRecord.nickname ?? editRecord.name ?? '',
-            editRecord.defaultScene,
-          );
+          characterApi?.getCharacterDetails(id)
+            .then(newRecord => {
+              setOrigRecord(newRecord);
+              onUpdated(
+                editRecord.characterId as number,
+                editRecord.visibility === 'private' ? 'private' : 'public',
+                editRecord.nickname ?? editRecord.name ?? '',
+                editRecord.defaultScene,
+              );
+            })
+            .catch(handleError);
         }
       })
       .catch(handleError);
@@ -255,6 +267,7 @@ export default function CharacterEditor ({
     backend: CharacterBackendDetailsDTO,
     promptTask?: PromptTaskDTO,
     redirectToChatPrompt?: boolean,
+    redirectHash?: string,
   ) {
     const request = new CharacterBackendDTO();
     request.chatPromptTaskId = backend.chatPromptTaskId;
@@ -273,7 +286,7 @@ export default function CharacterEditor ({
         characterApi?.updateCharacterBackend(backendId, req)
           .then(() => {
             if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
+              navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}${redirectHash ?? ''}`);
             } else {
               setBackends((prevBackends) => {
                 const others = prevBackends.filter(prevBackend => prevBackend.backendId !== backendId);
@@ -287,7 +300,7 @@ export default function CharacterEditor ({
           characterApi?.addCharacterBackend(id, req)
             .then((bId) => {
               if (redirectToChatPrompt && req.chatPromptTaskId) {
-                navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}`);
+                navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}${redirectHash ?? ''}`);
               } else {
                 setBackends((prevBackends) => {
                   return [...prevBackends, {...backend, backendId: bId, chatPromptTaskId: req.chatPromptTaskId}];
@@ -355,9 +368,6 @@ export default function CharacterEditor ({
   }
 
   function isSaved(): boolean {
-    if (!origRecord) {
-      return false;
-    }
     if (origRecord.username !== username) {
       return false;
     }
@@ -712,6 +722,7 @@ export default function CharacterEditor ({
 
         {editBackend ? (
           <CharacterBackendSettings
+            ref={backendRef}
             backend={{...editBackend}}
             onSave={handleBackendUpdated}
             onCancel={() => setEditBackend(undefined)}

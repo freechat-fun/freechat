@@ -81,6 +81,9 @@ export default function CharacterGuide(props: CardProps) {
         <Step>
           <Typography level="body-sm">{t('Prompt template')}</Typography>
         </Step>
+        <Step>
+          <Typography level="body-sm">{t('Preset memory')}</Typography>
+        </Step>
         <Step indicator={
           <StepIndicator color="primary">
             <CircleOutlined fontSize="small" />

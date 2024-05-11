@@ -12,7 +12,7 @@ Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializ
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
 - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
-- Supports **long-term memory** for characters.
+- Supports **long-term memory, preset memory** for characters.
 - Supports setting **quota limits** for characters.
 
 ## System Snapshots

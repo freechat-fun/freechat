@@ -1,4 +1,4 @@
-import { Fragment, createRef, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, createRef, forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Card, CardProps, IconButton, Option, Radio, RadioGroup, Select, Slider, Switch, Typography } from "@mui/joy";
 import { ArrowOutwardRounded, DoneRounded, KeyRounded, TuneRounded, UndoRounded } from "@mui/icons-material";
@@ -16,11 +16,12 @@ type CharacterBackendSettingsProps = CardProps & {
     backend: CharacterBackendDetailsDTO,
     promptTask?: PromptTaskDTO,
     redirectToChatPrompt?: boolean,
+    redirectHash?: string,
   ) => void;
   onCancel?: () => void;
 }
 
-export default function CharacterBackendSettings(props: CharacterBackendSettingsProps) {
+const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSettingsProps>((props, ref) => {
   const { t } = useTranslation('character');
   const { aiServiceApi, promptTaskApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -106,7 +107,7 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
     setModelSetting(false);
   }
 
-  function handleSave(redirectToChatPrompt: boolean = false) {
+  function handleSave(redirectToChatPrompt: boolean = false, redirectHash?: string) {
     let editBackend;
     if (backend) {
       editBackend = { ...backend, messageWindowSize, longTermMemoryWindowSize };
@@ -129,12 +130,12 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
     editPromptTask.modelId = modelId;
     editPromptTask.params = modelParameters;
 
-    onSave?.(editBackend, editPromptTask, redirectToChatPrompt);
+    onSave?.(editBackend, editPromptTask, redirectToChatPrompt, redirectHash);
   }
 
   return (
     <Fragment>
-      <Card sx={{
+      <Card ref={ref} sx={{
         my: 2,
         mx: { xs: 0, sm: 2 },
         p: 2,
@@ -352,10 +353,20 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
         <OptionCard>
           <CommonContainer>
             <Typography level="title-sm" textColor="neutral">
-              {t('Prompt')}
+              {t('Prompt Template')}
             </Typography>
             <OptionTooltip title={t('Adjust prompt words.')}>
-              <IconButton onClick={() => handleSave(true)}>
+              <IconButton onClick={() => handleSave(true, '#system')}>
+                <ArrowOutwardRounded />
+              </IconButton>
+            </OptionTooltip>
+          </CommonContainer>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
+              {t('Preset Memory')}
+            </Typography>
+            <OptionTooltip title={t('Adjust preset memory.')}>
+              <IconButton onClick={() => handleSave(true, '#messages')}>
                 <ArrowOutwardRounded />
               </IconButton>
             </OptionTooltip>
@@ -393,4 +404,6 @@ export default function CharacterBackendSettings(props: CharacterBackendSettings
         defaultParameters={parameters} />
     </Fragment>
   );
-}
+});
+
+export default CharacterBackendSettings;
