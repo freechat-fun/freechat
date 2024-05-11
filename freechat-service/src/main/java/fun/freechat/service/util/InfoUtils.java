@@ -74,10 +74,6 @@ public class InfoUtils {
         }
     }
 
-    private static Integer getOrDefault(List<Integer> info, int index, Integer defaultValue) {
-        return info.size() > index ? info.get(index) : defaultValue;
-    }
-
     public static void main(String[] args) throws JsonProcessingException {
         String text = "[1,2,3]";
         List<Integer> usage = defaultMapper().readValue(text, new TypeReference<>() {});

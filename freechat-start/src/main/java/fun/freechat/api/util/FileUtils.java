@@ -2,8 +2,10 @@ package fun.freechat.api.util;
 
 import fun.freechat.service.common.FileStore;
 import fun.freechat.util.IdUtils;
+import fun.freechat.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,6 +18,13 @@ import java.util.List;
 public class FileUtils {
     public static final String PUBLIC_DIR = "public/";
     public static final String PRIVATE_DIR = "private/";
+
+    private static String filenameFor(MultipartFile file) {
+        String filteredOriginFilename = SecurityUtils.filterPath(file.getOriginalFilename());
+        return StringUtils.isBlank(filteredOriginFilename) ?
+                IdUtils.newId() :
+                IdUtils.newId() + "-" + filteredOriginFilename.replaceAll("/", "-");
+    }
     
     public static String transfer(MultipartFile file, FileStore fileStore, String dstDir, int maxCount)
             throws IOException {
@@ -28,7 +37,7 @@ public class FileUtils {
         } else {
             fileStore.createDirectories(dstDir);
         }
-        String dstPath = dstDir + "/" + IdUtils.newId() + "-" + file.getOriginalFilename();
+        String dstPath = dstDir + "/" + filenameFor(file);
         fileStore.write(dstPath, file.getInputStream());
         log.info("Saved file: {}", dstPath);
         return dstPath;
