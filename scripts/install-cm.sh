@@ -16,6 +16,8 @@ helm --kubeconfig ${KUBE_CONFIG} install -f ${values_yaml} \
   --set bitnami.milvus.enabled=false \
   --set bitnami.mysql.enabled=false \
   --set bitnami.redis.enabled=false \
+  --set bitnami.prometheus.enabled=false \
+  --set bitnami.grafana.enabled=false \
   --set deployment.backend.enabled=false \
   --set deployment.frontend.enabled=false \
   --set deployment.pvc.enabled=false \

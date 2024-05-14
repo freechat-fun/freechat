@@ -2,7 +2,7 @@ annotations:
   licenses: Apache-2.0
   group: fun.freechat
 apiVersion: v1
-appVersion: '0.10.0'
+appVersion: '1.0.2'
 dependencies:
   - condition: bitnami.mysql.enabled
     name: mysql
@@ -28,6 +28,22 @@ dependencies:
       - embedding
       - database
     version: 6.x.x
+  - condition: bitnami.prometheus.enabled
+    name: prometheus
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - prometheus
+      - metrics
+      - alert
+    version: 1.x.x
+  - condition: bitnami.grafana.enabled
+    name: grafana
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - grafana
+      - metrics
+      - dashboard
+    version: 10.x.x
 description: A Helm chart for freechat
 maintainers:
   - email: dev.freechat.fun@gmail.com

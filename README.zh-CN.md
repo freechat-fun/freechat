@@ -104,6 +104,15 @@ milvus:
 
 这样一来，FreeChat 将不自动安装这些服务，而是直接利用配置信息进行连接。
 
+如果您的 Kubernetes 集群没有独立的监控系统，您可以启用以下开关。 这会将 Prometheus 和 Grafana 服务安装在同一命名空间中，专门用于监控 FreeChat 应用程序下的服务状态：
+```yaml
+bitnami:
+  prometheus:
+    enabled: true
+  grafana:
+    enabled: true
+```
+
 ### 运行在本地
 您同样可以在本地运行 FreeChat。目前支持 MacOS 和 Linux（实际上，仅在 MacOS 上进行了测试）。您需要安装 Docker 工具集，并拥有能访问到 [Docker Hub](https://hub.docker.com/) 的网络。
 
@@ -209,6 +218,7 @@ npm install freechat-sdk --save
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
 | Model Providers | [OpenAI](https://platform.openai.com/), [DashScope](https://dashscope.aliyun.com/)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
+| Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
 
 ## 合作

@@ -33,6 +33,10 @@ bitnami:
     enabled: true
   milvus:
     enabled: true
+  prometheus:
+    enabled: false
+  grafana:
+    enabled: false
 cert:
   manager:
     namespace: cert-manager
@@ -79,6 +83,24 @@ ingress:
             pathType: Prefix
   tls:
     enabled: true
+mysql:
+  url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8
+  auth:
+    database: freechat
+    username: freechat
+    password: ''
+    rootPassword: ''
+  initdbScripts:
+    1-schema.sql: ''
+    2-data.sql: ''
+  metrics:
+    enabled: true
+redis:
+  url: redis://freechat-redis-master:6379
+  replica:
+    replicaCount: 0
+  metrics:
+    enabled: true
 milvus:
   url: http://freechat-milvus-proxy:19530
   milvus:
@@ -90,9 +112,13 @@ milvus:
       token: ''
   etcd:
     replicaCount: 1
+    persistence:
+      size: 16Gi
   proxy:
     service:
       type: ClusterIP
+    metrics:
+      enabled: true
   attu:
     service:
       type: ClusterIP
@@ -103,20 +129,69 @@ milvus:
       tls: true
       annotations:
         cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
-mysql:
-  url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8
-  auth:
-    database: freechat
-    username: freechat
+prometheus:
+  alertmanager:
+    service:
+      type: ClusterIP
+  server:
+    service:
+      type: ClusterIP
+    configuration: |
+      global:
+        {{- if .Values.server.scrapeInterval }}
+        scrape_interval: {{ .Values.server.scrapeInterval }}
+        {{- end }}
+        {{- if .Values.server.scrapeTimeout }}
+        scrape_timeout: {{ .Values.server.scrapeTimeout }}
+        {{- end }}
+        {{- if .Values.server.evaluationInterval }}
+        evaluation_interval: {{ .Values.server.evaluationInterval }}
+        {{- end }}
+        external_labels:
+          monitor: {{ template "common.names.fullname" . }}
+          {{- if .Values.server.externalLabels }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.server.externalLabels "context" $) | nindent 4 }}
+          {{- end }}
+      {{- if .Values.server.remoteWrite }}
+      remote_write: {{- include "common.tplvalues.render" (dict "value" .Values.server.remoteWrite "context" $) | nindent 4 }}
+      {{- end }}
+      scrape_configs:
+        - job_name: prometheus
+        {{- include "prometheus.scrape_config" (dict "component" "server" "context" $) | nindent 4 }}
+      {{- if .Values.alertmanager.enabled }}
+        - job_name: alertmanager
+          {{- include "prometheus.scrape_config" (dict "component" "alertmanager" "context" $) | nindent 4 }}
+      {{- end }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "mysql" "component" "metrics" "context" $)) "context" $) | nindent 2 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "redis" "component" "metrics" "context" $)) "context" $) | nindent 2 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "milvus" "component" "data-coordinator|data-node|index-coordinator|index-node|proxy|query-coordinator|query-node|root-coordinator" "context" $)) "context" $) | nindent 2 }}
+      {{- if or .Values.alertmanager.enabled .Values.server.alertingEndpoints}}
+      alerting:
+        alertmanagers:
+          {{- if .Values.server.alertingEndpoints }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.server.alertingEndpoints "context" $) | nindent 4 }}
+          {{- end }}
+          - scheme: HTTP
+            static_configs:
+              - targets: [ "{{ printf "%s.%s.svc.%s:%d" (include "prometheus.alertmanager.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain (int .Values.alertmanager.service.ports.http) }}" ]
+      rule_files:
+        - rules.yaml
+      {{- end }}
+grafana:
+  admin:
+    user: freechat
     password: ''
-    rootPassword: ''
-  initdbScripts:
-    1-schema.sql: ''
-    2-data.sql: ''
-redis:
-  url: redis://freechat-redis-master:6379
-  replica:
-    replicaCount: 0
+  datasources:
+    secretName: freechat-grafana-configs
+  persistence:
+    size: 8Gi
+  ingress:
+    enabled: true
+    hostname: grafana.freechat.fun
+    ingressClassName: nginx
+    tls: true
+    annotations:
+      cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
 replicaCount: 2
 resources:
   limits: {}
