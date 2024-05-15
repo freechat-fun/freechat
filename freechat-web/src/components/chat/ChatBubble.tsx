@@ -150,6 +150,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                 <ImagePreview src={content.content} />
               ) : (
                 <MarkdownContent sx={(theme) => ({
+                  whiteSpace: 'pre-wrap',
                   color: isSent
                     ? theme.palette.common.white
                     : theme.palette.text.primary,

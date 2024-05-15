@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { useRef, KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Chip, FormControl, Stack, Textarea } from "@mui/joy";
+import { Box, Button, FormControl, IconButton, Input, Stack, Textarea } from "@mui/joy";
 import { SendRounded } from "@mui/icons-material";
 
 export type MessageInputProps = {
@@ -15,16 +15,53 @@ export default function MessageInput(props: MessageInputProps) {
   const { t } = useTranslation('chat');
   
   const textAreaRef = useRef<HTMLDivElement>(null);
-  const handleClick = () => {
+  function handleClick() {
     if (textAreaValue.trim() !== '') {
       onSubmit();
       setTextAreaValue('');
     }
-  };
+  }
+
+  function handleSend(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.nativeEvent.isComposing) {
+      return;
+    }
+
+    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+      // send
+      event.preventDefault();
+      handleClick();
+    }
+  } 
+
+  // function handleSendByEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
+  //   if (event.nativeEvent.isComposing) {
+  //     return;
+  //   }
+
+  //   if (event.key === 'Enter') {
+  //     if (event.metaKey || event.ctrlKey) {
+  //       // new line
+  //       event.preventDefault();
+  //       const textarea = event.target as HTMLTextAreaElement;
+  //       const cursorPosition = textarea.selectionStart;
+  //       const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+  //       const textAfterCursor = textarea.value.substring(cursorPosition);
+  //       textarea.value = textBeforeCursor + '\n' + textAfterCursor;
+  //       textarea.selectionStart = cursorPosition + 1;
+  //       textarea.selectionEnd = cursorPosition + 1;
+  //     } else {
+  //       // send
+  //       event.preventDefault();
+  //       handleClick();
+  //     }
+  //   }
+  // }
+
   return (
     <Box sx={{ px: 2, pb: 3 }}>
       <FormControl>
-        <Textarea
+        {/* <Textarea
           disabled={disabled}
           placeholder="Type something here…"
           aria-label="Message"
@@ -61,27 +98,76 @@ export default function MessageInput(props: MessageInputProps) {
               </Button>
             </Stack>
           }
-          onKeyDown={(event) => {
-            if (event.nativeEvent.isComposing) {
-              return;
-            }
+          onKeyDown={handleSendByEnter}
+        /> */}
 
-            if (event.key === 'Enter') {
-              if (event.metaKey || event.ctrlKey) {
-                event.preventDefault();
-                const textarea = event.target as HTMLTextAreaElement;
-                const cursorPosition = textarea.selectionStart;
-                const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-                const textAfterCursor = textarea.value.substring(cursorPosition);
-                textarea.value = textBeforeCursor + '\n' + textAfterCursor;
-                textarea.selectionStart = cursorPosition + 1;
-                textarea.selectionEnd = cursorPosition + 1;
-              } else {
-                event.preventDefault();
-                handleClick();
+        <Input
+          disabled={disabled}
+          placeholder="Type something here…"
+          aria-label="Message"
+          ref={textAreaRef}
+          onChange={(e) => setTextAreaValue(e.target.value)}
+          value={textAreaValue}
+          slotProps={{
+            input: {
+              component: Textarea,
+              variant: 'plain',
+              minRows: 1,
+              maxRows: 5,
+              sx: {
+                '--Textarea-focusedInset': 'inset',
+                '--Textarea-focusedThickness': 0,
+                p: 1.2,
+              },
+            },
+            endDecorator: {
+              sx: {
+                alignSelf: 'flex-end',
               }
             }
           }}
+          endDecorator={
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="center"
+              flexGrow={1}
+              sx={{
+                py: 1,
+                pr: 1,
+                borderTop: '1px solid',
+                borderColor: 'divider',
+              }}
+            >
+              <Button
+                disabled={disabled || !textAreaValue}
+                size="sm"
+                color="primary"
+                sx={{
+                  display: { xs: 'none', lg: 'inherit' },
+                  alignSelf: 'center',
+                }}
+                endDecorator={<SendRounded />}
+                onClick={handleClick}
+              >
+                {`${t('Send')} (Ctrl/⌘ + ⏎)`}
+              </Button>
+              <IconButton
+                disabled={disabled || !textAreaValue}
+                size="sm"
+                color="primary"
+                variant="solid"
+                sx={{
+                  display: { xs: 'inherit', lg: 'none' },
+                  alignSelf: 'center',
+                }}
+                onClick={handleClick}
+              >
+                <SendRounded />
+              </IconButton>
+            </Stack>
+          }
+          onKeyDown={handleSend}
         />
       </FormControl>
     </Box>

@@ -214,7 +214,8 @@ export default function Chats() {
 
       <Sheet
         sx={{
-          position: { xs: 'none', sm: 'sticky' },
+          display: { xs: 'none', md: 'block' },
+          position: 'sticky',
           width: '100%',
         }}
       >

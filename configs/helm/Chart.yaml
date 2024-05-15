@@ -6,7 +6,7 @@ appVersion: '1.0.2'
 dependencies:
   - condition: bitnami.mysql.enabled
     name: mysql
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - mysql
       - sql
@@ -14,7 +14,7 @@ dependencies:
     version: 10.x.x
   - condition: bitnami.redis.enabled
     name: redis
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - redis
       - keyvalue
@@ -22,15 +22,15 @@ dependencies:
     version: 19.x.x
   - condition: bitnami.milvus.enabled
     name: milvus
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - milvus
       - embedding
       - database
-    version: 6.x.x
+    version: 7.x.x
   - condition: bitnami.prometheus.enabled
     name: prometheus
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - prometheus
       - metrics
@@ -38,7 +38,7 @@ dependencies:
     version: 1.x.x
   - condition: bitnami.grafana.enabled
     name: grafana
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - grafana
       - metrics

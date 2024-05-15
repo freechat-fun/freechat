@@ -103,6 +103,24 @@ redis:
     enabled: true
 milvus:
   url: http://freechat-milvus-proxy:19530
+  initJob:
+    resourcesPreset: none
+  waitContainer:
+    resourcesPreset: none
+  dataCoord:
+    resourcesPreset: none
+  rootCoord:
+    resourcesPreset: none
+  queryCoord:
+    resourcesPreset: none
+  indexCoord:
+    resourcesPreset: none
+  dataNode:
+    resourcesPreset: none
+  queryNode:
+    resourcesPreset: none
+  indexNode:
+    resourcesPreset: none
   milvus:
     auth:
       enabled: true
@@ -119,6 +137,7 @@ milvus:
       type: ClusterIP
     metrics:
       enabled: true
+    resourcesPreset: none
   attu:
     service:
       type: ClusterIP
@@ -129,6 +148,7 @@ milvus:
       tls: true
       annotations:
         cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+    resourcesPreset: none
 prometheus:
   alertmanager:
     service:
