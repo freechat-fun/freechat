@@ -48,7 +48,7 @@ export default function ChatsPane(props: ChatsPaneProps) {
       sx={{
         borderRight: '1px solid',
         borderColor: 'divider',
-        height: '100dvh',
+        height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
         overflowY: 'auto',
       }}
     >
@@ -57,7 +57,8 @@ export default function ChatsPane(props: ChatsPaneProps) {
         spacing={1}
         alignItems="center"
         justifyContent="space-between"
-        p={2}
+        px={2}
+        pt={2}
         pb={1.5}
       >
         <Typography
@@ -78,28 +79,30 @@ export default function ChatsPane(props: ChatsPaneProps) {
         >
           {t('Messages')}
         </Typography>
-        <IconButton
-          variant="plain"
-          aria-label="edit"
-          color="neutral"
-          size="sm"
-          sx={{ display: 'unset' }}
-          onClick={() => setEditMode(!editMode)}
-        >
-          { editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded /> }
-        </IconButton>
-        <IconButton
-          variant="plain"
-          aria-label="edit"
-          color="neutral"
-          size="sm"
-          onClick={() => {
-            toggleMessagesPane();
-          }}
-          sx={{ display: { sm: 'none' } }}
-        >
-          <CloseRounded />
-        </IconButton>
+        <Stack direction="row" sx={{ gap: 1 }}>
+          <IconButton
+            variant="plain"
+            aria-label="edit"
+            color="neutral"
+            size="sm"
+            sx={{ display: 'unset' }}
+            onClick={() => setEditMode(!editMode)}
+          >
+            { editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded /> }
+          </IconButton>
+          <IconButton
+            variant="plain"
+            aria-label="edit"
+            color="neutral"
+            size="sm"
+            onClick={() => {
+              toggleMessagesPane();
+            }}
+            sx={{ display: { sm: 'none' } }}
+          >
+            <CloseRounded />
+          </IconButton>
+        </Stack>
       </Stack>
       <Box sx={{ px: 2, pb: 1.5 }}>
         <Input

@@ -111,6 +111,7 @@ export default function Home() {
         </Card>
 
         <LinePlaceholder spacing={6} />
+        <CharacterRecommendationPane sx={{ mb: 6, width: '80%' }} />
         <CharacterGallery />
       </Stack>
     </>

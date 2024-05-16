@@ -78,9 +78,7 @@ export default function InfoSearchbar(props: {
           onChange={handleInputChange}
           placeholder={t('Search title, description, content and more')}
           startDecorator={<SearchRounded />}
-          sx={{
-            minWidth: '22rem',
-          }}
+          sx={{ flex: 1 }}
         />
         {enableModelSelect && (
           <Fragment>

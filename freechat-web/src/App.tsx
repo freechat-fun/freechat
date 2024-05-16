@@ -11,10 +11,16 @@ import {
   Experimental_CssVarsProvider as MaterialCssVarsProvider,
   THEME_ID as MATERIAL_THEME_ID,
 } from '@mui/material';
+import { useEffect } from 'react';
+import { openMessagesPane } from './libs/chat_utils';
 
 const materialTheme = materialExtendTheme();
 
 function App() {
+  useEffect(() => {
+    openMessagesPane();
+  }, []);
+
   return (
     <ContextsProvider>
       <MaterialCssVarsProvider defaultMode="dark" theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
@@ -24,12 +30,13 @@ function App() {
             styles={() => ({
               ':root': {
                 '--Collapsed-breakpoint': '769px', // form will stretch when viewport is below `769px`
-                '--Cover-width': '50vw', // must be `vw` only
+                '--Cover-width': '50dvw',
                 '--Form-maxWidth': '800px',
                 '--Transition-duration': '0.4s', // set to `none` to disable transition
                 '--Sidebar-width': '240px',
                 '--Header-height': '40px',
                 '--Footer-height': '80px',
+                '--Footer-width': '80vw',
               },
             })}
           />

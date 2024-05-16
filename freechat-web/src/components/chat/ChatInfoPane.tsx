@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Card, Divider, FormControl, Input, Typography } from "@mui/joy";
+import { Box, Button, Card, Divider, FormControl, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
 import { CommonGridBox, ContentTextarea, LinePlaceholder, TextareaTypography } from "..";
-import { CheckRounded, SaveAltRounded } from "@mui/icons-material";
+import { CheckRounded, CloseRounded, SaveAltRounded } from "@mui/icons-material";
 import { getLocaleLabel } from "../../configs/i18n-config";
 import { ChatInfoUsage } from ".";
+import { toggleChatInfoPane } from "../../libs/chat_utils";
 
 type ChatInfoPaneProps = {
   session?: ChatSessionDTO;
@@ -58,9 +59,27 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       p: 2,
       borderRadius: 0,
       borderColor: 'divider',
-      height: '100dvh',
+      height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
       overflowY: 'auto',
     }}>
+      <Stack direction="row" sx={{
+        display: { xs: 'inherit', sm: 'none' },
+        gap: 1,
+      }}>
+        <IconButton
+          variant="plain"
+          aria-label="edit"
+          color="neutral"
+          size="sm"
+          onClick={() => {
+            toggleChatInfoPane();
+          }}
+          sx={{ display: { sm: 'none' } }}
+        >
+          <CloseRounded />
+        </IconButton>
+        <Divider sx={{ my: 2 }} />
+      </Stack>
       <ChatInfoUsage
         session={session}
         memoryUsage={memoryUsage}

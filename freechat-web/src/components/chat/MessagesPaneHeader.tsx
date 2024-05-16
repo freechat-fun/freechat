@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Avatar, Chip, Dropdown, IconButton, ListItemDecorator, Menu, MenuButton, MenuItem, Stack, Switch, Typography } from "@mui/joy";
-import { ArrowBackIosNewRounded, CheckRounded, CircleRounded, DeleteForeverRounded, MoreVertRounded } from "@mui/icons-material";
+import { ArrowBackIosNewRounded, CheckRounded, CircleRounded, DeleteForeverRounded, InfoRounded, MoreVertRounded } from "@mui/icons-material";
 import { ChatSessionDTO } from "freechat-sdk";
-import { getSenderName, getSenderStatus, getSenderStatusColor, toggleMessagesPane } from "../../libs/chat_utils";
+import { getSenderName, getSenderStatus, getSenderStatusColor, toggleChatInfoPane, toggleMessagesPane } from "../../libs/chat_utils";
 import { CommonBox } from "..";
 
 type MessagesPaneHeaderProps = {
@@ -53,7 +53,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
           sx={{
             display: { xs: 'inline-flex', sm: 'none' },
           }}
-          onClick={() => toggleMessagesPane()}
+          onClick={toggleMessagesPane}
         >
           <ArrowBackIosNewRounded />
         </IconButton>
@@ -102,6 +102,14 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
             <MoreVertRounded />
           </MenuButton>
           <Menu>
+            <MenuItem onClick={toggleChatInfoPane} sx={{
+              display: { xs: 'inherit', sm: 'none' },
+            }}>
+              <ListItemDecorator>
+                <InfoRounded />
+              </ListItemDecorator>
+              {t('Chat Information')}
+            </MenuItem>
             <MenuItem
               disabled={enableBackground === undefined}
               onClick={() => setEnableBackground?.(!enableBackground)}
@@ -111,7 +119,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
               </ListItemDecorator>
               {t('Enable Background')}
             </MenuItem>
-            <MenuItem onClick={() => handleClearHistory()}>
+            <MenuItem onClick={handleClearHistory}>
               <ListItemDecorator>
                 <DeleteForeverRounded />
               </ListItemDecorator>

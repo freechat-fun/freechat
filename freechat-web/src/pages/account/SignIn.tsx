@@ -83,13 +83,11 @@ export default function SignIn() {
     <Stack direction='row'>
       <Box
         sx={(theme) => ({
-          width:
-            'clamp(100vw - var(--Cover-width), (var(--Collapsed-breakpoint) - 100vw) * 999, 100vw)',
           transition: 'width var(--Transition-duration)',
           transitionDelay: 'calc(var(--Transition-duration) + 0.1s)',
-          position: 'relative',
           zIndex: 1,
           display: 'flex',
+          width: '100%',
           justifyContent: 'flex-end',
           backdropFilter: 'blur(12px)',
           backgroundColor: 'rgba(255 255 255 / 0.2)',
@@ -103,9 +101,7 @@ export default function SignIn() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100dvh',
-            width:
-              'clamp(var(--Form-maxWidth), (var(--Collapsed-breakpoint) - 100vw) * 999, 100%)',
+            minHeight: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
             maxWidth: '100%',
             px: 2,
           }}

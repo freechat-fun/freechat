@@ -58,7 +58,7 @@ export default function CharacterRecommendationPane(props: SheetProps) {
         mx: 'auto',
         borderRadius: 'md',
         p: 2,
-        display: { xs: 'none', sm: records.length > 0 ? 'grid' : 'none' },
+        display: records.length > 0 ? 'grid' : 'none',
         gridTemplateColumns: '1fr 4fr',
         gridTemplateRows: 'minmax(auto, 1fr)',
         alignItems: 'stretch',

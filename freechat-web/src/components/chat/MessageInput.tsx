@@ -137,8 +137,6 @@ export default function MessageInput(props: MessageInputProps) {
               sx={{
                 py: 1,
                 pr: 1,
-                borderTop: '1px solid',
-                borderColor: 'divider',
               }}
             >
               <Button

@@ -79,13 +79,11 @@ export default function ThinSidebar() {
         width: '80px',
         bgcolor: 'transparent',
         boxShadow: 'none',
-        p: 2,
         flexShrink: 0,
         display: { xs: 'none', sm: 'flex' },
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 2,
       }}
     >
       <div>

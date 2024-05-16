@@ -58,6 +58,7 @@ export default function ChatListItem(props: ChatListItemProps) {
             flexDirection: 'column',
             alignItems: 'initial',
             gap: 1,
+            mx: 0,
           }}
         >
           <CommonGridBox sx={{
@@ -121,7 +122,7 @@ export default function ChatListItem(props: ChatListItemProps) {
           </CommonGridBox>
         </ListItemButton>
       </ListItem>
-      <ListDivider sx={{ margin: 0 }} />
+      <ListDivider sx={{ mx: 2, my: 0 }} />
     </Fragment>
   );
 }

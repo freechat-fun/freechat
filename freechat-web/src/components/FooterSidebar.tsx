@@ -24,7 +24,6 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       <Box
         component="span"
         sx={{
-          width: '100%',
           display: 'inline-block',
       }}>
           
@@ -76,17 +75,16 @@ export default function FooterSidebar() {
         zIndex: 9999,
         position: 'fixed',
         bottom: 0,
-        left: 0,
+        left: 'calc((100dvw - var(--Footer-width)) / 2)',
+        right: 'calc((100dvw - var(--Footer-width)) / 2)',
         height: 'var(--Footer-height)',
-        width: '100dvw',
+        width: 'var(--Footer-width)',
         bgcolor: 'transparent',
         boxShadow: 'none',
-        p: 2,
         display: { xs: 'flex', sm: 'none' },
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 2,
       }}
     >
       <div>
@@ -99,9 +97,10 @@ export default function FooterSidebar() {
             boxShadow: 'lg',
             border: 1,
             borderColor: theme.palette.background.level3,
-            py: 1,
             px: 1,
-            gap: 0.5,
+            py: 0,
+            m: 0,
+            gap: 0,
             '--List-nestedInsetStart': '30px',
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
@@ -128,24 +127,30 @@ export default function FooterSidebar() {
             '--Divider-lineColor': 'var(--joy-palette-background-level3)',
           }}/>
 
-          <ItemTooltip title={t('Switch Theme')}>
-            <ColorSchemeToggle sx={{width: '100%', mr: 1}} />
-          </ItemTooltip>
+          <ListItem>
+            <ItemTooltip title={t('Switch Theme')}>
+              <ColorSchemeToggle sx={{ flex: 1 }} />
+            </ItemTooltip>
+          </ListItem>
           
-          <ItemTooltip title={t('Switch Language')}>
-            <LanguageToggle sx={{width: '100%'}} />
-          </ItemTooltip>
+          <ListItem>
+            <ItemTooltip title={t('Switch Language')}>
+              <LanguageToggle sx={{ flex: 1 }} />
+            </ItemTooltip>
+          </ListItem>
 
-          <ItemTooltip title={t('Code Repository')}>
-            <IconButton
-              component="a"
-              href="https://github.com/freechat-fun/freechat"
-              target="_blank"
-              sx={{width: '100%'}}
-            >
-              <GitHub />
-            </IconButton>
-          </ItemTooltip>
+          <ListItem>
+            <ItemTooltip title={t('Code Repository')}>
+              <IconButton
+                component="a"
+                href="https://github.com/freechat-fun/freechat"
+                target="_blank"
+                sx={{width: '100%'}}
+              >
+                <GitHub />
+              </IconButton>
+            </ItemTooltip>
+          </ListItem>
 
           <ListDivider orientation="vertical" sx={{
             mx: 2,
@@ -153,19 +158,21 @@ export default function FooterSidebar() {
           }}/>
           
           {isAuthorized() ? (
-            <form method="post" action="/logout">
-              <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
-                <Tooltip
-                  title={t('Sign Out', {ns: 'account'})}
-                  size="sm"
-                  placement="right"
-                  sx={{zIndex: 9999}}
-                >
-                  <IconButton type="submit" sx={{width: '100%'}}>
-                    <LogoutRounded />
-                  </IconButton>
-                </Tooltip>
-            </form>
+            <ListItem>
+              <form method="post" action="/logout">
+                <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
+                  <Tooltip
+                    title={t('Sign Out', {ns: 'account'})}
+                    size="sm"
+                    placement="right"
+                    sx={{zIndex: 9999}}
+                  >
+                    <IconButton type="submit" sx={{width: '100%'}}>
+                      <LogoutRounded />
+                    </IconButton>
+                  </Tooltip>
+              </form>
+            </ListItem>
           ) : (
             <ListItem>
               <ItemTooltip title={t('Sign In', {ns: 'account'})}>

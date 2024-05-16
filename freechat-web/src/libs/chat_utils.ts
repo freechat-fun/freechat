@@ -30,6 +30,33 @@ export function toggleMessagesPane(): void {
   }
 }
 
+export function openChatInfoPane(): void {
+  if (typeof window !== 'undefined') {
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.setProperty('--ChatInfoPane-slideIn', '-1');
+  }
+}
+
+export function closeChatInfoPane(): void {
+  if (typeof window !== 'undefined') {
+    document.documentElement.style.removeProperty('--ChatInfoPane-slideIn');
+    document.body.style.removeProperty('overflow');
+  }
+}
+
+export function toggleChatInfoPane(): void {
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    const slideIn = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue('--ChatInfoPane-slideIn');
+    if (slideIn) {
+      closeChatInfoPane();
+    } else {
+      openChatInfoPane();
+    }
+  }
+}
+
 export function getSenderStatus(session?: ChatSessionDTO): 'online' | 'invisible' | 'offline' {
   if (!session) {
     return 'offline';

@@ -192,7 +192,7 @@ export default function Chats() {
             xs: 'translateX(calc(100% * (var(--MessagesPane-slideIn, 0) - 1)))',
             sm: 'none',
           },
-          transition: 'transform 0.4s, width 0.4s',
+          transition: 'transform 0.2s, width 0.2s',
           zIndex: 100,
           width: '100%',
         }}
@@ -214,8 +214,13 @@ export default function Chats() {
 
       <Sheet
         sx={{
-          display: { xs: 'none', md: 'block' },
-          position: 'sticky',
+          position: { xs: 'fixed', sm: 'sticky' },
+          transform: {
+            xs: 'translateX(calc(100% * (var(--ChatInfoPane-slideIn, 0) + 1)))',
+            sm: 'none',
+          },
+          transition: 'transform 0.2s, width 0.2s',
+          zIndex: 100,
           width: '100%',
         }}
       >
