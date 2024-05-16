@@ -126,7 +126,7 @@ To run FreeChat in an IDE, you need to start all dependent services first but do
 -Dspring.profiles.active=local
 ```
 
-### 使用 SDK
+### Use SDK
 #### Java
 - **Dependency**
 ```xml

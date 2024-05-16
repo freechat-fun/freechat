@@ -12,6 +12,7 @@ export { default as Sidebar } from "./Sidebar";
 export { default as SidebarToggle } from "./SidebarToggle";
 export { default as Sidedrawer } from './Sidedrawer';
 export { default as ThinSidebar } from "./ThinSidebar";
+export { default as FooterSidebar } from "./FooterSidebar";
 export { default as Breadcrumbsbar } from "./Breadcrumbsbar";
 export { default as ImagePicker } from './ImagePicker';
 export { default as ImagePreview } from './ImagePreview';

@@ -62,12 +62,11 @@ export default function InfoSearchbar(props: {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'start',
-          alignItems: { xs: 'flex-start', sm: 'center' },
+          alignItems: 'center',
           py: 1,
-          pr: { xs: 1, sm: 1 },
-          gap:{ xs: 1, sm: 2, md: 3 },
+          pr: 1,
+          gap: 3,
           borderTopLeftRadius: 'var(--unstable_actionRadius)',
           borderTopRightRadius: 'var(--unstable_actionRadius)',
         }}
@@ -80,7 +79,7 @@ export default function InfoSearchbar(props: {
           placeholder={t('Search title, description, content and more')}
           startDecorator={<SearchRounded />}
           sx={{
-            minWidth: { xs: '20rem', md: '23.5rem' },
+            minWidth: '22rem',
           }}
         />
         {enableModelSelect && (

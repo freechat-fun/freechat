@@ -66,8 +66,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static dev.langchain4j.data.message.ChatMessageType.USER;
+import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 import static fun.freechat.service.ai.LanguageModelFactory.*;
 import static fun.freechat.service.enums.ChatVar.*;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
 import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
@@ -304,6 +306,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .embeddingStore(embeddingStore)
                     .maxResults(maxResults)
                     .minScore(minScore)
+                    .filter(metadataKey(MEMORY_ID.text()).isEqualTo(characterUid))
                     .build();
 
             ContentInjector contentInjector = DefaultContentInjector.builder()
@@ -331,6 +334,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         .embeddingStore(longTermMemoryEmbeddingStore)
                         .maxResults(longTermMemoryWindowSize)
                         .minScore(minScore)
+                        .filter(metadataKey(MEMORY_ID.text()).isEqualTo(chatId))
                         .build();
 
                 longTermMemoryRetrievalAugmentor = DefaultRetrievalAugmentor.builder()

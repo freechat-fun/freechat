@@ -7,4 +7,4 @@ pod=$(kubectl get pods -o name --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPA
 
 test -n "${pod}" || die "ERROR: Failed to find app pod!"
 
-kubectl logs --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} ${pod}
+kubectl logs --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE}  ${ARGS[*]} ${pod}

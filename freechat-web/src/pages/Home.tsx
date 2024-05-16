@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <LinePlaceholder />
-      <Stack>
+      <Stack sx={{ display: {xs: 'none', sm: 'inherit'} }}>
         <Card sx={{
           display: 'flex',
           flexDirection: 'row',
@@ -80,6 +80,38 @@ export default function Home() {
             <PromptGallery />
           </TabPanel>
         </Tabs>
+      </Stack>
+
+      <Stack sx={{ display: {xs: 'inherit', sm: 'none'} }}>
+        <Card sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          boxShadow: 'lg',
+        }}>
+          <Box sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
+            <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
+            <LinePlaceholder spacing={1} />
+            <Typography level="title-md">{t('Create some friends for yourself')}</Typography>
+          </Box>
+          <AspectRatio
+            variant="plain"
+            ratio={1}
+            sx={{
+              width: 240,
+            }}
+          >
+            <img src={mode === 'dark' ? '/img/freechat_dark.png' : '/img/freechat_light.png'} />
+          </AspectRatio>
+        </Card>
+
+        <LinePlaceholder spacing={6} />
+        <CharacterGallery />
       </Stack>
     </>
   );

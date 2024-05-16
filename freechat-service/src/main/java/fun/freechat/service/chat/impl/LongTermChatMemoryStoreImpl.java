@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import static dev.langchain4j.data.message.ChatMessageType.AI;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.*;
 import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
@@ -38,9 +39,6 @@ import static fun.freechat.service.util.PromptUtils.toSingleText;
 @SuppressWarnings("unused")
 public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
     private static final String LOCK_PREFIX = "LongTermChatMemoryStoreLock-";
-    private static final String MEMORY_ID_KEY = "Memory-Id";
-    private static final String USER_MESSAGE_ID = "User-Message-Id";
-    private static final String AI_MESSAGE_ID = "AI-Message-Id";
 
     @Autowired
     private RedissonClient redisson;
@@ -97,15 +95,15 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                     AiMessage aiMessage = (AiMessage) message;
                     String text = text(userMessage, aiMessage);
                     Metadata metadata = new Metadata();
-                    metadata.put(USER_MESSAGE_ID, userRecord.getId());
-                    metadata.put(AI_MESSAGE_ID, record.getId());
-                    metadata.put(MEMORY_ID_KEY, memoryId.toString());
+                    metadata.put(USER_MESSAGE_ID.text(), userRecord.getId());
+                    metadata.put(AI_MESSAGE_ID.text(), record.getId());
+                    metadata.put(MEMORY_ID.text(), memoryId.toString());
                     TextSegment segment = TextSegment.from(text, metadata);
 
                     Embedding embedding = embed(embeddingModel, userMessage, aiMessage);
-                    Filter filter = metadataKey(USER_MESSAGE_ID).isEqualTo(userRecord.getId())
-                            .and(metadataKey(AI_MESSAGE_ID).isEqualTo(record.getId()))
-                            .and(metadataKey(MEMORY_ID_KEY).isEqualTo(memoryId.toString()));
+                    Filter filter = metadataKey(USER_MESSAGE_ID.text()).isEqualTo(userRecord.getId())
+                            .and(metadataKey(AI_MESSAGE_ID.text()).isEqualTo(record.getId()))
+                            .and(metadataKey(MEMORY_ID.text()).isEqualTo(memoryId.toString()));
 
                     EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
                             .queryEmbedding(embedding)

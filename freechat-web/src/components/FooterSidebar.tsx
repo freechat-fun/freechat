@@ -2,7 +2,7 @@ import { forwardRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
-import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded } from "@mui/icons-material";
+import { GitHub, HomeRounded, LoginRounded, LogoutRounded } from "@mui/icons-material";
 import { ColorSchemeToggle, LanguageToggle } from ".";
 import { useMetaInfoContext } from "../contexts";
 import { ChatIcon } from "./icon";
@@ -14,7 +14,7 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     <Tooltip
       ref={ref}
       size="sm"
-      placement="right"
+      placement="top"
       sx={{
         zIndex: 9999,
         ...sx
@@ -64,7 +64,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   );
 });
 
-export default function ThinSidebar() {
+export default function FooterSidebar() {
   const theme = useTheme();
   const { t } = useTranslation('sidebar');
   const { csrfToken, isAuthorized } = useMetaInfoContext();
@@ -73,16 +73,17 @@ export default function ThinSidebar() {
     <Box
       className="Sidebar"
       sx={{
-        position: 'fixed',
         zIndex: 9999,
-        height: '100dvh',
-        width: '80px',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        height: 'var(--Footer-height)',
+        width: '100dvw',
         bgcolor: 'transparent',
         boxShadow: 'none',
         p: 2,
-        flexShrink: 0,
-        display: { xs: 'none', sm: 'flex' },
-        flexDirection: 'column',
+        display: { xs: 'flex', sm: 'none' },
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         gap: 2,
@@ -91,15 +92,15 @@ export default function ThinSidebar() {
       <div>
         <List
           size="sm"
+          orientation="horizontal"
           sx={{
             bgcolor: 'transparent',
             borderRadius: 'md',
             boxShadow: 'lg',
-            borderRight: 1,
-            borderBottom: 1,
+            border: 1,
             borderColor: theme.palette.background.level3,
-            py: 3,
-            px: 0.5,
+            py: 1,
+            px: 1,
             gap: 0.5,
             '--List-nestedInsetStart': '30px',
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
@@ -122,74 +123,8 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider sx={{
-            my: 2,
-            '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-          }}/>
-
-          <ListItem>
-            <ItemTooltip title={t('Characters')}>
-              <ItemButton href="/w/characters">
-                <AndroidRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListItem>
-            <ItemTooltip title={t('Prompts')}>
-              <ItemButton href="/w/prompts">
-                <ArticleRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListItem>
-            <ItemTooltip title={t('Plugins')}>
-              <ItemButton disabled href="/w/plugins">
-                <ExtensionRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListItem>
-            <ItemTooltip title={t('Agents')}>
-              <ItemButton disabled href="/w/agents">
-                <AccountTreeRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListItem>
-            <ItemTooltip title={t('API Reference')}>
-              <ItemButton href="/w/docs" disabled={false}>
-                <HelpRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListDivider sx={{
-            my: 2,
-            '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-          }}/>
-
-          <ListItem>
-            <ItemTooltip title={t('Profile')}>
-              <ItemButton href="/w/profile" disabled={!isAuthorized()}>
-                <ManageAccountsRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListItem>
-            <ItemTooltip title={t('Secrets & API keys')}>
-              <ItemButton href="/w/credentials" disabled={!isAuthorized()}>
-                <KeyRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListDivider sx={{
-            my: 2,
+          <ListDivider orientation="vertical" sx={{
+            mx: 2,
             '--Divider-lineColor': 'var(--joy-palette-background-level3)',
           }}/>
 
@@ -212,8 +147,8 @@ export default function ThinSidebar() {
             </IconButton>
           </ItemTooltip>
 
-          <ListDivider sx={{
-            my: 2,
+          <ListDivider orientation="vertical" sx={{
+            mx: 2,
             '--Divider-lineColor': 'var(--joy-palette-background-level3)',
           }}/>
           

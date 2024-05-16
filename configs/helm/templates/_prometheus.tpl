@@ -33,7 +33,7 @@ Usage:
     - action: keep
       source_labels:
         - __meta_kubernetes_endpoint_port_name
-      regex: .*metrics
+      regex: (http-metrics|metrics)
     - source_labels:
         - __meta_kubernetes_endpoint_address_target_kind
         - __meta_kubernetes_endpoint_address_target_name

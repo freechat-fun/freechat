@@ -105,22 +105,40 @@ milvus:
   url: http://freechat-milvus-proxy:19530
   initJob:
     resourcesPreset: none
+    metrics:
+      enabled: true
   waitContainer:
     resourcesPreset: none
+    metrics:
+      enabled: true
   dataCoord:
     resourcesPreset: none
+    metrics:
+      enabled: true
   rootCoord:
     resourcesPreset: none
+    metrics:
+      enabled: true
   queryCoord:
     resourcesPreset: none
+    metrics:
+      enabled: true
   indexCoord:
     resourcesPreset: none
+    metrics:
+      enabled: true
   dataNode:
     resourcesPreset: none
+    metrics:
+      enabled: true
   queryNode:
     resourcesPreset: none
+    metrics:
+      enabled: true
   indexNode:
     resourcesPreset: none
+    metrics:
+      enabled: true
   milvus:
     auth:
       enabled: true

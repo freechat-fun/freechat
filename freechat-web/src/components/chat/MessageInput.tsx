@@ -1,6 +1,6 @@
 import { useRef, KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, FormControl, IconButton, Input, Stack, Textarea } from "@mui/joy";
+import { Box, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
 import { SendRounded } from "@mui/icons-material";
 
 export type MessageInputProps = {
@@ -59,8 +59,10 @@ export default function MessageInput(props: MessageInputProps) {
   // }
 
   return (
-    <Box sx={{ px: 2, pb: 3 }}>
-      <FormControl>
+    <Box sx={{
+      px: 2,
+      pb: { xs: 1, sm: 3 },
+    }}>
         {/* <Textarea
           disabled={disabled}
           placeholder="Type something here…"
@@ -169,7 +171,6 @@ export default function MessageInput(props: MessageInputProps) {
           }
           onKeyDown={handleSend}
         />
-      </FormControl>
     </Box>
   );
 }

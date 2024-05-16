@@ -28,7 +28,8 @@ function App() {
                 '--Form-maxWidth': '800px',
                 '--Transition-duration': '0.4s', // set to `none` to disable transition
                 '--Sidebar-width': '240px',
-                '--Header-height': '40px'
+                '--Header-height': '40px',
+                '--Footer-height': '80px',
               },
             })}
           />

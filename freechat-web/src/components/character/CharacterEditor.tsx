@@ -247,6 +247,7 @@ export default function CharacterEditor ({
     request.greeting = record.greeting;
     request.chatStyle = record.chatStyle;
     request.chatExample = record.chatExample;
+    request.defaultScene = record.defaultScene;
     request.name = record.name ?? `untitiled-${formatDate(new Date())}`;
     request.draft = '';
     request.tags = record.tags;

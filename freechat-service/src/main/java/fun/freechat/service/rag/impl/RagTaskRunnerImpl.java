@@ -31,6 +31,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.TASK_ID;
 import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
 
 @Service
@@ -38,8 +40,6 @@ import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
 @SuppressWarnings("unused")
 public class RagTaskRunnerImpl implements RagTaskRunner {
     private static final String LOCK_PREFIX = "RagTaskRunnerLock-";
-    private static final String MEMORY_ID_KEY = "Memory-Id";
-    private static final String TASK_ID_KEY = "Task-Id";
 
     @Value("${chat.rag.defaultMaxSegmentSize}")
     private Integer defaultMaxSegmentSize;
@@ -81,8 +81,8 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             for (String metaName: tikaMetadata.names()) {
                 document.metadata().add(metaName, tikaMetadata.get(metaName));
             }
-            document.metadata().add(MEMORY_ID_KEY, memoryId);
-            document.metadata().add(TASK_ID_KEY, task.getId());
+            document.metadata().add(MEMORY_ID.text(), memoryId);
+            document.metadata().add(TASK_ID.text(), task.getId());
 
             EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
             EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, CHARACTER_DOCUMENT);

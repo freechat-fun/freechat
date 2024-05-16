@@ -1,6 +1,6 @@
 import { Box } from "@mui/joy";
 import { Outlet } from "react-router-dom";
-import { ThinSidebar } from "../components";
+import { ThinSidebar, FooterSidebar } from "../components";
 
 export default function SidebarFrame() {
   return (
@@ -11,11 +11,13 @@ export default function SidebarFrame() {
         flexDirection: 'column',
         gap: 1,
         overflow: 'auto',
-        pl: {xs: '80px', sm: '120px'},
-        pr: {xs: '0px', sm: '120px'},
+        pl: { xs: '20px', sm: '120px' },
+        pr: { xs: '20px', sm: '120px'},
+        maxHeight: { xs: 'calc(100dvh - var(--Footer-height))', sm: 'none' },
       }}>
         <Outlet />
       </Box>
+      <FooterSidebar />
     </>
   );
 }

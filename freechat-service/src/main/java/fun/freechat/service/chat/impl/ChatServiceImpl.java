@@ -278,16 +278,24 @@ public class ChatServiceImpl implements ChatService {
 
             if (Objects.nonNull(knowledgeRetriever)) {
                 Metadata metadata = Metadata.from(userMessage, memoryId, messages);
-                UserMessage relevantMessage =
-                        session.getRetriever().augment(userMessage, metadata);
-                if (relevantMessage != userMessage) {
-                    relevantConcatenated = toSingleText(relevantMessage);
+                try {
+                    UserMessage relevantMessage =
+                            session.getRetriever().augment(userMessage, metadata);
+                    if (relevantMessage != userMessage) {
+                        relevantConcatenated = toSingleText(relevantMessage);
+                    }
+                } catch (Throwable ex) {
+                    log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
                 }
             }
 
             if (Objects.nonNull(longTermMemoryRetriever)) {
-                longTermMemoryMessages = longTermChatMemoryStore.getMessages(
-                        memoryId, userMessage, messages, longTermMemoryRetriever);
+                try {
+                    longTermMemoryMessages = longTermChatMemoryStore.getMessages(
+                            memoryId, userMessage, messages, longTermMemoryRetriever);
+                } catch (Throwable ex) {
+                    log.warn("Failed to retrieve long-term memory from {}!", memoryId, ex);
+                }
             }
         }
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
