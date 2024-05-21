@@ -19,7 +19,6 @@ import fun.freechat.util.IdUtils;
 import fun.freechat.util.PojoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -245,10 +244,13 @@ public class CharacterServiceImpl implements CharacterService {
         conditions.and(Info.lang,
                 isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
         // priority
-        if (BooleanUtils.isTrue(query.getWhere().getHighPriority())) {
-            conditions.and(Info.priority, isGreaterThan(1));
-        } else {
-            conditions.and(Info.priority, isEqualTo(1));
+        Boolean highPriority = query.getWhere().getHighPriority();
+        if (Objects.nonNull(highPriority)) {
+            if (highPriority) {
+                conditions.and(Info.priority, isGreaterThan(1));
+            } else {
+                conditions.and(Info.priority, isEqualTo(1));
+            }
         }
         // version
         if (!hasDraft) {

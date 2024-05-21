@@ -13,7 +13,7 @@ export default function SidebarFrame() {
         overflow: 'auto',
         pl: { xs: 'none', sm: '120px' },
         pr: { xs: 'none', sm: '120px'},
-        maxHeight: { xs: 'calc(100dvh - var(--Footer-height))', sm: 'none' },
+        maxHeight: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
       }}>
         <Outlet />
       </Box>

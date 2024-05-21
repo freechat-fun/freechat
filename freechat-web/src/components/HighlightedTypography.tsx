@@ -2,7 +2,7 @@ import { forwardRef, useMemo } from "react";
 import { Typography, TypographyProps } from "@mui/joy";
 import { escapeRegExp } from "../libs/js_utils";
 
-type HighlightedTypographyProps = TypographyProps & {
+export type HighlightedTypographyProps = TypographyProps & {
   highlight?: string;
 }
 
@@ -31,7 +31,7 @@ const HighlightedTypography = forwardRef<HTMLDivElement, HighlightedTypographyPr
     <Typography ref={ref} {...others}>
       {parts.map((part, index) => (
         part.toLowerCase() === highlight.toLowerCase() ? (
-          <span key={`${part}-${index}`} style={{ backgroundColor: 'yellow' }}>{part}</span>
+          <span key={`${part}-${index}`} style={{ backgroundColor: 'var(--joy-palette-warning-softActiveBg)' }}>{part}</span>
         ) : (
           <span key={`${part}-${index}`}>{part}</span>
         )

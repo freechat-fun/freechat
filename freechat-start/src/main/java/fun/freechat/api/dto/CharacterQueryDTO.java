@@ -26,9 +26,9 @@ public class CharacterQueryDTO {
         private String name;
         @Schema(description = "Language, exact match")
         private String lang;
-        @Schema(description = "Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time.")
+        @Schema(description = "Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time")
         private String text;
-        @Schema(description = "Character priority, greater than 1 indicates a high priority")
+        @Schema(description = "Character priority, high-priority means recommended ones, null for all")
         private Boolean highPriority;
     }
 

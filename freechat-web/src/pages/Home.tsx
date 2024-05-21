@@ -2,10 +2,10 @@ import { useTranslation } from "react-i18next";
 import { AspectRatio, Box, Card, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses, useColorScheme } from "@mui/joy";
 import { LinePlaceholder } from "../components";
 import { PromptGallery } from "../components/prompt";
-import { CharacterGallery, CharacterRecommendationPane } from "../components/character";
+import { CharacterGallery, CharacterRecommendationViews } from "../components/character";
 
 export default function Home() {
-  const { t } = useTranslation(['sidebar']);
+  const { t } = useTranslation('sidebar');
   const { mode } = useColorScheme();
 
   return (
@@ -23,6 +23,7 @@ export default function Home() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            minWidth: '160px',
           }}>
             <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
@@ -41,7 +42,7 @@ export default function Home() {
 
         <LinePlaceholder spacing={6} />
 
-        <CharacterRecommendationPane sx={{ mb: 6, width: '80%' }} />
+        <CharacterRecommendationViews sx={{ mb: 6, width: '80%' }}/>
 
         <Tabs
           defaultValue={0}
@@ -74,7 +75,7 @@ export default function Home() {
             <Tab sx={{borderRadius: '6px 6px 0 0'}} value={1}>{t('Prompts')}</Tab>
           </TabList>
           <TabPanel value={0} key="character-gallery-panel">
-            <CharacterGallery />
+            <CharacterGallery all={false}/>
           </TabPanel>
           <TabPanel value={1} key="prompt-gallery-panel">
             <PromptGallery />
@@ -93,7 +94,8 @@ export default function Home() {
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'left',
+            minWidth: '160px',
           }}>
             <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
@@ -110,9 +112,18 @@ export default function Home() {
           </AspectRatio>
         </Card>
 
-        <LinePlaceholder spacing={6} />
-        <CharacterRecommendationPane sx={{ mb: 6, width: '80%' }} />
-        <CharacterGallery />
+        <LinePlaceholder />
+        <Card sx={{
+          mx: 2,
+          py: 1,
+          boxShadow: 'lg',
+          bgcolor: 'var(--joy-palette-background-level1)',
+        }}>
+          <Typography fontSize="small">
+            {t('If you want to create your own characters, please visit this website on PC.')}
+          </Typography>
+        </Card>
+        <CharacterGallery all={true}/>
       </Stack>
     </>
   );

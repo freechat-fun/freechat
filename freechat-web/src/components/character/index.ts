@@ -10,5 +10,6 @@ export { default as CharacterRecommendationList } from './CharacterRecommendatio
 export { default as CharacterRecommendationListItem } from './CharacterRecommendationListItem';
 export { default as CharacterRecommendationPoster } from './CharacterRecommendationPoster';
 export { default as CharacterRecommendationPane } from './CharacterRecommendationPane';
+export { default as CharacterRecommendationViews } from './CharacterRecommendationViews';
 export { default as CharacterDocumentsPane } from './CharacterDocumentsPane';
 export { default as CharacterDocumentUploader } from './CharacterDocumentUploader';

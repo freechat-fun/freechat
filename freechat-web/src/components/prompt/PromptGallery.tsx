@@ -2,7 +2,7 @@ import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from 
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CommonBox, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
+import { CommonBox, HighlightedTypography, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { InteractiveStatsDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO, PromptSummaryStatsDTO, UserBasicInfoDTO } from "freechat-sdk";
 import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Tooltip, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -13,12 +13,13 @@ import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequ
 
 type RecordCardProps = {
   record: PromptSummaryStatsDTO,
+  keyWord?: string,
   sx?: SxProps,
   onClick?: () => void;
 }
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
-  const { record, sx , onClick} = props;
+  const { record, keyWord, sx , onClick} = props;
   const { i18n } = useTranslation();
   const { accountApi } = useFreeChatApiContext();
 
@@ -61,7 +62,8 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
             event.preventDefault();
             onClick?.();
         }}>
-          <Typography
+          <HighlightedTypography
+            highlight={keyWord}
             level="title-lg"
             sx={{
               whiteSpace: 'nowrap',
@@ -71,7 +73,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
             }}
           >
             {record.name}
-          </Typography>
+          </HighlightedTypography>
         </Link>
         <Chip color="success" variant="soft">v{record.version}</Chip>
         <Chip color={record.type === 'string' ? 'warning' : 'success'} variant="outlined">{record.type}</Chip>
@@ -83,7 +85,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       </Box>
       <Divider />
 
-      <SummaryTypography sx={{...sx}}>
+      <SummaryTypography highlight={keyWord} sx={{...sx}}>
         {record.description}
       </SummaryTypography>
       <Divider />
@@ -134,6 +136,8 @@ export default function PromptGallery() {
 
   const [showCards, setShowCards] = useState(false);
   const [showCardsFinish, setShowCardsFinish] = useState(false);
+
+  const keyWord = useRef<string>();
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   const defaultQuery = useCallback(() => {
@@ -201,6 +205,7 @@ export default function PromptGallery() {
     newQuery.pageNum = 0;
     newQuery.orderBy = ['viewCount', 'referCount', 'modifyTime'];
 
+    keyWord.current = text;
     setPage(0);
     setQuery(newQuery);
   }
@@ -292,6 +297,7 @@ export default function PromptGallery() {
               {(state) => (
                 <RecordCard
                   key={`record-card-${record.promptId || index}`}
+                  keyWord={keyWord.current}
                   ref={cardRefs.current[index]}
                   record={record}
                   onClick={() => handleView(record)}

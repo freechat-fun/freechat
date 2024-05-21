@@ -14,8 +14,8 @@ Query condition
 |**tagsOp** | **String** | Relationship between tags: and | or (default) |  [optional] |
 |**name** | **String** | Name, left match |  [optional] |
 |**lang** | **String** | Language, exact match |  [optional] |
-|**text** | **String** | Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time. |  [optional] |
-|**highPriority** | **Boolean** | Character priority, greater than 1 indicates a high priority |  [optional] |
+|**text** | **String** | Name, description, profile, chat style, fuzzy match, any one match is sufficient; public scope + general search for all users does not guarantee real-time |  [optional] |
+|**highPriority** | **Boolean** | Character priority, high-priority means recommended ones, null for all |  [optional] |
 
 
 

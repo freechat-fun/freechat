@@ -4,8 +4,15 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO } from "freechat-sdk";
 import { CharacterRecommendationList, CharacterRecommendationPoster } from ".";
 
-export default function CharacterRecommendationPane(props: SheetProps) {
-  const { sx, ...others } = props;
+type CharacterRecommendationPaneProps = SheetProps & {
+  lang?: string,
+};
+
+export default function CharacterRecommendationPane({
+  lang = 'en',
+  sx,
+  ...others
+}: CharacterRecommendationPaneProps) {
 
   const { characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -20,12 +27,13 @@ export default function CharacterRecommendationPane(props: SheetProps) {
     newQuery.where = new CharacterQueryWhere();
     newQuery.where.visibility = 'public';
     newQuery.where.highPriority = true;
+    newQuery.where.lang = lang;
     newQuery.pageSize = pageSize;
     newQuery.pageNum = 0;
     newQuery.orderBy = ['modifyTime'];
 
     return newQuery;
-  }, []);
+  }, [lang]);
 
 
   const selectedRecord = useMemo(() => {

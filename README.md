@@ -5,6 +5,8 @@ English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.
 ## Introduction
 Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.
 
+It also serves as a prompt engineering platform.
+
 ## Features
 - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**.
 - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the "organization" concept and related permission constraint functions.
@@ -14,6 +16,7 @@ Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializ
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
 - Supports setting **quota limits** for characters.
+- Supports individual **debugging and sharing prompts**.
 
 ## System Snapshots
 

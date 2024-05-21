@@ -2,7 +2,7 @@ import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from 
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CommonBox, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
+import { CommonBox, HighlightedTypography, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, CharacterSummaryStatsDTO, ChatCreateDTO, InteractiveStatsDTO, PromptSummaryStatsDTO } from "freechat-sdk";
 import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Typography, useColorScheme } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -13,12 +13,13 @@ import { processBackground, defaultTransitionInterval, defaultTransitionSetting,
 
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO,
+  keyWord?: string,
   sx?: SxProps,
   onClick?: () => void;
 }
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
-  const { record, sx , onClick} = props;
+  const { record, keyWord, sx , onClick} = props;
   const { i18n } = useTranslation();
   const { mode } = useColorScheme();
 
@@ -66,18 +67,22 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           }}
         >
           <Avatar alt={nickname} src={record.avatar} size="md" />
-          <Typography
-            level="title-lg"
-            sx={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: '20rem',
-            }}
-          >
-            {nickname}
-            { nickname !== record.name && <Typography level="body-sm">@{record.name}</Typography> }
-          </Typography>
+          <div>
+            <HighlightedTypography
+              highlight={keyWord}
+              level="title-lg"
+              sx={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '20rem',
+              }}
+            >
+              {nickname}
+            </HighlightedTypography>
+           { nickname !== record.name &&
+              <HighlightedTypography highlight={keyWord} level="body-sm">{`@${record.name}`}</HighlightedTypography> }
+          </div>
         </Link>
         <Chip color="success" variant="soft">v{record.version}</Chip>
         {(record.gender === 'female' || record.gender === 'male') && (
@@ -86,7 +91,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       </Box>
       <Divider />
 
-      <SummaryTypography sx={{...sx}}>
+      <SummaryTypography highlight={keyWord} sx={{...sx}}>
         {record.description}
       </SummaryTypography>
       <Divider />
@@ -123,7 +128,13 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   )
 });
 
-export default function CharacterGallery() {
+type CharacterGalleryProps = {
+  all?: boolean,
+};
+
+export default function CharacterGallery({
+  all = false,
+}: CharacterGalleryProps) {
   const navigate = useNavigate();
   const { accountApi, characterApi, chatApi, interactiveStatisticsApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -137,18 +148,23 @@ export default function CharacterGallery() {
 
   const [showCards, setShowCards] = useState(false);
   const [showCardsFinish, setShowCardsFinish] = useState(false);
+
+  const keyWord = useRef<string>();
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   const defaultQuery = useCallback(() => {
     const newQuery = new CharacterQueryDTO();
     newQuery.where = new CharacterQueryWhere();
     newQuery.where.visibility = 'public';
+    if (!all) {
+      newQuery.where.highPriority = false;
+    }
     newQuery.pageSize = pageSize;
     newQuery.pageNum = 0;
     newQuery.orderBy = ['viewCount', 'referCount', 'modifyTime'];
 
     return newQuery;
-  }, []);
+  }, [all]);
 
   useEffect(() => {
     return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
@@ -196,6 +212,9 @@ export default function CharacterGallery() {
     const where = new CharacterQueryWhere();
     where.text = text;
     where.visibility = 'public';
+    if (!all) {
+      where.highPriority = false;
+    }
 
     const newQuery = new CharacterQueryDTO();
     newQuery.where = where;
@@ -203,6 +222,7 @@ export default function CharacterGallery() {
     newQuery.pageNum = 0;
     newQuery.orderBy = ['viewCount', 'referCount', 'modifyTime'];
 
+    keyWord.current = text;
     setPage(0);
     setQuery(newQuery);
   }
@@ -211,6 +231,9 @@ export default function CharacterGallery() {
     const where = new CharacterQueryWhere();
     where.tags = [tag];
     where.visibility = 'public';
+    if (!all) {
+      where.highPriority = false;
+    }
 
     const newQuery = new CharacterQueryDTO();
     newQuery.where = where;
@@ -302,7 +325,7 @@ export default function CharacterGallery() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(auto-fill, minmax(320px, 1fr))' },
             gap: 3,
           }}
         >
@@ -317,6 +340,7 @@ export default function CharacterGallery() {
               {(state) => (
                 <RecordCard
                   key={`record-card-${record.characterId || index}`}
+                  keyWord={keyWord.current}
                   ref={cardRefs.current[index]}
                   record={record}
                   onClick={() => handleView(record)}

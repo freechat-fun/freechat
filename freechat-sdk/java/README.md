@@ -2,7 +2,7 @@
 
 FreeChat OpenAPI Definition
 - API version: 1.0.2
-  - Generator version: 7.5.0
+  - Generator version: 7.6.0
 
 # FreeChat: Create Some Friends for Yourself with AI
 
@@ -11,6 +11,8 @@ English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.
 ## Introduction
 Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.
 
+It also serves as a prompt engineering platform.
+
 ## Features
 - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**.
 - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions.
@@ -18,8 +20,9 @@ Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializ
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
 - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
-- Supports **long-term memory** for characters.
+- Supports **long-term memory, preset memory** for characters.
 - Supports setting **quota limits** for characters.
+- Supports individual **debugging and sharing prompts**.
 
 ## System Snapshots
 
@@ -110,10 +113,19 @@ milvus:
 
 With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.
 
+If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application:
+```yaml
+bitnami:
+  prometheus:
+    enabled: true
+  grafana:
+    enabled: true
+```
+
 ### Running Locally
 You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).
 
-Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. Use `local-run.sh --help` to view the supported options of the script. Good luck!
+Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!
 
 ### Running in an IDE
 To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup parameters:
@@ -123,7 +135,7 @@ To run FreeChat in an IDE, you need to start all dependent services first but do
 -Dspring.profiles.active=local
 ```
 
-### 使用 SDK
+### Use SDK
 #### Java
 - **Dependency**
 ```xml
@@ -215,6 +227,7 @@ Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
 | Model Providers | [OpenAI](https://platform.openai.com/), [DashScope](https://dashscope.aliyun.com/)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
+| Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
 
 ## Collaboration

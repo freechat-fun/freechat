@@ -137,7 +137,7 @@ export function processBackground(imageUrl: string | undefined, mode: string = '
 
       ctx.drawImage(image, 0, 0);
 
-      ctx.fillStyle = `rgba(${mode === 'dark' ? '0 0 0' : '255 255 255'} / ${1 -opacity})`;
+      ctx.fillStyle = `rgba(${mode === 'dark' ? '0 0 0' : '255 255 255'} / ${1 - opacity})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       canvas.style.filter = 'blur(10px)';

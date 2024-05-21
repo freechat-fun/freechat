@@ -16,7 +16,7 @@ type BubbleContainerProps = SheetProps & {
 }
 
 const BubbleContainer = forwardRef<HTMLDivElement, BubbleContainerProps>((props, ref) => {
-  const { sx, children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
+  const { children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
   
   return (
     <Box
@@ -28,16 +28,20 @@ const BubbleContainer = forwardRef<HTMLDivElement, BubbleContainerProps>((props,
         ref={ref}
         color={isSent ? 'primary' : 'neutral'}
         variant={isSent ? 'solid' : 'soft'}
-        sx={{
+        sx={(theme) => ({
           p: 1.25,
           borderRadius: 'lg',
           borderTopRightRadius: isSent ? 0 : 'lg',
           borderTopLeftRadius: isSent ? 'lg' : 0,
           backgroundColor: isSent
-            ? 'var(--joy-palette-primary-solidBg)'
-            : 'background.body',
-          ...sx
-        }}
+            ? '#0B6BCBC0'
+            : '#FFFFFFC0',
+          [theme.getColorSchemeSelector('dark')]: {
+            backgroundColor: isSent
+              ? '#0B6BCBC0'
+              : '#000000C0',
+          }
+        })}
         {...others}
       >
         {children}
@@ -118,8 +122,8 @@ export default function ChatBubble(props: ChatBubbleProps) {
         spacing={2}
         sx={{ mb: 0.25 }}
       >
-        <Typography level="body-xs">{nickname}</Typography>
-        <Typography level="body-xs">{getDateLabel(record.gmtCreate || new Date(), i18n.language, true)}</Typography>
+        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>{nickname}</Typography>
+        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>{getDateLabel(record.gmtCreate || new Date(), i18n.language, true)}</Typography>
       </Stack>
 
       <LinePlaceholder />

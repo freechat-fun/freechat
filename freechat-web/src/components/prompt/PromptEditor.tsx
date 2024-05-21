@@ -141,7 +141,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
   useEffect(() => {
     const { hash } = window.location;
     const delay = 200;
-    let handler: NodeJS.Timeout | undefined;
+    let handler: number | undefined;
     
     if (hash === '#system' && systemRef.current) {
       handler = setTimeout(() => systemRef.current?.scrollIntoView({ behavior: 'smooth' }), delay);

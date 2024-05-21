@@ -3,42 +3,44 @@ info:
   description: "# FreeChat: Create Some Friends for Yourself with AI\n\nEnglish |\
     \ [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)\n\n\
     ## Introduction\nWelcome! FreeChat aims to build a cloud-native, robust, and quickly\
-    \ commercializable enterprise-level AI virtual character platform.\n\n## Features\n\
-    - Primarily uses Java and emphasizes **security, robustness, scalability, traceability,\
-    \ and maintainability**.\n- Boasts **account systems and permission management**,\
-    \ supporting OAuth2 authentication. Introduces the \"organization\" concept and\
-    \ related permission constraint functions.\n- Extensively employs distributed\
-    \ technologies and caching to support **high concurrency** access.\n- Provides\
-    \ flexible character customization options, supports direct intervention in prompts,\
-    \ and supports **configuring multiple backends for each character**.\n- **Offers\
-    \ a comprehensive range of Open APIs**, with more than 180 interfaces and provides\
-    \ java/python/typescript SDKs. These interfaces enable easy construction of systems\
-    \ for end-users.\n- Supports setting **RAG** (Retrieval Augmented Generation)\
-    \ for characters.\n- Supports **long-term memory** for characters.\n- Supports\
-    \ setting **quota limits** for characters.\n\n## System Snapshots\n\n## Character\
-    \ Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n    A -->\
-    \ C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A --> F(Backend-n...)\n\
-    \    E --> G(Message Window)\n    E --> H(Long Term Memory Settings)\n    E -->\
-    \ I(Quota Limit)\n    E --> J(Chat Prompt Task)\n    E --> K(Greeting Prompt Task)\n\
-    \    E --> L(Moderation Settings)\n    J --> M(Model & Parameters)\n    J -->\
-    \ N(API Keys)\n    J --> O(Prompt Refence)\n    J --> P(Tool Specifications)\n\
-    \    O --> Q(Template)\n    O --> R(Variables)\n    O --> S(Version)\n    O -->\
-    \ T(...)\n    style K stroke-dasharray: 5, 5\n    style L stroke-dasharray: 5,\
-    \ 5\n    style P stroke-dasharray: 5, 5\n```\n\nAfter setting up a unified persona\
-    \ and knowledge for a character, different backends can be configured. For example,\
-    \ different model may be adopted for different users based on cost considerations.\n\
-    \n## How to Play\n### Online Website\nYou can visit [freechat.fun](https://freechat.fun)\
-    \ to experience FreeChat. Share your designed AI character!\n\n### Running in\
-    \ a Kubernetes Cluster\nFreeChat is dedicated to the principles of cloud-native\
-    \ design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment\
-    \ by following these steps:\n\n1. Put the Kubernetes configuration file in the\
-    \ `configs/helm/` directory, named `kube-private.conf`.\n2. Place the Helm configuration\
-    \ file in the same directory, named `values-private.yaml`. Make sure to reference\
-    \ the default `values.yaml` and customize the variables as needed.\n3. Switch\
-    \ to the `scripts/` directory.\n4. If needed, run `install-in.sh` to deploy `ingress-nginx`\
-    \ on the Kubernetes cluster.\n5. If needed, run `install-cm.sh` to deploy `cert-manager`\
-    \ on the Kubernetes cluster, which automatically issues certificates for domains\
-    \ specified in `ingress.hosts`.\n6. Run `install-pvc.sh` to install PersistentVolumeClaim\
+    \ commercializable enterprise-level AI virtual character platform.\n\nIt also\
+    \ serves as a prompt engineering platform.\n\n## Features\n- Primarily uses Java\
+    \ and emphasizes **security, robustness, scalability, traceability, and maintainability**.\n\
+    - Boasts **account systems and permission management**, supporting OAuth2 authentication.\
+    \ Introduces the \"organization\" concept and related permission constraint functions.\n\
+    - Extensively employs distributed technologies and caching to support **high concurrency**\
+    \ access.\n- Provides flexible character customization options, supports direct\
+    \ intervention in prompts, and supports **configuring multiple backends for each\
+    \ character**.\n- **Offers a comprehensive range of Open APIs**, with more than\
+    \ 180 interfaces and provides java/python/typescript SDKs. These interfaces enable\
+    \ easy construction of systems for end-users.\n- Supports setting **RAG** (Retrieval\
+    \ Augmented Generation) for characters.\n- Supports **long-term memory, preset\
+    \ memory** for characters.\n- Supports setting **quota limits** for characters.\n\
+    - Supports individual **debugging and sharing prompts**.\n\n## System Snapshots\n\
+    \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
+    \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
+    \ --> F(Backend-n...)\n    E --> G(Message Window)\n    E --> H(Long Term Memory\
+    \ Settings)\n    E --> I(Quota Limit)\n    E --> J(Chat Prompt Task)\n    E -->\
+    \ K(Greeting Prompt Task)\n    E --> L(Moderation Settings)\n    J --> M(Model\
+    \ & Parameters)\n    J --> N(API Keys)\n    J --> O(Prompt Refence)\n    J -->\
+    \ P(Tool Specifications)\n    O --> Q(Template)\n    O --> R(Variables)\n    O\
+    \ --> S(Version)\n    O --> T(...)\n    style K stroke-dasharray: 5, 5\n    style\
+    \ L stroke-dasharray: 5, 5\n    style P stroke-dasharray: 5, 5\n```\n\nAfter setting\
+    \ up a unified persona and knowledge for a character, different backends can be\
+    \ configured. For example, different model may be adopted for different users\
+    \ based on cost considerations.\n\n## How to Play\n### Online Website\nYou can\
+    \ visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your\
+    \ designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat is dedicated\
+    \ to the principles of cloud-native design. If you have a Kubernetes cluster,\
+    \ you can deploy FreeChat to your environment by following these steps:\n\n1.\
+    \ Put the Kubernetes configuration file in the `configs/helm/` directory, named\
+    \ `kube-private.conf`.\n2. Place the Helm configuration file in the same directory,\
+    \ named `values-private.yaml`. Make sure to reference the default `values.yaml`\
+    \ and customize the variables as needed.\n3. Switch to the `scripts/` directory.\n\
+    4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes\
+    \ cluster.\n5. If needed, run `install-cm.sh` to deploy `cert-manager` on the\
+    \ Kubernetes cluster, which automatically issues certificates for domains specified\
+    \ in `ingress.hosts`.\n6. Run `install-pvc.sh` to install PersistentVolumeClaim\
     \ resources.\n\n    > By default, FreeChat operates files by accessing the \"\
     local file system.\" You may want to use high-availability distributed storage\
     \ in the cloud. As a cloud-native-designed system, we recommend interfacing through\
@@ -66,21 +68,26 @@ info:
     \ <your redis password>\n\n\nmilvus:\n  url: <your milvus url>\n  milvus:\n  \
     \  auth:\n      token: <your milvus api-key>\n```\n\nWith this, FreeChat will\
     \ not automatically install these services, but rather use the configuration information\
-    \ to connect directly.\n\n### Running Locally\nYou can also run FreeChat locally.\
-    \ Currently supported on MacOS and Linux (although only tested on MacOS). You\
-    \ need to install the Docker toolset and have a network that can access [Docker\
-    \ Hub](https://hub.docker.com/).\n\nOnce ready, enter the `scripts/` directory\
-    \ and run `local-run.sh`, which will download and run the necessary docker containers.\
-    \ After a successful startup, you can access `http://localhost` via a browser\
-    \ to see the locally running freechat.fun. Use `local-run.sh --help` to view the\
-    \ supported options of the script. Good luck!\n\n### Running in an IDE\nTo run\
-    \ FreeChat in an IDE, you need to start all dependent services first but do not\
-    \ need to run the container for the FreeChat application itself. You can execute\
-    \ the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`,\
-    \ `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
+    \ to connect directly.\n\nIf your Kubernetes cluster does not have a standalone\
+    \ monitoring system, you can enable the following switch. This will install Prometheus\
+    \ and Grafana services in the same namespace, dedicated to monitoring the status\
+    \ of the services under the FreeChat application:\n```yaml\nbitnami:\n  prometheus:\n\
+    \    enabled: true\n  grafana:\n    enabled: true\n```\n\n### Running Locally\n\
+    You can also run FreeChat locally. Currently supported on MacOS and Linux (although\
+    \ only tested on MacOS). You need to install the Docker toolset and have a network\
+    \ that can access [Docker Hub](https://hub.docker.com/).\n\nOnce ready, enter\
+    \ the `scripts/` directory and run `local-run.sh`, which will download and run\
+    \ the necessary docker containers. After a successful startup, you can access\
+    \ `http://localhost` via a browser to see the locally running freechat.fun. The\
+    \ built-in administrator username and password are \"admin:freechat\". Use `local-run.sh\
+    \ --help` to view the supported options of the script. Good luck!\n\n### Running\
+    \ in an IDE\nTo run FreeChat in an IDE, you need to start all dependent services\
+    \ first but do not need to run the container for the FreeChat application itself.\
+    \ You can execute the `scripts/local-deps.sh` script to start services like `MySQL`,\
+    \ `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
     Make sure you have set the following startup parameters:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
     \ \\\n-DAPP_HOME=local-data/freechat \\\n-Dspring.profiles.active=local\n```\n\
-    \n### 使用 SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
+    \n### Use SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
     \  <artifactId>freechat-sdk</artifactId>\n  <version>${freechat-sdk.version}</version>\n\
     </dependency>\n```\n\n- **Example**\n```java\nimport fun.freechat.client.ApiClient;\n\
     import fun.freechat.client.ApiException;\nimport fun.freechat.client.Configuration;\n\
@@ -112,8 +119,9 @@ info:
     \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
     \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
     \ [DashScope](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
-    \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| OpenAPI Tools |\
-    \ [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
+    \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| Monitoring & Alerting\
+    \ | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)\n| OpenAPI\
+    \ Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
     \ [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)\n\
     \n## Collaboration\n### Application Integration\nThe FreeChat system is entirely\
     \ oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is\
@@ -8346,10 +8354,11 @@ components:
         text:
           description: "Name, description, profile, chat style, fuzzy match, any one\
             \ match is sufficient; public scope + general search for all users does\
-            \ not guarantee real-time."
+            \ not guarantee real-time"
           type: string
         highPriority:
-          description: "Character priority, greater than 1 indicates a high priority"
+          description: "Character priority, high-priority means recommended ones,\
+            \ null for all"
           type: boolean
       type: object
     CharacterQueryDTO:

@@ -55,9 +55,16 @@ export default function MessagesPane(props: MessagesPaneProps) {
         if (!resp) {
           return;
         }
-        setChatMessages(resp);
-        sender?.picture && processBackground(sender?.picture, mode, 0.4)
-          .then(setBackground);
+        if (sender?.picture) {
+          processBackground(sender.picture, mode, 0.4)
+            .then(bg => {
+              setBackground(bg);
+              setChatMessages(resp);
+            });
+        } else {
+          setBackground('');
+          setChatMessages(resp);
+        }
         onOpen?.();
       })
       .catch(handleError);

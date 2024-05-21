@@ -97,7 +97,7 @@ export default function FooterSidebar() {
             boxShadow: 'lg',
             border: 1,
             borderColor: theme.palette.background.level3,
-            px: 1,
+            px: 0.8,
             py: 0,
             m: 0,
             gap: 0,

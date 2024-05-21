@@ -15,7 +15,7 @@ export default function InfoSearchbar(props: {
   const { aiServiceApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [text, setText] = useState<string | undefined>();
+  const [text, setText] = useState('');
   const [providers, setProviders] = useState<string[] | undefined>();
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
 

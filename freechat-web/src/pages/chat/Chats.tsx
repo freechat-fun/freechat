@@ -206,6 +206,7 @@ export default function Chats() {
       </Sheet>
 
       <MessagesPane
+        key={selectedSession?.context?.chatId}
         session={selectedSession}
         defaultDebugMode={defaultDebugMode}
         onOpen={handleMessagesPaneOpen}
