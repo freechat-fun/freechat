@@ -32,7 +32,7 @@ import static dev.langchain4j.data.message.ChatMessageType.AI;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.*;
-import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
+import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
 @Service
@@ -82,8 +82,10 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
 
         try {
             locked = lock.tryLock(30, 60, TimeUnit.SECONDS);
-            EmbeddingModel embeddingModel = embeddingModelService.modelForLang(chatMemoryService.getLang(memoryId));
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(memoryId, LONG_TERM_MEMORY);
+            String lang = chatMemoryService.getLang(memoryId);
+            EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
+            EmbeddingStore<TextSegment> embeddingStore =
+                    embeddingStoreService.of(memoryId, longTermMemoryTypeForLang(lang));
 
             ChatMessageRecord userRecord = null;
             for (ChatMessageRecord record: messages) {
@@ -120,7 +122,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                     userRecord = null;
                 }
             }
-            embeddingStoreService.flush(memoryId, LONG_TERM_MEMORY, embeddingStore);
+            embeddingStoreService.flush(memoryId, longTermMemoryTypeForLang(lang), embeddingStore);
         } catch (Exception ex) {
             log.error("Failed to update long term memory for [{}]", memoryId, ex);
         } finally {
@@ -139,7 +141,8 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
         if (Objects.isNull(memoryId)) {
             return;
         }
-        embeddingStoreService.delete(memoryId, LONG_TERM_MEMORY);
+        String lang = chatMemoryService.getLang(memoryId);
+        embeddingStoreService.delete(memoryId, longTermMemoryTypeForLang(lang));
     }
 
     @EventListener

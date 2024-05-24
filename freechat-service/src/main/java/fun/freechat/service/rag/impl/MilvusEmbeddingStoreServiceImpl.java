@@ -5,14 +5,16 @@ import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.milvus.MilvusEmbeddingStore;
 import fun.freechat.langchain4j.store.embedding.DelegatedEmbeddingStore;
 import fun.freechat.service.enums.EmbeddingStoreType;
+import fun.freechat.service.rag.EmbeddingModelService;
 import fun.freechat.service.rag.EmbeddingStoreService;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
-import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("milvusEmbeddingStoreService")
 @Primary
@@ -20,8 +22,6 @@ import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
 public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<TextSegment> {
     @Value("${embedding.milvus.database:#{null}}")
     private String database;
-    @Value("${embedding.milvus.dimension:384}")
-    private Integer dimension;
     @Value("${embedding.milvus.retrieveEmbeddingsOnSearch:false}")
     private Boolean retrieveEmbeddingsOnSearch;
     @Value("${embedding.milvus.url}")
@@ -32,46 +32,44 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
     private String password;
     @Value("${embedding.milvus.token:#{null}}")
     private String token;
+    @Autowired
+    private EmbeddingModelService embeddingModelService;
+    private Map<EmbeddingStoreType, DelegatedEmbeddingStore> embeddingStores;
 
-    private DelegatedEmbeddingStore documentEmbeddingStore;
-    private DelegatedEmbeddingStore longTermMemoryEmbeddingStore;
+    private int dimensionForType(EmbeddingStoreType type) {
+        return switch (type) {
+            case ZH_CHARACTER_DOCUMENT, ZH_LONG_TERM_MEMORY -> embeddingModelService.dimensionForLang("zh");
+            case EN_CHARACTER_DOCUMENT, EN_LONG_TERM_MEMORY -> embeddingModelService.dimensionForLang("en");
+            case null, default -> embeddingModelService.dimensionForLang("default");
+        };
+    }
 
     @PostConstruct
     public void init() {
-        MilvusEmbeddingStore documentMilvusEmbeddingStore = MilvusEmbeddingStore.builder()
-                .uri(url)
-                .username(username)
-                .password(password)
-                .token(token)
-                .databaseName(database)
-                .collectionName(CHARACTER_DOCUMENT.text())
-                .dimension(dimension)
-                .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
-                .build();
+        embeddingStores = new HashMap<>(EmbeddingStoreType.values().length);
+        for (EmbeddingStoreType type : EmbeddingStoreType.values()) {
+            MilvusEmbeddingStore origEmbeddingStore = MilvusEmbeddingStore.builder()
+                    .uri(url)
+                    .username(username)
+                    .password(password)
+                    .token(token)
+                    .databaseName(database)
+                    .collectionName(type.text())
+                    .dimension(dimensionForType(type))
+                    .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
+                    .build();
 
-        MilvusEmbeddingStore longTermMemoryMilvusEmbeddingStore = MilvusEmbeddingStore.builder()
-                .uri(url)
-                .username(username)
-                .password(password)
-                .token(token)
-                .databaseName(database)
-                .collectionName(LONG_TERM_MEMORY.text())
-                .dimension(dimension)
-                .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
-                .build();
+            DelegatedEmbeddingStore delegatedEmbeddingStore = DelegatedEmbeddingStore.builder()
+                    .embeddingStore(origEmbeddingStore)
+                    .build();
 
-        documentEmbeddingStore = DelegatedEmbeddingStore.builder()
-                .embeddingStore(documentMilvusEmbeddingStore)
-                .build();
-
-        longTermMemoryEmbeddingStore = DelegatedEmbeddingStore.builder()
-                .embeddingStore(longTermMemoryMilvusEmbeddingStore)
-                .build();
+            embeddingStores.put(type, delegatedEmbeddingStore);
+        }
     }
 
     @Override
     public EmbeddingStore<TextSegment> of(Object memoryId, EmbeddingStoreType type) {
-        return type == LONG_TERM_MEMORY ? longTermMemoryEmbeddingStore : documentEmbeddingStore;
+        return embeddingStores.get(type);
     }
 
     @Override

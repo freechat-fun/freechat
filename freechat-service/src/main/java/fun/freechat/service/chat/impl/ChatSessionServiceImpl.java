@@ -72,8 +72,7 @@ import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metad
 import static fun.freechat.service.ai.LanguageModelFactory.*;
 import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
-import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
-import static fun.freechat.service.enums.EmbeddingStoreType.LONG_TERM_MEMORY;
+import static fun.freechat.service.enums.EmbeddingStoreType.*;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static java.util.stream.Collectors.toList;
@@ -309,7 +308,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             // knowledge
             EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(characterUid, CHARACTER_DOCUMENT);
+            EmbeddingStore<TextSegment> embeddingStore =
+                    embeddingStoreService.of(characterUid, documentTypeForLang(lang));
 
             QueryTransformer origQueryTransformer = CompressingQueryTransformer.builder()
                     .chatLanguageModel(chatModel)
@@ -350,7 +350,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             if (Objects.nonNull(longTermMemoryWindowSize) && longTermMemoryWindowSize > 0L) {
                 EmbeddingStore<TextSegment> longTermMemoryEmbeddingStore =
-                        embeddingStoreService.of(chatId, LONG_TERM_MEMORY);
+                        embeddingStoreService.of(chatId, longTermMemoryTypeForLang(lang));
 
                 ContentRetriever longTermMemoryContentRetriever = EmbeddingStoreContentRetriever.builder()
                         .embeddingModel(embeddingModel)

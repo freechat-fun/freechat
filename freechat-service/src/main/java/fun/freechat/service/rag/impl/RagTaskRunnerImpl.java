@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.TASK_ID;
-import static fun.freechat.service.enums.EmbeddingStoreType.CHARACTER_DOCUMENT;
+import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
 
 @Service
 @Slf4j
@@ -89,18 +89,20 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             Integer maxOverlapSize = Utils.getOrDefault(task.getMaxOverlapSize(), defaultMaxOverlapSize);
 
             Metadata tikaMetadata = new Metadata();
-            DocumentParser parser = new ApacheTikaDocumentParser(null, null, tikaMetadata, null);
+            DocumentParser parser = new ApacheTikaDocumentParser(
+                    null, null, () -> tikaMetadata, null);
             Document document = DocumentLoader.load(source, parser);
             for (String metaName: tikaMetadata.names()) {
-                document.metadata().add(metaName, tikaMetadata.get(metaName));
+                document.metadata().put(metaName, tikaMetadata.get(metaName));
             }
-            document.metadata().add(MEMORY_ID.text(), memoryId);
-            document.metadata().add(TASK_ID.text(), task.getId());
+            document.metadata().put(MEMORY_ID.text(), memoryId);
+            document.metadata().put(TASK_ID.text(), task.getId());
 
 
             EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
             Tokenizer tokenizer = embeddingModelService.tokenizerForLang(lang);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(memoryId, CHARACTER_DOCUMENT);
+            EmbeddingStore<TextSegment> embeddingStore =
+                    embeddingStoreService.of(memoryId, documentTypeForLang(lang));
             DocumentTransformer documentTransformer = isHtml(document) ? new HtmlTextExtractor() : null;
             DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenizer);
 
@@ -112,7 +114,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
                     .build()
                     .ingest(document);
 
-            embeddingStoreService.flush(memoryId, CHARACTER_DOCUMENT, embeddingStore);
+            embeddingStoreService.flush(memoryId, documentTypeForLang(lang), embeddingStore);
 
             eventPublisher.publishEvent(new RagTaskSucceededEvent(task));
             return CompletableFuture.completedFuture(null);

@@ -73,7 +73,7 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
     public EmbeddingModel modelForLang(String lang) {
         if ("en".equalsIgnoreCase(lang)) {
             return enEmbeddingModel;
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang)) {
+        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
             return zhEmbeddingModel;
         } else {
             return defaultEmbeddingModel;
@@ -84,7 +84,7 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
     public Tokenizer tokenizerForLang(String lang) {
         if ("en".equalsIgnoreCase(lang)) {
             return enTokenizer;
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang)) {
+        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
             return zhTokenizer;
         } else {
             return defaultTokenizer;
@@ -96,11 +96,25 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
         if ("en".equalsIgnoreCase(lang)) {
             // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-en-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/en/v15/BgeSmallEnV15QuantizedEmbeddingModel.java#L16
             return "Represent this sentence for searching relevant passages:";
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang)) {
+        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
             // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-zh-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/zh/v15/BgeSmallZhV15QuantizedEmbeddingModel.java#L16
             return "为这个句子生成表示以用于检索相关文章：";
         } else {
             return "";
+        }
+    }
+
+    @Override
+    public int dimensionForLang(String lang) {
+        if ("en".equalsIgnoreCase(lang)) {
+            // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-en-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/en/v15/BgeSmallEnV15QuantizedEmbeddingModel.java#L14
+            return 384;
+        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
+            // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-zh-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/zh/v15/BgeSmallZhV15QuantizedEmbeddingModel.java#L14
+            return 512;
+        } else {
+            // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-all-minilm-l6-v2-q/src/main/java/dev/langchain4j/model/embedding/AllMiniLmL6V2QuantizedEmbeddingModel.java#L10
+            return 384;
         }
     }
 }

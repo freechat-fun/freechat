@@ -43,8 +43,6 @@ public class RagIT extends AbstractIntegrationTest {
         userId = ownerAndToken.getLeft();
         userToken = ownerAndToken.getRight();
 
-        characterId = TestCharacterUtils.createCharacter(userId);
-
         ChatPromptContent promptContent = new ChatPromptContent();
         promptContent.setSystem(TestChatUtils.DEFAULT_SYSTEM_PROMPT);
         promptId = TestPromptUtils.createChatPrompt(userId, promptContent);
@@ -57,6 +55,10 @@ public class RagIT extends AbstractIntegrationTest {
         TestPromptUtils.deletePrompts(userId);
         TestCharacterUtils.deleteCharacters(userId);
         TestAccountUtils.deleteUserAndToken(userId);
+    }
+
+    private void setUpCharacterForLang(String lang) {
+        characterId = TestCharacterUtils.createCharacter(userId, lang);
     }
 
     private void testUploadDocument(String doc) {
@@ -228,7 +230,9 @@ public class RagIT extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testAll(String modelId, String doc, String question, List<String> expected) throws InterruptedException, JsonProcessingException {
+    public void testAll(String modelId, String doc, String question, String lang, List<String> expected) throws InterruptedException, JsonProcessingException {
+        setUpCharacterForLang(lang);
+
         testUploadDocument(doc);
         testCreateTask();
         testQueryTask();
@@ -245,17 +249,26 @@ public class RagIT extends AbstractIntegrationTest {
                 Arguments.of("[open_ai]gpt-3.5-turbo",
                         "miles-of-smiles-terms-of-use.txt",
                         "How many days before the rental can I cancel my booking?",
+                        "en",
                         List.of("17", "61")),
 
                 Arguments.of("[open_ai]gpt-3.5-turbo",
                         "story-about-happy-carrot.txt",
                         "Who is Charlie?",
+                        "en",
                         List.of("carrot")),
 
                 Arguments.of("[open_ai]gpt-3.5-turbo",
                         "/public/test/info/request?doc=Once%20upon%20a%20time%20in%20the%20garden%20of%20FlowerField%20there%20bloomed%20a%20gentle%20sunflower%20named%20Lily",
                         "Who is Lily?",
-                        List.of("sunflower"))
+                        "en",
+                        List.of("sunflower")),
+
+                Arguments.of("[open_ai]gpt-3.5-turbo",
+                        "快乐胡萝卜的故事.txt",
+                        "查理是谁？",
+                        "zh",
+                        List.of(""))
         );
     }
 }

@@ -46,7 +46,6 @@ chat:
     minScore: 0.3
 embedding:
   milvus:
-    dimension: 384
     retrieveEmbeddingsOnSearch: false
 file:
   storeType: local

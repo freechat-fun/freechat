@@ -19,9 +19,14 @@ public class TestCharacterUtils implements ApplicationContextAware {
     private static CharacterService characterService;
 
     public static Long createCharacter(String userId) {
+        return createCharacter(userId, "en");
+    }
+
+    public static Long createCharacter(String userId, String lang) {
         CharacterInfo info = new CharacterInfo()
                 .withName("test-bot")
                 .withUserId(userId)
+                .withLang(lang)
                 .withVisibility("public");
         assertTrue(characterService.create(Pair.of(info, null)));
         return info.getCharacterId();
