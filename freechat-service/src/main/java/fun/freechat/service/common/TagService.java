@@ -11,6 +11,7 @@ public interface TagService {
     boolean create(User user, InfoType referType, String referId, String content);
     boolean delete(User user, InfoType referType, String referId, String content);
     List<Tag> list(User user, InfoType referType);
+    List<Tag> get(InfoType referType, String referId);
     default List<HotTag> listHot(InfoType referType, Long limit) {
         return listHot(referType, null, limit);
     }

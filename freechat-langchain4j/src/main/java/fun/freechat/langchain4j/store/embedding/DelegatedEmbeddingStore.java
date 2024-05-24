@@ -16,14 +16,14 @@ import static dev.langchain4j.internal.Utils.getOrDefault;
 import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
 
 @Slf4j
-public class BatchDelegatedEmbeddingStore implements EmbeddingStore<TextSegment> {
+public class DelegatedEmbeddingStore implements EmbeddingStore<TextSegment> {
     private static final int DEFAULT_BATCH_SIZE = 100;
 
     private final EmbeddingStore<TextSegment> embeddingStore;
     private final int batchSize;
 
     @Builder
-    public BatchDelegatedEmbeddingStore(EmbeddingStore<TextSegment> embeddingStore, Integer batchSize) {
+    public DelegatedEmbeddingStore(EmbeddingStore<TextSegment> embeddingStore, Integer batchSize) {
         this.embeddingStore = ensureNotNull(embeddingStore, "embeddingStore");
         this.batchSize = getOrDefault(batchSize, DEFAULT_BATCH_SIZE);
     }

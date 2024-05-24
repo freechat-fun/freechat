@@ -8,10 +8,13 @@ import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.document.transformer.HtmlTextExtractor;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.internal.Utils;
+import dev.langchain4j.model.Tokenizer;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
+import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.RagTask;
+import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.SourceType;
 import fun.freechat.service.rag.*;
 import fun.freechat.service.util.StoreUtils;
@@ -28,6 +31,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +52,8 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
+    private CharacterService characterService;
+    @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
     @Autowired
     private EmbeddingModelService embeddingModelService;
@@ -66,6 +72,13 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
         try {
             locked = lock.tryLock(30, 3600, TimeUnit.SECONDS);
             eventPublisher.publishEvent(new RagTaskStartedEvent(task));
+
+            String lang = Optional.ofNullable(memoryId)
+                    .map(characterService::getLatestIdByUid)
+                    .map(characterService::summary)
+                    .map(CharacterInfo::getLang)
+                    .orElseThrow(() -> new IllegalArgumentException("Can't find character by uid[" + memoryId + "]"));
+
             SourceType sourceType = SourceType.of(task.getSourceType());
             DocumentSource source = switch (sourceType) {
                 case FILE -> FileSystemSource.from(StoreUtils.defaultFileStore().toPath(task.getSource()));
@@ -84,11 +97,12 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             document.metadata().add(MEMORY_ID.text(), memoryId);
             document.metadata().add(TASK_ID.text(), task.getId());
 
-            EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, CHARACTER_DOCUMENT);
+
+            EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
+            Tokenizer tokenizer = embeddingModelService.tokenizerForLang(lang);
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(memoryId, CHARACTER_DOCUMENT);
             DocumentTransformer documentTransformer = isHtml(document) ? new HtmlTextExtractor() : null;
-            DocumentSplitter documentSplitter = DocumentSplitters.recursive(
-                    maxSegmentSize, maxOverlapSize, null);
+            DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenizer);
 
             EmbeddingStoreIngestor.builder()
                     .embeddingModel(embeddingModel)

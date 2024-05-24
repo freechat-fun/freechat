@@ -95,12 +95,20 @@ mysql:
     2-data.sql: ''
   metrics:
     enabled: true
+    livenessProbe:
+      enabled: false
+    readinessProbe:
+      enabled: false
 redis:
   url: redis://freechat-redis-master:6379
   replica:
     replicaCount: 0
   metrics:
     enabled: true
+    livenessProbe:
+      enabled: false
+    readinessProbe:
+      enabled: false
 milvus:
   url: http://freechat-milvus-proxy:19530
   initJob:

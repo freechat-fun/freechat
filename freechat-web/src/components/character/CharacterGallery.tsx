@@ -247,14 +247,24 @@ export default function CharacterGallery({
 
   function handleChangePage(newPage: number): void {
     setPage(newPage);
-    if (query) {
+    setQuery(prevQuery => {
+      if (!prevQuery) {
+        prevQuery = defaultQuery();
+      }
       const newQuery = new CharacterQueryDTO();
-      newQuery.where = query.where;
-      newQuery.pageSize = query.pageSize || pageSize;
-      newQuery.orderBy = query.orderBy;
+      newQuery.where = prevQuery.where;
+      if (!newQuery.where) {
+        newQuery.where = new CharacterQueryWhere();
+        newQuery.where.visibility = 'public';
+        if (!all) {
+          newQuery.where.highPriority = false;
+        }
+      }
+      newQuery.pageSize = prevQuery.pageSize || pageSize;
+      newQuery.orderBy = prevQuery.orderBy;
       newQuery.pageNum = newPage;
-      setQuery(newQuery);
-    }
+      return newQuery;
+    }) 
   }
 
   function handleView(record: CharacterSummaryStatsDTO): void {
@@ -361,6 +371,7 @@ export default function CharacterGallery({
           alignItems: 'center',
           gap: 1,
           mt: 2,
+          mr: 2,
         }}>
           <Chip variant="outlined" sx={{ mr: 1.5 }}>
             {labelDisplayedRows(

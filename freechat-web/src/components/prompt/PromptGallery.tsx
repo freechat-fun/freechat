@@ -318,6 +318,7 @@ export default function PromptGallery() {
           alignItems: 'center',
           gap: 1,
           mt: 2,
+          mr: 2,
         }}>
           <Chip variant="outlined" sx={{ mr: 1.5 }}>
             {labelDisplayedRows(

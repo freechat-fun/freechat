@@ -2,6 +2,7 @@ package fun.freechat.api.dto;
 
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.enums.Visibility;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -56,6 +57,11 @@ public class CharacterQueryDTO {
         }
         if (Objects.isNull(getPageNum()) || getPageNum() < 0L) {
             setPageNum(0L);
+        }
+        if (Objects.isNull(getWhere())) {
+            Where where = new Where();
+            where.setVisibility(Visibility.PUBLIC.text());
+            setWhere(where);
         }
         return CharacterService.queryBuilder()
                 .where(CharacterService.Query.whereBuilder()

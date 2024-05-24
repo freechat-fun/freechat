@@ -287,7 +287,7 @@ export default function CharacterEditor ({
         characterApi?.updateCharacterBackend(backendId, req)
           .then(() => {
             if (redirectToChatPrompt && req.chatPromptTaskId) {
-              navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}${redirectHash ?? ''}`);
+              saveAndNavigate(req.chatPromptTaskId, redirectHash);
             } else {
               setBackends((prevBackends) => {
                 const others = prevBackends.filter(prevBackend => prevBackend.backendId !== backendId);
@@ -301,7 +301,7 @@ export default function CharacterEditor ({
           characterApi?.addCharacterBackend(id, req)
             .then((bId) => {
               if (redirectToChatPrompt && req.chatPromptTaskId) {
-                navigate(`/w/prompt/task/edit/${req.chatPromptTaskId}${redirectHash ?? ''}`);
+                saveAndNavigate(req.chatPromptTaskId, redirectHash);
               } else {
                 setBackends((prevBackends) => {
                   return [...prevBackends, {...backend, backendId: bId, chatPromptTaskId: req.chatPromptTaskId}];
@@ -398,6 +398,18 @@ export default function CharacterEditor ({
       objectsEqual(draftRecord.defaultScene, defaultScene) &&
       objectsEqual(draftRecord.visibility ?? 'private', visibility) &&
       objectsEqual(draftRecord.tags ?? [], tags);
+  }
+
+  function saveAndNavigate(promptTaskId: string, hash?: string): void {
+    const draftRecord = getEditRecord();
+    draftRecord.characterId = undefined;
+    draftRecord.draft = undefined;
+
+    const request = new CharacterUpdateDTO();
+    request.draft = JSON.stringify(draftRecord);
+
+    characterApi?.updateCharacter(id, request)
+      .finally(() => navigate(`/w/prompt/task/edit/${promptTaskId}${hash ?? ''}`))
   }
 
   return (

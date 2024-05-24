@@ -85,7 +85,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     }
 
     @Override
-    public EmbeddingStore<TextSegment> from(Object memoryId, EmbeddingStoreType storeType) {
+    public EmbeddingStore<TextSegment> of(Object memoryId, EmbeddingStoreType storeType) {
         if (Objects.nonNull(memoryId)) {
             String storePath = memoryIdToPath(memoryId, storeType);
             FileStore fileStore = StoreUtils.defaultFileStore();

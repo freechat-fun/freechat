@@ -3,7 +3,7 @@ package fun.freechat.service.rag.impl;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.milvus.MilvusEmbeddingStore;
-import fun.freechat.langchain4j.store.embedding.BatchDelegatedEmbeddingStore;
+import fun.freechat.langchain4j.store.embedding.DelegatedEmbeddingStore;
 import fun.freechat.service.enums.EmbeddingStoreType;
 import fun.freechat.service.rag.EmbeddingStoreService;
 import jakarta.annotation.PostConstruct;
@@ -33,8 +33,8 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
     @Value("${embedding.milvus.token:#{null}}")
     private String token;
 
-    private BatchDelegatedEmbeddingStore documentEmbeddingStore;
-    private BatchDelegatedEmbeddingStore longTermMemoryEmbeddingStore;
+    private DelegatedEmbeddingStore documentEmbeddingStore;
+    private DelegatedEmbeddingStore longTermMemoryEmbeddingStore;
 
     @PostConstruct
     public void init() {
@@ -60,17 +60,17 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
                 .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
                 .build();
 
-        documentEmbeddingStore = BatchDelegatedEmbeddingStore.builder()
+        documentEmbeddingStore = DelegatedEmbeddingStore.builder()
                 .embeddingStore(documentMilvusEmbeddingStore)
                 .build();
 
-        longTermMemoryEmbeddingStore = BatchDelegatedEmbeddingStore.builder()
+        longTermMemoryEmbeddingStore = DelegatedEmbeddingStore.builder()
                 .embeddingStore(longTermMemoryMilvusEmbeddingStore)
                 .build();
     }
 
     @Override
-    public EmbeddingStore<TextSegment> from(Object memoryId, EmbeddingStoreType type) {
+    public EmbeddingStore<TextSegment> of(Object memoryId, EmbeddingStoreType type) {
         return type == LONG_TERM_MEMORY ? longTermMemoryEmbeddingStore : documentEmbeddingStore;
     }
 

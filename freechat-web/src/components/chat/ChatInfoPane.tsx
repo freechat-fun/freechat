@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Card, Divider, FormControl, IconButton, Input, Stack, Typography } from "@mui/joy";
+import { Box, Button, Card, Chip, Divider, FormControl, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
-import { CommonGridBox, ContentTextarea, LinePlaceholder, TextareaTypography } from "..";
+import { CommonBox, CommonGridBox, ContentTextarea, LinePlaceholder, TextareaTypography } from "..";
 import { CheckRounded, CloseRounded, SaveAltRounded } from "@mui/icons-material";
 import { getLocaleLabel } from "../../configs/i18n-config";
 import { ChatInfoUsage } from ".";
@@ -34,6 +34,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
   const [saved, setSaved] = useState(false);
 
   const lang = session?.character?.lang?.split('_')?.[0] ?? session?.character?.lang ?? 'en';
+  const tags = session?.character?.tags ?? [];
 
   useEffect(() => {
     setUserNickname(session?.context?.userNickname ?? '');
@@ -119,6 +120,16 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       <TextareaTypography level="title-sm" textColor="neutral">
         {session?.character?.description}
       </TextareaTypography>
+
+      {tags.length > 0 && (
+        <CommonBox>
+          {tags.map((tag, index) => (
+            <Chip variant="outlined" color="success" key={`tag-${tag}-${index}`}>{tag}</Chip>
+          ))}
+        </CommonBox>
+      )}
+
+      <LinePlaceholder spacing={1} />
 
       <Divider sx={{ my: 2 }}>{t('Settings that affect chat feedback')}</Divider>
 

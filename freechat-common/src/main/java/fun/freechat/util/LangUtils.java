@@ -373,6 +373,7 @@ public class LangUtils {
             "yi",
             "yo",
             "za",
+            "zh",
             "zu",
             "zh_CN",
             "zh_TW"

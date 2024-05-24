@@ -4,7 +4,11 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.output.TokenUsage;
 import fun.freechat.mapper.ChatHistoryDynamicSqlSupport;
 import fun.freechat.mapper.ChatHistoryMapper;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.ChatContext;
 import fun.freechat.model.ChatHistory;
+import fun.freechat.service.cache.MiddlePeriodCache;
+import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
 import fun.freechat.service.util.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +43,8 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private ApplicationEventPublisher eventPublisher;
     @Autowired
     private CacheManager cacheManager;
+    @Autowired
+    private CharacterService characterService;
     @Autowired
     private ChatHistoryMapper chatHistoryMapper;
     @Autowired
@@ -190,6 +196,21 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .reduce(new MemoryUsage(null, null),
                         (acc, tokenUsage) -> acc.add(1L, tokenUsage),
                         MemoryUsage::add);
+    }
+
+    @Override
+    @MiddlePeriodCache
+    public String getLang(Object memoryId) {
+        return Optional.ofNullable(memoryId)
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
+                .map(chatContextService::get)
+                .map(ChatContext::getBackendId)
+                .map(characterService::getBackendCharacterUid)
+                .map(characterService::getLatestIdByUid)
+                .map(characterService::summary)
+                .map(CharacterInfo::getLang)
+                .orElse("en");
     }
 
     private LinkedList<ChatMessageRecord> getMessageRecords(Object memoryId) {

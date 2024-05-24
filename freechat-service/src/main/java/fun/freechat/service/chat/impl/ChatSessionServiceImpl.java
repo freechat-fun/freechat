@@ -19,11 +19,13 @@ import dev.langchain4j.rag.content.injector.ContentInjector;
 import dev.langchain4j.rag.content.injector.DefaultContentInjector;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
+import dev.langchain4j.rag.query.Query;
 import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer;
 import dev.langchain4j.rag.query.transformer.QueryTransformer;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
+import fun.freechat.langchain4j.rag.query.transformer.DelegatedQueryTransformer;
 import fun.freechat.model.*;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
@@ -216,9 +218,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         Collections.emptyMap();
                 try (var apiKeyClient = aiApiKeyService.use(ownerId, moderationApiKeyName)) {
                     switch (provider) {
-                        case OPEN_AI -> {
-                            moderationModel = createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        }
+                        case OPEN_AI -> moderationModel = createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         default -> throw new NotImplementedException("Not implemented.");
                     }
                 }
@@ -274,9 +274,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 variables.putAll(predefinedVariables);
             }
 
+            String lang = characterInfo.getLang();
+            variables.put(CHARACTER_LANG.text(), LangUtils.codeToLabel(lang));
             variables.put(CHARACTER_NICKNAME.text(), characterNickname);
             variables.put(CHARACTER_GENDER.text(), characterInfo.getGender());
-            variables.put(CHARACTER_LANG.text(), LangUtils.codeToLabel(characterInfo.getLang()));
             variables.put(CHARACTER_CHAT_STYLE.text(), getOrBlank(characterInfo.getChatStyle()));
             variables.put(CHARACTER_CHAT_EXAMPLE.text(), getOrBlank(characterInfo.getChatExample()));
             variables.put(CHARACTER_GREETING.text(), getOrBlank(characterInfo.getGreeting()));
@@ -307,14 +308,21 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             }
 
             // knowledge
-            EmbeddingModel embeddingModel = embeddingModelService.from(characterUid);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(characterUid, CHARACTER_DOCUMENT);
+            EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(characterUid, CHARACTER_DOCUMENT);
 
-            QueryTransformer queryTransformer = CompressingQueryTransformer.builder()
+            QueryTransformer origQueryTransformer = CompressingQueryTransformer.builder()
                     .chatLanguageModel(chatModel)
-                    .promptTemplate("zh".equalsIgnoreCase(characterInfo.getLang()) ?
+                    .promptTemplate("zh".equalsIgnoreCase(lang) ?
                             DEFAULT_PROMPT_TEMPLATE_ZH :
                             CompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE)
+                    .build();
+
+            QueryTransformer delegatedQueryTransformer = DelegatedQueryTransformer.builder()
+                    .queryTransformer(origQueryTransformer)
+                    .postProcessor(queries -> queries.stream()
+                            .map(query -> Query.from(embeddingModelService.queryPrefixForLang(lang) + query.text()))
+                            .toList())
                     .build();
 
             ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
@@ -330,7 +338,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .build();
 
             RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
-                    .queryTransformer(queryTransformer)
+                    .queryTransformer(delegatedQueryTransformer)
                     .contentRetriever(contentRetriever)
                     .contentInjector(contentInjector)
                     .executor(executor)
@@ -341,12 +349,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             Integer longTermMemoryWindowSize = backend.getLongTermMemoryWindowSize();
 
             if (Objects.nonNull(longTermMemoryWindowSize) && longTermMemoryWindowSize > 0L) {
-                EmbeddingModel longTermMemoryEmbeddingModel = embeddingModelService.from(chatId);
                 EmbeddingStore<TextSegment> longTermMemoryEmbeddingStore =
-                        embeddingStoreService.from(chatId, LONG_TERM_MEMORY);
+                        embeddingStoreService.of(chatId, LONG_TERM_MEMORY);
 
                 ContentRetriever longTermMemoryContentRetriever = EmbeddingStoreContentRetriever.builder()
-                        .embeddingModel(longTermMemoryEmbeddingModel)
+                        .embeddingModel(embeddingModel)
                         .embeddingStore(longTermMemoryEmbeddingStore)
                         .maxResults(longTermMemoryWindowSize)
                         .minScore(minScore)
@@ -354,7 +361,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         .build();
 
                 longTermMemoryRetrievalAugmentor = DefaultRetrievalAugmentor.builder()
-                        .queryTransformer(queryTransformer)
+                        .queryTransformer(delegatedQueryTransformer)
                         .contentRetriever(longTermMemoryContentRetriever)
                         .contentInjector(contentInjector)
                         .executor(executor)

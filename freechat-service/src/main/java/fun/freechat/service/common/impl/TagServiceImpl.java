@@ -64,6 +64,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<Tag> get(InfoType referType, String referId) {
+        return tagMapper.select(c -> c.where(TagDynamicSqlSupport.referId, isEqualTo(referId))
+                .and(TagDynamicSqlSupport.referType, isEqualTo(referType.text())));
+    }
+
+    @Override
     public List<HotTag> listHot(InfoType referType, String text, Long limit) {
         var statement = select(
                 TagDynamicSqlSupport.content,
@@ -74,22 +80,22 @@ public class TagServiceImpl implements TagService {
         switch (referType) {
             case CHARACTER -> {
                 statement.leftJoin(CharacterInfoDynamicSqlSupport.characterInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(CharacterInfoDynamicSqlSupport.characterId));
+                        .on(TagDynamicSqlSupport.referId, equalTo(CharacterInfoDynamicSqlSupport.characterUid));
                 visibilityColumn = CharacterInfoDynamicSqlSupport.visibility;
             }
             case PROMPT -> {
                 statement.leftJoin(PromptInfoDynamicSqlSupport.promptInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptId));
+                        .on(TagDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptUid));
                 visibilityColumn = PromptInfoDynamicSqlSupport.visibility;
             }
             case AGENT -> {
                 statement.leftJoin(AgentInfoDynamicSqlSupport.agentInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentId));
+                        .on(TagDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentUid));
                 visibilityColumn = AgentInfoDynamicSqlSupport.visibility;
             }
             case PLUGIN -> {
                 statement.leftJoin(PluginInfoDynamicSqlSupport.pluginInfo, "i")
-                        .on(TagDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginId));
+                        .on(TagDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginUid));
                 visibilityColumn = PluginInfoDynamicSqlSupport.visibility;
             }
             default -> {

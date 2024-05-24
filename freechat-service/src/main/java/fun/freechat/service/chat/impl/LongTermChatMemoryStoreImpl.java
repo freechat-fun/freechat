@@ -11,6 +11,7 @@ import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.filter.Filter;
 import fun.freechat.service.chat.ChatMemoryReducedEvent;
+import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.chat.LongTermChatMemoryStore;
 import fun.freechat.service.rag.EmbeddingModelService;
@@ -42,6 +43,8 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
 
     @Autowired
     private RedissonClient redisson;
+    @Autowired
+    private ChatMemoryService chatMemoryService;
     @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
     @Autowired
@@ -79,8 +82,8 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
 
         try {
             locked = lock.tryLock(30, 60, TimeUnit.SECONDS);
-            EmbeddingModel embeddingModel = embeddingModelService.from(memoryId);
-            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.from(memoryId, LONG_TERM_MEMORY);
+            EmbeddingModel embeddingModel = embeddingModelService.modelForLang(chatMemoryService.getLang(memoryId));
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(memoryId, LONG_TERM_MEMORY);
 
             ChatMessageRecord userRecord = null;
             for (ChatMessageRecord record: messages) {

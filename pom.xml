@@ -15,7 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!--dependency versions-->
-        <spring-boot.version>3.2.5</spring-boot.version>
+        <spring-boot.version>3.2.6</spring-boot.version>
         <springdoc.version>2.5.0</springdoc.version>
         <mybatis.version>3.5.15</mybatis.version>
         <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
@@ -25,7 +25,7 @@
         <redisson.version>3.30.0</redisson.version>
         <objenesis.version>3.3</objenesis.version>
         <swagger-parser.version>2.1.20</swagger-parser.version>
-        <langchain4j.version>0.30.0</langchain4j.version>
+        <langchain4j.version>0.31.0</langchain4j.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>

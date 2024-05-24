@@ -12,4 +12,5 @@ public interface ChatMemoryService extends TokenUsageChatMemoryStore {
     ChatMessageRecord getLatestChatMessage(Object memoryId);
     List<Long> rollback(Object memoryId, Integer count);
     MemoryUsage usage(Object memoryId);
+    String getLang(Object memoryId);
 }

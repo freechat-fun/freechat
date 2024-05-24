@@ -54,6 +54,17 @@
 
         <dependency>
             <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-bge-small-en-v15-q</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-bge-small-zh-v15-q</artifactId>
+            <version>0.31.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-document-parser-apache-tika</artifactId>
             <exclusions>
                 <exclusion>
