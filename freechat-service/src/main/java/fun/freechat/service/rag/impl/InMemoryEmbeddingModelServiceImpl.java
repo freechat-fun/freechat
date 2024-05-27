@@ -31,6 +31,14 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
     private EmbeddingModel defaultEmbeddingModel;
     private Tokenizer defaultTokenizer;
 
+    private boolean isEn(String lang) {
+        return "en".equalsIgnoreCase(lang);
+    }
+
+    private boolean isZh(String lang) {
+        return "zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang);
+    }
+
     private Tokenizer tokenizerFromResource(String resourceName, Class<? extends EmbeddingModel> clazz) {
         try {
             URI uri = Objects.requireNonNull(clazz.getResource(resourceName)).toURI();
@@ -71,9 +79,9 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
 
     @Override
     public EmbeddingModel modelForLang(String lang) {
-        if ("en".equalsIgnoreCase(lang)) {
+        if (isEn(lang)) {
             return enEmbeddingModel;
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
+        } else if (isZh(lang)) {
             return zhEmbeddingModel;
         } else {
             return defaultEmbeddingModel;
@@ -82,9 +90,9 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
 
     @Override
     public Tokenizer tokenizerForLang(String lang) {
-        if ("en".equalsIgnoreCase(lang)) {
+        if (isEn(lang)) {
             return enTokenizer;
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
+        } else if (isZh(lang)) {
             return zhTokenizer;
         } else {
             return defaultTokenizer;
@@ -93,10 +101,10 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
 
     @Override
     public String queryPrefixForLang(String lang) {
-        if ("en".equalsIgnoreCase(lang)) {
+        if (isEn(lang)) {
             // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-en-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/en/v15/BgeSmallEnV15QuantizedEmbeddingModel.java#L16
             return "Represent this sentence for searching relevant passages:";
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
+        } else if (isZh(lang)) {
             // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-zh-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/zh/v15/BgeSmallZhV15QuantizedEmbeddingModel.java#L16
             return "为这个句子生成表示以用于检索相关文章：";
         } else {
@@ -106,10 +114,10 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
 
     @Override
     public int dimensionForLang(String lang) {
-        if ("en".equalsIgnoreCase(lang)) {
+        if (isEn(lang)) {
             // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-en-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/en/v15/BgeSmallEnV15QuantizedEmbeddingModel.java#L14
             return 384;
-        } else if ("zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang)) {
+        } else if (isZh(lang)) {
             // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-zh-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/zh/v15/BgeSmallZhV15QuantizedEmbeddingModel.java#L14
             return 512;
         } else {

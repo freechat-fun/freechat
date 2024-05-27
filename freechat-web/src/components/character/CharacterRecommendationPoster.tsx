@@ -74,7 +74,7 @@ const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecomm
               borderTopRightRadius: 'lg',
               borderTopLeftRadius: 0,
               borderColor: 'white',
-              background: 'rgba(0 0 0 / 0.2)',
+              background: 'rgba(0 0 0 / 0.4)',
               backdropFilter: 'blur(3px)',
             }}
           >

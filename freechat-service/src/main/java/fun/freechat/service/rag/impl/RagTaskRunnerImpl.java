@@ -70,7 +70,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
         boolean locked = false;
 
         try {
-            locked = lock.tryLock(30, 3600, TimeUnit.SECONDS);
+            locked = lock.tryLock(30, 5400, TimeUnit.SECONDS);
             eventPublisher.publishEvent(new RagTaskStartedEvent(task));
 
             String lang = Optional.ofNullable(memoryId)

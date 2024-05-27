@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum ChatVar {
     CHARACTER_NICKNAME,
+    CHARACTER_DESCRIPTION,
     CHARACTER_GENDER,
     CHARACTER_LANG,
     CHARACTER_PROFILE,

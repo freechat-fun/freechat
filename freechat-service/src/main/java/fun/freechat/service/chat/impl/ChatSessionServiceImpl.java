@@ -276,6 +276,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             String lang = characterInfo.getLang();
             variables.put(CHARACTER_LANG.text(), LangUtils.codeToLabel(lang));
             variables.put(CHARACTER_NICKNAME.text(), characterNickname);
+            variables.put(CHARACTER_DESCRIPTION.text(), characterInfo.getDescription());
             variables.put(CHARACTER_GENDER.text(), characterInfo.getGender());
             variables.put(CHARACTER_CHAT_STYLE.text(), getOrBlank(characterInfo.getChatStyle()));
             variables.put(CHARACTER_CHAT_EXAMPLE.text(), getOrBlank(characterInfo.getChatExample()));

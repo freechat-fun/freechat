@@ -66,7 +66,7 @@ public class MainController {
         Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
         String webVersion = properties.getProperty(WEB_VERSION_KEY);
         if (StringUtils.isNotBlank(webVersion)) {
-            script = "/asserts/index-" + webVersion + ".js";
+            script = "/assets/index-" + webVersion + ".js";
         }
         model.addAttribute("script", script);
         if (!AppMetaUtils.isTestingEnv()) {
