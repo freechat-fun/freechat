@@ -105,6 +105,8 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         var statement = fields.from(InteractiveStatsDynamicSqlSupport.interactiveStats)
                 .where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(infoType.text()))
                 .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(infoId))
+                .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                .limit(1)
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
         InteractiveStats stats = interactiveStatsMapper.selectOne(statement).orElse(null);
@@ -170,7 +172,9 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         }
         return interactiveStatsMapper.selectOne(c ->
                 c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(infoType.text()))
-                        .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(infoId)))
+                        .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(infoId))
+                        .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                        .limit(1))
                 .orElse(null);
     }
 

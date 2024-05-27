@@ -72,7 +72,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
 
   const [copied, setCopied] = useState(false);
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const context = session?.context;
   const sender = session?.character;

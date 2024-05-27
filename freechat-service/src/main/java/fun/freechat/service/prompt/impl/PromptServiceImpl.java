@@ -619,7 +619,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                 .map(info -> {
                     InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
                                     c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
+                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getPromptUid()))
+                                            .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                                            .limit(1))
                             .orElse(null);
                     return Triple.of(info.getPromptId(), info.getVersion(), stats);
                 })

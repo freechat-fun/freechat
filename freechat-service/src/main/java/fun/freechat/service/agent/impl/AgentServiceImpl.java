@@ -580,7 +580,9 @@ select distinct a.user_id, a.agent_id, a.visibility... \
                 .map(info -> {
                     InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
                                     c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
+                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getAgentUid()))
+                                            .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                                            .limit(1))
                             .orElse(null);
                     return Triple.of(info.getAgentId(), info.getVersion(), stats);
                 })

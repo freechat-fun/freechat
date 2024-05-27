@@ -589,7 +589,9 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .map(info -> {
                     InteractiveStats stats = interactiveStatsMapper.selectOne(c ->
                                     c.where(InteractiveStatsDynamicSqlSupport.referType, isEqualTo(InfoType.CHARACTER.text()))
-                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid())))
+                                            .and(InteractiveStatsDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid()))
+                                            .orderBy(InteractiveStatsDynamicSqlSupport.gmtModified.descending())
+                                            .limit(1))
                             .orElse(null);
                     return Triple.of(info.getCharacterId(), info.getVersion(), stats);
                 })

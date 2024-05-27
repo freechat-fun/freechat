@@ -85,7 +85,7 @@ export default function CharacterRecommendationPane({
 
       <CharacterRecommendationPoster
         record={selectedRecord}
-        maxDescriptionLines={2 * records.length}
+        maxDescriptionLines={2 * records.length - 2}
         sx={{
           gridTemplateRows: `calc(64px * ${records.length})`,
         }}
