@@ -47,6 +47,7 @@ const CharacterRecommendationListItem = forwardRef<HTMLLIElement, CharacterRecom
               backgroundImage: `url(${record.avatar})`,
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
             }}>
               <CardCover
                 sx={{
@@ -55,8 +56,8 @@ const CharacterRecommendationListItem = forwardRef<HTMLLIElement, CharacterRecom
                   },
                   opacity: selectedId === record.characterId ? 1 : 0,
                   transition: '0.3s ease-in',
-                  background: selectedId === record.characterId ? undefined : 'rgba(0 0 0 / 0.5)',
-                  backdropFilter: selectedId === record.characterId ? 'blur(3px)' : undefined,
+                  background: selectedId === record.characterId ? 'rgba(0 0 0 / 0.5)' : undefined,
+                  backdropFilter: selectedId === record.characterId ? undefined : 'blur(3px)',
                 }}>
                   <Typography level="title-lg" sx={{
                     color: 'white',

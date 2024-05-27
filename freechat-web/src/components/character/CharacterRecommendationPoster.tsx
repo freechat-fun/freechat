@@ -86,7 +86,16 @@ const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecomm
             px: 1,
             mr: 'auto',
           }}>
-            <Typography level="h2" sx={{ color: 'neutral.400' }}>
+            <Typography level="h2" sx={{
+              color: 'white',
+              '-webkit-text-stroke': '1px gray',
+              textShadow: `
+                -1px -1px 0 gray,
+                1px -1px 0 gray,
+                -1px  1px 0 gray,
+                1px  1px 0 gray
+              `,
+            }}>
               {nickname}
             </Typography>
           </Box>
