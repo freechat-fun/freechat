@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar, Chip, Dropdown, IconButton, ListItemDecorator, Menu, MenuButton, MenuItem, Stack, Switch, Typography } from "@mui/joy";
 import { ArrowBackIosNewRounded, CheckRounded, CircleRounded, DeleteForeverRounded, InfoRounded, MoreVertRounded } from "@mui/icons-material";
 import { ChatSessionDTO } from "freechat-sdk";
-import { getSenderName, getSenderStatus, getSenderStatusColor, toggleChatInfoPane } from "../../libs/chat_utils";
+import { getSenderName, getSenderStatus, getSenderStatusColor, toggleChatInfoPane, toggleChatsPane } from "../../libs/chat_utils";
 import { CommonBox } from "..";
 
 type MessagesPaneHeaderProps = {
@@ -53,7 +53,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
           sx={{
             display: { xs: 'inline-flex', sm: 'none' },
           }}
-          onClick={toggleChatInfoPane}
+          onClick={toggleChatsPane}
         >
           <ArrowBackIosNewRounded />
         </IconButton>
