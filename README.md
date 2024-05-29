@@ -47,7 +47,7 @@ flowchart TD
     style P stroke-dasharray: 5, 5
 ```
 
-After setting up a unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.
+After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.
 
 ## How to Play
 ### Online Website

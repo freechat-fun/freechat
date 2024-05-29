@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Stack, Typography } from "@mui/joy";
 import { ChatSessionDTO } from "freechat-sdk";
-import { getSenderName, getSenderReply, getSenderStatus, toggleMessagesPane } from "../../libs/chat_utils";
+import { getSenderName, getSenderReply, getSenderStatus, toggleChatsPane } from "../../libs/chat_utils";
 import { AvatarWithStatus } from ".";
 import { CommonGridBox, HighlightedTypography } from "..";
 import { CircleRounded, RemoveCircleRounded } from "@mui/icons-material";
@@ -49,7 +49,7 @@ export default function ChatListItem(props: ChatListItemProps) {
       <ListItem>
         <ListItemButton
           onClick={() => {
-            toggleMessagesPane();
+            toggleChatsPane();
             onSelectChat?.();
           }}
           selected={selected}

@@ -68,7 +68,7 @@ export function getTemplateContent(record: PromptDetailsDTO | undefined): string
     messages.forEach(message => 
       templates.push(`${getMessageText(message)}`));
     
-    templates.push(`${getMessageText(chatTemplate.messageToSend) ?? (record?.format === 'f_string' ? '{input}' : '{{input}}')}`);
+    templates.push(`${getMessageText(chatTemplate.messageToSend) ?? (record?.format === 'f_string' ? '{input}' : '{{{input}}}')}`);
   } else {
     templates.push(record?.template || '');
   }
@@ -181,7 +181,7 @@ function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | unde
   }
 
   markdownContent += '**[USER]**<br>';
-  markdownContent += `${getMessageText(chatTemplate.messageToSend) ?? (format === 'f_string' ? '{input}' : '{{input}}')}`;
+  markdownContent += `${getMessageText(chatTemplate.messageToSend) ?? (format === 'f_string' ? '{input}' : '{{{input}}}')}`;
 
   return markdownContent;
 }

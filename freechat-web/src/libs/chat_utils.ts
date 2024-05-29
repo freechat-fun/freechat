@@ -3,29 +3,29 @@ import { CharacterSummaryDTO, ChatMessageDTO, ChatPromptContentDTO, ChatSessionD
 import { i18nConfig } from "../configs/i18n-config";
 import { objectToMarkdownTable, setMessageText } from "./template_utils";
 
-export function openMessagesPane(): void {
+export function openChatsPane(): void {
   if (typeof window !== 'undefined') {
     document.body.style.overflow = 'hidden';
-    document.documentElement.style.setProperty('--MessagesPane-slideIn', '1');
+    document.documentElement.style.setProperty('--ChatsPane-slideIn', '1');
   }
 }
 
-export function closeMessagesPane(): void {
+export function closeChatsPane(): void {
   if (typeof window !== 'undefined') {
-    document.documentElement.style.removeProperty('--MessagesPane-slideIn');
+    document.documentElement.style.removeProperty('--ChatsPane-slideIn');
     document.body.style.removeProperty('overflow');
   }
 }
 
-export function toggleMessagesPane(): void {
+export function toggleChatsPane(): void {
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const slideIn = window
       .getComputedStyle(document.documentElement)
-      .getPropertyValue('--MessagesPane-slideIn');
+      .getPropertyValue('--ChatsPane-slideIn');
     if (slideIn) {
-      closeMessagesPane();
+      closeChatsPane();
     } else {
-      openMessagesPane();
+      openChatsPane();
     }
   }
 }
@@ -265,7 +265,7 @@ export function createPromptForCharacter(characterName: string | undefined, lang
   request.chatTemplate = new ChatPromptContentDTO();
   request.chatTemplate.messageToSend = new ChatMessageDTO();
   request.chatTemplate.messageToSend.role = 'user';
-  setMessageText(request.chatTemplate.messageToSend, '{{input}}');
+  setMessageText(request.chatTemplate.messageToSend, '{{{input}}}');
   request.format = 'mustache';
   request.lang = lang ?? i18nConfig.defaultLocale;
   request.visibility = 'private';

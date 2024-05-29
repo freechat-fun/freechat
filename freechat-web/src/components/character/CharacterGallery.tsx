@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CommonBox, HighlightedTypography, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
-import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, CharacterSummaryStatsDTO, ChatCreateDTO, InteractiveStatsDTO, PromptSummaryStatsDTO } from "freechat-sdk";
+import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, CharacterSummaryStatsDTO, ChatCreateDTO, InteractiveStatsDTO } from "freechat-sdk";
 import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Typography, useColorScheme } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded, ShareRounded, VisibilityRounded } from "@mui/icons-material";
@@ -307,7 +307,10 @@ export default function CharacterGallery({
     return `${from}-${to} of ${to <= count ? count : `more than ${to}`}`;
   }
 
-  function comparator(a: PromptSummaryStatsDTO, b: PromptSummaryStatsDTO): number {
+  function comparator(a: CharacterSummaryStatsDTO, b: CharacterSummaryStatsDTO): number {
+    if ((a.priority ?? 1) > (b.priority ?? 1)) return -1;
+    if ((a.priority ?? 1) < (b.priority ?? 1)) return 1;
+
     if ((a.viewCount ?? 0) > (b.viewCount ?? 0)) return -1;
     if ((a.viewCount ?? 0) < (b.viewCount ?? 0)) return 1;
 

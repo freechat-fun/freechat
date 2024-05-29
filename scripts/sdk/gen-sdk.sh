@@ -222,8 +222,15 @@ licenseUrl=${LICENSE_URL}
   cp -f typescript/tsconfig.json ${sdk_output}/tsconfig.json
   cp -f typescript/rollup.config.ts ${sdk_output}/rollup.config.ts
   cp -f typescript/publish.sh ${sdk_output}/publish.sh
-  python3 -m pip install -r requirements.txt
-  python3 merge-json.py -i ${output}/package.json typescript/package.json -o ${sdk_output}/package.json
+
+  cd typescript
+  python3 -m venv typescript-sdk-private.env
+  (
+    source typescript-sdk-private.env/bin/activate
+    python3 -m pip install -r requirements.txt
+    python3 merge-json.py -i ${output}/package.json package.json -o ${sdk_output}/package.json
+    deactivate
+  )
   clean_tmp ${sdk_output}
 }
 

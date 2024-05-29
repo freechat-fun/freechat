@@ -195,7 +195,7 @@ export default function Prompts() {
             request.chatTemplate.system = '';
             request.chatTemplate.messageToSend = new ChatMessageDTO();
             request.chatTemplate.messageToSend.role = 'user';
-            setMessageText(request.chatTemplate.messageToSend, '{{input}}');
+            setMessageText(request.chatTemplate.messageToSend, '{{{input}}}');
             request.inputs = JSON.stringify({'input': ''});
           } else if (editRecordType === 'string') {
             request.template = '';

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Box, Chip, IconButton, Input, List, Sheet, Stack, Typography } from "@mui/joy";
 import { ChatSessionDTO } from "freechat-sdk";
 import { ChatListItem } from ".";
-import { getSenderName, toggleMessagesPane } from "../../libs/chat_utils";
+import { closeChatsPane, getSenderName, openChatsPane, toggleChatsPane } from "../../libs/chat_utils";
 import { CloseRounded, EditNoteRounded, PlaylistAddCheckRounded, SearchRounded } from "@mui/icons-material";
 import { useDebounce } from "../../libs/ui_utils";
 import { escapeRegExp } from "../../libs/js_utils";
@@ -11,6 +11,7 @@ import { escapeRegExp } from "../../libs/js_utils";
 type ChatsPaneProps = {
   sessions: ChatSessionDTO[];
   selectedChatId?: string;
+  open?: boolean;
   onSelectChat?: (chatId: string | undefined) => void;
   onRemoveChat?: (chatId: string | undefined) => void;
 };
@@ -18,12 +19,14 @@ type ChatsPaneProps = {
 export default function ChatsPane(props: ChatsPaneProps) {
   const { t } = useTranslation('chat');
   
-  const { sessions, selectedChatId, onSelectChat, onRemoveChat } = props;
+  const { sessions, selectedChatId, open = true, onSelectChat, onRemoveChat } = props;
 
   const [chats, setChats] = useState([...sessions]);
   const [keyWord, setKeyWord] = useState('');
   const [editMode, setEditMode] = useState(false);
   const debouncedSearchTerm = useDebounce<string>(keyWord, 200);
+
+  open ? openChatsPane() : closeChatsPane();
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -96,7 +99,7 @@ export default function ChatsPane(props: ChatsPaneProps) {
             color="neutral"
             size="sm"
             onClick={() => {
-              toggleMessagesPane();
+              toggleChatsPane();
             }}
             sx={{ display: { sm: 'none' } }}
           >

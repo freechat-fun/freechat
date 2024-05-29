@@ -11,16 +11,10 @@ import {
   Experimental_CssVarsProvider as MaterialCssVarsProvider,
   THEME_ID as MATERIAL_THEME_ID,
 } from '@mui/material';
-import { useEffect } from 'react';
-import { openMessagesPane } from './libs/chat_utils';
 
 const materialTheme = materialExtendTheme();
 
 function App() {
-  useEffect(() => {
-    openMessagesPane();
-  }, []);
-
   return (
     <ContextsProvider>
       <MaterialCssVarsProvider defaultMode="dark" theme={{ [MATERIAL_THEME_ID]: materialTheme }}>

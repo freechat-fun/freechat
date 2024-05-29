@@ -187,7 +187,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
       setSystem(draftRecord.chatTemplate?.system);
       setUserName(draftRecord.chatTemplate?.messageToSend?.name ?? 'user');
       setUserMessage(draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
-        (draftRecord.format === 'f_string' ? '{input}' : '{{input}}'));
+        (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}'));
       setMessages(draftRecord.chatTemplate?.messages ?? []);
       setExample(draftRecord.example);
 
@@ -241,8 +241,8 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
     if (originName.current) {
       setUserMessage(prevUserMessage => {
         if (format === 'mustache' && prevUserMessage === '{input}') {
-          return '{{input}}';
-        } else if (format === 'f_string' && prevUserMessage === '{{input}}') {
+          return '{{{input}}}';
+        } else if (format === 'f_string' && prevUserMessage === '{{{input}}}') {
           return '{input}';
         } else {
           return prevUserMessage;
@@ -567,7 +567,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
       objectsEqual(draftRecord.chatTemplate?.system, system) &&
       objectsEqual((draftRecord.chatTemplate?.messageToSend?.name ?? 'user'), userName) &&
       objectsEqual((draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
-        (draftRecord.format === 'f_string' ? '{input}' : '{{input}}')), userMessage) &&
+        (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}')), userMessage) &&
       objectsEqual((draftRecord.chatTemplate?.messages ?? []), messages) &&
       objectsEqual(draftRecord.example, example) &&
       objectsEqual((draftRecord.visibility ?? 'private'), visibility) &&

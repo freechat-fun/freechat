@@ -26,8 +26,8 @@ info:
     \ P(Tool Specifications)\n    O --> Q(Template)\n    O --> R(Variables)\n    O\
     \ --> S(Version)\n    O --> T(...)\n    style K stroke-dasharray: 5, 5\n    style\
     \ L stroke-dasharray: 5, 5\n    style P stroke-dasharray: 5, 5\n```\n\nAfter setting\
-    \ up a unified persona and knowledge for a character, different backends can be\
-    \ configured. For example, different model may be adopted for different users\
+    \ up an unified persona and knowledge for a character, different backends can\
+    \ be configured. For example, different model may be adopted for different users\
     \ based on cost considerations.\n\n## How to Play\n### Online Website\nYou can\
     \ visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your\
     \ designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat is dedicated\
@@ -138,7 +138,7 @@ info:
     \ us. We look forward to AI technology helping people create their own \"soul\
     \ mates\" in the future."
   title: FreeChat OpenAPI Definition
-  version: 1.0.2
+  version: 1.1.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -8422,6 +8422,7 @@ components:
         description: description
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        priority: 5
         version: 1
         picture: picture
         tags:
@@ -8491,6 +8492,10 @@ components:
           description: "Default scene, which will be set as the default conversation\
             \ background information when creating a new chat"
           type: string
+        priority:
+          description: Character priority
+          format: int32
+          type: integer
         username:
           description: Character owner
           type: string
@@ -8514,9 +8519,9 @@ components:
         quotaType: quotaType
         isDefault: true
         requestId: requestId
-        initQuota: 5
+        initQuota: 2
         chatPromptTaskId: chatPromptTaskId
-        messageWindowSize: 1
+        messageWindowSize: 5
         longTermMemoryWindowSize: 5
         characterUid: characterUid
       properties:
@@ -8594,6 +8599,7 @@ components:
         chatExample: chatExample
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        priority: 1
         version: 6
         backends:
         - moderationApiKeyName: moderationApiKeyName
@@ -8606,9 +8612,9 @@ components:
           quotaType: quotaType
           isDefault: true
           requestId: requestId
-          initQuota: 5
+          initQuota: 2
           chatPromptTaskId: chatPromptTaskId
-          messageWindowSize: 1
+          messageWindowSize: 5
           longTermMemoryWindowSize: 5
           characterUid: characterUid
         - moderationApiKeyName: moderationApiKeyName
@@ -8621,9 +8627,9 @@ components:
           quotaType: quotaType
           isDefault: true
           requestId: requestId
-          initQuota: 5
+          initQuota: 2
           chatPromptTaskId: chatPromptTaskId
-          messageWindowSize: 1
+          messageWindowSize: 5
           longTermMemoryWindowSize: 5
           characterUid: characterUid
         picture: picture
@@ -8689,6 +8695,10 @@ components:
           description: "Default scene, which will be set as the default conversation\
             \ background information when creating a new chat"
           type: string
+        priority:
+          description: Character priority
+          format: int32
+          type: integer
         username:
           description: Character owner
           type: string
@@ -9393,31 +9403,32 @@ components:
     CharacterSummaryStatsDTO:
       description: "Character summary content, including interactive statistical information"
       example:
-        parentUid: parentUid
         referCount: 5
         gmtModified: 2000-01-23T04:56:07.000+00:00
-        visibility: visibility
         gender: gender
         defaultScene: defaultScene
-        scoreCount: 2
+        scoreCount: 7
         greeting: greeting
         description: description
+        score: 9
+        requestId: requestId
+        nickname: nickname
+        viewCount: 5
+        lang: lang
+        characterId: 0
+        characterUid: characterUid
+        parentUid: parentUid
+        visibility: visibility
         avatar: avatar
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        priority: 1
         version: 6
         picture: picture
         tags:
         - tags
         - tags
-        score: 7
-        recommendCount: 5
-        requestId: requestId
+        recommendCount: 2
         name: name
-        nickname: nickname
-        viewCount: 1
-        lang: lang
-        characterId: 0
-        characterUid: characterUid
         username: username
       properties:
         requestId:
@@ -9476,6 +9487,10 @@ components:
           description: "Default scene, which will be set as the default conversation\
             \ background information when creating a new chat"
           type: string
+        priority:
+          description: Character priority
+          format: int32
+          type: integer
         username:
           description: Character owner
           type: string
@@ -9877,6 +9892,7 @@ components:
           description: description
           avatar: avatar
           gmtCreate: 2000-01-23T04:56:07.000+00:00
+          priority: 5
           version: 1
           picture: picture
           tags:

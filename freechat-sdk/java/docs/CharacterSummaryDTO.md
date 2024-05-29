@@ -25,6 +25,7 @@ Character summary content
 |**lang** | **String** | Character language: en (default) | zh | ... |  [optional] |
 |**greeting** | **String** | Character greeting |  [optional] |
 |**defaultScene** | **String** | Default scene, which will be set as the default conversation background information when creating a new chat |  [optional] |
+|**priority** | **Integer** | Character priority |  [optional] |
 |**username** | **String** | Character owner |  [optional] |
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
 

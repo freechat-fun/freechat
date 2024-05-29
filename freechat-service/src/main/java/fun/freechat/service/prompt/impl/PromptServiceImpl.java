@@ -896,7 +896,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             String textTemplate = PromptUtils.toSingleText(promptContent.getMessageToSend());
             return switch (format) {
                 case F_STRING -> !textTemplate.equals("{input}");
-                case MUSTACHE -> !textTemplate.equals("{{input}}");
+                case MUSTACHE -> !(textTemplate.equals("{{input}}") || textTemplate.equals("{{{input}}}"));
                 case null -> false;
             };
         }

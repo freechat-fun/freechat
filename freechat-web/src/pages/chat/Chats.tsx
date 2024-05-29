@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Sheet, Typography } from "@mui/joy";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
@@ -24,6 +24,8 @@ export default function Chats() {
   const [selectedSession, setSelectedSession] = useState<ChatSessionDTO>();
   const [apiKeyValue, setApiKeyValue] = useState('');
   const [memoryUsage, setMemoryUsage] = useState<MemoryUsageDTO>();
+
+  const openChatsPane = useRef(!id);
 
   useEffect(() => {
     const newSelectedSession = sessions.find(session => session.context?.chatId === selectedChatId);
@@ -189,7 +191,7 @@ export default function Chats() {
         sx={{
           position: { xs: 'fixed', sm: 'sticky' },
           transform: {
-            xs: 'translateX(calc(100% * (var(--MessagesPane-slideIn, 0) - 1)))',
+            xs: 'translateX(calc(100% * (var(--ChatsPane-slideIn, 0) - 1)))',
             sm: 'none',
           },
           transition: 'transform 0.2s, width 0.2s',
@@ -200,7 +202,12 @@ export default function Chats() {
         <ChatsPane
           sessions={sessions}
           selectedChatId={selectedChatId}
-          onSelectChat={setSelectedChatId}
+          open={openChatsPane.current}
+          onSelectChat={chatId => {
+            openChatsPane.current = false;
+            setSelectedChatId(chatId);
+            
+          }}
           onRemoveChat={setChatIdDeleted}
         />
       </Sheet>
@@ -252,7 +259,7 @@ export default function Chats() {
         <Typography>
           { getCharacterNickname(chatIdDeleted) }
           { getCharacterNickname(chatIdDeleted) !== getCharacterName(chatIdDeleted) && 
-            <Typography level="body-sm">@{getCharacterName(chatIdDeleted)}</Typography>
+            <Typography level="body-sm">{`@${getCharacterName(chatIdDeleted)}`}</Typography>
           }
         </Typography>
       </ConfirmModal>

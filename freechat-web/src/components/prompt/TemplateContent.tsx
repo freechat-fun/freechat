@@ -11,7 +11,7 @@ export default function TemplateContent(props: { record: PromptDetailsDTO | unde
   };
 
   if (record?.type === 'chat' && record?.chatTemplate) {
-    const defaultInput = record?.format === 'f_string' ? '{input}' : '{{input}}';
+    const defaultInput = record?.format === 'f_string' ? '{input}' : '{{{input}}}';
     const template = record?.chatTemplate;
     const system = template?.system;
     const userName = template?.messageToSend?.name || 'user';

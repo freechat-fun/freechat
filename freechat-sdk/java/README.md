@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.0.2
+- API version: 1.1.0
   - Generator version: 7.6.0
 
 # FreeChat: Create Some Friends for Yourself with AI
@@ -53,7 +53,7 @@ flowchart TD
     style P stroke-dasharray: 5, 5
 ```
 
-After setting up a unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.
+After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.
 
 ## How to Play
 ### Online Website
@@ -271,7 +271,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -287,7 +287,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.0.2"
+     implementation "fun.freechat:freechat-sdk:1.1.0"
   }
 ```
 
@@ -301,7 +301,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.0.2.jar`
+* `target/freechat-sdk-1.1.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started

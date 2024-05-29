@@ -7,7 +7,7 @@ const providers = [{
 }];
 
 const defaultModels = {
-  'open_ai': '[open_ai]gpt-4-turbo',
+  'open_ai': '[open_ai]gpt-4o',
   'dash_scope': '[dash_scope]qwen-max',
 }
 
