@@ -18,7 +18,17 @@ It also serves as a prompt engineering platform.
 - Supports setting **quota limits** for characters.
 - Supports individual **debugging and sharing prompts**.
 
-## System Snapshots
+## Snapshots
+### On PC
+#### Home Page
+![Home Page Snapshot](/img/snapshot_w1.jpg)
+#### Development View
+![Development View Snapshot](/img/snapshot_w2.jpg)
+#### Chat View
+![Chat View Snapshot](/img/snapshot_w3.jpg)
+
+### On Mobile
+![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg) ![Chat Snapshot 3](/img/snapshot_m3.jpg)
 
 ## Character Design
 ```mermaid
