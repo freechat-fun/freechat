@@ -22,6 +22,7 @@ rm -rf ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets
 rm -rf ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img
 cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/assets ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/assets
 cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/img ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img
+cp -R -f ${PROJECT_PATH}/img/* ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img/
 
 cd ${SCRIPTS_PATH}
 
