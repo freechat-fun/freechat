@@ -19,7 +19,7 @@
 - 支持单独**调试与分享 prompt**。
 
 ## 快照
-### PC 页面
+### PC 端页面
 #### 主页
 ![Home Page Snapshot](/img/snapshot_w1.jpg)
 #### 开发视图
@@ -27,7 +27,7 @@
 #### 聊天视图
 ![Chat View Snapshot](/img/snapshot_w3.jpg)
 
-### 移动页面
+### 移动端页面
 ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br />
 ![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)
 
