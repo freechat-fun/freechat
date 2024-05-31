@@ -30,7 +30,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   useEffect(() => {
     setTags(record?.tags ?? []);
     setNickname(record?.nickname ?? record?.name);
-    record.picture && processBackground(record.picture, mode, 0.3)
+    record.picture && processBackground(record.picture, mode, 0.4)
       .then(setBackground);
   }, [mode, record]);
 
