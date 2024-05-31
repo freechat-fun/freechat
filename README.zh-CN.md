@@ -230,7 +230,7 @@ npm install freechat-sdk --save
 | ---- | ----
 | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/)
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
-| Model Providers | [OpenAI](https://platform.openai.com/), [DashScope](https://dashscope.aliyun.com/)
+| Model Providers | [OpenAI](https://platform.openai.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
 | Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
