@@ -17,13 +17,17 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 @Service
 @SuppressWarnings("unused")
 public class AiModelInfoServiceImpl implements AiModelInfoService {
-    final static String CACHE_KEY = "'AiModelInfoServiceImpl_' + #p0";
+    private static final String CACHE_KEY = "'AiModelInfoServiceImpl_' + #p0";
+    private static final Pattern MODEL_ID_PATTERN = Pattern.compile("\\[(.+?)\\](.+?)(\\|([^|]*))?");
+
 
     @Autowired
     private AiModelInfoMapper aiModelInfoMapper;
@@ -71,7 +75,7 @@ public class AiModelInfoServiceImpl implements AiModelInfoService {
     @LongPeriodCache(keyBy = CACHE_KEY)
     public AiModelInfo get(String modelId) {
         return aiModelInfoMapper.selectOne(c -> c.where(AiModelInfoDynamicSqlSupport.modelId, isEqualTo(modelId)))
-                .orElse(null);
+                .orElseGet(() -> parse(modelId));
     }
 
     @Override
@@ -86,5 +90,20 @@ public class AiModelInfoServiceImpl implements AiModelInfoService {
             }
             return c;
         });
+    }
+
+    private static AiModelInfo parse(String modelId) {
+        Matcher m = MODEL_ID_PATTERN.matcher(modelId);
+        if (m.matches()) {
+            AiModelInfo modelInfo =  new AiModelInfo();
+            modelInfo.setModelId(modelId);
+            modelInfo.setDescription("Unknown model.");
+            modelInfo.setProvider(m.group(1));
+            modelInfo.setName(m.group(2));
+            modelInfo.setType(StringUtils.isBlank(m.group(4)) ? "text2chat" : m.group(4));
+            return modelInfo;
+        } else {
+           return null;
+        }
     }
 }

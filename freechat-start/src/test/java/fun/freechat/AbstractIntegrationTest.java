@@ -72,7 +72,6 @@ public class AbstractIntegrationTest {
         registry.add("embedding.milvus.url", milvus::getEndpoint);
     }
 
-
     // In order to unify with the k8s environment, use the bitnami images for testing.
     private static DockerImageName redisImageName() {
         return DockerImageName.parse("bitnami/redis:latest")

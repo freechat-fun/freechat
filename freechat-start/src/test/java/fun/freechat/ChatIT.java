@@ -25,8 +25,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
 public class ChatIT extends AbstractIntegrationTest{
-    private static final String MODEL_ID = "[open_ai]gpt-4";
+    private static final String MODEL_ID = "[open_ai]gpt-4o";
     private static final String API_KEY_NAME = "test_api_key_open_ai";
+    private static final String API_KEY_VALUE = TestAiApiKeyUtils.apiKeyOfOpenAI();
+    private static final ModelProvider MODEL_PROVIDER = ModelProvider.OPEN_AI;
     private static final String CHARACTER_NICKNAME = "Jack";
     private static final String CHARACTER_GENDER = GenderType.MALE.text();
     private static final String CHARACTER_PROFILE = """
@@ -104,8 +106,7 @@ public class ChatIT extends AbstractIntegrationTest{
         developerId = developerAndToken.getLeft();
         developerApiKey = developerAndToken.getRight();
 
-        TestAiApiKeyUtils.addAiApiKey(developerId, API_KEY_NAME,
-                ModelProvider.OPEN_AI, TestAiApiKeyUtils.apiKeyOfOpenAI(), true);
+        TestAiApiKeyUtils.addAiApiKey(developerId, API_KEY_NAME, MODEL_PROVIDER, API_KEY_VALUE, true);
     }
 
     private void createUser() {
@@ -347,7 +348,7 @@ public class ChatIT extends AbstractIntegrationTest{
 
     private void testResendMessageWithSpecializedApiKey() {
         ChatUpdateDTO updateDto = new ChatUpdateDTO();
-        updateDto.setApiKeyValue(TestAiApiKeyUtils.apiKeyOfOpenAI());
+        updateDto.setApiKeyValue(API_KEY_VALUE);
 
         testClient.put().uri("/api/v1/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
