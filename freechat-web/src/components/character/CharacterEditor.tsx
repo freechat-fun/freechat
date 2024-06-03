@@ -276,6 +276,7 @@ export default function CharacterEditor ({
     request.isDefault = backend.isDefault;
     request.messageWindowSize = backend.messageWindowSize;
     request.longTermMemoryWindowSize = backend.longTermMemoryWindowSize;
+    request.proactiveChatWaitingTime = backend.proactiveChatWaitingTime;
     request.moderationApiKeyName = backend.moderationApiKeyName;
     request.moderationModelId = backend.moderationModelId;
     request.moderationParams = backend.moderationParams;
@@ -740,12 +741,12 @@ export default function CharacterEditor ({
             onSave={handleBackendUpdated}
             onCancel={() => setEditBackend(undefined)}
             sx={{
-              width: { xs: '100%', sm: '21rem' }
+              width: { xs: '100%', sm: '24rem' }
           }}/>
         ) : (
           <CharacterGuide sx={{
             display: { xs: 'none', md: 'inherit' },
-            width: '21rem',
+            width: '24rem',
           }}/>
         )}
 

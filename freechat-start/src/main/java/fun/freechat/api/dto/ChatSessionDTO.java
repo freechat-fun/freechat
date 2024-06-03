@@ -28,6 +28,8 @@ public class ChatSessionDTO {
     private String provider;
     @Schema(description = "Latest message record")
     private ChatMessageRecordDTO latestMessageRecord;
+    @Schema(description = "Minutes to wait for a proactive chat")
+    private Integer proactiveChatWaitingTime;
     @Schema(description = "Sender status: online | offline | invisible")
     private String senderStatus;
     @Schema(description = "Is it possible to debug")
@@ -36,6 +38,7 @@ public class ChatSessionDTO {
     public static ChatSessionDTO from(
             Triple<ChatContext, CharacterInfo, ChatMessageRecord> chatItem,
             String provider,
+            Integer proactiveChatWaitingTime,
             String senderStatus,
             Boolean isDebugEnabled) {
         if (Objects.isNull(chatItem) || Objects.isNull(chatItem.getLeft())) {
@@ -52,6 +55,7 @@ public class ChatSessionDTO {
         dto.setCharacter(CharacterSummaryDTO.from(Pair.of(characterInfo, tags)));
         dto.setLatestMessageRecord(ChatMessageRecordDTO.from(chatItem.getRight()));
         dto.setProvider(provider);
+        dto.setProactiveChatWaitingTime(proactiveChatWaitingTime);
         dto.setSenderStatus(senderStatus);
         dto.setIsDebugEnabled(isDebugEnabled);
 

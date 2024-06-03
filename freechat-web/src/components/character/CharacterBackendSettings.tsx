@@ -30,6 +30,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
 
   const [messageWindowSize, setMessageWindowSize] = useState(backend?.messageWindowSize ?? 50);
   const [longTermMemoryWindowSize, setLongTermMemoryWindowSize] = useState(backend?.longTermMemoryWindowSize ?? 5);
+  const [proactiveChatWaitingTime, setProactiveChatWaitingTime] = useState(backend?.proactiveChatWaitingTime ?? 2);
   const [initQuota, setInitQuota] = useState(backend?.initQuota ?? 0);
   const [quotaType, setQuotaType] = useState(backend?.quotaType ==='tokens' ? backend?.quotaType : 'messages');
   const [enableQuota, setEnableQuota] = useState(backend?.quotaType === 'messages' || backend?.quotaType === 'tokens');
@@ -46,7 +47,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
   const [modelSetting, setModelSetting] = useState(false);
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
 
-  const inputRefs = useRef(Array(3).fill(createRef<HTMLInputElement | null>()));
+  const inputRefs = useRef(Array(4).fill(createRef<HTMLInputElement | null>()));
 
   const matchingModels = useMemo(() => {
     return provider && models ? models.filter(
@@ -110,11 +111,12 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
   function handleSave(redirectToChatPrompt: boolean = false, redirectHash?: string) {
     let editBackend;
     if (backend) {
-      editBackend = { ...backend, messageWindowSize, longTermMemoryWindowSize };
+      editBackend = { ...backend, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime };
     } else {
       editBackend = new CharacterBackendDetailsDTO();
       editBackend.messageWindowSize = messageWindowSize;
       editBackend.longTermMemoryWindowSize = longTermMemoryWindowSize;
+      editBackend.proactiveChatWaitingTime = proactiveChatWaitingTime;
     }
 
     if (enableQuota) {
@@ -211,6 +213,38 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
         <OptionCard>
           <CommonContainer>
             <Typography level="title-sm" textColor="neutral">
+              {t('Proactive Chat Waiting Time')}
+            </Typography>
+            <OptionTooltip title={t('Set the number of minutes to wait before evoking a proactive message, 0 to disable.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <CommonContainer sx={{ ml: 'auto' }}>
+              <TinyInput
+                type="number"
+                slotProps={{
+                  input: {
+                    ref: inputRefs.current[2],
+                    min: 0,
+                    max: 60,
+                    step: 5,
+                  },
+                }}
+                value={proactiveChatWaitingTime}
+                onChange={(event => setProactiveChatWaitingTime(+event.target.value))} />
+            </CommonContainer>
+          </CommonContainer>
+          <Slider
+            value={proactiveChatWaitingTime}
+            step={5}
+            min={0}
+            max={60}
+            valueLabelDisplay="auto"
+            onChange={(_event, newValue) => setProactiveChatWaitingTime(newValue as number)} />
+        </OptionCard>
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
               {t('Quota Limit')}
             </Typography>
             <OptionTooltip title={t('After reaching the quota limit, users need to use their own API-Key to continue chatting.')}>
@@ -271,7 +305,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                 type="number"
                 slotProps={{
                   input: {
-                    ref: inputRefs.current[2],
+                    ref: inputRefs.current[3],
                     min: 0,
                     max: 10000,
                     step: 10,

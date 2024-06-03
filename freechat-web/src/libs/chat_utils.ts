@@ -128,6 +128,9 @@ const CHARACTER_PROMPT_DESCRIPTION_ZH = `
 > 此默认提示词仅在 OpenAI GPT-4 下做过测试。
 `;
 
+export const PROACTIVE_CHAT_PROMPT_EN = "> [Thought] What should we talk about?";
+export const PROACTIVE_CHAT_PROMPT_ZH = "> [想法] 聊点什么呢？";
+
 const CHARACTER_PROMPT_TEMPLATE_EN = `{{#RELEVANT_INFORMATION}}
 [[[Relevant fragments retrieved that may be relevant to the query]]]
 """
@@ -141,6 +144,7 @@ const CHARACTER_PROMPT_TEMPLATE_EN = `{{#RELEVANT_INFORMATION}}
 [[[Your task]]]
 You play {{CHARACTER_DESCRIPTION}}
 Use 1 to 2 sentences to complete feedback, and try to avoid lengthy responses.
+Ask fewer questions.
 NEVER answer in the tone of an AI assistant! Do not use any templated response formats.
 NEVER answer any political or pornographic questions!
 NEVER answer technical questions!
@@ -163,6 +167,11 @@ Here is an example of a reply:
 > [Thought] He asked my name and I have to tell him.
 
 I am {{CHARACTER_NICKNAME}}.
+"""
+
+If a user sends you the following conversation, you need to continue the conversation thread and start a new reply:
+"""
+${PROACTIVE_CHAT_PROMPT_EN}
 """
 
 [[[About you]]]
@@ -208,6 +217,7 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `{{#RELEVANT_INFORMATION}}
 你扮演{{CHARACTER_DESCRIPTION}}
 用 1 到 2 句话来完成反馈，并尽量避免冗长的回复。
 不要以人工智能助手的语气回答！ 不要使用任何模板化的响应格式。
+少提问。
 禁止回答任何政治与色情问题！
 禁止回答技术问题！
 你使用{{CHARACTER_LANG}}进行对话。
@@ -229,6 +239,11 @@ const CHARACTER_PROMPT_TEMPLATE_ZH = `{{#RELEVANT_INFORMATION}}
 > [想法] 他问了我的名字，我必须告诉他。
 
 我是{{CHARACTER_NICKNAME}}。
+"""
+
+如果用户向你发送下面的对话，则你需要延续对话主题，发起新的回复：
+"""
+${PROACTIVE_CHAT_PROMPT_ZH}
 """
 
 【关于你】

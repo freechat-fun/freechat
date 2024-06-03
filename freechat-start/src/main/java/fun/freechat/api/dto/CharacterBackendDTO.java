@@ -26,6 +26,8 @@ public class CharacterBackendDTO {
     private Integer messageWindowSize;
     @Schema(description = "Max rounds (a round includes a user message and a character reply) in the character's long term memory, 0 to disable")
     private Integer longTermMemoryWindowSize;
+    @Schema(description = "Minutes to wait for a proactive chat")
+    private Integer proactiveChatWaitingTime;
     @Schema(description = "Initial quota when opening a chat")
     private Long initQuota;
     @Schema(description = "Quota type: messages | tokens | none (not limited)")

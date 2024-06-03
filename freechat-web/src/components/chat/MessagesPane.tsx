@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Sheet, SheetProps, Stack, useColorScheme } from "@mui/joy";
 import { AvatarWithStatus, ChatBubble, MessageInput, MessagesPaneHeader } from "."
 import { ChatContentDTO, ChatMessageDTO, ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { getSenderName, getSenderStatus } from "../../libs/chat_utils";
+import { PROACTIVE_CHAT_PROMPT_EN, PROACTIVE_CHAT_PROMPT_ZH, getSenderName, getSenderStatus } from "../../libs/chat_utils";
 import { processBackground } from "../../libs/ui_utils";
+import { getMessageText } from "../../libs/template_utils";
 
 type MessagesPaneProps = SheetProps & {
   session?: ChatSessionDTO;
@@ -29,6 +30,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const [background, setBackground] = useState('');
   const [enableBackground, setEnableBackground] = useState(true);
 
+  const proactiveChatHandler = useRef<number | null>(null);
+
   const sender = session?.character;
   const context = session?.context;
 
@@ -48,6 +51,31 @@ export default function MessagesPane(props: MessagesPaneProps) {
     return record;
   }, [sender, t]);
 
+  const handleSend = useCallback((chatId?: string, userNickname?: string, textToSend?: string, processingMessage?: ChatMessageRecordDTO | null) => {
+    if (!textToSend || !chatId || processingMessage) {
+      return;
+    }
+
+    const content = new ChatContentDTO();
+    content.type = 'text';
+    content.content = textToSend.trim();
+
+    const userMessage = new ChatMessageDTO();
+    userMessage.role = 'user';
+    userMessage.contents = [content];
+    userMessage.name = userNickname;
+
+    const messageRecord = new ChatMessageRecordDTO();
+    messageRecord.message = userMessage;
+    messageRecord.gmtCreate = new Date();
+
+    setChatMessages((prevMessages) => {
+      return [...prevMessages, messageRecord];
+    });
+
+    setMessageToSend(messageRecord);
+    setErrorMessage('');
+  }, []);
 
   useEffect(() => {
     context?.chatId && chatApi?.listMessages(context.chatId)
@@ -68,7 +96,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
         onOpen?.();
       })
       .catch(handleError);
-  }, [chatApi, context?.chatId, handleError, mode, onOpen, sender, debugMode]);
+  }, [chatApi, context?.chatId, handleError, mode, onOpen, sender?.picture]);
 
   useEffect(() => {
     const savedEnableBackground = localStorage.getItem('MessagesPane.enableBackground');
@@ -81,37 +109,34 @@ export default function MessagesPane(props: MessagesPaneProps) {
     localStorage.setItem('MessagesPane.enableBackground', enableBackground ? '1': '0');
   }, [enableBackground]);
 
-  function handleClearMemory(chatId: string): void {
-    chatApi?.clearMemory(chatId)
-      .then(setChatMessages)
-      .catch(handleError);
-  }
-
-  function handleSend(): void {
-    if (!textAreaValue || !context?.chatId || messageToSend) {
-      return;
+  useEffect(() => {
+    if (proactiveChatHandler.current) {
+      clearTimeout(proactiveChatHandler.current);
+      proactiveChatHandler.current = null;
     }
 
-    const content = new ChatContentDTO();
-    content.type = 'text';
-    content.content = textAreaValue.trim();
+    const proactiveChatWaitingTime = session?.proactiveChatWaitingTime ?? 0;
+    const proactiveChatPrompt = 'zh' === sender?.lang ? PROACTIVE_CHAT_PROMPT_ZH : PROACTIVE_CHAT_PROMPT_EN;
 
-    const userMessage = new ChatMessageDTO();
-    userMessage.role = 'user';
-    userMessage.contents = [content];
-    userMessage.name = context?.userNickname;
+    if (proactiveChatWaitingTime > 0 && chatMessages.length > 2) {
+      const lastMessage = chatMessages[chatMessages.length - 1];
+      const secondToLastMessage = chatMessages[chatMessages.length - 2];
 
-    const messageRecord = new ChatMessageRecordDTO();
-    messageRecord.message = userMessage;
-    messageRecord.gmtCreate = new Date();
+      console.log(lastMessage.message?.role);
+      console.log(secondToLastMessage.message?.role);
+      console.log(getMessageText(secondToLastMessage.message));
 
-    setChatMessages((prevMessages) => {
-      return [...prevMessages, messageRecord];
-    });
 
-    setMessageToSend(messageRecord);
-    setErrorMessage('');
-  }
+      if (lastMessage.message?.role === 'assistant' &&
+        secondToLastMessage.message?.role === 'user' &&
+        getMessageText(secondToLastMessage.message) !== proactiveChatPrompt) {
+          proactiveChatHandler.current = setTimeout(() => {
+            handleSend(context?.chatId, context?.userNickname, proactiveChatPrompt, messageToSend);
+          }, proactiveChatWaitingTime * 60 * 1000);
+          console.log(proactiveChatHandler.current);
+      }
+    }
+  }, [chatMessages, context?.chatId, context?.userNickname, handleSend, messageToSend, sender?.lang, session?.proactiveChatWaitingTime]);
 
   function handleResend(): void {
     if (!context?.chatId) {
@@ -167,6 +192,17 @@ export default function MessagesPane(props: MessagesPaneProps) {
       .catch(handleError);
   }
 
+  function handleClearMemory(chatId: string): void {
+    chatApi?.clearMemory(chatId)
+      .then(setChatMessages)
+      .catch(handleError);
+  }
+
+  function getDisplayMessages(): ChatMessageRecordDTO[] {
+    const proactiveChatPrompt = 'zh' === sender?.lang ? PROACTIVE_CHAT_PROMPT_ZH : PROACTIVE_CHAT_PROMPT_EN;
+    return chatMessages.filter(record => !!record.message && getMessageText(record.message) !== proactiveChatPrompt);
+  }
+
   return (
     <Sheet
       sx={{
@@ -204,12 +240,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
         }}
       >
         <Stack spacing={2} justifyContent="flex-end">
-          {chatMessages.filter(record => !!record.message).map((record, index) => {
+          {getDisplayMessages().map((record, index) => {
             const message = record.message as ChatMessageDTO;
             const isYou = message.role === 'user';
             return (
               <Stack
-                key={`message-container-${record.messageId ?? '$' + index}`}
+                key={`message-container-${index}`}
                 direction="row"
                 spacing={2}
                 flexDirection={isYou ? 'row-reverse' : 'row'}
@@ -221,7 +257,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
                   />
                 )}
                 <ChatBubble
-                  key={`message-${record.messageId ?? index}`}
+                  key={`message-${index}`}
                   debugMode={debugMode}
                   session={session}
                   record={record}
@@ -235,6 +271,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
           {/* streaming message */}
           {(messageToSend || errorMessage) && context?.chatId && (
             <Stack
+              key={`message-container-${chatMessages.length}`}
               direction="row"
               spacing={2}
               flexDirection="row" 
@@ -271,7 +308,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
         disabled={!!messageToSend}
         textAreaValue={textAreaValue}
         setTextAreaValue={setTextAreaValue}
-        onSubmit={handleSend}
+        onSubmit={() => handleSend(context?.chatId, context?.userNickname, textAreaValue, messageToSend)}
       />
     </Sheet>
   );

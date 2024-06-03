@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static dev.langchain4j.internal.Utils.getOrDefault;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -778,6 +779,8 @@ select distinct c.user_id, c.character_id, c.visibility... \
             int rows = characterBackendMapper.insertSelective(characterBackend
                     .withGmtCreate(now)
                     .withGmtModified(now)
+                    .withProactiveChatWaitingTime(
+                            getOrDefault(characterBackend.getProactiveChatWaitingTime(), 0))
                     .withBackendId(IdUtils.newId()));
 
             if (rows > 0) {

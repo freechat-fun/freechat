@@ -226,6 +226,7 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `forward_to_user` tinyint NOT NULL DEFAULT 0,
   `message_window_size` int NOT NULL DEFAULT 100,
   `long_term_memory_window_size` int NOT NULL DEFAULT 0,
+  `proactive_chat_waiting_time` int NOT NULL DEFAULT 0 COMMENT 'minutes, 0 for disabled',
   `init_quota` bigint unsigned DEFAULT 0,
   `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   PRIMARY KEY (`backend_id`),

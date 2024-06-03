@@ -18,6 +18,7 @@ public enum ChatVar {
     CHAT_CONTEXT,
     MESSAGE_CONTEXT,
     CURRENT_TIME,
+    PROACTIVE_CHAT_PROMPT,
     INPUT,
     ATTACHMENT,
     UNKNOWN;

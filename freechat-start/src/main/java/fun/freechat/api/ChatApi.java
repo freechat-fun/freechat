@@ -175,6 +175,10 @@ public class ChatApi {
                             .map(aiModelInfoService::get)
                             .map(AiModelInfo::getProvider)
                             .orElse(null);
+                    Integer proactiveChatWaitingTime = Optional.ofNullable(chatContext.getBackendId())
+                            .map(characterService::getBackend)
+                            .map(CharacterBackend::getProactiveChatWaitingTime)
+                            .orElse(0);
 
                     String senderStatus;
                     if (Objects.isNull(characterInfo) || StringUtils.isBlank(characterOwner)) {
@@ -205,7 +209,8 @@ public class ChatApi {
                         }
                         chatInfo = Triple.of(chatInfo.getLeft(), chatInfo.getMiddle(), replacedMessage);
                     }
-                    return ChatSessionDTO.from(chatInfo, provider, senderStatus, isDebugEnabled);
+                    return ChatSessionDTO.from(
+                            chatInfo, provider, proactiveChatWaitingTime, senderStatus, isDebugEnabled);
                 })
                 .filter(Objects::nonNull)
                 .toList();

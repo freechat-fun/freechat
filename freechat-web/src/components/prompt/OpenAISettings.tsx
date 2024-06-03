@@ -9,7 +9,7 @@ import { HelpIcon } from "../icon";
 import { defaultModels } from "../../configs/model-providers-config";
 
 function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
-  return !!parameters && Object.keys(parameters).includes(key);
+  return parameters !== undefined && Object.keys(parameters).includes(key);
 }
 
 export default function OpenAISettings(props: {

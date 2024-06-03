@@ -42,6 +42,9 @@ public class CharacterBackend implements Serializable {
     private Integer longTermMemoryWindowSize;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Integer proactiveChatWaitingTime;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private Long initQuota;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -246,6 +249,22 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Integer getProactiveChatWaitingTime() {
+        return proactiveChatWaitingTime;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withProactiveChatWaitingTime(Integer proactiveChatWaitingTime) {
+        this.setProactiveChatWaitingTime(proactiveChatWaitingTime);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setProactiveChatWaitingTime(Integer proactiveChatWaitingTime) {
+        this.proactiveChatWaitingTime = proactiveChatWaitingTime;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public Long getInitQuota() {
         return initQuota;
     }
@@ -318,6 +337,7 @@ public class CharacterBackend implements Serializable {
             && (this.getForwardToUser() == null ? other.getForwardToUser() == null : this.getForwardToUser().equals(other.getForwardToUser()))
             && (this.getMessageWindowSize() == null ? other.getMessageWindowSize() == null : this.getMessageWindowSize().equals(other.getMessageWindowSize()))
             && (this.getLongTermMemoryWindowSize() == null ? other.getLongTermMemoryWindowSize() == null : this.getLongTermMemoryWindowSize().equals(other.getLongTermMemoryWindowSize()))
+            && (this.getProactiveChatWaitingTime() == null ? other.getProactiveChatWaitingTime() == null : this.getProactiveChatWaitingTime().equals(other.getProactiveChatWaitingTime()))
             && (this.getInitQuota() == null ? other.getInitQuota() == null : this.getInitQuota().equals(other.getInitQuota()))
             && (this.getQuotaType() == null ? other.getQuotaType() == null : this.getQuotaType().equals(other.getQuotaType()))
             && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
@@ -340,6 +360,7 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getForwardToUser() == null) ? 0 : getForwardToUser().hashCode());
         result = prime * result + ((getMessageWindowSize() == null) ? 0 : getMessageWindowSize().hashCode());
         result = prime * result + ((getLongTermMemoryWindowSize() == null) ? 0 : getLongTermMemoryWindowSize().hashCode());
+        result = prime * result + ((getProactiveChatWaitingTime() == null) ? 0 : getProactiveChatWaitingTime().hashCode());
         result = prime * result + ((getInitQuota() == null) ? 0 : getInitQuota().hashCode());
         result = prime * result + ((getQuotaType() == null) ? 0 : getQuotaType().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
@@ -365,6 +386,7 @@ public class CharacterBackend implements Serializable {
         sb.append(", forwardToUser=").append(forwardToUser);
         sb.append(", messageWindowSize=").append(messageWindowSize);
         sb.append(", longTermMemoryWindowSize=").append(longTermMemoryWindowSize);
+        sb.append(", proactiveChatWaitingTime=").append(proactiveChatWaitingTime);
         sb.append(", initQuota=").append(initQuota);
         sb.append(", quotaType=").append(quotaType);
         sb.append(", moderationParams=").append(moderationParams);

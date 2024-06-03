@@ -15,6 +15,7 @@ It also serves as a prompt engineering platform.
 - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
+- Supports characters evoking **proactive chat**.
 - Supports setting **quota limits** for characters.
 - Supports individual **debugging and sharing prompts**.
 

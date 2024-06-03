@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, initQuota, quotaType, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -49,6 +49,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="forward_to_user", property="forwardToUser", jdbcType=JdbcType.TINYINT),
         @Result(column="message_window_size", property="messageWindowSize", jdbcType=JdbcType.INTEGER),
         @Result(column="long_term_memory_window_size", property="longTermMemoryWindowSize", jdbcType=JdbcType.INTEGER),
+        @Result(column="proactive_chat_waiting_time", property="proactiveChatWaitingTime", jdbcType=JdbcType.INTEGER),
         @Result(column="init_quota", property="initQuota", jdbcType=JdbcType.BIGINT),
         @Result(column="quota_type", property="quotaType", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR)
@@ -92,6 +93,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(forwardToUser).toProperty("forwardToUser")
             .map(messageWindowSize).toProperty("messageWindowSize")
             .map(longTermMemoryWindowSize).toProperty("longTermMemoryWindowSize")
+            .map(proactiveChatWaitingTime).toProperty("proactiveChatWaitingTime")
             .map(initQuota).toProperty("initQuota")
             .map(quotaType).toProperty("quotaType")
             .map(moderationParams).toProperty("moderationParams")
@@ -113,6 +115,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(forwardToUser).toProperty("forwardToUser")
             .map(messageWindowSize).toProperty("messageWindowSize")
             .map(longTermMemoryWindowSize).toProperty("longTermMemoryWindowSize")
+            .map(proactiveChatWaitingTime).toProperty("proactiveChatWaitingTime")
             .map(initQuota).toProperty("initQuota")
             .map(quotaType).toProperty("quotaType")
             .map(moderationParams).toProperty("moderationParams")
@@ -134,6 +137,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(forwardToUser).toPropertyWhenPresent("forwardToUser", row::getForwardToUser)
             .map(messageWindowSize).toPropertyWhenPresent("messageWindowSize", row::getMessageWindowSize)
             .map(longTermMemoryWindowSize).toPropertyWhenPresent("longTermMemoryWindowSize", row::getLongTermMemoryWindowSize)
+            .map(proactiveChatWaitingTime).toPropertyWhenPresent("proactiveChatWaitingTime", row::getProactiveChatWaitingTime)
             .map(initQuota).toPropertyWhenPresent("initQuota", row::getInitQuota)
             .map(quotaType).toPropertyWhenPresent("quotaType", row::getQuotaType)
             .map(moderationParams).toPropertyWhenPresent("moderationParams", row::getModerationParams)
@@ -181,6 +185,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(forwardToUser).equalTo(row::getForwardToUser)
                 .set(messageWindowSize).equalTo(row::getMessageWindowSize)
                 .set(longTermMemoryWindowSize).equalTo(row::getLongTermMemoryWindowSize)
+                .set(proactiveChatWaitingTime).equalTo(row::getProactiveChatWaitingTime)
                 .set(initQuota).equalTo(row::getInitQuota)
                 .set(quotaType).equalTo(row::getQuotaType)
                 .set(moderationParams).equalTo(row::getModerationParams);
@@ -200,6 +205,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
                 .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
                 .set(longTermMemoryWindowSize).equalToWhenPresent(row::getLongTermMemoryWindowSize)
+                .set(proactiveChatWaitingTime).equalToWhenPresent(row::getProactiveChatWaitingTime)
                 .set(initQuota).equalToWhenPresent(row::getInitQuota)
                 .set(quotaType).equalToWhenPresent(row::getQuotaType)
                 .set(moderationParams).equalToWhenPresent(row::getModerationParams);
@@ -219,6 +225,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(forwardToUser).equalTo(row::getForwardToUser)
             .set(messageWindowSize).equalTo(row::getMessageWindowSize)
             .set(longTermMemoryWindowSize).equalTo(row::getLongTermMemoryWindowSize)
+            .set(proactiveChatWaitingTime).equalTo(row::getProactiveChatWaitingTime)
             .set(initQuota).equalTo(row::getInitQuota)
             .set(quotaType).equalTo(row::getQuotaType)
             .set(moderationParams).equalTo(row::getModerationParams)
@@ -240,6 +247,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(forwardToUser).equalToWhenPresent(row::getForwardToUser)
             .set(messageWindowSize).equalToWhenPresent(row::getMessageWindowSize)
             .set(longTermMemoryWindowSize).equalToWhenPresent(row::getLongTermMemoryWindowSize)
+            .set(proactiveChatWaitingTime).equalToWhenPresent(row::getProactiveChatWaitingTime)
             .set(initQuota).equalToWhenPresent(row::getInitQuota)
             .set(quotaType).equalToWhenPresent(row::getQuotaType)
             .set(moderationParams).equalToWhenPresent(row::getModerationParams)

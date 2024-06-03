@@ -47,6 +47,9 @@ public final class CharacterBackendDynamicSqlSupport {
     public static final SqlColumn<Integer> longTermMemoryWindowSize = characterBackend.longTermMemoryWindowSize;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Integer> proactiveChatWaitingTime = characterBackend.proactiveChatWaitingTime;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<Long> initQuota = characterBackend.initQuota;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -80,6 +83,8 @@ public final class CharacterBackendDynamicSqlSupport {
         public final SqlColumn<Integer> messageWindowSize = column("message_window_size", JDBCType.INTEGER);
 
         public final SqlColumn<Integer> longTermMemoryWindowSize = column("long_term_memory_window_size", JDBCType.INTEGER);
+
+        public final SqlColumn<Integer> proactiveChatWaitingTime = column("proactive_chat_waiting_time", JDBCType.INTEGER);
 
         public final SqlColumn<Long> initQuota = column("init_quota", JDBCType.BIGINT);
 
