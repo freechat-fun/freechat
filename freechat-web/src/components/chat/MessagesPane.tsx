@@ -122,18 +122,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
       const lastMessage = chatMessages[chatMessages.length - 1];
       const secondToLastMessage = chatMessages[chatMessages.length - 2];
 
-      console.log(lastMessage.message?.role);
-      console.log(secondToLastMessage.message?.role);
-      console.log(getMessageText(secondToLastMessage.message));
-
-
       if (lastMessage.message?.role === 'assistant' &&
         secondToLastMessage.message?.role === 'user' &&
         getMessageText(secondToLastMessage.message) !== proactiveChatPrompt) {
           proactiveChatHandler.current = setTimeout(() => {
             handleSend(context?.chatId, context?.userNickname, proactiveChatPrompt, messageToSend);
           }, proactiveChatWaitingTime * 60 * 1000);
-          console.log(proactiveChatHandler.current);
       }
     }
   }, [chatMessages, context?.chatId, context?.userNickname, handleSend, messageToSend, sender?.lang, session?.proactiveChatWaitingTime]);

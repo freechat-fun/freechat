@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum ModelProvider {
     HUGGING_FACE,
     OPEN_AI,
+    AZURE_OPEN_AI,
     LOCAL_AI,
     IN_PROCESS,
     DASH_SCOPE,
@@ -24,5 +25,13 @@ public enum ModelProvider {
     @JsonValue
     public String text() {
         return name().toLowerCase();
+    }
+
+    public static Boolean hasPrivateEndpoint(ModelProvider provider) {
+        return provider == AZURE_OPEN_AI;
+    }
+
+    public static Boolean hasPublicEndpoint(ModelProvider provider) {
+        return !hasPrivateEndpoint(provider);
     }
 }

@@ -5,8 +5,8 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, IconButton, Tooltip, Chip, ChipDelete } from "@mui/joy";
 import { AttachmentRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
 import { CommonContainer, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
-import { AiApiKeySettings, DashScopeSettings, OpenAISettings } from ".";
-import { defaultModels, providers as modelProviders } from "../../configs/model-providers-config";
+import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OpenAiSettings } from ".";
+import { defaultBaseURLs, defaultModels, providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
 import { extractModelProvider, extractVariables } from "../../libs/template_utils";
 import { HelpIcon } from "../icon";
@@ -75,14 +75,12 @@ export default function PromptRunner(props: PromptRunnerProps) {
     if (extractModelProvider(initialParameters?.modelId) === initialProvider) {
       return {...initialParameters};
     } else {
-      const defaultModelName = initialProvider === 'dash_scope' ? defaultModels.dash_scope : defaultModels.open_ai;
-      const defaultModel = initialModels?.find(modelInfo => modelInfo?.modelId === defaultModelName);
+      const defaultModelId = defaultModels?.[(initialProvider ?? 'open_ai') as keyof typeof defaultModels] ?? defaultModels.open_ai;
+      const defaultModel = initialModels?.find(modelInfo => modelInfo?.modelId === defaultModelId);
       if (defaultModel) {
         const initialParameters: { [key: string]: any } = {};
         initialParameters['modelId'] = defaultModel.modelId;
-        if (initialProvider === 'open_ai') {
-          initialParameters['baseUrl'] = 'https://api.openai.com/v1';
-        }
+        initialParameters['baseUrl'] = defaultBaseURLs?.[(initialProvider ?? 'open_ai') as keyof typeof defaultBaseURLs] ?? defaultBaseURLs.open_ai;
         return initialParameters;
       }
     }
@@ -368,8 +366,14 @@ export default function PromptRunner(props: PromptRunnerProps) {
           setOpenApiKeySetting(false);
         }}
       />
-      <OpenAISettings
+      <OpenAiSettings
         open={modelSetting && provider === 'open_ai'}
+        models={matchingModels}
+        onClose={handleModelSettings}
+        defaultParameters={parameters}
+      />
+      <AzureOpenAiSettings
+        open={modelSetting && provider === 'azure_open_ai'}
         models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}

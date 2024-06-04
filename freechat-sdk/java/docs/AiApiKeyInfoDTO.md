@@ -14,7 +14,7 @@ Model credential information
 |**gmtModified** | **OffsetDateTime** | Modification time |  [optional] |
 |**gmtUsed** | **OffsetDateTime** | Last use time |  [optional] |
 |**name** | **String** | Credential name |  [optional] |
-|**provider** | **String** | Model provider: hugging_face | open_ai | local_ai | in_process | dash_scope | unknown |  [optional] |
+|**provider** | **String** | Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown |  [optional] |
 |**token** | **String** | Credential content |  [optional] |
 |**enabled** | **Boolean** | Whether to enable |  [optional] |
 |**username** | **String** | Credential owner |  [optional] |

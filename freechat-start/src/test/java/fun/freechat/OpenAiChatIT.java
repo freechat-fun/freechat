@@ -17,18 +17,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import static fun.freechat.util.TestChatUtils.modelParams;
+import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
+import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
+import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
+import static fun.freechat.util.TestCommonUtils.parametersFor;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
-public class ChatIT extends AbstractIntegrationTest{
-    private static final String MODEL_ID = "[open_ai]gpt-4o";
-    private static final String API_KEY_NAME = "test_api_key_open_ai";
-    private static final String API_KEY_VALUE = TestAiApiKeyUtils.apiKeyOfOpenAI();
-    private static final ModelProvider MODEL_PROVIDER = ModelProvider.OPEN_AI;
+public class OpenAiChatIT extends AbstractIntegrationTest{
     private static final String CHARACTER_NICKNAME = "Jack";
     private static final String CHARACTER_GENDER = GenderType.MALE.text();
     private static final String CHARACTER_PROFILE = """
@@ -84,6 +84,23 @@ public class ChatIT extends AbstractIntegrationTest{
     private String backendId;
     private String chatId;
 
+    protected ModelProvider modelProvider() {
+        return OPEN_AI;
+    }
+
+    private String modelId() {
+        ModelProvider provider = modelProvider();
+        return "[" + provider.text() + "]" + defaultModelFor(provider);
+    }
+
+    private String apiKey() {
+        return apiKeyFor(modelProvider());
+    }
+
+    private String apiKeyName() {
+        return keyNameFor(modelProvider());
+    }
+
     @BeforeEach
     public void setUp() {
         createDeveloper();
@@ -106,11 +123,11 @@ public class ChatIT extends AbstractIntegrationTest{
         developerId = developerAndToken.getLeft();
         developerApiKey = developerAndToken.getRight();
 
-        TestAiApiKeyUtils.addAiApiKey(developerId, API_KEY_NAME, MODEL_PROVIDER, API_KEY_VALUE, true);
+        TestAiApiKeyUtils.addAiApiKey(developerId, apiKeyName(), modelProvider(), apiKey(), true);
     }
 
     private void createUser() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(ChatIT.class.getName());
+        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(OpenAiChatIT.class.getName());
         userId = userAndToken.getLeft();
         userApiKey = userAndToken.getRight();
     }
@@ -143,9 +160,9 @@ public class ChatIT extends AbstractIntegrationTest{
         promptRef.setPromptId(promptId);
 
         PromptTaskDTO dto = new PromptTaskDTO();
-        dto.setApiKeyName(API_KEY_NAME);
-        dto.setModelId(MODEL_ID);
-        dto.setParams(modelParams(MODEL_ID));
+        dto.setApiKeyName(apiKeyName());
+        dto.setModelId(modelId());
+        dto.setParams(parametersFor(modelId()));
         dto.setPromptRef(promptRef);
 
         promptTaskId = testClient.post().uri("/api/v1/prompt/task")
@@ -348,7 +365,7 @@ public class ChatIT extends AbstractIntegrationTest{
 
     private void testResendMessageWithSpecializedApiKey() {
         ChatUpdateDTO updateDto = new ChatUpdateDTO();
-        updateDto.setApiKeyValue(API_KEY_VALUE);
+        updateDto.setApiKeyValue(apiKey());
 
         testClient.put().uri("/api/v1/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)

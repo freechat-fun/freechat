@@ -100,18 +100,6 @@ Name: {{USER_NICKNAME}}
                 .forEach(chatContextService::delete);
     }
 
-    public static Map<String, Object> modelParams(String modelId) {
-        Map<String, Object> param = new HashMap<>();
-        if (modelId.startsWith("[dash_scope]")) {
-            param.put("topP", 0.8d);
-            param.put("seed", new Random().nextInt(0, Integer.MAX_VALUE));
-        } else if (modelId.startsWith("[open_ai]")) {
-            param.put("baseUrl", "https://api.openai-proxy.com/v1");
-            param.put("temperature", 0.7d);
-        }
-        return param;
-    }
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         chatContextService = applicationContext.getBean(ChatContextService.class);

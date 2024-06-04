@@ -2,6 +2,7 @@ package fun.freechat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.dto.*;
+import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.SourceType;
 import fun.freechat.service.enums.TaskStatus;
 import fun.freechat.service.prompt.ChatPromptContent;
@@ -20,7 +21,9 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
 import static fun.freechat.util.TestResourceUtils.bodyFrom;
 import static fun.freechat.util.TestResourceUtils.getResourceKey;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
-public class RagIT extends AbstractIntegrationTest {
+public class OpenAiRagIT extends AbstractIntegrationTest {
     private String userId;
     private String userToken;
     private Long characterId;
@@ -37,9 +40,18 @@ public class RagIT extends AbstractIntegrationTest {
     private String url;
     private Long promptId;
 
+    private static ModelProvider modelProvider() {
+        return OPEN_AI;
+    }
+
+    private static String modelId() {
+        ModelProvider provider = modelProvider();
+        return "[" + provider.text() + "]" + defaultModelFor(provider);
+    }
+
     @BeforeEach
     public void setUp() throws JsonProcessingException {
-        Pair<String, String> ownerAndToken = TestAccountUtils.createUserAndToken(RagIT.class.getName());
+        Pair<String, String> ownerAndToken = TestAccountUtils.createUserAndToken(OpenAiRagIT.class.getName());
         userId = ownerAndToken.getLeft();
         userToken = ownerAndToken.getRight();
 
@@ -246,25 +258,25 @@ public class RagIT extends AbstractIntegrationTest {
 
     public static Stream<Arguments> testAll() {
         return Stream.of(
-                Arguments.of("[open_ai]gpt-3.5-turbo",
+                Arguments.of(modelId(),
                         "miles-of-smiles-terms-of-use.txt",
                         "How many days before the rental can I cancel my booking?",
                         "en",
                         List.of("17", "61")),
 
-                Arguments.of("[open_ai]gpt-3.5-turbo",
+                Arguments.of(modelId(),
                         "story-about-happy-carrot.txt",
                         "Who is Charlie?",
                         "en",
                         List.of("carrot")),
 
-                Arguments.of("[open_ai]gpt-3.5-turbo",
+                Arguments.of(modelId(),
                         "/public/test/info/request?doc=Once%20upon%20a%20time%20in%20the%20garden%20of%20FlowerField%20there%20bloomed%20a%20gentle%20sunflower%20named%20Lily",
                         "Who is Lily?",
                         "en",
                         List.of("sunflower")),
 
-                Arguments.of("[open_ai]gpt-3.5-turbo",
+                Arguments.of(modelId(),
                         "快乐胡萝卜的故事.txt",
                         "查理是谁？",
                         "zh",

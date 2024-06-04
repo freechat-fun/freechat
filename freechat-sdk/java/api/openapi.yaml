@@ -15,8 +15,13 @@ info:
     \ 180 interfaces and provides java/python/typescript SDKs. These interfaces enable\
     \ easy construction of systems for end-users.\n- Supports setting **RAG** (Retrieval\
     \ Augmented Generation) for characters.\n- Supports **long-term memory, preset\
-    \ memory** for characters.\n- Supports setting **quota limits** for characters.\n\
-    - Supports individual **debugging and sharing prompts**.\n\n## System Snapshots\n\
+    \ memory** for characters.\n- Supports characters evoking **proactive chat**.\n\
+    - Supports setting **quota limits** for characters.\n- Supports individual **debugging\
+    \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
+    \ Snapshot](/img/snapshot_w1.jpg)\n#### Development View\n![Development View Snapshot](/img/snapshot_w2.jpg)\n\
+    #### Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\n### On Mobile\n\
+    ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
+    \ />\n![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
     \ --> F(Backend-n...)\n    E --> G(Message Window)\n    E --> H(Long Term Memory\
@@ -118,7 +123,7 @@ info:
     \n## System Dependencies\n| | Projects\n| ---- | ----\n| Application Framework\
     \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
     \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
-    \ [DashScope](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
+    \ [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
     \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| Monitoring & Alerting\
     \ | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)\n| OpenAPI\
     \ Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
@@ -131,14 +136,13 @@ info:
     \ no paid plans (after all, users use their own API Key to call LLM services).\n\
     \n### Model Integration\nFreeChat aims to explore AI virtual character technology\
     \ with anthropomorphic characteristics. So far, it supports model services from\
-    \ OpenAI and DashScope ([HuggingFace](https://huggingface.co/) is also expected\
-    \ to be supported soon). However, we are more interested in supporting models\
-    \ that are under research and can endow AI with more personality traits. If you\
-    \ are researching this area and hope FreeChat supports your model, please contact\
-    \ us. We look forward to AI technology helping people create their own \"soul\
-    \ mates\" in the future."
+    \ OpenAI and DashScope is also expected to be supported soon). However, we are\
+    \ more interested in supporting models that are under research and can endow AI\
+    \ with more personality traits. If you are researching this area and hope FreeChat\
+    \ supports your model, please contact us. We look forward to AI technology helping\
+    \ people create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 1.1.0
+  version: 1.2.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -6696,9 +6700,10 @@ components:
         moderationParams: moderationParams
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
-        initQuota: 1
+        initQuota: 5
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 0
+        proactiveChatWaitingTime: 1
         longTermMemoryWindowSize: 6
       properties:
         isDefault:
@@ -6726,6 +6731,10 @@ components:
         longTermMemoryWindowSize:
           description: "Max rounds (a round includes a user message and a character\
             \ reply) in the character's long term memory, 0 to disable"
+          format: int32
+          type: integer
+        proactiveChatWaitingTime:
+          description: Minutes to wait for a proactive chat
           format: int32
           type: integer
         initQuota:
@@ -7540,8 +7549,8 @@ components:
           description: Model description
           type: string
         provider:
-          description: "Model provider: hugging_face | open_ai | local_ai | in_process\
-            \ | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
+            \ | in_process | dash_scope | unknown"
           type: string
         type:
           description: "Model type: text2text | text2chat | text2image | embedding\
@@ -8519,9 +8528,10 @@ components:
         quotaType: quotaType
         isDefault: true
         requestId: requestId
-        initQuota: 2
+        initQuota: 7
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 5
+        proactiveChatWaitingTime: 2
         longTermMemoryWindowSize: 5
         characterUid: characterUid
       properties:
@@ -8569,6 +8579,10 @@ components:
             reply) in the character's long term memory
           format: int32
           type: integer
+        proactiveChatWaitingTime:
+          description: Minutes to wait for a proactive chat
+          format: int32
+          type: integer
         initQuota:
           description: Initial quota when opening a chat
           format: int64
@@ -8612,9 +8626,10 @@ components:
           quotaType: quotaType
           isDefault: true
           requestId: requestId
-          initQuota: 2
+          initQuota: 7
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 5
+          proactiveChatWaitingTime: 2
           longTermMemoryWindowSize: 5
           characterUid: characterUid
         - moderationApiKeyName: moderationApiKeyName
@@ -8627,9 +8642,10 @@ components:
           quotaType: quotaType
           isDefault: true
           requestId: requestId
-          initQuota: 2
+          initQuota: 7
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 5
+          proactiveChatWaitingTime: 2
           longTermMemoryWindowSize: 5
           characterUid: characterUid
         picture: picture
@@ -8741,8 +8757,8 @@ components:
           description: Credential name
           type: string
         provider:
-          description: "Model provider: hugging_face | open_ai | local_ai | in_process\
-            \ | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
+            \ | in_process | dash_scope | unknown"
           type: string
         token:
           description: Credential content
@@ -9923,7 +9939,9 @@ components:
           quotaType: quotaType
           requestId: requestId
           quota: 0
+        proactiveChatWaitingTime: 2
         isDebugEnabled: true
+        isCustomizedApiKeyEnabled: true
         latestMessageRecord:
           ext: ext
           messageId: 5
@@ -9951,16 +9969,23 @@ components:
         character:
           $ref: '#/components/schemas/CharacterSummaryDTO'
         provider:
-          description: "Model provider: hugging_face | open_ai | local_ai | in_process\
-            \ | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
+            \ | in_process | dash_scope | unknown"
           type: string
         latestMessageRecord:
           $ref: '#/components/schemas/ChatMessageRecordDTO'
+        proactiveChatWaitingTime:
+          description: Minutes to wait for a proactive chat
+          format: int32
+          type: integer
         senderStatus:
           description: "Sender status: online | offline | invisible"
           type: string
         isDebugEnabled:
           description: Is it possible to debug
+          type: boolean
+        isCustomizedApiKeyEnabled:
+          description: Is it possible to customize api-key
           type: boolean
       type: object
     MemoryUsageDTO:
@@ -10020,8 +10045,8 @@ components:
           description: Credential name
           type: string
         provider:
-          description: "Model provider: hugging_face | open_ai | local_ai | in_process\
-            \ | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
+            \ | in_process | dash_scope | unknown"
           type: string
         token:
           description: Credential content

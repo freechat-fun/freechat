@@ -7,4 +7,5 @@ export { default as PromptEditor } from './PromptEditor';
 export { default as PromptViewer } from './PromptViewer';
 export { default as AiApiKeySettings } from './AiApiKeySettings';
 export { default as DashScopeSettings } from './DashScopeSettings';
-export { default as OpenAISettings } from './OpenAISettings';
+export { default as OpenAiSettings } from './OpenAiSettings';
+export { default as AzureOpenAiSettings } from './AzureOpenAiSettings';

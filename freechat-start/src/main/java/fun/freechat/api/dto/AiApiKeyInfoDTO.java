@@ -24,7 +24,7 @@ public class AiApiKeyInfoDTO extends TraceableDTO {
     private Date gmtUsed;
     @Schema(description = "Credential name")
     private String name;
-    @Schema(description = "Model provider: hugging_face | open_ai | local_ai | in_process | dash_scope | unknown")
+    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown")
     private String provider;
     @Schema(description = "Credential content")
     private String token;

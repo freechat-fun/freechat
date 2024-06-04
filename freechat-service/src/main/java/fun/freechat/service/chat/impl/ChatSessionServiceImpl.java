@@ -198,6 +198,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         chatModel = createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         streamingChatModel = createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
+                    case AZURE_OPEN_AI -> {
+                        chatModel = createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel = createAzureOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    }
                     case DASH_SCOPE -> {
                         chatModel = createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         streamingChatModel = createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);

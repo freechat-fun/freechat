@@ -8,7 +8,7 @@ import { CommonBox, CommonContainer, CommonGridBox, LinePlaceholder, OptionCard,
 import { HelpIcon } from "../icon";
 import { extractModelProvider } from "../../libs/template_utils";
 import { providers as modelProviders } from "../../configs/model-providers-config";
-import { AiApiKeySettings, DashScopeSettings, OpenAISettings } from "../prompt";
+import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OpenAiSettings } from "../prompt";
 
 type CharacterBackendSettingsProps = CardProps & {
   backend?: CharacterBackendDetailsDTO;
@@ -226,7 +226,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                     ref: inputRefs.current[2],
                     min: 0,
                     max: 60,
-                    step: 5,
+                    step: 1,
                   },
                 }}
                 value={proactiveChatWaitingTime}
@@ -235,7 +235,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
           </CommonContainer>
           <Slider
             value={proactiveChatWaitingTime}
-            step={5}
+            step={1}
             min={0}
             max={60}
             valueLabelDisplay="auto"
@@ -426,8 +426,13 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
           setApiKeyValue(keyValue ?? '');
           setOpenApiKeySetting(false);
         }} />
-      <OpenAISettings
+      <OpenAiSettings
         open={modelSetting && provider === 'open_ai'}
+        models={matchingModels}
+        onClose={handleModelSettings}
+        defaultParameters={parameters} />
+      <AzureOpenAiSettings
+        open={modelSetting && provider === 'azure_open_ai'}
         models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters} />

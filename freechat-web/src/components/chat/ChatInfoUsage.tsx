@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { IconButton, Input, Stack, Typography } from "@mui/joy";
+import { IconButton, Input, Stack, Tooltip, Typography } from "@mui/joy";
 import { CheckRounded, KeyRounded, TuneRounded } from "@mui/icons-material";
 import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
 import { CommonBox, CommonGridBox, ConfirmModal } from "..";
@@ -58,9 +58,19 @@ export default function ChatInfoUsage({
           {t('My API Key', { ns: 'account' })}
         </Typography>
         <CommonBox sx={{ ml: 'auto' }}>
-          <IconButton onClick={() => setApiKeySettingOpen(true)}>
-            <TuneRounded />
-          </IconButton>
+          <Tooltip
+            size="sm"
+            sx={{ maxWidth: '20rem' }}
+            title={session?.isCustomizedApiKeyEnabled ?
+              t('Customize API key for the chat') :
+              t('The character does not support custom API key') }
+          >
+            <div>
+              <IconButton disabled={!session?.isCustomizedApiKeyEnabled} onClick={() => setApiKeySettingOpen(true)}>
+                <TuneRounded />
+              </IconButton>
+            </div>
+          </Tooltip>
         </CommonBox>
 
         <Typography level="title-sm" textColor="neutral">

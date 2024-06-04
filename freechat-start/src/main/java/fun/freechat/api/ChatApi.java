@@ -12,6 +12,7 @@ import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
 import fun.freechat.service.enums.ChatVar;
+import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.QuotaType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
@@ -167,18 +168,24 @@ public class ChatApi {
                     String characterOwner = chatContextService.getCharacterOwner(chatContext.getChatId());
                     String currentUserId = AccountUtils.currentUser().getUserId();
                     Boolean isDebugEnabled =currentUserId.equals(chatOwner) && currentUserId.equals(characterOwner);
-                    String provider = Optional.ofNullable(chatContext.getBackendId())
-                            .map(characterService::getBackend)
-                            .map(CharacterBackend::getChatPromptTaskId)
+                    String backendId = chatContext.getBackendId();
+                    Optional<CharacterBackend> backend = Optional.ofNullable(chatContext.getBackendId())
+                            .map(characterService::getBackend);
+
+                    String provider = backend.map(CharacterBackend::getChatPromptTaskId)
                             .map(promptTaskService::get)
                             .map(PromptTask::getModelId)
                             .map(aiModelInfoService::get)
                             .map(AiModelInfo::getProvider)
                             .orElse(null);
-                    Integer proactiveChatWaitingTime = Optional.ofNullable(chatContext.getBackendId())
-                            .map(characterService::getBackend)
-                            .map(CharacterBackend::getProactiveChatWaitingTime)
+
+                    Integer proactiveChatWaitingTime = backend.map(CharacterBackend::getProactiveChatWaitingTime)
                             .orElse(0);
+
+                    Boolean isCustomizedApiKeyEnabled = Optional.ofNullable(provider)
+                            .map(ModelProvider::of)
+                            .map(ModelProvider::hasPublicEndpoint)
+                            .orElse(Boolean.FALSE);
 
                     String senderStatus;
                     if (Objects.isNull(characterInfo) || StringUtils.isBlank(characterOwner)) {
@@ -209,8 +216,8 @@ public class ChatApi {
                         }
                         chatInfo = Triple.of(chatInfo.getLeft(), chatInfo.getMiddle(), replacedMessage);
                     }
-                    return ChatSessionDTO.from(
-                            chatInfo, provider, proactiveChatWaitingTime, senderStatus, isDebugEnabled);
+                    return ChatSessionDTO.from(chatInfo, provider, proactiveChatWaitingTime,
+                            senderStatus, isDebugEnabled, isCustomizedApiKeyEnabled);
                 })
                 .filter(Objects::nonNull)
                 .toList();

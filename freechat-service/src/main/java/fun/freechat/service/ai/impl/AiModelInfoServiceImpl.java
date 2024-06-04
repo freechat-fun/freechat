@@ -28,7 +28,6 @@ public class AiModelInfoServiceImpl implements AiModelInfoService {
     private static final String CACHE_KEY = "'AiModelInfoServiceImpl_' + #p0";
     private static final Pattern MODEL_ID_PATTERN = Pattern.compile("\\[(.+?)\\](.+?)(\\|([^|]*))?");
 
-
     @Autowired
     private AiModelInfoMapper aiModelInfoMapper;
 

@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import static fun.freechat.util.TestChatUtils.modelParams;
+import static fun.freechat.util.TestCommonUtils.parametersFor;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -61,7 +61,7 @@ public class TestPromptUtils implements ApplicationContextAware {
     }
 
     public static String createChatPromptTask(Long promptId, String modelId, String apiKey) throws JsonProcessingException {
-        String params = InfoUtils.defaultMapper().writeValueAsString(modelParams(modelId));
+        String params = InfoUtils.defaultMapper().writeValueAsString(parametersFor(modelId));
         PromptTask task = new PromptTask()
                 .withApiKeyValue(apiKey)
                 .withModelId(modelId)
@@ -88,6 +88,10 @@ public class TestPromptUtils implements ApplicationContextAware {
         User user = new User().withUserId(userId);
         promptTaskService.deleteByUser(user);
         promptService.deleteByUser(user);
+    }
+
+    public static String idToUid(Long promptId) {
+        return promptService.getUid(promptId);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class ChatSessionDTO {
     private ChatContextDTO context;
     @Schema(description = "Character summary info")
     private CharacterSummaryDTO character;
-    @Schema(description = "Model provider: hugging_face | open_ai | local_ai | in_process | dash_scope | unknown")
+    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown")
     private String provider;
     @Schema(description = "Latest message record")
     private ChatMessageRecordDTO latestMessageRecord;
@@ -34,13 +34,16 @@ public class ChatSessionDTO {
     private String senderStatus;
     @Schema(description = "Is it possible to debug")
     private Boolean isDebugEnabled;
+    @Schema(description = "Is it possible to customize api-key")
+    private Boolean isCustomizedApiKeyEnabled;
 
     public static ChatSessionDTO from(
             Triple<ChatContext, CharacterInfo, ChatMessageRecord> chatItem,
             String provider,
             Integer proactiveChatWaitingTime,
             String senderStatus,
-            Boolean isDebugEnabled) {
+            Boolean isDebugEnabled,
+            Boolean isCustomizedApiKeyEnabled) {
         if (Objects.isNull(chatItem) || Objects.isNull(chatItem.getLeft())) {
             return null;
         }
@@ -58,6 +61,7 @@ public class ChatSessionDTO {
         dto.setProactiveChatWaitingTime(proactiveChatWaitingTime);
         dto.setSenderStatus(senderStatus);
         dto.setIsDebugEnabled(isDebugEnabled);
+        dto.setIsCustomizedApiKeyEnabled(isCustomizedApiKeyEnabled);
 
         return dto;
     }

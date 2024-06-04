@@ -1,5 +1,6 @@
 package fun.freechat.util;
 
+import fun.freechat.api.dto.AiModelInfoDTO;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
@@ -48,22 +49,35 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
         }
     }
 
-    public static String apiKeyOfDashScope() {
-        return System.getenv("DASHSCOPE_API_KEY");
-    }
-
-    public static String apiKeyOfOpenAI() {
-        return System.getenv("OPENAI_API_KEY");
+    public static String apiKeyFor(ModelProvider provider) {
+        return switch (provider) {
+            case OPEN_AI -> System.getenv("OPENAI_API_KEY");
+            case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_KEY");
+            case DASH_SCOPE -> System.getenv("DASHSCOPE_API_KEY");
+            default -> null;
+        };
     }
 
     public static String apiKeyFor(String modelId) {
-        if (modelId.startsWith("[dash_scope]")) {
-            return apiKeyOfDashScope();
-        } else if (modelId.startsWith("[open_ai]")) {
-            return apiKeyOfOpenAI();
-        } else {
-            return null;
-        }
+        AiModelInfoDTO aiModelInfo = AiModelInfoDTO.from(modelId);
+        return apiKeyFor(ModelProvider.of(aiModelInfo.getProvider()));
+    }
+
+    public static String baseUrlFor(ModelProvider provider) {
+        return switch (provider) {
+            case OPEN_AI -> System.getenv("OPENAI_BASE_URL");
+            case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_ENDPOINT");
+            default -> null;
+        };
+    }
+
+    public static String baseUrlFor(String modelId) {
+        AiModelInfoDTO aiModelInfo = AiModelInfoDTO.from(modelId);
+        return baseUrlFor(ModelProvider.of(aiModelInfo.getProvider()));
+    }
+
+    public static String keyNameFor(ModelProvider provider) {
+        return "test_api_key_" + provider.text();
     }
 
     @Override

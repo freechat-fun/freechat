@@ -200,11 +200,11 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
                 .from(InteractiveStatsDynamicSqlSupport.interactiveStats, "s");
         var table = switch (infoType) {
             case PROMPT -> fields.join(PromptInfoDynamicSqlSupport.promptInfo, "i")
-                        .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptId));
+                        .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PromptInfoDynamicSqlSupport.promptUid));
             case AGENT -> fields.join(AgentInfoDynamicSqlSupport.agentInfo, "i")
-                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentId));
+                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(AgentInfoDynamicSqlSupport.agentUid));
             case PLUGIN -> fields.join(PluginInfoDynamicSqlSupport.pluginInfo, "i")
-                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginId));
+                    .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginUid));
             default -> throw new IllegalStateException("Unexpected value: " + infoType);
         };
         if (Objects.isNull(table)) {

@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **moderation_params** | **str** | Parameters for moderation model | [optional] 
 **message_window_size** | **int** | Max messages in the character&#39;s memory | [optional] 
 **long_term_memory_window_size** | **int** | Max rounds (a round includes a user message and a character reply) in the character&#39;s long term memory, 0 to disable | [optional] 
+**proactive_chat_waiting_time** | **int** | Minutes to wait for a proactive chat | [optional] 
 **init_quota** | **int** | Initial quota when opening a chat | [optional] 
 **quota_type** | **str** | Quota type: messages | tokens | none (not limited) | [optional] 
 

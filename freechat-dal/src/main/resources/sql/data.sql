@@ -24,4 +24,9 @@ INSERT IGNORE INTO `ai_model_info` (`model_id`, `gmt_create`, `gmt_modified`, `n
 ('[open_ai]gpt-3.5-turbo-instruct', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-3.5-turbo-instruct', 'trained similarly as the text-davinci series while maintaining the same speed as the turbo models.', 'open_ai', 'text2text'),
 ('[open_ai]text-embedding-ada-002', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'text-embedding-ada-002', 'embedding model', 'open_ai', 'embedding'),
 ('[open_ai]text-moderation-stable', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'text-moderation-stable', 'moderation stable model', 'open_ai', 'moderation'),
-('[open_ai]text-moderation-latest', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'text-moderation-latest', 'moderation latest model', 'open_ai', 'moderation');
+('[open_ai]text-moderation-latest', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'text-moderation-latest', 'moderation latest model', 'open_ai', 'moderation'),
+('[azure_open_ai]gpt-3.5-turbo', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-3.5-turbo', 'alias for the ChatGPT 4k latest model', 'azure_open_ai', 'text2chat'),
+('[azure_open_ai]gpt-4', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4', 'alias for the GPT-4 8k latest model', 'azure_open_ai', 'text2chat'),
+('[azure_open_ai]gpt-4-32k', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4-32k', 'the latest GPT-4 32k latest model', 'azure_open_ai', 'text2chat'),
+('[azure_open_ai]gpt-4o', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4o', 'most advanced, multimodal flagship model', 'azure_open_ai', 'text2chat'),
+('[azure_open_ai]text-embedding-ada-002', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'text-embedding-ada-002', 'embedding model', 'azure_open_ai', 'embedding');

@@ -6,13 +6,13 @@ import { AddCircleRounded } from "@mui/icons-material";
 import { CommonContainer, OptionCard, OptionTooltip, Sidedrawer, TinyInput } from "..";
 import { AiModelInfoDTO } from 'freechat-sdk';
 import { HelpIcon } from "../icon";
-import { defaultModels } from "../../configs/model-providers-config";
+import { defaultBaseURLs, defaultModels } from "../../configs/model-providers-config";
 
 function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
   return parameters !== undefined && Object.keys(parameters).includes(key);
 }
 
-export default function OpenAISettings(props: {
+export default function OpenAiSettings(props: {
   open: boolean,
   models:(AiModelInfoDTO | undefined)[] | undefined,
   onClose: (parameters: { [key: string]: any }) => void,
@@ -25,7 +25,7 @@ export default function OpenAISettings(props: {
   const [model, setModel] = useState<AiModelInfoDTO | undefined>(
     models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? defaultModels.open_ai)));
   
-  const [baseUrl, setBaseUrl] = useState(defaultParameters?.baseUrl ?? 'https://api.openai.com/v1');
+  const [baseUrl, setBaseUrl] = useState(defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai);
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
   const [enableTopP, setEnableTopP] = useState(containsKey(defaultParameters, 'topP'));
@@ -53,7 +53,7 @@ export default function OpenAISettings(props: {
 
   useEffect(() => {
     setModel(models?.find(modelInfo => modelInfo?.modelId === (defaultParameters?.modelId ?? defaultModels.open_ai)));
-    setBaseUrl(defaultParameters?.baseUrl ?? 'https://api.openai.com/v1');
+    setBaseUrl(defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai);
 
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));

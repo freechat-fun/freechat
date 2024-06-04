@@ -10,7 +10,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 public class AiApiKeyCreateDTO {
     @Schema(description = "Credential name", requiredMode = REQUIRED)
     private String name;
-    @Schema(description = "Model provider: hugging_face | open_ai | local_ai | in_process | dash_scope | unknown",
+    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown",
             requiredMode = REQUIRED)
     private String provider;
     @Schema(description = "Credential content", requiredMode = REQUIRED)

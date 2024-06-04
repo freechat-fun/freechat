@@ -273,58 +273,64 @@ public class PojoUtils {
     }
 
     private static List<Object> arrayToList(Object value) {
+        if (Objects.isNull(value)) {
+            return null;
+        }
         List<Object> list = new LinkedList<>();
-        if (value instanceof boolean[]) {
-            for (boolean v : (boolean[]) value) {
-                list.add(v);
+        switch (value) {
+            case boolean[] booleans -> {
+                for (boolean v : booleans) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof float[]) {
-            for (float v : (float[]) value) {
-                list.add(v);
+            case float[] floats -> {
+                for (float v : floats) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof long[]) {
-            for (long v : (long[]) value) {
-                list.add(v);
+            case long[] longs -> {
+                for (long v : longs) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof int[]) {
-            for (int v : (int[]) value) {
-                list.add(v);
+            case int[] ints -> {
+                for (int v : ints) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof short[]) {
-            for (short v : (short[]) value) {
-                list.add(v);
+            case short[] shorts -> {
+                for (short v : shorts) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof byte[]) {
-            for (byte v : (byte[]) value) {
-                list.add(v);
+            case byte[] bytes -> {
+                for (byte v : bytes) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof double[]) {
-            for (double v : (double[]) value) {
-                list.add(v);
+            case double[] doubles -> {
+                for (double v : doubles) {
+                    list.add(v);
+                }
             }
-        } else if (value instanceof char[]) {
-            for (char v : (char[]) value) {
-                list.add(v);
+            case char[] chars -> {
+                for (char v : chars) {
+                    list.add(v);
+                }
             }
-        } else {
-            list.addAll(List.of((Object[]) value));
+            default -> list.addAll(List.of((Object[]) value));
         }
         return list;
     }
 
     public static <S, T> void mapWhenExists(Supplier<S> from, Consumer<T> to, Function<S, T> converter) {
         S value = from.get();
-        boolean isValid;
-
-        if (value instanceof CharSequence) {
-            isValid = StringUtils.isNotBlank((String) value);
-        } else if (value instanceof Collection<?>){
-            isValid = CollectionUtils.isNotEmpty((Collection<?>) value);
-        } else if (value instanceof Map<?,?>) {
-            isValid = MapUtils.isNotEmpty((Map<?, ?>) value);
-        } else {
-            isValid = Objects.nonNull(value);
-        }
+        boolean isValid = switch (value) {
+            case CharSequence charSequence -> StringUtils.isNotBlank((String) value);
+            case Collection<?> objects -> CollectionUtils.isNotEmpty(objects);
+            case Map<?, ?> map -> MapUtils.isNotEmpty(map);
+            case null, default -> Objects.nonNull(value);
+        };
 
         if (isValid) {
             if (Objects.isNull(converter)) {

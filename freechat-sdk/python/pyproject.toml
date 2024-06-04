@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "freechat_sdk"
-version = "1.1.0"
+version = "1.2.0"
 description = "FreeChat OpenAPI Definition"
 authors = ["OpenAPI Generator Community <team@openapitools.org>"]
 license = "NoLicense"

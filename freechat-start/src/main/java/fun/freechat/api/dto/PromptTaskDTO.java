@@ -39,6 +39,14 @@ public class PromptTaskDTO {
     public PromptTask toPromptTask() {
         PromptTask task = CommonUtils.convert(this, PromptTask.class);
 
+        if (MapUtils.isNotEmpty(params)) {
+            try {
+                task.setParams(InfoUtils.defaultMapper().writeValueAsString(params));
+            } catch (JsonProcessingException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
+        }
+
         if (Objects.isNull(promptRef)) {
             return task;
         }
@@ -55,14 +63,6 @@ public class PromptTaskDTO {
         task.setVariables(variables);
         if (Objects.nonNull(promptRef.getDraft())) {
             task.setDraft(promptRef.getDraft() ? (byte) 0 : (byte) 1);
-        }
-
-        if (MapUtils.isNotEmpty(params)) {
-            try {
-                task.setParams(InfoUtils.defaultMapper().writeValueAsString(params));
-            } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-            }
         }
 
         return task;
