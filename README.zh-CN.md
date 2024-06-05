@@ -231,7 +231,7 @@ npm install freechat-sdk --save
 | ---- | ----
 | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/)
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
-| Model Providers | [OpenAI](https://platform.openai.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
+| Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
 | Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
@@ -241,4 +241,4 @@ npm install freechat-sdk --save
 FreeChat 系统是完全 Open API 导向的。站点 [freechat.fun](https://freechat.fun) 使用其 TypeScript SDK 进行开发，几乎不依赖私有接口。你可以使用这些在线接口，开发自己的端侧应用或者站点，使其符合你喜欢的样子。目前，FreeChat 是完全免费的，也暂时没有收费计划（毕竟，用户使用自己的 API Key 来调用 LLM 服务）。
 
 ### 模型接入
-FreeChat 旨在探索具有拟人化特征的 AI 虚拟角色技术。到目前为止，它支持 OpenAI 和阿里巴巴通义系列模型服务。但我们更感兴趣的是，支持那些正在研究中、能让 AI 具备更多人格特征的模型。如果你在这方面有所研究，并且希望 FreeChat 支持你的模型，请和我们取得联系。我们期待 AI 技术在未来能帮助人们塑造出自己的“灵魂伴侣”。
+FreeChat 旨在探索具有拟人化特征的 AI 虚拟角色技术。到目前为止，它支持 OpenAI 和阿里巴巴通义千问系列模型。但我们更感兴趣的是，支持那些正在研究中、能让 AI 具备更多人格特征的模型。如果你在这方面有所研究，并且希望 FreeChat 支持你的模型，请和我们取得联系。我们期待 AI 技术在未来能帮助人们塑造出自己的“灵魂伴侣”。
