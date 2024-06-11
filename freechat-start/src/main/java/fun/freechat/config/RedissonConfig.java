@@ -2,13 +2,11 @@ package fun.freechat.config;
 
 import com.esotericsoftware.kryo.Kryo;
 import fun.freechat.config.util.UnmodifiableCollectionsSerializer;
-import fun.freechat.service.common.EncryptionService;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.Codec;
 import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +22,6 @@ public class RedissonConfig {
     private String password;
     @Value("${redis.datasource.timeout}")
     private Integer timeout;
-    @Autowired
-    private EncryptionService encryptionService;
 
     @Bean(destroyMethod="shutdown")
     public RedissonClient redissonClient() {

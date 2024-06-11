@@ -22,7 +22,7 @@
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.15.1</commons-io.version>
-        <redisson.version>3.30.0</redisson.version>
+        <redisson.version>3.31.0</redisson.version>
         <objenesis.version>3.3</objenesis.version>
         <swagger-parser.version>2.1.20</swagger-parser.version>
         <langchain4j.version>0.31.0</langchain4j.version>
