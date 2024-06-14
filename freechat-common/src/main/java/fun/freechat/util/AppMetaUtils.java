@@ -115,7 +115,7 @@ public class AppMetaUtils {
 
     }
 
-    public static boolean isTestingEnv() {
+    public static boolean isTestEnv() {
         String runningEnv = getRunningEnv();
         return "testing".equalsIgnoreCase(runningEnv) || "local".equalsIgnoreCase(runningEnv);
     }

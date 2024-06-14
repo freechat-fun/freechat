@@ -219,7 +219,7 @@ public class SecurityConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        if (AppMetaUtils.isTestingEnv()) {
+        if (AppMetaUtils.isTestEnv()) {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedMethods(List.of("*"));
             configuration.applyPermitDefaultValues();

@@ -69,7 +69,7 @@ public class MainController {
             script = "/assets/index-" + webVersion + ".js";
         }
         model.addAttribute("script", script);
-        if (!AppMetaUtils.isTestingEnv()) {
+        if (!AppMetaUtils.isTestEnv()) {
             model.addAttribute("registrations", registrations);
         }
 
