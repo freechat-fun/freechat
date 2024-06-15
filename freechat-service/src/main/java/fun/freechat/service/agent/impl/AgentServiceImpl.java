@@ -16,6 +16,7 @@ import fun.freechat.service.util.SortSpecificationWrapper;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -76,7 +77,7 @@ public class AgentServiceImpl implements AgentService {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
         if (CollectionUtils.isNotEmpty(matchTags)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return triple.getMiddle().containsAll(matchTags);
             } else {
@@ -125,12 +126,14 @@ public class AgentServiceImpl implements AgentService {
                                 .and(TagDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                 .stream()
                 .map(Tag::getContent)
+                .distinct()
                 .toList();
         List<String> aiModels = aiModelMapper.select(c ->
                         c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.AGENT.text()))
                                 .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getAgentUid())))
                 .stream()
                 .map(AiModel::getModelId)
+                .distinct()
                 .toList();
         return Triple.of(info, tags, aiModels);
     }
@@ -691,6 +694,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     }
 
     @Override
+    @LongPeriodCache
     public String getUid(Long agentId) {
         var statement = select(Info.agentUid)
                 .from(Info.table)

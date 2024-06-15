@@ -81,7 +81,7 @@ public class PromptServiceImpl implements PromptService {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
         if (CollectionUtils.isNotEmpty(matchTags)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return triple.getMiddle().containsAll(matchTags);
             } else {
@@ -130,12 +130,14 @@ public class PromptServiceImpl implements PromptService {
                                 .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
                 .stream()
                 .map(Tag::getContent)
+                .distinct()
                 .toList();
         List<String> aiModels = aiModelMapper.select(c ->
                         c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PROMPT.text()))
                                 .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPromptUid())))
                 .stream()
                 .map(AiModel::getModelId)
+                .distinct()
                 .toList();
         return Triple.of(info, tags, aiModels);
     }

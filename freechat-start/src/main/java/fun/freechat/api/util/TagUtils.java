@@ -23,6 +23,7 @@ public class TagUtils  implements ApplicationContextAware {
         return tagService.get(referType, referId)
                 .stream()
                 .map(Tag::getContent)
+                .distinct()
                 .toList();
     }
 }

@@ -18,6 +18,7 @@ import fun.freechat.util.HttpUtils;
 import fun.freechat.util.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
@@ -81,7 +82,7 @@ public class PluginServiceImpl implements PluginService {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
         if (CollectionUtils.isNotEmpty(matchTags)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return triple.getMiddle().containsAll(matchTags);
             } else {
@@ -140,12 +141,14 @@ public class PluginServiceImpl implements PluginService {
                                 .and(TagDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
                 .stream()
                 .map(Tag::getContent)
+                .distinct()
                 .toList();
         List<String> aiModels = aiModelMapper.select(c ->
                         c.where(AiModelDynamicSqlSupport.referType, isEqualTo(InfoType.PLUGIN.text()))
                                 .and(AiModelDynamicSqlSupport.referId, isEqualTo(info.getPluginUid())))
                 .stream()
                 .map(AiModel::getModelId)
+                .distinct()
                 .toList();
         return Triple.of(info, tags, aiModels);
     }

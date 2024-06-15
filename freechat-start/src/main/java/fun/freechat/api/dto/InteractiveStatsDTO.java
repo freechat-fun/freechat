@@ -32,6 +32,14 @@ public class InteractiveStatsDTO extends TraceableDTO {
     @Schema(description = "Average score")
     private Long score;
 
+    public InteractiveStatsDTO() {
+        viewCount = 0L;
+        referCount = 0L;
+        recommendCount = 0L;
+        scoreCount = 0L;
+        score = 0L;
+    }
+
     public static InteractiveStatsDTO from(InteractiveStats stats) {
         if (Objects.isNull(stats)) {
             return new InteractiveStatsDTO();

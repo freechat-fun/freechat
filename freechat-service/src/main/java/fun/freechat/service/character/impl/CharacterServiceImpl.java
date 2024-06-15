@@ -19,6 +19,7 @@ import fun.freechat.util.IdUtils;
 import fun.freechat.util.PojoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -91,7 +92,7 @@ public class CharacterServiceImpl implements CharacterService {
         List<String> matchTags = query.getWhere().getTags();
         Boolean and = query.getWhere().getTagsAnd();
         if (CollectionUtils.isNotEmpty(matchTags)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return pair.getRight().containsAll(matchTags);
             } else {
@@ -121,6 +122,7 @@ public class CharacterServiceImpl implements CharacterService {
                                 .and(TagDynamicSqlSupport.referId, isEqualTo(info.getCharacterUid())))
                 .stream()
                 .map(Tag::getContent)
+                .distinct()
                 .toList();
 
         return Pair.of(info, tags);
