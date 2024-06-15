@@ -47,7 +47,7 @@ chat:
 embedding:
   milvus:
     retrieveEmbeddingsOnSearch: false
-localfile:
+disk:
   workdir: ${APP_HOME}/data
 redis:
   mode: single

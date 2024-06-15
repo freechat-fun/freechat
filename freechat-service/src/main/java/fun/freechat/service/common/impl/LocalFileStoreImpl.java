@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @Slf4j
 @SuppressWarnings("unused")
 public class LocalFileStoreImpl implements FileStore {
-    @Value("${localfile.workdir}")
+    @Value("${disk.workdir}")
     private String basePathStr;
     private Path basePath;
 
