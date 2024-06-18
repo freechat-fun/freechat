@@ -4,7 +4,7 @@ import fun.freechat.mapper.ApiTokenDynamicSqlSupport;
 import fun.freechat.mapper.ApiTokenMapper;
 import fun.freechat.model.ApiToken;
 import fun.freechat.model.User;
-import fun.freechat.service.account.ApiTokenType;
+import fun.freechat.service.enums.ApiTokenType;
 import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.util.IdUtils;

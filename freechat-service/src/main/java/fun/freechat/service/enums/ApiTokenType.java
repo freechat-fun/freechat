@@ -1,17 +1,15 @@
-package fun.freechat.service.account;
+package fun.freechat.service.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+@Getter
 public enum ApiTokenType {
     ACCESS("access");
     private final String type;
 
     ApiTokenType(String type) {
         this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public ApiTokenType fromType(String type) {

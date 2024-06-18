@@ -20,17 +20,17 @@ public class CacheConfig {
     @Bean
     @Primary
     CacheManager distributedCacheManager(RedissonClient redissonClient) {
-        /* 5 seconds cache
+        /* 10 seconds cache
         NOTE: Because the cache is often invalidated,
         it is recommended to set "sync" to true to prevent cache breakdown as
         @Cacheable(cacheNames = "freechatShortPeriodCache", sync = true...)
         */
         org.redisson.spring.cache.CacheConfig shortPeriodCache =
-                new org.redisson.spring.cache.CacheConfig(5_000, 5_000);
+                new org.redisson.spring.cache.CacheConfig(10_000, 5_000);
 
         // 5 minutes cache
         org.redisson.spring.cache.CacheConfig middlePeriodCache =
-                new org.redisson.spring.cache.CacheConfig(300_000, 180_000);
+                new org.redisson.spring.cache.CacheConfig(300_000, 150_000);
 
         // 1 hour cache
         org.redisson.spring.cache.CacheConfig longPeriodCache =

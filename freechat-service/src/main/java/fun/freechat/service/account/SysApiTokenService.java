@@ -1,6 +1,7 @@
 package fun.freechat.service.account;
 
 import fun.freechat.model.User;
+import fun.freechat.service.enums.ApiTokenType;
 import fun.freechat.util.PolicyUtils;
 
 import java.time.temporal.TemporalAmount;

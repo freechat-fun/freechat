@@ -2,9 +2,11 @@ package fun.freechat.service.common;
 
 import org.apache.commons.io.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -21,10 +23,18 @@ public interface FileStore extends Closeable {
     default long write(String path, InputStream stream) throws IOException {
         return write(path, stream, null, null);
     }
+    default long write(String path, String content) throws IOException {
+        byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+        return write(path, new ByteArrayInputStream(bytes), (long) bytes.length, Instant.now());
+    }
     InputStream read(String path) throws IOException;
     default byte[] readBytes(String path) throws IOException {
         InputStream stream = read(path);
-        return Objects.nonNull(stream) ? IOUtils.toByteArray(stream) : new byte[0];
+        return Objects.nonNull(stream) ? IOUtils.toByteArray(stream) : null;
+    }
+    default String readString(String path) throws IOException {
+        InputStream stream = read(path);
+        return Objects.nonNull(stream) ? IOUtils.toString(stream, StandardCharsets.UTF_8) : null;
     }
     boolean exists(String path);
     void delete(String path) throws IOException;
