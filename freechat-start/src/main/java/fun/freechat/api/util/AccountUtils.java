@@ -41,13 +41,16 @@ public class AccountUtils implements ApplicationContextAware {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Object principal = authenticated.getPrincipal();
-        if (principal instanceof User user) {
-            return user;
+        User user = null;
+        if (principal instanceof User) {
+            user = (User)principal;
         } else if (principal instanceof String userName) {
-            return userService.loadByUsername(userName);
-        } else {
+            user = userService.loadByUsername(userName);
+        }
+        if (Objects.isNull(user)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+        return user;
     }
 
     public static void updateCurrentUser() {
