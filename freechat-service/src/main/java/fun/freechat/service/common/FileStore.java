@@ -44,8 +44,12 @@ public interface FileStore extends Closeable {
         } catch (IOException ignored) {
         }
     }
-    default long copy(String sourcePath, String destinationPath) throws IOException {
-        return write(destinationPath, read(sourcePath));
+    default void copy(String sourcePath, String destinationPath) throws IOException {
+        write(destinationPath, read(sourcePath));
+    }
+    default void move(String sourcePath, String destinationPath) throws IOException {
+        copy(sourcePath, destinationPath);
+        delete(sourcePath);
     }
     long getLastModifiedTime(String path) throws IOException;
     default String getShareUrl(String path, int expireTimeInSecond) {

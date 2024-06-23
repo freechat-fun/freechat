@@ -105,6 +105,16 @@ public class LocalFileStoreImpl implements FileStore {
     }
 
     @Override
+    public void copy(String sourcePath, String destinationPath) throws IOException {
+        Files.copy(toPath(sourcePath), toPath(destinationPath), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    @Override
+    public void move(String sourcePath, String destinationPath) throws IOException {
+        Files.move(toPath(sourcePath), toPath(destinationPath), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    @Override
     public long getLastModifiedTime(String path) throws IOException {
         Path filePath = toPath(path);
         FileTime lastModifiedTime = Files.getLastModifiedTime(filePath, LinkOption.NOFOLLOW_LINKS);

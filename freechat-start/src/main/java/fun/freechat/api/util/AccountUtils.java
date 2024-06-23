@@ -43,7 +43,7 @@ public class AccountUtils implements ApplicationContextAware {
         Object principal = authenticated.getPrincipal();
         User user = null;
         if (principal instanceof User) {
-            user = (User)principal;
+            user = (User) principal;
         } else if (principal instanceof String userName) {
             user = userService.loadByUsername(userName);
         }
