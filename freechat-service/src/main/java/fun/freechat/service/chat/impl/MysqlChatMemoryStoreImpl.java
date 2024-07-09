@@ -348,26 +348,31 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 return acc;
             }
 
-            ChatMessageType lastedType = acc.getLast().getMessage().type();
-            if (type == AI && lastedType == SYSTEM) {
+            ChatMessageType lastType = acc.getLast().getMessage().type();
+            if (lastType == SYSTEM && type != USER) {
                 // The first non-system message must be a user message.
                 return acc;
             }
 
-            if (type == AI && lastedType == USER && ((AiMessage) record.getMessage()).text().isBlank()) {
+            if (type == AI && isInputMessageType(lastType) && ((AiMessage) record.getMessage()).text().isBlank()) {
                 // Invalid ai message. Ignore the ai message and the corresponding user message.
                 acc.removeLast();
                 return acc;
             }
 
-            if (type == lastedType) {
-                // The list must be user and ai alternating messages. Use the newest one when duplicated.
+            if (isInputMessageType(type) == isInputMessageType(lastType)) {
+                // The list must be user/tool_execution_result and ai alternating messages.
+                // Use the newest one when duplicated.
                 acc.removeLast();
             }
 
             acc.add(record);
             return acc;
         };
+    }
+
+    private static boolean isInputMessageType(ChatMessageType messageType) {
+        return messageType == USER || messageType == TOOL_EXECUTION_RESULT;
     }
 
     private static BinaryOperator<LinkedList<ChatMessageRecord>> messageRecordCombiner() {
