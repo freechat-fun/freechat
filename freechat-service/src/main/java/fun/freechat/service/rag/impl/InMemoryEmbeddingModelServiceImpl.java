@@ -115,14 +115,11 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
     @Override
     public int dimensionForLang(String lang) {
         if (isEn(lang)) {
-            // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-en-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/en/v15/BgeSmallEnV15QuantizedEmbeddingModel.java#L14
-            return 384;
+            return enEmbeddingModel.dimension();
         } else if (isZh(lang)) {
-            // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-bge-small-zh-v15-q/src/main/java/dev/langchain4j/model/embedding/bge/small/zh/v15/BgeSmallZhV15QuantizedEmbeddingModel.java#L14
-            return 512;
+            return zhEmbeddingModel.dimension();
         } else {
-            // https://github.com/langchain4j/langchain4j-embeddings/blob/main/langchain4j-embeddings-all-minilm-l6-v2-q/src/main/java/dev/langchain4j/model/embedding/AllMiniLmL6V2QuantizedEmbeddingModel.java#L10
-            return 384;
+            return defaultEmbeddingModel.dimension();
         }
     }
 }
