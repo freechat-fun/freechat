@@ -4,13 +4,13 @@ import fun.freechat.api.dto.ApiTokenInfoDTO;
 import fun.freechat.api.dto.UserBasicInfoDTO;
 import fun.freechat.api.dto.UserDetailsDTO;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.ConfigUtils;
 import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.FileStore;
-import fun.freechat.service.util.ConfigUtils;
 import fun.freechat.service.util.StoreUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,7 +22,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,6 +38,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
+import static fun.freechat.api.util.ConfigUtils.*;
 import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 
 @Controller
@@ -48,18 +48,11 @@ import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 @Validated
 @SuppressWarnings("unused")
 public class AccountApi {
-    private static final String CONFIG_NAME = "user";
-    private static final String PICTURE_MAX_SIZE_KEY = "picture.maxSize";
-    private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
-    private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
-    private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
-
     @Autowired
     private SysUserService userService;
     @Autowired
     private SysApiTokenService apiTokenService;
     @Autowired
-    @Qualifier("mysqlConfigService")
     private ConfigService configService;
 
     @Operation(
@@ -223,9 +216,9 @@ public class AccountApi {
             HttpServletRequest request,
             @Parameter(description = "User picture", style = ParameterStyle.FORM) @RequestParam("file") @NotNull
             MultipartFile file) {
-        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
-        long maxSize = ConfigUtils.getLongOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
-        int maxCount = ConfigUtils.getIntOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
+        Properties properties = configService.load();
+        long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
+        int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);

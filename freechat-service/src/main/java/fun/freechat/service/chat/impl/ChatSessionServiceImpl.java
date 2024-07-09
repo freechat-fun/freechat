@@ -73,7 +73,7 @@ import static fun.freechat.service.ai.LanguageModelFactory.*;
 import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 import static fun.freechat.service.enums.EmbeddingStoreType.*;
-import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
+import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static java.util.stream.Collectors.toList;
 
@@ -150,7 +150,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Override
     // ChatSession cannot be serialized. Use the in-process cache.
     @Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME,
-            cacheManager = IN_PROCESS_CACHE_MANAGER,
+            cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = CACHE_KEY_SPEL_PREFIX + "#p0",
             unless="#result == null")
     public ChatSession get(String chatId) {
@@ -401,7 +401,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
     @Override
     @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME,
-            cacheManager = IN_PROCESS_CACHE_MANAGER,
+            cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = CACHE_KEY_SPEL_PREFIX + "#p0")
     public void reset(String chatId) {}
 

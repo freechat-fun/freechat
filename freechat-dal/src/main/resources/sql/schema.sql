@@ -396,16 +396,3 @@ CREATE TABLE IF NOT EXISTS `ai_api_key` (
   INDEX `idx_user_provider` (`user_id`, `provider`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='AI provider API-KEY info'
 ;
-
-CREATE TABLE IF NOT EXISTS `non_real_time_config` (
-  `gmt_create` datetime NOT NULL,
-  `gmt_modified` datetime NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `format` varchar(16) DEFAULT 'kv' COMMENT 'kv | json | yaml',
-  `content` text DEFAULT NULl,
-  `version` int unsigned DEFAULT 1,
-  `user_id` varchar(32) NOT NULL,
-  PRIMARY KEY (`name`, `version`),
-  INDEX `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Non-real-time configurations, delayed by a few minutes for publishing.'
-;

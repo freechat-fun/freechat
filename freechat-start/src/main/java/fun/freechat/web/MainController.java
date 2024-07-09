@@ -4,12 +4,10 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.enums.GenderType;
-import fun.freechat.service.util.ConfigUtils;
 import fun.freechat.util.AppMetaUtils;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +20,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import static fun.freechat.api.util.ConfigUtils.WEB_VERSION_KEY;
+
 @Controller
 @SuppressWarnings("unused")
 public class MainController {
-    private static final String CONFIG_NAME = "system";
-    private static final String WEB_VERSION_KEY = "web.version";
-
     @Autowired
-    @Qualifier("mysqlConfigService")
     private ConfigService configService;
 
     @Autowired
@@ -63,7 +59,7 @@ public class MainController {
         }
 
         String script = "/assets/index.js";
-        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
+        Properties properties = configService.load();
         String webVersion = properties.getProperty(WEB_VERSION_KEY);
         if (StringUtils.isNotBlank(webVersion)) {
             script = "/assets/index-" + webVersion + ".js";

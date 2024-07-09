@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
+import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 
 @Service("inMemoryEmbeddingStoreService")
@@ -28,7 +28,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     private final static String BASE_PATH = "embedding";
 
     @Autowired
-    @Qualifier(IN_PROCESS_CACHE_MANAGER)
+    @Qualifier(IN_PROCESS_LONG_CACHE_MANAGER)
     private CacheManager cacheManager;
     private Cache cache;
 

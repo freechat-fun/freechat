@@ -96,7 +96,5 @@
         <table tableName="ai_api_key">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
-
-        <table tableName="non_real_time_config" />
     </context>
 </generatorConfiguration>

@@ -82,18 +82,26 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config
-              name: config
+              name: config-private
+            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config.run
+              name: config-runtime
             - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
               name: logs
             - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/data
               name: data
       volumes:
-        - name: config
+        - name: config-private
           secret:
             secretName: {{ include "helpers.fullname" . }}-spring-properties
             items:
               - key: application-private.yml
                 path: application-private.yml
+        - name: config-runtime
+          configMap:
+            name: {{ include "helpers.fullname" . }}-runtime-properties
+            items:
+              - key: application-runtime.properties
+                path: application-runtime.properties
         - name: logs
           emptyDir: {}
         - name: data

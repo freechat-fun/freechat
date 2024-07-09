@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static fun.freechat.service.util.CacheUtils.IN_PROCESS_CACHE_MANAGER;
+import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
@@ -85,7 +85,7 @@ public class ChatContextServiceImpl implements ChatContextService {
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0.chatId")
     @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME,
-            cacheManager = IN_PROCESS_CACHE_MANAGER,
+            cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = ChatSessionServiceImpl.CACHE_KEY_SPEL_PREFIX + "#p0.chatId"
     )
     public boolean update(ChatContext context) {
@@ -100,7 +100,7 @@ public class ChatContextServiceImpl implements ChatContextService {
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME,
-            cacheManager = IN_PROCESS_CACHE_MANAGER,
+            cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = ChatSessionServiceImpl.CACHE_KEY_SPEL_PREFIX + "#p0"
     )
     public boolean delete(String chatId) {

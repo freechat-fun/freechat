@@ -47,6 +47,8 @@ chat:
 embedding:
   milvus:
     retrieveEmbeddingsOnSearch: false
+configmap:
+  workdir: ${APP_HOME}/config.run
 disk:
   workdir: ${APP_HOME}/data
 redis:

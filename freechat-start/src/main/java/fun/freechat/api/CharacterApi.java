@@ -2,6 +2,7 @@ package fun.freechat.api;
 
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.ConfigUtils;
 import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
@@ -12,7 +13,6 @@ import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.stats.InteractiveStatsService;
-import fun.freechat.service.util.ConfigUtils;
 import fun.freechat.service.util.StoreUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +26,6 @@ import jakarta.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,6 +39,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.*;
 
+import static fun.freechat.api.util.ConfigUtils.*;
 import static fun.freechat.api.util.FileUtils.PRIVATE_DIR;
 import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 
@@ -50,20 +50,6 @@ import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 @Validated
 @SuppressWarnings("unused")
 public class CharacterApi {
-    private static final String CONFIG_NAME = "character";
-    private static final String PICTURE_MAX_SIZE_KEY = "picture.maxSize";
-    private static final String PICTURE_MAX_COUNT_KEY = "picture.maxCount";
-    private static final String AVATAR_MAX_SIZE_KEY = "avatar.maxSize";
-    private static final String AVATAR_MAX_COUNT_KEY = "avatar.maxCount";
-    private static final String DOCUMENT_MAX_SIZE_KEY = "document.maxSize";
-    private static final String DOCUMENT_MAX_COUNT_KEY = "document.maxCount";
-    private static final long DEFAULT_PICTURE_MAX_SIZE = 2 * 1024 * 1024;
-    private static final int DEFAULT_PICTURE_MAX_COUNT = 10;
-    private static final long DEFAULT_AVATAR_MAX_SIZE = 1024 * 1024;
-    private static final int DEFAULT_AVATAR_MAX_COUNT = 10;
-    private static final long DEFAULT_DOCUMENT_MAX_SIZE = 10 * 1024 * 1024;
-    private static final int DEFAULT_DOCUMENT_MAX_COUNT = 5;
-
     @Value("${chat.memory.minMessageWindowSize:10}")
     private Integer minMessageWindowSize;
     @Value("${chat.memory.maxMessageWindowSize:500}")
@@ -81,7 +67,6 @@ public class CharacterApi {
     @Autowired
     private InteractiveStatsService interactiveStatsService;
     @Autowired
-    @Qualifier("mysqlConfigService")
     private ConfigService configService;
 
     private String newUniqueName(String desired) {
@@ -708,9 +693,9 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
             Long characterId) {
-        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
-        long maxSize = ConfigUtils.getLongOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
-        int maxCount = ConfigUtils.getIntOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
+        Properties properties = configService.load();
+        long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
+        int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
 
 
         if (file.getSize() > maxSize) {
@@ -806,9 +791,9 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
             Long characterId) {
-        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
-        long maxSize = ConfigUtils.getLongOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
-        int maxCount = ConfigUtils.getIntOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
+        Properties properties = configService.load();
+        long maxSize = ConfigUtils.getOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
+        int maxCount = ConfigUtils.getOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
@@ -846,9 +831,9 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
             Long characterId) {
-        Properties properties = ConfigUtils.getProperties(configService, CONFIG_NAME);
-        long maxSize = ConfigUtils.getLongOrDefault(properties, DOCUMENT_MAX_SIZE_KEY, DEFAULT_DOCUMENT_MAX_SIZE);
-        int maxCount = ConfigUtils.getIntOrDefault(properties, DOCUMENT_MAX_COUNT_KEY, DEFAULT_DOCUMENT_MAX_COUNT);
+        Properties properties = configService.load();
+        long maxSize = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_SIZE_KEY, DEFAULT_DOCUMENT_MAX_SIZE);
+        int maxCount = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_COUNT_KEY, DEFAULT_DOCUMENT_MAX_COUNT);
 
 
         if (file.getSize() > maxSize) {

@@ -45,14 +45,25 @@ public class CacheConfig {
         return cacheManager;
     }
 
-    @Bean(name = IN_PROCESS_CACHE_MANAGER)
-    public CacheManager inProcessCacheManager() {
+    @Bean(name = IN_PROCESS_LONG_CACHE_MANAGER)
+    public CacheManager inProcessLongCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(LONG_PERIOD_CACHE_NAME);
         cacheManager.setAllowNullValues(false);
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .maximumSize(100_000)
                 .expireAfterWrite(60, TimeUnit.MINUTES)
                 .expireAfterAccess(30, TimeUnit.MINUTES));
+        return cacheManager;
+    }
+
+    @Bean(name = IN_PROCESS_SHORT_CACHE_MANAGER)
+    public CacheManager inProcessShortCacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager(SHORT_PERIOD_CACHE_NAME);
+        cacheManager.setAllowNullValues(false);
+        cacheManager.setCaffeine(Caffeine.newBuilder()
+                .maximumSize(100_000)
+                .expireAfterWrite(10, TimeUnit.SECONDS)
+                .expireAfterAccess(5, TimeUnit.SECONDS));
         return cacheManager;
     }
 }

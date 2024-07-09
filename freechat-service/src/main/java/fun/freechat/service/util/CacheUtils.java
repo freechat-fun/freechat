@@ -14,7 +14,8 @@ import java.util.Optional;
 @Component
 @SuppressWarnings("unused")
 public class CacheUtils implements ApplicationContextAware {
-    public static final String IN_PROCESS_CACHE_MANAGER = "inProcessCacheManager";
+    public static final String IN_PROCESS_SHORT_CACHE_MANAGER = "inProcessShortCacheManager";
+    public static final String IN_PROCESS_LONG_CACHE_MANAGER = "inProcessLongCacheManager";
     public static final String LONG_PERIOD_CACHE_NAME = "freechatLongPeriodCache";
     public static final String MIDDLE_PERIOD_CACHE_NAME = "freechatMiddlePeriodCache";
     public static final String SHORT_PERIOD_CACHE_NAME = "freechatShortPeriodCache";
@@ -26,7 +27,7 @@ public class CacheUtils implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         defaultCacheManager = applicationContext.getBean(CacheManager.class);
-        inProcessCacheManager = applicationContext.getBean(IN_PROCESS_CACHE_MANAGER, CacheManager.class);
+        inProcessCacheManager = applicationContext.getBean(IN_PROCESS_LONG_CACHE_MANAGER, CacheManager.class);
     }
 
     public static void cacheEvict(String cacheName, List<String> keys) {
