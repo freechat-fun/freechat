@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 
 @Service("milvusEmbeddingStoreService")
 @Primary
@@ -68,8 +72,8 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
     }
 
     @Override
-    public EmbeddingStore<TextSegment> of(Object memoryId, EmbeddingStoreType type) {
-        return embeddingStores.get(type);
+    public EmbeddingStore<TextSegment> of(Object memoryId, EmbeddingStoreType storeType) {
+        return embeddingStores.get(storeType);
     }
 
     @Override
@@ -79,6 +83,10 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
 
     @Override
     public void delete(Object memoryId, EmbeddingStoreType storeType) {
-        // ignore
+        if (Objects.isNull(memoryId)) {
+            return;
+        }
+        EmbeddingStore<TextSegment> embeddingStore = of(memoryId, storeType);
+        embeddingStore.removeAll(metadataKey(MEMORY_ID.text()).isEqualTo(memoryId.toString()));
     }
 }

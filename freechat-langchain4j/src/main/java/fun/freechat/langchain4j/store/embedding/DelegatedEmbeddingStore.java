@@ -6,10 +6,12 @@ import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.store.embedding.filter.Filter;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static dev.langchain4j.internal.Utils.getOrDefault;
@@ -85,6 +87,26 @@ public class DelegatedEmbeddingStore implements EmbeddingStore<TextSegment> {
         }
 
         return ids;
+    }
+
+    @Override
+    public void remove(String id) {
+        embeddingStore.remove(id);
+    }
+
+    @Override
+    public void removeAll(Collection<String> ids) {
+        embeddingStore.removeAll(ids);
+    }
+
+    @Override
+    public void removeAll(Filter filter) {
+        embeddingStore.removeAll(filter);
+    }
+
+    @Override
+    public void removeAll() {
+        embeddingStore.removeAll();
     }
 
     @Override
