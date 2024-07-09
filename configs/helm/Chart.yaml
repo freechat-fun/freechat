@@ -11,7 +11,7 @@ dependencies:
       - mysql
       - sql
       - database
-    version: 10.x.x
+    version: 11.x.x
   - condition: bitnami.redis.enabled
     name: redis
     repository: https://charts.bitnami.com/bitnami
@@ -27,8 +27,7 @@ dependencies:
       - milvus
       - embedding
       - database
-    # version: 7.x.x
-    version: 6.x.x
+    version: 8.x.x
   - condition: bitnami.prometheus.enabled
     name: prometheus
     repository: https://charts.bitnami.com/bitnami
@@ -44,7 +43,7 @@ dependencies:
       - grafana
       - metrics
       - dashboard
-    version: 10.x.x
+    version: 11.x.x
 description: A Helm chart for freechat
 maintainers:
   - email: dev.freechat.fun@gmail.com
@@ -52,4 +51,4 @@ maintainers:
     url: https://github.com/freechat-fun/freechat
 name: freechat
 type: application
-version: 1.3.0
+version: 1.3.2

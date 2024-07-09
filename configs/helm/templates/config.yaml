@@ -5,7 +5,6 @@ metadata:
   name: {{ include "helpers.fullname" . }}-runtime-properties
   labels:
     {{- include "helpers.labels" . | nindent 4 }}
-type: Opaque
 data:
   application-runtime.properties: |
     config.version=20240620

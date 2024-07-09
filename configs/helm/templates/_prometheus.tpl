@@ -61,11 +61,14 @@ Usage:
         - __meta_kubernetes_pod_container_name
       target_label: container
     - source_labels:
-        - __meta_kubernetes_service_label_app_kubernetes_io_name
-      target_label: name
-    - source_labels:
         - __meta_kubernetes_service_label_app_kubernetes_io_component
-      target_label: component
+      target_label: app_kubernetes_io_component
+    - source_labels:
+        - __meta_kubernetes_service_label_app_kubernetes_io_instance
+      target_label: app_kubernetes_io_instance
+    - source_labels:
+        - __meta_kubernetes_service_label_app_kubernetes_io_name
+      target_label: app_kubernetes_io_name
     - action: drop
       source_labels:
         - __meta_kubernetes_pod_phase
@@ -73,7 +76,6 @@ Usage:
     - source_labels:
         - __meta_kubernetes_service_name
       target_label: job
-      replacement: ${1}
     - target_label: endpoint
       replacement: metrics
     - source_labels:
