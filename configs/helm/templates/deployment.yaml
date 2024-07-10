@@ -98,7 +98,7 @@ spec:
                 path: application-private.yml
         - name: config-runtime
           configMap:
-            name: {{ include "helpers.fullname" . }}-runtime-properties
+            name: {{ include "helpers.fullname" . }}-runtime-configuration
             items:
               - key: application-runtime.properties
                 path: application-runtime.properties

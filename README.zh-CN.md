@@ -89,15 +89,9 @@ FreeChat 致力于云原生的设计理念。若您有 Kubernetes 集群，可�
 
 如果您更倾向于使用具备 SLA(Service Level Agreement) 保障的云服务，只需在 `configs/helm/values-private.yaml` 中做相应设定：
 ```yaml
-bitnami:
-  mysql:
-    enabled: false
-  redis:
-    enabled: false
-  milvus:
-    enabled: false
-
 mysql:
+  deployment:
+    enabled: false
   url: <your mysql url>
   auth:
     rootPassword: <your mysql root password>
@@ -105,12 +99,16 @@ mysql:
     password: <your mysql password for the username>
 
 redis:
+  deployment:
+    enabled: false
   url: <your redis url>
   auth:
     password: <your redis password>
 
 
 milvus:
+  deployment:
+    enabled: false
   url: <your milvus url>
   milvus:
     auth:
@@ -121,10 +119,11 @@ milvus:
 
 如果您的 Kubernetes 集群没有独立的监控系统，您可以启用以下开关。 这会将 Prometheus 和 Grafana 服务安装在同一命名空间中，专门用于监控 FreeChat 应用程序下的服务状态：
 ```yaml
-bitnami:
-  prometheus:
+prometheus:
+  deployment:
     enabled: true
-  grafana:
+grafana:
+  deployment:
     enabled: true
 ```
 

@@ -4,7 +4,7 @@ annotations:
 apiVersion: v1
 appVersion: '1.3.0'
 dependencies:
-  - condition: bitnami.mysql.enabled
+  - condition: mysql.deployment.enabled
     name: mysql
     repository: https://charts.bitnami.com/bitnami
     tags:
@@ -12,7 +12,7 @@ dependencies:
       - sql
       - database
     version: 11.x.x
-  - condition: bitnami.redis.enabled
+  - condition: redis.deployment.enabled
     name: redis
     repository: https://charts.bitnami.com/bitnami
     tags:
@@ -20,7 +20,7 @@ dependencies:
       - keyvalue
       - database
     version: 19.x.x
-  - condition: bitnami.milvus.enabled
+  - condition: milvus.deployment.enabled
     name: milvus
     repository: https://charts.bitnami.com/bitnami
     tags:
@@ -28,7 +28,7 @@ dependencies:
       - embedding
       - database
     version: 8.x.x
-  - condition: bitnami.prometheus.enabled
+  - condition: prometheus.deployment.enabled
     name: prometheus
     repository: https://charts.bitnami.com/bitnami
     tags:
@@ -36,7 +36,7 @@ dependencies:
       - metrics
       - alert
     version: 1.x.x
-  - condition: bitnami.grafana.enabled
+  - condition: grafana.deployment.enabled
     name: grafana
     repository: https://charts.bitnami.com/bitnami
     tags:

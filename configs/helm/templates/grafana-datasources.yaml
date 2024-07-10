@@ -1,4 +1,4 @@
-{{- if .Values.bitnami.grafana.enabled -}}
+{{- if .Values.grafana.deployment.enabled -}}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -7,7 +7,7 @@ metadata:
     {{- include "helpers.labels" . | nindent 4 }}
 type: Opaque
 data:
-  {{- if .Values.bitnami.prometheus.enabled }}
+  {{- if .Values.prometheus.deployment.enabled }}
   prometheus.ini: {{ include "prometheus.ini" . | b64enc | quote }}
   {{- end }}
 {{- end }}

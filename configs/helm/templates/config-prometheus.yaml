@@ -1,0 +1,52 @@
+{{- if and .Values.prometheus.deployment.enabled .Values.prometheus.server.existingConfigmap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helpers.fullname" . }}-prometheus-configuration
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+data:
+  {{ default "prometheus.yaml" .Values.prometheus.server.existingConfigmapKey }}: |
+    global:
+      {{- if .Values.prometheus.server.scrapeInterval }}
+      scrape_interval: {{ .Values.prometheus.server.scrapeInterval }}
+      {{- end }}
+      {{- if .Values.prometheus.server.scrapeTimeout }}
+      scrape_timeout: {{ .Values.prometheus.server.scrapeTimeout }}
+      {{- end }}
+      {{- if .Values.prometheus.server.evaluationInterval }}
+      evaluation_interval: {{ .Values.prometheus.server.evaluationInterval }}
+      {{- end }}
+      external_labels:
+        monitor: {{ template "helpers.fullname" . }}-prometheus
+        {{- if .Values.prometheus.server.externalLabels }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.prometheus.server.externalLabels "context" $) | nindent 8 }}
+        {{- end }}
+    {{- if .Values.prometheus.server.remoteWrite }}
+    remote_write: {{- include "common.tplvalues.render" (dict "value" .Values.prometheus.server.remoteWrite "context" $) | nindent 8 }}
+    {{- end }}
+    scrape_configs:
+      - job_name: prometheus
+        {{- include "prometheus.scrape_config" (dict "component" "server" "context" $) | nindent 8 }}
+      {{- if .Values.prometheus.alertmanager.enabled }}
+      - job_name: alertmanager
+        {{- include "prometheus.scrape_config" (dict "component" "alertmanager" "context" $) | nindent 8 }}
+      {{- end }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "mysql" "component" "metrics" "context" $)) "context" $) | nindent 6 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "redis" "component" "metrics" "context" $)) "context" $) | nindent 6 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "milvus" "component" "data-coordinator|data-node|index-coordinator|index-node|proxy|query-coordinator|query-node|root-coordinator" "context" $)) "context" $) | nindent 6 }}
+    {{- if or .Values.prometheus.alertmanager.enabled .Values.prometheus.server.alertingEndpoints}}
+    alerting:
+      alertmanagers:
+        {{- if .Values.prometheus.server.alertingEndpoints }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.prometheus.server.alertingEndpoints "context" $) | nindent 8 }}
+        {{- end }}
+        - scheme: HTTP
+          static_configs:
+            - targets: [ "{{ printf "%s.%s.svc.%s:%d" (include "prometheus.alertmanager.fullname" .) (include "common.names.namespace" .) .Values.prometheus.clusterDomain (int .Values.prometheus.alertmanager.service.ports.http) }}" ]
+    rule_files:
+      - rules.yaml
+    {{- end }}
+  rules.yaml: |
+    {}
+{{- end }}

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "helpers.fullname" . }}-runtime-properties
+  name: {{ include "helpers.fullname" . }}-runtime-configuration
   labels:
     {{- include "helpers.labels" . | nindent 4 }}
 data:
