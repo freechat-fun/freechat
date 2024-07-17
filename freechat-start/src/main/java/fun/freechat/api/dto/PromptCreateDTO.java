@@ -7,6 +7,7 @@ import fun.freechat.model.PromptInfo;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.enums.Visibility;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -73,5 +74,26 @@ public class PromptCreateDTO {
             promptInfo.setType(PromptType.STRING.text());
         }
         return Triple.of(promptInfo, getTags(), getAiModels());
+    }
+
+    public static PromptCreateDTO from(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
+        if (Objects.isNull(promptInfoTriple) || Objects.isNull(promptInfoTriple.getLeft())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prompt info should not be null.");
+        }
+        PromptInfo promptInfo = promptInfoTriple.getLeft();
+        PromptCreateDTO dto =CommonUtils.convert(promptInfo, PromptCreateDTO.class);
+        if (PromptType.CHAT == PromptType.of(promptInfo.getType())) {
+            try {
+                ChatPromptContent promptTemplate = InfoUtils.defaultMapper().readValue(
+                        promptInfo.getTemplate(), ChatPromptContent.class);
+                dto.setChatTemplate(ChatPromptContentDTO.from(promptTemplate));
+            } catch (JsonProcessingException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid template: " + promptInfo.getTemplate());
+            }
+        }
+        dto.setTags(promptInfoTriple.getMiddle());
+        dto.setAiModels(promptInfoTriple.getRight());
+
+        return dto;
     }
 }

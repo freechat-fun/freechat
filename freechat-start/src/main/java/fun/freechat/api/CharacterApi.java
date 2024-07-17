@@ -1,32 +1,44 @@
 package fun.freechat.api;
 
 import fun.freechat.api.dto.*;
+import fun.freechat.api.dto.conf.CharacterBackendConfigurationDTO;
+import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.ConfigUtils;
 import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.PromptTask;
+import fun.freechat.model.User;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
+import fun.freechat.service.prompt.PromptService;
+import fun.freechat.service.prompt.PromptTaskService;
 import fun.freechat.service.stats.InteractiveStatsService;
 import fun.freechat.service.util.StoreUtils;
+import fun.freechat.util.AppMetaUtils;
+import fun.freechat.util.TarUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,13 +47,21 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static fun.freechat.api.util.ConfigUtils.*;
 import static fun.freechat.api.util.FileUtils.PRIVATE_DIR;
 import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
+import static org.yaml.snakeyaml.nodes.Tag.MAP;
 
 @Controller
 @Tag(name = "Character")
@@ -68,6 +88,10 @@ public class CharacterApi {
     private InteractiveStatsService interactiveStatsService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private PromptService promptService;
+    @Autowired
+    private PromptTaskService promptTaskService;
 
     private String newUniqueName(String desired) {
         int index = 0;
@@ -930,5 +954,161 @@ public class CharacterApi {
     public String createName(
             @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {
         return newUniqueName(desired);
+    }
+
+    @Operation(
+            operationId = "exportCharacter",
+            summary = "Export Character Configuration",
+            description = "Export character configuration in tar.gz format, including settings, documents and pictures."
+    )
+    @GetMapping(value = "/export/{characterId}", produces = "application/gzip")
+    public void export(
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
+            Long characterId,
+            HttpServletResponse response) {
+        var characterTriple = characterService.details(characterId, AccountUtils.currentUser());
+        CharacterCreateDTO characterCreateDTO = CharacterCreateDTO.from(
+                Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
+
+        List<CharacterBackend> backends = characterTriple.getRight();
+        List<CharacterBackendConfigurationDTO> characterBackendConfList = Optional.ofNullable(characterTriple.getRight())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(backend -> {
+                    CharacterBackendDTO backendDTO = CharacterBackendDTO.from(backend);
+
+                    User currentUser = AccountUtils.currentUser();
+                    PromptCreateDTO chatPromptCreateDTO = Optional.ofNullable(backend.getChatPromptTaskId())
+                            .map(promptTaskService::get)
+                            .map(PromptTask::getPromptUid)
+                            .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
+                            .map(promptId -> promptService.details(promptId, currentUser))
+                            .map(PromptCreateDTO::from)
+                            .orElse(null);
+                    PromptCreateDTO greetingPromptCreateDTO = Optional.ofNullable(backend.getGreetingPromptTaskId())
+                            .map(promptTaskService::get)
+                            .map(PromptTask::getPromptUid)
+                            .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
+                            .map(promptId -> promptService.details(promptId, currentUser))
+                            .map(PromptCreateDTO::from)
+                            .orElse(null);
+
+                    return CharacterBackendConfigurationDTO.builder()
+                            .backend(backendDTO)
+                            .chatPrompt(chatPromptCreateDTO)
+                            .greetingPrompt(greetingPromptCreateDTO)
+                            .build();
+                })
+                .toList();
+
+        CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.builder()
+                .character(characterCreateDTO)
+                .backends(characterBackendConfList)
+                .build();
+
+        LinkedList<Triple<String, InputStream, Long>> entries = new LinkedList<>();
+
+        // manifest.yml
+        String manifestFilename = "manifest.yml";
+        byte[] manifestContent = new ManifestInfo().toYaml().getBytes(StandardCharsets.UTF_8);
+        entries.add(Triple.of(manifestFilename,
+                new ByteArrayInputStream(manifestContent),
+                (long) manifestContent.length));
+
+        // character.json
+        String characterFilename = "character.json";
+        String characterJson = characterConf.toJson();
+        byte[] characterContent = characterJson.getBytes(StandardCharsets.UTF_8);
+        entries.add(Triple.of(characterFilename,
+                new ByteArrayInputStream(characterContent),
+                (long) characterContent.length));
+
+        String characterUid = characterService.getUid(characterId);
+        if (StringUtils.isNotBlank(characterUid)) {
+            // documents
+            entries.addAll(documents(characterUid));
+
+            // pictures
+            entries.addAll(pictures(characterUid));
+
+            // avatars
+            entries.addAll(avatars(characterUid));
+        }
+
+        String encodedFilename = URLEncoder.encode(
+                characterConf.getCharacter().getName() + ".tar.gz", StandardCharsets.UTF_8);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + encodedFilename + "\"; filename*=UTF-8''" + encodedFilename);
+        response.setContentType("application/gzip");
+
+        try {
+            TarUtils.compressToGzip(entries, response.getOutputStream());
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
+        }
+    }
+
+    @Data
+    static class ManifestInfo {
+        private String apiVersion;
+        private String appVersion;
+        private String appUrl;
+
+        ManifestInfo() {
+            apiVersion = "v1";
+            appVersion = AppMetaUtils.getVersion();
+            appUrl = AppMetaUtils.getUrl();
+        }
+
+        public String toYaml() {
+            DumperOptions options = new DumperOptions();
+            options.setIndent(2);
+            options.setPrettyFlow(true);
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+            Representer representer = new Representer(options);
+            representer.getPropertyUtils().setSkipMissingProperties(true);
+            representer.addClassTag(ManifestInfo.class, MAP);
+
+            Yaml yaml = new Yaml(representer);
+            return yaml.dump(this);
+        }
+    }
+
+    private List<Triple<String, InputStream, Long>> documents(String characterUid) {
+        String dir = PRIVATE_DIR + AccountUtils.currentUser().getUserId() + "/character/document/" + characterUid;
+        return listFileStreams("documents", dir);
+    }
+
+    private List<Triple<String, InputStream, Long>> pictures(String characterUid) {
+        String dir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture/" + characterUid;
+        return listFileStreams("pictures", dir);
+    }
+
+    private List<Triple<String, InputStream, Long>> avatars(String characterUid) {
+        String dir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar/" + characterUid;
+        return listFileStreams("avatars", dir);
+    }
+
+    private static List<Triple<String, InputStream, Long>> listFileStreams(String prefix, String dir) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            return fileStore.list(dir, null, false)
+                    .stream()
+                    .map(path -> {
+                        try {
+                            String filePath = prefix + path.substring(dir.length());
+                            Long fileSize = fileStore.size(path);
+                            InputStream fileStream = fileStore.read(path);
+                            return Triple.of(filePath, fileStream, fileSize);
+                        } catch (IOException e) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .toList();
+        } catch (IOException e) {
+            return Collections.emptyList();
+        }
     }
 }

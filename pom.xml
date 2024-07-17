@@ -21,7 +21,10 @@
         <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
         <commons-collections4.version>4.4</commons-collections4.version>
+        <commons-compress.version>1.26.2</commons-compress.version>
         <commons-io.version>2.15.1</commons-io.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+
         <redisson.version>3.32.0</redisson.version>
         <objenesis.version>3.3</objenesis.version>
         <swagger-parser.version>2.1.20</swagger-parser.version>
@@ -138,9 +141,21 @@
             </dependency>
 
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
             <!--misc-->

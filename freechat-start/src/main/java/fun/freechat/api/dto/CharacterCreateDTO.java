@@ -8,6 +8,8 @@ import fun.freechat.service.enums.Visibility;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
@@ -62,5 +64,14 @@ public class CharacterCreateDTO {
         characterInfo.setVisibility(Visibility.of(getVisibility()).text());
         characterInfo.setDraft(getDraft());
         return Pair.of(characterInfo, getTags());
+    }
+
+    public static CharacterCreateDTO from(Pair<CharacterInfo, List<String>> characterPair) {
+        if (Objects.isNull(characterPair) || Objects.isNull(characterPair.getLeft())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Character info should not be null.");
+        }
+        CharacterCreateDTO dto = CommonUtils.convert(characterPair.getLeft(), CharacterCreateDTO.class);
+        dto.setTags(characterPair.getRight());
+        return dto;
     }
 }
