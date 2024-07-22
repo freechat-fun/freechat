@@ -13,7 +13,6 @@ import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -1551,40 +1550,7 @@ export class ObjectAgentApi {
 import { ObservableAppConfigForAdminApi } from "./ObservableAPI.js";
 import { AppConfigForAdminApiRequestFactory, AppConfigForAdminApiResponseProcessor} from "../apis/AppConfigForAdminApi.js";
 
-export interface AppConfigForAdminApiGetAppConfigRequest {
-    /**
-     * Configuration name
-     * @type string
-     * @memberof AppConfigForAdminApigetAppConfig
-     */
-    name: string
-}
-
-export interface AppConfigForAdminApiGetAppConfigByVersionRequest {
-    /**
-     * Configuration name
-     * @type string
-     * @memberof AppConfigForAdminApigetAppConfigByVersion
-     */
-    name: string
-    /**
-     * Configuration version
-     * @type number
-     * @memberof AppConfigForAdminApigetAppConfigByVersion
-     */
-    version: number
-}
-
-export interface AppConfigForAdminApiListAppConfigNamesRequest {
-}
-
-export interface AppConfigForAdminApiPublishAppConfigRequest {
-    /**
-     * Configuration information
-     * @type AppConfigCreateDTO
-     * @memberof AppConfigForAdminApipublishAppConfig
-     */
-    appConfigCreateDTO: AppConfigCreateDTO
+export interface AppConfigForAdminApiGetAppConfigsRequest {
 }
 
 export class ObjectAppConfigForAdminApi {
@@ -1595,75 +1561,21 @@ export class ObjectAppConfigForAdminApi {
     }
 
     /**
-     * Get the latest configuration information of the application by name.
-     * Get Configuration
+     * Get all configuration information of the application.
+     * Get Configurations
      * @param param the request object
      */
-    public getAppConfigWithHttpInfo(param: AppConfigForAdminApiGetAppConfigRequest, options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
-        return this.api.getAppConfigWithHttpInfo(param.name,  options).toPromise();
+    public getAppConfigsWithHttpInfo(param: AppConfigForAdminApiGetAppConfigsRequest = {}, options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
+        return this.api.getAppConfigsWithHttpInfo( options).toPromise();
     }
 
     /**
-     * Get the latest configuration information of the application by name.
-     * Get Configuration
+     * Get all configuration information of the application.
+     * Get Configurations
      * @param param the request object
      */
-    public getAppConfig(param: AppConfigForAdminApiGetAppConfigRequest, options?: Configuration): Promise<AppConfigInfoDTO> {
-        return this.api.getAppConfig(param.name,  options).toPromise();
-    }
-
-    /**
-     * Get the configuration information of the application by name and version.
-     * Get Specified Version of Configuration
-     * @param param the request object
-     */
-    public getAppConfigByVersionWithHttpInfo(param: AppConfigForAdminApiGetAppConfigByVersionRequest, options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
-        return this.api.getAppConfigByVersionWithHttpInfo(param.name, param.version,  options).toPromise();
-    }
-
-    /**
-     * Get the configuration information of the application by name and version.
-     * Get Specified Version of Configuration
-     * @param param the request object
-     */
-    public getAppConfigByVersion(param: AppConfigForAdminApiGetAppConfigByVersionRequest, options?: Configuration): Promise<AppConfigInfoDTO> {
-        return this.api.getAppConfigByVersion(param.name, param.version,  options).toPromise();
-    }
-
-    /**
-     * List all application configuration names.
-     * List Configuration Names
-     * @param param the request object
-     */
-    public listAppConfigNamesWithHttpInfo(param: AppConfigForAdminApiListAppConfigNamesRequest = {}, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.listAppConfigNamesWithHttpInfo( options).toPromise();
-    }
-
-    /**
-     * List all application configuration names.
-     * List Configuration Names
-     * @param param the request object
-     */
-    public listAppConfigNames(param: AppConfigForAdminApiListAppConfigNamesRequest = {}, options?: Configuration): Promise<Array<string>> {
-        return this.api.listAppConfigNames( options).toPromise();
-    }
-
-    /**
-     * Publish application configuration, return configuration version.
-     * Publish Configuration
-     * @param param the request object
-     */
-    public publishAppConfigWithHttpInfo(param: AppConfigForAdminApiPublishAppConfigRequest, options?: Configuration): Promise<HttpInfo<number>> {
-        return this.api.publishAppConfigWithHttpInfo(param.appConfigCreateDTO,  options).toPromise();
-    }
-
-    /**
-     * Publish application configuration, return configuration version.
-     * Publish Configuration
-     * @param param the request object
-     */
-    public publishAppConfig(param: AppConfigForAdminApiPublishAppConfigRequest, options?: Configuration): Promise<number> {
-        return this.api.publishAppConfig(param.appConfigCreateDTO,  options).toPromise();
+    public getAppConfigs(param: AppConfigForAdminApiGetAppConfigsRequest = {}, options?: Configuration): Promise<AppConfigInfoDTO> {
+        return this.api.getAppConfigs( options).toPromise();
     }
 
 }
@@ -1842,6 +1754,15 @@ export interface CharacterApiExistsCharacterNameRequest {
     name: string
 }
 
+export interface CharacterApiExportCharacterRequest {
+    /**
+     * Character identifier
+     * @type number
+     * @memberof CharacterApiexportCharacter
+     */
+    characterId: number
+}
+
 export interface CharacterApiGetCharacterDetailsRequest {
     /**
      * CharacterId to be obtained
@@ -1876,6 +1797,15 @@ export interface CharacterApiGetDefaultCharacterBackendRequest {
      * @memberof CharacterApigetDefaultCharacterBackend
      */
     characterId: number
+}
+
+export interface CharacterApiImportCharacterRequest {
+    /**
+     * Character avatar
+     * @type HttpFile
+     * @memberof CharacterApiimportCharacter
+     */
+    file: HttpFile
 }
 
 export interface CharacterApiListCharacterBackendIdsRequest {
@@ -2273,6 +2203,24 @@ export class ObjectCharacterApi {
     }
 
     /**
+     * Export character configuration in tar.gz format, including settings, documents and pictures.
+     * Export Character Configuration
+     * @param param the request object
+     */
+    public exportCharacterWithHttpInfo(param: CharacterApiExportCharacterRequest, options?: Configuration): Promise<HttpInfo<void>> {
+        return this.api.exportCharacterWithHttpInfo(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * Export character configuration in tar.gz format, including settings, documents and pictures.
+     * Export Character Configuration
+     * @param param the request object
+     */
+    public exportCharacter(param: CharacterApiExportCharacterRequest, options?: Configuration): Promise<void> {
+        return this.api.exportCharacter(param.characterId,  options).toPromise();
+    }
+
+    /**
      * Get character detailed information.
      * Get Character Details
      * @param param the request object
@@ -2342,6 +2290,24 @@ export class ObjectCharacterApi {
      */
     public getDefaultCharacterBackend(param: CharacterApiGetDefaultCharacterBackendRequest, options?: Configuration): Promise<CharacterBackendDetailsDTO> {
         return this.api.getDefaultCharacterBackend(param.characterId,  options).toPromise();
+    }
+
+    /**
+     * Export character configuration from a tar.gz file.
+     * Import Character Configuration
+     * @param param the request object
+     */
+    public importCharacterWithHttpInfo(param: CharacterApiImportCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
+        return this.api.importCharacterWithHttpInfo(param.file,  options).toPromise();
+    }
+
+    /**
+     * Export character configuration from a tar.gz file.
+     * Import Character Configuration
+     * @param param the request object
+     */
+    public importCharacter(param: CharacterApiImportCharacterRequest, options?: Configuration): Promise<number> {
+        return this.api.importCharacter(param.file,  options).toPromise();
     }
 
     /**

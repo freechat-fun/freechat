@@ -65,31 +65,31 @@ info:
     \nAs a cloud-native application, the services FreeChat relies on are obtained\
     \ and deployed to your cluster through the helm repository.\n\nIf you prefer cloud\
     \ services with SLA (Service Level Agreement) guarantees, simply make the relevant\
-    \ settings in `configs/helm/values-private.yaml`:\n```yaml\nbitnami:\n  mysql:\n\
-    \    enabled: false\n  redis:\n    enabled: false\n  milvus:\n    enabled: false\n\
-    \nmysql:\n  url: <your mysql url>\n  auth:\n    rootPassword: <your mysql root\
-    \ password>\n    username: <your mysql username>\n    password: <your mysql password\
-    \ for the username>\n\nredis:\n  url: <your redis url>\n  auth:\n    password:\
-    \ <your redis password>\n\n\nmilvus:\n  url: <your milvus url>\n  milvus:\n  \
-    \  auth:\n      token: <your milvus api-key>\n```\n\nWith this, FreeChat will\
-    \ not automatically install these services, but rather use the configuration information\
-    \ to connect directly.\n\nIf your Kubernetes cluster does not have a standalone\
-    \ monitoring system, you can enable the following switch. This will install Prometheus\
-    \ and Grafana services in the same namespace, dedicated to monitoring the status\
-    \ of the services under the FreeChat application:\n```yaml\nbitnami:\n  prometheus:\n\
-    \    enabled: true\n  grafana:\n    enabled: true\n```\n\n### Running Locally\n\
-    You can also run FreeChat locally. Currently supported on MacOS and Linux (although\
-    \ only tested on MacOS). You need to install the Docker toolset and have a network\
-    \ that can access [Docker Hub](https://hub.docker.com/).\n\nOnce ready, enter\
-    \ the `scripts/` directory and run `local-run.sh`, which will download and run\
-    \ the necessary docker containers. After a successful startup, you can access\
-    \ `http://localhost` via a browser to see the locally running freechat.fun. The\
-    \ built-in administrator username and password are \"admin:freechat\". Use `local-run.sh\
-    \ --help` to view the supported options of the script. Good luck!\n\n### Running\
-    \ in an IDE\nTo run FreeChat in an IDE, you need to start all dependent services\
-    \ first but do not need to run the container for the FreeChat application itself.\
-    \ You can execute the `scripts/local-deps.sh` script to start services like `MySQL`,\
-    \ `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
+    \ settings in `configs/helm/values-private.yaml`:\n```yaml\nmysql:\n  deployment:\n\
+    \    enabled: false\n  url: <your mysql url>\n  auth:\n    rootPassword: <your\
+    \ mysql root password>\n    username: <your mysql username>\n    password: <your\
+    \ mysql password for the username>\n\nredis:\n  deployment:\n    enabled: false\n\
+    \  url: <your redis url>\n  auth:\n    password: <your redis password>\n\n\nmilvus:\n\
+    \  deployment:\n    enabled: false\n  url: <your milvus url>\n  milvus:\n    auth:\n\
+    \      token: <your milvus api-key>\n```\n\nWith this, FreeChat will not automatically\
+    \ install these services, but rather use the configuration information to connect\
+    \ directly.\n\nIf your Kubernetes cluster does not have a standalone monitoring\
+    \ system, you can enable the following switch. This will install Prometheus and\
+    \ Grafana services in the same namespace, dedicated to monitoring the status of\
+    \ the services under the FreeChat application:\n```yaml\nprometheus:\n  deployment:\n\
+    \    enabled: true\ngrafana:\n  deployment:\n    enabled: true\n```\n\n### Running\
+    \ Locally\nYou can also run FreeChat locally. Currently supported on MacOS and\
+    \ Linux (although only tested on MacOS). You need to install the Docker toolset\
+    \ and have a network that can access [Docker Hub](https://hub.docker.com/).\n\n\
+    Once ready, enter the `scripts/` directory and run `local-run.sh`, which will\
+    \ download and run the necessary docker containers. After a successful startup,\
+    \ you can access `http://localhost` via a browser to see the locally running freechat.fun.\
+    \ The built-in administrator username and password are \"admin:freechat\". Use\
+    \ `local-run.sh --help` to view the supported options of the script. Good luck!\n\
+    \n### Running in an IDE\nTo run FreeChat in an IDE, you need to start all dependent\
+    \ services first but do not need to run the container for the FreeChat application\
+    \ itself. You can execute the `scripts/local-deps.sh` script to start services\
+    \ like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
     Make sure you have set the following startup parameters:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
     \ \\\n-DAPP_HOME=local-data/freechat \\\n-Dspring.profiles.active=local\n```\n\
     \n### Use SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
@@ -123,26 +123,27 @@ info:
     \n## System Dependencies\n| | Projects\n| ---- | ----\n| Application Framework\
     \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
     \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
-    \ [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
-    \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| Monitoring & Alerting\
-    \ | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)\n| OpenAPI\
-    \ Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
-    \ [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)\n\
-    \n## Collaboration\n### Application Integration\nThe FreeChat system is entirely\
-    \ oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is\
-    \ developed using its TypeScript SDK and hardly depends on private interfaces.\
-    \ You can use these online interfaces to develop your own applications or sites,\
-    \ making them fit your preferences. Currently, FreeChat is completely free with\
-    \ no paid plans (after all, users use their own API Key to call LLM services).\n\
-    \n### Model Integration\nFreeChat aims to explore AI virtual character technology\
-    \ with anthropomorphic characteristics. So far, it supports model services from\
-    \ OpenAI and DashScope is also expected to be supported soon). However, we are\
-    \ more interested in supporting models that are under research and can endow AI\
-    \ with more personality traits. If you are researching this area and hope FreeChat\
-    \ supports your model, please contact us. We look forward to AI technology helping\
-    \ people create their own \"soul mates\" in the future.\n"
+    \ [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n\
+    | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/),\
+    \ [Milvus](https://milvus.io/)\n| Monitoring & Alerting | [Prometheus](https://prometheus.io/),\
+    \ [Grafana](https://grafana.com/)\n| OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/),\
+    \ [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI\
+    \ Explorer](https://github.com/Authress-Engineering/openapi-explorer)\n\n## Collaboration\n\
+    ### Application Integration\nThe FreeChat system is entirely oriented towards\
+    \ Open APIs. The site [freechat.fun](https://freechat.fun) is developed using\
+    \ its TypeScript SDK and hardly depends on private interfaces. You can use these\
+    \ online interfaces to develop your own applications or sites, making them fit\
+    \ your preferences. Currently, FreeChat is completely free with no paid plans\
+    \ (after all, users use their own API Key to call LLM services).\n\n### Model\
+    \ Integration\nFreeChat aims to explore AI virtual character technology with anthropomorphic\
+    \ characteristics. So far, it supports model services from OpenAI GPT and Alibaba\
+    \ Qwen series models. However, we are more interested in supporting models that\
+    \ are under research and can endow AI with more personality traits. If you are\
+    \ researching this area and hope FreeChat supports your model, please contact\
+    \ us. We look forward to AI technology helping people create their own \"soul\
+    \ mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 1.2.0
+  version: 1.3.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -3002,6 +3003,30 @@ paths:
       - Character
       x-accepts:
       - application/json
+  /api/v1/character/import:
+    post:
+      description: Export character configuration from a tar.gz file.
+      operationId: importCharacter
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/importCharacter_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Import Character Configuration
+      tags:
+      - Character
+      x-content-type: multipart/form-data
+      x-accepts:
+      - application/json
   /api/v1/character/document/{characterId}:
     post:
       description: Upload a document of the character.
@@ -3306,7 +3331,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/uploadCharacterAvatar_request'
+              $ref: '#/components/schemas/importCharacter_request'
         required: true
       responses:
         "200":
@@ -3857,49 +3882,6 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - text/plain
-  /api/v1/admin/app/configs:
-    post:
-      description: List all application configuration names.
-      operationId: listAppConfigNames
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  type: string
-                type: array
-          description: OK
-      summary: List Configuration Names
-      tags:
-      - App Config (for admin)
-      x-accepts:
-      - application/json
-  /api/v1/admin/app/config:
-    post:
-      description: "Publish application configuration, return configuration version."
-      operationId: publishAppConfig
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AppConfigCreateDTO'
-        description: Configuration information
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                format: int32
-                type: integer
-          description: OK
-      summary: Publish Configuration
-      tags:
-      - App Config (for admin)
-      x-content-type: application/json
-      x-accepts:
-      - application/json
   /api/v1/account/token:
     post:
       description: "Create a timed API Token, valid for {duration} seconds."
@@ -5165,6 +5147,29 @@ paths:
       - Character
       x-accepts:
       - application/json
+  /api/v1/character/export/{characterId}:
+    get:
+      description: "Export character configuration in tar.gz format, including settings,\
+        \ documents and pictures."
+      operationId: exportCharacter
+      parameters:
+      - description: Character identifier
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: OK
+      summary: Export Character Configuration
+      tags:
+      - Character
+      x-accepts:
+      - application/json
   /api/v1/character/exists/name/{name}:
     get:
       description: Check if the character name already exists.
@@ -5854,20 +5859,10 @@ paths:
       - App Meta (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/app/config/{name}:
+  /api/v1/admin/app/configs:
     get:
-      description: Get the latest configuration information of the application by
-        name.
-      operationId: getAppConfig
-      parameters:
-      - description: Configuration name
-        explode: false
-        in: path
-        name: name
-        required: true
-        schema:
-          type: string
-        style: simple
+      description: Get all configuration information of the application.
+      operationId: getAppConfigs
       responses:
         "200":
           content:
@@ -5875,42 +5870,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AppConfigInfoDTO'
           description: OK
-      summary: Get Configuration
-      tags:
-      - App Config (for admin)
-      x-accepts:
-      - application/json
-  /api/v1/admin/app/config/{name}/{version}:
-    get:
-      description: Get the configuration information of the application by name and
-        version.
-      operationId: getAppConfigByVersion
-      parameters:
-      - description: Configuration name
-        explode: false
-        in: path
-        name: name
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Configuration version
-        explode: false
-        in: path
-        name: version
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppConfigInfoDTO'
-          description: OK
-      summary: Get Specified Version of Configuration
+      summary: Get Configurations
       tags:
       - App Config (for admin)
       x-accepts:
@@ -9159,25 +9119,6 @@ components:
           description: Draft content
           type: string
       type: object
-    AppConfigCreateDTO:
-      description: Configuration creation information
-      example:
-        name: name
-        format: format
-        content: content
-      properties:
-        name:
-          description: Configuration name
-          type: string
-        format:
-          description: "Configuration format: kv | json | yaml"
-          type: string
-        content:
-          description: Configuration content
-          type: string
-      required:
-      - name
-      type: object
     HotTagDTO:
       description: Hot tag
       example:
@@ -10307,27 +10248,18 @@ components:
       description: Configuration information
       example:
         requestId: requestId
-        name: name
-        format: format
-        version: 0
-        content: content
+        properties:
+          key: "{}"
       properties:
         requestId:
           description: Request identifier
           type: string
-        name:
-          description: Configuration name
-          type: string
-        format:
-          description: "Configuration format: kv | json | yaml"
-          type: string
-        content:
+        properties:
+          additionalProperties:
+            description: Configuration content
+            type: object
           description: Configuration content
-          type: string
-        version:
-          description: Configuration version
-          format: int32
-          type: integer
+          type: object
       type: object
     uploadCharacterPicture_request:
       properties:
@@ -10338,19 +10270,19 @@ components:
       required:
       - file
       type: object
-    uploadCharacterDocument_request:
+    importCharacter_request:
       properties:
         file:
-          description: Character document
+          description: Character avatar
           format: binary
           type: string
       required:
       - file
       type: object
-    uploadCharacterAvatar_request:
+    uploadCharacterDocument_request:
       properties:
         file:
-          description: Character avatar
+          description: Character document
           format: binary
           type: string
       required:

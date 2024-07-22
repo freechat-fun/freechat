@@ -14,8 +14,8 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.util.TestResourceUtils.bodyFrom;
-import static fun.freechat.util.TestResourceUtils.getResourceKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -103,8 +103,8 @@ public class CharacterIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        String key1 = getResourceKey(url1);
-        String key2 = getResourceKey(url2);
+        String key1 = getKeyFromUrl(url1);
+        String key2 = getKeyFromUrl(url2);
 
         testClient.delete().uri("/api/v1/character/picture/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
@@ -188,8 +188,8 @@ public class CharacterIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        String key1 = getResourceKey(url1);
-        String key2 = getResourceKey(url2);
+        String key1 = getKeyFromUrl(url1);
+        String key2 = getKeyFromUrl(url2);
 
         testClient.delete().uri("/api/v1/character/document/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)

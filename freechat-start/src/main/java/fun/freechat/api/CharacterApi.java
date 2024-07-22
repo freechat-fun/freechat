@@ -3,21 +3,18 @@ package fun.freechat.api;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.dto.conf.CharacterBackendConfigurationDTO;
 import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
-import fun.freechat.api.util.AccountUtils;
-import fun.freechat.api.util.ConfigUtils;
-import fun.freechat.api.util.FileUtils;
-import fun.freechat.model.CharacterBackend;
-import fun.freechat.model.CharacterInfo;
-import fun.freechat.model.PromptTask;
-import fun.freechat.model.User;
+import fun.freechat.api.util.*;
+import fun.freechat.model.*;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.InfoType;
+import fun.freechat.service.enums.SourceType;
 import fun.freechat.service.enums.StatsType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.prompt.PromptTaskService;
+import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.service.stats.InteractiveStatsService;
 import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.AppMetaUtils;
@@ -33,6 +30,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -56,11 +54,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fun.freechat.api.util.ConfigUtils.*;
-import static fun.freechat.api.util.FileUtils.PRIVATE_DIR;
-import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
+import static fun.freechat.api.util.FileUtils.*;
 import static org.yaml.snakeyaml.nodes.Tag.MAP;
 
 @Controller
@@ -68,6 +68,7 @@ import static org.yaml.snakeyaml.nodes.Tag.MAP;
 @RequestMapping("/api/v1/character")
 @ResponseBody
 @Validated
+@Slf4j
 @SuppressWarnings("unused")
 public class CharacterApi {
     @Value("${chat.memory.minMessageWindowSize:10}")
@@ -82,6 +83,10 @@ public class CharacterApi {
     private Integer maxLongTermMemoryWindowSize;
     @Value("${chat.memory.defaultLongTermMemoryWindowSize:5}")
     private Integer defaultLongTermMemoryWindowSize;
+    @Value("${chat.rag.defaultMaxSegmentSize}")
+    private Integer defaultMaxSegmentSize;
+    @Value("${chat.rag.defaultMaxOverlapSize}")
+    private Integer defaultMaxOverlapSize;
     @Autowired
     private CharacterService characterService;
     @Autowired
@@ -92,32 +97,8 @@ public class CharacterApi {
     private PromptService promptService;
     @Autowired
     private PromptTaskService promptTaskService;
-
-    private String newUniqueName(String desired) {
-        int index = 0;
-        String name =desired;
-        while (characterService.existsName(name, AccountUtils.currentUser())) {
-            index++;
-            name = desired + "-" + index;
-        }
-        return name;
-    }
-
-    private void resetCharacterInfo(CharacterInfo info, String parentUid) {
-        if (StringUtils.isNotBlank(parentUid)) {
-            info.setParentUid(parentUid);
-            info.setVisibility(Visibility.PRIVATE.text());
-        }
-        info.setName(newUniqueName(info.getName()));
-        info.setCharacterId(null);
-        info.setVersion(1);
-        info.setUserId(AccountUtils.currentUser().getUserId());
-    }
-
-    private void resetCharacterInfoPair(
-            Pair<CharacterInfo, List<String>> infoPair, String parentUid) {
-        resetCharacterInfo(infoPair.getLeft(), parentUid);
-    }
+    @Autowired
+    private RagTaskService ragTaskService;
 
     private void increaseReferCount(String characterUid) {
         interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
@@ -429,7 +410,7 @@ public class CharacterApi {
 
         var characterInfo = Pair.of(characterDetails.getLeft(), characterDetails.getMiddle());
         String characterUid = characterService.getUid(characterId);
-        resetCharacterInfoPair(characterInfo, characterUid);
+        CharacterUtils.resetCharacterInfoPair(characterInfo, characterUid);
         if (!characterService.create(characterInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
         }
@@ -953,7 +934,7 @@ public class CharacterApi {
     @GetMapping(value = "/create/name/{desired}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String createName(
             @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {
-        return newUniqueName(desired);
+        return CharacterUtils.newUniqueName(desired);
     }
 
     @Operation(
@@ -962,11 +943,13 @@ public class CharacterApi {
             description = "Export character configuration in tar.gz format, including settings, documents and pictures."
     )
     @GetMapping(value = "/export/{characterId}", produces = "application/gzip")
-    public void export(
+    public void exportCharacter(
             @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
             Long characterId,
             HttpServletResponse response) {
-        var characterTriple = characterService.details(characterId, AccountUtils.currentUser());
+        User currentUser = AccountUtils.currentUser();
+        String currentUserId = currentUser.getUserId();
+        var characterTriple = characterService.details(characterId, currentUser);
         CharacterCreateDTO characterCreateDTO = CharacterCreateDTO.from(
                 Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
 
@@ -977,26 +960,38 @@ public class CharacterApi {
                 .map(backend -> {
                     CharacterBackendDTO backendDTO = CharacterBackendDTO.from(backend);
 
-                    User currentUser = AccountUtils.currentUser();
-                    PromptCreateDTO chatPromptCreateDTO = Optional.ofNullable(backend.getChatPromptTaskId())
-                            .map(promptTaskService::get)
-                            .map(PromptTask::getPromptUid)
-                            .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
-                            .map(promptId -> promptService.details(promptId, currentUser))
-                            .map(PromptCreateDTO::from)
-                            .orElse(null);
-                    PromptCreateDTO greetingPromptCreateDTO = Optional.ofNullable(backend.getGreetingPromptTaskId())
-                            .map(promptTaskService::get)
+                    PromptTask chatPromptTask = Objects.nonNull(backend.getChatPromptTaskId()) ?
+                            promptTaskService.get(backend.getChatPromptTaskId()) : null;
+
+                    PromptCreateDTO chatPromptCreateDTO = Optional.ofNullable(chatPromptTask)
                             .map(PromptTask::getPromptUid)
                             .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
                             .map(promptId -> promptService.details(promptId, currentUser))
                             .map(PromptCreateDTO::from)
                             .orElse(null);
 
+                    PromptTaskDTO chatPromptTaskDTO = Objects.nonNull(chatPromptTask) ?
+                            PromptTaskDTO.from(chatPromptTask.withPromptUid(null)) : null;
+
+                    PromptTask greetingPromptTask = Objects.nonNull(backend.getGreetingPromptTaskId()) ?
+                            promptTaskService.get(backend.getGreetingPromptTaskId()) : null;
+
+                    PromptCreateDTO greetingPromptCreateDTO = Optional.ofNullable(greetingPromptTask)
+                            .map(PromptTask::getPromptUid)
+                            .map(promptUid -> promptService.getLatestIdByUid(promptUid, currentUser))
+                            .map(promptId -> promptService.details(promptId, currentUser))
+                            .map(PromptCreateDTO::from)
+                            .orElse(null);
+
+                    PromptTaskDTO greetingPromptTaskDTO = Objects.nonNull(greetingPromptTask) ?
+                            PromptTaskDTO.from(greetingPromptTask.withPromptUid(null)) : null;
+
                     return CharacterBackendConfigurationDTO.builder()
                             .backend(backendDTO)
                             .chatPrompt(chatPromptCreateDTO)
+                            .chatPromptTask(chatPromptTaskDTO)
                             .greetingPrompt(greetingPromptCreateDTO)
+                            .greetingPromptTask(greetingPromptTaskDTO)
                             .build();
                 })
                 .toList();
@@ -1026,13 +1021,14 @@ public class CharacterApi {
         String characterUid = characterService.getUid(characterId);
         if (StringUtils.isNotBlank(characterUid)) {
             // documents
-            entries.addAll(documents(characterUid));
+            entries.addAll(documents(currentUserId, characterUid));
 
             // pictures
-            entries.addAll(pictures(characterUid));
+            entries.addAll(pictures(currentUserId, characterUid));
 
             // avatars
-            entries.addAll(avatars(characterUid));
+            avatar(currentUserId, characterUid, characterTriple.getLeft().getAvatar())
+                    .ifPresent(entries::add);
         }
 
         String encodedFilename = URLEncoder.encode(
@@ -1042,52 +1038,41 @@ public class CharacterApi {
         response.setContentType("application/gzip");
 
         try {
-            TarUtils.compressToGzip(entries, response.getOutputStream());
+            TarUtils.compressGzip(entries, response.getOutputStream());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
         }
     }
 
-    @Data
-    static class ManifestInfo {
-        private String apiVersion;
-        private String appVersion;
-        private String appUrl;
-
-        ManifestInfo() {
-            apiVersion = "v1";
-            appVersion = AppMetaUtils.getVersion();
-            appUrl = AppMetaUtils.getUrl();
-        }
-
-        public String toYaml() {
-            DumperOptions options = new DumperOptions();
-            options.setIndent(2);
-            options.setPrettyFlow(true);
-            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-
-            Representer representer = new Representer(options);
-            representer.getPropertyUtils().setSkipMissingProperties(true);
-            representer.addClassTag(ManifestInfo.class, MAP);
-
-            Yaml yaml = new Yaml(representer);
-            return yaml.dump(this);
-        }
-    }
-
-    private List<Triple<String, InputStream, Long>> documents(String characterUid) {
-        String dir = PRIVATE_DIR + AccountUtils.currentUser().getUserId() + "/character/document/" + characterUid;
+    private static List<Triple<String, InputStream, Long>> documents(String userId, String characterUid) {
+        String dir = PRIVATE_DIR + userId + "/character/document/" + characterUid;
         return listFileStreams("documents", dir);
     }
 
-    private List<Triple<String, InputStream, Long>> pictures(String characterUid) {
-        String dir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture/" + characterUid;
+    private static List<Triple<String, InputStream, Long>> pictures(String userId, String characterUid) {
+        String dir = PUBLIC_DIR + userId + "/character/picture/" + characterUid;
         return listFileStreams("pictures", dir);
     }
 
-    private List<Triple<String, InputStream, Long>> avatars(String characterUid) {
-        String dir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/avatar/" + characterUid;
-        return listFileStreams("avatars", dir);
+    private Optional<Triple<String, InputStream, Long>> avatar(String userId, String characterUid, String avatarUrl) {
+        if (StringUtils.isBlank(avatarUrl)) {
+            return Optional.empty();
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String key = getKeyFromUrl(avatarUrl);
+        String path = FileUtils.getDefaultPublicPath(key);
+        String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterUid;
+        if (path.startsWith(dir) && fileStore.exists(path)) {
+            try {
+                String filePath = "avatar" + path.substring(dir.length());
+                Long fileSize = fileStore.size(path);
+                InputStream fileStream = fileStore.read(path);
+                return Optional.of(Triple.of(filePath, fileStream, fileSize));
+            } catch (IOException ignored) {
+            }
+        }
+        return Optional.empty();
     }
 
     private static List<Triple<String, InputStream, Long>> listFileStreams(String prefix, String dir) {
@@ -1109,6 +1094,244 @@ public class CharacterApi {
                     .toList();
         } catch (IOException e) {
             return Collections.emptyList();
+        }
+    }
+
+    @Operation(
+            operationId = "importCharacter",
+            summary = "Import Character Configuration",
+            description = "Export character configuration from a tar.gz file."
+    )
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Long importCharacter(
+            HttpServletRequest request,
+            @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
+            MultipartFile file) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+
+        try {
+            Path tempDir = Files.createTempDirectory(file.getOriginalFilename() + "-");
+            TarUtils.extractGzip(file.getInputStream(), tempDir);
+
+            handleManifestYaml(tempDir);
+            CharacterInfo characterInfo = handleCharacterJson(tempDir);
+            handleAvatar(request, userId, characterInfo, tempDir);
+            handlePictures(userId, characterInfo, tempDir);
+            handleDocuments(request, userId, characterInfo, tempDir);
+
+            cleanUpTempDirectory(tempDir);
+            return characterInfo.getCharacterId();
+        } catch (IOException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to import character configuration", e);
+        }
+    }
+
+    private void handleManifestYaml(Path confPath) throws IOException {
+        Path manifestFile = confPath.resolve("manifest.yml");
+        String manifestYaml = Files.readString(manifestFile, StandardCharsets.UTF_8);
+        ManifestInfo manifestInfo = ManifestInfo.fromYaml(manifestYaml);
+
+        if (!ManifestInfo.API_VERSION.equals(manifestInfo.getApiVersion())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incompatible character configuration");
+        }
+    }
+
+    private CharacterInfo handleCharacterJson(Path confPath) throws IOException {
+        Path characterFile = confPath.resolve("character.json");
+        String characterJson = Files.readString(characterFile, StandardCharsets.UTF_8);
+        CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.fromJson(characterJson);
+
+        // create character
+        CharacterCreateDTO characterCreateDTO = characterConf.getCharacter();
+        var characterPair = characterCreateDTO.toCharacterInfo();
+        CharacterUtils.resetCharacterInfoPair(characterPair, null);
+        if (!characterService.create(characterPair)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
+        }
+
+        CharacterInfo characterInfo = characterPair.getLeft();
+        String characterUid =characterInfo.getCharacterUid();
+
+        // create backends
+        for (CharacterBackendConfigurationDTO backendConf : characterConf.getBackends()) {
+            CharacterBackendDTO backendDTO = backendConf.getBackend();
+            if (Objects.isNull(backendDTO)) {
+                continue;
+            }
+
+            // create prompt tasks
+            String chatPromptTaskId = createPromptTask(
+                    backendConf.getChatPrompt(), backendConf.getChatPromptTask());
+            String greetingPromptTaskId = createPromptTask(
+                    backendConf.getGreetingPrompt(), backendConf.getGreetingPromptTask());
+
+            // add backend
+            backendDTO.setChatPromptTaskId(chatPromptTaskId);
+            backendDTO.setGreetingPromptTaskId(greetingPromptTaskId);
+            CharacterBackend backend = backendDTO.toCharacterBackend(characterUid);
+
+            characterService.addBackend(backend);
+        }
+
+        return characterInfo;
+    }
+
+    private void handleAvatar(HttpServletRequest request,
+                              String userId,
+                              CharacterInfo characterInfo,
+                              Path confPath) throws IOException {
+        Path srcPath = confPath.resolve("avatar");
+        String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterInfo.getCharacterUid();
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try (Stream<Path> stream = Files.list(srcPath)) {
+            stream.map(avatarPath -> {
+                        if (Files.isRegularFile(avatarPath)) {
+                            try {
+                                return FileUtils.move(avatarPath, fileStore, dir);
+                            } catch (IOException e) {
+                                log.warn("Failed to move file from {} to {}", avatarPath, dir, e);
+                            }
+                        }
+                        return null;
+                    })
+                    .filter(StringUtils::isNotBlank)
+                    .findAny()
+                    .map(avatarFile -> {
+                        String shareUrl = fileStore.getShareUrl(avatarFile, Integer.MAX_VALUE);
+                        if (StringUtils.isBlank(shareUrl)) {
+                            shareUrl = FileUtils.getDefaultPublicUrlForImage(request, avatarFile);
+                        }
+                        return shareUrl;
+                    })
+                    .ifPresent(avatarUrl -> {
+                        CharacterInfo newCharacterInfo = new CharacterInfo()
+                                .withCharacterId(characterInfo.getCharacterId())
+                                .withAvatar(avatarUrl);
+                        characterService.update(Pair.of(newCharacterInfo, null));
+                    });
+        }
+    }
+
+    private void handlePictures(String userId,
+                                CharacterInfo characterInfo,
+                                Path confPath) throws IOException {
+        Path srcPath = confPath.resolve("pictures");
+        String dir = PUBLIC_DIR + userId + "/character/picture/" + characterInfo.getCharacterUid();
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try (Stream<Path> stream = Files.list(srcPath)) {
+            stream.forEach(picturePath -> {
+                if (Files.isRegularFile(picturePath)) {
+                    try {
+                        FileUtils.move(picturePath, fileStore, dir);
+                    } catch (IOException e) {
+                        log.warn("Failed to move file from {} to {}", picturePath, dir, e);
+                    }
+                }
+            });
+        }
+    }
+
+    private void handleDocuments(HttpServletRequest request,
+                                 String userId,
+                                 CharacterInfo characterInfo,
+                                 Path confPath) throws IOException {
+        Path srcPath = confPath.resolve("documents");
+        String dir = PRIVATE_DIR + userId + "/character/document/" + characterInfo.getCharacterUid();
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try (Stream<Path> stream = Files.list(srcPath)) {
+            stream.map(documentPath -> {
+                        if (Files.isRegularFile(documentPath)) {
+                            try {
+                                return FileUtils.move(documentPath, fileStore, dir);
+                            } catch (IOException e) {
+                                log.warn("Failed to move file from {} to {}", documentPath, dir, e);
+                            }
+                        }
+                        return null;
+                    })
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(documentFile -> {
+                        RagTask ragTask = new RagTask()
+                                .withCharacterUid(characterInfo.getCharacterUid())
+                                .withSourceType(SourceType.FILE.text())
+                                .withSource(documentFile)
+                                .withMaxSegmentSize(defaultMaxSegmentSize)
+                                .withMaxOverlapSize(defaultMaxOverlapSize);
+                        ragTaskService.create(ragTask);
+                    });
+        }
+    }
+
+    private String createPromptTask(PromptCreateDTO promptCreateDTO, PromptTaskDTO promptTaskDTO) {
+        if (Objects.isNull(promptCreateDTO) || Objects.isNull(promptTaskDTO)) {
+            return null;
+        }
+
+        var promptInfo = promptCreateDTO.toPromptInfo();
+        if (Objects.nonNull(promptInfo)) {
+            PromptUtils.resetPromptInfoTriple(promptInfo, null);
+            if (!promptService.create(promptInfo)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt.");
+            }
+
+            PromptTask promptTask = promptTaskDTO.toPromptTask();
+            promptTask.setPromptUid(promptInfo.getLeft().getPromptUid());
+
+            if (!promptTaskService.create(promptTask)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt task.");
+            }
+
+            return promptTask.getTaskId();
+        }
+        return null;
+    }
+
+    private static void cleanUpTempDirectory(Path tempDir) throws IOException {
+        try (Stream<Path> stream = Files.walk(tempDir)) {
+            stream.sorted(Comparator.reverseOrder()).forEach(p -> {
+                try {
+                    Files.delete(p);
+                } catch (IOException e) {
+                    log.warn("Failed to delete file {}", p, e);
+                }
+            });
+        }
+    }
+
+    @Data
+    static class ManifestInfo {
+        static final String API_VERSION = "v1";
+
+        private String apiVersion;
+        private String appVersion;
+        private String appUrl;
+
+        ManifestInfo() {
+            apiVersion = API_VERSION;
+            appVersion = AppMetaUtils.getVersion();
+            appUrl = AppMetaUtils.getUrl();
+        }
+
+        String toYaml() {
+            return yaml().dump(this);
+        }
+
+        static ManifestInfo fromYaml(String yaml) {
+            return yaml().loadAs(yaml, ManifestInfo.class);
+        }
+
+        static Yaml yaml() {
+            DumperOptions options = new DumperOptions();
+            options.setIndent(2);
+            options.setPrettyFlow(true);
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+            Representer representer = new Representer(options);
+            representer.getPropertyUtils().setSkipMissingProperties(true);
+            representer.addClassTag(ManifestInfo.class, MAP);
+
+            return new Yaml(representer);
         }
     }
 }

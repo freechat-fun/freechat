@@ -29,4 +29,14 @@ public class CharacterConfigurationDTO {
                     "Failed to generate character configuration!");
         }
     }
+
+    public static CharacterConfigurationDTO fromJson(String json) {
+        try {
+            return InfoUtils.defaultMapper().readValue(json, CharacterConfigurationDTO.class);
+        } catch (JsonProcessingException | NullPointerException e) {
+            log.error("Failed to parse character configuration: {}", json, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Failed to parse character configuration!");
+        }
+    }
 }

@@ -1,8 +1,8 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.2.0
-  - Generator version: 7.6.0
+- API version: 1.3.0
+  - Generator version: 7.7.0
 
 # FreeChat: Create Some Friends for Yourself with AI
 
@@ -95,15 +95,9 @@ As a cloud-native application, the services FreeChat relies on are obtained and 
 
 If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`:
 ```yaml
-bitnami:
-  mysql:
-    enabled: false
-  redis:
-    enabled: false
-  milvus:
-    enabled: false
-
 mysql:
+  deployment:
+    enabled: false
   url: <your mysql url>
   auth:
     rootPassword: <your mysql root password>
@@ -111,12 +105,16 @@ mysql:
     password: <your mysql password for the username>
 
 redis:
+  deployment:
+    enabled: false
   url: <your redis url>
   auth:
     password: <your redis password>
 
 
 milvus:
+  deployment:
+    enabled: false
   url: <your milvus url>
   milvus:
     auth:
@@ -127,10 +125,11 @@ With this, FreeChat will not automatically install these services, but rather us
 
 If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application:
 ```yaml
-bitnami:
-  prometheus:
+prometheus:
+  deployment:
     enabled: true
-  grafana:
+grafana:
+  deployment:
     enabled: true
 ```
 
@@ -237,7 +236,7 @@ Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/
 | ---- | ----
 | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/)
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
-| Model Providers | [OpenAI](https://platform.openai.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
+| Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
 | Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
@@ -247,7 +246,7 @@ Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/
 The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, FreeChat is completely free with no paid plans (after all, users use their own API Key to call LLM services).
 
 ### Model Integration
-FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. So far, it supports model services from OpenAI and DashScope is also expected to be supported soon). However, we are more interested in supporting models that are under research and can endow AI with more personality traits. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future.
+FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. So far, it supports model services from OpenAI GPT and Alibaba Qwen series models. However, we are more interested in supporting models that are under research and can endow AI with more personality traits. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future.
 
 
 
@@ -284,7 +283,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.2.0</version>
+  <version>1.3.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -300,7 +299,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.2.0"
+     implementation "fun.freechat:freechat-sdk:1.3.0"
   }
 ```
 
@@ -314,7 +313,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.2.0.jar`
+* `target/freechat-sdk-1.3.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -415,10 +414,7 @@ Class | Method | HTTP request | Description
 *AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/ai/models/{pageSize} | List Models
 *AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/ai/models | List Models
 *AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/ai/models/{pageSize}/{pageNum} | List Models
-*AppConfigForAdminApi* | [**getAppConfig**](docs/AppConfigForAdminApi.md#getAppConfig) | **GET** /api/v1/admin/app/config/{name} | Get Configuration
-*AppConfigForAdminApi* | [**getAppConfigByVersion**](docs/AppConfigForAdminApi.md#getAppConfigByVersion) | **GET** /api/v1/admin/app/config/{name}/{version} | Get Specified Version of Configuration
-*AppConfigForAdminApi* | [**listAppConfigNames**](docs/AppConfigForAdminApi.md#listAppConfigNames) | **POST** /api/v1/admin/app/configs | List Configuration Names
-*AppConfigForAdminApi* | [**publishAppConfig**](docs/AppConfigForAdminApi.md#publishAppConfig) | **POST** /api/v1/admin/app/config | Publish Configuration
+*AppConfigForAdminApi* | [**getAppConfigs**](docs/AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v1/admin/app/configs | Get Configurations
 *AppMetaForAdminApi* | [**expose**](docs/AppMetaForAdminApi.md#expose) | **GET** /api/v1/admin/app/expose | Expose DTO definitions
 *AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v1/admin/app/meta | Get Application Information
 *CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterId} | Add Character Backend
@@ -432,10 +428,12 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
 *CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 *CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
+*CharacterApi* | [**exportCharacter**](docs/CharacterApi.md#exportCharacter) | **GET** /api/v1/character/export/{characterId} | Export Character Configuration
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 *CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 *CharacterApi* | [**getCharacterSummary**](docs/CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
 *CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
+*CharacterApi* | [**importCharacter**](docs/CharacterApi.md#importCharacter) | **POST** /api/v1/character/import | Import Character Configuration
 *CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
 *CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
 *CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterId} | List Character Documents
@@ -560,7 +558,6 @@ Class | Method | HTTP request | Description
  - [AiApiKeyInfoDTO](docs/AiApiKeyInfoDTO.md)
  - [AiModelInfoDTO](docs/AiModelInfoDTO.md)
  - [ApiTokenInfoDTO](docs/ApiTokenInfoDTO.md)
- - [AppConfigCreateDTO](docs/AppConfigCreateDTO.md)
  - [AppConfigInfoDTO](docs/AppConfigInfoDTO.md)
  - [AppMetaDTO](docs/AppMetaDTO.md)
  - [CharacterBackendDTO](docs/CharacterBackendDTO.md)

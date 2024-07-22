@@ -40,9 +40,4 @@ public class TestResourceUtils {
 
         return builder.build();
     }
-
-    public static String getResourceKey(String url) {
-        String[] parts = url.split("/");
-        return parts[parts.length - 1];
-    }
 }

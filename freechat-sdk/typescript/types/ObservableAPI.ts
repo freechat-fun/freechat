@@ -14,7 +14,6 @@ import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -1908,12 +1907,11 @@ export class ObservableAppConfigForAdminApi {
     }
 
     /**
-     * Get the latest configuration information of the application by name.
-     * Get Configuration
-     * @param name Configuration name
+     * Get all configuration information of the application.
+     * Get Configurations
      */
-    public getAppConfigWithHttpInfo(name: string, _options?: Configuration): Observable<HttpInfo<AppConfigInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getAppConfig(name, _options);
+    public getAppConfigsWithHttpInfo(_options?: Configuration): Observable<HttpInfo<AppConfigInfoDTO>> {
+        const requestContextPromise = this.requestFactory.getAppConfigs(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -1927,116 +1925,16 @@ export class ObservableAppConfigForAdminApi {
                 for (let middleware of this.configuration.middleware) {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAppConfigWithHttpInfo(rsp)));
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAppConfigsWithHttpInfo(rsp)));
             }));
     }
 
     /**
-     * Get the latest configuration information of the application by name.
-     * Get Configuration
-     * @param name Configuration name
+     * Get all configuration information of the application.
+     * Get Configurations
      */
-    public getAppConfig(name: string, _options?: Configuration): Observable<AppConfigInfoDTO> {
-        return this.getAppConfigWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<AppConfigInfoDTO>) => apiResponse.data));
-    }
-
-    /**
-     * Get the configuration information of the application by name and version.
-     * Get Specified Version of Configuration
-     * @param name Configuration name
-     * @param version Configuration version
-     */
-    public getAppConfigByVersionWithHttpInfo(name: string, version: number, _options?: Configuration): Observable<HttpInfo<AppConfigInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getAppConfigByVersion(name, version, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAppConfigByVersionWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Get the configuration information of the application by name and version.
-     * Get Specified Version of Configuration
-     * @param name Configuration name
-     * @param version Configuration version
-     */
-    public getAppConfigByVersion(name: string, version: number, _options?: Configuration): Observable<AppConfigInfoDTO> {
-        return this.getAppConfigByVersionWithHttpInfo(name, version, _options).pipe(map((apiResponse: HttpInfo<AppConfigInfoDTO>) => apiResponse.data));
-    }
-
-    /**
-     * List all application configuration names.
-     * List Configuration Names
-     */
-    public listAppConfigNamesWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<string>>> {
-        const requestContextPromise = this.requestFactory.listAppConfigNames(_options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAppConfigNamesWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * List all application configuration names.
-     * List Configuration Names
-     */
-    public listAppConfigNames(_options?: Configuration): Observable<Array<string>> {
-        return this.listAppConfigNamesWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
-    }
-
-    /**
-     * Publish application configuration, return configuration version.
-     * Publish Configuration
-     * @param appConfigCreateDTO Configuration information
-     */
-    public publishAppConfigWithHttpInfo(appConfigCreateDTO: AppConfigCreateDTO, _options?: Configuration): Observable<HttpInfo<number>> {
-        const requestContextPromise = this.requestFactory.publishAppConfig(appConfigCreateDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (let middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (let middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.publishAppConfigWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Publish application configuration, return configuration version.
-     * Publish Configuration
-     * @param appConfigCreateDTO Configuration information
-     */
-    public publishAppConfig(appConfigCreateDTO: AppConfigCreateDTO, _options?: Configuration): Observable<number> {
-        return this.publishAppConfigWithHttpInfo(appConfigCreateDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    public getAppConfigs(_options?: Configuration): Observable<AppConfigInfoDTO> {
+        return this.getAppConfigsWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<AppConfigInfoDTO>) => apiResponse.data));
     }
 
 }
@@ -2507,6 +2405,39 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Export character configuration in tar.gz format, including settings, documents and pictures.
+     * Export Character Configuration
+     * @param characterId Character identifier
+     */
+    public exportCharacterWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<void>> {
+        const requestContextPromise = this.requestFactory.exportCharacter(characterId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.exportCharacterWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Export character configuration in tar.gz format, including settings, documents and pictures.
+     * Export Character Configuration
+     * @param characterId Character identifier
+     */
+    public exportCharacter(characterId: number, _options?: Configuration): Observable<void> {
+        return this.exportCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<void>) => apiResponse.data));
+    }
+
+    /**
      * Get character detailed information.
      * Get Character Details
      * @param characterId CharacterId to be obtained
@@ -2636,6 +2567,39 @@ export class ObservableCharacterApi {
      */
     public getDefaultCharacterBackend(characterId: number, _options?: Configuration): Observable<CharacterBackendDetailsDTO> {
         return this.getDefaultCharacterBackendWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<CharacterBackendDetailsDTO>) => apiResponse.data));
+    }
+
+    /**
+     * Export character configuration from a tar.gz file.
+     * Import Character Configuration
+     * @param file Character avatar
+     */
+    public importCharacterWithHttpInfo(file: HttpFile, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.importCharacter(file, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.importCharacterWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Export character configuration from a tar.gz file.
+     * Import Character Configuration
+     * @param file Character avatar
+     */
+    public importCharacter(file: HttpFile, _options?: Configuration): Observable<number> {
+        return this.importCharacterWithHttpInfo(file, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**

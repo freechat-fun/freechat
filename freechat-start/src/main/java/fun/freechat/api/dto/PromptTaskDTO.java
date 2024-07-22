@@ -1,6 +1,7 @@
 package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nimbusds.oauth2.sdk.util.MapUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.api.util.PromptUtils;
@@ -9,6 +10,7 @@ import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -66,5 +68,41 @@ public class PromptTaskDTO {
         }
 
         return task;
+    }
+
+    public static PromptTaskDTO from(PromptTask task) {
+        if (Objects.isNull(task)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prompt task should not be null.");
+        }
+        PromptTaskDTO dto = CommonUtils.convert(task, PromptTaskDTO.class);
+
+        if (StringUtils.isNotBlank(task.getPromptUid())) {
+            Map<String, Object> variables = null;
+            if (StringUtils.isNotBlank(task.getVariables())) {
+                try {
+                    variables = InfoUtils.defaultMapper().readValue(
+                            task.getVariables(), new TypeReference<>() {});
+                } catch (JsonProcessingException e) {
+                    log.error("Failed to parse prompt variables: {}", task.getVariables(), e);
+                }
+            }
+            Boolean draft = (byte) 1 == task.getDraft();
+            PromptRefDTO promptRef = PromptRefDTO.from(
+                    PromptUtils.uidToLatestId(task.getPromptUid()), variables, draft);
+
+            dto.setPromptRef(promptRef);
+        }
+
+        if (StringUtils.isNotBlank(task.getParams())) {
+            try {
+                Map<String, Object> params = InfoUtils.defaultMapper().readValue(
+                        task.getParams(), new TypeReference<>() {});
+                dto.setParams(params);
+            } catch (JsonProcessingException e) {
+                log.error("Failed to parse model params: {}", task.getParams(), e);
+            }
+        }
+
+        return dto;
     }
 }

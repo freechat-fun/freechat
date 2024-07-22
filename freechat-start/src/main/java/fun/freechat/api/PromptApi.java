@@ -3,9 +3,9 @@ package fun.freechat.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.model.PromptInfo;
-import fun.freechat.service.prompt.ChatPromptContent;
+import fun.freechat.api.util.PromptUtils;
 import fun.freechat.service.enums.*;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.stats.InteractiveStatsService;
 import fun.freechat.service.util.InfoUtils;
@@ -21,7 +21,6 @@ import jakarta.validation.constraints.Positive;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,32 +44,6 @@ public class PromptApi {
     private PromptService promptService;
     @Autowired
     private InteractiveStatsService interactiveStatsService;
-
-    private String newUniqueName(String desired) {
-        int index = 0;
-        String name =desired;
-        while (promptService.existsName(name, AccountUtils.currentUser())) {
-            index++;
-            name = desired + "-" + index;
-        }
-        return name;
-    }
-
-    private void resetPromptInfo(PromptInfo info, String parentUid) {
-        if (StringUtils.isNotBlank(parentUid)) {
-            info.setParentUid(parentUid);
-            info.setVisibility(Visibility.PRIVATE.text());
-        }
-        info.setName(newUniqueName(info.getName()));
-        info.setPromptId(null);
-        info.setVersion(1);
-        info.setUserId(AccountUtils.currentUser().getUserId());
-    }
-
-    private void resetPromptInfoTriple(
-            Triple<PromptInfo, List<String>, List<String>> infoTriple, String parentUid) {
-        resetPromptInfo(infoTriple.getLeft(), parentUid);
-    }
 
     private void increaseReferCount(String promptUid) {
         interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
@@ -447,7 +420,7 @@ public class PromptApi {
             return null;
         }
         String promptUid = promptService.getUid(promptId);
-        resetPromptInfoTriple(promptInfo, promptUid);
+        PromptUtils.resetPromptInfoTriple(promptInfo, promptUid);
         if (!promptService.create(promptInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt.");
         }
@@ -474,7 +447,7 @@ public class PromptApi {
         for (var promptInfo : promptInfoList) {
             Long parentPromptId = promptInfo.getLeft().getPromptId();
             String parentUid = Objects.isNull(parentPromptId) ? null : promptService.getUid(parentPromptId);
-            resetPromptInfoTriple(promptInfo, parentUid);
+            PromptUtils.resetPromptInfoTriple(promptInfo, parentUid);
         }
         List<Long> newPromptIds = promptService.create(promptInfoList);
         if (!newPromptIds.isEmpty()) {
@@ -668,6 +641,6 @@ public class PromptApi {
     @GetMapping(value = "/create/name/{desired}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String createName(
             @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {
-        return newUniqueName(desired);
+        return PromptUtils.newUniqueName(desired);
     }
 }

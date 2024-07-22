@@ -42,7 +42,7 @@ public class DocController {
 
     @GetMapping("/public/docs/api/switch")
     public String switchRenderer(HttpServletRequest request) {
-        String renderer = RENDERERS.get(0);
+        String renderer = RENDERERS.getFirst();
         String ref = request.getHeader("Referer");
         if (StringUtils.isNotBlank(ref)) {
             String[] urlComponents = ref.split("[?#]")[0].split("/");
@@ -134,22 +134,31 @@ public class DocController {
                 }
             }
             case NUMBER -> {
-                if (propertyValue instanceof Integer intValue) {
-                    yield IntNode.valueOf(intValue);
-                } else if (propertyValue instanceof Float floatValue) {
-                    yield FloatNode.valueOf(floatValue);
-                } else if (propertyValue instanceof Double doubleValue) {
-                    yield DoubleNode.valueOf(doubleValue);
-                } else if (propertyValue instanceof Long longValue) {
-                    yield LongNode.valueOf(longValue);
-                } else if (propertyValue instanceof Short shortValue) {
-                    yield ShortNode.valueOf(shortValue);
-                } else if (propertyValue instanceof BigInteger bigIntegerValue) {
-                    yield BigIntegerNode.valueOf(bigIntegerValue);
-                } else if (propertyValue instanceof BigDecimal bigDecimalValue) {
-                    yield DecimalNode.valueOf(bigDecimalValue);
-                } else {
-                    yield null;
+                switch (propertyValue) {
+                    case Integer intValue -> {
+                        yield IntNode.valueOf(intValue);
+                    }
+                    case Float floatValue -> {
+                        yield FloatNode.valueOf(floatValue);
+                    }
+                    case Double doubleValue -> {
+                        yield DoubleNode.valueOf(doubleValue);
+                    }
+                    case Long longValue -> {
+                        yield LongNode.valueOf(longValue);
+                    }
+                    case Short shortValue -> {
+                        yield ShortNode.valueOf(shortValue);
+                    }
+                    case BigInteger bigIntegerValue -> {
+                        yield BigIntegerNode.valueOf(bigIntegerValue);
+                    }
+                    case BigDecimal bigDecimalValue -> {
+                        yield DecimalNode.valueOf(bigDecimalValue);
+                    }
+                    case null, default -> {
+                        yield null;
+                    }
                 }
             }
             default -> null;

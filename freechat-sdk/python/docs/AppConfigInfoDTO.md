@@ -7,10 +7,7 @@ Configuration information
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
-**name** | **str** | Configuration name | [optional] 
-**format** | **str** | Configuration format: kv | json | yaml | [optional] 
-**content** | **str** | Configuration content | [optional] 
-**version** | **int** | Configuration version | [optional] 
+**properties** | **Dict[str, object]** | Configuration content | [optional] 
 
 ## Example
 

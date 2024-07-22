@@ -13,7 +13,6 @@ import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -1219,82 +1218,20 @@ export class PromiseAppConfigForAdminApi {
     }
 
     /**
-     * Get the latest configuration information of the application by name.
-     * Get Configuration
-     * @param name Configuration name
+     * Get all configuration information of the application.
+     * Get Configurations
      */
-    public getAppConfigWithHttpInfo(name: string, _options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
-        const result = this.api.getAppConfigWithHttpInfo(name, _options);
+    public getAppConfigsWithHttpInfo(_options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
+        const result = this.api.getAppConfigsWithHttpInfo(_options);
         return result.toPromise();
     }
 
     /**
-     * Get the latest configuration information of the application by name.
-     * Get Configuration
-     * @param name Configuration name
+     * Get all configuration information of the application.
+     * Get Configurations
      */
-    public getAppConfig(name: string, _options?: Configuration): Promise<AppConfigInfoDTO> {
-        const result = this.api.getAppConfig(name, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Get the configuration information of the application by name and version.
-     * Get Specified Version of Configuration
-     * @param name Configuration name
-     * @param version Configuration version
-     */
-    public getAppConfigByVersionWithHttpInfo(name: string, version: number, _options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
-        const result = this.api.getAppConfigByVersionWithHttpInfo(name, version, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Get the configuration information of the application by name and version.
-     * Get Specified Version of Configuration
-     * @param name Configuration name
-     * @param version Configuration version
-     */
-    public getAppConfigByVersion(name: string, version: number, _options?: Configuration): Promise<AppConfigInfoDTO> {
-        const result = this.api.getAppConfigByVersion(name, version, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List all application configuration names.
-     * List Configuration Names
-     */
-    public listAppConfigNamesWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listAppConfigNamesWithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * List all application configuration names.
-     * List Configuration Names
-     */
-    public listAppConfigNames(_options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listAppConfigNames(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Publish application configuration, return configuration version.
-     * Publish Configuration
-     * @param appConfigCreateDTO Configuration information
-     */
-    public publishAppConfigWithHttpInfo(appConfigCreateDTO: AppConfigCreateDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishAppConfigWithHttpInfo(appConfigCreateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Publish application configuration, return configuration version.
-     * Publish Configuration
-     * @param appConfigCreateDTO Configuration information
-     */
-    public publishAppConfig(appConfigCreateDTO: AppConfigCreateDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.publishAppConfig(appConfigCreateDTO, _options);
+    public getAppConfigs(_options?: Configuration): Promise<AppConfigInfoDTO> {
+        const result = this.api.getAppConfigs(_options);
         return result.toPromise();
     }
 
@@ -1599,6 +1536,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Export character configuration in tar.gz format, including settings, documents and pictures.
+     * Export Character Configuration
+     * @param characterId Character identifier
+     */
+    public exportCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<void>> {
+        const result = this.api.exportCharacterWithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Export character configuration in tar.gz format, including settings, documents and pictures.
+     * Export Character Configuration
+     * @param characterId Character identifier
+     */
+    public exportCharacter(characterId: number, _options?: Configuration): Promise<void> {
+        const result = this.api.exportCharacter(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Get character detailed information.
      * Get Character Details
      * @param characterId CharacterId to be obtained
@@ -1675,6 +1632,26 @@ export class PromiseCharacterApi {
      */
     public getDefaultCharacterBackend(characterId: number, _options?: Configuration): Promise<CharacterBackendDetailsDTO> {
         const result = this.api.getDefaultCharacterBackend(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Export character configuration from a tar.gz file.
+     * Import Character Configuration
+     * @param file Character avatar
+     */
+    public importCharacterWithHttpInfo(file: HttpFile, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.importCharacterWithHttpInfo(file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Export character configuration from a tar.gz file.
+     * Import Character Configuration
+     * @param file Character avatar
+     */
+    public importCharacter(file: HttpFile, _options?: Configuration): Promise<number> {
+        const result = this.api.importCharacter(file, _options);
         return result.toPromise();
     }
 

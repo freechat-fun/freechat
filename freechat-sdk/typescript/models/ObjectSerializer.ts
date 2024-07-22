@@ -10,7 +10,6 @@ export * from '../models/AiApiKeyCreateDTO.js';
 export * from '../models/AiApiKeyInfoDTO.js';
 export * from '../models/AiModelInfoDTO.js';
 export * from '../models/ApiTokenInfoDTO.js';
-export * from '../models/AppConfigCreateDTO.js';
 export * from '../models/AppConfigInfoDTO.js';
 export * from '../models/AppMetaDTO.js';
 export * from '../models/CharacterBackendDTO.js';
@@ -78,7 +77,6 @@ import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigCreateDTO } from '../models/AppConfigCreateDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -162,7 +160,6 @@ let typeMap: {[index: string]: any} = {
     "AiApiKeyInfoDTO": AiApiKeyInfoDTO,
     "AiModelInfoDTO": AiModelInfoDTO,
     "ApiTokenInfoDTO": ApiTokenInfoDTO,
-    "AppConfigCreateDTO": AppConfigCreateDTO,
     "AppConfigInfoDTO": AppConfigInfoDTO,
     "AppMetaDTO": AppMetaDTO,
     "CharacterBackendDTO": CharacterBackendDTO,

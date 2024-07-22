@@ -21,11 +21,11 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestCommonUtils.defaultModelFor;
 import static fun.freechat.util.TestResourceUtils.bodyFrom;
-import static fun.freechat.util.TestResourceUtils.getResourceKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -100,7 +100,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
             return;
         }
 
-        Boolean success = testClient.delete().uri("/api/v1/character/document/" + getResourceKey(url))
+        Boolean success = testClient.delete().uri("/api/v1/character/document/" + getKeyFromUrl(url))
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -115,7 +115,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
     private void testCreateTask() {
         RagTaskDTO fileRequest = new RagTaskDTO();
         if (isFile) {
-            fileRequest.setSource(getResourceKey(url));
+            fileRequest.setSource(getKeyFromUrl(url));
             fileRequest.setSourceType(SourceType.FILE.text());
         } else {
             fileRequest.setSource(url);
