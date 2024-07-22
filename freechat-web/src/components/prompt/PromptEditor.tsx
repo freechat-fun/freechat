@@ -609,7 +609,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
           variant="soft"
           color="primary"
           sx={{
-          borderRadius: '16px',
+            borderRadius: '16px',
         }}>
           <Button
             disabled={isSaved() || visibility==='hidden'}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ElementType } from "react";
 import { Box, CardCover, IconButton } from "@mui/joy";
-import { VisibilityRounded, EditRounded, DeleteRounded } from "@mui/icons-material";
+import { VisibilityRounded, EditRounded, DeleteRounded, FileDownloadRounded } from "@mui/icons-material";
 import { SxProps } from "@mui/joy/styles/types";
 
 function CardIconButton({ Icon, onClick, sx }: {
@@ -35,15 +35,17 @@ export default function InfoCardCover(props: {
   icons?: {
     view?: ElementType<any>,
     edit?: ElementType<any>,
+    download?: ElementType<any>,
     delete?: ElementType<any>,
   }
   onView?: () => void,
   onEdit?: () => void,
+  onDownload?: () => void,
   onDelete?: () => void,
 }) {
-  const { icons, onView, onEdit, onDelete } = props;
+  const { icons, onView, onEdit, onDownload, onDelete } = props;
 
-  const iconSet = { view: VisibilityRounded, edit: EditRounded, delete: DeleteRounded, ...icons };
+  const iconSet = { view: VisibilityRounded, edit: EditRounded, download: FileDownloadRounded, delete: DeleteRounded, ...icons };
 
   return (
     <CardCover
@@ -69,6 +71,7 @@ export default function InfoCardCover(props: {
         }}>
           { onView && <CardIconButton Icon={iconSet.view} onClick={onView} /> } 
           { onEdit && <CardIconButton Icon={iconSet.edit} onClick={onEdit} /> }
+          { onDownload && <CardIconButton Icon={iconSet.download} onClick={onDownload} /> }
           { onDelete && <CardIconButton Icon={iconSet.delete} onClick={onDelete} /> }
         </Box>
       </div>

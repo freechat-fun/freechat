@@ -7,12 +7,13 @@ import { formatDate, getDateLabel } from "../../libs/date_utils";
 import { locales } from "../../configs/i18n-config";
 import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, OptionTooltip, RouterBlocker, TinyInput } from "../../components";
 import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Typography, switchClasses } from "@mui/joy";
-import { AddCircleRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
+import { AddCircleRounded, CheckRounded, EditRounded, ImportExportRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
 import { CharacterAlbumPane, CharacterBackendSettings, CharacterBackendsPane, CharacterDocumentsPane, CharacterGuide } from "../../components/character";
 import { HelpIcon } from "../../components/icon";
 import { createPromptForCharacter } from "../../libs/chat_utils";
 import { getCompressedImage } from "../../libs/ui_utils";
 import { objectsEqual } from "../../libs/js_utils";
+import { exportCharacter } from "../../libs/character_utils";
 
 type CharacterEditorProps = {
   id: number;
@@ -235,6 +236,16 @@ export default function CharacterEditor ({
       .catch(handleError);
   }
 
+  function handleRecordExport(): void {
+    if (!id) {
+      return;
+    }
+    setEditEnabled(false);
+    exportCharacter(id)
+      .catch(handleError)
+      .finally(() => setEditEnabled(true))
+  }
+
   function recordToUpdateRequest(record: CharacterDetailsDTO): CharacterUpdateDTO {
     const request = new CharacterUpdateDTO();
     request.nickname = record.nickname;
@@ -445,20 +456,28 @@ export default function CharacterEditor ({
           variant="soft"
           color="primary"
           sx={{
-          borderRadius: '16px',
+            borderRadius: '16px',
         }}>
           <Button
-            disabled={isSaved() || visibility==='hidden'}
+            disabled={isSaved() || visibility==='hidden' || !editEnabled}
             startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
           >
             {t('button:Save')}
           </Button>
           <Button
+            disabled={!editEnabled}
             startDecorator={<IosShareRounded />}
             onClick={handleRecordPublish}
           >
             {t('button:Publish')}
+          </Button>
+          <Button
+            disabled={!editEnabled}
+            startDecorator={<ImportExportRounded />}
+            onClick={handleRecordExport}
+          >
+            {t('button:Export')}
           </Button>
         </ButtonGroup>
       </Box>

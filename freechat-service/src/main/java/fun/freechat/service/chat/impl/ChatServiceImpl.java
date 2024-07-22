@@ -128,23 +128,18 @@ public class ChatServiceImpl implements ChatService {
         String userId = user.getUserId();
         return chatContextService.list(userId)
                 .stream()
-                .map(chatContext -> {
-                    String backendId = chatContext.getBackendId();
-                    if (StringUtils.isBlank(backendId)) {
-                        return null;
-                    }
-                    String characterUid = characterService.getBackendCharacterUid(backendId);
-                    if (StringUtils.isBlank(characterUid)) {
-                        return null;
-                    }
-                    Long characterId = characterService.getLatestIdByUid(characterUid);
-                    CharacterInfo summary = characterService.summary(characterId);
-
-                    String chatId = chatContext.getChatId();
-                    ChatMessageRecord latestMessage = chatMemoryService.getLatestChatMessage(chatId);
-
-                    return Triple.of(chatContext, summary, latestMessage);
-                })
+                .map(chatContext -> Optional.ofNullable(chatContext.getBackendId())
+                            .filter(StringUtils::isNotBlank)
+                            .map(characterService::getBackendCharacterUid)
+                            .filter(StringUtils::isNotBlank)
+                            .map(characterService::getLatestIdByUid)
+                            .map(characterService::summary)
+                            .map(summary -> {
+                                String chatId = chatContext.getChatId();
+                                ChatMessageRecord latestMessage = chatMemoryService.getLatestChatMessage(chatId);
+                                return Triple.of(chatContext, summary, latestMessage);
+                            })
+                            .orElse(null))
                 .filter(Objects::nonNull)
                 .toList();
     }

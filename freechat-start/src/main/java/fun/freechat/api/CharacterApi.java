@@ -1300,14 +1300,14 @@ public class CharacterApi {
     }
 
     @Data
-    static class ManifestInfo {
+    static public class ManifestInfo {
         static final String API_VERSION = "v1";
 
         private String apiVersion;
         private String appVersion;
         private String appUrl;
 
-        ManifestInfo() {
+        public ManifestInfo() {
             apiVersion = API_VERSION;
             appVersion = AppMetaUtils.getVersion();
             appUrl = AppMetaUtils.getUrl();

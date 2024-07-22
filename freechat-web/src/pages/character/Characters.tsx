@@ -4,25 +4,29 @@ import { useNavigate } from "react-router-dom";
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CommonBox, ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { CharacterCreateDTO, CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, ChatCreateDTO } from "freechat-sdk";
-import { Avatar, Box, Button, Card, Chip, FormControl, FormHelperText, IconButton, Input, Typography } from "@mui/joy";
+import { Avatar, Box, Button, ButtonGroup, Card, Chip, FormControl, FormHelperText, IconButton, Input, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { AddCircleRounded, DeleteForeverRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
+import { AddCircleRounded, DeleteForeverRounded, ImportExportRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
 import { i18nConfig } from "../../configs/i18n-config";
 import { ChatIcon } from "../../components/icon";
+import { exportCharacter } from "../../libs/character_utils";
+
+let idCounter = 0;
 
 type RecordCardProps = {
   record: CharacterSummaryDTO,
   onView: () => void,
   onEdit: () => void,
+  onDownload: () => void,
   onDelete: () => void,
   sx?: SxProps,
 }
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
-  const { record, onView, onEdit, onDelete, sx } = props;
+  const { record, onView, onEdit, onDownload, onDelete, sx } = props;
   const { t, i18n } = useTranslation();
 
   const characterName = record.nickname ?? record.name;
@@ -82,6 +86,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         icons={{view: ChatIcon}}
         onView={() => onView()}
         onEdit={() => onEdit()}
+        onDownload={() => onDownload()}
         onDelete={() => onDelete()}
       />
     </Card>
@@ -108,6 +113,11 @@ export default function Characters() {
   const [showCards, setShowCards] = useState(false);
   const [showCardsFinish, setShowCardsFinish] = useState(false);
 
+  const [characterUploading, setCharacterUploading] = useState(false);
+
+  const fileInputId = useRef(`character-configuration-input-${idCounter}`).current;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   const doSearch = useCallback(() => {
@@ -124,8 +134,12 @@ export default function Characters() {
   }, [characterApi, handleError, page, query]);
 
   useEffect(() => {
+    idCounter++;
     doSearch();
-    return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
+    return () => {
+      initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
+      setCharacterUploading(false);
+    }
   }, [doSearch]);
 
   function defaultQuery(limit: number): CharacterQueryDTO {
@@ -201,7 +215,12 @@ export default function Characters() {
   }
 
   function handleEdit(record: CharacterSummaryDTO): void {
-    navigate(`/w/character/edit/${record.characterId}`);
+    record.characterId && navigate(`/w/character/edit/${record.characterId}`);
+  }
+
+  function handleDownload(record: CharacterSummaryDTO): void {
+    record.characterId && exportCharacter(record.characterId)
+      .catch(handleError)
   }
 
   function handleNameChange(): void {
@@ -233,6 +252,23 @@ export default function Characters() {
       .catch(handleError);
   }
 
+  function handleConfFileChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      setCharacterUploading(true);
+      characterApi?.importCharacter(file)
+        .then(() => doSearch())
+        .catch(handleError)
+        .finally(() => setCharacterUploading(false));
+    }
+  }
+
+  function handleConfFileModify(): void {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }
+
   function getLabelDisplayedRowsTo(): number {
     const currentCount = (page + 1) * pageSize;
     return total === 0 && records.length > 0 ? currentCount : Math.min(total, currentCount);
@@ -252,13 +288,39 @@ export default function Characters() {
         alignItems: { xs: 'start', lg: 'center' },
       }}>
         <InfoSearchbar enableModelSelect={false} onSearch={handleSearch} />
-        <Button
-          startDecorator={<AddCircleRounded />}
+        <Input
+          disabled={characterUploading}
+          type="file"
+          id={fileInputId}
+          onChange={handleConfFileChange}
+          sx={{ display: 'none' }}
+          slotProps={{ input: {
+            ref: fileInputRef,
+            accept: "*/tar.gz",
+          }}}
+        />
+        <ButtonGroup
+          variant="solid"
+          color="primary"
           sx={{ borderRadius: '20px' }}
-          onClick={() => setEditRecordName('untitled')}
         >
-          {t('Create new')}
-        </Button>
+          <Button
+            disabled={characterUploading}
+            startDecorator={<AddCircleRounded />}
+            onClick={() => setEditRecordName('untitled')}
+          >
+            {t('Create')}
+          </Button>
+          <label htmlFor={fileInputId}>
+            <Button
+              disabled={characterUploading}
+              startDecorator={<ImportExportRounded />}
+              onClick={handleConfFileModify}
+            >
+              {t('Import')}
+            </Button>
+          </label>
+        </ButtonGroup>
       </Box>
       <LinePlaceholder />
       <Box
@@ -283,6 +345,7 @@ export default function Characters() {
                 record={record}
                 onView={() => handleView(record)}
                 onEdit={() => handleEdit(record)}
+                onDownload={() => handleDownload(record)}
                 onDelete={() => handleTryDelete(record)}
                 sx={{
                   transition: defaultTransitionSetting,

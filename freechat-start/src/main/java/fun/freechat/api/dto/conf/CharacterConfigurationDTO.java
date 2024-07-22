@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.dto.CharacterCreateDTO;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Schema(description = "Character configuration")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Slf4j
 public class CharacterConfigurationDTO {
