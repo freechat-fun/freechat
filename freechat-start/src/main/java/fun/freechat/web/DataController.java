@@ -10,6 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,7 @@ public class DataController {
         try {
             String pathStr = FileUtils.getDefaultPublicPath(key);
             Path path = fileStore.toPath(pathStr);
-            Resource resource = new FileUrlResource(path.toString());
+            Resource resource = new PathResource(path);
             HttpHeaders headers = getResponseHeaders(pathStr, IMAGE_JPEG, AVAILABLE_IMAGE_TYPES);
 
             return ResponseEntity.ok().headers(headers).body(resource);

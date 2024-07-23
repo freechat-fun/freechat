@@ -12,7 +12,7 @@ export async function exportCharacter(characterId: number) {
 
   const blob = await response.blob();
   const contentDisposition = response.headers.get('Content-Disposition');
-  let fileName = 'file.tar.gz';
+  let fileName = 'character.tar.gz';
 
   if (contentDisposition) {
     const matches = /filename="([^;]*)"/.exec(contentDisposition);

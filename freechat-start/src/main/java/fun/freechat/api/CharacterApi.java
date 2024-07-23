@@ -1100,7 +1100,7 @@ public class CharacterApi {
     @Operation(
             operationId = "importCharacter",
             summary = "Import Character Configuration",
-            description = "Export character configuration from a tar.gz file."
+            description = "Import character configuration from a tar.gz file."
     )
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Long importCharacter(
