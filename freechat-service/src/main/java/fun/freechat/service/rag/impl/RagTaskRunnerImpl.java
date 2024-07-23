@@ -18,6 +18,7 @@ import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.SourceType;
 import fun.freechat.service.rag.*;
 import fun.freechat.service.util.StoreUtils;
+import fun.freechat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.tika.Tika;
@@ -82,7 +83,12 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             SourceType sourceType = SourceType.of(task.getSourceType());
             DocumentSource source = switch (sourceType) {
                 case FILE -> FileSystemSource.from(StoreUtils.defaultFileStore().toPath(task.getSource()));
-                case URL -> UrlSource.from(task.getSource());
+                case URL -> {
+                    if (!HttpUtils.isSafeUrl(task.getSource())) {
+                        throw new IllegalArgumentException("Illegal url: " + task.getSource());
+                    }
+                    yield UrlSource.from(task.getSource());
+                }
                 default -> throw new NotImplementedException("Not implemented.");
             };
             Integer maxSegmentSize = Utils.getOrDefault(task.getMaxSegmentSize(), defaultMaxSegmentSize);

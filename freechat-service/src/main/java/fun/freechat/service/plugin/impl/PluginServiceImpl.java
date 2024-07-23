@@ -117,10 +117,10 @@ public class PluginServiceImpl implements PluginService {
     }
 
     private PluginInfo fetchInfo(PluginInfo info) {
-        if (HttpUtils.isValidUrl(info.getManifestInfo())) {
+        if (HttpUtils.isSafeUrl(info.getManifestInfo())) {
             info.setManifestInfo(fetchService.fetchManifestInfo(info));
         }
-        if (HttpUtils.isValidUrl(info.getApiInfo())) {
+        if (HttpUtils.isSafeUrl(info.getApiInfo())) {
             info.setApiInfo(fetchService.fetchApiDocsInfo(info));
         }
         if (Objects.isNull(info.getManifestInfo())) {
