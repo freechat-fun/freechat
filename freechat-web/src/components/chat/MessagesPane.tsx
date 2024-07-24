@@ -34,6 +34,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
 
   const sender = session?.character;
   const context = session?.context;
+  const avatarWithStatus = <AvatarWithStatus status={getSenderStatus(session)} src={sender?.avatar} />
 
   const errorMessageRecord = useCallback((message?: string) => {
     const content = new ChatContentDTO();
@@ -244,12 +245,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
                 spacing={2}
                 flexDirection={isYou ? 'row-reverse' : 'row'}
               >
-                { !isYou && (
-                  <AvatarWithStatus
-                    status={getSenderStatus(session)}
-                    src={sender?.avatar}
-                  />
-                )}
+                { !isYou && avatarWithStatus}
                 <ChatBubble
                   key={`message-${index}`}
                   debugMode={debugMode}
@@ -265,15 +261,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
           {/* streaming message */}
           {(messageToSend || errorMessage) && context?.chatId && (
             <Stack
-              key={`message-container-${chatMessages.length}`}
+              key={`message-container-${getDisplayMessages().length}`}
               direction="row"
               spacing={2}
               flexDirection="row" 
             >
-              <AvatarWithStatus
-                status={getSenderStatus(session)}
-                src={sender?.avatar}
-              />
+              {avatarWithStatus}
               {errorMessage ? (
                 <ChatBubble
                   session={session}

@@ -148,7 +148,7 @@ export default function CharacterEditor ({
     if (!id) {
       return;
     }
-    getCompressedImage(file, 1024 * 1024)
+    getCompressedImage(file, 100 * 1024)
       .then(imageInfo => {
         const request = new File([imageInfo.blob], name);
         characterApi?.uploadCharacterAvatar(id as number, request)

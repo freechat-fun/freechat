@@ -159,7 +159,7 @@ public class HttpUtils {
     }
 
     public static boolean isSafeUrl(String url) {
-        if (Objects.isNull(url) || !SAFE_URL_PATTERN.matcher(url).matches()) {
+        if (StringUtils.isBlank(url) || !SAFE_URL_PATTERN.matcher(url).matches()) {
             return false;
         }
 
@@ -170,7 +170,6 @@ public class HttpUtils {
         } catch (URISyntaxException | UnknownHostException e) {
             return false;
         }
-
     }
 
     private static boolean isPrivateIP(InetAddress address) {
