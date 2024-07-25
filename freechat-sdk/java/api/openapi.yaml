@@ -16,11 +16,12 @@ info:
     \ easy construction of systems for end-users.\n- Supports setting **RAG** (Retrieval\
     \ Augmented Generation) for characters.\n- Supports **long-term memory, preset\
     \ memory** for characters.\n- Supports characters evoking **proactive chat**.\n\
-    - Supports setting **quota limits** for characters.\n- Supports individual **debugging\
-    \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
-    \ Snapshot](/img/snapshot_w1.jpg)\n#### Development View\n![Development View Snapshot](/img/snapshot_w2.jpg)\n\
-    #### Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\n### On Mobile\n\
-    ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
+    - Supports setting **quota limits** for characters.\n- Supports characters **importing\
+    \ and exporting**.\n- Supports individual **debugging and sharing prompts**.\n\
+    \n## Snapshots\n### On PC\n#### Home Page\n![Home Page Snapshot](/img/snapshot_w1.jpg)\n\
+    #### Development View\n![Development View Snapshot](/img/snapshot_w2.jpg)\n####\
+    \ Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\n### On Mobile\n![Chat\
+    \ Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
     \ />\n![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
@@ -3005,7 +3006,7 @@ paths:
       - application/json
   /api/v1/character/import:
     post:
-      description: Export character configuration from a tar.gz file.
+      description: Import character configuration from a tar.gz file.
       operationId: importCharacter
       requestBody:
         content:

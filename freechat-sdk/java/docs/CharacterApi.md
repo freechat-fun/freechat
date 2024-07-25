@@ -1119,7 +1119,7 @@ public class Example {
 
 Import Character Configuration
 
-Export character configuration from a tar.gz file.
+Import character configuration from a tar.gz file.
 
 ### Example
 ```java

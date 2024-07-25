@@ -23,6 +23,7 @@ It also serves as a prompt engineering platform.
 - Supports **long-term memory, preset memory** for characters.
 - Supports characters evoking **proactive chat**.
 - Supports setting **quota limits** for characters.
+- Supports characters **importing and exporting**.
 - Supports individual **debugging and sharing prompts**.
 
 ## Snapshots

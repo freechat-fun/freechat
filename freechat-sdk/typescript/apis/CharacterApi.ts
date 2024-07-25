@@ -689,7 +689,7 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Export character configuration from a tar.gz file.
+     * Import character configuration from a tar.gz file.
      * Import Character Configuration
      * @param file Character avatar
      */

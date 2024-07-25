@@ -1287,7 +1287,7 @@ Name | Type | Description  | Notes
 
 Import Character Configuration
 
-Export character configuration from a tar.gz file.
+Import character configuration from a tar.gz file.
 
 ### Example
 

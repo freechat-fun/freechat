@@ -2293,7 +2293,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Export character configuration from a tar.gz file.
+     * Import character configuration from a tar.gz file.
      * Import Character Configuration
      * @param param the request object
      */
@@ -2302,7 +2302,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Export character configuration from a tar.gz file.
+     * Import character configuration from a tar.gz file.
      * Import Character Configuration
      * @param param the request object
      */

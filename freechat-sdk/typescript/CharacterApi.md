@@ -1000,7 +1000,7 @@ Name | Type | Description  | Notes
 # **importCharacter**
 > number importCharacter()
 
-Export character configuration from a tar.gz file.
+Import character configuration from a tar.gz file.
 
 ### Example
 

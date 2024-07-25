@@ -2570,7 +2570,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Export character configuration from a tar.gz file.
+     * Import character configuration from a tar.gz file.
      * Import Character Configuration
      * @param file Character avatar
      */
@@ -2594,7 +2594,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Export character configuration from a tar.gz file.
+     * Import character configuration from a tar.gz file.
      * Import Character Configuration
      * @param file Character avatar
      */
