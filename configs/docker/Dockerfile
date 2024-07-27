@@ -11,9 +11,6 @@ ENV APP_HOME=/home/${UNAME}/${APP_NAME}
 RUN groupadd -g ${GID} -o ${UNAME}
 RUN useradd -m -u ${UID} -g ${GID} -o ${UNAME}
 
-RUN apt-get update && \
-    apt-get install -y iproute2
-
 COPY scripts/* ${APP_HOME}/
 
 RUN mkdir ${APP_HOME}/logs && \

@@ -55,7 +55,7 @@ usage() {
 
   check_start() {
     local exptime=0
-    local time=300
+    local time=600
     while true
     do
       curl -sf "http://localhost:${SERVER_PORT:-8080}/public/check/ready" &>/dev/null
@@ -83,7 +83,6 @@ usage() {
   }
 
   get_pid() {
-    # ls -l /proc/[0-9]*/exe | grep "java" | awk -F/ '{print $3}'
     ps -ef | grep "java" | grep "project.name=${APP_NAME}" | awk '{print $2}'
   }
 
