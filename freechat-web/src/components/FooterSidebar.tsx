@@ -87,6 +87,7 @@ export default function FooterSidebar() {
     >
       <div>
         <List
+          size="sm"
           orientation="horizontal"
           sx={{
             bgcolor: 'transparent',

@@ -85,6 +85,7 @@ export default function ThinSidebar() {
     >
       <div>
         <List
+          size="sm"
           sx={{
             bgcolor: 'transparent',
             borderRadius: 'md',
