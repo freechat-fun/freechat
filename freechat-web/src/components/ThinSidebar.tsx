@@ -2,10 +2,9 @@ import { forwardRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
-import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded } from "@mui/icons-material";
+import { AccountTreeRounded, AndroidRounded, ArticleRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded, SmsRounded } from "@mui/icons-material";
 import { ColorSchemeToggle, LanguageToggle } from ".";
 import { useMetaInfoContext } from "../contexts";
-import { ChatIcon } from "./icon";
 
 
 const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -13,8 +12,8 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   return (
     <Tooltip
       ref={ref}
-      size="sm"
       placement="right"
+      size="sm"
       sx={{
         zIndex: 9999,
         ...sx
@@ -24,10 +23,8 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       <Box
         component="span"
         sx={{
-          width: '100%',
           display: 'inline-block',
       }}>
-          
         {children}
       </Box>
     </Tooltip>
@@ -88,7 +85,6 @@ export default function ThinSidebar() {
     >
       <div>
         <List
-          size="sm"
           sx={{
             bgcolor: 'transparent',
             borderRadius: 'md',
@@ -115,7 +111,7 @@ export default function ThinSidebar() {
           <ListItem>
             <ItemTooltip title={t('Chat')}>
               <ItemButton href="/w/chat">
-                <ChatIcon />
+                <SmsRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>
@@ -137,14 +133,6 @@ export default function ThinSidebar() {
             <ItemTooltip title={t('Prompts')}>
               <ItemButton href="/w/prompts">
                 <ArticleRounded />
-              </ItemButton>
-            </ItemTooltip>
-          </ListItem>
-
-          <ListItem>
-            <ItemTooltip title={t('Plugins')}>
-              <ItemButton disabled href="/w/plugins">
-                <ExtensionRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>

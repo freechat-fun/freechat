@@ -2,10 +2,9 @@ import { forwardRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
-import { GitHub, HomeRounded, LoginRounded, LogoutRounded } from "@mui/icons-material";
+import { GitHub, HomeRounded, LoginRounded, LogoutRounded, SmsRounded } from "@mui/icons-material";
 import { ColorSchemeToggle, LanguageToggle } from ".";
 import { useMetaInfoContext } from "../contexts";
-import { ChatIcon } from "./icon";
 
 
 const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -26,7 +25,6 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
         sx={{
           display: 'inline-block',
       }}>
-          
         {children}
       </Box>
     </Tooltip>
@@ -89,7 +87,6 @@ export default function FooterSidebar() {
     >
       <div>
         <List
-          size="sm"
           orientation="horizontal"
           sx={{
             bgcolor: 'transparent',
@@ -117,7 +114,7 @@ export default function FooterSidebar() {
           <ListItem>
             <ItemTooltip title={t('Chat')}>
               <ItemButton href="/w/chat">
-                <ChatIcon />
+                <SmsRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>

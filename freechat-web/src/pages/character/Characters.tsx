@@ -6,12 +6,11 @@ import { CommonBox, ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder,
 import { CharacterCreateDTO, CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, ChatCreateDTO } from "freechat-sdk";
 import { Avatar, Box, Button, ButtonGroup, Card, Chip, FormControl, FormHelperText, IconButton, Input, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { AddCircleRounded, DeleteForeverRounded, ImportExportRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
+import { AddCircleRounded, DeleteForeverRounded, ImportExportRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded, SmsRounded } from "@mui/icons-material";
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
 import { i18nConfig } from "../../configs/i18n-config";
-import { ChatIcon } from "../../components/icon";
 import { exportCharacter } from "../../libs/character_utils";
 
 let idCounter = 0;
@@ -83,7 +82,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       </SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
-        icons={{view: ChatIcon}}
+        icons={{view: SmsRounded}}
         onView={() => onView()}
         onEdit={() => onEdit()}
         onDownload={() => onDownload()}
@@ -136,10 +135,7 @@ export default function Characters() {
   useEffect(() => {
     idCounter++;
     doSearch();
-    return () => {
-      initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
-      setCharacterUploading(false);
-    }
+    return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
   }, [doSearch]);
 
   function defaultQuery(limit: number): CharacterQueryDTO {
