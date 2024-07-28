@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
-import { AliyunIcon  } from '../../components/icon';
+import { AliyunIcon } from '../../components/icon';
 import { useErrorMessageBusContext, useMetaInfoContext } from '../../contexts';
 import { UserFullDetailsDTO } from 'freechat-sdk';
 

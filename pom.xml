@@ -9,7 +9,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <revision>1.3.0</revision>
+        <revision>1.3.1</revision>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
