@@ -1,18 +1,22 @@
 package fun.freechat.service.chat.impl;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.agent.tool.ToolExecutor;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.*;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
+import dev.langchain4j.rag.AugmentationRequest;
+import dev.langchain4j.rag.AugmentationResult;
 import dev.langchain4j.rag.RetrievalAugmentor;
+import dev.langchain4j.rag.content.Content;
 import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
+import dev.langchain4j.service.tool.ToolExecutor;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
@@ -34,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
@@ -202,7 +207,7 @@ public class ChatServiceImpl implements ChatService {
                 }
 
                 response = chatModel.generate(chatMemory.messages(), toolSpecifications);
-                tokenUsageAccumulator = tokenUsageAccumulator.add(response.tokenUsage());
+                tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
             }
 
             session.getProcessing().set(false);
@@ -271,17 +276,18 @@ public class ChatServiceImpl implements ChatService {
             List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
 
-            if (Objects.nonNull(knowledgeRetriever)) {
-                Metadata metadata = Metadata.from(userMessage, memoryId, messages);
-                try {
-                    UserMessage relevantMessage =
-                            session.getRetriever().augment(userMessage, metadata);
-                    if (relevantMessage != userMessage) {
-                        relevantConcatenated = toSingleText(relevantMessage);
-                    }
-                } catch (Throwable ex) {
-                    log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
-                }
+            try {
+                relevantConcatenated = Optional.ofNullable(knowledgeRetriever)
+                        .map(retriever -> retriever.augment(
+                                new AugmentationRequest(userMessage, Metadata.from(userMessage, memoryId, messages))))
+                        .map(AugmentationResult::contents)
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .map(Content::textSegment)
+                        .map(TextSegment::text)
+                        .collect(Collectors.joining("\n\n"));
+            } catch (Throwable ex) {
+                log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
             }
 
             if (Objects.nonNull(longTermMemoryRetriever)) {
@@ -293,6 +299,7 @@ public class ChatServiceImpl implements ChatService {
                 }
             }
         }
+
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
         ChatPromptContent prompt = session.getPrompt();

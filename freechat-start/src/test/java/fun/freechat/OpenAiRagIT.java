@@ -74,8 +74,8 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
     }
 
     private void testUploadDocument(String doc) {
-        if (doc.startsWith("/public/test/")) {
-            url = getLocalUrl(doc);
+        if (HttpUtils.isSafeUrl(doc)) {
+            url = doc;
             isFile = false;
             return;
         }
@@ -271,7 +271,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
                         List.of("carrot")),
 
                 Arguments.of(modelId(),
-                        "/public/test/info/request?doc=Once%20upon%20a%20time%20in%20the%20garden%20of%20FlowerField%20there%20bloomed%20a%20gentle%20sunflower%20named%20Lily",
+                        "https://freechat.fun/public/test/info/request?doc=Once%20upon%20a%20time%20in%20the%20garden%20of%20FlowerField%20there%20bloomed%20a%20gentle%20sunflower%20named%20Lily",
                         "Who is Lily?",
                         "en",
                         List.of("sunflower")),

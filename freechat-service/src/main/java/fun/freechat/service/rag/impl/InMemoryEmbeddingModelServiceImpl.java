@@ -1,11 +1,11 @@
 package fun.freechat.service.rag.impl;
 
 import dev.langchain4j.model.Tokenizer;
-import dev.langchain4j.model.embedding.AllMiniLmL6V2QuantizedEmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.HuggingFaceTokenizer;
-import dev.langchain4j.model.embedding.bge.small.en.v15.BgeSmallEnV15QuantizedEmbeddingModel;
-import dev.langchain4j.model.embedding.bge.small.zh.v15.BgeSmallZhV15QuantizedEmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.HuggingFaceTokenizer;
+import dev.langchain4j.model.embedding.onnx.allminilml6v2q.AllMiniLmL6V2QuantizedEmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15QuantizedEmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.bgesmallzhv15q.BgeSmallZhV15QuantizedEmbeddingModel;
 import fun.freechat.service.rag.EmbeddingModelService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +73,7 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
                 BgeSmallZhV15QuantizedEmbeddingModel.class);
 
         defaultTokenizer = tokenizerFromResource(
-                "/tokenizer.json",
+                "/all-minilm-l6-v2-q-tokenizer.json",
                 AllMiniLmL6V2QuantizedEmbeddingModel.class);
     }
 

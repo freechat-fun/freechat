@@ -65,7 +65,7 @@ public class AbstractIntegrationTest {
     static void redisProperties(DynamicPropertyRegistry registry) {
         redis.start();
         mysql.start();
-        milvus.start();;
+        milvus.start();
         registry.add("redis.datasource.url",
                 () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);

@@ -5,7 +5,10 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.rag.AugmentationRequest;
+import dev.langchain4j.rag.AugmentationResult;
 import dev.langchain4j.rag.RetrievalAugmentor;
+import dev.langchain4j.rag.content.Content;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -16,16 +19,17 @@ import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.chat.LongTermChatMemoryStore;
 import fun.freechat.service.rag.EmbeddingModelService;
 import fun.freechat.service.rag.EmbeddingStoreService;
-import fun.freechat.service.util.PromptUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static dev.langchain4j.data.message.ChatMessageType.AI;
@@ -58,21 +62,18 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
         dev.langchain4j.rag.query.Metadata metadata = dev.langchain4j.rag.query.Metadata.from(
                 userMessage, memoryId, chatMemory);
 
-        return Optional.ofNullable(retriever.augment(userMessage, metadata))
-                .filter(relevantMessage -> relevantMessage != userMessage)
-                .map(PromptUtils::toSingleText)
-                .map(text -> text.split("\\n\\n"))
-                .map(Arrays::asList)
+        return Optional.ofNullable(retriever.augment(new AugmentationRequest(userMessage, metadata)))
+                .map(AugmentationResult::contents)
                 .orElse(Collections.emptyList())
                 .stream()
-                .filter(StringUtils::isNotBlank)
+                .map(Content::textSegment)
+                .map(TextSegment::text)
                 .map(ChatMessageDeserializer::messagesFromJson)
                 .filter(messages -> messages.size() == 2 &&
                         messages.getFirst().type() == USER &&
                         messages.getLast().type() == AI)
                 .flatMap(List::stream)
                 .toList();
-
     }
 
     @Override
