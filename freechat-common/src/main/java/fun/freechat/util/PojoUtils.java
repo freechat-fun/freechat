@@ -52,22 +52,22 @@ public class PojoUtils {
     }
 
     private static void register(Object value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             return;
         }
         Map<Object, Object> m = getRegistry();
-        if (Objects.isNull(m)) {
+        if (m == null) {
             REGISTRY.set(new WeakHashMap());
         }
         getRegistry().put(value, null);
     }
 
     private static void unregister(Object value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             return;
         }
         Map<Object, Object> m = getRegistry();
-        if (Objects.isNull(m)) {
+        if (m == null) {
             return;
         }
         m.remove(value);
@@ -77,7 +77,7 @@ public class PojoUtils {
     }
 
     public static String object2JsonString(Object value, boolean recursive) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             return "null";
         } else if (value instanceof Number || value instanceof Boolean) {
             return value.toString();
@@ -101,7 +101,7 @@ public class PojoUtils {
     }
 
     private static String coll2Json(Collection coll, boolean recursive) {
-        if (Objects.isNull(coll)) {
+        if (coll == null) {
             return "null";
         }
         StringBuilder builder = new StringBuilder();
@@ -197,7 +197,7 @@ public class PojoUtils {
     }
 
     private static String map2Json(Map map, boolean recursive) {
-        if (Objects.isNull(map)) {
+        if (map == null) {
             return "null";
         }
         StringBuilder builder = new StringBuilder();
@@ -205,7 +205,7 @@ public class PojoUtils {
         for (Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String key = (String) entry.getKey();
-            if (Objects.isNull(key))  {
+            if (key == null)  {
                 continue;
             }
             builder.append('\"');
@@ -223,7 +223,7 @@ public class PojoUtils {
      * Escape quotes, \, /, \r, \n, \b, \f, \t and other control characters (U+0000 through U+001F).
      */
     private static String escape(String s) {
-        if (Objects.isNull(s)) {
+        if (s == null) {
             return null;
         }
         StringBuilder builder = new StringBuilder();
@@ -273,7 +273,7 @@ public class PojoUtils {
     }
 
     private static List<Object> arrayToList(Object value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             return null;
         }
         List<Object> list = new LinkedList<>();
@@ -333,7 +333,7 @@ public class PojoUtils {
         };
 
         if (isValid) {
-            if (Objects.isNull(converter)) {
+            if (converter == null) {
                 converter = s -> (T) s;
             }
             to.accept(converter.apply(value));

@@ -30,7 +30,7 @@ public class PluginSummaryStatsDTO extends PluginSummaryDTO {
 
     public static PluginSummaryStatsDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple, InteractiveStats stats) {
-        if (Objects.isNull(pluginInfoTriple) || Objects.isNull(stats)) {
+        if (pluginInfoTriple == null || stats == null) {
             return null;
         }
         PluginSummaryStatsDTO dto =

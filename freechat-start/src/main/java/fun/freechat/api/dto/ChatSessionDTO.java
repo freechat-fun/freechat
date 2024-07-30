@@ -44,7 +44,7 @@ public class ChatSessionDTO {
             String senderStatus,
             Boolean isDebugEnabled,
             Boolean isCustomizedApiKeyEnabled) {
-        if (Objects.isNull(chatItem) || Objects.isNull(chatItem.getLeft())) {
+        if (chatItem == null || chatItem.getLeft() == null) {
             return null;
         }
 

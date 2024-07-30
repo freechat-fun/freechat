@@ -448,7 +448,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
                 .subscribe(event -> {
                     String text = event.getText();
-                    if (Objects.isNull(text)) {
+                    if (text == null) {
                         // last event
                         answerBuilder.append(" (")
                                 .append(event.getTokenUsage().toString())
@@ -486,7 +486,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
                 .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
                 .subscribe(event -> {
                     String text = event.getText();
-                    if (Objects.isNull(text)) {
+                    if (text == null) {
                         // last event
                         answerBuilder.append(" (")
                                 .append(event.getTokenUsage().toString())

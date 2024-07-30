@@ -18,7 +18,7 @@ public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
     private final SysUserDetails sysUser;
 
     private static List<GrantedAuthority> getAuthorities(SysUserDetails sysUser) {
-        if (Objects.isNull(sysUser)) {
+        if (sysUser == null) {
             return null;
         }
         List<GrantedAuthority> authorities = new LinkedList<>(sysUser.getAuthorities());

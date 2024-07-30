@@ -67,7 +67,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
         }
         Date now = new Date();
         InteractiveStatsScoreDetails scoreDetails = getScore(userId, infoType, infoId);
-        if (Objects.isNull(scoreDetails)) {
+        if (scoreDetails == null) {
             scoreDetails = new InteractiveStatsScoreDetails()
                     .withScore(v)
                     .withGmtCreate(now)
@@ -90,7 +90,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
     @Override
     public long add(String userId, InfoType infoType, String infoId, StatsType statsType, long delta) {
         SqlColumn<Long> statsColumn = getStatsColumn(statsType);
-        if (Objects.isNull(statsColumn) || infoType == InfoType.UNKNOWN || StringUtils.isBlank(infoId)) {
+        if (statsColumn == null || infoType == InfoType.UNKNOWN || StringUtils.isBlank(infoId)) {
             return -1;
         }
         Date now = new Date();
@@ -111,7 +111,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
                 .render(RenderingStrategies.MYBATIS3);
         InteractiveStats stats = interactiveStatsMapper.selectOne(statement).orElse(null);
         boolean exists = true;
-        if (Objects.isNull(stats)) {
+        if (stats == null) {
             stats = new InteractiveStats()
                     .withGmtCreate(now)
                     .withGmtModified(now)
@@ -207,7 +207,7 @@ public class InteractiveStatsServiceImpl implements InteractiveStatsService {
                     .on(InteractiveStatsDynamicSqlSupport.referId, equalTo(PluginInfoDynamicSqlSupport.pluginUid));
             default -> throw new IllegalStateException("Unexpected value: " + infoType);
         };
-        if (Objects.isNull(table)) {
+        if (table == null) {
             return Collections.emptyList();
         }
         // conditions

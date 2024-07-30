@@ -23,7 +23,7 @@ public class CloseableAiApiKey implements Closeable {
     public CloseableAiApiKey(EncryptionService encryptionService,
                              AiApiKeyMapper aiApiKeyMapper,
                              Long id) {
-        if (Objects.isNull(aiApiKeyMapper) || Objects.isNull(id)) {
+        if (aiApiKeyMapper == null || id == null) {
             throw new IllegalArgumentException("aiApiKeyMapper and id must be defined!");
         }
         this.aiApiKeyMapper = aiApiKeyMapper;
@@ -40,7 +40,7 @@ public class CloseableAiApiKey implements Closeable {
                              AiApiKeyMapper aiApiKeyMapper,
                              String userId,
                              String name) {
-        if (Objects.isNull(aiApiKeyMapper) || StringUtils.isBlank(userId) || StringUtils.isBlank(name)) {
+        if (aiApiKeyMapper == null || StringUtils.isBlank(userId) || StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("aiApiKeyMapper, userId and name must be defined!");
         }
         AiApiKey aiApiKey = aiApiKeyMapper.select(c ->
@@ -68,7 +68,7 @@ public class CloseableAiApiKey implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (StringUtils.isBlank(token) || Objects.isNull(id) || !used) {
+        if (StringUtils.isBlank(token) || id == null || !used) {
             return;
         }
         AiApiKey aiApiKey = new AiApiKey()

@@ -45,7 +45,7 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private String quotaType;
 
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
-        if (Objects.isNull(backend)) {
+        if (backend == null) {
             return null;
         }
         CharacterBackendDetailsDTO dto = CommonUtils.convert(backend, CharacterBackendDetailsDTO.class);

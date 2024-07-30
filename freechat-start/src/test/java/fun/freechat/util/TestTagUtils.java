@@ -29,7 +29,7 @@ public class TestTagUtils implements ApplicationContextAware {
 
     public static void cleanTags(String userId) {
         User user = userService.loadByUserId(userId);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return;
         }
 

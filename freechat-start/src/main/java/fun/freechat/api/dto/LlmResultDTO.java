@@ -36,7 +36,7 @@ public class LlmResultDTO extends TraceableDTO {
     }
 
     public static <T> LlmResultDTO from(Response<T> response) {
-        if (Objects.isNull(response)) {
+        if (response == null) {
             return null;
         }
 

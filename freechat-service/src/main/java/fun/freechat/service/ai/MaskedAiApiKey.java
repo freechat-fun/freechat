@@ -11,7 +11,7 @@ public class MaskedAiApiKey extends AiApiKey {
     private MaskedAiApiKey() {}
 
     public static MaskedAiApiKey of(AiApiKey aiApiKey, EncryptionService encryptionService) {
-        if (Objects.isNull(aiApiKey) || Objects.isNull(encryptionService)) {
+        if (aiApiKey == null || encryptionService == null) {
             throw new IllegalArgumentException("aiApiKey and encryptionService must be defined!");
         }
         MaskedAiApiKey maskedAiApiKey = new MaskedAiApiKey();

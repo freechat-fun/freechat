@@ -25,7 +25,7 @@ public class ChatPromptContentDTO {
     private List<ChatMessageDTO> messages;
 
     public static ChatPromptContentDTO from(ChatPromptContent chatPrompt) {
-        if (Objects.isNull(chatPrompt)) {
+        if (chatPrompt == null) {
             return null;
         }
 

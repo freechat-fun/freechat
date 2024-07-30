@@ -30,7 +30,7 @@ public class AiModelInfoDTO extends TraceableDTO {
     private static final Pattern MODEL_ID_PATTERN = Pattern.compile("\\[(.+?)\\](.+?)(\\|([^|]*))?");
 
     public static AiModelInfoDTO from(AiModelInfo aiModelInfo) {
-        if (Objects.isNull(aiModelInfo)) {
+        if (aiModelInfo == null) {
             return null;
         }
         return CommonUtils.convert(aiModelInfo, AiModelInfoDTO.class);

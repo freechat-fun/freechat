@@ -116,7 +116,7 @@ public class AccountApi {
             Optional<Long> duration) {
         String token = apiTokenService.create(AccountUtils.currentUser(),
                     duration.map(Duration::ofSeconds).orElse(null));
-        if (Objects.isNull(token)) {
+        if (token == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many tokens.");
         }
         return token;

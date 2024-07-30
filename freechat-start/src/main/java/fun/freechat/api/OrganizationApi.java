@@ -43,7 +43,7 @@ public class OrganizationApi {
 
     private String getSubordinateId(String username, Graph<String> subordinates) {
         String userId = AccountUtils.userNameToId(username);
-        if (Objects.isNull(subordinates)) {
+        if (subordinates == null) {
             subordinates = orgService.getSubordinates(AccountUtils.currentUser().getUserId());
         }
         if (subordinates.contains(userId) ||
@@ -243,7 +243,7 @@ public class OrganizationApi {
             String username) {
         getSubordinateId(username);
         User user = userService.loadByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find user " + username);
         }
         return authorityService.list(user).stream().toList();
@@ -263,7 +263,7 @@ public class OrganizationApi {
         getSubordinateId(username);
         checkAuthorities(authorities);
         User user = userService.loadByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find user " + username);
         }
         return authorityService.update(user.getUserId(), authorities);

@@ -223,7 +223,7 @@ public class TestController {
                           Model model) {
         StringBuilder resp = new StringBuilder();
         Object sessionValue = session.getAttribute(key);
-        if (Objects.isNull(sessionValue)) {
+        if (sessionValue == null) {
             resp.append("Session doesn't exist, setting ").append(key).append("=").append(value);
             session.setAttribute(key, value);
         } else {
@@ -250,7 +250,7 @@ public class TestController {
                              Model model) {
         Object sessionValue = session.getAttribute(key);
         TestPojo pojo;
-        if (Objects.isNull(sessionValue) || !(sessionValue instanceof TestPojo)) {
+        if (sessionValue == null || !(sessionValue instanceof TestPojo)) {
             pojo = new TestPojo();
             pojo.a = key;
             pojo.b = value;

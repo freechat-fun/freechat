@@ -30,7 +30,7 @@ public class AgentSummaryStatsDTO extends AgentSummaryDTO {
 
     public static AgentSummaryStatsDTO from(
             Triple<AgentInfo, List<String>, List<String>> agentInfoTriple, InteractiveStats stats) {
-        if (Objects.isNull(agentInfoTriple) || Objects.isNull(stats)) {
+        if (agentInfoTriple == null || stats == null) {
             return null;
         }
         AgentSummaryStatsDTO dto =

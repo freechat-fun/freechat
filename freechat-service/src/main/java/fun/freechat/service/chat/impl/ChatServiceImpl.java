@@ -82,7 +82,7 @@ public class ChatServiceImpl implements ChatService {
         }
 
         CharacterBackend backend = characterService.getBackend(backendId);
-        if (Objects.isNull(backend)) {
+        if (backend == null) {
             return null;
         }
 
@@ -109,12 +109,12 @@ public class ChatServiceImpl implements ChatService {
 
         ChatContext persistentContext = chatContextService.create(context);
 
-        if (Objects.isNull(persistentContext)) {
+        if (persistentContext == null) {
             return null;
         }
 
         ChatSession session = chatSessionService.get(persistentContext);
-        if (Objects.isNull(session)) {
+        if (session == null) {
             chatContextService.delete(persistentContext.getChatId());
             return null;
         }
@@ -161,7 +161,7 @@ public class ChatServiceImpl implements ChatService {
     // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
     public Response<AiMessage> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
-        if (Objects.isNull(session) || Objects.isNull(message) || !session.acquire()) {
+        if (session == null || message == null || !session.acquire()) {
             return null;
         }
 
@@ -221,7 +221,7 @@ public class ChatServiceImpl implements ChatService {
     // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
     public TokenStream streamSend(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
-        if (Objects.isNull(session) || Objects.isNull(message) || !session.acquire()) {
+        if (session == null || message == null || !session.acquire()) {
             return null;
         }
 
@@ -242,7 +242,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void clearMemory(String chatId) {
         ChatSession session = chatSessionService.get(chatId);
-        if (Objects.isNull(session)) {
+        if (session == null) {
             return;
         }
         ChatPromptContent prompt = session.getPrompt();

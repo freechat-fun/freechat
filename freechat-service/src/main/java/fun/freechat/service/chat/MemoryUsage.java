@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public record MemoryUsage(Long messageUsage, TokenUsage tokenUsage) {
     public MemoryUsage add(MemoryUsage that) {
-        if (Objects.isNull(that)) {
+        if (that == null) {
             return this;
         }
         return add(that.messageUsage(), that.tokenUsage());

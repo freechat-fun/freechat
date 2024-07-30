@@ -29,7 +29,7 @@ public class CharacterSummaryStatsDTO extends CharacterSummaryDTO {
 
     public static CharacterSummaryStatsDTO from(
             Pair<CharacterInfo, List<String>> characterInfoPair, InteractiveStats stats) {
-        if (Objects.isNull(characterInfoPair) || Objects.isNull(stats)) {
+        if (characterInfoPair == null || stats == null) {
             return null;
         }
         CharacterSummaryStatsDTO dto =

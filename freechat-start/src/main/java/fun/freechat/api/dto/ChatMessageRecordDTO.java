@@ -27,7 +27,7 @@ public class ChatMessageRecordDTO {
     private String ext;
 
     public static ChatMessageRecordDTO from(ChatMessageRecord record) {
-        if (Objects.isNull(record)) {
+        if (record == null) {
             return null;
         }
 

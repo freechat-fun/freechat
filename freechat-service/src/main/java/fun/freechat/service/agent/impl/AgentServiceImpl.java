@@ -118,7 +118,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     private Triple<AgentInfo, List<String>, List<String>> toInfoTriple(AgentInfo info) {
-        if (Objects.isNull(info)) {
+        if (info == null) {
             return null;
         }
         List<String> tags = tagMapper.select(c ->
@@ -282,7 +282,7 @@ public class AgentServiceImpl implements AgentService {
         for (String orderBy : InfoUtils.trimListElements(query.getOrderBy())) {
             String[] orderByInfo = orderBy.split(" ");
             SortSpecification orderByField = nameToColumn(orderByInfo[0]);
-            if (Objects.isNull(orderByField)) {
+            if (orderByField == null) {
                 continue;
             }
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
@@ -466,14 +466,14 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean hide(Long agentId, User user) {
-        if (Objects.isNull(agentId)) {
+        if (agentId == null) {
             return false;
         }
         AgentInfo AgentInfo = agentInfoMapper.selectOne(c ->
                         c.where(Info.userId, isEqualTo(user.getUserId()))
                                 .and(Info.agentId, isEqualTo(agentId)))
                 .orElse(null);
-        if (Objects.isNull(AgentInfo) ||
+        if (AgentInfo == null ||
                 Visibility.HIDDEN.text().equals(AgentInfo.getVisibility())) {
             return false;
         }
@@ -487,7 +487,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean delete(Long agentId, User user) {
-        if (Objects.isNull(agentId)) {
+        if (agentId == null) {
             return false;
         }
         int rows = agentInfoMapper.delete(c -> c.where(Info.agentId, isEqualTo(agentId))
@@ -629,7 +629,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
         SqlSession session = sqlSessionFactory.openSession();
         try {
             var infoTriple = details(agentId, user);
-            if (Objects.isNull(infoTriple)) {
+            if (infoTriple == null) {
                 return null;
             }
             AgentInfo info = infoTriple.getLeft();

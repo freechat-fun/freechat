@@ -60,7 +60,7 @@ public class LocalFileStoreImpl implements FileStore {
                 listing = Files.list(toPath(path));
             }
 
-            if (Objects.isNull(regex)) {
+            if (regex == null) {
                 return listing.map(this::relativePath)
                         .map(Path::toString)
                         .toList();

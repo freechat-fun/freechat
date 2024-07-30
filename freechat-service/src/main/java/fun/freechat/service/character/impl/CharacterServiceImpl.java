@@ -114,7 +114,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     private Pair<CharacterInfo, List<String>> toInfoPair(CharacterInfo info) {
-        if (Objects.isNull(info)) {
+        if (info == null) {
             return null;
         }
         List<String> tags = tagMapper.select(c ->
@@ -130,7 +130,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     private Triple<CharacterInfo, List<String>, List<CharacterBackend>> toInfoTriple(
             Pair<CharacterInfo, List<String>> infoPair) {
-        if (Objects.isNull(infoPair)) {
+        if (infoPair == null) {
             return null;
         }
         List<CharacterBackend> backends = characterBackendMapper.select(c ->
@@ -155,7 +155,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     private void overrideByDraft(CharacterInfoDraft draft, CharacterInfo info) {
-        if (Objects.isNull(draft)) {
+        if (draft == null) {
             return;
         }
         PojoUtils.mapWhenExists(draft::getChatExample, info::setChatExample);
@@ -279,7 +279,7 @@ public class CharacterServiceImpl implements CharacterService {
         for (String orderBy : InfoUtils.trimListElements(query.getOrderBy())) {
             String[] orderByInfo = orderBy.split(" ");
             SortSpecification orderByField = nameToColumn(orderByInfo[0]);
-            if (Objects.isNull(orderByField)) {
+            if (orderByField == null) {
                 continue;
             }
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
@@ -431,14 +431,14 @@ select distinct c.user_id, c.character_id, c.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean hide(Long characterId, User user) {
-        if (Objects.isNull(characterId)) {
+        if (characterId == null) {
             return false;
         }
         CharacterInfo characterInfo = characterInfoMapper.selectOne(c ->
                         c.where(Info.userId, isEqualTo(user.getUserId()))
                                 .and(Info.characterId, isEqualTo(characterId)))
                 .orElse(null);
-        if (Objects.isNull(characterInfo) ||
+        if (characterInfo == null ||
                 Visibility.HIDDEN.text().equals(characterInfo.getVisibility())) {
             return false;
         }
@@ -452,7 +452,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean delete(Long characterId, User user) {
-        if (Objects.isNull(characterId)) {
+        if (characterId == null) {
             return false;
         }
         int rows = characterInfoMapper.delete(c -> c.where(Info.characterId, isEqualTo(characterId))
@@ -639,7 +639,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
         SqlSession session = sqlSessionFactory.openSession();
         try {
             var infoTriple = details(characterId, user);
-            if (Objects.isNull(infoTriple)) {
+            if (infoTriple == null) {
                 return null;
             }
             CharacterInfo info = infoTriple.getLeft();

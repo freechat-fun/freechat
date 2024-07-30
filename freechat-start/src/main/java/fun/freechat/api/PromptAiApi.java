@@ -53,7 +53,7 @@ public class PromptAiApi {
     private PromptAiService promptAiService;
 
     private String getString(Map<String, Object> parameters, String key) {
-        if (Objects.isNull(parameters)) {
+        if (parameters == null) {
             return null;
         }
         Object value = parameters.get(key);
@@ -97,7 +97,7 @@ public class PromptAiApi {
 
         Response<AiMessage> response =
                 promptAiService.send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
-        if (Objects.isNull(response)) {
+        if (response == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, prompt);
         }
         return LlmResultDTO.from(response);

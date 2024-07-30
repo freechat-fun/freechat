@@ -31,9 +31,9 @@ public class MustachePromptTemplateFactory implements PromptTemplateFactory {
         }
 
         private com.samskivert.mustache.Template template() {
-            if (Objects.isNull(template)) {
+            if (template == null) {
                 synchronized (this) {
-                    if (Objects.isNull(template)) {
+                    if (template == null) {
                         template = templateProvider.get();
                     }
                 }

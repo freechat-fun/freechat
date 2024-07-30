@@ -17,7 +17,7 @@ public class FStringPromptTemplate extends PromptTemplate {
     private String getAsString(Object value) {
         if (value instanceof String) {
             return (String) value;
-        } else if (Objects.isNull(value)) {
+        } else if (value == null) {
             return "";
         } else if (value instanceof Number || value instanceof Boolean || value instanceof Character) {
             return value.toString();

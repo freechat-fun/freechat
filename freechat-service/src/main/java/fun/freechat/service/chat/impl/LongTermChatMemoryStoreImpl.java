@@ -94,7 +94,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                 if (message.type() == USER) {
                     userRecord = record;
                 } else if (message.type() == AI && !((AiMessage) message).hasToolExecutionRequests()) {
-                    if (Objects.isNull(userRecord)) {
+                    if (userRecord == null) {
                         continue;
                     }
                     UserMessage userMessage = (UserMessage) userRecord.getMessage();
@@ -139,7 +139,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
 
     @Override
     public void deleteMessages(Object memoryId) {
-        if (Objects.isNull(memoryId)) {
+        if (memoryId == null) {
             return;
         }
         String lang = chatMemoryService.getLang(memoryId);

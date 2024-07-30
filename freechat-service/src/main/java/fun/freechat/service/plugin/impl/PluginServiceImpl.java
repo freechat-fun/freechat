@@ -123,17 +123,17 @@ public class PluginServiceImpl implements PluginService {
         if (HttpUtils.isSafeUrl(info.getApiInfo())) {
             info.setApiInfo(fetchService.fetchApiDocsInfo(info));
         }
-        if (Objects.isNull(info.getManifestInfo())) {
+        if (info.getManifestInfo() == null) {
             info.setManifestInfo("");
         }
-        if (Objects.isNull(info.getApiInfo())) {
+        if (info.getApiInfo() == null) {
             info.setApiInfo("");
         }
         return info;
     }
 
     private Triple<PluginInfo, List<String>, List<String>> toInfoTriple(PluginInfo info) {
-        if (Objects.isNull(info)) {
+        if (info == null) {
             return null;
         }
         List<String> tags = tagMapper.select(c ->
@@ -292,7 +292,7 @@ public class PluginServiceImpl implements PluginService {
         for (String orderBy : InfoUtils.trimListElements(query.getOrderBy())) {
             String[] orderByInfo = orderBy.split(" ");
             SortSpecification orderByField = nameToColumn(orderByInfo[0]);
-            if (Objects.isNull(orderByField)) {
+            if (orderByField == null) {
                 continue;
             }
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
@@ -473,14 +473,14 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean hide(Long pluginId, User user) {
-        if (Objects.isNull(pluginId)) {
+        if (pluginId == null) {
             return false;
         }
         PluginInfo pluginInfo = pluginInfoMapper.selectOne(c ->
                         c.where(Info.userId, isEqualTo(user.getUserId()))
                                 .and(Info.pluginId, isEqualTo(pluginId)))
                 .orElse(null);
-        if (Objects.isNull(pluginInfo) ||
+        if (pluginInfo == null ||
                 Visibility.HIDDEN.text().equals(pluginInfo.getVisibility())) {
             return false;
         }
@@ -494,7 +494,7 @@ select distinct p.user_id, p.plugin_id, p.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean delete(Long pluginId, User user) {
-        if (Objects.isNull(pluginId)) {
+        if (pluginId == null) {
             return false;
         }
         int rows = pluginInfoMapper.delete(c -> c.where(Info.pluginId, isEqualTo(pluginId))

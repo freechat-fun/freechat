@@ -69,7 +69,7 @@ public class EncryptedPropertyProcessor implements BeanPostProcessor {
         for (Field field : fields) {
             field.setAccessible(true);
             Encrypted encrypted = field.getAnnotation(Encrypted.class);
-            if (Objects.isNull(encrypted)) {
+            if (encrypted == null) {
                 continue;
             }
             try {

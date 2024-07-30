@@ -71,23 +71,23 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
     }
 
     private ToolParameters getParametersFromBody(OpenAPI openApi, RequestBody body) {
-        if (Objects.isNull(body)) {
+        if (body == null) {
             return null;
         }
 
         Content content = body.getContent();
-        if (Objects.isNull(content)) {
+        if (content == null) {
             return null;
         }
 
         MediaType mediaType = content.get(MimeTypeUtils.APPLICATION_JSON_VALUE);
-        if (Objects.isNull(mediaType)) {
+        if (mediaType == null) {
             return null;
         }
 
         //noinspection rawtypes
         Schema schema = mediaType.getSchema();
-        if (Objects.isNull(schema)) {
+        if (schema == null) {
             return null;
         }
 
@@ -102,7 +102,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         }
         if (StringUtils.isNotBlank(ref)) {
             Components components = openApi.getComponents();
-            if (Objects.isNull(components)) {
+            if (components == null) {
                 return null;
             }
             String[] componentPaths = ref.split("/");
@@ -110,7 +110,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
 
             //noinspection rawtypes
             Schema componentSchema = components.getSchemas().get(component);
-            if (Objects.isNull(componentSchema)) {
+            if (componentSchema == null) {
                 return null;
             }
             Map<String, Schema<?>> propertiesMap = componentSchema.getProperties();
@@ -215,12 +215,12 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         OpenAPI openApi = new OpenAPIParser()
                 .readContents(apiInfo, null, options)
                 .getOpenAPI();
-        if (Objects.isNull(openApi)) {
+        if (openApi == null) {
             throw new RuntimeException("Failed to parse api docs: " + apiInfo);
         }
         List<ToolSpecification> resultList = new ArrayList<>();
         Paths paths = openApi.getPaths();
-        if (Objects.isNull(paths)) {
+        if (paths == null) {
             return "[]";
         }
         for (Map.Entry<String, PathItem> entry : paths.entrySet()) {

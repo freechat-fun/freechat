@@ -41,7 +41,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     }
 
     private Cache cache() {
-        if (Objects.isNull(cache) && Objects.nonNull(cacheManager)) {
+        if (cache == null && Objects.nonNull(cacheManager)) {
             cache = cacheManager.getCache(LONG_PERIOD_CACHE_NAME);
         }
         return cache;
@@ -49,12 +49,12 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     private EmbeddingStore<TextSegment> getCachedStore(Object memoryId, long lastModifiedTime) {
         Cache cache = cache();
-        if (Objects.isNull(cache)) {
+        if (cache == null) {
             return null;
         }
         String timestampKey = CACHE_KEY_PREFIX + "timestamp";
         Long timestamp = cache.get(timestampKey, Long.class);
-        if (Objects.isNull(timestamp) || timestamp < lastModifiedTime) {
+        if (timestamp == null || timestamp < lastModifiedTime) {
             return null;
         }
 
@@ -64,7 +64,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     private void removeCachedStore(Object memoryId) {
         Cache cache = cache();
-        if (Objects.isNull(cache)) {
+        if (cache == null) {
             return;
         }
         String timestampKey = CACHE_KEY_PREFIX + "timestamp";
@@ -75,7 +75,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     private void cacheStore(EmbeddingStore<TextSegment> store) {
         Cache cache = cache();
-        if (Objects.isNull(cache)) {
+        if (cache == null) {
             return;
         }
         String timestampKey = CACHE_KEY_PREFIX + "timestamp";
@@ -97,7 +97,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
                     log.warn("Failed to get last modified time of file {}", storePath, e);
                 }
                 EmbeddingStore<TextSegment> store = getCachedStore(memoryId, lastModifiedTime);
-                if (Objects.isNull(store)) {
+                if (store == null) {
                     store = (EmbeddingStore<TextSegment>) InMemoryEmbeddingStore.fromFile(fileStore.toPath(storePath));
                     cacheStore(store);
                 }

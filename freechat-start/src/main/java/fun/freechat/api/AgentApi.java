@@ -437,7 +437,7 @@ public class AgentApi {
             @Parameter(description = "The referenced agentId") @PathVariable("agentId") @Positive
             Long agentId) {
         var agentInfo = agentService.details(agentId, AccountUtils.currentUser());
-        if (Objects.isNull(agentInfo)) {
+        if (agentInfo == null) {
             return null;
         }
         String agentUid = agentService.getUid(agentId);
@@ -466,7 +466,7 @@ public class AgentApi {
         }
         for (var agentInfo : agentInfoList) {
             Long parentAgentId = agentInfo.getLeft().getAgentId();
-            String parentUid = Objects.isNull(parentAgentId) ? null : agentService.getUid(parentAgentId);
+            String parentUid = parentAgentId == null ? null : agentService.getUid(parentAgentId);
             resetAgentInfoTriple(agentInfo, parentUid);
         }
         List<Long> newAgentIds = agentService.create(agentInfoList);

@@ -29,7 +29,7 @@ public class TestAccountUtils implements ApplicationContextAware {
 
     public static Pair<String, String> createUserAndToken(String username, Set<String> roles) {
         User user = userService.loadByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             String randomInfo = IdUtils.newId();
             user = new User().withUsername(username).withPassword("test-" + randomInfo);
             userService.create(user);

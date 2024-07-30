@@ -30,7 +30,7 @@ public class PromptSummaryStatsDTO extends PromptSummaryDTO {
 
     public static PromptSummaryStatsDTO from(
             Triple<PromptInfo, List<String>, List<String>> promptInfoTriple, InteractiveStats stats) {
-        if (Objects.isNull(promptInfoTriple) || Objects.isNull(stats)) {
+        if (promptInfoTriple == null || stats == null) {
             return null;
         }
         PromptSummaryStatsDTO dto =

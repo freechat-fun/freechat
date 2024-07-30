@@ -212,7 +212,7 @@ public class DiGraph<T> implements Graph<T> {
     private Vertex<T> getVertex(T o) {
         Objects.requireNonNull(o);
         Vertex<T> vertex = indexMap.get(o);
-        if (Objects.isNull(vertex)) {
+        if (vertex == null) {
             throw new IllegalArgumentException("Vertex does not in graph: " + o);
         }
         return vertex;
@@ -262,7 +262,7 @@ public class DiGraph<T> implements Graph<T> {
     @SafeVarargs
     @Override
     public final void connect(T... arr) {
-        if (Objects.isNull(arr)) {
+        if (arr == null) {
             return;
         }
 
@@ -279,7 +279,7 @@ public class DiGraph<T> implements Graph<T> {
     @SafeVarargs
     @Override
     public final void disconnect(T... arr) {
-        if (Objects.isNull(arr)) {
+        if (arr == null) {
             return;
         }
 

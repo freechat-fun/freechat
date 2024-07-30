@@ -101,11 +101,11 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
     @Override
     protected boolean requiresExitUser(HttpServletRequest request) {
         Authentication current = securityContextHolderStrategy.getContext().getAuthentication();
-        if (Objects.isNull(current)) {
+        if (current == null) {
             return false;
         }
         Authentication original = getSourceAuthentication(current);
-        if (Objects.isNull(original)) {
+        if (original == null) {
             return false;
         }
         return StringUtils.isBlank(request.getHeader(headerName));
@@ -114,7 +114,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
     @Override
     protected Authentication attemptSwitchUser(HttpServletRequest request) throws AuthenticationException {
         Authentication currentAuthentication = getCurrentAuthentication(request);
-        if (Objects.isNull(currentAuthentication)) {
+        if (currentAuthentication == null) {
             throw new BadCredentialsException("Failed to get current user info");
         }
         SysUserDetails currentUser = (SysUserDetails) currentAuthentication.getPrincipal();
@@ -125,12 +125,12 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         }
         checkPermission(currentAuthentication);
         var userInfo = resolveHeader(headerInfo, currentUser);
-        if (Objects.isNull(userInfo)) {
+        if (userInfo == null) {
             throw new AuthenticationCredentialsNotFoundException(
                     "Failed to parse target user info from header value: " + headerInfo);
         }
         SysUserDetails targetUser = loadUser(userInfo);
-        if (Objects.isNull(targetUser)) {
+        if (targetUser == null) {
             throw new BadCredentialsException(
                     "Failed to query users: " + userInfo.getLeft() + ":" + userInfo.getMiddle());
         }
@@ -183,7 +183,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
 
     private Authentication getCurrentAuthentication(HttpServletRequest request) {
         Authentication current = securityContextHolderStrategy.getContext().getAuthentication();
-        if (Objects.isNull(current)) {
+        if (current == null) {
             return null;
         }
         Authentication original = getSourceAuthentication(current);
@@ -257,7 +257,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         String platform = userInfo.getRight();
 
         User user = sysUserService.loadByUsernameAndPlatform(username, platform);
-        if (Objects.isNull(user) && enableAutoRegister) {
+        if (user == null && enableAutoRegister) {
             user = new User()
                     .withUsername(username)
                     .withPassword(IdUtils.newId())
@@ -267,7 +267,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
             }
         }
         User owner = sysUserService.loadByUsernameAndPlatform(ownerUsername, platform);
-        if (Objects.isNull(owner) && enableAutoRegister) {
+        if (owner == null && enableAutoRegister) {
             owner = new User()
                     .withUsername(ownerUsername)
                     .withPassword(IdUtils.newId())
@@ -277,7 +277,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
             }
         }
 
-        if (Objects.isNull(user) || Objects.isNull(owner)) {
+        if (user == null || owner == null) {
             return null;
         }
 
@@ -345,7 +345,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
     public void setSuccessHandler(AuthenticationSuccessHandler successHandler) {
         AuthenticationSuccessHandler handler = (request, response, authentication) -> {
             FilterChain chain = (FilterChain) request.getAttribute(CHAIN_ATTR_NAME);
-            if (Objects.isNull(chain)) {
+            if (chain == null) {
                 successHandler.onAuthenticationSuccess(request, response, authentication);
             } else {
                 successHandler.onAuthenticationSuccess(request, response, chain, authentication);

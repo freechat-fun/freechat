@@ -44,7 +44,7 @@ public class RagTaskDetailsDTO extends TraceableDTO {
     private String ext;
 
     public static RagTaskDetailsDTO from(RagTask task) {
-        if (Objects.isNull(task)) {
+        if (task == null) {
             return null;
         }
 

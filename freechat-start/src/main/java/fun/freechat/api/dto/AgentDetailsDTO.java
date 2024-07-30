@@ -29,7 +29,7 @@ public class AgentDetailsDTO extends AgentSummaryDTO {
 
     public static AgentDetailsDTO from(
             Triple<AgentInfo, List<String>, List<String>> agentInfoTriple) {
-        if (Objects.isNull(agentInfoTriple)) {
+        if (agentInfoTriple == null) {
             return null;
         }
         AgentDetailsDTO dto =

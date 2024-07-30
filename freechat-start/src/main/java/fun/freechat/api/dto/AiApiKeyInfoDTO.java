@@ -34,7 +34,7 @@ public class AiApiKeyInfoDTO extends TraceableDTO {
     private String username;
 
     public static AiApiKeyInfoDTO from(MaskedAiApiKey apiKey) {
-        if (Objects.isNull(apiKey)) {
+        if (apiKey == null) {
             return null;
         }
         AiApiKeyInfoDTO dto = CommonUtils.convert(apiKey, AiApiKeyInfoDTO.class);

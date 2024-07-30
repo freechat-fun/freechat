@@ -49,7 +49,7 @@ public class PromptTaskDTO {
             }
         }
 
-        if (Objects.isNull(promptRef)) {
+        if (promptRef == null) {
             return task;
         }
 
@@ -71,7 +71,7 @@ public class PromptTaskDTO {
     }
 
     public static PromptTaskDTO from(PromptTask task) {
-        if (Objects.isNull(task)) {
+        if (task == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prompt task should not be null.");
         }
         PromptTaskDTO dto = CommonUtils.convert(task, PromptTaskDTO.class);

@@ -39,7 +39,7 @@ public class UserDetailsDTO extends TraceableDTO {
     private String address;
 
     public static UserDetailsDTO from(User user) {
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         UserDetailsDTO dto = CommonUtils.convert(user, UserDetailsDTO.class);

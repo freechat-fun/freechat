@@ -45,7 +45,7 @@ public class AgentSummaryDTO extends TraceableDTO {
     private List<AiModelInfoDTO> aiModels;
 
     public static AgentSummaryDTO from(Triple<AgentInfo, List<String>, List<String>> agentInfoTriple) {
-        if (Objects.isNull(agentInfoTriple)) {
+        if (agentInfoTriple == null) {
             return null;
         }
         AgentSummaryDTO dto =

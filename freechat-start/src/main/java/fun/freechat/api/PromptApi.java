@@ -416,7 +416,7 @@ public class PromptApi {
             @Parameter(description = "The referenced promptId") @PathVariable("promptId") @Positive
             Long promptId) {
         var promptInfo = promptService.details(promptId, AccountUtils.currentUser());
-        if (Objects.isNull(promptInfo)) {
+        if (promptInfo == null) {
             return null;
         }
         String promptUid = promptService.getUid(promptId);
@@ -446,7 +446,7 @@ public class PromptApi {
         HashMap<String, Integer> referCountMap = new HashMap<>(promptInfoList.size());
         for (var promptInfo : promptInfoList) {
             Long parentPromptId = promptInfo.getLeft().getPromptId();
-            String parentUid = Objects.isNull(parentPromptId) ? null : promptService.getUid(parentPromptId);
+            String parentUid = parentPromptId == null ? null : promptService.getUid(parentPromptId);
             PromptUtils.resetPromptInfoTriple(promptInfo, parentUid);
         }
         List<Long> newPromptIds = promptService.create(promptInfoList);

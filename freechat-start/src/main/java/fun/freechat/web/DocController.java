@@ -166,7 +166,7 @@ public class DocController {
     }
 
     private Triple<JsonNode, Object, JsonNode> getNode(JsonNode node, String path) {
-        if (Objects.isNull(node) || StringUtils.isBlank(path)) {
+        if (node == null || StringUtils.isBlank(path)) {
             return null;
         }
 
@@ -175,7 +175,7 @@ public class DocController {
         String subPath = parts.length > 1 ? parts[1] : null;
         if (node.isObject()) {
             JsonNode child = node.get(key);
-            if (Objects.isNull(child)) {
+            if (child == null) {
                 return null;
             } else if (StringUtils.isBlank(subPath)) {
                 return Triple.of(node, key, child);
@@ -189,7 +189,7 @@ public class DocController {
             }
             int index = Integer.parseInt(m.group(1));
             JsonNode child = node.get(index);
-            if (Objects.isNull(child)) {
+            if (child == null) {
                 return null;
             } else if (StringUtils.isBlank(subPath)) {
                 return Triple.of(node, index, child);

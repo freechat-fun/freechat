@@ -28,7 +28,7 @@ public class TarUtils {
                 InputStream entryInputStream = entry.getMiddle();
                 Long size = entry.getRight();
 
-                if (Objects.isNull(size) || size <= BUFFER_SIZE) {
+                if (size == null || size <= BUFFER_SIZE) {
                     byte[] content = entryInputStream.readAllBytes();
                     tarEntry.setSize(content.length);
                     tarOut.putArchiveEntry(tarEntry);

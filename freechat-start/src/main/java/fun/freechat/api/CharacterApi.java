@@ -404,7 +404,7 @@ public class CharacterApi {
             @Parameter(description = "The referenced characterId") @PathVariable("characterId") @Positive
             Long characterId) {
         var characterDetails = characterService.details(characterId, AccountUtils.currentUser());
-        if (Objects.isNull(characterDetails)) {
+        if (characterDetails == null) {
             return null;
         }
 
@@ -545,18 +545,18 @@ public class CharacterApi {
             CharacterBackendDTO backend) {
         String characterUid = characterService.getUid(characterId);
         CharacterBackend characterBackend = backend.toCharacterBackend(characterUid);
-        if (Objects.isNull(characterBackend)) {
+        if (characterBackend == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
         }
         Integer messageWindowSize = characterBackend.getMessageWindowSize();
-        if (Objects.isNull(messageWindowSize)) {
+        if (messageWindowSize == null) {
             characterBackend.setMessageWindowSize(defaultMessageWindowSize);
         } else if (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Message window size should be between " + minMessageWindowSize + " and " + maxMessageWindowSize);
         }
         Integer longTermMemoryWindowSize = characterBackend.getLongTermMemoryWindowSize();
-        if (Objects.isNull(longTermMemoryWindowSize)) {
+        if (longTermMemoryWindowSize == null) {
             characterBackend.setLongTermMemoryWindowSize(defaultLongTermMemoryWindowSize);
         } else if (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
                 longTermMemoryWindowSize > maxLongTermMemoryWindowSize) {
@@ -580,7 +580,7 @@ public class CharacterApi {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The character backend configuration to be updated") @RequestBody @NotNull
             CharacterBackendDTO backend) {
         CharacterBackend characterBackend = characterService.getBackend(characterBackendId);
-        if (Objects.isNull(characterBackend)) {
+        if (characterBackend == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character backend: " + characterBackendId);
         }
 
@@ -1156,7 +1156,7 @@ public class CharacterApi {
         // create backends
         for (CharacterBackendConfigurationDTO backendConf : characterConf.getBackends()) {
             CharacterBackendDTO backendDTO = backendConf.getBackend();
-            if (Objects.isNull(backendDTO)) {
+            if (backendDTO == null) {
                 continue;
             }
 
@@ -1264,7 +1264,7 @@ public class CharacterApi {
     }
 
     private String createPromptTask(PromptCreateDTO promptCreateDTO, PromptTaskDTO promptTaskDTO) {
-        if (Objects.isNull(promptCreateDTO) || Objects.isNull(promptTaskDTO)) {
+        if (promptCreateDTO == null || promptTaskDTO == null) {
             return null;
         }
 

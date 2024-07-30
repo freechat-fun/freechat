@@ -126,7 +126,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     private ThreadPoolTaskExecutor executor;
 
     private synchronized Lock getLock(Cache cache, String chatId) {
-        if (Objects.isNull(cache)) {
+        if (cache == null) {
             return new ReentrantLock();
         }
         return cache.get(CACHE_KEY_PREFIX + "_lock_" + chatId, ReentrantLock::new);
@@ -155,7 +155,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             unless="#result == null")
     public ChatSession get(String chatId) {
         ChatContext context = chatContextService.get(chatId);
-        if (Objects.isNull(context)) {
+        if (context == null) {
             return null;
         }
         return get(context);
@@ -263,7 +263,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         promptInfo.getInputs(), new TypeReference<>() {});
                 for (Map.Entry<String, Object> input : inputs.entrySet()) {
                     Object value = input.getValue();
-                    if  (Objects.isNull(value) ||
+                    if  (value == null ||
                             (value instanceof String strValue && StringUtils.isBlank(strValue))) {
                         continue;
                     }
@@ -411,7 +411,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             ChatSession session,
             List<dev.langchain4j.data.message.ChatMessage> messages) {
         ModerationModel moderationModel = session.getModerationModel();
-        if (Objects.isNull(moderationModel)) {
+        if (moderationModel == null) {
             return null;
         }
         List<ChatMessage> messagesToModerate = removeToolMessages(messages);

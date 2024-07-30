@@ -122,7 +122,7 @@ public class PromptServiceImpl implements PromptService {
     }
 
     private Triple<PromptInfo, List<String>, List<String>> toInfoTriple(PromptInfo info) {
-        if (Objects.isNull(info)) {
+        if (info == null) {
             return null;
         }
         List<String> tags = tagMapper.select(c ->
@@ -288,7 +288,7 @@ public class PromptServiceImpl implements PromptService {
         for (String orderBy : InfoUtils.trimListElements(query.getOrderBy())) {
             String[] orderByInfo = orderBy.split(" ");
             SortSpecification orderByField = nameToColumn(orderByInfo[0]);
-            if (Objects.isNull(orderByField)) {
+            if (orderByField == null) {
                 continue;
             }
             if (orderByInfo.length < 2 || !"asc".equalsIgnoreCase(orderByInfo[1])) {
@@ -472,14 +472,14 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean hide(Long promptId, User user) {
-        if (Objects.isNull(promptId)) {
+        if (promptId == null) {
             return false;
         }
         PromptInfo promptInfo = promptInfoMapper.selectOne(c ->
                 c.where(Info.userId, isEqualTo(user.getUserId()))
                         .and(Info.promptId, isEqualTo(promptId)))
                 .orElse(null);
-        if (Objects.isNull(promptInfo) ||
+        if (promptInfo == null ||
                 Visibility.HIDDEN.text().equals(promptInfo.getVisibility())) {
             return false;
         }
@@ -493,7 +493,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     @Override
     @LongPeriodCacheEvict(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public boolean delete(Long promptId, User user) {
-        if (Objects.isNull(promptId)) {
+        if (promptId == null) {
             return false;
         }
         int rows = promptInfoMapper.delete(c -> c.where(Info.promptId, isEqualTo(promptId))
@@ -667,7 +667,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         SqlSession session = sqlSessionFactory.openSession();
         try {
             var infoTriple = details(promptId, user);
-            if (Objects.isNull(infoTriple)) {
+            if (infoTriple == null) {
                 return null;
             }
             PromptInfo info = infoTriple.getLeft();
@@ -750,7 +750,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
 
     @Override
     public String apply(String promptTemplate, Map<String, Object> variables, PromptFormat format) {
-        if (StringUtils.isBlank(promptTemplate) || Objects.isNull(variables)) {
+        if (StringUtils.isBlank(promptTemplate) || variables == null) {
             return promptTemplate;
         }
 
@@ -839,7 +839,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     public Pair<String, PromptType> apply(Long promptId, Map<String, Object> variables, Boolean draft) {
         PromptInfo promptInfo = promptInfoMapper.selectOne(c -> c.where(Info.promptId, isEqualTo(promptId)))
                 .orElse(null);
-        if (Objects.isNull(promptInfo)) {
+        if (promptInfo == null) {
             return null;
         }
 
@@ -851,7 +851,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
                     String key = input.getKey();
                     Object value = input.getValue();
                     if (variables.containsKey(key) ||
-                            Objects.isNull(value) ||
+                            value == null ||
                             (value instanceof String strValue && StringUtils.isBlank(strValue))) {
                         continue;
                     }

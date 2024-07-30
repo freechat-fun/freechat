@@ -31,7 +31,7 @@ public class PluginDetailsDTO extends PluginSummaryDTO {
 
     public static PluginDetailsDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple) {
-        if (Objects.isNull(pluginInfoTriple)) {
+        if (pluginInfoTriple == null) {
             return null;
         }
         PluginInfo pluginInfo = pluginInfoTriple.getLeft();

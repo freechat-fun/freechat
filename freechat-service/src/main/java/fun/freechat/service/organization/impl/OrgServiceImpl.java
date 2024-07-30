@@ -187,7 +187,7 @@ public class OrgServiceImpl implements OrgService {
         if (StringUtils.isBlank(userId)) {
             return false;
         }
-        if (Objects.isNull(owners)) {
+        if (owners == null) {
             owners = Collections.emptyList();
         }
         Set<String> banOwners = orgRelationshipMapper.select(c ->
@@ -206,7 +206,7 @@ public class OrgServiceImpl implements OrgService {
         if (StringUtils.isBlank(userId)) {
             return false;
         }
-        if (Objects.isNull(subordinates)) {
+        if (subordinates == null) {
             subordinates = Collections.emptyList();
         }
         Set<String> banSubordinates = orgRelationshipMapper.select(c ->

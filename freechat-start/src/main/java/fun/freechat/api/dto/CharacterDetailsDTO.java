@@ -31,7 +31,7 @@ public class CharacterDetailsDTO extends CharacterSummaryDTO {
 
     public static CharacterDetailsDTO from(
             Triple<CharacterInfo, List<String>, List<CharacterBackend>> characterInfoTriple) {
-        if (Objects.isNull(characterInfoTriple)) {
+        if (characterInfoTriple == null) {
             return null;
         }
         CharacterInfo info = characterInfoTriple.getLeft();

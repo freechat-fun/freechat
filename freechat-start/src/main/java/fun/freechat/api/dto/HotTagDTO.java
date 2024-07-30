@@ -16,7 +16,7 @@ public class HotTagDTO {
     private Long count;
 
     public static HotTagDTO fromHotTag(HotTag hotTag) {
-        if (Objects.isNull(hotTag)) {
+        if (hotTag == null) {
             return null;
         }
         return CommonUtils.convert(hotTag, HotTagDTO.class);

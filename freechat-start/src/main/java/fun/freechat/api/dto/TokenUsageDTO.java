@@ -17,7 +17,7 @@ public class TokenUsageDTO {
     private Integer totalTokenCount;
 
     public static TokenUsageDTO from(TokenUsage tokenUsage) {
-        if (Objects.isNull(tokenUsage)) {
+        if (tokenUsage == null) {
             return null;
         }
         TokenUsageDTO dto = new TokenUsageDTO();

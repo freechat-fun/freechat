@@ -34,9 +34,9 @@ public class HttpUtils {
     private static OkHttpClient client;
 
     private static OkHttpClient getClient() {
-        if (Objects.isNull(client)) {
+        if (client == null) {
             synchronized (HttpUtils.class) {
-                if (Objects.isNull(client)) {
+                if (client == null) {
                     client = createClient();
                 }
             }
@@ -127,11 +127,11 @@ public class HttpUtils {
     }
 
     public static String upload(String url, File file, String filename, Map<String, String> headers) {
-        if (Objects.isNull(file) || !file.exists()) {
+        if (file == null || !file.exists()) {
             return null;
         }
 
-        if (Objects.isNull(filename)) {
+        if (filename == null) {
             filename = file.getName();
         }
 

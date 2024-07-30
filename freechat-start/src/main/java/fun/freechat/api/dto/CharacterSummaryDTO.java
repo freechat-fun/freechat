@@ -56,7 +56,7 @@ public class CharacterSummaryDTO extends TraceableDTO {
     private List<String> tags;
 
     public static CharacterSummaryDTO from(Pair<CharacterInfo, List<String>> characterInfoPair) {
-        if (Objects.isNull(characterInfoPair)) {
+        if (characterInfoPair == null) {
             return null;
         }
         CharacterSummaryDTO dto =

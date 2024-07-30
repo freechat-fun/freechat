@@ -34,7 +34,7 @@ public class ApiTokenInfoDTO extends TraceableDTO {
     private String username;
 
     public static ApiTokenInfoDTO from(MaskedApiToken apiToken) {
-        if (Objects.isNull(apiToken)) {
+        if (apiToken == null) {
             return null;
         }
         ApiTokenInfoDTO dto = CommonUtils.convert(apiToken, ApiTokenInfoDTO.class);

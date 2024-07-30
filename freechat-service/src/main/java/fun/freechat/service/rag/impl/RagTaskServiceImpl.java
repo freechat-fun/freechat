@@ -119,7 +119,7 @@ public class RagTaskServiceImpl implements RagTaskService {
     public boolean setStatus(Long taskId, TaskStatus status, RagTaskExt ext) {
         RagTask task = ragTaskMapper.selectByPrimaryKey(taskId).orElse(null);
 
-        if (Objects.isNull(task)) {
+        if (task == null) {
             return false;
         }
 
@@ -184,7 +184,7 @@ public class RagTaskServiceImpl implements RagTaskService {
     public boolean start(Long taskId) {
         RagTask task = ragTaskMapper.selectByPrimaryKey(taskId).orElse(null);
 
-        if (Objects.isNull(task)) {
+        if (task == null) {
             return false;
         }
 
@@ -198,7 +198,7 @@ public class RagTaskServiceImpl implements RagTaskService {
         Cache cache = CacheUtils.inProcessLongPeriodCache();
 
         CompletableFuture<Void> future = ragTaskRunner.start(task).whenComplete((result, throwable) -> {
-            if (Objects.isNull(throwable)) {
+            if (throwable == null) {
                 setStatus(task, SUCCEEDED, null);
             } else {
                 TaskStatus status = throwable instanceof CancellationException ? CANCELED : FAILED;
@@ -212,7 +212,7 @@ public class RagTaskServiceImpl implements RagTaskService {
             }
         });
 
-        if (Objects.isNull(future)) {
+        if (future == null) {
             return false;
         }
 
@@ -226,12 +226,12 @@ public class RagTaskServiceImpl implements RagTaskService {
     @Override
     public boolean cancel(long taskId) {
         Cache cache = CacheUtils.inProcessLongPeriodCache();
-        if (Objects.isNull(cache)) {
+        if (cache == null) {
             return false;
         }
 
         CompletableFuture<Void> future = cache.get(CACHE_KEY_PREFIX +taskId, CompletableFuture.class);
-        if (Objects.isNull(future)) {
+        if (future == null) {
             return false;
         }
 
@@ -241,7 +241,7 @@ public class RagTaskServiceImpl implements RagTaskService {
     @EventListener
     public void handleTaskStarted(RagTaskStartedEvent event) {
         RagTask task = event.task();
-        if (Objects.isNull(task)) {
+        if (task == null) {
             return;
         }
 

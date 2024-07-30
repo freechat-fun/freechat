@@ -43,7 +43,7 @@ public class ChatContextDTO extends TraceableDTO {
     private String ext;
 
     public static ChatContextDTO from(ChatContext chatContext) {
-        if (Objects.isNull(chatContext)) {
+        if (chatContext == null) {
             return null;
         }
 

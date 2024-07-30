@@ -109,7 +109,7 @@ public class ChatApi {
             ChatCreateDTO chatCreateParams) {
         String chatCharacterUid = characterService.getUid(chatCreateParams.getCharacterId());
         String backendId = null;
-        if (Objects.isNull(chatCreateParams.getBackendId())) {
+        if (chatCreateParams.getBackendId() == null) {
             CharacterBackend backend = characterService.getDefaultBackend(chatCharacterUid);
             if (Objects.nonNull(backend)) {
                 backendId = backend.getBackendId();
@@ -188,7 +188,7 @@ public class ChatApi {
                             .orElse(Boolean.FALSE);
 
                     String senderStatus;
-                    if (Objects.isNull(characterInfo) || StringUtils.isBlank(characterOwner)) {
+                    if (characterInfo == null || StringUtils.isBlank(characterOwner)) {
                         // The character or backend no longer exists.
                         senderStatus = "offline";
                     } else {
@@ -277,7 +277,7 @@ public class ChatApi {
         Response<AiMessage> response = chatService.send(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
-        if (Objects.isNull(response)) {
+        if (response == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
         }
 
@@ -299,7 +299,7 @@ public class ChatApi {
         TokenStream tokenStream = chatService.streamSend(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
-        if (Objects.isNull(tokenStream)) {
+        if (tokenStream == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
         }
 

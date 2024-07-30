@@ -39,7 +39,7 @@ public class PromptAiServiceImpl implements PromptAiService {
     private AiApiKeyService aiApiKeyService;
 
     private CloseableAiApiKey getCloseableAiApiKey(User user, String apiKeyInfo) {
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return aiApiKeyService.use(apiKeyInfo);
         } else {
             return aiApiKeyService.use(user.getUserId(), apiKeyInfo);

@@ -80,7 +80,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         currentUser.getUserId().equals(getRagTaskService().getOwner(taskId));
                 case "chatCreateOp" -> {
                     Long characterId  =(Long) targetObject;
-                    if (Objects.isNull(characterId)) {
+                    if (characterId == null) {
                         allow = false;
                     } else {
                         String chatUserId = currentUser.getUserId();
@@ -257,70 +257,70 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
     }
 
     private PromptService getPromptService() {
-        if (Objects.isNull(promptService)) {
+        if (promptService == null) {
             promptService = applicationContext.getBean(PromptService.class);
         }
         return promptService;
     }
 
     private PromptTaskService getPromptTaskService() {
-        if (Objects.isNull(promptTaskService)) {
+        if (promptTaskService == null) {
             promptTaskService = applicationContext.getBean(PromptTaskService.class);
         }
         return promptTaskService;
     }
 
     private AgentService getAgentService() {
-        if (Objects.isNull(agentService)) {
+        if (agentService == null) {
             agentService = applicationContext.getBean(AgentService.class);
         }
         return agentService;
     }
 
     private PluginService getPluginService() {
-        if (Objects.isNull(pluginService)) {
+        if (pluginService == null) {
             pluginService = applicationContext.getBean(PluginService.class);
         }
         return pluginService;
     }
 
     private CharacterService getCharacterService() {
-        if (Objects.isNull(characterService)) {
+        if (characterService == null) {
             characterService = applicationContext.getBean(CharacterService.class);
         }
         return characterService;
     }
 
     private ChatContextService getChatContextService() {
-        if (Objects.isNull(chatContextService)) {
+        if (chatContextService == null) {
             chatContextService = applicationContext.getBean(ChatContextService.class);
         }
         return chatContextService;
     }
 
     private AiApiKeyService getAiApiKeyService() {
-        if (Objects.isNull(aiApiKeyService)) {
+        if (aiApiKeyService == null) {
             aiApiKeyService = applicationContext.getBean(AiApiKeyService.class);
         }
         return aiApiKeyService;
     }
 
     private OrgService getOrgService() {
-        if (Objects.isNull(orgService)) {
+        if (orgService == null) {
             orgService = applicationContext.getBean(OrgService.class);
         }
         return orgService;
     }
 
     private SysApiTokenService getSysApiTokenService() {
-        if (Objects.isNull(sysApiTokenService)) {
+        if (sysApiTokenService == null) {
             sysApiTokenService = applicationContext.getBean(SysApiTokenService.class);
         }
         return sysApiTokenService;
     }
 
     private RagTaskService getRagTaskService() {
-        if (Objects.isNull(ragTaskService)) {
+        if (ragTaskService == null) {
             ragTaskService = applicationContext.getBean((RagTaskService.class));
         }
         return ragTaskService;

@@ -41,7 +41,7 @@ public record SysUserDetailsManager(SysUserService userService,
     private User mapUser(UserDetails userDetails, User user) {
         Date now = new Date();
 
-        if (Objects.isNull(user)) {
+        if (user == null) {
             user = new User();
         }
 
@@ -55,7 +55,7 @@ public record SysUserDetailsManager(SysUserService userService,
 
     @Override
     public void createUser(UserDetails userDetails) {
-        if (Objects.isNull(userDetails)) {
+        if (userDetails == null) {
             return;
         }
 
@@ -76,7 +76,7 @@ public record SysUserDetailsManager(SysUserService userService,
 
     @Override
     public void updateUser(UserDetails userDetails) {
-        if (Objects.isNull(userDetails)) {
+        if (userDetails == null) {
             return;
         }
 
@@ -88,7 +88,7 @@ public record SysUserDetailsManager(SysUserService userService,
             }
         } else {
             user = ((SysUserDetails) loadUserByUsername(userDetails.getUsername()));
-            if (Objects.isNull(user)) {
+            if (user == null) {
                 return;
             }
             user = mapUser(userDetails, user);
@@ -110,12 +110,12 @@ public record SysUserDetailsManager(SysUserService userService,
                 .map(SysUserDetails.class::cast)
                 .orElse(null);
 
-        if (Objects.isNull(sysUser)) {
+        if (sysUser == null) {
             return;
         }
 
         User user = userService.loadByUsernameAndPassword(sysUser.getUsername(), oldPassword);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return;
         }
         userService.changePassword(user, newPassword);
@@ -129,7 +129,7 @@ public record SysUserDetailsManager(SysUserService userService,
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.loadByUsername(username);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new UsernameNotFoundException("No user for " + username);
         }
         return SysUserDetails.builder()
@@ -141,7 +141,7 @@ public record SysUserDetailsManager(SysUserService userService,
 
     public SysUserDetails loadUserByUsernameAndPlatform(String username, String platform) {
         User user = userService.loadByUsernameAndPlatform(username, platform);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return SysUserDetails.builder()
@@ -177,7 +177,7 @@ public record SysUserDetailsManager(SysUserService userService,
         if ("aliyun".equalsIgnoreCase(platform)) {
             String uid = oAuth2User.getAttribute("uid");
             String aid = oAuth2User.getAttribute("aid");
-            if (Objects.isNull(uid) || Objects.isNull(aid)) {
+            if (uid == null || aid == null) {
                 return nickname;
             }
             if (StringUtils.equals(uid, aid)) {
@@ -253,7 +253,7 @@ public record SysUserDetailsManager(SysUserService userService,
     }
 
     private Date timestampToDate(Object timestamp) {
-        if (Objects.isNull(timestamp)) {
+        if (timestamp == null) {
             return null;
         }
 
@@ -286,7 +286,7 @@ public record SysUserDetailsManager(SysUserService userService,
         Set<String> authorities = oAuth2User.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
-        if (Objects.isNull(user)) {
+        if (user == null) {
             String zoneInfo = oAuth2User.getAttribute(StandardClaimNames.ZONEINFO);
 
             user = new User()
@@ -337,7 +337,7 @@ public record SysUserDetailsManager(SysUserService userService,
                                                        OAuth2AuthorizedClient oAuth2Client) {
         String platform = oAuth2Client.getClientRegistration().getRegistrationId();
         OAuth2RefreshToken refreshToken = oAuth2Client.getRefreshToken();
-        if (Objects.isNull(refreshToken) && bindService.isBound(sysUser, platform)) {
+        if (refreshToken == null && bindService.isBound(sysUser, platform)) {
             return false;
         }
         String refreshTokenValue = Optional.ofNullable(refreshToken)

@@ -15,7 +15,7 @@ public class UserFullDetailsDTO extends UserDetailsDTO{
     private String password;
 
     public static UserFullDetailsDTO from(User user) {
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         UserFullDetailsDTO dto = CommonUtils.convert(user, UserFullDetailsDTO.class);

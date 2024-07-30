@@ -37,7 +37,7 @@ public class AccountUtils implements ApplicationContextAware {
     @NonNull
     public static User currentUser() {
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
-        if (Objects.isNull(authenticated) || authenticated instanceof AnonymousAuthenticationToken) {
+        if (authenticated == null || authenticated instanceof AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Object principal = authenticated.getPrincipal();
@@ -47,7 +47,7 @@ public class AccountUtils implements ApplicationContextAware {
         } else if (principal instanceof String userName) {
             user = userService.loadByUsername(userName);
         }
-        if (Objects.isNull(user)) {
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         return user;
@@ -74,7 +74,7 @@ public class AccountUtils implements ApplicationContextAware {
     @NonNull
     public static String currentRole() {
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
-        if (Objects.isNull(authenticated)) {
+        if (authenticated == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         String maxAuthority = AuthorityUtils.USER;

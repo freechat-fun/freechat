@@ -50,15 +50,15 @@ public class CharacterQueryDTO {
     private Long pageSize;
 
     public CharacterService.Query toCharacterInfoQuery() {
-        if (Objects.isNull(getPageSize()) || getPageSize() <= 0L) {
+        if (getPageSize() == null || getPageSize() <= 0L) {
             setPageSize(10L);
         } else if (getPageSize() > 100L) {
             setPageSize(100L);
         }
-        if (Objects.isNull(getPageNum()) || getPageNum() < 0L) {
+        if (getPageNum() == null || getPageNum() < 0L) {
             setPageNum(0L);
         }
-        if (Objects.isNull(getWhere())) {
+        if (getWhere() == null) {
             Where where = new Where();
             where.setVisibility(Visibility.PUBLIC.text());
             setWhere(where);

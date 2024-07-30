@@ -34,7 +34,7 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
 
     public static void cleanAiApiKeys(String userId) {
         User user = userService.loadByUserId(userId);
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return;
         }
 

@@ -67,7 +67,7 @@ public class CharacterCreateDTO {
     }
 
     public static CharacterCreateDTO from(Pair<CharacterInfo, List<String>> characterPair) {
-        if (Objects.isNull(characterPair) || Objects.isNull(characterPair.getLeft())) {
+        if (characterPair == null || characterPair.getLeft() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Character info should not be null.");
         }
         CharacterCreateDTO dto = CommonUtils.convert(characterPair.getLeft(), CharacterCreateDTO.class);

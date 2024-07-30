@@ -48,7 +48,7 @@ public class AiApiKeyApi {
         Long id = aiApiKeyService.create(AccountUtils.currentUser(),
                 aiApiKey.getName(), ModelProvider.of(aiApiKey.getProvider()),
                 aiApiKey.getToken(), aiApiKey.getEnabled());
-        if (Objects.isNull(id)) {
+        if (id == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many api keys.");
         }
         return id;

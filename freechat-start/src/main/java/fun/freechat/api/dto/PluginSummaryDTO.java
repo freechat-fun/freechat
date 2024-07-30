@@ -44,7 +44,7 @@ public class PluginSummaryDTO extends TraceableDTO {
 
     public static PluginSummaryDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple) {
-        if (Objects.isNull(pluginInfoTriple)) {
+        if (pluginInfoTriple == null) {
             return null;
         }
         PluginInfo pluginInfo = pluginInfoTriple.getLeft();

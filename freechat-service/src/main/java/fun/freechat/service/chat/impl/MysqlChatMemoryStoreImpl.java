@@ -96,7 +96,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Override
     public void addAiMessage(Object memoryId, AiMessage message, TokenUsage usage) {
-        if (StringUtils.isBlank((String) memoryId) || Objects.isNull(message)) {
+        if (StringUtils.isBlank((String) memoryId) || message == null) {
             return;
         }
 
@@ -114,7 +114,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Override
     public void updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage) {
-        if (Objects.isNull(tokenUsage) || Objects.isNull(message)) {
+        if (tokenUsage == null || message == null) {
             return;
         }
 
@@ -155,7 +155,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
     @Override
     public List<Long> rollback(Object memoryId, Integer count) {
-        if (StringUtils.isBlank((String) memoryId) || Objects.isNull(count) || count <= 0) {
+        if (StringUtils.isBlank((String) memoryId) || count == null || count <= 0) {
             return Collections.emptyList();
         }
 
@@ -282,12 +282,12 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     }
 
     private ChatMessageRecord historyToMessageRecord(ChatHistory history, boolean basic) {
-        if (Objects.isNull(history)) {
+        if (history == null) {
             return null;
         }
 
         ChatMessage message = historyToMessage(history);
-        if (Objects.isNull(message)) {
+        if (message == null) {
             return null;
         }
 
@@ -332,7 +332,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     }
 
     private Cache cache() {
-        if (Objects.isNull(cache) && Objects.nonNull(cacheManager)) {
+        if (cache == null && Objects.nonNull(cacheManager)) {
             cache = cacheManager.getCache(LONG_PERIOD_CACHE_NAME);
         }
         return cache;

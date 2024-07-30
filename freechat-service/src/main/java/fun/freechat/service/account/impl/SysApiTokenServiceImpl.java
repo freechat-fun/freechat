@@ -37,7 +37,7 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
             return null;
         }
         Date now = new Date();
-        String token = Objects.isNull(prefix) ? "" : prefix;
+        String token = prefix == null ? "" : prefix;
         token += IdUtils.newId();
         int rows = apiTokenMapper.insertSelective(new ApiToken()
                 .withGmtCreate(now)
@@ -127,7 +127,7 @@ public class SysApiTokenServiceImpl implements SysApiTokenService {
         Date now = new Date();
         return Objects.nonNull(apiToken) &&
                 apiToken.getIssuedAt().before(now) &&
-                (Objects.isNull(apiToken.getExpiresAt()) || apiToken.getExpiresAt().after(now));
+                (apiToken.getExpiresAt() == null || apiToken.getExpiresAt().after(now));
     }
 
     @Override

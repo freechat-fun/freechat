@@ -83,7 +83,7 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
 
     @Override
     public void delete(Object memoryId, EmbeddingStoreType storeType) {
-        if (Objects.isNull(memoryId)) {
+        if (memoryId == null) {
             return;
         }
         EmbeddingStore<TextSegment> embeddingStore = of(memoryId, storeType);

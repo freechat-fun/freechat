@@ -49,7 +49,7 @@ public class PromptSummaryDTO extends TraceableDTO {
     private List<AiModelInfoDTO> aiModels;
 
     public static PromptSummaryDTO from(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
-        if (Objects.isNull(promptInfoTriple)) {
+        if (promptInfoTriple == null) {
             return null;
         }
         PromptSummaryDTO dto =

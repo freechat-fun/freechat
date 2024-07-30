@@ -48,19 +48,19 @@ public class SysUserServiceImpl implements SysUserService {
             return false;
         }
 
-        if (Objects.isNull(user.getPlatform())) {
+        if (user.getPlatform() == null) {
             user.setPlatform("system");
         }
-        if (Objects.isNull(user.getEmailVerified())) {
+        if (user.getEmailVerified() == null) {
             user.setEmailVerified((byte)0);
         }
-        if (Objects.isNull(user.getPhoneNumberVerified())) {
+        if (user.getPhoneNumberVerified() == null) {
             user.setPhoneNumberVerified((byte)0);
         }
-        if (Objects.isNull(user.getEnabled())) {
+        if (user.getEnabled() == null) {
             user.setEnabled((byte)1);
         }
-        if (Objects.isNull(user.getLocked())) {
+        if (user.getLocked() == null) {
             user.setLocked((byte)0);
         }
         return true;

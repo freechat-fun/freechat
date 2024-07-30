@@ -45,7 +45,7 @@ public class CharacterBackendDTO {
     }
 
     public static CharacterBackendDTO from(CharacterBackend backend) {
-        if (Objects.isNull(backend)) {
+        if (backend == null) {
             return null;
         }
         CharacterBackendDTO dto = CommonUtils.convert(backend, CharacterBackendDTO.class);

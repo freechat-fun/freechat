@@ -20,7 +20,7 @@ public class UserBasicInfoDTO extends TraceableDTO{
     private String picture;
 
     public static UserBasicInfoDTO from(User user) {
-        if (Objects.isNull(user)) {
+        if (user == null) {
             return null;
         }
         return CommonUtils.convert(user, UserBasicInfoDTO.class);

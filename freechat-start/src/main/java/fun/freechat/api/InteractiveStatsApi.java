@@ -64,7 +64,7 @@ public class InteractiveStatsApi {
         }
         return interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
                 InfoType.of(infoType), infoId,
-                StatsType.of(statsType), Objects.isNull(delta) ? 0L : delta);
+                StatsType.of(statsType), delta == null ? 0L : delta);
     }
 
     @Operation(

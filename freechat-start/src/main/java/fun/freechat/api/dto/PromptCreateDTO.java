@@ -77,7 +77,7 @@ public class PromptCreateDTO {
     }
 
     public static PromptCreateDTO from(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
-        if (Objects.isNull(promptInfoTriple) || Objects.isNull(promptInfoTriple.getLeft())) {
+        if (promptInfoTriple == null || promptInfoTriple.getLeft() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prompt info should not be null.");
         }
         PromptInfo promptInfo = promptInfoTriple.getLeft();

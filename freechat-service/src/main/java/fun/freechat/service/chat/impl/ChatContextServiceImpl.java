@@ -184,7 +184,7 @@ public class ChatContextServiceImpl implements ChatContextService {
 
         String backendId = chatContextMapper.selectOne(statement).map(ChatContext::getBackendId).orElse(null);
 
-        if (Objects.isNull(backendId)) {
+        if (backendId == null) {
             return null;
         }
 

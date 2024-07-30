@@ -57,7 +57,7 @@ public class ChatMessageDTO {
                 AiMessage aiMessage = (AiMessage) message;
                 dto.setContentText(aiMessage.text());
                 List<ToolExecutionRequest> requests = aiMessage.toolExecutionRequests();
-                if (Objects.isNull(requests)) {
+                if (requests == null) {
                     dto.setRole(ASSISTANT.text());
                 } else {
                     dto.setRole(FUNCTION_CALL.text());

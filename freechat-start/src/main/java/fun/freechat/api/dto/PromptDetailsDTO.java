@@ -37,7 +37,7 @@ public class PromptDetailsDTO extends PromptSummaryDTO {
 
     public static PromptDetailsDTO from(
             Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
-        if (Objects.isNull(promptInfoTriple)) {
+        if (promptInfoTriple == null) {
             return null;
         }
         PromptInfo info = promptInfoTriple.getLeft();

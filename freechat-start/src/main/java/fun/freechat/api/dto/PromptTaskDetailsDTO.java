@@ -49,7 +49,7 @@ public class PromptTaskDetailsDTO extends TraceableDTO {
     private String ext;
 
     public static PromptTaskDetailsDTO from(PromptTask task) {
-        if (Objects.isNull(task)) {
+        if (task == null) {
             return null;
         }
         PromptTaskDetailsDTO dto = CommonUtils.convert(task, PromptTaskDetailsDTO.class);

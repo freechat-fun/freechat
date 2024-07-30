@@ -66,7 +66,7 @@ public class RagApi {
         }
 
         Integer maxSegmentSize = task.getMaxSegmentSize();
-        if (Objects.isNull(maxSegmentSize)) {
+        if (maxSegmentSize == null) {
             task.setMaxSegmentSize(defaultMaxSegmentSize);
         } else if (maxSegmentSize < minMaxSegmentSize || maxSegmentSize > maxMaxSegmentSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -74,7 +74,7 @@ public class RagApi {
         }
 
         Integer maxOverlapSize = task.getMaxOverlapSize();
-        if (Objects.isNull(maxOverlapSize)) {
+        if (maxOverlapSize == null) {
             task.setMaxOverlapSize(defaultMaxOverlapSize);
         } else if (maxOverlapSize < minMaxOverlapSize || maxOverlapSize > maxMaxOverlapSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

@@ -19,7 +19,7 @@ public class MemoryUsageDTO extends TraceableDTO {
     public static MemoryUsageDTO from(MemoryUsage memoryUsage) {
         MemoryUsageDTO dto = new MemoryUsageDTO();
 
-        if (Objects.isNull(memoryUsage)) {
+        if (memoryUsage == null) {
             return dto;
         }
 

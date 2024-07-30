@@ -30,7 +30,7 @@ public class SysUserDetails extends User implements UserDetails {
     @Override
     public boolean isAccountNonLocked() {
         Byte locked = getLocked();
-        return Objects.isNull(locked) || locked == (byte) 0;
+        return locked == null || locked == (byte) 0;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SysUserDetails extends User implements UserDetails {
     @Override
     public boolean isEnabled() {
         Byte enabled = getEnabled();
-        return Objects.isNull(enabled) || enabled == (byte) 1;
+        return enabled == null || enabled == (byte) 1;
     }
 
     public static Builder builder() {

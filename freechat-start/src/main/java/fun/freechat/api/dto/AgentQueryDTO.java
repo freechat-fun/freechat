@@ -51,12 +51,12 @@ public class AgentQueryDTO {
     private Long pageSize;
 
     public AgentService.Query toAgentInfoQuery() {
-        if (Objects.isNull(getPageSize()) || getPageSize() <= 0L) {
+        if (getPageSize() == null || getPageSize() <= 0L) {
             setPageSize(10L);
         } else if (getPageSize() > 100L) {
             setPageSize(100L);
         }
-        if (Objects.isNull(getPageNum()) || getPageNum() < 0L) {
+        if (getPageNum() == null || getPageNum() < 0L) {
             setPageNum(0L);
         }
         return AgentService.queryBuilder()

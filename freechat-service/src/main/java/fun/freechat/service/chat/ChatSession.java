@@ -67,10 +67,10 @@ public class ChatSession {
 
     @SuppressWarnings("unused")
     public ChatSession tools(List<Object> objectsWithTools) {
-        if (Objects.isNull(aiServiceContext.toolSpecifications)) {
+        if (aiServiceContext.toolSpecifications == null) {
             aiServiceContext.toolSpecifications = new ArrayList<>();
         }
-        if (Objects.isNull(aiServiceContext.toolExecutors)) {
+        if (aiServiceContext.toolExecutors == null) {
             aiServiceContext.toolExecutors = new HashMap<>();
         }
 
@@ -120,7 +120,7 @@ public class ChatSession {
     }
 
     public void addMemoryUsage(Long messageUsage, TokenUsage tokenUsage) {
-        if (Objects.isNull(memoryUsage)) {
+        if (memoryUsage == null) {
             memoryUsage = new MemoryUsage(messageUsage, tokenUsage);
         } else {
             memoryUsage = memoryUsage.add(messageUsage, tokenUsage);
