@@ -30,11 +30,11 @@ public interface FileStore extends Closeable {
     InputStream read(String path) throws IOException;
     default byte[] readBytes(String path) throws IOException {
         InputStream stream = read(path);
-        return Objects.nonNull(stream) ? IOUtils.toByteArray(stream) : null;
+        return stream != null ? IOUtils.toByteArray(stream) : null;
     }
     default String readString(String path) throws IOException {
         InputStream stream = read(path);
-        return Objects.nonNull(stream) ? IOUtils.toString(stream, StandardCharsets.UTF_8) : null;
+        return stream != null ? IOUtils.toString(stream, StandardCharsets.UTF_8) : null;
     }
     boolean exists(String path);
     void delete(String path) throws IOException;

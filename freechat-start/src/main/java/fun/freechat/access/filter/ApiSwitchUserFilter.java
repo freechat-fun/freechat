@@ -138,7 +138,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         // OK, create the switch user token
         Authentication targetUserRequest = createSwitchUserToken(request, targetUser);
         // publish event
-        if (Objects.nonNull(eventPublisher)) {
+        if (eventPublisher != null) {
             this.eventPublisher.publishEvent(new AuthenticationSwitchUserEvent(
                     securityContextHolderStrategy.getContext().getAuthentication(), targetUser));
         }
@@ -156,7 +156,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         // get the original authorities
         Collection<? extends GrantedAuthority> orig = targetUser.getAuthorities();
         // Allow subclasses to change the authorities to be granted
-        if (Objects.nonNull(switchUserAuthorityChanger)) {
+        if (switchUserAuthorityChanger != null) {
             orig = switchUserAuthorityChanger.modifyGrantedAuthorities(targetUser, currentAuthentication, orig);
         }
         // add the new switch user authority
@@ -187,7 +187,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
             return null;
         }
         Authentication original = getSourceAuthentication(current);
-        return Objects.nonNull(original) ? original : current;
+        return original != null ? original : current;
     }
 
     private Authentication getCurrentAuthenticationAndExitUser(HttpServletRequest request) {
@@ -359,7 +359,7 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         AuthenticationFailureHandler handler = (request, response, exception) -> {
             FilterChain chain = (FilterChain) request.getAttribute(CHAIN_ATTR_NAME);
             failureHandler.onAuthenticationFailure(request, response, exception);
-            if (Objects.nonNull(chain)) {
+            if (chain != null) {
                 chain.doFilter(request, response);
             }
         };

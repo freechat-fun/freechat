@@ -84,7 +84,7 @@ public class LocalFileStoreImpl implements FileStore {
     public long write(String path, InputStream stream, Long contentLength, Instant lastModified) throws IOException {
         Path filePath = toPath(path);
         long size = Files.copy(stream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        if (Objects.nonNull(lastModified)) {
+        if (lastModified != null) {
             Files.setLastModifiedTime(filePath, FileTime.from(lastModified));
         }
         return size;

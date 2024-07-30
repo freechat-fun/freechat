@@ -63,7 +63,7 @@ public class PromptTaskDTO {
         }
         task.setPromptUid(PromptUtils.idToUid(promptRef.getPromptId()));
         task.setVariables(variables);
-        if (Objects.nonNull(promptRef.getDraft())) {
+        if (promptRef.getDraft() != null) {
             task.setDraft(promptRef.getDraft() ? (byte) 0 : (byte) 1);
         }
 

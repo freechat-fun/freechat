@@ -58,7 +58,7 @@ public class TraceAspect {
             throw t;
         } finally {
             Trace trace = getTraceAnnotation(method);
-            if (Objects.nonNull(trace)) {
+            if (trace != null) {
                 String username = Optional.ofNullable(SecurityContextHolder.getContext())
                         .map(SecurityContext::getAuthentication)
                         .map(Principal::getName)

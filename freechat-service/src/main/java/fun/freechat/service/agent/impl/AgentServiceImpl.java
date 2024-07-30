@@ -96,7 +96,7 @@ public class AgentServiceImpl implements AgentService {
         List<String> matchAiModels = query.getWhere().getAiModels();
         Boolean and = query.getWhere().getAiModelsAnd();
         if (CollectionUtils.isNotEmpty(matchAiModels)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return triple.getRight().containsAll(matchAiModels);
             } else {
@@ -637,7 +637,7 @@ select distinct a.user_id, a.agent_id, a.visibility... \
             List<Triple<Long, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
             Triple<Long, Integer, InteractiveStats> versionInfo =
                     CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
-            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
+            Integer version = versionInfo != null ? versionInfo.getMiddle() : info.getVersion();
 
             info.setVisibility(visibility.text());
             info.setAgentId(null);

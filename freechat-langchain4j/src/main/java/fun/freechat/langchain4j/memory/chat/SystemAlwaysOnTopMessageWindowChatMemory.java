@@ -65,7 +65,7 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     @Override
     public List<ChatMessage> messages() {
         LinkedList<ChatMessage> messages = new LinkedList<>(store.getMessages(id));
-        if (Objects.nonNull(latestSystemMessage)) {
+        if (latestSystemMessage != null) {
             messages.removeFirst();
             messages.addFirst(latestSystemMessage);
         }

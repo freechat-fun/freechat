@@ -6,11 +6,11 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
+import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.enums.Visibility;
-import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginService;
 import fun.freechat.service.prompt.PromptService;
@@ -28,7 +28,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Component
 @Slf4j
@@ -174,25 +173,25 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 }
                 case "promptDeleteOp" -> {
                     var info = getPromptService().summary((Long) targetObject, currentUser);
-                    allow = Objects.nonNull(info) &&
+                    allow = info != null &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
                 case "agentDeleteOp" -> {
                     var info = getAgentService().summary((Long) targetObject, currentUser);
-                    allow = Objects.nonNull(info) &&
+                    allow = info != null &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
                 case "pluginDeleteOp" -> {
                     var info = getPluginService().summary((Long) targetObject, currentUser);
-                    allow = Objects.nonNull(info) &&
+                    allow = info != null &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
                 case "characterDeleteOp" -> {
                     var info = getCharacterService().summary((Long) targetObject, currentUser);
-                    allow = Objects.nonNull(info) &&
+                    allow = info != null &&
                             currentUser.getUserId().equals(info.getLeft().getUserId()) &&
                             checkVisibility(info.getLeft().getVisibility(), currentRole);
                 }
@@ -203,21 +202,21 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "aiForPromptOp" -> {
                     allow = true;
                     PromptAiParamDTO aiRequest = (PromptAiParamDTO) targetObject;
-                    if (Objects.nonNull(aiRequest.getPromptRef())) {
+                    if (aiRequest.getPromptRef() != null) {
                         ownerId = getPromptService().getOwner(aiRequest.getPromptRef().getPromptId());
                         allow = currentUser.getUserId().equals(ownerId);
                     }
                     if (allow &&
-                            Objects.nonNull(aiRequest.getParams()) &&
-                            Objects.nonNull(aiRequest.getParams().get("apiKeyName"))) {
+                            aiRequest.getParams() != null &&
+                            aiRequest.getParams().get("apiKeyName") != null) {
                         ownerId = getAiApiKeyService().getOwner(
                                 currentUser.getUserId(), aiRequest.getParams().get("apiKeyName").toString());
-                        allow = Objects.nonNull(ownerId);
+                        allow = ownerId != null;
                     }
                 }
                 case "promptApplyOp" -> {
                     PromptRefDTO promptRef = (PromptRefDTO) targetObject;
-                    allow = Objects.nonNull(promptRef.getPromptId());
+                    allow = promptRef.getPromptId() != null;
                     if (allow) {
                         ownerId = getPromptService().getOwner(promptRef.getPromptId());
                         allow = currentUser.getUserId().equals(ownerId);

@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
             OAuth2User oAuth2User = oAuth2Auth.getPrincipal();
 
             SysUserDetails sysUser;
-            if (Objects.nonNull(sysAuth) && sysAuth.getPrincipal() instanceof SysUserDetails userDetails) {
+            if (sysAuth != null && sysAuth.getPrincipal() instanceof SysUserDetails userDetails) {
                 sysUser = userDetails;
             } else {
                 sysUser = userDetailsManager.createSysUserFromOAuth2UserIfNecessary(oAuth2User, oAuth2Client);

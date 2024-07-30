@@ -103,12 +103,12 @@ public class DocController {
             JsonNode rootNode = API_DOCS_MAPPER.readTree(apiDocs);
             for (var property : properties.entrySet()) {
                 var matchedNodes = getNode(rootNode, (String) property.getKey());
-                if (Objects.nonNull(matchedNodes)) {
+                if (matchedNodes != null) {
                     JsonNode node = matchedNodes.getLeft();
                     Object key = matchedNodes.getMiddle();
                     JsonNode value = matchedNodes.getRight();
                     JsonNode replacedValue = replaceValue(value, property);
-                    if (Objects.nonNull(replacedValue)) {
+                    if (replacedValue != null) {
                         setNode(node, key, replacedValue);
                     }
                 }

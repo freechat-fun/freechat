@@ -101,7 +101,7 @@ public class PluginServiceImpl implements PluginService {
         List<String> matchAiModels = query.getWhere().getAiModels();
         Boolean and = query.getWhere().getAiModelsAnd();
         if (CollectionUtils.isNotEmpty(matchAiModels)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return triple.getRight().containsAll(matchAiModels);
             } else {

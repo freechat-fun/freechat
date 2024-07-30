@@ -111,7 +111,7 @@ public class ChatApi {
         String backendId = null;
         if (chatCreateParams.getBackendId() == null) {
             CharacterBackend backend = characterService.getDefaultBackend(chatCharacterUid);
-            if (Objects.nonNull(backend)) {
+            if (backend != null) {
                 backendId = backend.getBackendId();
             }
         } else {
@@ -202,10 +202,10 @@ public class ChatApi {
                         };
                     }
                     ChatMessageRecord latestMessage = chatInfo.getRight();
-                    if (Objects.nonNull(latestMessage) && latestMessage.getMessage().type() == ChatMessageType.SYSTEM) {
+                    if (latestMessage != null && latestMessage.getMessage().type() == ChatMessageType.SYSTEM) {
                         ChatMessageRecord replacedMessage = null;
                         ChatSession session = chatSessionService.get(chatContext.getChatId());
-                        if (Objects.nonNull(session)) {
+                        if (session != null) {
                             // replace with greeting message
                             String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
                             if (StringUtils.isNotBlank(greeting)) {
@@ -374,7 +374,7 @@ public class ChatApi {
             ChatMessageRecord firstRecord = records.removeFirst();
             --end;
             ChatSession session = chatSessionService.get(chatId);
-            if (Objects.nonNull(session)) {
+            if (session != null) {
                 // add greeting message
                 String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
                 if (StringUtils.isNotBlank(greeting)) {

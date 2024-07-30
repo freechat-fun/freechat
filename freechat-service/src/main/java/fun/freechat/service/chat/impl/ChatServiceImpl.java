@@ -153,7 +153,7 @@ public class ChatServiceImpl implements ChatService {
     public String getDefaultChatId(User user, Long characterId) {
         String characterUid = characterService.getUid(characterId);
         CharacterBackend defaultBackend = characterService.getDefaultBackend(characterUid);
-        return Objects.nonNull(defaultBackend) ?
+        return defaultBackend != null ?
                 chatContextService.getIdByBackend(user.getUserId(), defaultBackend.getBackendId()) : null;
     }
 
@@ -171,13 +171,13 @@ public class ChatServiceImpl implements ChatService {
 
             var messages = handleMessages(message, context, memoryId, session, chatMemory);
 
-            Future<Moderation> moderationFuture = Objects.nonNull(session.getModerationModel()) ?
+            Future<Moderation> moderationFuture = session.getModerationModel() != null ?
                     chatSessionService.triggerModerationIfNeeded(session, messages) : null;
 
             ChatLanguageModel chatModel = session.getChatModel();
             List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
 
-            Response<AiMessage> response = Objects.nonNull(toolSpecifications) ?
+            Response<AiMessage> response = toolSpecifications != null ?
                     chatModel.generate(messages, toolSpecifications) :
                     chatModel.generate(messages);
             TokenUsage tokenUsageAccumulator = response.tokenUsage();
@@ -272,7 +272,7 @@ public class ChatServiceImpl implements ChatService {
         RetrievalAugmentor knowledgeRetriever = session.getRetriever();
         RetrievalAugmentor longTermMemoryRetriever = session.getLongTermMemoryRetriever();
         if (message.type() == USER &&
-                (Objects.nonNull(knowledgeRetriever) || Objects.nonNull(longTermMemoryRetriever))) {
+                (knowledgeRetriever != null || longTermMemoryRetriever != null)) {
             List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
 
@@ -290,7 +290,7 @@ public class ChatServiceImpl implements ChatService {
                 log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
             }
 
-            if (Objects.nonNull(longTermMemoryRetriever)) {
+            if (longTermMemoryRetriever != null) {
                 try {
                     longTermMemoryMessages = longTermChatMemoryStore.getMessages(
                             memoryId, userMessage, messages, longTermMemoryRetriever);
@@ -308,7 +308,7 @@ public class ChatServiceImpl implements ChatService {
 
         ChatMessage messageToSend = message;
         if (message.type() == USER) {
-            if (Objects.nonNull(prompt.getMessageToSend())) {
+            if (prompt.getMessageToSend() != null) {
                 messageToSend = promptService.apply(
                         UserMessage.from(prompt.getMessageToSend().contents()),
                         variables,

@@ -75,11 +75,11 @@ public class SysUserDetails extends User implements UserDetails {
 
             BeanUtils.copyProperties(user, sysUser);
 
-            if (Objects.nonNull(passwordEncoder)) {
+            if (passwordEncoder != null) {
                 sysUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
 
-            if (Objects.nonNull(authorityService)) {
+            if (authorityService != null) {
                 sysUser.authorities = authorityService.list(user)
                         .stream()
                         .map(SimpleGrantedAuthority::new)

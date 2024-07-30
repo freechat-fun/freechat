@@ -31,7 +31,7 @@ public class ChatContentDTO {
         ensureNotNull(content, "content");
         if (content.type() == IMAGE) {
             Image image = ((ImageContent) content).image();
-            if (Objects.nonNull(image.url())) {
+            if (image.url() != null) {
                 return ChatContentDTO.fromImage(image.url().toString());
             } else {
                 String dataUrl = "data:%s;base64,%s";

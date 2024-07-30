@@ -170,9 +170,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         lock.lock();
         try {
             // double-checked locking
-            if (Objects.nonNull(cache)) {
+            if (cache != null) {
                 ChatSession session = cache.get(CACHE_KEY_PREFIX + chatId, ChatSession.class);
-                if (Objects.nonNull(session)) {
+                if (session != null) {
                     return session;
                 }
             }
@@ -353,7 +353,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             RetrievalAugmentor longTermMemoryRetrievalAugmentor = null;
             Integer longTermMemoryWindowSize = backend.getLongTermMemoryWindowSize();
 
-            if (Objects.nonNull(longTermMemoryWindowSize) && longTermMemoryWindowSize > 0L) {
+            if (longTermMemoryWindowSize != null && longTermMemoryWindowSize > 0L) {
                 EmbeddingStore<TextSegment> longTermMemoryEmbeddingStore =
                         embeddingStoreService.of(chatId, longTermMemoryTypeForLang(lang));
 
@@ -420,10 +420,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
     @Override
     public void verifyModerationIfNeeded(ChatSession session, Future<Moderation> moderationFuture) {
-        if (Objects.nonNull(moderationFuture)) {
+        if (moderationFuture != null) {
             try {
                 Moderation moderation = moderationFuture.get();
-                if (Objects.nonNull(moderation) && moderation.flagged()) {
+                if (moderation != null && moderation.flagged()) {
                     throw new ModerationException(
                             String.format("Text \"%s\" violates content policy", moderation.flaggedText()));
                 }

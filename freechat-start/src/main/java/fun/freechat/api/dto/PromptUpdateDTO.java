@@ -26,7 +26,7 @@ public class PromptUpdateDTO extends PromptCreateDTO {
         promptInfo.setPromptId(promptId);
         promptInfo.setUserId(
                 Objects.requireNonNull(AccountUtils.currentUser()).getUserId());
-        if (StringUtils.isBlank(getTemplate()) && Objects.nonNull(getChatTemplate())) {
+        if (StringUtils.isBlank(getTemplate()) && getChatTemplate() != null) {
             try {
                 promptInfo.setTemplate(
                         InfoUtils.defaultMapper().writeValueAsString(

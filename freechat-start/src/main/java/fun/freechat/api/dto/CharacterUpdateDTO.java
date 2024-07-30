@@ -21,7 +21,7 @@ public class CharacterUpdateDTO extends CharacterCreateDTO {
         characterInfo.setCharacterId(characterId);
         characterInfo.setUserId(
                 Objects.requireNonNull(AccountUtils.currentUser()).getUserId());
-        if (Objects.nonNull(getGender())) {
+        if (getGender() != null) {
             characterInfo.setGender(GenderType.of(getGender()).text());
         }
         return Pair.of(characterInfo, getTags());

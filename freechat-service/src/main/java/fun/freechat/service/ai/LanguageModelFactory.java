@@ -305,7 +305,7 @@ public class LanguageModelFactory {
         Object value = parameters.get(key);
         if (value instanceof String strValue) {
             return strValue;
-        } else if (Objects.nonNull(value)) {
+        } else if (value != null) {
             return value.toString();
         } else {
             return null;

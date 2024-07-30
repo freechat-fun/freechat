@@ -77,16 +77,16 @@ public class PromptUtils {
         try {
             JsonNode rootNode = InfoUtils.defaultMapper().readTree(draft);
             JsonNode typeNode = rootNode.get("type");
-            if (Objects.nonNull(typeNode)) {
+            if (typeNode != null) {
                 PromptType type = PromptType.of(typeNode.asText());
                 if (type == PromptType.STRING) {
                     JsonNode templateNode = rootNode.get("template");
-                    if (Objects.nonNull(templateNode) && templateNode.isTextual()) {
+                    if (templateNode != null && templateNode.isTextual()) {
                         template = templateNode.asText();
                     }
                 } else if (type == PromptType.CHAT) {
                     JsonNode templateNode = rootNode.get("chatTemplate");
-                    if (Objects.nonNull(templateNode) && templateNode.isObject()) {
+                    if (templateNode != null && templateNode.isObject()) {
                         template = templateNode.toString();
                     }
                 }
@@ -132,7 +132,7 @@ public class PromptUtils {
         if (CollectionUtils.isNotEmpty(promptTemplate.getMessages())) {
             messages.addAll(promptTemplate.getMessages());
         }
-        if (Objects.nonNull(promptTemplate.getMessageToSend())) {
+        if (promptTemplate.getMessageToSend() != null) {
             messages.add(promptTemplate.getMessageToSend());
         }
         return messages;

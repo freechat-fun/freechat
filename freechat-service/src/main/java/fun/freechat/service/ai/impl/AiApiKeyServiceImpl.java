@@ -37,7 +37,7 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
                        String token, boolean enabled) {
         if (StringUtils.isBlank(name) ||
                 StringUtils.isBlank(token) ||
-                (Objects.nonNull(maxCount) && list(user, provider).size() >= maxCount)) {
+                (maxCount != null && list(user, provider).size() >= maxCount)) {
             return null;
         }
         Date now = new Date();

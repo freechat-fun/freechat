@@ -61,7 +61,7 @@ public class PromptCreateDTO {
                 Objects.requireNonNull(AccountUtils.currentUser()).getUserId());
         promptInfo.setVisibility(Visibility.of(getVisibility()).text());
         promptInfo.setFormat(PromptFormat.of(getFormat()).text());
-        if (StringUtils.isBlank(getTemplate()) && Objects.nonNull(getChatTemplate())) {
+        if (StringUtils.isBlank(getTemplate()) && getChatTemplate() != null) {
             try {
                 promptInfo.setTemplate(
                         InfoUtils.defaultMapper().writeValueAsString(

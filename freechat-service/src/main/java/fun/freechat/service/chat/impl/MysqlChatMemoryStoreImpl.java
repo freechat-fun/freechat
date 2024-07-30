@@ -71,7 +71,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         SystemMessage systemMessage = firstMessage.type() == SYSTEM ? (SystemMessage) firstMessage : null;
         ChatHistory history = messageToHistory(memoryId, lastMessage, systemMessage, null);
         chatHistoryMapper.insertSelective(history);
-        if (Objects.nonNull(history.getId())) {
+        if (history.getId() != null) {
             cachedList.add(ChatMessageRecord.builder()
                     .id(history.getId())
                     .message(lastMessage)
@@ -102,7 +102,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
         ChatHistory history = messageToHistory(memoryId, message, null, usage);
         chatHistoryMapper.insertSelective(history);
-        if (Objects.nonNull(history.getId())) {
+        if (history.getId() != null) {
             List<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
             cachedList.add(ChatMessageRecord.builder()
                     .id(history.getId())
@@ -189,7 +189,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .stream()
                 .filter(history -> {
                     ChatMessage message = historyToMessage(history);
-                    return Objects.nonNull(message) && message.type() == AI;
+                    return message != null && message.type() == AI;
                 })
                 .map(ChatHistory::getExt)
                 .map(InfoUtils::deserialize)
@@ -247,7 +247,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         if (histories.size() >= maxSize) {
             // There are too many histories. Query the system message (known as the first history).
             ChatHistory systemHistory = loadSystemHistory(memoryId);
-            if (Objects.nonNull(systemHistory) &&
+            if (systemHistory != null &&
                     !Objects.equals(systemHistory.getId(), histories.getFirst().getId())) {
                 histories = new LinkedList<>(histories);
                 histories.addFirst(systemHistory);
@@ -314,9 +314,9 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private static ChatHistory messageToHistory(
             Object memoryId, ChatMessage message, ChatMessage systemMessage, TokenUsage tokenUsage) {
         String ext = null;
-        if (message.type() == USER && Objects.nonNull(systemMessage)) {
+        if (message.type() == USER && systemMessage != null) {
             ext = ChatMessageSerializer.messageToJson(systemMessage);
-        } else if (message.type() == AI && Objects.nonNull(tokenUsage)) {
+        } else if (message.type() == AI && tokenUsage != null) {
             ext =InfoUtils.serialize(tokenUsage);
         }
         String messageText = ChatMessageSerializer.messageToJson(message);
@@ -332,7 +332,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     }
 
     private Cache cache() {
-        if (cache == null && Objects.nonNull(cacheManager)) {
+        if (cache == null && cacheManager != null) {
             cache = cacheManager.getCache(LONG_PERIOD_CACHE_NAME);
         }
         return cache;

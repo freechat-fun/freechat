@@ -21,7 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         InterceptorRegistration registration =
                 registry.addInterceptor(traceInterceptor())
                         .addPathPatterns("/**");
-        if (Objects.nonNull(traceExcludeUri) && traceExcludeUri.length > 0) {
+        if (traceExcludeUri != null && traceExcludeUri.length > 0) {
             registration.excludePathPatterns(traceExcludeUri);
         }
 

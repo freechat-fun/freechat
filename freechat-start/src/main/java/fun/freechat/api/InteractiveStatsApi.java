@@ -151,7 +151,7 @@ public class InteractiveStatsApi {
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getPromptId());
             PromptSummaryStatsDTO dto = PromptSummaryStatsDTO.from(summary, stats);
-            if (Objects.nonNull(dto)) {
+            if (dto != null) {
                 dtoList.add(dto);
             }
         }
@@ -189,7 +189,7 @@ public class InteractiveStatsApi {
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getAgentId());
             AgentSummaryStatsDTO dto = AgentSummaryStatsDTO.from(summary, stats);
-            if (Objects.nonNull(dto)) {
+            if (dto != null) {
                 dtoList.add(dto);
             }
         }
@@ -227,7 +227,7 @@ public class InteractiveStatsApi {
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getPluginId());
             PluginSummaryStatsDTO dto = PluginSummaryStatsDTO.from(summary, stats);
-            if (Objects.nonNull(dto)) {
+            if (dto != null) {
                 dtoList.add(dto);
             }
         }
@@ -265,7 +265,7 @@ public class InteractiveStatsApi {
         for (var summary : summaries) {
             InteractiveStats stats = statsMap.get(summary.getLeft().getCharacterId());
             CharacterSummaryStatsDTO dto = CharacterSummaryStatsDTO.from(summary, stats);
-            if (Objects.nonNull(dto)) {
+            if (dto != null) {
                 dtoList.add(dto);
             }
         }

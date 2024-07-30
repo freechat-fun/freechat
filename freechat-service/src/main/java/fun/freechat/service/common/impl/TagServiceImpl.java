@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService {
                         .and(TagDynamicSqlSupport.referId, isEqualTo(referId))
                         .and(TagDynamicSqlSupport.content, isEqualTo(content)))
                 .orElse(null);
-        if (Objects.nonNull(existedTag)) {
+        if (existedTag != null) {
             return true;
         }
         Date now = new Date();

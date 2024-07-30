@@ -127,7 +127,7 @@ public class RagTaskServiceImpl implements RagTaskService {
     }
 
     private boolean setStatus(RagTask task, TaskStatus status, RagTaskExt ext) {
-        if (Objects.nonNull(ext)) {
+        if (ext != null) {
             task.setExt(ext.toString());
         }
 
@@ -207,7 +207,7 @@ public class RagTaskServiceImpl implements RagTaskService {
                 }
                 setStatus(task, status, new RagTaskExt(throwable.getMessage(), throwable));
             }
-            if (Objects.nonNull(cache)) {
+            if (cache != null) {
                 cache.evict(CACHE_KEY_PREFIX + task.getId());
             }
         });
@@ -216,7 +216,7 @@ public class RagTaskServiceImpl implements RagTaskService {
             return false;
         }
 
-        if (Objects.nonNull(cache)) {
+        if (cache != null) {
             cache.put(CACHE_KEY_PREFIX + task.getId(), future);
         }
 

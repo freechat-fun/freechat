@@ -70,13 +70,13 @@ public class LlmResultDTO extends TraceableDTO {
                 }
             }
             case null, default -> {
-                text = Objects.nonNull(content) ? content.toString() : "";
+                text = content != null ? content.toString() : "";
                 message.setContents(List.of(ChatContentDTO.fromText(text)));
                 message.setRole(PromptRole.ASSISTANT.text());
             }
         }
 
-        String finishReason = Objects.nonNull(response.finishReason()) ?
+        String finishReason = response.finishReason() != null ?
                 response.finishReason().name().toLowerCase() : null;
 
         return LlmResultDTO.from(

@@ -41,7 +41,7 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
     }
 
     private Cache cache() {
-        if (cache == null && Objects.nonNull(cacheManager)) {
+        if (cache == null && cacheManager != null) {
             cache = cacheManager.getCache(LONG_PERIOD_CACHE_NAME);
         }
         return cache;
@@ -86,10 +86,10 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     @Override
     public EmbeddingStore<TextSegment> of(Object memoryId, EmbeddingStoreType storeType) {
-        if (Objects.nonNull(memoryId)) {
+        if (memoryId != null) {
             String storePath = memoryIdToPath(memoryId, storeType);
             FileStore fileStore = StoreUtils.defaultFileStore();
-            if (Objects.nonNull(fileStore) && fileStore.exists(storePath)) {
+            if (fileStore != null && fileStore.exists(storePath)) {
                 long lastModifiedTime = Long.MAX_VALUE;
                 try {
                     lastModifiedTime = fileStore.getLastModifiedTime(storePath);
@@ -109,10 +109,10 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     @Override
     public void flush(Object memoryId, EmbeddingStoreType storeType, EmbeddingStore<TextSegment> store) {
-        if (Objects.nonNull(memoryId) && store instanceof InMemoryEmbeddingStore<TextSegment> inMemoryStore) {
+        if (memoryId != null && store instanceof InMemoryEmbeddingStore<TextSegment> inMemoryStore) {
             String storePath = memoryIdToPath(memoryId, storeType);
             FileStore fileStore = StoreUtils.defaultFileStore();
-            if (Objects.nonNull(fileStore)) {
+            if (fileStore != null) {
                 String dir = memoryDirectory(storeType);
                 if (!fileStore.exists(dir)) {
                     try {
@@ -129,10 +129,10 @@ public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements Embedding
 
     @Override
     public void delete(Object memoryId, EmbeddingStoreType storeType) {
-        if (Objects.nonNull(memoryId)) {
+        if (memoryId != null) {
             String storePath = memoryIdToPath(memoryId, storeType);
             FileStore fileStore = StoreUtils.defaultFileStore();
-            if (Objects.nonNull(fileStore)) {
+            if (fileStore != null) {
                 fileStore.tryDelete(storePath);
                 removeCachedStore(memoryId);
             }

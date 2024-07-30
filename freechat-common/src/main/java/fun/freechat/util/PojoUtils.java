@@ -27,7 +27,7 @@ public class PojoUtils {
 
     private static int getDepth() {
         Integer depth = DEPTH.get();
-        return Objects.nonNull(depth) ? depth : 0;
+        return depth != null ? depth : 0;
     }
 
     private static boolean isTooDeep() {
@@ -48,7 +48,7 @@ public class PojoUtils {
 
     private static boolean isRegistered(Object value) {
         Map<Object, Object> m = getRegistry();
-        return Objects.nonNull(m) && m.containsKey(value);
+        return m != null && m.containsKey(value);
     }
 
     private static void register(Object value) {
@@ -130,7 +130,7 @@ public class PojoUtils {
             fieldList = List.of(type.getDeclaredFields());
         } else {
             fieldList = new LinkedList<>();
-            while (Objects.nonNull(type)) {
+            while (type != null) {
                 fieldList.addAll(List.of(type.getDeclaredFields()));
                 type = type.getSuperclass();
             }
@@ -329,7 +329,7 @@ public class PojoUtils {
             case CharSequence charSequence -> StringUtils.isNotBlank((String) value);
             case Collection<?> objects -> CollectionUtils.isNotEmpty(objects);
             case Map<?, ?> map -> MapUtils.isNotEmpty(map);
-            case null, default -> Objects.nonNull(value);
+            case null, default -> value != null;
         };
 
         if (isValid) {

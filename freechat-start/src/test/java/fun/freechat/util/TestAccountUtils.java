@@ -59,7 +59,7 @@ public class TestAccountUtils implements ApplicationContextAware {
 
     public static void deleteUserAndTokenByUsername(String username) {
         User user = userService.loadByUsername(username);
-        if (Objects.nonNull(user)) {
+        if (user != null) {
             deleteUserAndToken(user.getUserId());
         }
     }

@@ -588,14 +588,14 @@ public class CharacterApi {
         updatedBackend.setBackendId(characterBackend.getBackendId());
 
         Integer messageWindowSize = updatedBackend.getMessageWindowSize();
-        if (Objects.nonNull(messageWindowSize) &&
+        if (messageWindowSize != null &&
                 (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Message window size should be between " + minMessageWindowSize + " and " + maxMessageWindowSize);
         }
 
         Integer longTermMemoryWindowSize = updatedBackend.getLongTermMemoryWindowSize();
-        if (Objects.nonNull(longTermMemoryWindowSize) &&
+        if (longTermMemoryWindowSize != null &&
                 (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
                         longTermMemoryWindowSize > maxLongTermMemoryWindowSize)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -960,7 +960,7 @@ public class CharacterApi {
                 .map(backend -> {
                     CharacterBackendDTO backendDTO = CharacterBackendDTO.from(backend);
 
-                    PromptTask chatPromptTask = Objects.nonNull(backend.getChatPromptTaskId()) ?
+                    PromptTask chatPromptTask = backend.getChatPromptTaskId() != null ?
                             promptTaskService.get(backend.getChatPromptTaskId()) : null;
 
                     PromptCreateDTO chatPromptCreateDTO = Optional.ofNullable(chatPromptTask)
@@ -970,10 +970,10 @@ public class CharacterApi {
                             .map(PromptCreateDTO::from)
                             .orElse(null);
 
-                    PromptTaskDTO chatPromptTaskDTO = Objects.nonNull(chatPromptTask) ?
+                    PromptTaskDTO chatPromptTaskDTO = chatPromptTask != null ?
                             PromptTaskDTO.from(chatPromptTask.withPromptUid(null)) : null;
 
-                    PromptTask greetingPromptTask = Objects.nonNull(backend.getGreetingPromptTaskId()) ?
+                    PromptTask greetingPromptTask = backend.getGreetingPromptTaskId() != null ?
                             promptTaskService.get(backend.getGreetingPromptTaskId()) : null;
 
                     PromptCreateDTO greetingPromptCreateDTO = Optional.ofNullable(greetingPromptTask)
@@ -983,7 +983,7 @@ public class CharacterApi {
                             .map(PromptCreateDTO::from)
                             .orElse(null);
 
-                    PromptTaskDTO greetingPromptTaskDTO = Objects.nonNull(greetingPromptTask) ?
+                    PromptTaskDTO greetingPromptTaskDTO = greetingPromptTask != null ?
                             PromptTaskDTO.from(greetingPromptTask.withPromptUid(null)) : null;
 
                     return CharacterBackendConfigurationDTO.builder()
@@ -1269,7 +1269,7 @@ public class CharacterApi {
         }
 
         var promptInfo = promptCreateDTO.toPromptInfo();
-        if (Objects.nonNull(promptInfo)) {
+        if (promptInfo != null) {
             PromptUtils.resetPromptInfoTriple(promptInfo, null);
             if (!promptService.create(promptInfo)) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt.");

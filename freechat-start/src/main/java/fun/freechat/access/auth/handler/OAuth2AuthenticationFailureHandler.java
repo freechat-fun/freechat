@@ -35,7 +35,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         Authentication sysAuth = StringUtils.isNotBlank(state) ?
                 oAuth2AuthorizationRequestCustomizer.getAndDeleteCachedAuthentication(state) : null;
 
-        if (Objects.nonNull(sysAuth)) {
+        if (sysAuth != null) {
             SecurityContextHolder.getContext().setAuthentication(sysAuth);
         }
 

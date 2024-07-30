@@ -97,7 +97,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
         parameters.setType("object");
         parameters.setDescription(body.getDescription());
         Object example = mediaType.getExample();
-        if (Objects.nonNull(example)) {
+        if (example != null) {
             parameters.setExample(mediaType.getExample().toString());
         }
         if (StringUtils.isNotBlank(ref)) {
@@ -119,7 +119,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
             }
 
             HashMap<String, ToolProperties> properties = new HashMap<>();
-            boolean required = Objects.nonNull(body.getRequired()) ? body.getRequired() : false;
+            boolean required = body.getRequired() != null ? body.getRequired() : false;
             for (var entry : propertiesMap.entrySet()) {
                 String key = entry.getKey();
                 Schema<?> info = entry.getValue();
@@ -128,7 +128,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
                 infoProperties.setType(getType(info));
                 infoProperties.setDescription(info.getDescription());
                 example = info.getExample();
-                if (Objects.nonNull(example)) {
+                if (example != null) {
                     infoProperties.setExample(example.toString());
                 }
                 properties.put(key, infoProperties);
@@ -153,17 +153,17 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
              String type = "string";
             //noinspection rawtypes
             Schema schema = p.getSchema();
-             if (Objects.nonNull(schema)) {
+             if (schema != null) {
                  type = getType(schema);
              }
              infoProperties.setType(type);
              infoProperties.setDescription(p.getDescription());
              Object example = p.getExample();
-            if (Objects.nonNull(example)) {
+            if (example != null) {
                 infoProperties.setExample(example.toString());
             }
             properties.put(p.getName(), infoProperties);
-            boolean required = Objects.nonNull(p.getRequired()) ? p.getRequired() : false;
+            boolean required = p.getRequired() != null ? p.getRequired() : false;
             if (required) {
                 parameters.getRequired().add(p.getName());
             }
@@ -228,7 +228,7 @@ public class OpenAIToolSpecFormatter implements PluginToolSpecFormatService {
             String pathDesc = item.getDescription();
 
             for (Operation op : item.readOperations()) {
-                if (Objects.nonNull(op)) {
+                if (op != null) {
                     String name = op.getOperationId();
                     if (StringUtils.isBlank(name)) {
                         String prefix = getPrefix(op, item);

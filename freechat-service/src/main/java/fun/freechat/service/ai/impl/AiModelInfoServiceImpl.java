@@ -53,7 +53,7 @@ public class AiModelInfoServiceImpl implements AiModelInfoService {
             .orElse(null);
 
         int rows;
-        if (Objects.nonNull(oldModelInfo)) {
+        if (oldModelInfo != null) {
             modelInfo.setGmtCreate(oldModelInfo.getGmtCreate());
             rows = aiModelInfoMapper.updateByPrimaryKeySelective(modelInfo);
         } else {

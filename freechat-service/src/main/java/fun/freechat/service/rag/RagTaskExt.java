@@ -25,7 +25,7 @@ public record RagTaskExt(String message, Throwable ex) {
             info.setMessage(message);
         }
 
-        if (Objects.nonNull(ex)) {
+        if (ex != null) {
             StringWriter exInfo = new StringWriter();
             try (PrintWriter writer = new PrintWriter(exInfo)) {
                 ex.printStackTrace(writer);

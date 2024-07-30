@@ -71,13 +71,13 @@ public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2Auth
 
         boolean isBinding = isBinding();
 
-        if (Objects.nonNull(registrationCustomizer)) {
+        if (registrationCustomizer != null) {
             registrationCustomizer.accept(builder, isBinding);
         }
 
         if (isBinding) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (Objects.nonNull(authentication) && authentication.isAuthenticated()) {
+            if (authentication != null && authentication.isAuthenticated()) {
                 String state = DEFAULT_STATE_GENERATOR.generateKey();
                 RBucket<Authentication> bucket = persistentClient.getBucket(CACHED_AUTHENTICATION_PREFIX + state);
                 bucket.set(authentication, CACHED_AUTHENTICATION_TIMEOUT);

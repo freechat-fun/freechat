@@ -79,12 +79,12 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
         SysUserDetails sysUser = null;
         String currentUserId = null;
         Authentication origAuthentication = securityContextHolderStrategy.getContext().getAuthentication();
-        if (Objects.nonNull(origAuthentication) && origAuthentication.getPrincipal() instanceof User currentUser) {
+        if (origAuthentication != null && origAuthentication.getPrincipal() instanceof User currentUser) {
             currentUserId = currentUser.getUserId();
         }
         for (String token : tokens) {
             User user = apiTokenService.getUser(token);
-            if (Objects.nonNull(user)) {
+            if (user != null) {
                 if (Objects.equals(user.getUserId(), currentUserId)) {
                     return null;
                 }

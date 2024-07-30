@@ -44,7 +44,7 @@ public class TraceUtils {
     }
 
     public static boolean isTracing() {
-        return Objects.nonNull(TRACE_ID.get());
+        return TRACE_ID.get() != null;
     }
 
     public static void setTraceAttribute(String key, Object value) {
@@ -58,7 +58,7 @@ public class TraceUtils {
 
     public static Object getTraceAttribute(String key) {
         Map<String, Object> attributes = TRACE_ATTRIBUTES.get();
-        if (Objects.nonNull(attributes)) {
+        if (attributes != null) {
             return attributes.get(key);
         }
         return null;
@@ -170,7 +170,7 @@ public class TraceUtils {
 
         public String build() {
             String methodInfo = PLACEHOLDER;
-            if (Objects.nonNull(method)) {
+            if (method != null) {
                 if (method instanceof Method methodObj) {
                     String className = shortenClassName(methodObj.getDeclaringClass().getCanonicalName());
                     String methodName = methodObj.getName();
@@ -183,7 +183,7 @@ public class TraceUtils {
             String statusInfo = Optional.ofNullable(status).map(TraceStatus::info).orElse(PLACEHOLDER);
 
             String argsInfo = PLACEHOLDER;
-            if (Objects.nonNull(args) && args.length > 0) {
+            if (args != null && args.length > 0) {
                 argsInfo = Arrays.stream(args)
                         .map(PojoUtils::object2JsonString)
                         .collect(Collectors.joining(COMMA));

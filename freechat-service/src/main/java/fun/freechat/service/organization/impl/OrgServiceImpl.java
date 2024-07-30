@@ -55,7 +55,7 @@ public class OrgServiceImpl implements OrgService {
                         c.where(OrgRelationshipDynamicSqlSupport.userId, isEqualTo(userId))
                                 .and(OrgRelationshipDynamicSqlSupport.ownerId, isEqualTo(ownerId)))
                         .orElse(null);
-                if (Objects.nonNull(oldRelationship)) {
+                if (oldRelationship != null) {
                     if (isEnabled(oldRelationship) && isVirtual == isVirtual(oldRelationship)) {
                         continue;
                     }
@@ -108,7 +108,7 @@ public class OrgServiceImpl implements OrgService {
                                 c.where(OrgRelationshipDynamicSqlSupport.userId, isEqualTo(subordinateId))
                                         .and(OrgRelationshipDynamicSqlSupport.ownerId, isEqualTo(userId)))
                         .orElse(null);
-                if (Objects.nonNull(oldRelationship)) {
+                if (oldRelationship != null) {
                     if (isEnabled(oldRelationship) && isVirtual == isVirtual(oldRelationship)) {
                         continue;
                     }

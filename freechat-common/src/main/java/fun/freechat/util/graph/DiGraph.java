@@ -442,7 +442,7 @@ public class DiGraph<T> implements Graph<T> {
     @Override
     public boolean remove(Object o) {
         Vertex<T> vertex = indexMap.remove(o);
-        if (Objects.nonNull(vertex)) {
+        if (vertex != null) {
             // 断开前继顶点与本顶点的边
             List<Vertex<T>> predecessors = vertex.getPredecessors();
             for (Iterator<Vertex<T>> it = predecessors.iterator(); it.hasNext();) {

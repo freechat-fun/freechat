@@ -22,10 +22,10 @@ public class DelegatedQueryTransformer implements QueryTransformer {
 
     @Override
     public Collection<Query> transform(Query query) {
-        Collection<Query> queries = Objects.nonNull(queryTransformer) ?
+        Collection<Query> queries = queryTransformer != null ?
                 queryTransformer.transform(query) :
                 Collections.singleton(query);
 
-        return Objects.nonNull(postProcessor) ? postProcessor.apply(queries) : queries;
+        return postProcessor != null ? postProcessor.apply(queries) : queries;
     }
 }

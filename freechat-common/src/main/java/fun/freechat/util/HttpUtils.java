@@ -73,7 +73,7 @@ public class HttpUtils {
 
     private static String getResponseAsString(Request request) {
         try (Response response = getClient().newCall(request).execute()) {
-            if (response.isSuccessful() && Objects.nonNull(response.body())) {
+            if (response.isSuccessful() && response.body() != null) {
                 return response.body().string();
             }
         } catch (IOException e) {

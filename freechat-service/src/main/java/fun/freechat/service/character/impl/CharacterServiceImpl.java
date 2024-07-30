@@ -248,7 +248,7 @@ public class CharacterServiceImpl implements CharacterService {
                 isEqualTo(query.getWhere().getLang()).filter(StringUtils::isNotBlank));
         // priority
         Boolean highPriority = query.getWhere().getHighPriority();
-        if (Objects.nonNull(highPriority)) {
+        if (highPriority != null) {
             if (highPriority) {
                 conditions.and(Info.priority, isGreaterThan(1));
             } else {
@@ -618,7 +618,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
 
     @Override
     public Long getLatestIdByUid(String characterUid, User user) {
-        String userId = Objects.nonNull(user) ? user.getUserId() : null;
+        String userId = user != null ? user.getUserId() : null;
         var statement = select(Info.characterId, Info.version)
                 .from(Info.table)
                 .where(Info.characterUid, isEqualTo(characterUid))
@@ -647,7 +647,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
             List<Triple<Long, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
             Triple<Long, Integer, InteractiveStats> versionInfo =
                     CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
-            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
+            Integer version = versionInfo != null ? versionInfo.getMiddle() : info.getVersion();
 
             info.setVisibility(visibility.text());
             info.setVersion(version + 1);

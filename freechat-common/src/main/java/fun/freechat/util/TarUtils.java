@@ -7,11 +7,12 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_GNU;
 
@@ -54,7 +55,7 @@ public class TarUtils {
         try (GzipCompressorInputStream gzipIn = new GzipCompressorInputStream(inputStream);
              TarArchiveInputStream tarIn = new TarArchiveInputStream(gzipIn)) {
             TarArchiveEntry entry;
-            while (Objects.nonNull(entry = tarIn.getNextEntry())) {
+            while ((entry = tarIn.getNextEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;
                 }

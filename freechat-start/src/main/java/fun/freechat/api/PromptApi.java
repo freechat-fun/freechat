@@ -589,7 +589,7 @@ public class PromptApi {
             return promptService.apply(template, promptTemplate.getVariables(),
                     PromptFormat.of(promptTemplate.getFormat()));
         }
-        if (Objects.nonNull(promptTemplate.getChatTemplate())) {
+        if (promptTemplate.getChatTemplate() != null) {
             try {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
@@ -619,7 +619,7 @@ public class PromptApi {
             PromptRefDTO promptRef) {
         Pair<String, PromptType> applied = promptService.apply(
                 promptRef.getPromptId(), promptRef.getVariables(), promptRef.getDraft());
-        return Objects.nonNull(applied) ? applied.getLeft() : null;
+        return applied != null ? applied.getLeft() : null;
     }
 
     @Operation(

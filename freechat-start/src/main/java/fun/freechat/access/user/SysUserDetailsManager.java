@@ -272,7 +272,7 @@ public record SysUserDetailsManager(SysUserService userService,
     }
 
     private Byte toByte(Boolean bool) {
-        return Objects.nonNull(bool) && bool ? (byte) 1 : (byte) 0;
+        return bool != null && bool ? (byte) 1 : (byte) 0;
     }
 
     public SysUserDetails createSysUserFromOAuth2UserIfNecessary(OAuth2User oAuth2User,

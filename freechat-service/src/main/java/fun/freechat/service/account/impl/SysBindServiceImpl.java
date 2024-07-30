@@ -38,7 +38,7 @@ public class SysBindServiceImpl implements SysBindService {
                 .withUserId(user.getUserId())
                 .withPlatform(platform)
                 .withSub(sub)
-                .withIss(Objects.nonNull(iss) ? iss.toExternalForm() : null)
+                .withIss(iss != null ? iss.toExternalForm() : null)
                 .withAud(arrayToString(aud))
                 .withRefreshToken(refreshToken)
                 .withIssuedAt(issuedAt)
@@ -50,7 +50,7 @@ public class SysBindServiceImpl implements SysBindService {
                 .orElse(null);
 
         int rows;
-        if (Objects.nonNull(oldBinding)) {
+        if (oldBinding != null) {
             binding.setGmtCreate(oldBinding.getGmtCreate());
             binding.setId(oldBinding.getId());
             rows = bindingMapper.updateByPrimaryKeySelective(binding);

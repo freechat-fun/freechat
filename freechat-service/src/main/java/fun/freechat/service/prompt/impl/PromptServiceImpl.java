@@ -100,7 +100,7 @@ public class PromptServiceImpl implements PromptService {
         List<String> matchAiModels = query.getWhere().getAiModels();
         Boolean and = query.getWhere().getAiModelsAnd();
         if (CollectionUtils.isNotEmpty(matchAiModels)) {
-            if (Objects.nonNull(and) && and) {
+            if (BooleanUtils.isTrue(and)) {
                 //noinspection SlowListContainsAll
                 return triple.getRight().containsAll(matchAiModels);
             } else {
@@ -675,7 +675,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
             List<Triple<Long, Integer, InteractiveStats>> versionInfoList = listVersionsByName(info.getName(), user);
             Triple<Long, Integer, InteractiveStats> versionInfo =
                     CollectionUtils.isNotEmpty(versionInfoList) ? versionInfoList.getFirst() : null;
-            Integer version = Objects.nonNull(versionInfo) ? versionInfo.getMiddle() : info.getVersion();
+            Integer version = versionInfo != null ? versionInfo.getMiddle() : info.getVersion();
 
             info.setVisibility(visibility.text());
             info.setPromptId(null);
@@ -809,9 +809,9 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         } else {
             Pair<String, String> inputs = PromptUtils.getDefaultInput(variables);
             UserMessage messageToSend;
-            if (Objects.nonNull(inputs.getLeft())) {
+            if (inputs.getLeft() != null) {
                 String textInput = inputs.getLeft();
-                if (Objects.nonNull(inputs.getRight())) {
+                if (inputs.getRight() != null) {
                     Pair<String, String> imageInfo = PromptUtils.parseDataMimeType(inputs.getRight());
                     ImageContent imageContent = StringUtils.isBlank(imageInfo.getRight()) ?
                             ImageContent.from(imageInfo.getLeft()) :
@@ -894,7 +894,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
     }
 
     private boolean hasValidUserMessagePrompt(ChatPromptContent promptContent, PromptFormat format) {
-        if (Objects.nonNull(promptContent.getMessageToSend())) {
+        if (promptContent.getMessageToSend() != null) {
             String textTemplate = PromptUtils.toSingleText(promptContent.getMessageToSend());
             return switch (format) {
                 case F_STRING -> !textTemplate.equals("{input}");

@@ -35,7 +35,7 @@ public class FullNameKeyGenerator implements KeyGenerator {
     public @NonNull Object generate(@NonNull Object target, @NonNull Method method, @Nullable Object... params) {
         Pair<String[], String> cachesKeyExpr = getCachesKeyExpr(method);
         String key = null;
-        if (Objects.nonNull(cachesKeyExpr) && !ObjectUtils.isEmpty(cachesKeyExpr.getRight())) {
+        if (cachesKeyExpr != null && !ObjectUtils.isEmpty(cachesKeyExpr.getRight())) {
             key = generateSpELKey(target, method, params, cachesKeyExpr);
         }
         if (ObjectUtils.isEmpty(key)) {
@@ -62,13 +62,13 @@ public class FullNameKeyGenerator implements KeyGenerator {
 
     private Pair<String[], String> getCachesKeyExpr(Method method) {
         Pair<String[], String> cachesKeyExpr = getCachesKeyExpr(method.getAnnotations());
-        return Objects.nonNull(cachesKeyExpr) ? cachesKeyExpr
+        return cachesKeyExpr != null ? cachesKeyExpr
                 : getCachesKeyExpr(method.getDeclaringClass().getAnnotations());
     }
 
     private String generateDefaultKey(Object target, Method method, Object[] params) {
         String key = target.getClass().getName() + "::" + method.getName() + "_";
-        if (Objects.nonNull(params) && params.length > 0) {
+        if (params != null && params.length > 0) {
             key += StringUtils.arrayToDelimitedString(params, "_");
         }
         return key;

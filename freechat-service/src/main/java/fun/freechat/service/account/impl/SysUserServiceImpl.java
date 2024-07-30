@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
@@ -92,7 +91,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public boolean exists(String username) {
-        return Objects.nonNull(loadByUsername(username));
+        return loadByUsername(username) != null;
     }
 
     @Override

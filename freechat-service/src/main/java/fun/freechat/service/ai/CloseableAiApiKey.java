@@ -51,7 +51,7 @@ public class CloseableAiApiKey implements Closeable {
                 .findAny()
                 .orElse(null);
         this.aiApiKeyMapper = aiApiKeyMapper;
-        this.id = Objects.nonNull(aiApiKey) ? aiApiKey.getId() : Long.MAX_VALUE;
+        this.id = aiApiKey != null ? aiApiKey.getId() : Long.MAX_VALUE;
         this.token = Optional.ofNullable(aiApiKey)
                 .map(AiApiKey::getToken)
                 .map(encryptionService::decrypt)

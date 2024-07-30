@@ -36,7 +36,7 @@ public class OpenApiConfig {
         } else {
             Components components = new Components();
             SecurityRequirement securityRequirement = new SecurityRequirement();
-            if (Objects.nonNull(securityHeaderName)) {
+            if (securityHeaderName != null) {
                 components.addSecuritySchemes("SysApiTokenHeader", new SecurityScheme()
                         .type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.HEADER)
@@ -44,7 +44,7 @@ public class OpenApiConfig {
                 securityRequirement.addList("SysApiTokenHeader");
             }
 
-            if (Objects.nonNull(securityParameterName)) {
+            if (securityParameterName != null) {
                 components.addSecuritySchemes("SysApiTokenParameter", new SecurityScheme()
                         .type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.QUERY)

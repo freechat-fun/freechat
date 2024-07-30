@@ -57,7 +57,7 @@ public class PromptAiApi {
             return null;
         }
         Object value = parameters.get(key);
-        return Objects.nonNull(value) ? value.toString() : null;
+        return value != null ? value.toString() : null;
     }
 
     @Operation(
@@ -170,14 +170,14 @@ public class PromptAiApi {
         if (StringUtils.isNotBlank(aiRequest.getPrompt())) {
             prompt = aiRequest.getPrompt();
             promptType = PromptType.STRING;
-        } else if (Objects.nonNull(aiRequest.getPromptTemplate())) {
+        } else if (aiRequest.getPromptTemplate() != null) {
             PromptTemplateDTO promptTemplate = aiRequest.getPromptTemplate();
             if (StringUtils.isNotBlank(promptTemplate.getTemplate())) {
                 prompt = promptService.apply(promptTemplate.getTemplate(),
                         promptTemplate.getVariables(),
                         PromptFormat.of(promptTemplate.getFormat()));
                 promptType = PromptType.STRING;
-            } else if (Objects.nonNull(promptTemplate.getChatTemplate())) {
+            } else if (promptTemplate.getChatTemplate() != null) {
                 ChatPromptContentDTO chatTemplate = promptTemplate.getChatTemplate();
                 Map<String, Object> variables = promptTemplate.getVariables();
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
@@ -191,7 +191,7 @@ public class PromptAiApi {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage(), e);
                 }
             }
-        } else if(Objects.nonNull(aiRequest.getPromptRef())) {
+        } else if(aiRequest.getPromptRef() != null) {
             PromptRefDTO promptRef = aiRequest.getPromptRef();
             Pair<String, PromptType> applied = promptService.apply(promptRef.getPromptId(),
                     promptRef.getVariables(), promptRef.getDraft());
