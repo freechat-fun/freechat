@@ -311,8 +311,8 @@ public class ChatApi {
                         partialResult, null, null, null);
                 result.setRequestId(null);
                 sseEmitter.send(result);
-            } catch (NullPointerException | IOException e) {
-                log.error("Error when sending message.", e);
+            } catch (IllegalStateException | NullPointerException | IOException e) {
+                log.warn("Error when sending message.", e);
                 session.release();
                 sseEmitter.completeWithError(e);
             }
@@ -326,7 +326,7 @@ public class ChatApi {
                 sseEmitter.send(result);
                 sseEmitter.complete();
             } catch (Exception e) {
-                log.error("Error when sending message.", e);
+                log.warn("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
             } finally {
                 session.release();

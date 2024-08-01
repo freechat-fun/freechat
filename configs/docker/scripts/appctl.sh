@@ -12,10 +12,6 @@ fi
 
 SERVICE_NAME=${APP_NAME}
 
-if [[ -z "${SERVICE_OUT}" ]]; then
-  SERVICE_OUT="${APP_HOME}/logs/service_stdout.log"
-fi
-
 usage() {
   echo "Usage: ${PROG_NAME} {start|stop|restart|status}"
     exit 2 # bad usage
@@ -46,13 +42,8 @@ usage() {
     SERVICE_ARGS="${SERVICE_ARGS} --server.port=${SERVER_PORT}  --management.server.port=${MANAGEMENT_PORT}"
 
     echo "java" ${JVM_OPTS} ${SERVICE_OPTS} "-jar" ${JAR_PATH} ${SERVICE_ARGS}
-    if [[ "x${TEE_JAVA_LOG}" == "x1" ]]; then
-      eval exec "java" ${JVM_OPTS} ${SERVICE_OPTS} "-jar" ${JAR_PATH} ${SERVICE_ARGS} 2>&1 "|" "tee" "-a" ${SERVICE_OUT} "&"
-    else
-      eval exec "java" ${JVM_OPTS} ${SERVICE_OPTS} "-jar" ${JAR_PATH} ${SERVICE_ARGS} &>>${SERVICE_OUT} "&"
-    fi
+    eval exec "java" ${JVM_OPTS} ${SERVICE_OPTS} "-jar" ${JAR_PATH} ${SERVICE_ARGS} "&"
   }
-
   check_start() {
     local exptime=0
     local time=600

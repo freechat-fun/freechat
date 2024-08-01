@@ -10,7 +10,6 @@ services:
     environment:
       - APP_NAME=${APP_NAME}
       - SERVICE_OPTS=${SERVICE_OPTS}
-      - TEE_JAVA_LOG=1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/public/check/ready"]
       interval: 10s
