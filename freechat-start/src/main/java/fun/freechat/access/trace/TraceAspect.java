@@ -26,7 +26,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Aspect
@@ -65,15 +64,15 @@ public class TraceAspect {
                         .orElse((String) TraceUtils.getTraceAttribute("TRACE_USER"));
 
                 TraceUtils.TraceInfoBuilder builder = new TraceUtils.TraceInfoBuilder();
-                builder.setTraceId(TraceUtils.getTraceId())
-                        .setUsername(username)
-                        .setMethod(method)
-                        .setStatus(status)
-                        .setArgs(trace.ignoreArgs() ? null : getArgs(point, method))
-                        .setResponse(trace.ignoreReturn() ? null : response)
-                        .setThrowable(throwable)
-                        .setElapseTime(System.currentTimeMillis() - startTime)
-                        .setExtInfo(getExtInfoBySpEL(point.getTarget(), method, point.getArgs(), trace.extInfo()));
+                builder.traceId(TraceUtils.getTraceId())
+                        .username(username)
+                        .method(method)
+                        .status(status)
+                        .args(trace.ignoreArgs() ? null : getArgs(point, method))
+                        .response(trace.ignoreReturn() ? null : response)
+                        .throwable(throwable)
+                        .elapseTime(System.currentTimeMillis() - startTime)
+                        .extInfo(getExtInfoBySpEL(point.getTarget(), method, point.getArgs(), trace.extInfo()));
                 log.trace(builder.build());
             }
         }

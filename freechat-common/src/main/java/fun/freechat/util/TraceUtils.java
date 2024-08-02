@@ -103,47 +103,47 @@ public class TraceUtils {
 
         public TraceInfoBuilder() {}
 
-        public TraceInfoBuilder setTraceId(String traceId) {
+        public TraceInfoBuilder traceId(String traceId) {
             this.traceId = traceId;
             return this;
         }
 
-        public TraceInfoBuilder setUsername(String username) {
+        public TraceInfoBuilder username(String username) {
             this.username = username;
             return this;
         }
 
-        public TraceInfoBuilder setMethod(Object method) {
+        public TraceInfoBuilder method(Object method) {
             this.method = method;
             return this;
         }
 
-        public TraceInfoBuilder setStatus(TraceStatus status) {
+        public TraceInfoBuilder status(TraceStatus status) {
             this.status = status;
             return this;
         }
 
-        public TraceInfoBuilder setElapseTime(long elapseTime) {
+        public TraceInfoBuilder elapseTime(long elapseTime) {
             this.elapseTime = elapseTime;
             return this;
         }
 
-        public TraceInfoBuilder setArgs(Object[] args) {
+        public TraceInfoBuilder args(Object[] args) {
             this.args = args;
             return this;
         }
 
-        public TraceInfoBuilder setResponse(Object response) {
+        public TraceInfoBuilder response(Object response) {
             this.response = response;
             return this;
         }
 
-        public TraceInfoBuilder setThrowable(Throwable throwable) {
+        public TraceInfoBuilder throwable(Throwable throwable) {
             this.throwable = throwable;
             return this;
         }
 
-        public TraceInfoBuilder setExtInfo(String extInfo) {
+        public TraceInfoBuilder extInfo(String extInfo) {
             this.extInfo = extInfo;
             return this;
         }

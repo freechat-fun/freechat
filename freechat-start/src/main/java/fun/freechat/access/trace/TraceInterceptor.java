@@ -18,9 +18,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.Nullable;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -82,15 +80,14 @@ public class TraceInterceptor implements HandlerInterceptor {
         long elapseTime = TraceUtils.endTrace();
 
         TraceUtils.TraceInfoBuilder builder = new TraceUtils.TraceInfoBuilder();
-        builder.setTraceId(TraceUtils.getTraceId())
-                .setUsername(username)
-                .setMethod(service + "::" + method)
-                .setStatus(status)
-                .setArgs(args)
-                .setResponse(responseCode)
-                .setThrowable(ex)
-                .setElapseTime(elapseTime);
-
+        builder.traceId(TraceUtils.getTraceId())
+                .username(username)
+                .method(service + "::" + method)
+                .status(status)
+                .args(args)
+                .response(responseCode)
+                .throwable(ex)
+                .elapseTime(elapseTime);
         log.trace(builder.build());
     }
 }
