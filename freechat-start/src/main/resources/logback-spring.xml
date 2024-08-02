@@ -12,9 +12,9 @@
     <property name="ERROR_LOG_FILE" value="${LOG_PATH}/common-error.log" />
     <property name="COMMON_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %c{36} - %m%n"/>
     <property name="PERF_LOG_FILE" value="${LOG_PATH}/common-perf.log" />
-    <property name="PERF_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] - %m%n"/>
+    <property name="PERF_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] PERF  %c{36} - %m%n"/>
     <property name="ACCESS_LOG_FILE" value="${LOG_PATH}/common-access.log" />
-    <property name="ACCESS_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] - %m%n"/>
+    <property name="ACCESS_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] ACCESS %c{36} - %m%n"/>
 
     <appender name="TRACE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">

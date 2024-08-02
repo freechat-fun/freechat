@@ -44,6 +44,15 @@ dependencies:
       - metrics
       - dashboard
     version: 11.x.x
+  - condition: grafana-loki.deployment.enabled
+    name: grafana-loki
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - grafana-loki
+      - metrics
+      - log
+      - alert
+    version: 4.x.x
 description: A Helm chart for freechat
 maintainers:
   - email: dev.freechat.fun@gmail.com
@@ -51,4 +60,4 @@ maintainers:
     url: https://github.com/freechat-fun/freechat
 name: freechat
 type: application
-version: 1.3.2
+version: 1.3.1

@@ -1,6 +1,7 @@
 global:
   redis:
     password: ''
+  defaultStorageClass: 'default'
   storageClass: 'default'
 auth:
   aes:
@@ -54,6 +55,10 @@ image:
   frontend:
     pullPolicy: Always
     repository: freechatfun/freechat-web
+    tag: 'latest'
+  promtail:
+    pullPolicy: IfNotPresent
+    repository: grafana/promtail
     tag: 'latest'
 ingress:
   className: nginx
@@ -151,8 +156,9 @@ milvus:
       token: ''
   etcd:
     replicaCount: 1
-    persistence:
-      size: 16Gi
+  minio:
+    provisioning:
+      resourcesPreset: none
   proxy:
     service:
       type: ClusterIP
@@ -173,22 +179,21 @@ milvus:
 prometheus:
   deployment:
     enabled: false
-  alertmanager:
-    service:
-      type: ClusterIP
   server:
     service:
       type: ClusterIP
     existingConfigmap: freechat-prometheus-configuration
     existingConfigmapKey: prometheus.yaml
+  alertmanager:
+    enabled: false
+    service:
+      type: ClusterIP
 grafana:
   deployment:
     enabled: false
   admin:
     user: freechat
     password: ''
-  datasources:
-    secretName: freechat-grafana-configs
   persistence:
     size: 8Gi
   ingress:
@@ -198,6 +203,12 @@ grafana:
     tls: true
     annotations:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+grafana-loki:
+  deployment:
+    enabled: false
+  promtail:
+    containerPorts:
+      http: 9080
 replicaCount: 2
 resources:
   limits: {}

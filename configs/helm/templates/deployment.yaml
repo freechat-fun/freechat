@@ -47,8 +47,6 @@ spec:
           env:
             - name: SERVICE_OPTS
               value: '-Dspring.config.location=classpath:/application.yml,/home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config/application-private.yml -Dspring.profiles.active=online'
-            - name: TEE_JAVA_LOG
-              value: "1"
             {{- if .Values.debug.jpda.enabled }}
             - name: JPDA_ENABLE
               value: "true"
@@ -57,7 +55,7 @@ spec:
             {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag | default .Chart.AppVersion }}"
+          image: '{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag | default .Chart.AppVersion }}'
           imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
           ports:
             - name: http
@@ -72,23 +70,39 @@ spec:
             httpGet:
               path: public/check/live
               port: http
-            failureThreshold: 30
+            initialDelaySeconds: 60
+            failureThreshold: 60
           readinessProbe:
             httpGet:
               path: public/check/ready
               port: http
-            failureThreshold: 30
+            initialDelaySeconds: 60
+            failureThreshold: 60
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config
-              name: config-private
-            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config.run
-              name: config-runtime
-            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
-              name: logs
-            - mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/data
-              name: data
+            - name: config-private
+              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config
+            - name: config-runtime
+              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config.run
+            - name: logs
+              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
+            - name: data
+              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/data
+        {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
+        - name: promtail
+          image: '{{ .Values.image.promtail.repository }}:{{ .Values.image.promtail.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.promtail.pullPolicy }}
+          args:
+            - "-config.file=/etc/promtail/promtail.yaml"
+          volumeMounts:
+            - name: promtail-config
+              mountPath: /etc/promtail
+            - name: promtail-positions
+              mountPath: /run/promtail
+            - name: logs
+              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
+        {{- end }}
       volumes:
         - name: config-private
           secret:
@@ -107,6 +121,16 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ include "helpers.fullname" . }}-pvc
+        {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
+        - name: promtail-config
+          configMap:
+            name: {{ include "helpers.fullname" . }}-promtail-configuration
+            items:
+              - key: promtail.yaml
+                path: promtail.yaml
+        - name: promtail-positions
+          emptyDir: {}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

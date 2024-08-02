@@ -1,0 +1,47 @@
+{{- if (index .Values "grafana-loki" "deployment" "enabled") -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helpers.fullname" . }}-promtail-configuration
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+data:
+  promtail.yaml: |-
+    server:
+      log_level: {{ index .Values "grafana-loki" "promtail" "logLevel" }}
+      http_listen_port: {{ index .Values "grafana-loki" "promtail" "containerPorts" "http" }}
+      grpc_listen_port: {{ index .Values "grafana-loki" "promtail" "containerPorts" "grpc" }}
+      
+    clients:
+      - url: http://{{ template "helpers.fullname" . }}-grafana-loki-gateway:{{ index .Values "grafana-loki" "gateway" "service" "ports" "http" }}/loki/api/v1/push
+        {{- if (index .Values "grafana-loki" "gateway" "auth" "enabled") }}
+        basic_auth:
+          # The username to use for basic auth
+          username: {{ index .Values "grafana-loki" "gateway" "auth" "username" }}
+          password_file: /bitnami/promtail/conf/secrets/password
+        {{- end }}
+    positions:
+      filename: /run/promtail/positions.yaml
+    
+    scrape_configs:
+      - job_name: {{ template "helpers.fullname" . }}-backend-logs
+        static_configs:
+          - targets:
+              - localhost 
+            labels:
+              job: {{ template "helpers.namespace" . }}/{{ template "helpers.fullname" . }}-backend-logs
+              __path__: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs/common-*.log*
+        pipeline_stages:
+          - multiline:
+              firstline: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}'
+              max_wait_time: 3s
+          - regex: 
+              expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) \[(?P<thread>[^\]]+)\] (?P<level>TRACE|DEBUG|INFO|WARN|ERROR|PERF|ACCESS) +(?P<logger>\S+) - (?P<message>(?s:.*))$'
+          - timestamp:
+              source: timestamp
+              format: '2006-01-02 15:04:05.000'
+          - labels:
+              thread:
+              level:
+              logger:
+{{- end }}
