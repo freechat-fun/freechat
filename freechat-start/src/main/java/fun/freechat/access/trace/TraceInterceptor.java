@@ -64,7 +64,8 @@ public class TraceInterceptor implements HandlerInterceptor {
 
         String service = request.getServletPath();
         String method = request.getMethod();
-        String[] args = new String[]{ request.getQueryString() };
+        String query = request.getQueryString();
+        String[] args = query != null ? new String[]{ query } : null;
         int responseCode = response.getStatus();
         TraceUtils.TraceStatus status = TraceUtils.TraceStatus.SUCCESSFUL;
         if (ex != null || responseCode >= 400) {
