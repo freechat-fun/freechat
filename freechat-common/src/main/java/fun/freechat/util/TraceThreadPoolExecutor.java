@@ -41,11 +41,11 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
     public void execute(@SuppressWarnings("NullableProblems") Runnable runnable) {
         Objects.requireNonNull(runnable);
         String traceId = TraceUtils.getTraceId();
-        Map<String, Object> traceAttributes = TraceUtils.getTraceAttributes();
+        Map<String, String> traceAttributes = TraceUtils.getTraceAttributes();
         super.execute(() -> {
             TraceUtils.startTrace(traceId);
             if (MapUtils.isNotEmpty(traceAttributes)) {
-                traceAttributes.forEach(TraceUtils::setTraceAttribute);
+                traceAttributes.forEach(TraceUtils::putTraceAttribute);
             }
             try {
                 runnable.run();

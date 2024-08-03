@@ -17,6 +17,7 @@ import fun.freechat.service.enums.QuotaType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.PromptTaskService;
+import fun.freechat.util.TraceUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -305,6 +307,9 @@ public class ChatApi {
 
         ChatSession session = chatSessionService.get(chatId);
 
+        String traceId = TraceUtils.getTraceId();
+        String username = AccountUtils.currentUser().getUsername();
+
         tokenStream.onNext(partialResult -> {
             try {
                 LlmResultDTO result = LlmResultDTO.from(
@@ -312,6 +317,8 @@ public class ChatApi {
                 result.setRequestId(null);
                 sseEmitter.send(result);
             } catch (IllegalStateException | NullPointerException | IOException e) {
+                MDC.put("traceId", traceId);
+                MDC.put("username", username);
                 log.warn("Error when sending message.", e);
                 session.release();
                 sseEmitter.completeWithError(e);
@@ -326,6 +333,8 @@ public class ChatApi {
                 sseEmitter.send(result);
                 sseEmitter.complete();
             } catch (Exception e) {
+                MDC.put("traceId", traceId);
+                MDC.put("username", username);
                 log.warn("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
             } finally {
@@ -333,6 +342,8 @@ public class ChatApi {
             }
         }).onError(ex -> {
             try {
+                MDC.put("traceId", traceId);
+                MDC.put("username", username);
                 log.error("SSE exception.", ex);
                 sseEmitter.completeWithError(ex);
             } finally {

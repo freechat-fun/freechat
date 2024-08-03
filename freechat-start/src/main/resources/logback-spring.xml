@@ -10,7 +10,7 @@
     <property name="INFO_LOG_FILE" value="${LOG_PATH}/common-info.log" />
     <property name="WARN_LOG_FILE" value="${LOG_PATH}/common-warn.log" />
     <property name="ERROR_LOG_FILE" value="${LOG_PATH}/common-error.log" />
-    <property name="COMMON_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %c{36} - %m%n"/>
+    <property name="COMMON_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %c{36} - %X{traceId:--}|%X{username:--}|%m%n"/>
     <property name="PERF_LOG_FILE" value="${LOG_PATH}/common-perf.log" />
     <property name="PERF_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] PERF  %c{36} - %m%n"/>
     <property name="ACCESS_LOG_FILE" value="${LOG_PATH}/common-access.log" />

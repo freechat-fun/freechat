@@ -1,16 +1,19 @@
 package fun.freechat.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class TraceUtils {
     private static final ThreadLocal<String> TRACE_ID = new ThreadLocal<>();
     private static final ThreadLocal<Long> TRACE_TIME = new ThreadLocal<>();
-    private static final ThreadLocal<Map<String, Object>> TRACE_ATTRIBUTES = new ThreadLocal<>();
 
     public static String getTraceId() {
         String traceId = TRACE_ID.get();
@@ -35,11 +38,8 @@ public class TraceUtils {
         setTraceId(UUID.randomUUID().toString());
     }
 
-    public static long endTrace() {
+    public static long stopTrace() {
         Long traceTime = TRACE_TIME.get();
-        TRACE_ID.remove();
-        TRACE_TIME.remove();
-        TRACE_ATTRIBUTES.remove();
         return traceTime == null ? 0 : System.currentTimeMillis() - traceTime;
     }
 
@@ -47,25 +47,22 @@ public class TraceUtils {
         return TRACE_ID.get() != null;
     }
 
-    public static void setTraceAttribute(String key, Object value) {
-        Map<String, Object> attributes = TRACE_ATTRIBUTES.get();
-        if (attributes == null) {
-            attributes = new HashMap<>(1);
-            TRACE_ATTRIBUTES.set(attributes);
-        }
-        attributes.put(key, value);
+    public static void putTraceAttribute(String key, String value) {
+        MDC.put(key, value);
     }
 
-    public static Object getTraceAttribute(String key) {
-        Map<String, Object> attributes = TRACE_ATTRIBUTES.get();
-        if (attributes != null) {
-            return attributes.get(key);
-        }
-        return null;
+    public static String getTraceAttribute(String key) {
+        return MDC.get(key);
     }
 
-    public static Map<String, Object> getTraceAttributes() {
-        return TRACE_ATTRIBUTES.get();
+    public static void endTrace() {
+        TRACE_ID.remove();
+        TRACE_TIME.remove();
+        MDC.clear();
+    }
+
+    public static Map<String, String> getTraceAttributes() {
+        return MDC.getCopyOfContextMap();
     }
 
     public enum TraceStatus {

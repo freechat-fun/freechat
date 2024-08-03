@@ -8,7 +8,6 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,16 +41,12 @@ public class TraceInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable Object handler) {
-        String eagleEyeId = request.getHeader("EagleEye-TraceId");
-        if (StringUtils.isNotBlank(eagleEyeId)) {
-            TraceUtils.startTrace(eagleEyeId);
-        } else {
-            TraceUtils.startTrace();
-        }
+        TraceUtils.startTrace();
+        TraceUtils.putTraceAttribute("traceId", TraceUtils.getTraceId());
         Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .map(Principal::getName)
-                .ifPresent(username -> TraceUtils.setTraceAttribute("TRACE_USER", username));
+                .ifPresent(username ->  TraceUtils.putTraceAttribute("username", username));
         return true;
     }
 
@@ -65,7 +60,7 @@ public class TraceInterceptor implements HandlerInterceptor {
         String username = Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .map(Principal::getName)
-                .orElse((String) TraceUtils.getTraceAttribute("TRACE_USER"));
+                .orElse(TraceUtils.getTraceAttribute("username"));
 
         String service = request.getServletPath();
         String method = request.getMethod();
@@ -77,7 +72,7 @@ public class TraceInterceptor implements HandlerInterceptor {
                     TraceUtils.TraceStatus.BAD_REQUEST :
                     TraceUtils.TraceStatus.FAILED;
         }
-        long elapseTime = TraceUtils.endTrace();
+        long elapseTime = TraceUtils.stopTrace();
 
         TraceUtils.TraceInfoBuilder builder = new TraceUtils.TraceInfoBuilder();
         builder.traceId(TraceUtils.getTraceId())
@@ -89,5 +84,6 @@ public class TraceInterceptor implements HandlerInterceptor {
                 .throwable(ex)
                 .elapseTime(elapseTime);
         log.trace(builder.build());
+        TraceUtils.endTrace();
     }
 }
