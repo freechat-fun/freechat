@@ -62,7 +62,7 @@ public class AbstractIntegrationTest {
     }
 
     @DynamicPropertySource
-    static void redisProperties(DynamicPropertyRegistry registry) {
+    static void registerProperties(DynamicPropertyRegistry registry) {
         redis.start();
         mysql.start();
         milvus.start();
