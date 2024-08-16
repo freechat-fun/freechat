@@ -1,6 +1,8 @@
 package fun.freechat.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.lang.reflect.Method;
@@ -20,7 +22,7 @@ public class TraceUtils {
         if (StringUtils.isNotBlank(traceId)) {
             return traceId;
         }
-        traceId = UUID.randomUUID().toString();
+        traceId = UUID.randomUUID().toString().replaceAll("-", "");
         setTraceId(traceId);
         return traceId;
     }
@@ -63,6 +65,10 @@ public class TraceUtils {
 
     public static Map<String, String> getTraceAttributes() {
         return MDC.getCopyOfContextMap();
+    }
+
+    public static Logger getPerfLogger() {
+        return PerfLogger.logger;
     }
 
     public enum TraceStatus {
@@ -205,5 +211,9 @@ public class TraceUtils {
                     throwableMessage + SEPARATOR +
                     wrap(extInfo);
         }
+    }
+
+    public static class PerfLogger {
+        static Logger logger = LoggerFactory.getLogger(PerfLogger.class);
     }
 }

@@ -22,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
@@ -189,5 +188,22 @@ public class ChatContextServiceImpl implements ChatContextService {
         }
 
         return characterService.getBackendOwner(backendId);
+    }
+
+    @Override
+    public String getCharacterUid(String chatId) {
+        var statement = select(ChatContextDynamicSqlSupport.backendId)
+                .from(ChatContextDynamicSqlSupport.chatContext)
+                .where(ChatContextDynamicSqlSupport.chatId, isEqualTo(chatId))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String backendId = chatContextMapper.selectOne(statement).map(ChatContext::getBackendId).orElse(null);
+
+        if (backendId == null) {
+            return null;
+        }
+
+        return characterService.getBackendCharacterUid(backendId);
     }
 }

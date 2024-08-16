@@ -15,4 +15,5 @@ public interface ChatContextService {
     List<String> listIdsByBackend(String backendId);
     String getChatOwner(String chatId);
     String getCharacterOwner(String chatId);
+    String getCharacterUid(String chatId);
 }

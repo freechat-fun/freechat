@@ -189,7 +189,7 @@
         <appender-ref ref="ERROR_ASYNC" />
     </root>
 
-    <logger name="fun.freechat.access.trace.TraceAspect" level="trace" additivity="false">
+    <logger name="fun.freechat.util.TraceUtils$PerfLogger" level="trace" additivity="false">
         <appender-ref ref="PERF_ASYNC" />
     </logger>
 

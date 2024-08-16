@@ -27,6 +27,7 @@ import fun.freechat.service.chat.*;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
+import fun.freechat.util.TraceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -276,26 +277,65 @@ public class ChatServiceImpl implements ChatService {
             List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
 
-            try {
-                relevantConcatenated = Optional.ofNullable(knowledgeRetriever)
-                        .map(retriever -> retriever.augment(
-                                new AugmentationRequest(userMessage, Metadata.from(userMessage, memoryId, messages))))
-                        .map(AugmentationResult::contents)
-                        .orElse(Collections.emptyList())
-                        .stream()
-                        .map(Content::textSegment)
-                        .map(TextSegment::text)
-                        .collect(Collectors.joining("\n\n"));
-            } catch (Throwable ex) {
-                log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
+            String traceId = TraceUtils.getTraceId();
+            String username = TraceUtils.getTraceAttribute("username");
+            String characterUid = chatContextService.getCharacterUid((String) memoryId);
+            if (knowledgeRetriever != null) {
+                long startTime = System.currentTimeMillis();
+                Throwable throwable = null;
+                try {
+                    relevantConcatenated = Optional.of(knowledgeRetriever)
+                            .map(retriever -> retriever.augment(
+                                    new AugmentationRequest(userMessage, Metadata.from(userMessage, memoryId, messages))))
+                            .map(AugmentationResult::contents)
+                            .orElse(Collections.emptyList())
+                            .stream()
+                            .map(Content::textSegment)
+                            .map(TextSegment::text)
+                            .collect(Collectors.joining("\n\n"));
+                } catch (Throwable ex) {
+                    log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
+                    throwable = ex;
+                } finally {
+                    long endTime = System.currentTimeMillis();
+                    TraceUtils.TraceStatus status = throwable == null ?
+                            TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
+                    String traceInfo = new TraceUtils.TraceInfoBuilder()
+                            .args(new String[]{characterUid})
+                            .elapseTime(endTime - startTime)
+                            .method("ChatServiceImpl::retrieveKnowledge")
+                            .status(status)
+                            .throwable(throwable)
+                            .traceId(traceId)
+                            .username(username)
+                            .build();
+                    TraceUtils.getPerfLogger().trace(traceInfo);
+                }
             }
 
             if (longTermMemoryRetriever != null) {
+                long startTime = System.currentTimeMillis();
+                Throwable throwable = null;
                 try {
                     longTermMemoryMessages = longTermChatMemoryStore.getMessages(
                             memoryId, userMessage, messages, longTermMemoryRetriever);
                 } catch (Throwable ex) {
                     log.warn("Failed to retrieve long-term memory from {}!", memoryId, ex);
+                    throwable = ex;
+                } finally {
+                    long endTime = System.currentTimeMillis();
+                    TraceUtils.TraceStatus status = throwable == null ?
+                            TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
+                    String traceInfo = new TraceUtils.TraceInfoBuilder()
+                            .args(new String[]{characterUid})
+                            .elapseTime(endTime - startTime)
+                            .method("ChatServiceImpl::retrieveLongTermMemory")
+                            .status(status)
+                            .throwable(throwable)
+                            .traceId(traceId)
+                            .username(username)
+                            .build();
+                    TraceUtils.getPerfLogger().trace(traceInfo);
                 }
             }
         }

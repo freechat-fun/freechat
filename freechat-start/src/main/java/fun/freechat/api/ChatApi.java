@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,6 +40,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @Tag(name = "Chat")
@@ -298,6 +298,7 @@ public class ChatApi {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         checkQuota(chatId);
         SseEmitter sseEmitter = new SseEmitter();
+        long startTime = System.currentTimeMillis();
         TokenStream tokenStream = chatService.streamSend(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
@@ -309,21 +310,50 @@ public class ChatApi {
 
         String traceId = TraceUtils.getTraceId();
         String username = AccountUtils.currentUser().getUsername();
+        String characterUid = chatContextService.getCharacterUid(chatId);
+        AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
         tokenStream.onNext(partialResult -> {
+            if (!firstPackageReceived.get()) {
+                TraceUtils.putTraceAttribute("traceId", traceId);
+                TraceUtils.putTraceAttribute("username", username);
+                long firstPackageReceivedTime = System.currentTimeMillis();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{characterUid})
+                        .elapseTime(firstPackageReceivedTime - startTime)
+                        .method("ChatApi::firstPackageReceived")
+                        .response(partialResult)
+                        .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
+                firstPackageReceived.set(true);
+            }
             try {
                 LlmResultDTO result = LlmResultDTO.from(
                         partialResult, null, null, null);
                 result.setRequestId(null);
                 sseEmitter.send(result);
             } catch (IllegalStateException | NullPointerException | IOException e) {
-                MDC.put("traceId", traceId);
-                MDC.put("username", username);
                 log.warn("Error when sending message.", e);
                 session.release();
                 sseEmitter.completeWithError(e);
+                long lastPackageReceivedTime = System.currentTimeMillis();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{characterUid})
+                        .elapseTime(lastPackageReceivedTime - startTime)
+                        .method("ChatApi::lastPackageReceived")
+                        .response(partialResult)
+                        .throwable(e)
+                        .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
             }
         }).onComplete(response -> {
+            long lastPackageReceivedTime = System.currentTimeMillis();
             try {
                 session.addMemoryUsage(1L, response.tokenUsage());
                 chatMemoryService.updateChatMessageTokenUsage(chatId, response.content(), response.tokenUsage());
@@ -332,23 +362,48 @@ public class ChatApi {
                 result.setRequestId(null);
                 sseEmitter.send(result);
                 sseEmitter.complete();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{characterUid})
+                        .elapseTime(lastPackageReceivedTime - startTime)
+                        .method("ChatApi::lastPackageReceived")
+                        .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
             } catch (Exception e) {
-                MDC.put("traceId", traceId);
-                MDC.put("username", username);
                 log.warn("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{characterUid})
+                        .elapseTime(lastPackageReceivedTime - startTime)
+                        .method("ChatApi::lastPackageReceived")
+                        .throwable(e)
+                        .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
             } finally {
                 session.release();
             }
         }).onError(ex -> {
             try {
-                MDC.put("traceId", traceId);
-                MDC.put("username", username);
                 log.error("SSE exception.", ex);
                 sseEmitter.completeWithError(ex);
             } finally {
                 session.release();
             }
+            long lastPackageReceivedTime = System.currentTimeMillis();
+            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                    .args(new String[]{characterUid})
+                    .elapseTime(lastPackageReceivedTime - startTime)
+                    .method("ChatApi::lastPackageReceived")
+                    .status(TraceUtils.TraceStatus.FAILED)
+                    .traceId(traceId)
+                    .username(username)
+                    .build();
+            TraceUtils.getPerfLogger().trace(traceInfo);
         }).start();
 
         return sseEmitter;
