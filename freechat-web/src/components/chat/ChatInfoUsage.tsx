@@ -31,7 +31,8 @@ export default function ChatInfoUsage({
   function getUsageLabel(): string {
     if (session?.context?.apiKeyName ||
       session?.context?.apiKeyValue ||
-      session?.context?.quotaType === 'none'
+      session?.context?.quotaType === 'none' ||
+      !session?.context?.quota
     ) {
       return '-';
     }
