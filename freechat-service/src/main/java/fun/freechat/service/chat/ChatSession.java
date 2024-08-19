@@ -134,4 +134,8 @@ public class ChatSession {
     public void release() {
         processing.compareAndExchangeRelease(true, false);
     }
+
+    public boolean isProcessing() {
+        return processing.get();
+    }
 }

@@ -316,6 +316,10 @@ public class ChatApi {
         AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
         tokenStream.onNext(partialResult -> {
+            if (!session.isProcessing()) {
+                return;
+            }
+
             if (!firstPackageReceived.get()) {
                 TraceUtils.putTraceAttribute("traceId", traceId);
                 TraceUtils.putTraceAttribute("username", username);
@@ -355,6 +359,10 @@ public class ChatApi {
                 TraceUtils.getPerfLogger().trace(traceInfo);
             }
         }).onComplete(response -> {
+            if (!session.isProcessing()) {
+                return;
+            }
+
             long lastPackageReceivedTime = System.currentTimeMillis();
             try {
                 session.addMemoryUsage(1L, response.tokenUsage());
@@ -390,6 +398,10 @@ public class ChatApi {
                 session.release();
             }
         }).onError(ex -> {
+            if (!session.isProcessing()) {
+                return;
+            }
+
             try {
                 log.error("SSE exception.", ex);
                 sseEmitter.completeWithError(ex);

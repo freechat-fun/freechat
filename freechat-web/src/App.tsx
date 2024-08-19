@@ -12,7 +12,16 @@ import {
   THEME_ID as MATERIAL_THEME_ID,
 } from '@mui/material';
 
-const joyTheme = joyExtendTheme();
+const joyTheme = joyExtendTheme({
+  components: {
+    MuiSvgIcon: {
+      defaultProps: {
+        // @ts-expect-error: temporary for MUI icons usage
+        fontSize: 'medium',
+      },
+    },
+  },
+});
 const materialTheme = materialExtendTheme();
 
 function App() {

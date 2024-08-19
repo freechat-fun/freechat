@@ -79,25 +79,46 @@ export default function MessagesPane(props: MessagesPaneProps) {
   }, []);
 
   useEffect(() => {
-    context?.chatId && chatApi?.listMessages(context.chatId)
-      .then(resp => {
-        if (!resp) {
-          return;
-        }
-        if (sender?.picture) {
-          processBackground(sender.picture, mode, 0.6)
-            .then(bg => {
-              setBackground(bg);
-              setChatMessages(resp);
-            });
-        } else {
-          setBackground('');
-          setChatMessages(resp);
-        }
-        onOpen?.();
-      })
-      .catch(handleError);
-  }, [chatApi, context?.chatId, handleError, mode, onOpen, sender?.picture]);
+    if (debugMode) {
+      context?.chatId && chatApi?.listDebugMessages2(context.chatId)
+        .then(resp => {
+          if (!resp) {
+            return;
+          }
+          if (sender?.picture) {
+            processBackground(sender.picture, mode, 0.6)
+              .then(bg => {
+                setBackground(bg);
+                setChatMessages(resp);
+              });
+          } else {
+            setBackground('');
+            setChatMessages(resp);
+          }
+          onOpen?.();
+        })
+        .catch(handleError);
+    } else {
+      context?.chatId && chatApi?.listMessages(context.chatId)
+        .then(resp => {
+          if (!resp) {
+            return;
+          }
+          if (sender?.picture) {
+            processBackground(sender.picture, mode, 0.6)
+              .then(bg => {
+                setBackground(bg);
+                setChatMessages(resp);
+              });
+          } else {
+            setBackground('');
+            setChatMessages(resp);
+          }
+          onOpen?.();
+        })
+        .catch(handleError);
+      }
+  }, [chatApi, debugMode, context?.chatId, handleError, mode, onOpen, sender?.picture]);
 
   useEffect(() => {
     const savedEnableBackground = localStorage.getItem('MessagesPane.enableBackground');
