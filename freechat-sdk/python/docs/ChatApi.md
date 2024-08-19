@@ -9,6 +9,9 @@ Method | HTTP request | Description
 [**get_default_chat_id**](ChatApi.md#get_default_chat_id) | **GET** /api/v1/chat/{characterId} | Get Default Chat
 [**get_memory_usage**](ChatApi.md#get_memory_usage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
 [**list_chats**](ChatApi.md#list_chats) | **GET** /api/v1/chat | List Chats
+[**list_debug_messages**](ChatApi.md#list_debug_messages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
+[**list_debug_messages1**](ChatApi.md#list_debug_messages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
+[**list_debug_messages2**](ChatApi.md#list_debug_messages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages
 [**list_messages**](ChatApi.md#list_messages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 [**list_messages1**](ChatApi.md#list_messages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 [**list_messages2**](ChatApi.md#list_messages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
@@ -385,6 +388,246 @@ This endpoint does not need any parameter.
 ### Return type
 
 [**List[ChatSessionDTO]**](ChatSessionDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_debug_messages**
+> List[ChatMessageRecordDTO] list_debug_messages(chat_id, limit)
+
+List Chat Debug Messages
+
+List debug messages of a chat.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.chat_message_record_dto import ChatMessageRecordDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.ChatApi(api_client)
+    chat_id = 'chat_id_example' # str | Chat session identifier
+    limit = 56 # int | Messages limit
+
+    try:
+        # List Chat Debug Messages
+        api_response = api_instance.list_debug_messages(chat_id, limit)
+        print("The response of ChatApi->list_debug_messages:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ChatApi->list_debug_messages: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chat_id** | **str**| Chat session identifier | 
+ **limit** | **int**| Messages limit | 
+
+### Return type
+
+[**List[ChatMessageRecordDTO]**](ChatMessageRecordDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_debug_messages1**
+> List[ChatMessageRecordDTO] list_debug_messages1(chat_id, limit, offset)
+
+List Chat Debug Messages
+
+List debug messages of a chat.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.chat_message_record_dto import ChatMessageRecordDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.ChatApi(api_client)
+    chat_id = 'chat_id_example' # str | Chat session identifier
+    limit = 56 # int | Messages limit
+    offset = 56 # int | Messages offset (from new to old)
+
+    try:
+        # List Chat Debug Messages
+        api_response = api_instance.list_debug_messages1(chat_id, limit, offset)
+        print("The response of ChatApi->list_debug_messages1:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ChatApi->list_debug_messages1: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chat_id** | **str**| Chat session identifier | 
+ **limit** | **int**| Messages limit | 
+ **offset** | **int**| Messages offset (from new to old) | 
+
+### Return type
+
+[**List[ChatMessageRecordDTO]**](ChatMessageRecordDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_debug_messages2**
+> List[ChatMessageRecordDTO] list_debug_messages2(chat_id)
+
+List Chat Debug Messages
+
+List debug messages of a chat.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.chat_message_record_dto import ChatMessageRecordDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.ChatApi(api_client)
+    chat_id = 'chat_id_example' # str | Chat session identifier
+
+    try:
+        # List Chat Debug Messages
+        api_response = api_instance.list_debug_messages2(chat_id)
+        print("The response of ChatApi->list_debug_messages2:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling ChatApi->list_debug_messages2: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chat_id** | **str**| Chat session identifier | 
+
+### Return type
+
+[**List[ChatMessageRecordDTO]**](ChatMessageRecordDTO.md)
 
 ### Authorization
 

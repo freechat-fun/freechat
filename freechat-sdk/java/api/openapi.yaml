@@ -91,7 +91,7 @@ info:
     \ services first but do not need to run the container for the FreeChat application\
     \ itself. You can execute the `scripts/local-deps.sh` script to start services\
     \ like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
-    Make sure you have set the following startup parameters:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
+    Make sure you have set the following startup VM options:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
     \ \\\n-DAPP_HOME=local-data/freechat \\\n-Dspring.profiles.active=local\n```\n\
     \n### Use SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
     \  <artifactId>freechat-sdk</artifactId>\n  <version>${freechat-sdk.version}</version>\n\
@@ -144,7 +144,7 @@ info:
     \ us. We look forward to AI technology helping people create their own \"soul\
     \ mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 1.3.0
+  version: 1.3.2
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -5065,6 +5065,114 @@ paths:
                 type: array
           description: OK
       summary: List Chat Messages
+      tags:
+      - Chat
+      x-accepts:
+      - application/json
+  /api/v1/chat/messages/debug/{chatId}/{limit}:
+    get:
+      description: List debug messages of a chat.
+      operationId: listDebugMessages
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Messages limit
+        explode: false
+        in: path
+        name: limit
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: List Chat Debug Messages
+      tags:
+      - Chat
+      x-accepts:
+      - application/json
+  /api/v1/chat/messages/debug/{chatId}/{limit}/{offset}:
+    get:
+      description: List debug messages of a chat.
+      operationId: listDebugMessages_1
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Messages limit
+        explode: false
+        in: path
+        name: limit
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      - description: Messages offset (from new to old)
+        explode: false
+        in: path
+        name: offset
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: List Chat Debug Messages
+      tags:
+      - Chat
+      x-accepts:
+      - application/json
+  /api/v1/chat/messages/debug/{chatId}:
+    get:
+      description: List debug messages of a chat.
+      operationId: listDebugMessages_2
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ChatMessageRecordDTO'
+                type: array
+          description: OK
+      summary: List Chat Debug Messages
       tags:
       - Chat
       x-accepts:

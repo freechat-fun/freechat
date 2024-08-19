@@ -10,7 +10,9 @@ import fun.freechat.model.ChatHistory;
 import fun.freechat.service.cache.MiddlePeriodCache;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
+import fun.freechat.service.common.FileStore;
 import fun.freechat.service.util.InfoUtils;
+import fun.freechat.service.util.StoreUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,15 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import static dev.langchain4j.data.message.ChatMessageType.*;
+import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -36,6 +41,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @SuppressWarnings("unused")
 public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private final static String CACHE_KEY_PREFIX = "MysqlChatMemoryStoreImpl_";
+    final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
+    private final static String SYSTEM_MESSAGE_HOME = "private/messages/";
 
     @Value("${chat.memory.maxMessageSize:1000}")
     private Integer maxSize;
@@ -72,6 +79,10 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         ChatHistory history = messageToHistory(memoryId, lastMessage, systemMessage, null);
         chatHistoryMapper.insertSelective(history);
         if (history.getId() != null) {
+            // the system message may be too large
+            // store it as a file instead of db record.
+            saveSystemMessage(memoryId, history.getId(), systemMessage);
+
             cachedList.add(ChatMessageRecord.builder()
                     .id(history.getId())
                     .message(lastMessage)
@@ -213,6 +224,36 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .orElse("en");
     }
 
+    @Override
+    @Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME,
+            cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
+            key = CACHE_KEY_SPEL_PREFIX + "#p0",
+            unless="#result == null")
+    public String loadSystemMessage(Long id) {
+        var statement = select(ChatHistoryDynamicSqlSupport.memoryId)
+                .from(ChatHistoryDynamicSqlSupport.chatHistory)
+                .where(ChatHistoryDynamicSqlSupport.id, isEqualTo(id));
+
+        String memoryId = chatHistoryMapper.selectOne(statement.build().render(RenderingStrategies.MYBATIS3))
+                .map(ChatHistory::getMemoryId)
+                .orElse(null);
+
+        if (StringUtils.isBlank(memoryId)) {
+            return null;
+        }
+
+        try {
+            FileStore fileStore = StoreUtils.defaultFileStore();
+            if (fileStore != null) {
+                return fileStore.readString(messagePath(memoryId, id));
+            }
+        } catch (Exception e) {
+            log.warn("Failed to load system message of {}", id, e);
+        }
+
+        return null;
+    }
+
     private LinkedList<ChatMessageRecord> getMessageRecords(Object memoryId) {
         if (StringUtils.isBlank((String) memoryId)) {
             return new LinkedList<>();
@@ -314,9 +355,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private static ChatHistory messageToHistory(
             Object memoryId, ChatMessage message, ChatMessage systemMessage, TokenUsage tokenUsage) {
         String ext = null;
-        if (message.type() == USER && systemMessage != null) {
-            ext = ChatMessageSerializer.messageToJson(systemMessage);
-        } else if (message.type() == AI && tokenUsage != null) {
+        if (message.type() == AI && tokenUsage != null) {
             ext =InfoUtils.serialize(tokenUsage);
         }
         String messageText = ChatMessageSerializer.messageToJson(message);
@@ -329,6 +368,34 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .withMessage(messageText)
                 .withExt(ext)
                 .withEnabled((byte) 1);
+    }
+
+    private static void saveSystemMessage(Object memoryId, Long id, SystemMessage systemMessage) {
+        if (systemMessage == null) {
+            return;
+        }
+
+        try {
+            FileStore fileStore = StoreUtils.defaultFileStore();
+            if (fileStore != null) {
+                String dir = messageDirectory((String) memoryId);
+                if (!fileStore.exists(dir)) {
+                   fileStore.createDirectories(dir);
+
+                }
+                fileStore.write(messagePath((String) memoryId, id), ChatMessageSerializer.messageToJson(systemMessage));
+            }
+        } catch (Exception e) {
+            log.warn("Failed to save system message of {}", id, e);
+        }
+    }
+
+    private static String messageDirectory(String memoryId) {
+        return SYSTEM_MESSAGE_HOME + File.separator + memoryId;
+    }
+
+    private static String messagePath(String memoryId, Long id) {
+        return messageDirectory(memoryId) + File.separator + id + ".json";
     }
 
     private Cache cache() {

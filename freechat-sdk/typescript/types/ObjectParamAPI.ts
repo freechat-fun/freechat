@@ -2660,6 +2660,51 @@ export interface ChatApiGetMemoryUsageRequest {
 export interface ChatApiListChatsRequest {
 }
 
+export interface ChatApiListDebugMessagesRequest {
+    /**
+     * Chat session identifier
+     * @type string
+     * @memberof ChatApilistDebugMessages
+     */
+    chatId: string
+    /**
+     * Messages limit
+     * @type number
+     * @memberof ChatApilistDebugMessages
+     */
+    limit: number
+}
+
+export interface ChatApiListDebugMessages1Request {
+    /**
+     * Chat session identifier
+     * @type string
+     * @memberof ChatApilistDebugMessages1
+     */
+    chatId: string
+    /**
+     * Messages limit
+     * @type number
+     * @memberof ChatApilistDebugMessages1
+     */
+    limit: number
+    /**
+     * Messages offset (from new to old)
+     * @type number
+     * @memberof ChatApilistDebugMessages1
+     */
+    offset: number
+}
+
+export interface ChatApiListDebugMessages2Request {
+    /**
+     * Chat session identifier
+     * @type string
+     * @memberof ChatApilistDebugMessages2
+     */
+    chatId: string
+}
+
 export interface ChatApiListMessagesRequest {
     /**
      * Chat session identifier
@@ -2869,6 +2914,60 @@ export class ObjectChatApi {
      */
     public listChats(param: ChatApiListChatsRequest = {}, options?: Configuration): Promise<Array<ChatSessionDTO>> {
         return this.api.listChats( options).toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param param the request object
+     */
+    public listDebugMessagesWithHttpInfo(param: ChatApiListDebugMessagesRequest, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        return this.api.listDebugMessagesWithHttpInfo(param.chatId, param.limit,  options).toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param param the request object
+     */
+    public listDebugMessages(param: ChatApiListDebugMessagesRequest, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        return this.api.listDebugMessages(param.chatId, param.limit,  options).toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param param the request object
+     */
+    public listDebugMessages1WithHttpInfo(param: ChatApiListDebugMessages1Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        return this.api.listDebugMessages1WithHttpInfo(param.chatId, param.limit, param.offset,  options).toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param param the request object
+     */
+    public listDebugMessages1(param: ChatApiListDebugMessages1Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        return this.api.listDebugMessages1(param.chatId, param.limit, param.offset,  options).toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param param the request object
+     */
+    public listDebugMessages2WithHttpInfo(param: ChatApiListDebugMessages2Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        return this.api.listDebugMessages2WithHttpInfo(param.chatId,  options).toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param param the request object
+     */
+    public listDebugMessages2(param: ChatApiListDebugMessages2Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        return this.api.listDebugMessages2(param.chatId,  options).toPromise();
     }
 
     /**

@@ -9,6 +9,9 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat |
 | [**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage |
 | [**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats |
+| [**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages |
+| [**listDebugMessages1**](ChatApi.md#listDebugMessages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages |
+| [**listDebugMessages2**](ChatApi.md#listDebugMessages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages |
 | [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages |
 | [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages |
 | [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages |
@@ -335,6 +338,213 @@ This endpoint does not need any parameter.
 ### Return type
 
 [**List&lt;ChatSessionDTO&gt;**](ChatSessionDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listDebugMessages"></a>
+# **listDebugMessages**
+> List&lt;ChatMessageRecordDTO&gt; listDebugMessages(chatId, limit)
+
+List Chat Debug Messages
+
+List debug messages of a chat.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    Integer limit = 56; // Integer | Messages limit
+    try {
+      List<ChatMessageRecordDTO> result = apiInstance.listDebugMessages(chatId, limit);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#listDebugMessages");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+| **limit** | **Integer**| Messages limit | |
+
+### Return type
+
+[**List&lt;ChatMessageRecordDTO&gt;**](ChatMessageRecordDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listDebugMessages1"></a>
+# **listDebugMessages1**
+> List&lt;ChatMessageRecordDTO&gt; listDebugMessages1(chatId, limit, offset)
+
+List Chat Debug Messages
+
+List debug messages of a chat.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    Integer limit = 56; // Integer | Messages limit
+    Integer offset = 56; // Integer | Messages offset (from new to old)
+    try {
+      List<ChatMessageRecordDTO> result = apiInstance.listDebugMessages1(chatId, limit, offset);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#listDebugMessages1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+| **limit** | **Integer**| Messages limit | |
+| **offset** | **Integer**| Messages offset (from new to old) | |
+
+### Return type
+
+[**List&lt;ChatMessageRecordDTO&gt;**](ChatMessageRecordDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listDebugMessages2"></a>
+# **listDebugMessages2**
+> List&lt;ChatMessageRecordDTO&gt; listDebugMessages2(chatId)
+
+List Chat Debug Messages
+
+List debug messages of a chat.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    try {
+      List<ChatMessageRecordDTO> result = apiInstance.listDebugMessages2(chatId);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#listDebugMessages2");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+
+### Return type
+
+[**List&lt;ChatMessageRecordDTO&gt;**](ChatMessageRecordDTO.md)
 
 ### Authorization
 

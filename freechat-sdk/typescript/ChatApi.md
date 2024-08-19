@@ -9,6 +9,9 @@ Method | HTTP request | Description
 [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
 [**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
 [**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
+[**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
+[**listDebugMessages1**](ChatApi.md#listDebugMessages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
+[**listDebugMessages2**](ChatApi.md#listDebugMessages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages
 [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
@@ -265,6 +268,177 @@ This endpoint does not need any parameter.
 ### Return type
 
 **Array<ChatSessionDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listDebugMessages**
+> Array<ChatMessageRecordDTO> listDebugMessages()
+
+List debug messages of a chat.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .ChatApi(configuration);
+
+let body:.ChatApiListDebugMessagesRequest = {
+  // string | Chat session identifier
+  chatId: "chatId_example",
+  // number | Messages limit
+  limit: 1,
+};
+
+apiInstance.listDebugMessages(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chatId** | [**string**] | Chat session identifier | defaults to undefined
+ **limit** | [**number**] | Messages limit | defaults to undefined
+
+
+### Return type
+
+**Array<ChatMessageRecordDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listDebugMessages1**
+> Array<ChatMessageRecordDTO> listDebugMessages1()
+
+List debug messages of a chat.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .ChatApi(configuration);
+
+let body:.ChatApiListDebugMessages1Request = {
+  // string | Chat session identifier
+  chatId: "chatId_example",
+  // number | Messages limit
+  limit: 1,
+  // number | Messages offset (from new to old)
+  offset: 1,
+};
+
+apiInstance.listDebugMessages1(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chatId** | [**string**] | Chat session identifier | defaults to undefined
+ **limit** | [**number**] | Messages limit | defaults to undefined
+ **offset** | [**number**] | Messages offset (from new to old) | defaults to undefined
+
+
+### Return type
+
+**Array<ChatMessageRecordDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **listDebugMessages2**
+> Array<ChatMessageRecordDTO> listDebugMessages2()
+
+List debug messages of a chat.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .ChatApi(configuration);
+
+let body:.ChatApiListDebugMessages2Request = {
+  // string | Chat session identifier
+  chatId: "chatId_example",
+};
+
+apiInstance.listDebugMessages2(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **chatId** | [**string**] | Chat session identifier | defaults to undefined
+
+
+### Return type
+
+**Array<ChatMessageRecordDTO>**
 
 ### Authorization
 

@@ -2,13 +2,13 @@ package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.ChatUtils;
 import fun.freechat.service.chat.ChatMessageRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
-import java.util.Objects;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -26,7 +26,7 @@ public class ChatMessageRecordDTO {
     @Schema(description = "Additional information")
     private String ext;
 
-    public static ChatMessageRecordDTO from(ChatMessageRecord record) {
+    public static ChatMessageRecordDTO from(ChatMessageRecord record, boolean debugInfo) {
         if (record == null) {
             return null;
         }
@@ -39,8 +39,10 @@ public class ChatMessageRecordDTO {
 
         String userId = AccountUtils.currentUser().getUserId();
 
-        if (userId.equals(record.getCharacterOwnerId()) && userId.equals(record.getChatOwnerId())) {
-           dto.setExt(record.getExt());
+        if (debugInfo &&
+                userId.equals(record.getCharacterOwnerId()) &&
+                userId.equals(record.getChatOwnerId())) {
+           dto.setExt(ChatUtils.getChatMessageExt(record));
         }
 
         return dto;

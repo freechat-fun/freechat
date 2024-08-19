@@ -2125,6 +2125,72 @@ export class PromiseChatApi {
     }
 
     /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listDebugMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listDebugMessagesWithHttpInfo(chatId, limit, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listDebugMessages(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listDebugMessages(chatId, limit, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listDebugMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listDebugMessages1WithHttpInfo(chatId, limit, offset, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listDebugMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listDebugMessages1(chatId, limit, offset, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     */
+    public listDebugMessages2WithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listDebugMessages2WithHttpInfo(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     */
+    public listDebugMessages2(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listDebugMessages2(chatId, _options);
+        return result.toPromise();
+    }
+
+    /**
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier

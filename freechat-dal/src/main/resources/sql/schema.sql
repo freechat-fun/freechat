@@ -230,7 +230,8 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `init_quota` bigint unsigned DEFAULT 0,
   `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   PRIMARY KEY (`backend_id`),
-  INDEX `idx_character` (`character_uid`)
+  INDEX `idx_character` (`character_uid`),
+  INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='character backend table'
 ;
 
@@ -273,7 +274,8 @@ CREATE TABLE IF NOT EXISTS `chat_context` (
   `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   `ext` json DEFAULT NULL,
   PRIMARY KEY (`chat_id`),
-  INDEX `idx_user` (`user_id`)
+  INDEX `idx_user` (`user_id`),
+  INDEX `idx_backend` (`backend_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='chat context table'
 ;
 
@@ -286,6 +288,7 @@ CREATE TABLE IF NOT EXISTS `chat_history` (
   `ext` json DEFAULT NULL,
   `enabled` tinyint NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
+  INDEX `idx_memory` (`memory_id`),
   INDEX `idx_memory_enabled` (`memory_id`, `enabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='chat message table'
 ;

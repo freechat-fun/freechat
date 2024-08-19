@@ -3357,6 +3357,111 @@ export class ObservableChatApi {
     }
 
     /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listDebugMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listDebugMessages(chatId, limit, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listDebugMessagesWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     */
+    public listDebugMessages(chatId: string, limit: number, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listDebugMessagesWithHttpInfo(chatId, limit, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listDebugMessages1WithHttpInfo(chatId: string, limit: number, offset: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listDebugMessages1(chatId, limit, offset, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listDebugMessages1WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     * @param limit Messages limit
+     * @param offset Messages offset (from new to old)
+     */
+    public listDebugMessages1(chatId: string, limit: number, offset: number, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listDebugMessages1WithHttpInfo(chatId, limit, offset, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     */
+    public listDebugMessages2WithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listDebugMessages2(chatId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listDebugMessages2WithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List debug messages of a chat.
+     * List Chat Debug Messages
+     * @param chatId Chat session identifier
+     */
+    public listDebugMessages2(chatId: string, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listDebugMessages2WithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    }
+
+    /**
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier

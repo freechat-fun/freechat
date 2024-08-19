@@ -56,7 +56,7 @@ public class ChatSessionDTO {
 
         dto.setContext(context);
         dto.setCharacter(CharacterSummaryDTO.from(Pair.of(characterInfo, tags)));
-        dto.setLatestMessageRecord(ChatMessageRecordDTO.from(chatItem.getRight()));
+        dto.setLatestMessageRecord(ChatMessageRecordDTO.from(chatItem.getRight(), true));
         dto.setProvider(provider);
         dto.setProactiveChatWaitingTime(proactiveChatWaitingTime);
         dto.setSenderStatus(senderStatus);

@@ -41,6 +41,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 @Tag(name = "Chat")
@@ -298,7 +299,8 @@ public class ChatApi {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         checkQuota(chatId);
         SseEmitter sseEmitter = new SseEmitter();
-        long startTime = System.currentTimeMillis();
+        // avoid instruction reordering
+        AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
         TokenStream tokenStream = chatService.streamSend(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
@@ -320,7 +322,7 @@ public class ChatApi {
                 long firstPackageReceivedTime = System.currentTimeMillis();
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
                         .args(new String[]{characterUid})
-                        .elapseTime(firstPackageReceivedTime - startTime)
+                        .elapseTime(firstPackageReceivedTime - startTime.get())
                         .method("ChatApi::firstPackageReceived")
                         .response(partialResult)
                         .status(TraceUtils.TraceStatus.SUCCESSFUL)
@@ -342,7 +344,7 @@ public class ChatApi {
                 long lastPackageReceivedTime = System.currentTimeMillis();
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
                         .args(new String[]{characterUid})
-                        .elapseTime(lastPackageReceivedTime - startTime)
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
                         .method("ChatApi::lastPackageReceived")
                         .response(partialResult)
                         .throwable(e)
@@ -364,7 +366,7 @@ public class ChatApi {
                 sseEmitter.complete();
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
                         .args(new String[]{characterUid})
-                        .elapseTime(lastPackageReceivedTime - startTime)
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
                         .method("ChatApi::lastPackageReceived")
                         .status(TraceUtils.TraceStatus.SUCCESSFUL)
                         .traceId(traceId)
@@ -376,7 +378,7 @@ public class ChatApi {
                 sseEmitter.completeWithError(e);
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
                         .args(new String[]{characterUid})
-                        .elapseTime(lastPackageReceivedTime - startTime)
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
                         .method("ChatApi::lastPackageReceived")
                         .throwable(e)
                         .status(TraceUtils.TraceStatus.BAD_REQUEST)
@@ -397,7 +399,7 @@ public class ChatApi {
             long lastPackageReceivedTime = System.currentTimeMillis();
             String traceInfo = new TraceUtils.TraceInfoBuilder()
                     .args(new String[]{characterUid})
-                    .elapseTime(lastPackageReceivedTime - startTime)
+                    .elapseTime(lastPackageReceivedTime - startTime.get())
                     .method("ChatApi::lastPackageReceived")
                     .status(TraceUtils.TraceStatus.FAILED)
                     .traceId(traceId)
@@ -455,7 +457,57 @@ public class ChatApi {
 
         return messages.subList(start, end)
                 .stream()
-                .map(ChatMessageRecordDTO::from)
+                .map(r -> ChatMessageRecordDTO.from(r, false))
+                .toList();
+    }
+
+    @Operation(
+            operationId = "listDebugMessages",
+            summary = "List Chat Debug Messages",
+            description = "List debug messages of a chat."
+    )
+    @GetMapping(value = {
+            "/messages/debug/{chatId}",
+            "/messages/debug/{chatId}/{limit}",
+            "/messages/debug/{chatId}/{limit}/{offset}"})
+    @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
+    public List<ChatMessageRecordDTO> debugMessages(
+            @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
+            @Parameter(description = "Messages limit") @PathVariable("limit") Optional<Integer> limit,
+            @Parameter(description = "Messages offset (from new to old)") @PathVariable("offset") Optional<Integer> offset) {
+        int messagesLimit = limit.orElse(Integer.MAX_VALUE);
+        int messagesOffset = Math.max(0, offset.orElse(0));
+
+        var messages = chatMemoryService.listAllChatMessages(chatId);
+        if (CollectionUtils.isEmpty(messages) || messages.size() <= messagesOffset) {
+            return Collections.emptyList();
+        }
+
+        int end = messages.size() - messagesOffset;
+        int start = Math.max(0, end - messagesLimit);
+
+        if (start == 0) {
+            LinkedList<ChatMessageRecord> records = new LinkedList<>(messages);
+            // remove system message
+            ChatMessageRecord firstRecord = records.removeFirst();
+            --end;
+            ChatSession session = chatSessionService.get(chatId);
+            if (session != null) {
+                // add greeting message
+                String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
+                if (StringUtils.isNotBlank(greeting)) {
+                    AiMessage greetingMessage = AiMessage.from(greeting);
+                    firstRecord.setMessage(greetingMessage);
+                    records.addFirst(firstRecord);
+                    ++end;
+                }
+            }
+            messages = records;
+        }
+
+        return messages.subList(start, end)
+                .stream()
+                .map(r -> ChatMessageRecordDTO.from(r, true))
                 .toList();
     }
 

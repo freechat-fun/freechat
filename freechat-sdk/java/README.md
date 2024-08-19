@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.3.0
+- API version: 1.3.2
   - Generator version: 7.7.0
 
 # FreeChat: Create Some Friends for Yourself with AI
@@ -140,7 +140,7 @@ You can also run FreeChat locally. Currently supported on MacOS and Linux (altho
 Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!
 
 ### Running in an IDE
-To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup parameters:
+To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options:
 ```shell
 -Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \\
 -DAPP_HOME=local-data/freechat \\
@@ -284,7 +284,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.3.0</version>
+  <version>1.3.2</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -300,7 +300,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.3.0"
+     implementation "fun.freechat:freechat-sdk:1.3.2"
   }
 ```
 
@@ -314,7 +314,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.3.0.jar`
+* `target/freechat-sdk-1.3.2.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -457,6 +457,9 @@ Class | Method | HTTP request | Description
 *ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
 *ChatApi* | [**getMemoryUsage**](docs/ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
 *ChatApi* | [**listChats**](docs/ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
+*ChatApi* | [**listDebugMessages**](docs/ChatApi.md#listDebugMessages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
+*ChatApi* | [**listDebugMessages1**](docs/ChatApi.md#listDebugMessages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
+*ChatApi* | [**listDebugMessages2**](docs/ChatApi.md#listDebugMessages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages
 *ChatApi* | [**listMessages**](docs/ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
 *ChatApi* | [**listMessages1**](docs/ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 *ChatApi* | [**listMessages2**](docs/ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
