@@ -95,6 +95,13 @@ mysql:
       enabled: false
     readinessProbe:
       enabled: false
+    resourcesPreset: none
+  primary:
+    resourcesPreset: none
+  secondary:
+    resourcesPreset: none
+  volumePermissions:
+    resourcesPreset: none
 redis:
   deployment:
     enabled: true
@@ -156,8 +163,23 @@ milvus:
       token: ''
   etcd:
     replicaCount: 1
-  minio:
+  kafka:
+    broker:
+      resourcesPreset: none
+    controller:
+      resourcesPreset: none
     provisioning:
+      resourcesPreset: none
+    volumePermissions:
+      resourcesPreset: none
+    metrics:
+      jmx:
+        resourcesPreset: none
+  minio:
+    resourcesPreset: none
+    provisioning:
+      resourcesPreset: none
+    volumePermissions:
       resourcesPreset: none
   proxy:
     service:
