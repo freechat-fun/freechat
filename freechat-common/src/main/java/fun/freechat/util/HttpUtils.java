@@ -14,7 +14,6 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -98,6 +97,8 @@ public class HttpUtils {
         Request.Builder builder = builderFor(url, headers);
         if (StringUtils.isNotBlank(data)) {
             builder.post(RequestBody.create(data, DEFAULT_MEDIA_TYPE));
+        } else {
+            builder.post(RequestBody.create(new byte[0], null));
         }
         return getResponseAsString(builder.build());
     }
@@ -110,6 +111,8 @@ public class HttpUtils {
         Request.Builder builder = builderFor(url, headers);
         if (StringUtils.isNotBlank(data)) {
             builder.put(RequestBody.create(data, DEFAULT_MEDIA_TYPE));
+        } else {
+            builder.put(RequestBody.create(new byte[0], null));
         }
         return getResponseAsString(builder.build());
     }

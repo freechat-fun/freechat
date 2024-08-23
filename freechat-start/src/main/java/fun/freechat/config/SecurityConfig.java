@@ -44,6 +44,8 @@ import java.util.List;
 @Configuration
 @SuppressWarnings("unused")
 public class SecurityConfig {
+    @Value("${auth.aes.key}")
+    private String aesKey;
     @Value("${auth.role.adminUri:#{null}}")
     private String[] adminUri;
     @Value("${auth.role.bizAdminUri:#{null}}")
@@ -72,6 +74,10 @@ public class SecurityConfig {
     private String impersonateHeaderName;
     @Value("${auth.impersonate.autoRegister}")
     private Boolean impersonateAutoRegister;
+    @Value("${auth.logout.uri}")
+    private String logoutUri;
+    @Value("${auth.logout.successUri}")
+    private String logoutSuccessUri;
 
     private void configPrivatePath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(privateUri)) {
@@ -123,12 +129,20 @@ public class SecurityConfig {
             registry.anyRequest().authenticated();
         });
 
+        http.userDetailsService(userDetailsManager);
+
+        http.logout(logout ->
+                logout.logoutUrl(logoutUri)
+                        .logoutSuccessUrl(logoutSuccessUri)
+                        .permitAll()
+        );
+
         http.formLogin(portal ->
                 portal.loginPage(loginUri)
                         .loginProcessingUrl(loginProcessingUri)
-                        .permitAll()
                         .defaultSuccessUrl(portalLoginSuccessUri)
                         .failureUrl(portalLoginFailureUri)
+                        .permitAll()
         );
 
         SysUserDetailsManager sysUserDetailsManager = (SysUserDetailsManager) userDetailsManager;
@@ -147,11 +161,11 @@ public class SecurityConfig {
 
         http.oauth2Login(oauth2 ->
                 oauth2.loginPage(loginUri)
-                        .permitAll()
                         .authorizationEndpoint(endpoint ->
                                 endpoint.authorizationRequestResolver(oAuth2RequestResolver))
                         .successHandler(oAuth2SuccessHandler)
                         .failureHandler(oAuth2FailureHandler)
+                        .permitAll()
         );
 
         if (ArrayUtils.isNotEmpty(apiUri)) {
@@ -162,7 +176,7 @@ public class SecurityConfig {
             http.csrf(csrfConf -> csrfConf.ignoringRequestMatchers(apiUri));
         }
 
-        http.userDetailsService(userDetailsManager);
+        http.rememberMe(rememberMe -> rememberMe.key(aesKey).alwaysRemember(true));
 
         return http.build();
     }
@@ -220,8 +234,17 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         if (AppMetaUtils.isTestEnv()) {
+            List<String> allowedOriginList = List.of(
+                    "http://localhost",
+                    "http://localhost:3000",
+                    "http://127.0.0.1",
+                    "http://127.0.0.1:8080"
+            );
+
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedMethods(List.of("*"));
+            configuration.setAllowedOriginPatterns(allowedOriginList);
+            configuration.setAllowCredentials(true);
             configuration.applyPermitDefaultValues();
 
             for (String uri : apiUri) {

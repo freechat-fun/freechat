@@ -13,11 +13,12 @@ helm --kubeconfig ${KUBE_CONFIG} install --create-namespace -f ${values_yaml} \
   cert-manager jetstack/cert-manager
 
 helm --kubeconfig ${KUBE_CONFIG} install -f ${values_yaml} \
-  --set bitnami.milvus.enabled=false \
-  --set bitnami.mysql.enabled=false \
-  --set bitnami.redis.enabled=false \
-  --set bitnami.prometheus.enabled=false \
-  --set bitnami.grafana.enabled=false \
+  --set mysql.deployment.enabled=false \
+  --set redis.deployment.enabled=false \
+  --set milvus.deployment.enabled=false \
+  --set prometheus.deployment.enabled=false \
+  --set grafana.deployment.enabled=false \
+  --set grafana-loki.deployment.enabled=false \
   --set deployment.backend.enabled=false \
   --set deployment.frontend.enabled=false \
   --set deployment.pvc.enabled=false \
