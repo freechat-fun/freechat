@@ -32,7 +32,7 @@ spec:
         {{- range .Values.ingress.hosts }}
         - {{ .host | quote }}
         {{- end }}
-      secretName: {{ include "helpers.name" . }}-letsencrypt-cert
+      secretName: {{ include "helpers.name" . }}-tls
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
