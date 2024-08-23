@@ -1,10 +1,11 @@
 package fun.freechat.config;
 
 import fun.freechat.access.auth.ApiTokenAuthenticationProvider;
+import fun.freechat.access.auth.OAuth2TokenBasedRememberMeServices;
 import fun.freechat.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
 import fun.freechat.access.auth.handler.OAuth2AuthenticationFailureHandler;
 import fun.freechat.access.auth.handler.OAuth2AuthenticationSuccessHandler;
-import fun.freechat.access.filter.ApiSwitchUserFilter;
+import fun.freechat.access.auth.ApiSwitchUserFilter;
 import fun.freechat.access.user.SysUserDetailsManager;
 import fun.freechat.api.access.RoleBasedPermissionEvaluator;
 import fun.freechat.service.account.SysAuthorityService;
@@ -21,6 +22,7 @@ import org.springframework.security.access.expression.method.DefaultMethodSecuri
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -29,6 +31,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2Authorization
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFilter;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -176,7 +179,8 @@ public class SecurityConfig {
             http.csrf(csrfConf -> csrfConf.ignoringRequestMatchers(apiUri));
         }
 
-        http.rememberMe(rememberMe -> rememberMe.key(aesKey).alwaysRemember(true));
+        http.rememberMe(rememberMe ->
+                rememberMe.rememberMeServices(rememberMeServices(userDetailsManager)));
 
         return http.build();
     }
@@ -207,6 +211,13 @@ public class SecurityConfig {
         DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
         handler.setPermissionEvaluator(roleBasedPermissionEvaluator);
         return handler;
+    }
+
+    private RememberMeServices rememberMeServices(UserDetailsService userDetailsService) {
+        OAuth2TokenBasedRememberMeServices rememberMeServices =
+                new OAuth2TokenBasedRememberMeServices(aesKey, userDetailsService);
+        rememberMeServices.setAlwaysRemember(true);
+        return rememberMeServices;
     }
 
     private AuthenticationFilter apiAuthenticationFilter(ApiTokenAuthenticationProvider provider) {

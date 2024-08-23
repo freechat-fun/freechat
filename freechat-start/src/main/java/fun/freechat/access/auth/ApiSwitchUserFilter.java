@@ -1,4 +1,4 @@
-package fun.freechat.access.filter;
+package fun.freechat.access.auth;
 
 import fun.freechat.access.user.SysUserDetails;
 import fun.freechat.access.user.SysUserDetailsManager;
@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -151,7 +151,7 @@ public record SysUserDetailsManager(SysUserService userService,
                 .build();
     }
 
-    private String getUsername(OAuth2User oAuth2User, String platform) {
+    public String getUsername(OAuth2User oAuth2User, String platform) {
         String username = oAuth2User.getName();
         if ("aliyun".equalsIgnoreCase(platform)) {
             String uid = oAuth2User.getAttribute("uid");
@@ -168,8 +168,12 @@ public record SysUserDetailsManager(SysUserService userService,
         return username + "@" + platform;
     }
 
-    private String generatePassword() {
-        return UUID.randomUUID().toString();
+    public String getRawPassword(OAuth2User oAuth2User, String platform) {
+        return getSub(oAuth2User, platform);
+    }
+
+    public String getPassword(OAuth2User oAuth2User, String platform) {
+        return passwordEncoder.encode(getRawPassword(oAuth2User, platform));
     }
 
     private String getNickname(OAuth2User oAuth2User, String platform) {
@@ -291,7 +295,7 @@ public record SysUserDetailsManager(SysUserService userService,
 
             user = new User()
                     .withUsername(getUsername(oAuth2User, platform))
-                    .withPassword(generatePassword())
+                    .withPassword(getRawPassword(oAuth2User, platform))
                     .withNickname(getNickname(oAuth2User, platform))
                     .withGivenName(oAuth2User.getAttribute(StandardClaimNames.GIVEN_NAME))
                     .withMiddleName(oAuth2User.getAttribute(StandardClaimNames.MIDDLE_NAME))
