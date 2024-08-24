@@ -1,16 +1,18 @@
 package fun.freechat.config;
 
+import fun.freechat.access.auth.ApiSwitchUserFilter;
 import fun.freechat.access.auth.ApiTokenAuthenticationProvider;
 import fun.freechat.access.auth.OAuth2TokenBasedRememberMeServices;
 import fun.freechat.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
 import fun.freechat.access.auth.handler.OAuth2AuthenticationFailureHandler;
 import fun.freechat.access.auth.handler.OAuth2AuthenticationSuccessHandler;
-import fun.freechat.access.auth.ApiSwitchUserFilter;
 import fun.freechat.access.user.SysUserDetailsManager;
+import fun.freechat.access.user.SysUserPasswordEncoder;
 import fun.freechat.api.access.RoleBasedPermissionEvaluator;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.service.account.SysBindService;
 import fun.freechat.service.account.SysUserService;
+import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.util.AppMetaUtils;
 import fun.freechat.util.AuthorityUtils;
@@ -23,7 +25,6 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -186,16 +187,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    public PasswordEncoder passwordEncoder(EncryptionService encryptionService) {
+        return new SysUserPasswordEncoder(encryptionService);
+    }
+
+    @Bean
     public UserDetailsManager users(SysUserService userService,
                                     SysBindService bindService,
                                     SysAuthorityService authorityService,
                                     PasswordEncoder passwordEncoder) {
         return new SysUserDetailsManager(userService, bindService, authorityService, passwordEncoder);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     private RequestMatcher toRequestMatcher(String[] paths) {
