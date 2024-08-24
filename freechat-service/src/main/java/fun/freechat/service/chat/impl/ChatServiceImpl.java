@@ -27,6 +27,7 @@ import fun.freechat.service.chat.*;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
+import fun.freechat.service.rag.RagTaskService;
 import fun.freechat.util.TraceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -66,6 +67,8 @@ public class ChatServiceImpl implements ChatService {
     private CharacterService characterService;
     @Autowired
     private OrgService orgService;
+    @Autowired
+    private RagTaskService ragTaskService;
 
     @Override
     public String start(User user,
@@ -280,7 +283,7 @@ public class ChatServiceImpl implements ChatService {
             String traceId = TraceUtils.getTraceId();
             String username = TraceUtils.getTraceAttribute("username");
             String characterUid = chatContextService.getCharacterUid((String) memoryId);
-            if (knowledgeRetriever != null) {
+            if (knowledgeRetriever != null && ragTaskService.hasAnyTask(characterUid)) {
                 long startTime = System.currentTimeMillis();
                 Throwable throwable = null;
                 try {
@@ -313,7 +316,8 @@ public class ChatServiceImpl implements ChatService {
                 }
             }
 
-            if (longTermMemoryRetriever != null) {
+            if (longTermMemoryRetriever != null &&
+                    chatMemoryService.roughCount(memoryId) >= ((SystemAlwaysOnTopMessageWindowChatMemory) chatMemory).getMaxMessages()) {
                 long startTime = System.currentTimeMillis();
                 Throwable throwable = null;
                 try {
@@ -353,8 +357,6 @@ public class ChatServiceImpl implements ChatService {
                         UserMessage.from(prompt.getMessageToSend().contents()),
                         variables,
                         session.getPromptFormat());
-            } else {
-                messageToSend = UserMessage.from(((UserMessage) message).contents());
             }
         }
 

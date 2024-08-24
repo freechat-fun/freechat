@@ -10,6 +10,7 @@ public interface RagTaskService {
     boolean update(RagTask task);
     boolean delete(Long taskId);
     List<RagTask> list(String characterUid);
+    boolean hasAnyTask(String characterUid);
     boolean deleteByCharacterUid(String characterUid);
     RagTask get(Long taskId);
     String getOwner(Long taskId);

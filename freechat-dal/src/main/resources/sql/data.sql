@@ -19,6 +19,7 @@ INSERT IGNORE INTO `ai_model_info` (`model_id`, `gmt_create`, `gmt_modified`, `n
 ('[open_ai]gpt-4', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4', 'alias for the GPT-4 8k latest model', 'open_ai', 'text2chat'),
 ('[open_ai]gpt-4-turbo', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4-turbo', 'the latest GPT-4 Turbo model with vision capabilities', 'open_ai', 'text2chat'),
 ('[open_ai]gpt-4o', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4o', 'most advanced, multimodal flagship model that’s cheaper and faster than GPT-4 Turbo', 'open_ai', 'text2chat'),
+('[open_ai]gpt-4o-mini', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4o-mini', 'gpt-40 mini version', 'open_ai', 'text2chat'),
 ('[open_ai]gpt-4-vision-preview', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-4-vision-preview', '128k context, vision', 'open_ai', 'text2chat'),
 ('[open_ai]text-davinci-003', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'text-davinci-003', 'davinci fine-tuning model', 'open_ai', 'text2text'),
 ('[open_ai]gpt-3.5-turbo-instruct', '2024-05-01 19:11:32', '2024-05-01 19:11:32', 'gpt-3.5-turbo-instruct', 'trained similarly as the text-davinci series while maintaining the same speed as the turbo models.', 'open_ai', 'text2text'),

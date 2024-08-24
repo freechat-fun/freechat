@@ -4,6 +4,7 @@ import fun.freechat.mapper.RagTaskDynamicSqlSupport;
 import fun.freechat.mapper.RagTaskMapper;
 import fun.freechat.model.RagTask;
 import fun.freechat.service.cache.LongPeriodCache;
+import fun.freechat.service.cache.MiddlePeriodCache;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.TaskStatus;
 import fun.freechat.service.rag.RagTaskExt;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 
@@ -71,6 +71,15 @@ public class RagTaskServiceImpl implements RagTaskService {
     public List<RagTask> list(String characterUid) {
         return ragTaskMapper.select(c ->
                 c.where(RagTaskDynamicSqlSupport.characterUid, isEqualTo(characterUid)));
+    }
+
+    @Override
+    @MiddlePeriodCache
+    public boolean hasAnyTask(String characterUid) {
+        return !ragTaskMapper.select(c ->
+                c.where(RagTaskDynamicSqlSupport.characterUid, isEqualTo(characterUid))
+                        .limit(1))
+                .isEmpty();
     }
 
     @Override

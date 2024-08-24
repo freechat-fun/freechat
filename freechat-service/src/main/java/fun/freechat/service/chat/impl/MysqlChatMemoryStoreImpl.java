@@ -76,11 +76,11 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         LinkedList<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
 
         SystemMessage systemMessage = firstMessage.type() == SYSTEM ? (SystemMessage) firstMessage : null;
-        ChatHistory history = messageToHistory(memoryId, lastMessage, systemMessage, null);
+        ChatHistory history = messageToHistory(memoryId, lastMessage, null);
         chatHistoryMapper.insertSelective(history);
         if (history.getId() != null) {
             // the system message may be too large
-            // store it as a file instead of db record.
+            // store it as a file instead of db record
             saveSystemMessage(memoryId, history.getId(), systemMessage);
 
             cachedList.add(ChatMessageRecord.builder()
@@ -111,7 +111,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
             return;
         }
 
-        ChatHistory history = messageToHistory(memoryId, message, null, usage);
+        ChatHistory history = messageToHistory(memoryId, message, usage);
         chatHistoryMapper.insertSelective(history);
         if (history.getId() != null) {
             List<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
@@ -222,6 +222,20 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 .map(characterService::summary)
                 .map(CharacterInfo::getLang)
                 .orElse("en");
+    }
+
+    @Override
+    @MiddlePeriodCache
+    public Long roughCount(Object memoryId) {
+        var statement = select(count(ChatHistoryDynamicSqlSupport.id))
+                .from(ChatHistoryDynamicSqlSupport.chatHistory)
+                .where(ChatHistoryDynamicSqlSupport.memoryId, isEqualTo((String) memoryId))
+                .and(ChatHistoryDynamicSqlSupport.enabled, isEqualTo((byte) 1))
+                .and(ChatHistoryDynamicSqlSupport.message, isNotNull())
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return chatHistoryMapper.count(statement);
     }
 
     @Override
@@ -353,7 +367,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     }
 
     private static ChatHistory messageToHistory(
-            Object memoryId, ChatMessage message, ChatMessage systemMessage, TokenUsage tokenUsage) {
+            Object memoryId, ChatMessage message, TokenUsage tokenUsage) {
         String ext = null;
         if (message.type() == AI && tokenUsage != null) {
             ext =InfoUtils.serialize(tokenUsage);

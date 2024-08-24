@@ -7,11 +7,11 @@ import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
@@ -21,6 +21,7 @@ import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
 @Slf4j
 public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     private final Object id;
+    @Getter
     private final Integer maxMessages;
     private final ChatMemoryStore store;
     private SystemMessage latestSystemMessage;
