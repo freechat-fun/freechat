@@ -72,11 +72,10 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value = {"/", "/undefined"})
     public String home(Model model) {
         return "redirect:/w";
     }
-
 
     @GetMapping({"/public/check/live"})
     @ResponseBody
