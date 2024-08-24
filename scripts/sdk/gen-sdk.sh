@@ -21,7 +21,7 @@ AUTHOR_URL=https://github.com/freechat-fun
 AUTHOR_ORG=freechat.fun
 OUTPUT=${PROJECT_PATH}/local-data/sdk
 CLI=${OUTPUT}/openapi-generator-cli.jar
-CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.7.0/openapi-generator-cli-7.7.0.jar
+CLI_URL=https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.8.0/openapi-generator-cli-7.8.0.jar
 # DOC=https://freechat.fun/public/openapi/v3/api-docs/g-all
 DOC=http://127.0.0.1:8080/public/openapi/v3/api-docs/g-all
 
