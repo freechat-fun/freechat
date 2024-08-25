@@ -717,6 +717,20 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
+    @LongPeriodCache
+    public String getNameByUid(String characterUid) {
+        var statement = select(Info.name)
+                .from(Info.table)
+                .where(Info.characterUid, isEqualTo(characterUid))
+                .orderBy(Info.version.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).map(CharacterInfo::getName).orElse(null);
+    }
+
+    @Override
     public boolean existsName(String name, User user) {
         var statement = select(Info.name)
                 .from(Info.table)

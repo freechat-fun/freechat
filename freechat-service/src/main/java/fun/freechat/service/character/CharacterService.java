@@ -67,6 +67,7 @@ public interface CharacterService {
     String getOwner(Long characterId);
     String getOwnerByUid(String characterUid);
     String getUid(Long characterId);
+    String getNameByUid(String characterUid);
     boolean existsName(String name, User user);
 
     String addBackend(CharacterBackend characterBackend);

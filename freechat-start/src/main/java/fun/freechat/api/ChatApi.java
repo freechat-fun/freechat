@@ -313,6 +313,7 @@ public class ChatApi {
         String traceId = TraceUtils.getTraceId();
         String username = AccountUtils.currentUser().getUsername();
         String characterUid = chatContextService.getCharacterUid(chatId);
+        String characterName = characterService.getNameByUid(characterUid);
         AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
         tokenStream.onNext(partialResult -> {
@@ -325,7 +326,7 @@ public class ChatApi {
                 TraceUtils.putTraceAttribute("username", username);
                 long firstPackageReceivedTime = System.currentTimeMillis();
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
-                        .args(new String[]{characterUid})
+                        .args(new String[]{characterName, characterUid})
                         .elapseTime(firstPackageReceivedTime - startTime.get())
                         .method("ChatApi::firstPackageReceived")
                         .response(partialResult)
@@ -347,7 +348,7 @@ public class ChatApi {
                 sseEmitter.completeWithError(e);
                 long lastPackageReceivedTime = System.currentTimeMillis();
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
-                        .args(new String[]{characterUid})
+                        .args(new String[]{characterName, characterUid})
                         .elapseTime(lastPackageReceivedTime - startTime.get())
                         .method("ChatApi::lastPackageReceived")
                         .response(partialResult)
@@ -373,7 +374,7 @@ public class ChatApi {
                 sseEmitter.send(result);
                 sseEmitter.complete();
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
-                        .args(new String[]{characterUid})
+                        .args(new String[]{characterName, characterUid})
                         .elapseTime(lastPackageReceivedTime - startTime.get())
                         .method("ChatApi::lastPackageReceived")
                         .status(TraceUtils.TraceStatus.SUCCESSFUL)
@@ -385,7 +386,7 @@ public class ChatApi {
                 log.warn("Error when sending message.", e);
                 sseEmitter.completeWithError(e);
                 String traceInfo = new TraceUtils.TraceInfoBuilder()
-                        .args(new String[]{characterUid})
+                        .args(new String[]{characterName, characterUid})
                         .elapseTime(lastPackageReceivedTime - startTime.get())
                         .method("ChatApi::lastPackageReceived")
                         .throwable(e)
@@ -410,7 +411,7 @@ public class ChatApi {
             }
             long lastPackageReceivedTime = System.currentTimeMillis();
             String traceInfo = new TraceUtils.TraceInfoBuilder()
-                    .args(new String[]{characterUid})
+                    .args(new String[]{characterName, characterUid})
                     .elapseTime(lastPackageReceivedTime - startTime.get())
                     .method("ChatApi::lastPackageReceived")
                     .status(TraceUtils.TraceStatus.FAILED)

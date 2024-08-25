@@ -37,7 +37,7 @@ public class TraceUtils {
     }
 
     public static void startTrace() {
-        setTraceId(UUID.randomUUID().toString());
+        setTraceId(UUID.randomUUID().toString().replaceAll("-", ""));
     }
 
     public static long stopTrace() {

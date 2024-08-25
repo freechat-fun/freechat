@@ -40,9 +40,13 @@ data:
               firstline: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}'
               max_wait_time: 3s
           - regex: 
-              expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) \[[^\]]+\] (?P<level>TRACE|DEBUG|INFO|WARN|ERROR|FATAL|PERF|ACCESS) +\S+ - (?s:.*)$'
+              expression: '^(?P<date>\d{4}-\d{2}-\d{2}) (?P<time>\d{2}:\d{2}:\d{2}\.\d{3}) \[[^\]]+\] (?P<level>TRACE|DEBUG|INFO|WARN|ERROR|FATAL|PERF|ACCESS) +\S+ - (?s:.*)$'
           - labels:
+              date:
               level:
+          - template:
+              source: timestamp
+              template: '{{ "{{" }}.date{{ "}}" }} {{ "{{" }}.time{{ "}}" }}'
           - match:
               selector: '{level="PERF"}'
               stages:
@@ -52,9 +56,6 @@ data:
                     class:
                     method:
                     status:
-                - template:
-                    source: 'api'
-                    template: '{{ "{{" }}.class{{ "}}" }}::{{ "{{" }}.method{{ "}}" }}'
           - match:
               selector: '{level="ACCESS"}'
               stages:
@@ -65,9 +66,6 @@ data:
                     method:
                     status:
                     http_code:
-                - template:
-                    source: 'api'
-                    template: '{{ "{{" }}.method{{ "}}" }} {{ "{{" }}.path{{ "}}" }}'
           - timestamp:
               source: timestamp
               format: '2006-01-02 15:04:05.000'

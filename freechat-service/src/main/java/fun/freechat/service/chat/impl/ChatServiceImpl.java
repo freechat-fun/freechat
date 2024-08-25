@@ -283,6 +283,7 @@ public class ChatServiceImpl implements ChatService {
             String traceId = TraceUtils.getTraceId();
             String username = TraceUtils.getTraceAttribute("username");
             String characterUid = chatContextService.getCharacterUid((String) memoryId);
+            String characterName = characterService.getNameByUid(characterUid);
             if (knowledgeRetriever != null && ragTaskService.hasAnyTask(characterUid)) {
                 long startTime = System.currentTimeMillis();
                 Throwable throwable = null;
@@ -304,7 +305,7 @@ public class ChatServiceImpl implements ChatService {
                     TraceUtils.TraceStatus status = throwable == null ?
                             TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
                     String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[]{characterUid})
+                            .args(new String[]{characterName, characterUid})
                             .elapseTime(endTime - startTime)
                             .method("ChatServiceImpl::retrieveKnowledge")
                             .status(status)
@@ -331,7 +332,7 @@ public class ChatServiceImpl implements ChatService {
                     TraceUtils.TraceStatus status = throwable == null ?
                             TraceUtils.TraceStatus.SUCCESSFUL : TraceUtils.TraceStatus.FAILED;
                     String traceInfo = new TraceUtils.TraceInfoBuilder()
-                            .args(new String[]{characterUid})
+                            .args(new String[]{characterName, characterUid})
                             .elapseTime(endTime - startTime)
                             .method("ChatServiceImpl::retrieveLongTermMemory")
                             .status(status)
