@@ -1,4 +1,4 @@
-import { useRef, KeyboardEvent } from "react";
+import { useRef, KeyboardEvent, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
 import { SendRounded } from "@mui/icons-material";
@@ -14,7 +14,14 @@ export default function MessageInput(props: MessageInputProps) {
   const { textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
   const { t } = useTranslation('chat');
   
-  const textAreaRef = useRef<HTMLDivElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (!disabled) {
+      textAreaRef.current?.focus();
+    }
+  }, [disabled]);
+
   function handleClick() {
     if (textAreaValue.trim() !== '') {
       onSubmit();
@@ -107,7 +114,6 @@ export default function MessageInput(props: MessageInputProps) {
           disabled={disabled}
           placeholder="Type something here…"
           aria-label="Message"
-          ref={textAreaRef}
           onChange={(e) => setTextAreaValue(e.target.value)}
           value={textAreaValue}
           slotProps={{
@@ -116,6 +122,7 @@ export default function MessageInput(props: MessageInputProps) {
               variant: 'plain',
               minRows: 1,
               maxRows: 5,
+              slotProps: { textarea: { ref: textAreaRef } },
               sx: {
                 '--Textarea-focusedInset': 'inset',
                 '--Textarea-focusedThickness': 0,

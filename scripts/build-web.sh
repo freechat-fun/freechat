@@ -42,8 +42,10 @@ services:
     image: ${HELM_image_frontend_repository}:latest
 EOF
 
-echo "[COMPOSE CONFIG]"
-cat ${COMPOSE_CONFIG}
+if [[ "${VERBOSE}" == "1" ]];then
+  echo "[COMPOSE CONFIG]"
+  cat ${COMPOSE_CONFIG}
+fi
 
 docker compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
 
