@@ -56,6 +56,10 @@ image:
     pullPolicy: Always
     repository: freechatfun/freechat-web
     tag: 'latest'
+  busybox:
+    pullPolicy: IfNotPresent
+    repository: busybox
+    tag: 'latest'
   promtail:
     pullPolicy: IfNotPresent
     repository: grafana/promtail

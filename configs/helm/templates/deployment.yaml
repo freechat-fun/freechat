@@ -30,7 +30,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: dependencies-listener
-          image: busybox
+          image: '{{ .Values.image.busybox.repository }}:{{ .Values.image.busybox.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.busybox.pullPolicy }}
           command:
             - sh
             - -ec
@@ -85,10 +86,12 @@ spec:
               mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config
             - name: config-runtime
               mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config.run
-            - name: logs
+            - name: persistence
               mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
-            - name: data
+              subPath: logs
+            - name: persistence
               mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/data
+              subPath: data
         {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
         - name: promtail
           image: '{{ .Values.image.promtail.repository }}:{{ .Values.image.promtail.tag | default "latest" }}'
@@ -100,8 +103,9 @@ spec:
               mountPath: /etc/promtail
             - name: promtail-positions
               mountPath: /run/promtail
-            - name: logs
+            - name: persistence
               mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
+              subPath: logs
         {{- end }}
       volumes:
         - name: config-private
@@ -116,9 +120,7 @@ spec:
             items:
               - key: application-runtime.properties
                 path: application-runtime.properties
-        - name: logs
-          emptyDir: {}
-        - name: data
+        - name: persistence
           persistentVolumeClaim:
             claimName: {{ include "helpers.fullname" . }}-pvc
         {{- if (index .Values "grafana-loki" "deployment" "enabled") }}

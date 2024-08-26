@@ -13,8 +13,7 @@ RUN useradd -m -u ${UID} -g ${GID} -o ${UNAME}
 
 COPY scripts/* ${APP_HOME}/
 
-RUN mkdir ${APP_HOME}/logs && \
-    chmod +x ${APP_HOME}/*.sh && \
+RUN chmod +x ${APP_HOME}/*.sh && \
     chown -R ${UNAME}:${UNAME} ${APP_HOME}
 
 COPY ${APP_NAME}.jar ${APP_HOME}/${APP_NAME}.jar
