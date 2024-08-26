@@ -64,7 +64,7 @@ flowchart TD
 
 ## 如何运行
 ### 在线网站
-您可以访问 [freechat.fun](https://freechat.fun) 来体验 FreeChat，请分享您设计的 AI 角色！
+您可以访问 [freechat.fun](https://www.freechat.fun) 来体验 FreeChat，请分享您设计的 AI 角色！
 
 ### 运行在 Kubernetes 集群中
 FreeChat 致力于云原生的设计理念。若您有 Kubernetes 集群，可按以下步骤将 FreeChat 部署至您的环境中：
