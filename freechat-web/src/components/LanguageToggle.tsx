@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { i18nConfig, locales } from "../configs/i18n-config";
 import { IconButton, IconButtonProps } from "@mui/joy";
-import { LanguageRounded } from "@mui/icons-material";
 import { EnIcon, ZhIcon } from "./icon";
 
 export default function LanguageToggle(props: IconButtonProps) {
@@ -12,7 +11,7 @@ export default function LanguageToggle(props: IconButtonProps) {
 
   const language = i18n.language || i18nConfig.defaultLocale;
 
-  const Icon = language === 'en' ? ZhIcon : (language == 'zh' ? EnIcon : LanguageRounded);
+  const Icon = language === 'zh' ? EnIcon : ZhIcon;
 
   useEffect(() => {
     setMounted(true);
