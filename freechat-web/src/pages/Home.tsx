@@ -32,9 +32,7 @@ export default function Home() {
           <AspectRatio
             variant="plain"
             ratio={1}
-            sx={{
-              width: 240,
-            }}
+            sx={{ width: 240 }}
           >
             <img src={mode === 'dark' ? '/img/freechat_dark.png' : '/img/freechat_light.png'} />
           </AspectRatio>

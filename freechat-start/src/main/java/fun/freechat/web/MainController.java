@@ -6,6 +6,7 @@ import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.util.AppMetaUtils;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -44,7 +45,7 @@ public class MainController {
     }
 
     @RequestMapping("/w/**")
-    public String index(Model model) {
+    public String index(HttpServletRequest request, Model model) {
         try {
             User user = AccountUtils.currentUser();
             model.addAttribute("username", user.getUsername());
@@ -67,6 +68,10 @@ public class MainController {
         model.addAttribute("script", script);
         if (!AppMetaUtils.isTestEnv()) {
             model.addAttribute("registrations", registrations);
+        }
+        String location = request.getHeader("x-location");
+        if (StringUtils.isNotBlank(location)) {
+            model.addAttribute("location", request.getHeader("x-location"));
         }
 
         return "index";

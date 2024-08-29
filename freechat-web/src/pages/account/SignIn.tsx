@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
+import { Box, Button, Divider, FormControl, FormLabel, Input, Link, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon } from '../../components/icon';
 import { useErrorMessageBusContext, useMetaInfoContext } from '../../contexts';
@@ -8,7 +8,7 @@ import { UserFullDetailsDTO } from 'freechat-sdk';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
-  const { csrfToken, csrfHeaderName, registrations } = useMetaInfoContext();
+  const { csrfToken, csrfHeaderName, registrations, location } = useMetaInfoContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [guestFormState, setGuestFormState] = useState({
@@ -207,9 +207,15 @@ export default function SignIn() {
                       backgroundColor: 'transparent'
                     }
                 }}>
-                  {t('I\'m a guest')}
+                  {t("I'm a guest")}
                 </Button>
               </form>
+            </Stack>
+            <Stack sx={{
+              alignItems: 'center',
+              display: location === 'CN' ? 'flex' : 'none'
+            }}>
+              <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2023004734号-2</Link>
             </Stack>
             {/* <Divider
               sx={(theme) => ({
