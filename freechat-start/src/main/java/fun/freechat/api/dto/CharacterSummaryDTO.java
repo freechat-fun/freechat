@@ -7,10 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Character summary content")
 @Data
@@ -57,7 +58,7 @@ public class CharacterSummaryDTO extends TraceableDTO {
 
     public static CharacterSummaryDTO from(Pair<CharacterInfo, List<String>> characterInfoPair) {
         if (characterInfoPair == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character!");
         }
         CharacterSummaryDTO dto =
                 CommonUtils.convert(characterInfoPair.getLeft(), CharacterSummaryDTO.class);

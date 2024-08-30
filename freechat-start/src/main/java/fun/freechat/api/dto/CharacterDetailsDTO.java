@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +34,7 @@ public class CharacterDetailsDTO extends CharacterSummaryDTO {
     public static CharacterDetailsDTO from(
             Triple<CharacterInfo, List<String>, List<CharacterBackend>> characterInfoTriple) {
         if (characterInfoTriple == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character!");
         }
         CharacterInfo info = characterInfoTriple.getLeft();
         CharacterDetailsDTO dto =

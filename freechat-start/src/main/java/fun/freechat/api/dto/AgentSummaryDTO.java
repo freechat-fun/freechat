@@ -1,17 +1,18 @@
 package fun.freechat.api.dto;
 
-import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AgentInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Agent summary information")
 @Data
@@ -46,7 +47,7 @@ public class AgentSummaryDTO extends TraceableDTO {
 
     public static AgentSummaryDTO from(Triple<AgentInfo, List<String>, List<String>> agentInfoTriple) {
         if (agentInfoTriple == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find agent!");
         }
         AgentSummaryDTO dto =
                 CommonUtils.convert(agentInfoTriple.getLeft(), AgentSummaryDTO.class);

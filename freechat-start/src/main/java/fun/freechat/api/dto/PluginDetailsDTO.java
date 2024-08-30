@@ -1,7 +1,7 @@
 package fun.freechat.api.dto;
 
-import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.api.util.ToolSpecFormatUtils;
 import fun.freechat.model.PluginInfo;
@@ -10,9 +10,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Plugin detailed content")
 @Data
@@ -32,7 +33,7 @@ public class PluginDetailsDTO extends PluginSummaryDTO {
     public static PluginDetailsDTO from(
             Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple) {
         if (pluginInfoTriple == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find plugin!");
         }
         PluginInfo pluginInfo = pluginInfoTriple.getLeft();
         Pair<String, String> toolSpecPair = ToolSpecFormatUtils.convert(pluginInfo);

@@ -8,6 +8,8 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,7 +68,14 @@ public class TraceInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         String query = request.getQueryString();
         String[] args = query != null ? new String[]{ query } : null;
-        int responseCode = response.getStatus();
+        int responseCode;
+        if (ex instanceof AuthenticationException) {
+            responseCode = HttpStatus.UNAUTHORIZED.value();
+        } else if (ex instanceof AccessDeniedException) {
+            responseCode = HttpStatus.FORBIDDEN.value();
+        } else {
+            responseCode = response.getStatus();
+        }
         TraceUtils.TraceStatus status = TraceUtils.TraceStatus.SUCCESSFUL;
         if (ex != null || responseCode >= 400) {
             status = isBadRequest(responseCode, ex) ?

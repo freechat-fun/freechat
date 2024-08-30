@@ -13,9 +13,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Prompt detailed content")
 @Slf4j
@@ -38,7 +39,7 @@ public class PromptDetailsDTO extends PromptSummaryDTO {
     public static PromptDetailsDTO from(
             Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
         if (promptInfoTriple == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find prompt!");
         }
         PromptInfo info = promptInfoTriple.getLeft();
         PromptDetailsDTO dto =

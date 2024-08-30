@@ -8,9 +8,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Agent detailed content")
 @Data
@@ -30,7 +31,7 @@ public class AgentDetailsDTO extends AgentSummaryDTO {
     public static AgentDetailsDTO from(
             Triple<AgentInfo, List<String>, List<String>> agentInfoTriple) {
         if (agentInfoTriple == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find agent!");
         }
         AgentDetailsDTO dto =
                 CommonUtils.convert(agentInfoTriple.getLeft(), AgentDetailsDTO.class);

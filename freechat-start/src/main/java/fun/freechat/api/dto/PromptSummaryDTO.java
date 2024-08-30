@@ -1,17 +1,18 @@
 package fun.freechat.api.dto;
 
-import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.PromptInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Prompt summary content")
 @Data
@@ -50,7 +51,7 @@ public class PromptSummaryDTO extends TraceableDTO {
 
     public static PromptSummaryDTO from(Triple<PromptInfo, List<String>, List<String>> promptInfoTriple) {
         if (promptInfoTriple == null) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find prompt!");
         }
         PromptSummaryDTO dto =
                 CommonUtils.convert(promptInfoTriple.getLeft(), PromptSummaryDTO.class);
