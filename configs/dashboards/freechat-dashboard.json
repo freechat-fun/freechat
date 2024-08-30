@@ -107,7 +107,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
+        "w": 8,
         "x": 0,
         "y": 1
       },
@@ -137,7 +137,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "count by(date) (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        | pattern `<_> [<_>] <_> <_> - <_>|<username>|<_>`\n        | keep username, date [$__range]\n    )\n)",
+          "expr": "count (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        | pattern `<_> [<_>] <_> <_> - <_>|<username>|<_>`\n        | keep username [$__range]\n    )\n)",
           "queryType": "instant",
           "refId": "A"
         },
@@ -153,7 +153,7 @@
           "refId": "B"
         }
       ],
-      "title": "Daily Active Users",
+      "title": "Active Users",
       "transformations": [
         {
           "id": "calculateField",
@@ -198,8 +198,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 6,
+        "w": 8,
+        "x": 8,
         "y": 1
       },
       "id": 2,
@@ -228,7 +228,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "count_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\"}\n    |= \"|/api/v1/chat/send/stream\"\n    | keep date [$__range]\n)",
+          "expr": "count_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\"}\n    |= \"|/api/v1/chat/send/stream\" [$__range]\n)",
           "queryType": "instant",
           "refId": "A"
         },
@@ -288,8 +288,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 12,
+        "w": 8,
+        "x": 16,
         "y": 1
       },
       "id": 3,
@@ -318,7 +318,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "count_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\"}\n    |= \"|/api/v1/character\"\n    | keep date [$__range]\n)",
+          "expr": "count_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\"}\n    |= \"|/api/v1/character|\" [$__range]\n)",
           "queryType": "instant",
           "refId": "A"
         },
@@ -378,11 +378,94 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 18,
-        "y": 1
+        "w": 8,
+        "x": 0,
+        "y": 7
       },
       "id": 32,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "topk(5, \n    sum by (name) (\n        count_over_time (\n            {app=\"freechat-main\", level=\"PERF\", class=\"ChatApi\", method=\"firstPackageReceived\"}\n            | pattern `<_>|\"<name>\",<_>` [$__range]\n        )\n    )\n)",
+          "legendFormat": "{{name}}",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "Character Activity Ranking",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Value #A"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 7
+      },
+      "id": 33,
       "options": {
         "displayMode": "gradient",
         "maxVizHeight": 300,
@@ -409,13 +492,97 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "topk(10, \n    sum by (date, name) (\n        count_over_time (\n            {app=\"freechat-main\", level=\"PERF\", class=\"ChatApi\", method=\"firstPackageReceived\"}\n            | pattern `<_>|\"<name>\",<_>` [$__range]\n        )\n    )\n)",
-          "legendFormat": "{{name}}",
+          "expr": "topk(5, \n    sum by (api) (\n        count_over_time (\n            {app=\"freechat-main\", level=\"ACCESS\"}\n            |= \"|/api\"\n            | label_format api=`{{.method}} {{.path}}` [$__range]\n        )\n    )\n)",
+          "legendFormat": "{{api}}",
           "queryType": "instant",
           "refId": "A"
         }
       ],
-      "title": "Character Activity Ranking",
+      "title": "Request Count Ranking",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Value #A"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 7
+      },
+      "id": 34,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "top",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "topk(5, \n    avg_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        |= \"|/api\"\n        | pattern \"<_>|<path>::<method>|<_>|<rt>|<_>\"\n        | label_format api=`{{.method}} {{.path}}`\n        | unwrap rt [$__range]\n    ) by (api)\n)",
+          "legendFormat": "{{api}}",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "Request Latency Ranking",
       "transformations": [
         {
           "id": "sortBy",
@@ -495,7 +662,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 13
       },
       "id": 4,
       "options": {
@@ -510,7 +677,42 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum (\n    rate (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        |= \"|/api\" [1m]\n    )\n)",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "0",
+          "hide": false,
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
       "title": "Requests Per Second",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -576,7 +778,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 13
       },
       "id": 5,
       "options": {
@@ -591,6 +793,31 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\"}\n    |= \"|/api\"\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "legendFormat": "avg(ms)",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\"}\n    |= \"|/api\"\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "hide": false,
+          "legendFormat": "max(ms)",
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
       "title": "Request Latency",
       "type": "timeseries"
     },
@@ -657,7 +884,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 21
       },
       "id": 8,
       "options": {
@@ -672,6 +899,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (code) (\n    rate (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        |= \"|/api\"\n        | pattern \"<_>|<_>::<_>|<_>|<_>|<_>|<http_code>|<_>\"\n        | label_format code=`{{ regexReplaceAll \"(\\\\d{1})\\\\d*\" .http_code \"${1}xx\" }}`\n        | keep code [1m]\n    )\n)",
+          "legendFormat": "{{code}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Response Statuses",
       "type": "timeseries"
     },
@@ -738,7 +978,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 15
+        "y": 21
       },
       "id": 6,
       "options": {
@@ -753,7 +993,79 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (code) (\n    rate (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        |= \"|/api\"\n        | pattern \"<_>|<_>::<_>|<_>|<_>|<_>|<http_code>|<_>\"\n        | label_format code=`{{ regexReplaceAll \"(\\\\d{1})\\\\d*\" .http_code \"${1}xx\" }}`\n        | keep code [1m]\n    )\n)",
+          "hide": false,
+          "legendFormat": "",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum (\n    rate (\n        {app=\"freechat-main\", level=\"ACCESS\"}\n        |= \"|/api\" [1m]\n    )\n)",
+          "hide": false,
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
       "title": "Success/Bad Request Rate",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "2xx",
+            "binary": {
+              "left": "{code=\"2xx\"}",
+              "operator": "/",
+              "right": "{}"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "4xx",
+            "binary": {
+              "left": "{code=\"4xx\"}",
+              "operator": "/",
+              "right": "{}"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "byVariable": false,
+            "include": {
+              "names": [
+                "Time",
+                "2xx",
+                "4xx"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -819,7 +1131,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 23
+        "y": 29
       },
       "id": 10,
       "options": {
@@ -834,6 +1146,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "legendFormat": "rt(ms)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "First Package Latency of Chat",
       "type": "timeseries"
     },
@@ -900,7 +1225,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 23
+        "y": 29
       },
       "id": 11,
       "options": {
@@ -915,6 +1240,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"lastPackageReceived\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "legendFormat": "rt(ms)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Last Package Latency of Chat",
       "type": "timeseries"
     },
@@ -965,7 +1303,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -980,7 +1319,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 37
       },
       "id": 14,
       "options": {
@@ -995,6 +1334,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveKnowledge\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "legendFormat": "rt(ms)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Retrieve Knowledge Latency",
       "type": "timeseries"
     },
@@ -1045,7 +1397,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1060,7 +1413,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 37
       },
       "id": 17,
       "options": {
@@ -1075,6 +1428,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveLongTermMemory\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "legendFormat": "rt(ms)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Retrieve Memory Latency",
       "type": "timeseries"
     },
@@ -1084,7 +1450,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 45
       },
       "id": 19,
       "panels": [],
@@ -1138,7 +1504,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1153,327 +1520,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 40
-      },
-      "id": 20,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "title": "Requests Per Seconds of APIs",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 40
-      },
-      "id": 21,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "title": "Request Latency of APIs",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 48
-      },
-      "id": 22,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "title": "Success Request Rate of APIs",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 48
-      },
-      "id": 23,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "title": "Bad Request Rate of APIs",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 56
+        "y": 46
       },
       "id": 24,
       "options": {
@@ -1488,6 +1535,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Avg First Package Latency of Characters",
       "type": "timeseries"
     },
@@ -1538,7 +1598,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1553,7 +1614,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 46
       },
       "id": 25,
       "options": {
@@ -1568,6 +1629,18 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Max First Package Latency of Characters",
       "type": "timeseries"
     },
@@ -1618,7 +1691,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1633,7 +1707,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 64
+        "y": 54
       },
       "id": 26,
       "options": {
@@ -1648,6 +1722,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"lastPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Avg Last Package Latency of Characters",
       "type": "timeseries"
     },
@@ -1698,7 +1785,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1713,7 +1801,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 64
+        "y": 54
       },
       "id": 27,
       "options": {
@@ -1728,6 +1816,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Max Last Package Latency of Characters",
       "type": "timeseries"
     },
@@ -1778,7 +1879,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1793,7 +1895,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 62
       },
       "id": 28,
       "options": {
@@ -1808,6 +1910,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveKnowledge\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Avg Retrieve Knowledge Latency of Characters",
       "type": "timeseries"
     },
@@ -1858,7 +1973,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1873,7 +1989,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 62
       },
       "id": 29,
       "options": {
@@ -1888,6 +2004,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveKnowledge\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Max Retrieve Knowledge Latency of Characters",
       "type": "timeseries"
     },
@@ -1938,7 +2067,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1953,7 +2083,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 80
+        "y": 70
       },
       "id": 30,
       "options": {
@@ -1968,6 +2098,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveLongTermMemory\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Avg Retrieve Memory Latency of Characters",
       "type": "timeseries"
     },
@@ -2018,7 +2161,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2033,7 +2177,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 80
+        "y": 70
       },
       "id": 31,
       "options": {
@@ -2048,6 +2192,19 @@
           "sort": "none"
         }
       },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveLongTermMemory\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "legendFormat": "{{name}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
       "title": "Max Retrieve Memory Latency of Characters",
       "type": "timeseries"
     }
@@ -2059,13 +2216,13 @@
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Freechat Dashboard",
   "uid": "cdu6mgjmttds0b",
-  "version": 7,
+  "version": 25,
   "weekStart": ""
 }

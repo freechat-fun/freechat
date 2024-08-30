@@ -87,6 +87,7 @@ public class PromptCreateDTO {
                 ChatPromptContent promptTemplate = InfoUtils.defaultMapper().readValue(
                         promptInfo.getTemplate(), ChatPromptContent.class);
                 dto.setChatTemplate(ChatPromptContentDTO.from(promptTemplate));
+                dto.setTemplate(null);
             } catch (JsonProcessingException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid template: " + promptInfo.getTemplate());
             }
