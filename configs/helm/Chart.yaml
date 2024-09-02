@@ -53,6 +53,13 @@ dependencies:
       - log
       - alert
     version: 4.x.x
+  - condition: kube-state-metrics.deployment.enabled
+    name: kube-state-metrics
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - kube-state-metrics
+      - metrics
+    version: 4.x.x
 description: A Helm chart for freechat
 maintainers:
   - email: dev.freechat.fun@gmail.com

@@ -215,7 +215,7 @@ export default function SignIn() {
               alignItems: 'center',
               display: location === 'CN' ? 'flex' : 'none'
             }}>
-              <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2023004734号-2</Link>
+              <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">ICP备xxxxxxxxxx号</Link>
             </Stack>
             {/* <Divider
               sx={(theme) => ({

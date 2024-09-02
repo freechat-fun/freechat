@@ -32,9 +32,10 @@ data:
       - job_name: alertmanager
         {{- include "prometheus.scrape_config" (dict "component" "alertmanager" "context" $) | nindent 8 }}
       {{- end }}
-      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "mysql" "component" "metrics" "context" $)) "context" $) | nindent 6 }}
-      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "redis" "component" "metrics" "context" $)) "context" $) | nindent 6 }}
-      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "milvus" "component" "data-coordinator|data-node|index-coordinator|index-node|proxy|query-coordinator|query-node|root-coordinator" "context" $)) "context" $) | nindent 6 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "mysql" "component" "metrics" "port" "metrics" "context" $)) "context" $) | nindent 6 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "redis" "component" "metrics" "port" "http-metrics" "context" $)) "context" $) | nindent 6 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "milvus" "component" "data-coordinator|data-node|index-coordinator|index-node|proxy|query-coordinator|query-node|root-coordinator" "port" "http-metrics" "context" $)) "context" $) | nindent 6 }}
+      {{- include "common.tplvalues.render" (dict "value" (include "prometheus.extraScrapeConfig" (dict "name" "kube-state-metrics" "port" "http" "context" $)) "context" $) | nindent 6 }}
     {{- if or .Values.prometheus.alertmanager.enabled .Values.prometheus.server.alertingEndpoints}}
     alerting:
       alertmanagers:

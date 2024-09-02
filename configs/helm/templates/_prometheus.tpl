@@ -1,7 +1,7 @@
 {{/*
 Return the prometheus scrape configuration for kubernetes objects.
 Usage:
-{{ include "prometheus.extraScrapeConfig" (dict "name" "mysql" "component" "metrics" "context" $) }}
+{{ include "prometheus.extraScrapeConfig" (dict "name" "mysql" "component" "metrics" "port" "metrics" "context" $) }}
 */}}
 {{- define "prometheus.extraScrapeConfig" -}}
 - job_name: {{ .name }}
@@ -14,12 +14,14 @@ Usage:
   relabel_configs:
     - source_labels:
         - job
-      target_label: __tmp_{{ .name }}_job_name
+      target_label: __tmp_{{ regexReplaceAllLiteral "-" .name "_" }}_job_name
+    {{- if .component }}
     - action: keep
       source_labels:
         - __meta_kubernetes_service_label_app_kubernetes_io_component
         - __meta_kubernetes_service_labelpresent_app_kubernetes_io_component
       regex: ({{ .component }});true
+    {{- end }}
     - action: keep
       source_labels:
         - __meta_kubernetes_service_label_app_kubernetes_io_instance
@@ -33,7 +35,7 @@ Usage:
     - action: keep
       source_labels:
         - __meta_kubernetes_endpoint_port_name
-      regex: (http-metrics|metrics)
+      regex: ({{ .port }})
     - source_labels:
         - __meta_kubernetes_endpoint_address_target_kind
         - __meta_kubernetes_endpoint_address_target_name
@@ -52,6 +54,10 @@ Usage:
         - __meta_kubernetes_namespace
       target_label: namespace
     - source_labels:
+        - __meta_kubernetes_namespace
+      action: replace
+      target_label: k8s_namespace
+    - source_labels:
         - __meta_kubernetes_service_name
       target_label: service
     - source_labels:
@@ -60,15 +66,8 @@ Usage:
     - source_labels:
         - __meta_kubernetes_pod_container_name
       target_label: container
-    - source_labels:
-        - __meta_kubernetes_service_label_app_kubernetes_io_component
-      target_label: app_kubernetes_io_component
-    - source_labels:
-        - __meta_kubernetes_service_label_app_kubernetes_io_instance
-      target_label: app_kubernetes_io_instance
-    - source_labels:
-        - __meta_kubernetes_service_label_app_kubernetes_io_name
-      target_label: app_kubernetes_io_name
+    - action: labelmap
+      regex: __meta_kubernetes_service_label_(.+)
     - action: drop
       source_labels:
         - __meta_kubernetes_pod_phase
@@ -78,6 +77,8 @@ Usage:
       target_label: job
     - target_label: endpoint
       replacement: metrics
+    - target_label: cluster
+      replacement: linuxea
     - source_labels:
         - __address__
       target_label: __tmp_hash

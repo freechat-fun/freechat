@@ -13,4 +13,4 @@ helm --kubeconfig ${KUBE_CONFIG} install --create-namespace \
   --set controller.service.externalTrafficPolicy=Local \
   --set controller.config.proxy-body-size=20m \
   ${ARGS[*]} \
-  ${PROJECT_NAME} ingress-nginx/ingress-nginx
+  ${PROJECT_NAME}-in ingress-nginx/ingress-nginx
