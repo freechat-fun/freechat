@@ -19,7 +19,6 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Objects;
 
 import static fun.freechat.service.util.CacheUtils.*;
 
@@ -38,7 +37,7 @@ public class FullNameKeyGenerator implements KeyGenerator {
         if (cachesKeyExpr != null && !ObjectUtils.isEmpty(cachesKeyExpr.getRight())) {
             key = generateSpELKey(target, method, params, cachesKeyExpr);
         }
-        if (ObjectUtils.isEmpty(key)) {
+        if (!StringUtils.hasText(key)) {
             key = generateDefaultKey(target, method, params);
         }
         return key;

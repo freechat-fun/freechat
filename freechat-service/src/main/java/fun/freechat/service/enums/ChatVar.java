@@ -38,4 +38,9 @@ public enum ChatVar {
         return name();
     }
 
+    @Override
+    public String toString() {
+        return text();
+    }
+
 }

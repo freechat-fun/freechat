@@ -27,6 +27,11 @@ public enum ModelProvider {
         return name().toLowerCase();
     }
 
+    @Override
+    public String toString() {
+        return text();
+    }
+
     public static Boolean hasPrivateEndpoint(ModelProvider provider) {
         return provider == AZURE_OPEN_AI;
     }

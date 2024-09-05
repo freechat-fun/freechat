@@ -25,4 +25,9 @@ public enum InfoType {
     public String text() {
         return name().toLowerCase();
     }
+
+    @Override
+    public String toString() {
+        return text();
+    }
 }

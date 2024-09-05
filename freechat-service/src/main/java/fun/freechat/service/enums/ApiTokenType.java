@@ -1,5 +1,6 @@
 package fun.freechat.service.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,5 +25,14 @@ public enum ApiTokenType {
         }
 
         return ACCESS;
+    }
+
+    @JsonValue
+    public String text() {
+        return type;
+    }
+    @Override
+    public String toString() {
+        return text();
     }
 }

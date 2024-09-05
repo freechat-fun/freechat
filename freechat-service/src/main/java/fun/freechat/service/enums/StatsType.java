@@ -38,6 +38,11 @@ public enum StatsType {
         return name().toLowerCase();
     }
 
+    @Override
+    public String toString() {
+        return text();
+    }
+
     public String fieldName() {
         return field;
     }
