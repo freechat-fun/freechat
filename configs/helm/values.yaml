@@ -79,6 +79,15 @@ ingress:
         paths:
           - path: /assets
             pathType: Prefix
+    - host: www.freechat.fun
+      backend:
+        paths:
+          - path: /
+            pathType: Prefix
+      frontend:
+        paths:
+          - path: /assets
+            pathType: Prefix
   tls:
     enabled: true
 mysql:
