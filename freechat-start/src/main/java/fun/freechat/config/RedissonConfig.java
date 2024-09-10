@@ -43,8 +43,9 @@ public class RedissonConfig {
 
     private Codec codec() {
         return new Kryo5Codec() {
-            protected Kryo createKryo(ClassLoader classLoader) {
-                Kryo kryo = super.createKryo(classLoader);
+            @Override
+            protected Kryo createKryo(ClassLoader classLoader, boolean useReferences) throws ClassNotFoundException {
+                Kryo kryo = super.createKryo(classLoader, useReferences);
                 UnmodifiableCollectionsSerializer.registerSerializers(kryo);
                 return kryo;
             }

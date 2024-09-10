@@ -236,7 +236,12 @@ public class ChatServiceImpl implements ChatService {
             ChatMemory chatMemory = session.getChatMemory(memoryId);
 
             var messages = handleMessages(message, context, memoryId, session, chatMemory);
-            return new AiServiceTokenStream(messages, session.getAiServiceContext(), memoryId);
+            return new AiServiceTokenStream(messages,
+                    session.getToolSpecifications(),
+                    session.getToolExecutors(),
+                    null,
+                    session.getAiServiceContext(),
+                    memoryId);
         } catch (Throwable e) {
             session.getProcessing().set(false);
             throw e;
