@@ -8,7 +8,7 @@ import { UserFullDetailsDTO } from 'freechat-sdk';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
-  const { csrfToken, csrfHeaderName, registrations, location } = useMetaInfoContext();
+  const { csrfToken, csrfHeaderName, registrations, icpCode } = useMetaInfoContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [guestFormState, setGuestFormState] = useState({
@@ -213,9 +213,9 @@ export default function SignIn() {
             </Stack>
             <Stack sx={{
               alignItems: 'center',
-              display: location === 'CN' ? 'flex' : 'none'
+              display: icpCode ? 'flex' : 'none'
             }}>
-              <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">ICP备xxxxxxxxxx号</Link>
+              <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">ICP备{icpCode}</Link>
             </Stack>
             {/* <Divider
               sx={(theme) => ({

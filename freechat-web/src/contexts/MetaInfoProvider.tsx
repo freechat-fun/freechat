@@ -9,6 +9,7 @@ type MetaInfoContextValue = {
   csrfHeaderName: string,
   registrations: string[],
   location: string | null | undefined,
+  icpCode: string | null | undefined,
   resetUser: (
     name: string | null | undefined,
     from: string | null | undefined,
@@ -24,6 +25,7 @@ const anonymous: MetaInfoContextValue = {
   csrfHeaderName: 'X-CSRF-TOKEN',
   registrations: [],
   location: undefined,
+  icpCode: undefined,
   resetUser: () => {},
   isAuthorized: () => false,
   isGuest: () => false,
@@ -39,6 +41,7 @@ const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const metaRegistrations = document.querySelector('meta[name="_registrations"]')?.getAttribute('content');
   const registrations = metaRegistrations ? metaRegistrations.split(',') : [];
   const location = document.querySelector('meta[name="_location"]')?.getAttribute('content');
+  const icpCode = document.querySelector('meta[name="_icp_code"]')?.getAttribute('content');
   const [username, setUsername] = useState(metaUsername);
   const [platform, setPlatform] = useState(metaPlatform);
 
@@ -66,6 +69,7 @@ const MetaInfoProvider: React.FC<PropsWithChildren> = ({ children }) => {
         csrfHeaderName,
         registrations,
         location,
+        icpCode,
         resetUser,
         isAuthorized,
         isGuest,

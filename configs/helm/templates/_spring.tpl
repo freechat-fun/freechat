@@ -1,4 +1,8 @@
 {{- define "application-private.yml" -}}
+{{- if and .Values.app.icpCode }}
+app:
+  icpCode: {{ .Values.app.icpCode | quote }}
+{{- end }}
 auth:
   aes:
     key: {{ .Values.auth.aes.key | quote }}

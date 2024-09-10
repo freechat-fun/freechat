@@ -9,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,12 +27,12 @@ import static fun.freechat.api.util.ConfigUtils.WEB_VERSION_KEY;
 @Controller
 @SuppressWarnings("unused")
 public class MainController {
+    @Value("${app.icpCode}")
+    private String icpCode;
     @Autowired
     private ConfigService configService;
-
     @Autowired
     private InMemoryClientRegistrationRepository clientRegistrationRepository;
-
     private String registrations;
 
 
@@ -62,16 +63,27 @@ public class MainController {
         String script = "/assets/index.js";
         Properties properties = configService.load();
         String webVersion = properties.getProperty(WEB_VERSION_KEY);
+
         if (StringUtils.isNotBlank(webVersion)) {
             script = "/assets/index-" + webVersion + ".js";
         }
         model.addAttribute("script", script);
+
         if (!AppMetaUtils.isTestEnv()) {
             model.addAttribute("registrations", registrations);
         }
+
         String location = request.getHeader("x-location");
+        String host = request.getRemoteHost();
         if (StringUtils.isNotBlank(location)) {
             model.addAttribute("location", request.getHeader("x-location"));
+        } else if (host.startsWith("cn.")) {
+            model.addAttribute("location", "CN");
+        }
+
+        if ("CN".equalsIgnoreCase((String) model.getAttribute("location")) &&
+                StringUtils.isNotBlank(icpCode)) {
+            model.addAttribute("icpCode", icpCode);
         }
 
         return "index";
