@@ -74,7 +74,7 @@ public class MainController {
         }
 
         String location = request.getHeader("x-location");
-        String host = request.getRemoteHost();
+        String host = request.getServerName();
         if (StringUtils.isNotBlank(location)) {
             model.addAttribute("location", request.getHeader("x-location"));
         } else if (host.startsWith("cn.")) {
