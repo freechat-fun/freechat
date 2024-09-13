@@ -1,29 +1,21 @@
 {
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS-SELF7.26",
-      "label": "Prometheus-self7.26",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    },
-    {
-      "name": "DS__VICTORIAMETRICS-PROD-ALL",
-      "label": " VictoriaMetrics-prod-all",
+      "name": "DS_PROMETHEUS",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
     }
   ],
-  "__elements": [],
+  "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.5.14"
+      "version": "11.2.0"
     },
     {
       "type": "panel",
@@ -51,8 +43,8 @@
     },
     {
       "type": "panel",
-      "id": "table-old",
-      "name": "Table (old)",
+      "id": "timeseries",
+      "name": "Time series",
       "version": ""
     }
   ],
@@ -92,7 +84,6 @@
   "gnetId": 17320,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1670546003466,
   "links": [
     {
       "asDropdown": false,
@@ -136,7 +127,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS-SELF7.26}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -146,7 +137,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": false,
             "inspect": false
           },
@@ -214,8 +207,7 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": null
+                "id": "custom.width"
               }
             ]
           },
@@ -262,8 +254,11 @@
             },
             "properties": [
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "color",
@@ -299,8 +294,11 @@
                 }
               },
               {
-                "id": "custom.displayMode",
-                "value": "gradient-gauge"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
               }
             ]
           },
@@ -351,8 +349,11 @@
                 "value": 56
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "thresholds",
@@ -419,8 +420,11 @@
                 }
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               }
             ]
           },
@@ -435,8 +439,11 @@
                 "value": 64
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "thresholds",
@@ -491,8 +498,11 @@
                 }
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "links",
@@ -541,8 +551,11 @@
                 }
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               }
             ]
           },
@@ -561,8 +574,11 @@
                 "value": "binBps"
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "thresholds",
@@ -597,8 +613,11 @@
                 "value": 71
               },
               {
-                "id": "custom.displayMode",
-                "value": "color-background"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
               },
               {
                 "id": "thresholds",
@@ -644,7 +663,9 @@
       },
       "id": 466,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": [
             "Value #B",
             "Value #C",
@@ -669,12 +690,12 @@
           }
         ]
       },
-      "pluginVersion": "8.5.14",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -689,7 +710,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -704,7 +725,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -719,7 +740,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -734,7 +755,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -749,7 +770,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -764,7 +785,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -779,7 +800,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -794,7 +815,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -809,7 +830,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -824,7 +845,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -839,7 +860,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -854,7 +875,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -869,7 +890,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS-SELF7.26}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -991,7 +1012,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1026,7 +1047,6 @@
         "y": 10
       },
       "id": 458,
-      "links": [],
       "options": {
         "colorMode": "value",
         "fieldOptions": {
@@ -1037,6 +1057,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "max"
@@ -1044,15 +1065,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value"
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "8.5.14",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "calculatedInterval": "10m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "editorMode": "code",
@@ -1072,75 +1095,177 @@
       "type": "stat"
     },
     {
-      "aliasColors": {
-        "CPU使用率": "blue",
-        "上限": "dark-red",
-        "上限1": "dark-red",
-        "上限2": "super-light-red"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU使用率"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "上限"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "上限1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "上限2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "上限1"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 10
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "line"
+              }
+            ]
+          }
+        ]
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 5,
         "x": 2,
         "y": 10
       },
-      "hiddenSeries": false,
       "id": 450,
       "interval": "1m",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.5.14",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:720",
-          "alias": "上限1",
-          "fill": 1,
-          "fillGradient": 2,
-          "lines": true
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "8.5.14",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1154,7 +1279,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1168,7 +1293,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1182,7 +1307,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1196,7 +1321,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1208,95 +1333,100 @@
           "refId": "C"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "CPU使用率",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:98",
-          "format": "percent",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:99",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 5,
         "x": 7,
         "y": 10
       },
-      "hiddenSeries": false,
       "id": 452,
       "interval": "30s",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.5.14",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1310,7 +1440,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1322,95 +1452,102 @@
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "内存使用率",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:182",
-          "format": "percent",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:183",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 5,
         "x": 12,
         "y": 10
       },
-      "hiddenSeries": false,
       "id": 462,
       "interval": "30s",
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.5.14",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1424,7 +1561,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -1436,108 +1573,131 @@
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "磁盘使用率",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:142",
-          "format": "percent",
-          "logBase": 1,
-          "max": "100",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:143",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
-      "decimals": 2,
       "description": "**InnoDB I/O**\n\n_Data Writes_ - The total number of InnoDB data writes.\\\n_Data Reads_ - The total number of InnoDB data reads (OS file reads).\\\n_Log Writes_ - The number of physical writes to the InnoDB redo log file.\\\n_Data Fsyncs_ - The number of fsync() operations. The frequency of fsync() calls is influenced by the setting of the `innodb_flush_method` configuration option.",
-      "editable": true,
-      "error": false,
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "磁盘I/O使用率"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 4
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "always"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 7,
         "x": 17,
         "y": 10
       },
-      "hiddenSeries": false,
       "id": 432,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.5.14",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:1382",
-          "alias": "磁盘I/O使用率",
-          "lines": false,
-          "pointradius": 1,
-          "points": true,
-          "yaxis": 2
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "8.5.14",
       "targets": [
         {
           "calculatedInterval": "2m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -1554,7 +1714,7 @@
           "calculatedInterval": "2m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -1571,7 +1731,7 @@
           "calculatedInterval": "2m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -1588,7 +1748,7 @@
           "calculatedInterval": "2m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -1605,7 +1765,7 @@
           "calculatedInterval": "2m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "editorMode": "code",
@@ -1622,45 +1782,13 @@
           "step": 300
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "InnoDB I/O",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:5374",
-          "format": "none",
-          "logBase": 1,
-          "min": 0,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:5375",
-          "format": "percent",
-          "logBase": 1,
-          "min": 0,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "**InnoDB Buffer Pool Size**\n\nInnoDB maintains a storage area called the buffer pool for caching data and indexes in memory.  Knowing how the InnoDB buffer pool works, and taking advantage of it to keep frequently accessed data in memory, is one of the most important aspects of MySQL tuning. The goal is to keep the working set in memory. In most cases, this should be between 60%-90% of available memory on a dedicated database host, but depends on many factors.",
       "fieldConfig": {
@@ -1714,6 +1842,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "mean"
@@ -1721,15 +1850,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.5.14",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "calculatedInterval": "10m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -1749,7 +1880,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "自上次重新启动mysql服务器进程的运行时间。",
       "fieldConfig": {
@@ -1788,13 +1919,13 @@
       },
       "id": 12,
       "interval": "",
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -1802,15 +1933,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.5.14",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "calculatedInterval": "10m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -1829,75 +1962,105 @@
       "type": "stat"
     },
     {
-      "columns": [
-        {
-          "$$hashKey": "object:647",
-          "text": "Current",
-          "value": "current"
-        }
-      ],
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Current"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "占用空间"
+              },
+              {
+                "id": "unit",
+                "value": "bytes"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Metric"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "表名称"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 0,
         "y": 17
       },
-      "height": "",
       "hideTimeOverride": true,
       "id": 442,
-      "links": [],
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": 1,
-        "desc": true
-      },
-      "styles": [
-        {
-          "$$hashKey": "object:1087",
-          "alias": "占用空间",
-          "align": "auto",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
           ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Current",
-          "thresholds": [],
-          "type": "number",
-          "unit": "bytes"
+          "show": false
         },
-        {
-          "$$hashKey": "object:219",
-          "alias": "表名称",
-          "align": "auto",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Metric",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1913,97 +2076,138 @@
       ],
       "timeFrom": "5m",
       "title": "表占用空间概览Top10",
-      "transform": "timeseries_aggregations",
-      "type": "table-old"
-    },
-    {
-      "columns": [
+      "transformations": [
         {
-          "$$hashKey": "object:416",
-          "text": "Current",
-          "value": "current"
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
         }
       ],
+      "type": "table"
+    },
+    {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Metric"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "表名称"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Current"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "数据量"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 12,
         "y": 17
       },
-      "height": "",
       "hideTimeOverride": true,
       "id": 440,
-      "links": [],
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": 1,
-        "desc": true
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
       },
-      "styles": [
-        {
-          "$$hashKey": "object:733",
-          "alias": "表名称",
-          "align": "auto",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "Metric",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "$$hashKey": "object:918",
-          "alias": "",
-          "align": "auto",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "$$hashKey": "object:686",
-          "alias": "数据量",
-          "align": "auto",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Current",
-          "thresholds": [],
-          "type": "string",
-          "unit": "short"
-        }
-      ],
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -2019,45 +2223,151 @@
       ],
       "timeFrom": "5m",
       "title": "表数据量概览Top10",
-      "transform": "timeseries_aggregations",
-      "type": "table-old"
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        }
+      ],
+      "type": "table"
     },
     {
-      "aliasColors": {
-        "QPS": "yellow",
-        "TPS": "blue"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "QPS计算只包括客户端发送到服务器的语句，而不包括存储程序中执行的语句\n- 以下命令不被统计：\n* ``COM_PING``\n* ``COM_STATISTICS``\n* ``COM_STMT_PREPARE``\n* ``COM_STMT_CLOSE``\n* ``COM_STMT_RESET``",
-      "fill": 0,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "QPS",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "QPS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TPS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TPS"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 50
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "line"
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "TPS"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 0,
         "y": 24
       },
-      "hiddenSeries": false,
       "id": 398,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
       "links": [
         {
           "targetBlank": true,
@@ -2065,38 +2375,33 @@
           "url": "https://dev.mysql.com/doc/refman/5.7/en/server-status-variables.html#statvar_Queries"
         }
       ],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.5.14",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:258",
-          "alias": "TPS",
-          "fill": 5,
-          "lines": true,
-          "linewidth": 0,
-          "yaxis": 2
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "8.5.14",
       "targets": [
         {
           "calculatedInterval": "10m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
+          "editorMode": "code",
           "errors": {},
-          "exemplar": true,
+          "exemplar": false,
           "expr": "rate(mysql_global_status_queries{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])",
           "format": "time_series",
           "hide": false,
@@ -2104,6 +2409,7 @@
           "intervalFactor": 1,
           "legendFormat": "QPS",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 20
         },
@@ -2111,7 +2417,7 @@
           "calculatedInterval": "10m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -2126,92 +2432,98 @@
           "step": 20
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "QPS/TPS",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:516",
-          "format": "none",
-          "label": "QPS",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:517",
-          "format": "short",
-          "label": "TPS",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
-      "fill": 0,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 12,
         "y": 24
       },
-      "hiddenSeries": false,
       "id": 448,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
       "pluginVersion": "8.5.14",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
           "expr": "mysql_info_schema_processlist_processes_by_user{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
@@ -2220,105 +2532,160 @@
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "用户连接数",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:53",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:54",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
-      "decimals": 0,
       "description": "",
-      "editable": true,
-      "error": false,
-      "fill": 6,
-      "fillGradient": 0,
-      "grid": {},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 60,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "System Memory"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "A",
+                  "mode": "none"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsNull",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 0,
         "y": 31
       },
-      "hiddenSeries": false,
       "id": 460,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.5.14",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:527",
-          "alias": "System Memory",
-          "fill": 0,
-          "stack": false
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
         }
-      ],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      },
+      "pluginVersion": "8.5.14",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": " mysql_global_status_innodb_page_size{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"} * on (instance) mysql_global_status_buffer_pool_pages{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\",state=\"data\"}",
           "format": "time_series",
@@ -2332,7 +2699,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_variables_innodb_log_buffer_size{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2345,7 +2712,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_variables_innodb_additional_mem_pool_size{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2358,7 +2725,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_status_innodb_mem_dictionary{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2371,7 +2738,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_variables_key_buffer_size{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2384,7 +2751,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_variables_query_cache_size{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2397,7 +2764,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_status_innodb_mem_adaptive_hash{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2410,7 +2777,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "mysql_global_variables_tokudb_cache_size{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
           "format": "time_series",
@@ -2421,107 +2788,145 @@
           "step": 20
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "内存使用情况",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:542",
-          "format": "bytes",
-          "label": "",
-          "logBase": 1,
-          "min": 0,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:543",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+        "uid": "${DS_PROMETHEUS}"
       },
-      "editable": true,
-      "error": false,
-      "fill": 0,
-      "fillGradient": 0,
-      "grid": {},
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unknown"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "unknown"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 12,
         "y": 31
       },
-      "hiddenSeries": false,
       "id": 444,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "hideZero": true,
-        "max": true,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.5.14",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:126",
-          "alias": "unknown",
-          "color": "#F2495C",
-          "hideTooltip": true,
-          "yaxis": 2
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "8.5.14",
       "targets": [
         {
           "calculatedInterval": "2m",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "datasourceErrors": {},
           "errors": {},
@@ -2536,41 +2941,8 @@
           "step": 20
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Processlist列表",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1776",
-          "format": "none",
-          "logBase": 1,
-          "min": 0,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1777",
-          "format": "none",
-          "label": "unknown",
-          "logBase": 1,
-          "min": 0,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "collapsed": true,
@@ -2593,7 +2965,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "Sort_scan 和 Sort_range\n查询做排序，不论是因为 order by 还是 group by（除了使用了 order by NULL 的 group by），主要都是下面的三步：\n通过 where 条件找到记录\n排序\n按排好的顺序读取记录\n如果第二步不被跳过，那么第三步中就会有 Sort_scan 或 Sort_range。如果第一步是 Select_scan，那么第三步将是 Sort_scan，如果第一步是 Select_range，那么第三步会是 Sort_range。但 Sort_scan 和 Sort_range 其实没有功能上的区别，都是将需要的记录按顺序读出来，所以性能也是一样的。\nSort_merge_passes\nSort_merge_passes 包括两步。MySQL 首先会尝试在内存中做排序，使用的内存大小由系统变量 Sort_buffer_size 决定，如果它的大小不够把所有的记录都读到内存中，MySQL 就会把每次在内存中排序的结果存到临时文件中，等 MySQL 找到所有记录之后，再把临时文件中的记录做一次排序。这再次排序就会增加 Sort_merge_passes。实际上，MySQL 会用另一个临时文件来存再次排序的结果，所以通常会看到 Sort_merge_passes 增加的数值是建临时文件数的两倍。因为用到了临时文件，所以速度可能会比较慢，增加 Sort_buffer_size 会减少 Sort_merge_passes 和 创建临时文件的次数。但盲目的增加 Sort_buffer_size 并不一定能提高速度。",
@@ -2645,7 +3017,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2663,7 +3035,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2680,7 +3052,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2697,7 +3069,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2753,7 +3125,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "description": "",
           "editable": true,
@@ -2800,7 +3172,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2858,7 +3230,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "此图显示有关mysql服务器创建的临时对象的信息：临时表、临时文件和在磁盘而不是内存中创建的临时表。就像排序数据一样，这很容易被过度分析。最严重的是在磁盘上创建的临时表。",
@@ -2909,7 +3281,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2927,7 +3299,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -2945,7 +3317,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3002,7 +3374,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "",
@@ -3055,7 +3427,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3073,7 +3445,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3091,7 +3463,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3109,7 +3481,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3127,7 +3499,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3204,7 +3576,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 0,
           "description": "**Max Connections** \n\nMax Connections is the maximum permitted number of simultaneous client connections. By default, this is 151. Increasing this value increases the number of file descriptors that mysqld requires. If the required number of descriptors are not available, the server reduces the value of Max Connections.\n\nmysqld actually permits Max Connections + 1 clients to connect. The extra connection is reserved for use by accounts that have the SUPER privilege, such as root.\n\nMax Used Connections is the maximum number of connections that have been in use simultaneously since the server started.\n\nConnections is the number of connection attempts (successful or not) to the MySQL server.",
@@ -3262,7 +3634,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3279,7 +3651,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3297,7 +3669,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "editorMode": "code",
@@ -3359,7 +3731,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "description": "",
           "editable": true,
@@ -3407,7 +3779,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "editorMode": "code",
@@ -3427,7 +3799,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "editorMode": "code",
@@ -3490,7 +3862,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "description": "",
           "editable": true,
@@ -3546,7 +3918,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3564,7 +3936,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3581,7 +3953,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -3640,7 +4012,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 0,
           "description": "",
@@ -3698,7 +4070,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "editorMode": "code",
@@ -3778,7 +4150,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "fill": 1,
@@ -3821,7 +4193,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
               "expr": "delta(mysql_global_status_innodb_row_lock_waits{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[1m])",
@@ -3834,7 +4206,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
               "expr": "delta(mysql_global_status_innodb_row_lock_time{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[1m])/1000",
@@ -3847,7 +4219,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
               "expr": "(rate(mysql_global_status_innodb_row_lock_time{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])/1000)/rate(mysql_global_status_innodb_row_lock_waits{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])",
@@ -3897,7 +4269,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "**InnoDB Deadlocks**\n\nA deadlock in MySQL happens when two or more transactions mutually hold and request for locks, creating a cycle of dependencies. In a transaction system, deadlocks are a fact of life and not completely avoidable. InnoDB automatically detects transaction deadlocks, rollbacks a transaction immediately and returns an error.",
@@ -3952,7 +4324,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4008,7 +4380,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "当一个主机连接到mysql时，连接被中断（例如密码修改），mysql将该信息保存在一个系统表中。\n\n如果连接失败请求的数量达到max_connect_errors的值，mysqld将假定有问题并阻止主机进一步连接。\n\n要再次允许来自该主机的连接，需要发出“flush hosts”请求。",
@@ -4058,7 +4430,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4075,7 +4447,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4134,7 +4506,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "",
@@ -4185,7 +4557,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4203,7 +4575,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4220,7 +4592,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "editorMode": "code",
@@ -4297,7 +4669,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "fill": 0,
           "fillGradient": 0,
@@ -4339,7 +4711,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "topk(5, rate(mysql_global_status_commands_total{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])>0)",
               "interval": "",
@@ -4386,7 +4758,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "- read_rnd_next：在数据文件中读下一行的请求数。如果你正进行大量的表扫描，该值较高。通常说明你的表索引不正确或写入的查询没有利用索引。\n- read_next：按照键顺序读下一行的请求数。如果你用范围约束或如果执行索引扫描来查询索引列，该值增加。\n- read_key：根据键读一行的请求数。如果较高，说明查询和表的索引正确。\n- write：请求向表中插入一行的次数。 \n- read_rnd：根据固定位置读一行的请求数。如果你正执行大量查询并需要对结果进行排序该值较高。你可能使用了大量需要MySQL扫描整个表的查询或你的连接没有正确使用索引。\n- external_lock：此变量与锁定操作数量有关，主要是在表访问的开始和结束时起作用。\n- update：请求更新表中一行的次数。 \n- read_prev：按照键顺序读前一行的请求数。该读方法主要用于优化ORDER BY … DESC。\n- read_first：索引中第一条被读的次数。如果较高，它建议服务器正执行大量全索引扫描；例如，SELECT col1 FROM foo，假定col1有索引。\n- delete：请求从表中删除行的次数。\n- read_last：根据键读最后一行的请求数。",
@@ -4438,7 +4810,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4494,7 +4866,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "editable": true,
@@ -4545,7 +4917,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4618,7 +4990,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "",
@@ -4669,7 +5041,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4686,7 +5058,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4742,7 +5114,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "",
@@ -4794,7 +5166,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4811,7 +5183,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -4886,7 +5258,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "fill": 0,
           "fillGradient": 0,
@@ -4926,7 +5298,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "1- mysql_global_status_innodb_buffer_pool_reads{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"} / mysql_global_status_innodb_buffer_pool_read_requests{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"} ",
               "interval": "",
@@ -4974,7 +5346,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "",
@@ -5026,7 +5398,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5044,7 +5416,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5061,7 +5433,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5078,7 +5450,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5134,7 +5506,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "editable": true,
@@ -5189,7 +5561,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5205,7 +5577,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5221,7 +5593,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5276,7 +5648,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "",
@@ -5327,7 +5699,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5344,7 +5716,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5401,7 +5773,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "**MySQL Table Definition Cache**\n\nThe recommendation is to set the `table_open_cache_instances` to a loose correlation to virtual CPUs, keeping in mind that more instances means the cache is split more times. If you have a cache set to 500 but it has 10 instances, each cache will only have 50 cached.\n\nThe `table_definition_cache` and `table_open_cache` can be left as default as they are auto-sized MySQL 5.6 and above (ie: do not set them to any value).",
@@ -5462,7 +5834,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5479,7 +5851,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5495,7 +5867,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "rate(mysql_global_status_opened_table_definitions{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])",
               "format": "time_series",
@@ -5548,7 +5920,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "**MySQL Table Open Cache Status**\n\nThe recommendation is to set the `table_open_cache_instances` to a loose correlation to virtual CPUs, keeping in mind that more instances means the cache is split more times. If you have a cache set to 500 but it has 10 instances, each cache will only have 50 cached.\n\nThe `table_definition_cache` and `table_open_cache` can be left as default as they are auto-sized MySQL 5.6 and above (ie: do not set them to any value).",
@@ -5609,7 +5981,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5625,7 +5997,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "rate(mysql_global_status_table_open_cache_hits{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])",
               "format": "time_series",
@@ -5638,7 +6010,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "rate(mysql_global_status_table_open_cache_misses{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])",
               "format": "time_series",
@@ -5651,7 +6023,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "rate(mysql_global_status_table_open_cache_overflows{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])",
               "format": "time_series",
@@ -5664,7 +6036,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "rate(mysql_global_status_table_open_cache_hits{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])/(rate(mysql_global_status_table_open_cache_hits{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval])+rate(mysql_global_status_table_open_cache_misses{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}[$interval]))",
               "format": "time_series",
@@ -5718,7 +6090,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "editable": true,
@@ -5768,7 +6140,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5784,7 +6156,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5857,7 +6229,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "editable": true,
@@ -5907,7 +6279,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -5962,7 +6334,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "editable": true,
@@ -6012,7 +6384,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6028,7 +6400,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6043,7 +6415,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "expr": "mysql_global_status_innodb_num_open_files{account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\",instance=~\"$host\"}",
               "interval": "",
@@ -6095,7 +6467,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "**InnoDB Row Operations**\n\nThis graph allows you to see which operations occur and the number of rows affected per operation. A graph like Queries Per Second will give you an idea of queries, but one query could effect millions of rows.",
@@ -6146,7 +6518,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6202,7 +6574,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "**MySQL Open Tables**\n\nThe recommendation is to set the `table_open_cache_instances` to a loose correlation to virtual CPUs, keeping in mind that more instances means the cache is split more times. If you have a cache set to 500 but it has 10 instances, each cache will only have 50 cached.\n\nThe `table_definition_cache` and `table_open_cache` can be left as default as they are auto-sized MySQL 5.6 and above (ie: do not set them to any value).",
@@ -6258,7 +6630,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6275,7 +6647,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6331,7 +6703,7 @@
           "dashes": false,
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+            "uid": "${DS_PROMETHEUS}"
           },
           "decimals": 2,
           "description": "**InnoDB Log File Usage Hourly**\n\nAlong with the buffer pool size, `innodb_log_file_size` is the most important setting when we are working with InnoDB. This graph shows how much data was written to InnoDB's redo logs over each hour. When the InnoDB log files are full, InnoDB needs to flush the modified pages from memory to disk.\n\nThe rules of the thumb is to keep one hour of traffic in those logs and let the checkpointing perform its work as smooth as possible. If you don't do this, InnoDB will do synchronous flushing at the worst possible time, ie when you are busiest.\n\nThis graph can help guide you in setting the correct `innodb_log_file_size`.",
@@ -6405,7 +6777,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6422,7 +6794,7 @@
               "calculatedInterval": "2m",
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+                "uid": "${DS_PROMETHEUS}"
               },
               "datasourceErrors": {},
               "errors": {},
@@ -6476,8 +6848,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 36,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "StarsL.cn",
     "MySQL",
@@ -6490,7 +6861,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up, vendor)",
         "hide": 0,
@@ -6513,7 +6884,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up{vendor=~\"$vendor\"}, account)",
         "hide": 0,
@@ -6540,7 +6911,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up{vendor=~\"$vendor\",account=~\"$account\"}, group)",
         "hide": 0,
@@ -6566,7 +6937,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up{vendor=~\"$vendor\",account=~\"$account\",group=~\"$group\"}, name)",
         "hide": 0,
@@ -6592,7 +6963,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up{vendor=~\"$vendor\",account=~\"$account\",group=~\"$group\",name=~\"$name\"}, iid)",
         "hide": 0,
@@ -6619,7 +6990,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up{vendor=~\"$vendor\",account=~\"$account\",group=~\"$group\",name=~\"$name\",iid=~\"$iid\"}, instance)",
         "hide": 0,
@@ -6646,7 +7017,7 @@
         "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "${DS__VICTORIAMETRICS-PROD-ALL}"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mysql_up{vendor=~\"$vendor\",account=~\"$account\",group=~\"$group\",name=~\"$name\"}, instance)",
         "hide": 2,
@@ -6756,8 +7127,8 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "Mysqld Exporter Dashboard CN 20221102-StarsL.cn",
+  "title": "MySQL CN",
   "uid": "0D6dTg3Zk",
-  "version": 150,
+  "version": 4,
   "weekStart": ""
 }

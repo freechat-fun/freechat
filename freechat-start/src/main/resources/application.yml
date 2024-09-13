@@ -160,4 +160,4 @@ springdoc:
       pathsToMatch: /api/v1/stats/**,/api/v1/score/**
 perf:
   trace:
-    excludeUri: /public/check/**,/favicon.ico,/assets/**,/css/**,/js/**,/img/**,/logo/**,/w/**,/error
+    excludeUri: /public/check/**,/favicon.ico,/assets/**,/css/**,/js/**,/img/**,/logo/**,/error
