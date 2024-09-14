@@ -7,8 +7,6 @@ import lombok.Data;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Objects;
-
 @Schema(description = "Character backend information")
 @Data
 public class CharacterBackendDTO {

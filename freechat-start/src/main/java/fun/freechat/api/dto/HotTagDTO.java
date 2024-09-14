@@ -5,8 +5,6 @@ import fun.freechat.model.HotTag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.Objects;
-
 @Schema(description = "Hot tag")
 @Data
 public class HotTagDTO {

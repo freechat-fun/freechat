@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
 @Schema(description = "Prompt task detailed information")
 @Slf4j

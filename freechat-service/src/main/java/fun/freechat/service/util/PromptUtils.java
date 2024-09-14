@@ -3,9 +3,9 @@ package fun.freechat.service.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.langchain4j.data.message.*;
-import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.PromptType;
+import fun.freechat.service.prompt.ChatPromptContent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 

@@ -1,7 +1,7 @@
 package fun.freechat.service.account;
 
-import org.springframework.lang.NonNull;
 import fun.freechat.model.User;
+import org.springframework.lang.NonNull;
 
 import java.util.Set;
 

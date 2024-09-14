@@ -11,7 +11,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Agent template summary content, including interactive statistical information")
 @Data

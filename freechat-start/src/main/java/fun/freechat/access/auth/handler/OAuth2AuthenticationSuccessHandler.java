@@ -1,5 +1,11 @@
 package fun.freechat.access.auth.handler;
 
+import fun.freechat.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
+import fun.freechat.access.user.SysUserDetails;
+import fun.freechat.access.user.SysUserDetailsManager;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,15 +17,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import fun.freechat.access.auth.customizer.OAuth2AuthorizationRequestCustomizer;
-import fun.freechat.access.user.SysUserDetails;
-import fun.freechat.access.user.SysUserDetailsManager;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {

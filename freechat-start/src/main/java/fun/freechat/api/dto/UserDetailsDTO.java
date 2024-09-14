@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Date;
-import java.util.Objects;
 
 @Schema(description = "Account detailed information")
 @Data

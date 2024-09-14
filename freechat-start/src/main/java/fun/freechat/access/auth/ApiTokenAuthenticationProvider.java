@@ -4,6 +4,7 @@ import fun.freechat.access.user.SysUserDetails;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysAuthorityService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.thymeleaf.util.ArrayUtils;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;

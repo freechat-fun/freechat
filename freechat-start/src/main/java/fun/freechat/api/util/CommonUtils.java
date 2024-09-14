@@ -1,9 +1,9 @@
 package fun.freechat.api.util;
 
-import dev.langchain4j.model.output.FinishReason;
-import fun.freechat.api.dto.LlmResultDTO;
 import dev.langchain4j.model.StreamingResponseHandler;
+import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
+import fun.freechat.api.dto.LlmResultDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

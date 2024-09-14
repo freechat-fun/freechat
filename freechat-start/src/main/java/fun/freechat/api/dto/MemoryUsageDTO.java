@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Objects;
-
 @Schema(description = "Memory usage information")
 @Data
 @EqualsAndHashCode(callSuper = true)

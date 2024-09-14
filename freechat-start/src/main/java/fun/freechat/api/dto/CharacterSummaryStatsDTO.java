@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Character summary content, including interactive statistical information")
 @Data

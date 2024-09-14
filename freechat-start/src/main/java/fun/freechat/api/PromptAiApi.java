@@ -9,9 +9,9 @@ import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
-import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
+import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptAiService;
 import fun.freechat.service.prompt.PromptService;
 import fun.freechat.service.util.InfoUtils;
@@ -38,7 +38,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @Tag(name = "Prompt")

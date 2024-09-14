@@ -10,8 +10,6 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Objects;
-
 import static dev.langchain4j.data.message.ContentType.IMAGE;
 import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.api.util.ChatUtils.contentTypeOf;

@@ -9,7 +9,6 @@ import dev.langchain4j.model.openai.*;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class LanguageModelFactory {
     static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60L);

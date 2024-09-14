@@ -5,8 +5,6 @@ import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.util.InfoUtils;
 import org.springframework.beans.BeanUtils;
 
-import java.util.Objects;
-
 public class MaskedAiApiKey extends AiApiKey {
     private MaskedAiApiKey() {}
 

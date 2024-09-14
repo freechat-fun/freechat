@@ -6,7 +6,6 @@ import lombok.Builder;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class DelegatedQueryTransformer implements QueryTransformer {

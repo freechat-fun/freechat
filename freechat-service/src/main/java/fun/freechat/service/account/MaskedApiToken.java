@@ -4,8 +4,6 @@ import fun.freechat.model.ApiToken;
 import fun.freechat.service.util.InfoUtils;
 import org.springframework.beans.BeanUtils;
 
-import java.util.Objects;
-
 public class MaskedApiToken extends ApiToken {
     private MaskedApiToken() {}
 

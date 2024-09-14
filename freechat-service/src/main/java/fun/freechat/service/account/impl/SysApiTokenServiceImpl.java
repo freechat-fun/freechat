@@ -4,9 +4,9 @@ import fun.freechat.mapper.ApiTokenDynamicSqlSupport;
 import fun.freechat.mapper.ApiTokenMapper;
 import fun.freechat.model.ApiToken;
 import fun.freechat.model.User;
-import fun.freechat.service.enums.ApiTokenType;
 import fun.freechat.service.account.MaskedApiToken;
 import fun.freechat.service.account.SysApiTokenService;
+import fun.freechat.service.enums.ApiTokenType;
 import fun.freechat.util.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 

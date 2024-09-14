@@ -72,7 +72,8 @@ import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metad
 import static fun.freechat.service.ai.LanguageModelFactory.*;
 import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
-import static fun.freechat.service.enums.EmbeddingStoreType.*;
+import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
+import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static java.util.stream.Collectors.toList;

@@ -1,15 +1,15 @@
 package fun.freechat.service.account.impl;
 
-import fun.freechat.service.account.SysAuthorityService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import fun.freechat.mapper.AuthorityDynamicSqlSupport;
 import fun.freechat.mapper.AuthorityMapper;
 import fun.freechat.model.Authority;
 import fun.freechat.model.User;
+import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.util.AuthorityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashSet;

@@ -6,12 +6,11 @@ import fun.freechat.service.enums.InfoType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.constraints.NotBlank;
 
 @Service
 @Tag(name = "Tag Manager (for biz, admin)", description = "Manage tags, callable only by super administrators and business administrators.")

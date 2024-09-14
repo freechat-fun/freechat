@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Prompt service result")
 @Data

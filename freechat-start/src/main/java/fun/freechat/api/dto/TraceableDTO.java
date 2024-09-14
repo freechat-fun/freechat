@@ -1,7 +1,7 @@
 package fun.freechat.api.dto;
 
-import fun.freechat.util.TraceUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fun.freechat.util.TraceUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

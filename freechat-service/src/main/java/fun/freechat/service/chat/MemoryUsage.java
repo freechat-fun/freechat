@@ -3,8 +3,6 @@ package fun.freechat.service.chat;
 import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.output.TokenUsage;
 
-import java.util.Objects;
-
 public record MemoryUsage(Long messageUsage, TokenUsage tokenUsage) {
     public MemoryUsage add(MemoryUsage that) {
         if (that == null) {

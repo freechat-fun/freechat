@@ -1,11 +1,10 @@
 package fun.freechat.langchain4j.model.input;
 
-import fun.freechat.util.PojoUtils;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
+import fun.freechat.util.PojoUtils;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

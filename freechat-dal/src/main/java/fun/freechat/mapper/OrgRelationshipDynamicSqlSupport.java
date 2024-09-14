@@ -1,10 +1,11 @@
 package fun.freechat.mapper;
 
 import jakarta.annotation.Generated;
-import java.sql.JDBCType;
-import java.util.Date;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
+
+import java.sql.JDBCType;
+import java.util.Date;
 
 public final class OrgRelationshipDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")

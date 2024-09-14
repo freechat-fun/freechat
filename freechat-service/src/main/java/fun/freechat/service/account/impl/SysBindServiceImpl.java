@@ -1,10 +1,10 @@
 package fun.freechat.service.account.impl;
 
-import fun.freechat.service.account.SysBindService;
 import fun.freechat.mapper.BindingDynamicSqlSupport;
 import fun.freechat.mapper.BindingMapper;
 import fun.freechat.model.Binding;
 import fun.freechat.model.User;
+import fun.freechat.service.account.SysBindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -12,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Objects;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
