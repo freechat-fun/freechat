@@ -5,7 +5,6 @@ import fun.freechat.annotation.Trace;
 import fun.freechat.exception.BadRequestException;
 import fun.freechat.util.SpELUtils;
 import fun.freechat.util.TraceUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -13,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
 import org.springframework.expression.EvaluationException;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParseException;
@@ -30,9 +30,10 @@ import java.util.Optional;
 
 @Aspect
 @Service
-@Slf4j
 @SuppressWarnings("unused")
 public class TraceAspect {
+    private static final Logger log = TraceUtils.getPerfLogger();
+
     @Pointcut("@annotation(fun.freechat.annotation.Trace)")
     public void tracePointCut() {}
 
