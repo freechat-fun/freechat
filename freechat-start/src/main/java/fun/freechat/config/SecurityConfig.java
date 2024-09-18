@@ -225,7 +225,6 @@ public class SecurityConfig {
         AuthenticationFilter filter = new AuthenticationFilter(provider::authenticate, provider);
         filter.setRequestMatcher(toRequestMatcher(apiUri));
         filter.setSuccessHandler((request, response, authentication) -> {});
-        filter.setFailureHandler((request, response, exception) -> {});
         return filter;
     }
 

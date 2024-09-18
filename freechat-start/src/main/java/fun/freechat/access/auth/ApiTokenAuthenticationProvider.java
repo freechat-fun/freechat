@@ -83,6 +83,10 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
             currentUserId = currentUser.getUserId();
         }
         for (String token : tokens) {
+            if (!validateToken(token)) {
+                continue;
+            }
+
             User user = apiTokenService.getUser(token);
             if (user != null) {
                 if (Objects.equals(user.getUserId(), currentUserId)) {
@@ -110,7 +114,7 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
         }
         String[] tokens = request.getParameterValues(parameterName);
         return ArrayUtils.isEmpty(tokens) ? null
-                : Arrays.stream(tokens).filter(this::validateToken).collect(Collectors.toSet());
+                : Arrays.stream(tokens).collect(Collectors.toSet());
     }
 
     private Set<String> resolveTokensFromHeader(HttpServletRequest request) {
@@ -121,7 +125,7 @@ public class ApiTokenAuthenticationProvider implements AuthenticationProvider, A
             tokenValue = request.getHeader(headerName);
         }
         return StringUtils.isBlank(tokenValue) ? null
-                : Arrays.stream(tokenValue.trim().split(",")).filter(this::validateToken).collect(Collectors.toSet());
+                : Arrays.stream(tokenValue.trim().split(",")).collect(Collectors.toSet());
     }
 
     public void setSecurityContextHolderStrategy(SecurityContextHolderStrategy securityContextHolderStrategy) {
