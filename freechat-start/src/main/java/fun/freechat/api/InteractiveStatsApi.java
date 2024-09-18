@@ -88,7 +88,7 @@ public class InteractiveStatsApi {
             summary = "Get Statistics",
             description = "Get the statistics of the corresponding metrics of the corresponding resources."
     )
-    @GetMapping("/stats/{infoType}/{infoId}/{statsType}")
+    @GetMapping("/public/stats/{infoType}/{infoId}/{statsType}")
     public Long get(
             @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId,
@@ -101,7 +101,7 @@ public class InteractiveStatsApi {
             summary = "Get All Statistics",
             description = "Get all statistics of the corresponding resources."
     )
-    @GetMapping("/stats/{infoType}/{infoId}")
+    @GetMapping("/public/stats/{infoType}/{infoId}")
     public InteractiveStatsDTO get(
             @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
@@ -114,7 +114,7 @@ public class InteractiveStatsApi {
             summary = "Get Score for Resource",
             description = "Get the current user's score for the corresponding resource."
     )
-    @GetMapping("/score/{infoType}/{infoId}")
+    @GetMapping("/public/score/{infoType}/{infoId}")
     public Long getScore(
             @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Unique resource identifier") @PathVariable("infoId") @NotBlank String infoId) {
@@ -130,9 +130,9 @@ public class InteractiveStatsApi {
             description = "List prompts based on statistics, including interactive statistical data."
     )
     @GetMapping(value = {
-            "/stats/prompts/by/{statsType}/{pageSize}/{pageNum}",
-            "/stats/prompts/by/{statsType}/{pageSize}",
-            "/stats/prompts/by/{statsType}"})
+            "/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum}",
+            "/public/stats/prompts/by/{statsType}/{pageSize}",
+            "/public/stats/prompts/by/{statsType}"})
     public List<PromptSummaryStatsDTO> listPrompts(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
@@ -168,9 +168,9 @@ public class InteractiveStatsApi {
             description = "List agents based on statistics, including interactive statistical data."
     )
     @GetMapping(value = {
-            "/stats/agents/by/{statsType}/{pageSize}/{pageNum}",
-            "/stats/agents/by/{statsType}/{pageSize}",
-            "/stats/agents/by/{statsType}"})
+            "/public/stats/agents/by/{statsType}/{pageSize}/{pageNum}",
+            "/public/stats/agents/by/{statsType}/{pageSize}",
+            "/public/stats/agents/by/{statsType}"})
     public List<AgentSummaryStatsDTO> listAgents(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
@@ -206,9 +206,9 @@ public class InteractiveStatsApi {
             description = "List plugins based on statistics, including interactive statistical data."
     )
     @GetMapping(value = {
-            "/stats/plugins/by/{statsType}/{pageSize}/{pageNum}",
-            "/stats/plugins/by/{statsType}/{pageSize}",
-            "/stats/plugins/by/{statsType}"})
+            "/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum}",
+            "/public/stats/plugins/by/{statsType}/{pageSize}",
+            "/public/stats/plugins/by/{statsType}"})
     public List<PluginSummaryStatsDTO> listPlugins(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
@@ -244,9 +244,9 @@ public class InteractiveStatsApi {
             description = "List characters based on statistics, including interactive statistical data."
     )
     @GetMapping(value = {
-            "/stats/characters/by/{statsType}/{pageSize}/{pageNum}",
-            "/stats/characters/by/{statsType}/{pageSize}",
-            "/stats/characters/by/{statsType}"})
+            "/public/stats/characters/by/{statsType}/{pageSize}/{pageNum}",
+            "/public/stats/characters/by/{statsType}/{pageSize}",
+            "/public/stats/characters/by/{statsType}"})
     public List<CharacterSummaryStatsDTO> listCharacters(
             @Parameter(description = "Statistics type: view_count | refer_count | recommend_count | score") @PathVariable("statsType") @NotBlank String statsType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Optional<Long> pageSize,
@@ -281,7 +281,7 @@ public class InteractiveStatsApi {
             summary = "Hot Tags",
             description = "Get popular tags for a specified info type."
     )
-    @GetMapping("/tags/hot/{infoType}/{pageSize}")
+    @GetMapping("/public/tags/hot/{infoType}/{pageSize}")
     public List<HotTagDTO> getHotTags(
             @Parameter(description = "Info type: prompt | agent | plugin | character") @PathVariable("infoType") @NotBlank String infoType,
             @Parameter(description = "Maximum quantity") @PathVariable("pageSize") Long pageSize,

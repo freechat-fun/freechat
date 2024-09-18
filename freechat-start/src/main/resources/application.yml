@@ -20,7 +20,7 @@ auth:
     bizAdminUri: /api/biz/admin/**,/api/v1/biz/admin/**
     apiUri: /api/**
     privateUri: /private/**
-    publicUri: /public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico
+    publicUri: /public/**,/api/v1/public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico
   token:
     limits: 5
     prefix: fc-

@@ -27,7 +27,7 @@ import static fun.freechat.api.util.ConfigUtils.WEB_VERSION_KEY;
 @Controller
 @SuppressWarnings("unused")
 public class MainController {
-    @Value("${app.icpCode}")
+    @Value("${app.icpCode:#{null}}")
     private String icpCode;
     @Autowired
     private ConfigService configService;
