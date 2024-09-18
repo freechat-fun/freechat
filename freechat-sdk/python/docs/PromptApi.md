@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**clone_prompt**](PromptApi.md#clone_prompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
 [**clone_prompts**](PromptApi.md#clone_prompts) | **POST** /api/v1/prompt/batch/clone | Batch Clone Prompts
 [**count_prompts**](PromptApi.md#count_prompts) | **POST** /api/v1/prompt/count | Calculate Number of Prompts
+[**count_public_prompts**](PromptApi.md#count_public_prompts) | **POST** /api/v1/public/prompt/count | Calculate Number of Public Prompts
 [**create_prompt**](PromptApi.md#create_prompt) | **POST** /api/v1/prompt | Create Prompt
 [**create_prompts**](PromptApi.md#create_prompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 [**delete_prompt**](PromptApi.md#delete_prompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
@@ -24,6 +25,7 @@ Method | HTTP request | Description
 [**publish_prompt**](PromptApi.md#publish_prompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
 [**search_prompt_details**](PromptApi.md#search_prompt_details) | **POST** /api/v1/prompt/details/search | Search Prompt Details
 [**search_prompt_summary**](PromptApi.md#search_prompt_summary) | **POST** /api/v1/prompt/search | Search Prompt Summary
+[**search_public_prompt_summary**](PromptApi.md#search_public_prompt_summary) | **POST** /api/v1/public/prompt/search | Search Public Prompt Summary
 [**send_prompt**](PromptApi.md#send_prompt) | **POST** /api/v1/prompt/send | Send Prompt
 [**stream_send_prompt**](PromptApi.md#stream_send_prompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back
 [**update_prompt**](PromptApi.md#update_prompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
@@ -543,6 +545,84 @@ with freechat_sdk.ApiClient(configuration) as api_client:
         pprint(api_response)
     except Exception as e:
         print("Exception when calling PromptApi->count_prompts: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+
+### Return type
+
+**int**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **count_public_prompts**
+> int count_public_prompts(prompt_query_dto)
+
+Calculate Number of Public Prompts
+
+Calculate the number of prompts according to the specified query conditions.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.PromptApi(api_client)
+    prompt_query_dto = freechat_sdk.PromptQueryDTO() # PromptQueryDTO | Query conditions
+
+    try:
+        # Calculate Number of Public Prompts
+        api_response = api_instance.count_public_prompts(prompt_query_dto)
+        print("The response of PromptApi->count_public_prompts:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling PromptApi->count_public_prompts: %s\n" % e)
 ```
 
 
@@ -1555,6 +1635,85 @@ with freechat_sdk.ApiClient(configuration) as api_client:
         pprint(api_response)
     except Exception as e:
         print("Exception when calling PromptApi->search_prompt_summary: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **prompt_query_dto** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | 
+
+### Return type
+
+[**List[PromptSummaryDTO]**](PromptSummaryDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **search_public_prompt_summary**
+> List[PromptSummaryDTO] search_public_prompt_summary(prompt_query_dto)
+
+Search Public Prompt Summary
+
+Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.prompt_query_dto import PromptQueryDTO
+from freechat_sdk.models.prompt_summary_dto import PromptSummaryDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.PromptApi(api_client)
+    prompt_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","text":"(new)","tags":["demo2"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1} # PromptQueryDTO | Query conditions
+
+    try:
+        # Search Public Prompt Summary
+        api_response = api_instance.search_public_prompt_summary(prompt_query_dto)
+        print("The response of PromptApi->search_public_prompt_summary:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling PromptApi->search_public_prompt_summary: %s\n" % e)
 ```
 
 

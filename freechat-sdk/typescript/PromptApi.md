@@ -11,6 +11,7 @@ Method | HTTP request | Description
 [**clonePrompt**](PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
 [**clonePrompts**](PromptApi.md#clonePrompts) | **POST** /api/v1/prompt/batch/clone | Batch Clone Prompts
 [**countPrompts**](PromptApi.md#countPrompts) | **POST** /api/v1/prompt/count | Calculate Number of Prompts
+[**countPublicPrompts**](PromptApi.md#countPublicPrompts) | **POST** /api/v1/public/prompt/count | Calculate Number of Public Prompts
 [**createPrompt**](PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt
 [**createPrompts**](PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 [**deletePrompt**](PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
@@ -24,6 +25,7 @@ Method | HTTP request | Description
 [**publishPrompt**](PromptApi.md#publishPrompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
 [**searchPromptDetails**](PromptApi.md#searchPromptDetails) | **POST** /api/v1/prompt/details/search | Search Prompt Details
 [**searchPromptSummary**](PromptApi.md#searchPromptSummary) | **POST** /api/v1/prompt/search | Search Prompt Summary
+[**searchPublicPromptSummary**](PromptApi.md#searchPublicPromptSummary) | **POST** /api/v1/public/prompt/search | Search Public Prompt Summary
 [**sendPrompt**](PromptApi.md#sendPrompt) | **POST** /api/v1/prompt/send | Send Prompt
 [**streamSendPrompt**](PromptApi.md#streamSendPrompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back
 [**updatePrompt**](PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
@@ -501,6 +503,82 @@ let body:.PromptApiCountPromptsRequest = {
 };
 
 apiInstance.countPrompts(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **promptQueryDTO** | **PromptQueryDTO**| Query conditions |
+
+
+### Return type
+
+**number**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **countPublicPrompts**
+> number countPublicPrompts(promptQueryDTO)
+
+Calculate the number of prompts according to the specified query conditions.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .PromptApi(configuration);
+
+let body:.PromptApiCountPublicPromptsRequest = {
+  // PromptQueryDTO | Query conditions
+  promptQueryDTO: {
+    where: {
+      visibility: "visibility_example",
+      username: "username_example",
+      tags: [
+        "tags_example",
+      ],
+      tagsOp: "tagsOp_example",
+      aiModels: [
+        "aiModels_example",
+      ],
+      aiModelsOp: "aiModelsOp_example",
+      name: "name_example",
+      type: "type_example",
+      lang: "lang_example",
+      text: "text_example",
+    },
+    orderBy: [
+      "orderBy_example",
+    ],
+    pageNum: 1,
+    pageSize: 1,
+  },
+};
+
+apiInstance.countPublicPrompts(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```
@@ -1376,6 +1454,82 @@ let body:.PromptApiSearchPromptSummaryRequest = {
 };
 
 apiInstance.searchPromptSummary(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **promptQueryDTO** | **PromptQueryDTO**| Query conditions |
+
+
+### Return type
+
+**Array<PromptSummaryDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **searchPublicPromptSummary**
+> Array<PromptSummaryDTO> searchPublicPromptSummary(promptQueryDTO)
+
+Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .PromptApi(configuration);
+
+let body:.PromptApiSearchPublicPromptSummaryRequest = {
+  // PromptQueryDTO | Query conditions
+  promptQueryDTO: {
+    where: {
+      visibility: "visibility_example",
+      username: "username_example",
+      tags: [
+        "tags_example",
+      ],
+      tagsOp: "tagsOp_example",
+      aiModels: [
+        "aiModels_example",
+      ],
+      aiModelsOp: "aiModelsOp_example",
+      name: "name_example",
+      type: "type_example",
+      lang: "lang_example",
+      text: "text_example",
+    },
+    orderBy: [
+      "orderBy_example",
+    ],
+    pageNum: 1,
+    pageSize: 1,
+  },
+};
+
+apiInstance.searchPublicPromptSummary(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```

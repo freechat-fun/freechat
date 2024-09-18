@@ -5,23 +5,23 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**addStatistic**](InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
-[**getScore**](InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/score/{infoType}/{infoId} | Get Score for Resource
-[**getStatistic**](InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/stats/{infoType}/{infoId}/{statsType} | Get Statistics
-[**getStatistics**](InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/stats/{infoType}/{infoId} | Get All Statistics
+[**getScore**](InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/public/score/{infoType}/{infoId} | Get Score for Resource
+[**getStatistic**](InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/public/stats/{infoType}/{infoId}/{statsType} | Get Statistics
+[**getStatistics**](InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/public/stats/{infoType}/{infoId} | Get All Statistics
 [**increaseStatistic**](InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
-[**listAgentsByStatistic**](InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/stats/agents/by/{statsType} | List Agents by Statistics
-[**listAgentsByStatistic1**](InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
-[**listAgentsByStatistic2**](InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
-[**listCharactersByStatistic**](InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
-[**listCharactersByStatistic1**](InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
-[**listCharactersByStatistic2**](InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/stats/characters/by/{statsType} | List Characters by Statistics
-[**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
-[**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
-[**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
-[**listPluginsByStatistic2**](InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/stats/plugins/by/{statsType} | List Plugins by Statistics
-[**listPromptsByStatistic**](InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v1/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics
-[**listPromptsByStatistic1**](InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v1/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics
-[**listPromptsByStatistic2**](InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v1/stats/prompts/by/{statsType} | List Prompts by Statistics
+[**listAgentsByStatistic**](InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
+[**listAgentsByStatistic1**](InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
+[**listAgentsByStatistic2**](InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/public/stats/agents/by/{statsType} | List Agents by Statistics
+[**listCharactersByStatistic**](InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/public/stats/characters/by/{statsType} | List Characters by Statistics
+[**listCharactersByStatistic1**](InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
+[**listCharactersByStatistic2**](InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
+[**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/public/tags/hot/{infoType}/{pageSize} | Hot Tags
+[**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
+[**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
+[**listPluginsByStatistic2**](InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/public/stats/plugins/by/{statsType} | List Plugins by Statistics
+[**listPromptsByStatistic**](InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics
+[**listPromptsByStatistic1**](InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics
+[**listPromptsByStatistic2**](InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v1/public/stats/prompts/by/{statsType} | List Prompts by Statistics
 
 
 # **addStatistic**
@@ -339,6 +339,8 @@ const apiInstance = new .InteractiveStatisticsApi(configuration);
 let body:.InteractiveStatisticsApiListAgentsByStatisticRequest = {
   // string | Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
+  // number | Maximum quantity
+  pageSize: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -354,6 +356,7 @@ apiInstance.listAgentsByStatistic(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 
@@ -398,6 +401,8 @@ let body:.InteractiveStatisticsApiListAgentsByStatistic1Request = {
   statsType: "statsType_example",
   // number | Maximum quantity
   pageSize: 1,
+  // number | Current page number
+  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -414,6 +419,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
  **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **pageNum** | [**number**] | Current page number | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 
@@ -456,10 +462,6 @@ const apiInstance = new .InteractiveStatisticsApi(configuration);
 let body:.InteractiveStatisticsApiListAgentsByStatistic2Request = {
   // string | Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
-  pageSize: 1,
-  // number | Current page number
-  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -475,8 +477,6 @@ apiInstance.listAgentsByStatistic2(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
- **pageNum** | [**number**] | Current page number | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 
@@ -519,8 +519,6 @@ const apiInstance = new .InteractiveStatisticsApi(configuration);
 let body:.InteractiveStatisticsApiListCharactersByStatisticRequest = {
   // string | Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
-  pageSize: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -536,7 +534,6 @@ apiInstance.listCharactersByStatistic(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 
@@ -642,6 +639,8 @@ const apiInstance = new .InteractiveStatisticsApi(configuration);
 let body:.InteractiveStatisticsApiListCharactersByStatistic2Request = {
   // string | Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
+  // number | Maximum quantity
+  pageSize: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -657,6 +656,7 @@ apiInstance.listCharactersByStatistic2(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 
@@ -761,8 +761,6 @@ let body:.InteractiveStatisticsApiListPluginsByStatisticRequest = {
   statsType: "statsType_example",
   // number | Maximum quantity
   pageSize: 1,
-  // number | Current page number
-  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -779,7 +777,6 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
  **pageSize** | [**number**] | Maximum quantity | defaults to undefined
- **pageNum** | [**number**] | Current page number | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 
@@ -824,6 +821,8 @@ let body:.InteractiveStatisticsApiListPluginsByStatistic1Request = {
   statsType: "statsType_example",
   // number | Maximum quantity
   pageSize: 1,
+  // number | Current page number
+  pageNum: 1,
   // string | Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
@@ -840,6 +839,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **statsType** | [**string**] | Statistics type: view_count | refer_count | recommend_count | score | defaults to undefined
  **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **pageNum** | [**number**] | Current page number | defaults to undefined
  **asc** | [**string**] | Default is descending order, set asc&#x3D;1 for ascending order | (optional) defaults to undefined
 
 

@@ -1,7 +1,7 @@
 import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { CommonBox, HighlightedTypography, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, CharacterSummaryStatsDTO, ChatCreateDTO, InteractiveStatsDTO } from "freechat-sdk";
 import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Typography, useColorScheme } from "@mui/joy";
@@ -136,6 +136,7 @@ export default function CharacterGallery({
   all = false,
 }: CharacterGalleryProps) {
   const navigate = useNavigate();
+  const { isAuthorized } = useMetaInfoContext();
   const { accountApi, characterApi, chatApi, interactiveStatisticsApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -172,7 +173,7 @@ export default function CharacterGallery({
 
   useEffect(() => {
     const currentQuery = query || defaultQuery();
-    characterApi?.searchCharacterSummary(query || defaultQuery())
+    characterApi?.searchPublicCharacterSummary(query || defaultQuery())
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
@@ -188,7 +189,7 @@ export default function CharacterGallery({
             .catch(handleError);
         })
         if (currentQuery.pageNum === 0) {
-          characterApi.countCharacters(currentQuery)
+          characterApi.countPublicCharacters(currentQuery)
             .then(setTotal)
             .catch(handleError);
         }
@@ -268,7 +269,10 @@ export default function CharacterGallery({
   }
 
   function handleView(record: CharacterSummaryStatsDTO): void {
-    if (!record.characterUid || !record.characterId) {
+    if (!isAuthorized()) {
+      navigate('/w/login');
+      return;
+    } else if (!record.characterUid || !record.characterId) {
       return;
     }
     interactiveStatisticsApi?.increaseStatistic('character', record.characterUid, 'view_count')

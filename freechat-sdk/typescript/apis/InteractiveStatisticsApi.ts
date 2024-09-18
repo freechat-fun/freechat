@@ -104,7 +104,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/score/{infoType}/{infoId}'
+        const localVarPath = '/api/v1/public/score/{infoType}/{infoId}'
             .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
             .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)));
 
@@ -157,7 +157,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/{infoType}/{infoId}/{statsType}'
+        const localVarPath = '/api/v1/public/stats/{infoType}/{infoId}/{statsType}'
             .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
             .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)))
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
@@ -204,7 +204,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/{infoType}/{infoId}'
+        const localVarPath = '/api/v1/public/stats/{infoType}/{infoId}'
             .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
             .replace('{' + 'infoId' + '}', encodeURIComponent(String(infoId)));
 
@@ -286,9 +286,10 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public async listAgentsByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<RequestContext> {
+    public async listAgentsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'statsType' is not null or undefined
@@ -297,61 +298,15 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
         }
 
 
-
-        // Path Params
-        const localVarPath = '/api/v1/stats/agents/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-        // Query Params
-        if (asc !== undefined) {
-            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
-        }
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * List agents based on statistics, including interactive statistical data.
-     * List Agents by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public async listAgentsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'statsType' is not null or undefined
-        if (statsType === null || statsType === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "statsType");
-        }
-
-
         // verify required parameter 'pageSize' is not null or undefined
         if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "pageSize");
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic", "pageSize");
         }
 
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/agents/by/{statsType}/{pageSize}'
+        const localVarPath = '/api/v1/public/stats/agents/by/{statsType}/{pageSize}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
@@ -388,30 +343,30 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
      * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public async listAgentsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
+    public async listAgentsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'statsType' is not null or undefined
         if (statsType === null || statsType === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "statsType");
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "statsType");
         }
 
 
         // verify required parameter 'pageSize' is not null or undefined
         if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "pageSize");
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "pageSize");
         }
 
 
         // verify required parameter 'pageNum' is not null or undefined
         if (pageNum === null || pageNum === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "pageNum");
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic1", "pageNum");
         }
 
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}'
+        const localVarPath = '/api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
             .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
@@ -442,13 +397,57 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
     }
 
     /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public async listAgentsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'statsType' is not null or undefined
+        if (statsType === null || statsType === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listAgentsByStatistic2", "statsType");
+        }
+
+
+
+        // Path Params
+        const localVarPath = '/api/v1/public/stats/agents/by/{statsType}'
+            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+        // Query Params
+        if (asc !== undefined) {
+            requestContext.setQueryParam("asc", ObjectSerializer.serialize(asc, "string", ""));
+        }
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public async listCharactersByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
+    public async listCharactersByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'statsType' is not null or undefined
@@ -457,17 +456,10 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
         }
 
 
-        // verify required parameter 'pageSize' is not null or undefined
-        if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listCharactersByStatistic", "pageSize");
-        }
-
-
 
         // Path Params
-        const localVarPath = '/api/v1/stats/characters/by/{statsType}/{pageSize}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+        const localVarPath = '/api/v1/public/stats/characters/by/{statsType}'
+            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -525,7 +517,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum}'
+        const localVarPath = '/api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
             .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
@@ -559,9 +551,10 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public async listCharactersByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<RequestContext> {
+    public async listCharactersByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'statsType' is not null or undefined
@@ -570,10 +563,17 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
         }
 
 
+        // verify required parameter 'pageSize' is not null or undefined
+        if (pageSize === null || pageSize === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listCharactersByStatistic2", "pageSize");
+        }
+
+
 
         // Path Params
-        const localVarPath = '/api/v1/stats/characters/by/{statsType}'
-            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
+        const localVarPath = '/api/v1/public/stats/characters/by/{statsType}/{pageSize}'
+            .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -624,7 +624,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/tags/hot/{infoType}/{pageSize}'
+        const localVarPath = '/api/v1/public/tags/hot/{infoType}/{pageSize}'
             .replace('{' + 'infoType' + '}', encodeURIComponent(String(infoType)))
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
@@ -658,10 +658,9 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public async listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
+    public async listPluginsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'statsType' is not null or undefined
@@ -676,18 +675,11 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
         }
 
 
-        // verify required parameter 'pageNum' is not null or undefined
-        if (pageNum === null || pageNum === undefined) {
-            throw new RequiredError("InteractiveStatisticsApi", "listPluginsByStatistic", "pageNum");
-        }
-
-
 
         // Path Params
-        const localVarPath = '/api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum}'
+        const localVarPath = '/api/v1/public/stats/plugins/by/{statsType}/{pageSize}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -719,9 +711,10 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public async listPluginsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
+    public async listPluginsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'statsType' is not null or undefined
@@ -736,11 +729,18 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
         }
 
 
+        // verify required parameter 'pageNum' is not null or undefined
+        if (pageNum === null || pageNum === undefined) {
+            throw new RequiredError("InteractiveStatisticsApi", "listPluginsByStatistic1", "pageNum");
+        }
+
+
 
         // Path Params
-        const localVarPath = '/api/v1/stats/plugins/by/{statsType}/{pageSize}'
+        const localVarPath = '/api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
+            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -784,7 +784,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/plugins/by/{statsType}'
+        const localVarPath = '/api/v1/public/stats/plugins/by/{statsType}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
 
         // Make Request Context
@@ -836,7 +836,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/prompts/by/{statsType}/{pageSize}'
+        const localVarPath = '/api/v1/public/stats/prompts/by/{statsType}/{pageSize}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
@@ -896,7 +896,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/prompts/by/{statsType}/{pageSize}/{pageNum}'
+        const localVarPath = '/api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)))
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
             .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
@@ -943,7 +943,7 @@ export class InteractiveStatisticsApiRequestFactory extends BaseAPIRequestFactor
 
 
         // Path Params
-        const localVarPath = '/api/v1/stats/prompts/by/{statsType}'
+        const localVarPath = '/api/v1/public/stats/prompts/by/{statsType}'
             .replace('{' + 'statsType' + '}', encodeURIComponent(String(statsType)));
 
         // Make Request Context

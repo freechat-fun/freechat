@@ -9,6 +9,7 @@ Method | HTTP request | Description
 [**batchSearchCharacterSummary**](CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
 [**cloneCharacter**](CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character
 [**countCharacters**](CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters
+[**countPublicCharacters**](CharacterApi.md#countPublicCharacters) | **POST** /api/v1/public/character/count | Calculate Number of Public Characters
 [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
@@ -32,6 +33,7 @@ Method | HTTP request | Description
 [**removeCharacterBackend**](CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
 [**searchCharacterDetails**](CharacterApi.md#searchCharacterDetails) | **POST** /api/v1/character/details/search | Search Character Details
 [**searchCharacterSummary**](CharacterApi.md#searchCharacterSummary) | **POST** /api/v1/character/search | Search Character Summary
+[**searchPublicCharacterSummary**](CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v1/public/character/search | Search Public Character Summary
 [**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 [**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 [**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
@@ -350,6 +352,78 @@ let body:.CharacterApiCountCharactersRequest = {
 };
 
 apiInstance.countCharacters(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterQueryDTO** | **CharacterQueryDTO**| Query conditions |
+
+
+### Return type
+
+**number**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **countPublicCharacters**
+> number countPublicCharacters(characterQueryDTO)
+
+Calculate the number of characters according to the specified query conditions.
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .CharacterApi(configuration);
+
+let body:.CharacterApiCountPublicCharactersRequest = {
+  // CharacterQueryDTO | Query conditions
+  characterQueryDTO: {
+    where: {
+      visibility: "visibility_example",
+      username: "username_example",
+      tags: [
+        "tags_example",
+      ],
+      tagsOp: "tagsOp_example",
+      name: "name_example",
+      lang: "lang_example",
+      text: "text_example",
+      highPriority: true,
+    },
+    orderBy: [
+      "orderBy_example",
+    ],
+    pageNum: 1,
+    pageSize: 1,
+  },
+};
+
+apiInstance.countPublicCharacters(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```
@@ -1651,6 +1725,78 @@ let body:.CharacterApiSearchCharacterSummaryRequest = {
 };
 
 apiInstance.searchCharacterSummary(body).then((data:any) => {
+  console.log('API called successfully. Returned data: ' + data);
+}).catch((error:any) => console.error(error));
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterQueryDTO** | **CharacterQueryDTO**| Query conditions |
+
+
+### Return type
+
+**Array<CharacterSummaryDTO>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **searchPublicCharacterSummary**
+> Array<CharacterSummaryDTO> searchPublicCharacterSummary(characterQueryDTO)
+
+Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+
+### Example
+
+
+```typescript
+import {  } from '';
+import * as fs from 'fs';
+
+const configuration = .createConfiguration();
+const apiInstance = new .CharacterApi(configuration);
+
+let body:.CharacterApiSearchPublicCharacterSummaryRequest = {
+  // CharacterQueryDTO | Query conditions
+  characterQueryDTO: {
+    where: {
+      visibility: "visibility_example",
+      username: "username_example",
+      tags: [
+        "tags_example",
+      ],
+      tagsOp: "tagsOp_example",
+      name: "name_example",
+      lang: "lang_example",
+      text: "text_example",
+      highPriority: true,
+    },
+    orderBy: [
+      "orderBy_example",
+    ],
+    pageNum: 1,
+    pageSize: 1,
+  },
+};
+
+apiInstance.searchPublicCharacterSummary(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
 }).catch((error:any) => console.error(error));
 ```

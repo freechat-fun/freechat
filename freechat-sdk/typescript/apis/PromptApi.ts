@@ -352,6 +352,54 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
+     * Calculate the number of prompts according to the specified query conditions.
+     * Calculate Number of Public Prompts
+     * @param promptQueryDTO Query conditions
+     */
+    public async countPublicPrompts(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'promptQueryDTO' is not null or undefined
+        if (promptQueryDTO === null || promptQueryDTO === undefined) {
+            throw new RequiredError("PromptApi", "countPublicPrompts", "promptQueryDTO");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/public/prompt/count';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        // Body Params
+        const contentType = ObjectSerializer.getPreferredMediaType([
+            "application/json"
+        ]);
+        requestContext.setHeaderParam("Content-Type", contentType);
+        const serializedBody = ObjectSerializer.stringify(
+            ObjectSerializer.serialize(promptQueryDTO, "PromptQueryDTO", ""),
+            contentType
+        );
+        requestContext.setBody(serializedBody);
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
@@ -904,6 +952,54 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search Public Prompt Summary
+     * @param promptQueryDTO Query conditions
+     */
+    public async searchPublicPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'promptQueryDTO' is not null or undefined
+        if (promptQueryDTO === null || promptQueryDTO === undefined) {
+            throw new RequiredError("PromptApi", "searchPublicPromptSummary", "promptQueryDTO");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/public/prompt/search';
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        // Body Params
+        const contentType = ObjectSerializer.getPreferredMediaType([
+            "application/json"
+        ]);
+        requestContext.setHeaderParam("Content-Type", contentType);
+        const serializedBody = ObjectSerializer.stringify(
+            ObjectSerializer.serialize(promptQueryDTO, "PromptQueryDTO", ""),
+            contentType
+        );
+        requestContext.setBody(serializedBody);
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * Send the prompt to the AI service. Note that if the embedding model is called, the return is an embedding array, placed in the details field of the result; the original text is in the text field of the result.
      * Send Prompt
      * @param promptAiParamDTO Call parameters
@@ -1241,6 +1337,35 @@ export class PromptApiResponseProcessor {
      * @throws ApiException if the response code was not in [200, 299]
      */
      public async countPromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: number = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "number", "int64"
+            ) as number;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: number = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "number", "int64"
+            ) as number;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to countPublicPrompts
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async countPublicPromptsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<number >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: number = ObjectSerializer.deserialize(
@@ -1618,6 +1743,35 @@ export class PromptApiResponseProcessor {
      * @throws ApiException if the response code was not in [200, 299]
      */
      public async searchPromptSummaryWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<PromptSummaryDTO> >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<PromptSummaryDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<PromptSummaryDTO>", ""
+            ) as Array<PromptSummaryDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<PromptSummaryDTO> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<PromptSummaryDTO>", ""
+            ) as Array<PromptSummaryDTO>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to searchPublicPromptSummary
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async searchPublicPromptSummaryWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<PromptSummaryDTO> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: Array<PromptSummaryDTO> = ObjectSerializer.deserialize(

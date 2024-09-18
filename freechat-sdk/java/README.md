@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.3.2
+- API version: 1.4.0
   - Generator version: 7.7.0
 
 # FreeChat: Create Some Friends for Yourself with AI
@@ -70,7 +70,7 @@ After setting up an unified persona and knowledge for a character, different bac
 
 ## How to Play
 ### Online Website
-You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!
+You can visit [freechat.fun](https://www.freechat.fun) to experience FreeChat. Share your designed AI character!
 
 ### Running in a Kubernetes Cluster
 FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:
@@ -284,7 +284,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.3.2</version>
+  <version>1.4.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -300,7 +300,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.3.2"
+     implementation "fun.freechat:freechat-sdk:1.4.0"
   }
 ```
 
@@ -314,7 +314,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.3.2.jar`
+* `target/freechat-sdk-1.4.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -423,6 +423,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**batchSearchCharacterSummary**](docs/CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
 *CharacterApi* | [**cloneCharacter**](docs/CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character
 *CharacterApi* | [**countCharacters**](docs/CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters
+*CharacterApi* | [**countPublicCharacters**](docs/CharacterApi.md#countPublicCharacters) | **POST** /api/v1/public/character/count | Calculate Number of Public Characters
 *CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 *CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 *CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
@@ -446,6 +447,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**removeCharacterBackend**](docs/CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
 *CharacterApi* | [**searchCharacterDetails**](docs/CharacterApi.md#searchCharacterDetails) | **POST** /api/v1/character/details/search | Search Character Details
 *CharacterApi* | [**searchCharacterSummary**](docs/CharacterApi.md#searchCharacterSummary) | **POST** /api/v1/character/search | Search Character Summary
+*CharacterApi* | [**searchPublicCharacterSummary**](docs/CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v1/public/character/search | Search Public Character Summary
 *CharacterApi* | [**setDefaultCharacterBackend**](docs/CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 *CharacterApi* | [**updateCharacter**](docs/CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 *CharacterApi* | [**updateCharacterBackend**](docs/CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
@@ -470,23 +472,23 @@ Class | Method | HTTP request | Description
 *ChatApi* | [**updateChat**](docs/ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session
 *EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v1/admin/encryption/encrypt/{text} | Encrypt Text
 *InteractiveStatisticsApi* | [**addStatistic**](docs/InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
-*InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/score/{infoType}/{infoId} | Get Score for Resource
-*InteractiveStatisticsApi* | [**getStatistic**](docs/InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/stats/{infoType}/{infoId}/{statsType} | Get Statistics
-*InteractiveStatisticsApi* | [**getStatistics**](docs/InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/stats/{infoType}/{infoId} | Get All Statistics
+*InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/public/score/{infoType}/{infoId} | Get Score for Resource
+*InteractiveStatisticsApi* | [**getStatistic**](docs/InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/public/stats/{infoType}/{infoId}/{statsType} | Get Statistics
+*InteractiveStatisticsApi* | [**getStatistics**](docs/InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/public/stats/{infoType}/{infoId} | Get All Statistics
 *InteractiveStatisticsApi* | [**increaseStatistic**](docs/InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
-*InteractiveStatisticsApi* | [**listAgentsByStatistic**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/stats/agents/by/{statsType} | List Agents by Statistics
-*InteractiveStatisticsApi* | [**listAgentsByStatistic1**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
-*InteractiveStatisticsApi* | [**listAgentsByStatistic2**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
-*InteractiveStatisticsApi* | [**listCharactersByStatistic**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listCharactersByStatistic1**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listCharactersByStatistic2**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/stats/characters/by/{statsType} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listHotTags**](docs/InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/tags/hot/{infoType}/{pageSize} | Hot Tags
-*InteractiveStatisticsApi* | [**listPluginsByStatistic**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
-*InteractiveStatisticsApi* | [**listPluginsByStatistic1**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
-*InteractiveStatisticsApi* | [**listPluginsByStatistic2**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/stats/plugins/by/{statsType} | List Plugins by Statistics
-*InteractiveStatisticsApi* | [**listPromptsByStatistic**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v1/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics
-*InteractiveStatisticsApi* | [**listPromptsByStatistic1**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v1/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics
-*InteractiveStatisticsApi* | [**listPromptsByStatistic2**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v1/stats/prompts/by/{statsType} | List Prompts by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic1**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic2**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/public/stats/agents/by/{statsType} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listCharactersByStatistic**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/public/stats/characters/by/{statsType} | List Characters by Statistics
+*InteractiveStatisticsApi* | [**listCharactersByStatistic1**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
+*InteractiveStatisticsApi* | [**listCharactersByStatistic2**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
+*InteractiveStatisticsApi* | [**listHotTags**](docs/InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/public/tags/hot/{infoType}/{pageSize} | Hot Tags
+*InteractiveStatisticsApi* | [**listPluginsByStatistic**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
+*InteractiveStatisticsApi* | [**listPluginsByStatistic1**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
+*InteractiveStatisticsApi* | [**listPluginsByStatistic2**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/public/stats/plugins/by/{statsType} | List Plugins by Statistics
+*InteractiveStatisticsApi* | [**listPromptsByStatistic**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics
+*InteractiveStatisticsApi* | [**listPromptsByStatistic1**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics
+*InteractiveStatisticsApi* | [**listPromptsByStatistic2**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v1/public/stats/prompts/by/{statsType} | List Prompts by Statistics
 *OrganizationApi* | [**getOwners**](docs/OrganizationApi.md#getOwners) | **GET** /api/v1/org/owners | Get My Superior Relationship
 *OrganizationApi* | [**getOwnersDot**](docs/OrganizationApi.md#getOwnersDot) | **GET** /api/v1/org/owners/dot | Get DOT of Superior Relationship
 *OrganizationApi* | [**getSubordinateOwners**](docs/OrganizationApi.md#getSubordinateOwners) | **GET** /api/v1/org/manage/{username}/owners | Get Superior Relationship
@@ -518,6 +520,7 @@ Class | Method | HTTP request | Description
 *PromptApi* | [**clonePrompt**](docs/PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
 *PromptApi* | [**clonePrompts**](docs/PromptApi.md#clonePrompts) | **POST** /api/v1/prompt/batch/clone | Batch Clone Prompts
 *PromptApi* | [**countPrompts**](docs/PromptApi.md#countPrompts) | **POST** /api/v1/prompt/count | Calculate Number of Prompts
+*PromptApi* | [**countPublicPrompts**](docs/PromptApi.md#countPublicPrompts) | **POST** /api/v1/public/prompt/count | Calculate Number of Public Prompts
 *PromptApi* | [**createPrompt**](docs/PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt
 *PromptApi* | [**createPrompts**](docs/PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
 *PromptApi* | [**deletePrompt**](docs/PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
@@ -531,6 +534,7 @@ Class | Method | HTTP request | Description
 *PromptApi* | [**publishPrompt**](docs/PromptApi.md#publishPrompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
 *PromptApi* | [**searchPromptDetails**](docs/PromptApi.md#searchPromptDetails) | **POST** /api/v1/prompt/details/search | Search Prompt Details
 *PromptApi* | [**searchPromptSummary**](docs/PromptApi.md#searchPromptSummary) | **POST** /api/v1/prompt/search | Search Prompt Summary
+*PromptApi* | [**searchPublicPromptSummary**](docs/PromptApi.md#searchPublicPromptSummary) | **POST** /api/v1/public/prompt/search | Search Public Prompt Summary
 *PromptApi* | [**sendPrompt**](docs/PromptApi.md#sendPrompt) | **POST** /api/v1/prompt/send | Send Prompt
 *PromptApi* | [**streamSendPrompt**](docs/PromptApi.md#streamSendPrompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back
 *PromptApi* | [**updatePrompt**](docs/PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt

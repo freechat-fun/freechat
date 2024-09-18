@@ -2207,6 +2207,39 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Calculate the number of characters according to the specified query conditions.
+     * Calculate Number of Public Characters
+     * @param characterQueryDTO Query conditions
+     */
+    public countPublicCharactersWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.countPublicCharacters(characterQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.countPublicCharactersWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Calculate the number of characters according to the specified query conditions.
+     * Calculate Number of Public Characters
+     * @param characterQueryDTO Query conditions
+     */
+    public countPublicCharacters(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Observable<number> {
+        return this.countPublicCharactersWithHttpInfo(characterQueryDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    }
+
+    /**
      * Create a character.
      * Create Character
      * @param characterCreateDTO Information of the character to be created
@@ -2965,6 +2998,39 @@ export class ObservableCharacterApi {
      */
     public searchCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Observable<Array<CharacterSummaryDTO>> {
         return this.searchCharacterSummaryWithHttpInfo(characterQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search Public Character Summary
+     * @param characterQueryDTO Query conditions
+     */
+    public searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryDTO>>> {
+        const requestContextPromise = this.requestFactory.searchPublicCharacterSummary(characterQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.searchPublicCharacterSummaryWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search Public Character Summary
+     * @param characterQueryDTO Query conditions
+     */
+    public searchPublicCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Observable<Array<CharacterSummaryDTO>> {
+        return this.searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryDTO>>) => apiResponse.data));
     }
 
     /**
@@ -3995,10 +4061,11 @@ export class ObservableInteractiveStatisticsApi {
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listAgentsByStatistic(statsType, asc, _options);
+    public listAgentsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentsByStatistic(statsType, pageSize, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4020,10 +4087,11 @@ export class ObservableInteractiveStatisticsApi {
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic(statsType: string, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
-        return this.listAgentsByStatisticWithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
+    public listAgentsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
+        return this.listAgentsByStatisticWithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4031,10 +4099,11 @@ export class ObservableInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listAgentsByStatistic1(statsType, pageSize, asc, _options);
+    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentsByStatistic1(statsType, pageSize, pageNum, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4057,22 +4126,21 @@ export class ObservableInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
-        return this.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
+    public listAgentsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
+        return this.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listAgentsByStatistic2(statsType, pageSize, pageNum, asc, _options);
+    public listAgentsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listAgentsByStatistic2(statsType, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4094,23 +4162,20 @@ export class ObservableInteractiveStatisticsApi {
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
-        return this.listAgentsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
+    public listAgentsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Observable<Array<AgentSummaryStatsDTO>> {
+        return this.listAgentsByStatistic2WithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<AgentSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listCharactersByStatistic(statsType, pageSize, asc, _options);
+    public listCharactersByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listCharactersByStatistic(statsType, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4132,11 +4197,10 @@ export class ObservableInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
-        return this.listCharactersByStatisticWithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
+    public listCharactersByStatistic(statsType: string, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
+        return this.listCharactersByStatisticWithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4182,10 +4246,11 @@ export class ObservableInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listCharactersByStatistic2(statsType, asc, _options);
+    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listCharactersByStatistic2(statsType, pageSize, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4207,10 +4272,11 @@ export class ObservableInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2(statsType: string, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
-        return this.listCharactersByStatistic2WithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
+    public listCharactersByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
+        return this.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4255,11 +4321,10 @@ export class ObservableInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPluginsByStatistic(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPluginsByStatistic(statsType, pageSize, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4282,11 +4347,10 @@ export class ObservableInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
-        return this.listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
+    public listPluginsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
+        return this.listPluginsByStatisticWithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4294,10 +4358,11 @@ export class ObservableInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPluginsByStatistic1(statsType, pageSize, asc, _options);
+    public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPluginsByStatistic1(statsType, pageSize, pageNum, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4320,10 +4385,11 @@ export class ObservableInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
-        return this.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
+    public listPluginsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
+        return this.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -5562,6 +5628,39 @@ export class ObservablePromptApi {
     }
 
     /**
+     * Calculate the number of prompts according to the specified query conditions.
+     * Calculate Number of Public Prompts
+     * @param promptQueryDTO Query conditions
+     */
+    public countPublicPromptsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.countPublicPrompts(promptQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.countPublicPromptsWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Calculate the number of prompts according to the specified query conditions.
+     * Calculate Number of Public Prompts
+     * @param promptQueryDTO Query conditions
+     */
+    public countPublicPrompts(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Observable<number> {
+        return this.countPublicPromptsWithHttpInfo(promptQueryDTO, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    }
+
+    /**
      * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
@@ -5990,6 +6089,39 @@ export class ObservablePromptApi {
      */
     public searchPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Observable<Array<PromptSummaryDTO>> {
         return this.searchPromptSummaryWithHttpInfo(promptQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search Public Prompt Summary
+     * @param promptQueryDTO Query conditions
+     */
+    public searchPublicPromptSummaryWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryDTO>>> {
+        const requestContextPromise = this.requestFactory.searchPublicPromptSummary(promptQueryDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (let middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (let middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.searchPublicPromptSummaryWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search Public Prompt Summary
+     * @param promptQueryDTO Query conditions
+     */
+    public searchPublicPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Observable<Array<PromptSummaryDTO>> {
+        return this.searchPublicPromptSummaryWithHttpInfo(promptQueryDTO, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryDTO>>) => apiResponse.data));
     }
 
     /**

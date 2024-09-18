@@ -9,6 +9,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**batchSearchCharacterSummary**](CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries |
 | [**cloneCharacter**](CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character |
 | [**countCharacters**](CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters |
+| [**countPublicCharacters**](CharacterApi.md#countPublicCharacters) | **POST** /api/v1/public/character/count | Calculate Number of Public Characters |
 | [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character |
 | [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character |
 | [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name |
@@ -32,6 +33,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**removeCharacterBackend**](CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend |
 | [**searchCharacterDetails**](CharacterApi.md#searchCharacterDetails) | **POST** /api/v1/character/details/search | Search Character Details |
 | [**searchCharacterSummary**](CharacterApi.md#searchCharacterSummary) | **POST** /api/v1/character/search | Search Character Summary |
+| [**searchPublicCharacterSummary**](CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v1/public/character/search | Search Public Character Summary |
 | [**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend |
 | [**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character |
 | [**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend |
@@ -344,6 +346,73 @@ public class Example {
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#countCharacters");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **characterQueryDTO** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | |
+
+### Return type
+
+**Long**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="countPublicCharacters"></a>
+# **countPublicCharacters**
+> Long countPublicCharacters(characterQueryDTO)
+
+Calculate Number of Public Characters
+
+Calculate the number of characters according to the specified query conditions.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    CharacterQueryDTO characterQueryDTO = new CharacterQueryDTO(); // CharacterQueryDTO | Query conditions
+    try {
+      Long result = apiInstance.countPublicCharacters(characterQueryDTO);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#countPublicCharacters");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -1886,6 +1955,73 @@ public class Example {
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling CharacterApi#searchCharacterSummary");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **characterQueryDTO** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | |
+
+### Return type
+
+[**List&lt;CharacterSummaryDTO&gt;**](CharacterSummaryDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="searchPublicCharacterSummary"></a>
+# **searchPublicCharacterSummary**
+> List&lt;CharacterSummaryDTO&gt; searchPublicCharacterSummary(characterQueryDTO)
+
+Search Public Character Summary
+
+Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user&#39;s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    CharacterQueryDTO characterQueryDTO = new CharacterQueryDTO(); // CharacterQueryDTO | Query conditions
+    try {
+      List<CharacterSummaryDTO> result = apiInstance.searchPublicCharacterSummary(characterQueryDTO);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#searchPublicCharacterSummary");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());

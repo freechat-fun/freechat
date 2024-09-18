@@ -1,7 +1,7 @@
 import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 import { CommonBox, HighlightedTypography, HotTags, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
 import { InteractiveStatsDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO, PromptSummaryStatsDTO, UserBasicInfoDTO } from "freechat-sdk";
 import { Avatar, Box, Card, Chip, Divider, IconButton, Link, Stack, Tooltip, Typography } from "@mui/joy";
@@ -124,6 +124,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
 
 export default function PromptGallery() {
   const navigate = useNavigate();
+  const { isAuthorized } = useMetaInfoContext();
   const { promptApi, interactiveStatisticsApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -157,7 +158,7 @@ export default function PromptGallery() {
 
   useEffect(() => {
     const currentQuery = query || defaultQuery();
-    promptApi?.searchPromptSummary(currentQuery)
+    promptApi?.searchPublicPromptSummary(currentQuery)
       .then(resp => {
         setRecords(resp);
         resp.forEach(r => {
@@ -173,7 +174,7 @@ export default function PromptGallery() {
             .catch(handleError);
         })
         if (currentQuery.pageNum === 0) {
-          promptApi?.countPrompts(currentQuery)
+          promptApi?.countPublicPrompts(currentQuery)
             .then(setTotal)
             .catch(handleError);
         }
@@ -238,9 +239,13 @@ export default function PromptGallery() {
   }
 
   function handleView(record: PromptSummaryStatsDTO): void {
-    if (!record.promptUid) {
+    if (!isAuthorized()) {
+      navigate('/w/login');
+      return;
+    } else if (!record.promptUid) {
       return;
     }
+    
     interactiveStatisticsApi?.increaseStatistic('prompt', record.promptUid, 'view_count')
       .finally(() => navigate(`/w/prompt/${record.promptId}`));
   }

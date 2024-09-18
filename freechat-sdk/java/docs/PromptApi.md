@@ -11,6 +11,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**clonePrompt**](PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt |
 | [**clonePrompts**](PromptApi.md#clonePrompts) | **POST** /api/v1/prompt/batch/clone | Batch Clone Prompts |
 | [**countPrompts**](PromptApi.md#countPrompts) | **POST** /api/v1/prompt/count | Calculate Number of Prompts |
+| [**countPublicPrompts**](PromptApi.md#countPublicPrompts) | **POST** /api/v1/public/prompt/count | Calculate Number of Public Prompts |
 | [**createPrompt**](PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt |
 | [**createPrompts**](PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts |
 | [**deletePrompt**](PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt |
@@ -24,6 +25,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**publishPrompt**](PromptApi.md#publishPrompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt |
 | [**searchPromptDetails**](PromptApi.md#searchPromptDetails) | **POST** /api/v1/prompt/details/search | Search Prompt Details |
 | [**searchPromptSummary**](PromptApi.md#searchPromptSummary) | **POST** /api/v1/prompt/search | Search Prompt Summary |
+| [**searchPublicPromptSummary**](PromptApi.md#searchPublicPromptSummary) | **POST** /api/v1/public/prompt/search | Search Public Prompt Summary |
 | [**sendPrompt**](PromptApi.md#sendPrompt) | **POST** /api/v1/prompt/send | Send Prompt |
 | [**streamSendPrompt**](PromptApi.md#streamSendPrompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back |
 | [**updatePrompt**](PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt |
@@ -465,6 +467,73 @@ public class Example {
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#countPrompts");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **promptQueryDTO** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | |
+
+### Return type
+
+**Long**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="countPublicPrompts"></a>
+# **countPublicPrompts**
+> Long countPublicPrompts(promptQueryDTO)
+
+Calculate Number of Public Prompts
+
+Calculate the number of prompts according to the specified query conditions.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.PromptApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    PromptApi apiInstance = new PromptApi(defaultClient);
+    PromptQueryDTO promptQueryDTO = new PromptQueryDTO(); // PromptQueryDTO | Query conditions
+    try {
+      Long result = apiInstance.countPublicPrompts(promptQueryDTO);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling PromptApi#countPublicPrompts");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -1338,6 +1407,73 @@ public class Example {
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling PromptApi#searchPromptSummary");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **promptQueryDTO** | [**PromptQueryDTO**](PromptQueryDTO.md)| Query conditions | |
+
+### Return type
+
+[**List&lt;PromptSummaryDTO&gt;**](PromptSummaryDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="searchPublicPromptSummary"></a>
+# **searchPublicPromptSummary**
+> List&lt;PromptSummaryDTO&gt; searchPublicPromptSummary(promptQueryDTO)
+
+Search Public Prompt Summary
+
+Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user&#39;s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.PromptApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    PromptApi apiInstance = new PromptApi(defaultClient);
+    PromptQueryDTO promptQueryDTO = new PromptQueryDTO(); // PromptQueryDTO | Query conditions
+    try {
+      List<PromptSummaryDTO> result = apiInstance.searchPublicPromptSummary(promptQueryDTO);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling PromptApi#searchPublicPromptSummary");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());

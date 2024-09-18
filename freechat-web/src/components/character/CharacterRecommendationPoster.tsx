@@ -4,7 +4,7 @@ import { Box, BoxProps, Button, Chip, Stack, Typography } from "@mui/joy";
 import { CharacterSummaryDTO, ChatCreateDTO } from "freechat-sdk";
 import { CommonBox, CommonGridBox, LinePlaceholder, SummaryTypography } from "..";
 import { getSenderName } from "../../libs/chat_utils";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
+import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
 
 type CharacterRecommendationPosterProps = BoxProps & {
   record?: CharacterSummaryDTO,
@@ -15,6 +15,7 @@ type CharacterRecommendationPosterProps = BoxProps & {
 const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecommendationPosterProps>((props, ref) => {
   const { record, maxDescriptionLines = 3, disabled = false, sx, ...others } = props;
   const navigate = useNavigate();
+  const { isAuthorized } = useMetaInfoContext();
   const { accountApi, chatApi, interactiveStatisticsApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   
@@ -23,9 +24,13 @@ const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecomm
   const nickname = getSenderName(record);
 
   function handleView(record?: CharacterSummaryDTO): void {
-    if (!record || !record.characterUid || !record.characterId) {
+    if (!isAuthorized()) {
+      navigate('/w/login');
+      return;
+    } else if (!record || !record.characterUid || !record.characterId) {
       return;
     }
+
     interactiveStatisticsApi?.increaseStatistic('character', record.characterUid, 'view_count')
       .finally(() => {
         chatApi?.getDefaultChatId(record.characterId as number)

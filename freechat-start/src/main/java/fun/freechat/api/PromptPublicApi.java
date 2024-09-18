@@ -75,11 +75,34 @@ public class PromptPublicApi {
             @RequestBody
             @NotNull
             PromptQueryDTO query) {
+        if (query.getWhere() == null) {
+            query.setWhere(new PromptQueryDTO.Where());
+        }
         if (Visibility.of(query.getWhere().getVisibility()) != Visibility.PUBLIC) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The visibility should be 'public'");
         }
-        // ensure the 'visibility' has a value
+        // ensure 'visibility' is non-blank
         query.getWhere().setVisibility(Visibility.PUBLIC.text());
         return promptApi.search(query);
+    }
+
+    @Operation(
+            operationId = "countPublicPrompts",
+            summary = "Calculate Number of Public Prompts",
+            description = "Calculate the number of prompts according to the specified query conditions."
+    )
+    @PostMapping("/count")
+    public Long count(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
+            PromptQueryDTO query) {
+        if (query.getWhere() == null) {
+            query.setWhere(new PromptQueryDTO.Where());
+        }
+        if (Visibility.of(query.getWhere().getVisibility()) != Visibility.PUBLIC) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The visibility should be 'public'");
+        }
+        // ensure 'visibility' is non-blank
+        query.getWhere().setVisibility(Visibility.PUBLIC.text());
+        return promptApi.count(query);
     }
 }

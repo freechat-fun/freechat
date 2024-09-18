@@ -33,8 +33,8 @@ public class CharacterPublicApi {
     private CharacterApi characterApi;
 
     @Operation(
-            operationId = "searchCharacterSummary",
-            summary = "Search Character Summary",
+            operationId = "searchPublicCharacterSummary",
+            summary = "Search Public Character Summary",
             description = """
                     Search characters:
                     - Specifiable query fields, and relationship:
@@ -74,11 +74,36 @@ public class CharacterPublicApi {
             @RequestBody
             @NotNull
             CharacterQueryDTO query) {
+        if (query.getWhere() == null) {
+            query.setWhere(new CharacterQueryDTO.Where());
+        }
         if (Visibility.of(query.getWhere().getVisibility()) != Visibility.PUBLIC) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The visibility should be 'public'");
         }
-        // ensure the 'visibility' has a value
+        // ensure 'visibility' is non-blank
         query.getWhere().setVisibility(Visibility.PUBLIC.text());
         return characterApi.search(query);
+    }
+
+    @Operation(
+            operationId = "countPublicCharacters",
+            summary = "Calculate Number of Public Characters",
+            description = "Calculate the number of characters according to the specified query conditions."
+    )
+    @PostMapping("/count")
+    public Long count(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
+            @RequestBody
+            @NotNull
+            CharacterQueryDTO query) {
+        if (query.getWhere() == null) {
+            query.setWhere(new CharacterQueryDTO.Where());
+        }
+        if (Visibility.of(query.getWhere().getVisibility()) != Visibility.PUBLIC) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The visibility should be 'public'");
+        }
+        // ensure 'visibility' is non-blank
+        query.getWhere().setVisibility(Visibility.PUBLIC.text());
+        return characterApi.count(query);
     }
 }

@@ -1416,6 +1416,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Calculate the number of characters according to the specified query conditions.
+     * Calculate Number of Public Characters
+     * @param characterQueryDTO Query conditions
+     */
+    public countPublicCharactersWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.countPublicCharactersWithHttpInfo(characterQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Calculate the number of characters according to the specified query conditions.
+     * Calculate Number of Public Characters
+     * @param characterQueryDTO Query conditions
+     */
+    public countPublicCharacters(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<number> {
+        const result = this.api.countPublicCharacters(characterQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Create a character.
      * Create Character
      * @param characterCreateDTO Information of the character to be created
@@ -1874,6 +1894,26 @@ export class PromiseCharacterApi {
      */
     public searchCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<Array<CharacterSummaryDTO>> {
         const result = this.api.searchCharacterSummary(characterQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search Public Character Summary
+     * @param characterQueryDTO Query conditions
+     */
+    public searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryDTO>>> {
+        const result = this.api.searchPublicCharacterSummaryWithHttpInfo(characterQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+     * Search Public Character Summary
+     * @param characterQueryDTO Query conditions
+     */
+    public searchPublicCharacterSummary(characterQueryDTO: CharacterQueryDTO, _options?: Configuration): Promise<Array<CharacterSummaryDTO>> {
+        const result = this.api.searchPublicCharacterSummary(characterQueryDTO, _options);
         return result.toPromise();
     }
 
@@ -2544,21 +2584,11 @@ export class PromiseInteractiveStatisticsApi {
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const result = this.api.listAgentsByStatisticWithHttpInfo(statsType, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List agents based on statistics, including interactive statistical data.
-     * List Agents by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listAgentsByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
-        const result = this.api.listAgentsByStatistic(statsType, asc, _options);
+    public listAgentsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const result = this.api.listAgentsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2569,20 +2599,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const result = this.api.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List agents based on statistics, including interactive statistical data.
-     * List Agents by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listAgentsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
-        const result = this.api.listAgentsByStatistic1(statsType, pageSize, asc, _options);
+    public listAgentsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        const result = this.api.listAgentsByStatistic(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2594,8 +2612,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
-        const result = this.api.listAgentsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const result = this.api.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2607,8 +2625,30 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listAgentsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
-        const result = this.api.listAgentsByStatistic2(statsType, pageSize, pageNum, asc, _options);
+    public listAgentsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        const result = this.api.listAgentsByStatistic1(statsType, pageSize, pageNum, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
+        const result = this.api.listAgentsByStatistic2WithHttpInfo(statsType, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List agents based on statistics, including interactive statistical data.
+     * List Agents by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listAgentsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
+        const result = this.api.listAgentsByStatistic2(statsType, asc, _options);
         return result.toPromise();
     }
 
@@ -2616,11 +2656,10 @@ export class PromiseInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
+    public listCharactersByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const result = this.api.listCharactersByStatisticWithHttpInfo(statsType, asc, _options);
         return result.toPromise();
     }
 
@@ -2628,11 +2667,10 @@ export class PromiseInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic(statsType, pageSize, asc, _options);
+    public listCharactersByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+        const result = this.api.listCharactersByStatistic(statsType, asc, _options);
         return result.toPromise();
     }
 
@@ -2666,10 +2704,11 @@ export class PromiseInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, asc, _options);
+    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2677,10 +2716,11 @@ export class PromiseInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic2(statsType, asc, _options);
+    public listCharactersByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+        const result = this.api.listCharactersByStatistic2(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2713,11 +2753,22 @@ export class PromiseInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List plugins based on statistics, including interactive statistical data.
+     * List Plugins by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listPluginsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+        const result = this.api.listPluginsByStatistic(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2729,8 +2780,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2739,22 +2790,11 @@ export class PromiseInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param asc Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List plugins based on statistics, including interactive statistical data.
-     * List Plugins by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listPluginsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic1(statsType, pageSize, asc, _options);
+    public listPluginsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+        const result = this.api.listPluginsByStatistic1(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -3542,6 +3582,26 @@ export class PromisePromptApi {
     }
 
     /**
+     * Calculate the number of prompts according to the specified query conditions.
+     * Calculate Number of Public Prompts
+     * @param promptQueryDTO Query conditions
+     */
+    public countPublicPromptsWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.countPublicPromptsWithHttpInfo(promptQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Calculate the number of prompts according to the specified query conditions.
+     * Calculate Number of Public Prompts
+     * @param promptQueryDTO Query conditions
+     */
+    public countPublicPrompts(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<number> {
+        const result = this.api.countPublicPrompts(promptQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Create a prompt, required fields: - Prompt name - Prompt content - Applicable model  Limitations: - Description: 300 characters - Template: 1000 characters - Example: 2000 characters - Tags: 5 - Parameters: 10 
      * Create Prompt
      * @param promptCreateDTO Information of the prompt to be created
@@ -3800,6 +3860,26 @@ export class PromisePromptApi {
      */
     public searchPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<Array<PromptSummaryDTO>> {
         const result = this.api.searchPromptSummary(promptQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search Public Prompt Summary
+     * @param promptQueryDTO Query conditions
+     */
+    public searchPublicPromptSummaryWithHttpInfo(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryDTO>>> {
+        const result = this.api.searchPublicPromptSummaryWithHttpInfo(promptQueryDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Search prompts: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Model type: exact match (support and, or logic).   - Name: left match.   - Type, exact match: string (default) | chat.   - Language, exact match.   - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user\'s general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the prompt summary content. - Support pagination. 
+     * Search Public Prompt Summary
+     * @param promptQueryDTO Query conditions
+     */
+    public searchPublicPromptSummary(promptQueryDTO: PromptQueryDTO, _options?: Configuration): Promise<Array<PromptSummaryDTO>> {
+        const result = this.api.searchPublicPromptSummary(promptQueryDTO, _options);
         return result.toPromise();
     }
 

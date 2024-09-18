@@ -9,6 +9,7 @@ Method | HTTP request | Description
 [**batch_search_character_summary**](CharacterApi.md#batch_search_character_summary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
 [**clone_character**](CharacterApi.md#clone_character) | **POST** /api/v1/character/clone/{characterId} | Clone Character
 [**count_characters**](CharacterApi.md#count_characters) | **POST** /api/v1/character/count | Calculate Number of Characters
+[**count_public_characters**](CharacterApi.md#count_public_characters) | **POST** /api/v1/public/character/count | Calculate Number of Public Characters
 [**create_character**](CharacterApi.md#create_character) | **POST** /api/v1/character | Create Character
 [**delete_character**](CharacterApi.md#delete_character) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**delete_character_by_name**](CharacterApi.md#delete_character_by_name) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
@@ -32,6 +33,7 @@ Method | HTTP request | Description
 [**remove_character_backend**](CharacterApi.md#remove_character_backend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
 [**search_character_details**](CharacterApi.md#search_character_details) | **POST** /api/v1/character/details/search | Search Character Details
 [**search_character_summary**](CharacterApi.md#search_character_summary) | **POST** /api/v1/character/search | Search Character Summary
+[**search_public_character_summary**](CharacterApi.md#search_public_character_summary) | **POST** /api/v1/public/character/search | Search Public Character Summary
 [**set_default_character_backend**](CharacterApi.md#set_default_character_backend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 [**update_character**](CharacterApi.md#update_character) | **PUT** /api/v1/character/{characterId} | Update Character
 [**update_character_backend**](CharacterApi.md#update_character_backend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
@@ -401,6 +403,84 @@ with freechat_sdk.ApiClient(configuration) as api_client:
         pprint(api_response)
     except Exception as e:
         print("Exception when calling CharacterApi->count_characters: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+
+### Return type
+
+**int**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **count_public_characters**
+> int count_public_characters(character_query_dto)
+
+Calculate Number of Public Characters
+
+Calculate the number of characters according to the specified query conditions.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.character_query_dto import CharacterQueryDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_query_dto = freechat_sdk.CharacterQueryDTO() # CharacterQueryDTO | Query conditions
+
+    try:
+        # Calculate Number of Public Characters
+        api_response = api_instance.count_public_characters(character_query_dto)
+        print("The response of CharacterApi->count_public_characters:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->count_public_characters: %s\n" % e)
 ```
 
 
@@ -2182,6 +2262,85 @@ with freechat_sdk.ApiClient(configuration) as api_client:
         pprint(api_response)
     except Exception as e:
         print("Exception when calling CharacterApi->search_character_summary: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_query_dto** | [**CharacterQueryDTO**](CharacterQueryDTO.md)| Query conditions | 
+
+### Return type
+
+[**List[CharacterSummaryDTO]**](CharacterSummaryDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **search_public_character_summary**
+> List[CharacterSummaryDTO] search_public_character_summary(character_query_dto)
+
+Search Public Character Summary
+
+Search characters: - Specifiable query fields, and relationship:   - Scope: public(fixed).   - Username: exact match. If not specified, search all users.   - Tags: exact match (support and, or logic).   - Name: left match.   - Language, exact match.   - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness. - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending. - The search result is the character summary content. - Support pagination. 
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.character_query_dto import CharacterQueryDTO
+from freechat_sdk.models.character_summary_dto import CharacterSummaryDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","text":"(new)","tags":["demo2"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1} # CharacterQueryDTO | Query conditions
+
+    try:
+        # Search Public Character Summary
+        api_response = api_instance.search_public_character_summary(character_query_dto)
+        print("The response of CharacterApi->search_public_character_summary:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->search_public_character_summary: %s\n" % e)
 ```
 
 

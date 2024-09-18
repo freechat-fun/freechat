@@ -54,7 +54,7 @@ export default function CharacterRecommendationPane({
   }, [records]);
 
   useEffect(() => {
-    characterApi?.searchCharacterSummary(recommendationQuery())
+    characterApi?.searchPublicCharacterSummary(recommendationQuery())
       .then(setRecords)
       .catch(handleError);
   }, [characterApi, handleError, recommendationQuery]);

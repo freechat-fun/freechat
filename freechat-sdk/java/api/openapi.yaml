@@ -35,11 +35,11 @@ info:
     \ up an unified persona and knowledge for a character, different backends can\
     \ be configured. For example, different model may be adopted for different users\
     \ based on cost considerations.\n\n## How to Play\n### Online Website\nYou can\
-    \ visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your\
-    \ designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat is dedicated\
-    \ to the principles of cloud-native design. If you have a Kubernetes cluster,\
-    \ you can deploy FreeChat to your environment by following these steps:\n\n1.\
-    \ Put the Kubernetes configuration file in the `configs/helm/` directory, named\
+    \ visit [freechat.fun](https://www.freechat.fun) to experience FreeChat. Share\
+    \ your designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat\
+    \ is dedicated to the principles of cloud-native design. If you have a Kubernetes\
+    \ cluster, you can deploy FreeChat to your environment by following these steps:\n\
+    \n1. Put the Kubernetes configuration file in the `configs/helm/` directory, named\
     \ `kube-private.conf`.\n2. Place the Helm configuration file in the same directory,\
     \ named `values-private.yaml`. Make sure to reference the default `values.yaml`\
     \ and customize the variables as needed.\n3. Switch to the `scripts/` directory.\n\
@@ -144,7 +144,7 @@ info:
     \ us. We look forward to AI technology helping people create their own \"soul\
     \ mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 1.3.2
+  version: 1.4.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -1404,49 +1404,6 @@ paths:
       x-accepts:
       - application/json
   /api/v1/stats/{infoType}/{infoId}/{statsType}:
-    get:
-      description: Get the statistics of the corresponding metrics of the corresponding
-        resources.
-      operationId: getStatistic
-      parameters:
-      - description: "Info type: prompt | agent | plugin | character"
-        explode: false
-        in: path
-        name: infoType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Unique resource identifier
-        explode: false
-        in: path
-        name: infoId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                format: int64
-                type: integer
-          description: OK
-      summary: Get Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
     post:
       description: Increase the statistics of the corresponding metrics of the corresponding
         resources by one. Return the latest statistics.
@@ -1628,6 +1585,162 @@ paths:
       summary: Cancel RAG Task
       tags:
       - Rag
+      x-accepts:
+      - application/json
+  /api/v1/public/prompt/search:
+    post:
+      description: |
+        Search prompts:
+        - Specifiable query fields, and relationship:
+          - Scope: public(fixed).
+          - Username: exact match. If not specified, search all users.
+          - Tags: exact match (support and, or logic).
+          - Model type: exact match (support and, or logic).
+          - Name: left match.
+          - Type, exact match: string (default) | chat.
+          - Language, exact match.
+          - General: name, description, template, example, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+        - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+        - The search result is the prompt summary content.
+        - Support pagination.
+      operationId: searchPublicPromptSummary
+      requestBody:
+        content:
+          application/json:
+            example:
+              where:
+                visibility: public
+                username: amin
+                name: Second Test
+                text: (new)
+                tags:
+                - demo2
+                aiModels:
+                - "123"
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 0
+              pageSize: 1
+            schema:
+              $ref: '#/components/schemas/PromptQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PromptSummaryDTO'
+                type: array
+          description: OK
+      summary: Search Public Prompt Summary
+      tags:
+      - Prompt
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v1/public/prompt/count:
+    post:
+      description: Calculate the number of prompts according to the specified query
+        conditions.
+      operationId: countPublicPrompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Calculate Number of Public Prompts
+      tags:
+      - Prompt
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v1/public/character/search:
+    post:
+      description: |
+        Search characters:
+        - Specifiable query fields, and relationship:
+          - Scope: public(fixed).
+          - Username: exact match. If not specified, search all users.
+          - Tags: exact match (support and, or logic).
+          - Name: left match.
+          - Language, exact match.
+          - General: name, description, profile, chat style, experience, fuzzy match, one hit is enough; public scope + all user's general search does not guarantee timeliness.
+        - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
+        - The search result is the character summary content.
+        - Support pagination.
+      operationId: searchPublicCharacterSummary
+      requestBody:
+        content:
+          application/json:
+            example:
+              where:
+                visibility: public
+                username: amin
+                name: Second Test
+                text: (new)
+                tags:
+                - demo2
+              orderBy:
+              - version
+              - modifyTime asc
+              pageNum: 0
+              pageSize: 1
+            schema:
+              $ref: '#/components/schemas/CharacterQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CharacterSummaryDTO'
+                type: array
+          description: OK
+      summary: Search Public Character Summary
+      tags:
+      - Character
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /api/v1/public/character/count:
+    post:
+      description: Calculate the number of characters according to the specified query
+        conditions.
+      operationId: countPublicCharacters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterQueryDTO'
+        description: Query conditions
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Calculate Number of Public Characters
+      tags:
+      - Character
+      x-content-type: application/json
       x-accepts:
       - application/json
   /api/v1/prompt:
@@ -3949,669 +4062,6 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
-  /api/v1/tags/hot/{infoType}/{pageSize}:
-    get:
-      description: Get popular tags for a specified info type.
-      operationId: listHotTags
-      parameters:
-      - description: "Info type: prompt | agent | plugin | character"
-        explode: false
-        in: path
-        name: infoType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Key word
-        explode: true
-        in: query
-        name: text
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/HotTagDTO'
-                type: array
-          description: OK
-      summary: Hot Tags
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/{infoType}/{infoId}:
-    get:
-      description: Get all statistics of the corresponding resources.
-      operationId: getStatistics
-      parameters:
-      - description: "Info type: prompt | agent | plugin | character"
-        explode: false
-        in: path
-        name: infoType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Unique resource identifier
-        explode: false
-        in: path
-        name: infoId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InteractiveStatsDTO'
-          description: OK
-      summary: Get All Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/prompts/by/{statsType}/{pageSize}:
-    get:
-      description: "List prompts based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPromptsByStatistic
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Prompts by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/prompts/by/{statsType}/{pageSize}/{pageNum}:
-    get:
-      description: "List prompts based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPromptsByStatistic_1
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Prompts by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/prompts/by/{statsType}:
-    get:
-      description: "List prompts based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPromptsByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Prompts by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/plugins/by/{statsType}/{pageSize}/{pageNum}:
-    get:
-      description: "List plugins based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPluginsByStatistic
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Plugins by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/plugins/by/{statsType}/{pageSize}:
-    get:
-      description: "List plugins based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPluginsByStatistic_1
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Plugins by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/plugins/by/{statsType}:
-    get:
-      description: "List plugins based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPluginsByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Plugins by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/characters/by/{statsType}/{pageSize}:
-    get:
-      description: "List characters based on statistics, including interactive statistical\
-        \ data."
-      operationId: listCharactersByStatistic
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Characters by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/characters/by/{statsType}/{pageSize}/{pageNum}:
-    get:
-      description: "List characters based on statistics, including interactive statistical\
-        \ data."
-      operationId: listCharactersByStatistic_1
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Characters by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/characters/by/{statsType}:
-    get:
-      description: "List characters based on statistics, including interactive statistical\
-        \ data."
-      operationId: listCharactersByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Characters by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/agents/by/{statsType}:
-    get:
-      description: "List agents based on statistics, including interactive statistical\
-        \ data."
-      operationId: listAgentsByStatistic
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Agents by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/agents/by/{statsType}/{pageSize}:
-    get:
-      description: "List agents based on statistics, including interactive statistical\
-        \ data."
-      operationId: listAgentsByStatistic_1
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Agents by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/stats/agents/by/{statsType}/{pageSize}/{pageNum}:
-    get:
-      description: "List agents based on statistics, including interactive statistical\
-        \ data."
-      operationId: listAgentsByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Agents by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/score/{infoType}/{infoId}:
-    get:
-      description: Get the current user's score for the corresponding resource.
-      operationId: getScore
-      parameters:
-      - description: "Info type: prompt | agent | plugin | character"
-        explode: false
-        in: path
-        name: infoType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Unique resource identifier
-        explode: false
-        in: path
-        name: infoId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                format: int64
-                type: integer
-          description: OK
-      summary: Get Score for Resource
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
   /api/v1/rag/tasks/{characterId}:
     get:
       description: List the RAG tasks by characterId.
@@ -4667,6 +4117,713 @@ paths:
       - Rag
       x-accepts:
       - text/plain
+  /api/v1/public/tags/hot/{infoType}/{pageSize}:
+    get:
+      description: Get popular tags for a specified info type.
+      operationId: listHotTags
+      parameters:
+      - description: "Info type: prompt | agent | plugin | character"
+        explode: false
+        in: path
+        name: infoType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Key word
+        explode: true
+        in: query
+        name: text
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/HotTagDTO'
+                type: array
+          description: OK
+      summary: Hot Tags
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/{infoType}/{infoId}:
+    get:
+      description: Get all statistics of the corresponding resources.
+      operationId: getStatistics
+      parameters:
+      - description: "Info type: prompt | agent | plugin | character"
+        explode: false
+        in: path
+        name: infoType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique resource identifier
+        explode: false
+        in: path
+        name: infoId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InteractiveStatsDTO'
+          description: OK
+      summary: Get All Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/{infoType}/{infoId}/{statsType}:
+    get:
+      description: Get the statistics of the corresponding metrics of the corresponding
+        resources.
+      operationId: getStatistic
+      parameters:
+      - description: "Info type: prompt | agent | plugin | character"
+        explode: false
+        in: path
+        name: infoType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique resource identifier
+        explode: false
+        in: path
+        name: infoId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Get Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/prompts/by/{statsType}/{pageSize}:
+    get:
+      description: "List prompts based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPromptsByStatistic
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Prompts by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List prompts based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPromptsByStatistic_1
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Current page number
+        explode: false
+        in: path
+        name: pageNum
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Prompts by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/prompts/by/{statsType}:
+    get:
+      description: "List prompts based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPromptsByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Prompts by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/plugins/by/{statsType}/{pageSize}:
+    get:
+      description: "List plugins based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPluginsByStatistic
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Plugins by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List plugins based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPluginsByStatistic_1
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Current page number
+        explode: false
+        in: path
+        name: pageNum
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Plugins by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/plugins/by/{statsType}:
+    get:
+      description: "List plugins based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPluginsByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Plugins by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/characters/by/{statsType}:
+    get:
+      description: "List characters based on statistics, including interactive statistical\
+        \ data."
+      operationId: listCharactersByStatistic
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Characters by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List characters based on statistics, including interactive statistical\
+        \ data."
+      operationId: listCharactersByStatistic_1
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Current page number
+        explode: false
+        in: path
+        name: pageNum
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Characters by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/characters/by/{statsType}/{pageSize}:
+    get:
+      description: "List characters based on statistics, including interactive statistical\
+        \ data."
+      operationId: listCharactersByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Characters by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/agents/by/{statsType}/{pageSize}:
+    get:
+      description: "List agents based on statistics, including interactive statistical\
+        \ data."
+      operationId: listAgentsByStatistic
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Agents by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List agents based on statistics, including interactive statistical\
+        \ data."
+      operationId: listAgentsByStatistic_1
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Current page number
+        explode: false
+        in: path
+        name: pageNum
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Agents by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/stats/agents/by/{statsType}:
+    get:
+      description: "List agents based on statistics, including interactive statistical\
+        \ data."
+      operationId: listAgentsByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AgentSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Agents by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v1/public/score/{infoType}/{infoId}:
+    get:
+      description: Get the current user's score for the corresponding resource.
+      operationId: getScore
+      parameters:
+      - description: "Info type: prompt | agent | plugin | character"
+        explode: false
+        in: path
+        name: infoType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique resource identifier
+        explode: false
+        in: path
+        name: infoId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Get Score for Resource
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
   /api/v1/prompt/summary/{promptId}:
     get:
       description: Get prompt summary information.
@@ -7040,6 +7197,436 @@ components:
         address:
           type: string
       type: object
+    PromptQuery.Where:
+      description: Query condition
+      example:
+        aiModels:
+        - aiModels
+        - aiModels
+        tagsOp: tagsOp
+        visibility: visibility
+        name: name
+        aiModelsOp: aiModelsOp
+        text: text
+        type: type
+        lang: lang
+        username: username
+        tags:
+        - tags
+        - tags
+      properties:
+        visibility:
+          description: "Visibility: public, public_org (search this organization),\
+            \ private (default)"
+          type: string
+        username:
+          description: "Effective when searching public, public_org prompts, if not\
+            \ specified, search all users"
+          type: string
+        tags:
+          description: Tags
+          items:
+            description: Tags
+            type: string
+          type: array
+        tagsOp:
+          description: "Relationship between tags: and | or (default)"
+          type: string
+        aiModels:
+          description: Model set
+          items:
+            description: Model set
+            type: string
+          type: array
+        aiModelsOp:
+          description: "Relationship between model sets: and | or (default)"
+          type: string
+        name:
+          description: "Name, left match"
+          type: string
+        type:
+          description: "Type, exact match: string (default) | chat"
+          type: string
+        lang:
+          description: "Language, exact match"
+          type: string
+        text:
+          description: "Name, description, template, example, fuzzy match, any one\
+            \ match is sufficient; public scope + general search for all users does\
+            \ not guarantee real-time."
+          type: string
+      type: object
+    PromptQueryDTO:
+      description: Prompt template query request
+      example:
+        orderBy:
+        - orderBy
+        - orderBy
+        pageSize: 6
+        where:
+          aiModels:
+          - aiModels
+          - aiModels
+          tagsOp: tagsOp
+          visibility: visibility
+          name: name
+          aiModelsOp: aiModelsOp
+          text: text
+          type: type
+          lang: lang
+          username: username
+          tags:
+          - tags
+          - tags
+        pageNum: 0
+      properties:
+        where:
+          $ref: '#/components/schemas/PromptQuery.Where'
+        orderBy:
+          description: |
+            Sorting condition, supported sorting fields are:
+            - version
+            - modifyTime
+            - createTime
+            - (interactive statistical fields)
+
+            Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+          items:
+            description: |
+              Sorting condition, supported sorting fields are:
+              - version
+              - modifyTime
+              - createTime
+              - (interactive statistical fields)
+
+              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+            type: string
+          type: array
+        pageNum:
+          description: "Page number, default is 0"
+          format: int64
+          type: integer
+        pageSize:
+          description: "Number of items per page, 1～50, default is 10"
+          format: int64
+          type: integer
+      type: object
+    AiModelInfoDTO:
+      description: Model information
+      example:
+        modelId: modelId
+        provider: provider
+        requestId: requestId
+        name: name
+        description: description
+        type: type
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        modelId:
+          description: "Model identifier: [provider]name"
+          type: string
+        name:
+          description: Model name
+          type: string
+        description:
+          description: Model description
+          type: string
+        provider:
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
+            \ | in_process | dash_scope | unknown"
+          type: string
+        type:
+          description: "Model type: text2text | text2chat | text2image | embedding\
+            \ | moderation"
+          type: string
+      type: object
+    PromptSummaryDTO:
+      description: Prompt summary content
+      example:
+        parentUid: parentUid
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        aiModels:
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        - modelId: modelId
+          provider: provider
+          requestId: requestId
+          name: name
+          description: description
+          type: type
+        visibility: visibility
+        promptUid: promptUid
+        format: format
+        description: description
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        type: type
+        version: 6
+        tags:
+        - tags
+        - tags
+        requestId: requestId
+        promptId: 0
+        name: name
+        lang: lang
+        username: username
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        promptId:
+          description: "Prompt identifier, will change after publish"
+          format: int64
+          type: integer
+        promptUid:
+          description: Prompt immutable identifier
+          type: string
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        parentUid:
+          description: Referenced prompt
+          type: string
+        visibility:
+          description: "Visibility: private, public, public_org, hidden"
+          type: string
+        version:
+          description: Version
+          format: int32
+          type: integer
+        name:
+          description: Prompt name
+          type: string
+        type:
+          description: "Prompt type: string | chat"
+          type: string
+        description:
+          description: "Prompt description (50 characters, the excess part is represented\
+            \ by ellipsis)"
+          type: string
+        format:
+          description: "Prompt format: mustache (default) | f_string"
+          type: string
+        lang:
+          description: "Prompt language: en (default) | zh | ..."
+          type: string
+        username:
+          description: Prompt owner
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+        aiModels:
+          description: Supported model set
+          items:
+            $ref: '#/components/schemas/AiModelInfoDTO'
+          type: array
+      type: object
+    CharacterQuery.Where:
+      description: Query condition
+      example:
+        highPriority: true
+        tagsOp: tagsOp
+        visibility: visibility
+        name: name
+        text: text
+        lang: lang
+        username: username
+        tags:
+        - tags
+        - tags
+      properties:
+        visibility:
+          description: "Visibility: public, public_org (search this organization),\
+            \ private (default)"
+          type: string
+        username:
+          description: "Effective when searching public, public_org characters, if\
+            \ not specified, search all users"
+          type: string
+        tags:
+          description: Tags
+          items:
+            description: Tags
+            type: string
+          type: array
+        tagsOp:
+          description: "Relationship between tags: and | or (default)"
+          type: string
+        name:
+          description: "Name, left match"
+          type: string
+        lang:
+          description: "Language, exact match"
+          type: string
+        text:
+          description: "Name, description, profile, chat style, fuzzy match, any one\
+            \ match is sufficient; public scope + general search for all users does\
+            \ not guarantee real-time"
+          type: string
+        highPriority:
+          description: "Character priority, high-priority means recommended ones,\
+            \ null for all"
+          type: boolean
+      type: object
+    CharacterQueryDTO:
+      description: Character query request
+      example:
+        orderBy:
+        - orderBy
+        - orderBy
+        pageSize: 6
+        where:
+          highPriority: true
+          tagsOp: tagsOp
+          visibility: visibility
+          name: name
+          text: text
+          lang: lang
+          username: username
+          tags:
+          - tags
+          - tags
+        pageNum: 0
+      properties:
+        where:
+          $ref: '#/components/schemas/CharacterQuery.Where'
+        orderBy:
+          description: |
+            Sorting condition, supported sorting fields are:
+            - version
+            - modifyTime
+            - createTime
+
+            Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+          items:
+            description: |
+              Sorting condition, supported sorting fields are:
+              - version
+              - modifyTime
+              - createTime
+
+              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
+            type: string
+          type: array
+        pageNum:
+          description: "Page number, default is 0"
+          format: int64
+          type: integer
+        pageSize:
+          description: "Number of items per page, 1～50, default is 10"
+          format: int64
+          type: integer
+      type: object
+    CharacterSummaryDTO:
+      description: Character summary content
+      example:
+        parentUid: parentUid
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        visibility: visibility
+        gender: gender
+        defaultScene: defaultScene
+        greeting: greeting
+        description: description
+        avatar: avatar
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        priority: 1
+        version: 6
+        picture: picture
+        tags:
+        - tags
+        - tags
+        requestId: requestId
+        name: name
+        nickname: nickname
+        lang: lang
+        characterId: 0
+        characterUid: characterUid
+        username: username
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        characterId:
+          description: "Character identifier, will change after publish"
+          format: int64
+          type: integer
+        characterUid:
+          description: Character immutable identifier
+          type: string
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        parentUid:
+          description: Referenced character
+          type: string
+        visibility:
+          description: "Visibility: private, public, public_org, hidden"
+          type: string
+        version:
+          description: Version
+          format: int32
+          type: integer
+        name:
+          description: Character name
+          type: string
+        description:
+          description: Character description
+          type: string
+        nickname:
+          description: Character nickname
+          type: string
+        avatar:
+          description: Character avatar url
+          type: string
+        picture:
+          description: Character picture url
+          type: string
+        gender:
+          description: "Character gender: male | female | other"
+          type: string
+        lang:
+          description: "Character language: en (default) | zh | ..."
+          type: string
+        greeting:
+          description: Character greeting
+          type: string
+        defaultScene:
+          description: "Default scene, which will be set as the default conversation\
+            \ background information when creating a new chat"
+          type: string
+        priority:
+          description: Character priority
+          format: int32
+          type: integer
+        username:
+          description: Character owner
+          type: string
+        tags:
+          description: Tag set
+          items:
+            description: Tag set
+            type: string
+          type: array
+      type: object
     PromptCreateDTO:
       description: Request data for creating new prompt information
       example:
@@ -7480,244 +8067,6 @@ components:
         timeout:
           format: int64
           type: integer
-      type: object
-    PromptQuery.Where:
-      description: Query condition
-      example:
-        aiModels:
-        - aiModels
-        - aiModels
-        tagsOp: tagsOp
-        visibility: visibility
-        name: name
-        aiModelsOp: aiModelsOp
-        text: text
-        type: type
-        lang: lang
-        username: username
-        tags:
-        - tags
-        - tags
-      properties:
-        visibility:
-          description: "Visibility: public, public_org (search this organization),\
-            \ private (default)"
-          type: string
-        username:
-          description: "Effective when searching public, public_org prompts, if not\
-            \ specified, search all users"
-          type: string
-        tags:
-          description: Tags
-          items:
-            description: Tags
-            type: string
-          type: array
-        tagsOp:
-          description: "Relationship between tags: and | or (default)"
-          type: string
-        aiModels:
-          description: Model set
-          items:
-            description: Model set
-            type: string
-          type: array
-        aiModelsOp:
-          description: "Relationship between model sets: and | or (default)"
-          type: string
-        name:
-          description: "Name, left match"
-          type: string
-        type:
-          description: "Type, exact match: string (default) | chat"
-          type: string
-        lang:
-          description: "Language, exact match"
-          type: string
-        text:
-          description: "Name, description, template, example, fuzzy match, any one\
-            \ match is sufficient; public scope + general search for all users does\
-            \ not guarantee real-time."
-          type: string
-      type: object
-    PromptQueryDTO:
-      description: Prompt template query request
-      example:
-        orderBy:
-        - orderBy
-        - orderBy
-        pageSize: 6
-        where:
-          aiModels:
-          - aiModels
-          - aiModels
-          tagsOp: tagsOp
-          visibility: visibility
-          name: name
-          aiModelsOp: aiModelsOp
-          text: text
-          type: type
-          lang: lang
-          username: username
-          tags:
-          - tags
-          - tags
-        pageNum: 0
-      properties:
-        where:
-          $ref: '#/components/schemas/PromptQuery.Where'
-        orderBy:
-          description: |
-            Sorting condition, supported sorting fields are:
-            - version
-            - modifyTime
-            - createTime
-            - (interactive statistical fields)
-
-            Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-          items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-              - (interactive statistical fields)
-
-              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-            type: string
-          type: array
-        pageNum:
-          description: "Page number, default is 0"
-          format: int64
-          type: integer
-        pageSize:
-          description: "Number of items per page, 1～50, default is 10"
-          format: int64
-          type: integer
-      type: object
-    AiModelInfoDTO:
-      description: Model information
-      example:
-        modelId: modelId
-        provider: provider
-        requestId: requestId
-        name: name
-        description: description
-        type: type
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        modelId:
-          description: "Model identifier: [provider]name"
-          type: string
-        name:
-          description: Model name
-          type: string
-        description:
-          description: Model description
-          type: string
-        provider:
-          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
-            \ | in_process | dash_scope | unknown"
-          type: string
-        type:
-          description: "Model type: text2text | text2chat | text2image | embedding\
-            \ | moderation"
-          type: string
-      type: object
-    PromptSummaryDTO:
-      description: Prompt summary content
-      example:
-        parentUid: parentUid
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        aiModels:
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        - modelId: modelId
-          provider: provider
-          requestId: requestId
-          name: name
-          description: description
-          type: type
-        visibility: visibility
-        promptUid: promptUid
-        format: format
-        description: description
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        type: type
-        version: 6
-        tags:
-        - tags
-        - tags
-        requestId: requestId
-        promptId: 0
-        name: name
-        lang: lang
-        username: username
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        promptId:
-          description: "Prompt identifier, will change after publish"
-          format: int64
-          type: integer
-        promptUid:
-          description: Prompt immutable identifier
-          type: string
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
-        gmtModified:
-          description: Modification time
-          format: date-time
-          type: string
-        parentUid:
-          description: Referenced prompt
-          type: string
-        visibility:
-          description: "Visibility: private, public, public_org, hidden"
-          type: string
-        version:
-          description: Version
-          format: int32
-          type: integer
-        name:
-          description: Prompt name
-          type: string
-        type:
-          description: "Prompt type: string | chat"
-          type: string
-        description:
-          description: "Prompt description (50 characters, the excess part is represented\
-            \ by ellipsis)"
-          type: string
-        format:
-          description: "Prompt format: mustache (default) | f_string"
-          type: string
-        lang:
-          description: "Prompt language: en (default) | zh | ..."
-          type: string
-        username:
-          description: Prompt owner
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-        aiModels:
-          description: Supported model set
-          items:
-            $ref: '#/components/schemas/AiModelInfoDTO'
-          type: array
       type: object
     PromptDetailsDTO:
       description: Prompt detailed content
@@ -8392,198 +8741,6 @@ components:
         stats:
           $ref: '#/components/schemas/InteractiveStatsDTO'
       type: object
-    CharacterQuery.Where:
-      description: Query condition
-      example:
-        highPriority: true
-        tagsOp: tagsOp
-        visibility: visibility
-        name: name
-        text: text
-        lang: lang
-        username: username
-        tags:
-        - tags
-        - tags
-      properties:
-        visibility:
-          description: "Visibility: public, public_org (search this organization),\
-            \ private (default)"
-          type: string
-        username:
-          description: "Effective when searching public, public_org characters, if\
-            \ not specified, search all users"
-          type: string
-        tags:
-          description: Tags
-          items:
-            description: Tags
-            type: string
-          type: array
-        tagsOp:
-          description: "Relationship between tags: and | or (default)"
-          type: string
-        name:
-          description: "Name, left match"
-          type: string
-        lang:
-          description: "Language, exact match"
-          type: string
-        text:
-          description: "Name, description, profile, chat style, fuzzy match, any one\
-            \ match is sufficient; public scope + general search for all users does\
-            \ not guarantee real-time"
-          type: string
-        highPriority:
-          description: "Character priority, high-priority means recommended ones,\
-            \ null for all"
-          type: boolean
-      type: object
-    CharacterQueryDTO:
-      description: Character query request
-      example:
-        orderBy:
-        - orderBy
-        - orderBy
-        pageSize: 6
-        where:
-          highPriority: true
-          tagsOp: tagsOp
-          visibility: visibility
-          name: name
-          text: text
-          lang: lang
-          username: username
-          tags:
-          - tags
-          - tags
-        pageNum: 0
-      properties:
-        where:
-          $ref: '#/components/schemas/CharacterQuery.Where'
-        orderBy:
-          description: |
-            Sorting condition, supported sorting fields are:
-            - version
-            - modifyTime
-            - createTime
-
-            Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-          items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-
-              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
-            type: string
-          type: array
-        pageNum:
-          description: "Page number, default is 0"
-          format: int64
-          type: integer
-        pageSize:
-          description: "Number of items per page, 1～50, default is 10"
-          format: int64
-          type: integer
-      type: object
-    CharacterSummaryDTO:
-      description: Character summary content
-      example:
-        parentUid: parentUid
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        visibility: visibility
-        gender: gender
-        defaultScene: defaultScene
-        greeting: greeting
-        description: description
-        avatar: avatar
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        priority: 5
-        version: 1
-        picture: picture
-        tags:
-        - tags
-        - tags
-        requestId: requestId
-        name: name
-        nickname: nickname
-        lang: lang
-        characterId: 6
-        characterUid: characterUid
-        username: username
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        characterId:
-          description: "Character identifier, will change after publish"
-          format: int64
-          type: integer
-        characterUid:
-          description: Character immutable identifier
-          type: string
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
-        gmtModified:
-          description: Modification time
-          format: date-time
-          type: string
-        parentUid:
-          description: Referenced character
-          type: string
-        visibility:
-          description: "Visibility: private, public, public_org, hidden"
-          type: string
-        version:
-          description: Version
-          format: int32
-          type: integer
-        name:
-          description: Character name
-          type: string
-        description:
-          description: Character description
-          type: string
-        nickname:
-          description: Character nickname
-          type: string
-        avatar:
-          description: Character avatar url
-          type: string
-        picture:
-          description: Character picture url
-          type: string
-        gender:
-          description: "Character gender: male | female | other"
-          type: string
-        lang:
-          description: "Character language: en (default) | zh | ..."
-          type: string
-        greeting:
-          description: Character greeting
-          type: string
-        defaultScene:
-          description: "Default scene, which will be set as the default conversation\
-            \ background information when creating a new chat"
-          type: string
-        priority:
-          description: Character priority
-          format: int32
-          type: integer
-        username:
-          description: Character owner
-          type: string
-        tags:
-          description: Tag set
-          items:
-            description: Tag set
-            type: string
-          type: array
-      type: object
     CharacterBackendDetailsDTO:
       description: Character backend detailed information
       example:
@@ -9228,6 +9385,71 @@ components:
           description: Draft content
           type: string
       type: object
+    RagTaskDetailsDTO:
+      description: Prompt task detailed information
+      example:
+        ext: ext
+        maxOverlapSize: 1
+        gmtModified: 2000-01-23T04:56:07.000+00:00
+        maxSegmentSize: 6
+        source: source
+        gmtCreate: 2000-01-23T04:56:07.000+00:00
+        gmtStart: 2000-01-23T04:56:07.000+00:00
+        gmtEnd: 2000-01-23T04:56:07.000+00:00
+        sourceType: sourceType
+        requestId: requestId
+        id: 0
+        characterUid: characterUid
+        status: status
+      properties:
+        requestId:
+          description: Request identifier
+          type: string
+        id:
+          description: RAG task identifier
+          format: int64
+          type: integer
+        gmtCreate:
+          description: Creation time
+          format: date-time
+          type: string
+        gmtModified:
+          description: Modification time
+          format: date-time
+          type: string
+        gmtStart:
+          description: Task start execution time
+          format: date-time
+          type: string
+        gmtEnd:
+          description: Task end execution time
+          format: date-time
+          type: string
+        characterUid:
+          description: Character identifier
+          type: string
+        sourceType:
+          description: "Source type: file (default) | url"
+          type: string
+        source:
+          description: "Source information, url, or a key for file"
+          type: string
+        maxSegmentSize:
+          description: The maximum size of a segment in tokens.
+          format: int32
+          type: integer
+        maxOverlapSize:
+          description: The maximum size of the overlap between segments in tokens.
+          format: int32
+          type: integer
+        status:
+          description: "Task execution status: pending | running | succeeded | failed\
+            \ | canceled"
+          type: string
+        ext:
+          description: "Additional information, JSON format"
+          type: string
+      type: object
     HotTagDTO:
       description: Hot tag
       example:
@@ -9697,71 +9919,6 @@ components:
           format: int64
           type: integer
       type: object
-    RagTaskDetailsDTO:
-      description: Prompt task detailed information
-      example:
-        ext: ext
-        maxOverlapSize: 1
-        gmtModified: 2000-01-23T04:56:07.000+00:00
-        maxSegmentSize: 6
-        source: source
-        gmtCreate: 2000-01-23T04:56:07.000+00:00
-        gmtStart: 2000-01-23T04:56:07.000+00:00
-        gmtEnd: 2000-01-23T04:56:07.000+00:00
-        sourceType: sourceType
-        requestId: requestId
-        id: 0
-        characterUid: characterUid
-        status: status
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        id:
-          description: RAG task identifier
-          format: int64
-          type: integer
-        gmtCreate:
-          description: Creation time
-          format: date-time
-          type: string
-        gmtModified:
-          description: Modification time
-          format: date-time
-          type: string
-        gmtStart:
-          description: Task start execution time
-          format: date-time
-          type: string
-        gmtEnd:
-          description: Task end execution time
-          format: date-time
-          type: string
-        characterUid:
-          description: Character identifier
-          type: string
-        sourceType:
-          description: "Source type: file (default) | url"
-          type: string
-        source:
-          description: "Source information, url, or a key for file"
-          type: string
-        maxSegmentSize:
-          description: The maximum size of a segment in tokens.
-          format: int32
-          type: integer
-        maxOverlapSize:
-          description: The maximum size of the overlap between segments in tokens.
-          format: int32
-          type: integer
-        status:
-          description: "Task execution status: pending | running | succeeded | failed\
-            \ | canceled"
-          type: string
-        ext:
-          description: "Additional information, JSON format"
-          type: string
-      type: object
     PromptTaskDetailsDTO:
       description: Prompt task detailed information
       example:
@@ -9911,7 +10068,7 @@ components:
       description: Chat message record
       example:
         ext: ext
-        messageId: 5
+        messageId: 6
         message:
           role: role
           contents:
@@ -9958,8 +10115,8 @@ components:
           description: description
           avatar: avatar
           gmtCreate: 2000-01-23T04:56:07.000+00:00
-          priority: 5
-          version: 1
+          priority: 1
+          version: 6
           picture: picture
           tags:
           - tags
@@ -9968,7 +10125,7 @@ components:
           name: name
           nickname: nickname
           lang: lang
-          characterId: 6
+          characterId: 0
           characterUid: characterUid
           username: username
         provider: provider
@@ -9989,12 +10146,12 @@ components:
           quotaType: quotaType
           requestId: requestId
           quota: 0
-        proactiveChatWaitingTime: 2
+        proactiveChatWaitingTime: 1
         isDebugEnabled: true
         isCustomizedApiKeyEnabled: true
         latestMessageRecord:
           ext: ext
-          messageId: 5
+          messageId: 6
           message:
             role: role
             contents:
