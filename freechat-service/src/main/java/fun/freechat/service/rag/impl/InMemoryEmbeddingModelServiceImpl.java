@@ -65,11 +65,11 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
         defaultEmbeddingModel = new AllMiniLmL6V2QuantizedEmbeddingModel();
 
         enTokenizer = tokenizerFromResource(
-                "/bge-small-en-v1.5-tokenizer.json",
+                "/bge-small-en-v1.5-q-tokenizer.json",
                 BgeSmallEnV15QuantizedEmbeddingModel.class);
 
         zhTokenizer = tokenizerFromResource(
-                "/bge-small-zh-v1.5-tokenizer.json",
+                "/bge-small-zh-v1.5-q-tokenizer.json",
                 BgeSmallZhV15QuantizedEmbeddingModel.class);
 
         defaultTokenizer = tokenizerFromResource(
