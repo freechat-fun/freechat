@@ -29,11 +29,11 @@
     <meta name="_registrations" th:content="${registrations}" />
     <meta name="_location" th:content="${location}" />
     <meta name="_icp_code" th:content="${icpCode}" />
-
-    <script type="module" crossorigin th:src="${script}"></script>
 </head>
 <body>
-<div id="root"></div>
-
+    <div id="root">
+        <h1 style="display: none;">FreeChat helps you create your own soul mate through AI. It also serves as a prompt engineering platform. (狐狸猜通过 AI 帮您创建属于自己的心灵伴侣。它也能作为一个提示词工程平台。)</h1>
+    </div>
+    <script type="module" crossorigin th:src="${script}"></script>
 </body>
 </html>
