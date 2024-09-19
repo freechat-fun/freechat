@@ -133,7 +133,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
         .catch(handleError);
     }
 
-    aiServiceApi?.listAiModelInfo1()
+    aiServiceApi?.listAiModelInfo2()
       .then(setModelInfos)
       .catch(handleError);
   }, [handleError, id, promptApi, aiServiceApi]);

@@ -66,7 +66,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
   ];
 
   useEffect(() => {
-    aiServiceApi?.listAiModelInfo1()
+    aiServiceApi?.listAiModelInfo2()
       .then(setModels)
       .catch(handleError);
   }, [aiServiceApi, handleError]);
