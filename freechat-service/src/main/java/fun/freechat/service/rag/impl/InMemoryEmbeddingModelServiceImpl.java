@@ -16,9 +16,8 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
-
-import static java.util.Collections.singletonMap;
 
 @Service("enZhEmbeddingModelService")
 @SuppressWarnings("unused")
@@ -39,18 +38,23 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
         return "zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang);
     }
 
-    private Tokenizer tokenizerFromResource(String resourceName, Class<? extends EmbeddingModel> clazz) {
+    private Tokenizer tokenizerFromResource(String resourceName, EmbeddingModel model) {
+        Class<? extends EmbeddingModel> clazz = model.getClass();
+        Map<String, String> options = Map.of(
+                "padding", "false",
+                "modelMaxLength", String.valueOf(model.dimension()));
+
         try {
             URI uri = Objects.requireNonNull(clazz.getResource(resourceName)).toURI();
 
             if ("jar".equals(uri.getScheme())) {
                 try (FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
                     Path resourcePath = fileSystem.getPath(resourceName);
-                    new HuggingFaceTokenizer(resourcePath, singletonMap("padding", "false"));
+                    new HuggingFaceTokenizer(resourcePath, options);
                 }
             } else {
                 Path resourcePath = Path.of(uri);
-                new HuggingFaceTokenizer(resourcePath, singletonMap("padding", "false"));
+                new HuggingFaceTokenizer(resourcePath, options);
             }
         } catch (Exception e) {
             log.error("Failed to find resource {}", resourceName, e);
@@ -66,15 +70,15 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
 
         enTokenizer = tokenizerFromResource(
                 "/bge-small-en-v1.5-q-tokenizer.json",
-                BgeSmallEnV15QuantizedEmbeddingModel.class);
+                enEmbeddingModel);
 
         zhTokenizer = tokenizerFromResource(
                 "/bge-small-zh-v1.5-q-tokenizer.json",
-                BgeSmallZhV15QuantizedEmbeddingModel.class);
+                zhEmbeddingModel);
 
         defaultTokenizer = tokenizerFromResource(
                 "/all-minilm-l6-v2-q-tokenizer.json",
-                AllMiniLmL6V2QuantizedEmbeddingModel.class);
+                defaultEmbeddingModel);
     }
 
     @Override

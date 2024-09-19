@@ -9,11 +9,11 @@ Method | HTTP request | Description
 [**disable_ai_api_key**](AIServiceApi.md#disable_ai_api_key) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
 [**enable_ai_api_key**](AIServiceApi.md#enable_ai_api_key) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
 [**get_ai_api_key**](AIServiceApi.md#get_ai_api_key) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-[**get_ai_model_info**](AIServiceApi.md#get_ai_model_info) | **GET** /api/v1/ai/model/{modelId} | Get Model Information
+[**get_ai_model_info**](AIServiceApi.md#get_ai_model_info) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
 [**list_ai_api_keys**](AIServiceApi.md#list_ai_api_keys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-[**list_ai_model_info**](AIServiceApi.md#list_ai_model_info) | **GET** /api/v1/ai/models/{pageSize} | List Models
-[**list_ai_model_info1**](AIServiceApi.md#list_ai_model_info1) | **GET** /api/v1/ai/models | List Models
-[**list_ai_model_info2**](AIServiceApi.md#list_ai_model_info2) | **GET** /api/v1/ai/models/{pageSize}/{pageNum} | List Models
+[**list_ai_model_info**](AIServiceApi.md#list_ai_model_info) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
+[**list_ai_model_info1**](AIServiceApi.md#list_ai_model_info1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
+[**list_ai_model_info2**](AIServiceApi.md#list_ai_model_info2) | **GET** /api/v1/public/ai/models | List Models
 
 
 # **add_ai_api_key**
@@ -560,159 +560,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_ai_model_info**
-> List[AiModelInfoDTO] list_ai_model_info(page_size)
-
-List Models
-
-Return model information by page, return the pageNum page, up to pageSize model information.
-
-### Example
-
-* Bearer Authentication (bearerAuth):
-
-```python
-import freechat_sdk
-from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
-from freechat_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://127.0.0.1:8080
-# See configuration.py for a list of all supported configuration parameters.
-configuration = freechat_sdk.Configuration(
-    host = "http://127.0.0.1:8080"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization: bearerAuth
-configuration = freechat_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with freechat_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = freechat_sdk.AIServiceApi(api_client)
-    page_size = 56 # int | Maximum quantity
-
-    try:
-        # List Models
-        api_response = api_instance.list_ai_model_info(page_size)
-        print("The response of AIServiceApi->list_ai_model_info:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling AIServiceApi->list_ai_model_info: %s\n" % e)
-```
-
-
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **page_size** | **int**| Maximum quantity | 
-
-### Return type
-
-[**List[AiModelInfoDTO]**](AiModelInfoDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **list_ai_model_info1**
-> List[AiModelInfoDTO] list_ai_model_info1()
-
-List Models
-
-Return model information by page, return the pageNum page, up to pageSize model information.
-
-### Example
-
-* Bearer Authentication (bearerAuth):
-
-```python
-import freechat_sdk
-from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
-from freechat_sdk.rest import ApiException
-from pprint import pprint
-
-# Defining the host is optional and defaults to http://127.0.0.1:8080
-# See configuration.py for a list of all supported configuration parameters.
-configuration = freechat_sdk.Configuration(
-    host = "http://127.0.0.1:8080"
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure Bearer authorization: bearerAuth
-configuration = freechat_sdk.Configuration(
-    access_token = os.environ["BEARER_TOKEN"]
-)
-
-# Enter a context with an instance of the API client
-with freechat_sdk.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = freechat_sdk.AIServiceApi(api_client)
-
-    try:
-        # List Models
-        api_response = api_instance.list_ai_model_info1()
-        print("The response of AIServiceApi->list_ai_model_info1:\n")
-        pprint(api_response)
-    except Exception as e:
-        print("Exception when calling AIServiceApi->list_ai_model_info1: %s\n" % e)
-```
-
-
-
-### Parameters
-
-This endpoint does not need any parameter.
-
-### Return type
-
-[**List[AiModelInfoDTO]**](AiModelInfoDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | OK |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **list_ai_model_info2**
-> List[AiModelInfoDTO] list_ai_model_info2(page_size, page_num)
+> List[AiModelInfoDTO] list_ai_model_info(page_size, page_num)
 
 List Models
 
@@ -753,11 +601,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
     try:
         # List Models
-        api_response = api_instance.list_ai_model_info2(page_size, page_num)
-        print("The response of AIServiceApi->list_ai_model_info2:\n")
+        api_response = api_instance.list_ai_model_info(page_size, page_num)
+        print("The response of AIServiceApi->list_ai_model_info:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AIServiceApi->list_ai_model_info2: %s\n" % e)
+        print("Exception when calling AIServiceApi->list_ai_model_info: %s\n" % e)
 ```
 
 
@@ -769,6 +617,158 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **page_size** | **int**| Maximum quantity | 
  **page_num** | **int**| Current page number | 
+
+### Return type
+
+[**List[AiModelInfoDTO]**](AiModelInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_ai_model_info1**
+> List[AiModelInfoDTO] list_ai_model_info1(page_size)
+
+List Models
+
+Return model information by page, return the pageNum page, up to pageSize model information.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.AIServiceApi(api_client)
+    page_size = 56 # int | Maximum quantity
+
+    try:
+        # List Models
+        api_response = api_instance.list_ai_model_info1(page_size)
+        print("The response of AIServiceApi->list_ai_model_info1:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AIServiceApi->list_ai_model_info1: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page_size** | **int**| Maximum quantity | 
+
+### Return type
+
+[**List[AiModelInfoDTO]**](AiModelInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_ai_model_info2**
+> List[AiModelInfoDTO] list_ai_model_info2()
+
+List Models
+
+Return model information by page, return the pageNum page, up to pageSize model information.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.models.ai_model_info_dto import AiModelInfoDTO
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.AIServiceApi(api_client)
+
+    try:
+        # List Models
+        api_response = api_instance.list_ai_model_info2()
+        print("The response of AIServiceApi->list_ai_model_info2:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling AIServiceApi->list_ai_model_info2: %s\n" % e)
+```
+
+
+
+### Parameters
+
+This endpoint does not need any parameter.
 
 ### Return type
 

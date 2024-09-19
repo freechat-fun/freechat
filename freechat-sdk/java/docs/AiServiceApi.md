@@ -9,11 +9,11 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**disableAiApiKey**](AiServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential |
 | [**enableAiApiKey**](AiServiceApi.md#enableAiApiKey) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential |
 | [**getAiApiKey**](AiServiceApi.md#getAiApiKey) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider |
-| [**getAiModelInfo**](AiServiceApi.md#getAiModelInfo) | **GET** /api/v1/ai/model/{modelId} | Get Model Information |
+| [**getAiModelInfo**](AiServiceApi.md#getAiModelInfo) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information |
 | [**listAiApiKeys**](AiServiceApi.md#listAiApiKeys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider |
-| [**listAiModelInfo**](AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/ai/models/{pageSize} | List Models |
-| [**listAiModelInfo1**](AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/ai/models | List Models |
-| [**listAiModelInfo2**](AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/ai/models/{pageSize}/{pageNum} | List Models |
+| [**listAiModelInfo**](AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models |
+| [**listAiModelInfo1**](AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models |
+| [**listAiModelInfo2**](AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/public/ai/models | List Models |
 
 
 <a id="addAiApiKey"></a>
@@ -487,137 +487,7 @@ public class Example {
 
 <a id="listAiModelInfo"></a>
 # **listAiModelInfo**
-> List&lt;AiModelInfoDTO&gt; listAiModelInfo(pageSize)
-
-List Models
-
-Return model information by page, return the pageNum page, up to pageSize model information.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.AiServiceApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    AiServiceApi apiInstance = new AiServiceApi(defaultClient);
-    Long pageSize = 56L; // Long | Maximum quantity
-    try {
-      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo(pageSize);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling AiServiceApi#listAiModelInfo");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **pageSize** | **Long**| Maximum quantity | |
-
-### Return type
-
-[**List&lt;AiModelInfoDTO&gt;**](AiModelInfoDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listAiModelInfo1"></a>
-# **listAiModelInfo1**
-> List&lt;AiModelInfoDTO&gt; listAiModelInfo1()
-
-List Models
-
-Return model information by page, return the pageNum page, up to pageSize model information.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.AiServiceApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    AiServiceApi apiInstance = new AiServiceApi(defaultClient);
-    try {
-      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo1();
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling AiServiceApi#listAiModelInfo1");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-This endpoint does not need any parameter.
-
-### Return type
-
-[**List&lt;AiModelInfoDTO&gt;**](AiModelInfoDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listAiModelInfo2"></a>
-# **listAiModelInfo2**
-> List&lt;AiModelInfoDTO&gt; listAiModelInfo2(pageSize, pageNum)
+> List&lt;AiModelInfoDTO&gt; listAiModelInfo(pageSize, pageNum)
 
 List Models
 
@@ -646,10 +516,10 @@ public class Example {
     Long pageSize = 56L; // Long | Maximum quantity
     Long pageNum = 56L; // Long | Current page number
     try {
-      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo2(pageSize, pageNum);
+      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo(pageSize, pageNum);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling AiServiceApi#listAiModelInfo2");
+      System.err.println("Exception when calling AiServiceApi#listAiModelInfo");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -665,6 +535,136 @@ public class Example {
 |------------- | ------------- | ------------- | -------------|
 | **pageSize** | **Long**| Maximum quantity | |
 | **pageNum** | **Long**| Current page number | |
+
+### Return type
+
+[**List&lt;AiModelInfoDTO&gt;**](AiModelInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listAiModelInfo1"></a>
+# **listAiModelInfo1**
+> List&lt;AiModelInfoDTO&gt; listAiModelInfo1(pageSize)
+
+List Models
+
+Return model information by page, return the pageNum page, up to pageSize model information.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AiServiceApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AiServiceApi apiInstance = new AiServiceApi(defaultClient);
+    Long pageSize = 56L; // Long | Maximum quantity
+    try {
+      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo1(pageSize);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AiServiceApi#listAiModelInfo1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **pageSize** | **Long**| Maximum quantity | |
+
+### Return type
+
+[**List&lt;AiModelInfoDTO&gt;**](AiModelInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listAiModelInfo2"></a>
+# **listAiModelInfo2**
+> List&lt;AiModelInfoDTO&gt; listAiModelInfo2()
+
+List Models
+
+Return model information by page, return the pageNum page, up to pageSize model information.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AiServiceApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AiServiceApi apiInstance = new AiServiceApi(defaultClient);
+    try {
+      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo2();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AiServiceApi#listAiModelInfo2");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 

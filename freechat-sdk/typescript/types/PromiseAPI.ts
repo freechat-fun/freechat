@@ -225,37 +225,10 @@ export class PromiseAIServiceApi {
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfoWithHttpInfo(pageSize: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfoWithHttpInfo(pageSize, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     */
-    public listAiModelInfo(pageSize: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo(pageSize, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     */
-    public listAiModelInfo1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfo1WithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     */
-    public listAiModelInfo1(_options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo1(_options);
+    public listAiModelInfoWithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        const result = this.api.listAiModelInfoWithHttpInfo(pageSize, pageNum, _options);
         return result.toPromise();
     }
 
@@ -265,8 +238,8 @@ export class PromiseAIServiceApi {
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
      */
-    public listAiModelInfo2WithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfo2WithHttpInfo(pageSize, pageNum, _options);
+    public listAiModelInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        const result = this.api.listAiModelInfo(pageSize, pageNum, _options);
         return result.toPromise();
     }
 
@@ -274,10 +247,37 @@ export class PromiseAIServiceApi {
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo2(pageSize, pageNum, _options);
+    public listAiModelInfo1WithHttpInfo(pageSize: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        const result = this.api.listAiModelInfo1WithHttpInfo(pageSize, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * List Models
+     * @param pageSize Maximum quantity
+     */
+    public listAiModelInfo1(pageSize: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        const result = this.api.listAiModelInfo1(pageSize, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * List Models
+     */
+    public listAiModelInfo2WithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        const result = this.api.listAiModelInfo2WithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * List Models
+     */
+    public listAiModelInfo2(_options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        const result = this.api.listAiModelInfo2(_options);
         return result.toPromise();
     }
 

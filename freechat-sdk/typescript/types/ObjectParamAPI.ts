@@ -141,24 +141,24 @@ export interface AIServiceApiListAiModelInfoRequest {
      * @memberof AIServiceApilistAiModelInfo
      */
     pageSize: number
-}
-
-export interface AIServiceApiListAiModelInfo1Request {
-}
-
-export interface AIServiceApiListAiModelInfo2Request {
-    /**
-     * Maximum quantity
-     * @type number
-     * @memberof AIServiceApilistAiModelInfo2
-     */
-    pageSize: number
     /**
      * Current page number
      * @type number
-     * @memberof AIServiceApilistAiModelInfo2
+     * @memberof AIServiceApilistAiModelInfo
      */
     pageNum: number
+}
+
+export interface AIServiceApiListAiModelInfo1Request {
+    /**
+     * Maximum quantity
+     * @type number
+     * @memberof AIServiceApilistAiModelInfo1
+     */
+    pageSize: number
+}
+
+export interface AIServiceApiListAiModelInfo2Request {
 }
 
 export class ObjectAIServiceApi {
@@ -300,7 +300,7 @@ export class ObjectAIServiceApi {
      * @param param the request object
      */
     public listAiModelInfoWithHttpInfo(param: AIServiceApiListAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfoWithHttpInfo(param.pageSize,  options).toPromise();
+        return this.api.listAiModelInfoWithHttpInfo(param.pageSize, param.pageNum,  options).toPromise();
     }
 
     /**
@@ -309,7 +309,7 @@ export class ObjectAIServiceApi {
      * @param param the request object
      */
     public listAiModelInfo(param: AIServiceApiListAiModelInfoRequest, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo(param.pageSize,  options).toPromise();
+        return this.api.listAiModelInfo(param.pageSize, param.pageNum,  options).toPromise();
     }
 
     /**
@@ -317,8 +317,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo1WithHttpInfo(param: AIServiceApiListAiModelInfo1Request = {}, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfo1WithHttpInfo( options).toPromise();
+    public listAiModelInfo1WithHttpInfo(param: AIServiceApiListAiModelInfo1Request, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        return this.api.listAiModelInfo1WithHttpInfo(param.pageSize,  options).toPromise();
     }
 
     /**
@@ -326,8 +326,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo1(param: AIServiceApiListAiModelInfo1Request = {}, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo1( options).toPromise();
+    public listAiModelInfo1(param: AIServiceApiListAiModelInfo1Request, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        return this.api.listAiModelInfo1(param.pageSize,  options).toPromise();
     }
 
     /**
@@ -335,8 +335,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo2WithHttpInfo(param: AIServiceApiListAiModelInfo2Request, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfo2WithHttpInfo(param.pageSize, param.pageNum,  options).toPromise();
+    public listAiModelInfo2WithHttpInfo(param: AIServiceApiListAiModelInfo2Request = {}, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        return this.api.listAiModelInfo2WithHttpInfo( options).toPromise();
     }
 
     /**
@@ -344,8 +344,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo2(param: AIServiceApiListAiModelInfo2Request, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo2(param.pageSize, param.pageNum,  options).toPromise();
+    public listAiModelInfo2(param: AIServiceApiListAiModelInfo2Request = {}, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        return this.api.listAiModelInfo2( options).toPromise();
     }
 
 }

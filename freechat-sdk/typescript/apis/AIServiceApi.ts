@@ -232,7 +232,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/model/{modelId}'
+        const localVarPath = '/api/v1/public/ai/model/{modelId}'
             .replace('{' + 'modelId' + '}', encodeURIComponent(String(modelId)));
 
         // Make Request Context
@@ -297,8 +297,9 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public async listAiModelInfo(pageSize: number, _options?: Configuration): Promise<RequestContext> {
+    public async listAiModelInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'pageSize' is not null or undefined
@@ -307,8 +308,53 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
         }
 
 
+        // verify required parameter 'pageNum' is not null or undefined
+        if (pageNum === null || pageNum === undefined) {
+            throw new RequiredError("AIServiceApi", "listAiModelInfo", "pageNum");
+        }
+
+
         // Path Params
-        const localVarPath = '/api/v1/ai/models/{pageSize}'
+        const localVarPath = '/api/v1/public/ai/models/{pageSize}/{pageNum}'
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
+            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * List Models
+     * @param pageSize Maximum quantity
+     */
+    public async listAiModelInfo1(pageSize: number, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'pageSize' is not null or undefined
+        if (pageSize === null || pageSize === undefined) {
+            throw new RequiredError("AIServiceApi", "listAiModelInfo1", "pageSize");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/public/ai/models/{pageSize}'
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
@@ -335,57 +381,11 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
      */
-    public async listAiModelInfo1(_options?: Configuration): Promise<RequestContext> {
+    public async listAiModelInfo2(_options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // Path Params
-        const localVarPath = '/api/v1/ai/models';
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     */
-    public async listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // verify required parameter 'pageSize' is not null or undefined
-        if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("AIServiceApi", "listAiModelInfo2", "pageSize");
-        }
-
-
-        // verify required parameter 'pageNum' is not null or undefined
-        if (pageNum === null || pageNum === undefined) {
-            throw new RequiredError("AIServiceApi", "listAiModelInfo2", "pageNum");
-        }
-
-
-        // Path Params
-        const localVarPath = '/api/v1/ai/models/{pageSize}/{pageNum}'
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+        const localVarPath = '/api/v1/public/ai/models';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

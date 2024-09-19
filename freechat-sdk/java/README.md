@@ -410,11 +410,11 @@ Class | Method | HTTP request | Description
 *AiServiceApi* | [**disableAiApiKey**](docs/AiServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
 *AiServiceApi* | [**enableAiApiKey**](docs/AiServiceApi.md#enableAiApiKey) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
 *AiServiceApi* | [**getAiApiKey**](docs/AiServiceApi.md#getAiApiKey) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-*AiServiceApi* | [**getAiModelInfo**](docs/AiServiceApi.md#getAiModelInfo) | **GET** /api/v1/ai/model/{modelId} | Get Model Information
+*AiServiceApi* | [**getAiModelInfo**](docs/AiServiceApi.md#getAiModelInfo) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
 *AiServiceApi* | [**listAiApiKeys**](docs/AiServiceApi.md#listAiApiKeys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-*AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/ai/models/{pageSize} | List Models
-*AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/ai/models | List Models
-*AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/ai/models/{pageSize}/{pageNum} | List Models
+*AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
+*AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
+*AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/public/ai/models | List Models
 *AppConfigForAdminApi* | [**getAppConfigs**](docs/AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v1/admin/app/configs | Get Configurations
 *AppMetaForAdminApi* | [**expose**](docs/AppMetaForAdminApi.md#expose) | **GET** /api/v1/admin/app/expose | Expose DTO definitions
 *AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v1/admin/app/meta | Get Application Information

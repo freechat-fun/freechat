@@ -2,6 +2,8 @@ package fun.freechat.api;
 
 import fun.freechat.api.dto.CharacterQueryDTO;
 import fun.freechat.api.dto.CharacterSummaryDTO;
+import fun.freechat.api.util.AccountUtils;
+import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.Visibility;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +32,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class CharacterPublicApi {
     @Autowired
-    private CharacterApi characterApi;
+    private CharacterService characterService;
 
     @Operation(
             operationId = "searchPublicCharacterSummary",
@@ -82,7 +84,10 @@ public class CharacterPublicApi {
         }
         // ensure 'visibility' is non-blank
         query.getWhere().setVisibility(Visibility.PUBLIC.text());
-        return characterApi.search(query);
+        return characterService.search(query.toCharacterInfoQuery(), AccountUtils.currentUserOrNull())
+                .stream()
+                .map(CharacterSummaryDTO::from)
+                .toList();
     }
 
     @Operation(
@@ -102,8 +107,11 @@ public class CharacterPublicApi {
         if (Visibility.of(query.getWhere().getVisibility()) != Visibility.PUBLIC) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The visibility should be 'public'");
         }
-        // ensure 'visibility' is non-blank
-        query.getWhere().setVisibility(Visibility.PUBLIC.text());
-        return characterApi.count(query);
+        CharacterService.Query infoQuery = query.toCharacterInfoQuery();
+        infoQuery.setOffset(null);
+        infoQuery.setLimit(null);
+        infoQuery.setOrderBy(null);
+        infoQuery.getWhere().setVisibility(Visibility.PUBLIC.text());
+        return characterService.count(infoQuery, AccountUtils.currentUserOrNull());
     }
 }

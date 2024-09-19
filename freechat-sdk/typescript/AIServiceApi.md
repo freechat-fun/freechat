@@ -9,11 +9,11 @@ Method | HTTP request | Description
 [**disableAiApiKey**](AIServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
 [**enableAiApiKey**](AIServiceApi.md#enableAiApiKey) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
 [**getAiApiKey**](AIServiceApi.md#getAiApiKey) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-[**getAiModelInfo**](AIServiceApi.md#getAiModelInfo) | **GET** /api/v1/ai/model/{modelId} | Get Model Information
+[**getAiModelInfo**](AIServiceApi.md#getAiModelInfo) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
 [**listAiApiKeys**](AIServiceApi.md#listAiApiKeys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-[**listAiModelInfo**](AIServiceApi.md#listAiModelInfo) | **GET** /api/v1/ai/models/{pageSize} | List Models
-[**listAiModelInfo1**](AIServiceApi.md#listAiModelInfo1) | **GET** /api/v1/ai/models | List Models
-[**listAiModelInfo2**](AIServiceApi.md#listAiModelInfo2) | **GET** /api/v1/ai/models/{pageSize}/{pageNum} | List Models
+[**listAiModelInfo**](AIServiceApi.md#listAiModelInfo) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
+[**listAiModelInfo1**](AIServiceApi.md#listAiModelInfo1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
+[**listAiModelInfo2**](AIServiceApi.md#listAiModelInfo2) | **GET** /api/v1/public/ai/models | List Models
 
 
 # **addAiApiKey**
@@ -417,6 +417,8 @@ const apiInstance = new .AIServiceApi(configuration);
 let body:.AIServiceApiListAiModelInfoRequest = {
   // number | Maximum quantity
   pageSize: 1,
+  // number | Current page number
+  pageNum: 1,
 };
 
 apiInstance.listAiModelInfo(body).then((data:any) => {
@@ -430,6 +432,7 @@ apiInstance.listAiModelInfo(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **pageNum** | [**number**] | Current page number | defaults to undefined
 
 
 ### Return type
@@ -468,7 +471,10 @@ import * as fs from 'fs';
 const configuration = .createConfiguration();
 const apiInstance = new .AIServiceApi(configuration);
 
-let body:any = {};
+let body:.AIServiceApiListAiModelInfo1Request = {
+  // number | Maximum quantity
+  pageSize: 1,
+};
 
 apiInstance.listAiModelInfo1(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
@@ -477,7 +483,10 @@ apiInstance.listAiModelInfo1(body).then((data:any) => {
 
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
 
 
 ### Return type
@@ -516,12 +525,7 @@ import * as fs from 'fs';
 const configuration = .createConfiguration();
 const apiInstance = new .AIServiceApi(configuration);
 
-let body:.AIServiceApiListAiModelInfo2Request = {
-  // number | Maximum quantity
-  pageSize: 1,
-  // number | Current page number
-  pageNum: 1,
-};
+let body:any = {};
 
 apiInstance.listAiModelInfo2(body).then((data:any) => {
   console.log('API called successfully. Returned data: ' + data);
@@ -530,11 +534,7 @@ apiInstance.listAiModelInfo2(body).then((data:any) => {
 
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
- **pageNum** | [**number**] | Current page number | defaults to undefined
+This endpoint does not need any parameter.
 
 
 ### Return type

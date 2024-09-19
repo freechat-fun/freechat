@@ -141,7 +141,8 @@ public class AiServiceApiTest {
     @Test
     public void listAiModelInfoTest() throws ApiException {
         Long pageSize = null;
-        List<AiModelInfoDTO> response = api.listAiModelInfo(pageSize);
+        Long pageNum = null;
+        List<AiModelInfoDTO> response = api.listAiModelInfo(pageSize, pageNum);
         // TODO: test validations
     }
 
@@ -154,7 +155,8 @@ public class AiServiceApiTest {
      */
     @Test
     public void listAiModelInfo1Test() throws ApiException {
-        List<AiModelInfoDTO> response = api.listAiModelInfo1();
+        Long pageSize = null;
+        List<AiModelInfoDTO> response = api.listAiModelInfo1(pageSize);
         // TODO: test validations
     }
 
@@ -167,9 +169,7 @@ public class AiServiceApiTest {
      */
     @Test
     public void listAiModelInfo2Test() throws ApiException {
-        Long pageSize = null;
-        Long pageNum = null;
-        List<AiModelInfoDTO> response = api.listAiModelInfo2(pageSize, pageNum);
+        List<AiModelInfoDTO> response = api.listAiModelInfo2();
         // TODO: test validations
     }
 

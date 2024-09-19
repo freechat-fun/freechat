@@ -343,11 +343,11 @@ Class | Method | HTTP request | Description
 *AIServiceApi* | [**disable_ai_api_key**](docs/AIServiceApi.md#disable_ai_api_key) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
 *AIServiceApi* | [**enable_ai_api_key**](docs/AIServiceApi.md#enable_ai_api_key) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
 *AIServiceApi* | [**get_ai_api_key**](docs/AIServiceApi.md#get_ai_api_key) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-*AIServiceApi* | [**get_ai_model_info**](docs/AIServiceApi.md#get_ai_model_info) | **GET** /api/v1/ai/model/{modelId} | Get Model Information
+*AIServiceApi* | [**get_ai_model_info**](docs/AIServiceApi.md#get_ai_model_info) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
 *AIServiceApi* | [**list_ai_api_keys**](docs/AIServiceApi.md#list_ai_api_keys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-*AIServiceApi* | [**list_ai_model_info**](docs/AIServiceApi.md#list_ai_model_info) | **GET** /api/v1/ai/models/{pageSize} | List Models
-*AIServiceApi* | [**list_ai_model_info1**](docs/AIServiceApi.md#list_ai_model_info1) | **GET** /api/v1/ai/models | List Models
-*AIServiceApi* | [**list_ai_model_info2**](docs/AIServiceApi.md#list_ai_model_info2) | **GET** /api/v1/ai/models/{pageSize}/{pageNum} | List Models
+*AIServiceApi* | [**list_ai_model_info**](docs/AIServiceApi.md#list_ai_model_info) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
+*AIServiceApi* | [**list_ai_model_info1**](docs/AIServiceApi.md#list_ai_model_info1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
+*AIServiceApi* | [**list_ai_model_info2**](docs/AIServiceApi.md#list_ai_model_info2) | **GET** /api/v1/public/ai/models | List Models
 *AccountApi* | [**create_token**](docs/AccountApi.md#create_token) | **POST** /api/v1/account/token | Create API Token
 *AccountApi* | [**create_token1**](docs/AccountApi.md#create_token1) | **POST** /api/v1/account/token/{duration} | Create API Token
 *AccountApi* | [**delete_token**](docs/AccountApi.md#delete_token) | **DELETE** /api/v1/account/token/{token} | Delete API Token

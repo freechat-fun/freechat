@@ -20,7 +20,7 @@ export default function InfoSearchbar(props: {
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
 
   const getModels = useCallback(() => {
-    aiServiceApi?.listAiModelInfo1()
+    aiServiceApi?.listAiModelInfo2()
       .then(setModels)
       .catch(handleError);
   }, [aiServiceApi, handleError]);

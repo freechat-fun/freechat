@@ -718,7 +718,7 @@ public class AiServiceApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/ai/model/{modelId}"
+        String localVarPath = "/api/v1/public/ai/model/{modelId}"
             .replace("{" + "modelId" + "}", localVarApiClient.escapeString(modelId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -938,242 +938,6 @@ public class AiServiceApi {
     /**
      * Build call for listAiModelInfo
      * @param pageSize Maximum quantity (required)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listAiModelInfoCall(Long pageSize, final ApiCallback _callback) throws ApiException {
-        String basePath = null;
-        // Operation Servers
-        String[] localBasePaths = new String[] {  };
-
-        // Determine Base Path to Use
-        if (localCustomBaseUrl != null){
-            basePath = localCustomBaseUrl;
-        } else if ( localBasePaths.length > 0 ) {
-            basePath = localBasePaths[localHostIndex];
-        } else {
-            basePath = null;
-        }
-
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/api/v1/ai/models/{pageSize}"
-            .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        final String[] localVarAccepts = {
-            "application/json"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        if (localVarContentType != null) {
-            localVarHeaderParams.put("Content-Type", localVarContentType);
-        }
-
-        String[] localVarAuthNames = new String[] { "bearerAuth" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call listAiModelInfoValidateBeforeCall(Long pageSize, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'pageSize' is set
-        if (pageSize == null) {
-            throw new ApiException("Missing the required parameter 'pageSize' when calling listAiModelInfo(Async)");
-        }
-
-        return listAiModelInfoCall(pageSize, _callback);
-
-    }
-
-    /**
-     * List Models
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * @param pageSize Maximum quantity (required)
-     * @return List&lt;AiModelInfoDTO&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public List<AiModelInfoDTO> listAiModelInfo(Long pageSize) throws ApiException {
-        ApiResponse<List<AiModelInfoDTO>> localVarResp = listAiModelInfoWithHttpInfo(pageSize);
-        return localVarResp.getData();
-    }
-
-    /**
-     * List Models
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * @param pageSize Maximum quantity (required)
-     * @return ApiResponse&lt;List&lt;AiModelInfoDTO&gt;&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<List<AiModelInfoDTO>> listAiModelInfoWithHttpInfo(Long pageSize) throws ApiException {
-        okhttp3.Call localVarCall = listAiModelInfoValidateBeforeCall(pageSize, null);
-        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * List Models (asynchronously)
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * @param pageSize Maximum quantity (required)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listAiModelInfoAsync(Long pageSize, final ApiCallback<List<AiModelInfoDTO>> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = listAiModelInfoValidateBeforeCall(pageSize, _callback);
-        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for listAiModelInfo1
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listAiModelInfo1Call(final ApiCallback _callback) throws ApiException {
-        String basePath = null;
-        // Operation Servers
-        String[] localBasePaths = new String[] {  };
-
-        // Determine Base Path to Use
-        if (localCustomBaseUrl != null){
-            basePath = localCustomBaseUrl;
-        } else if ( localBasePaths.length > 0 ) {
-            basePath = localBasePaths[localHostIndex];
-        } else {
-            basePath = null;
-        }
-
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/api/v1/ai/models";
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        final String[] localVarAccepts = {
-            "application/json"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        if (localVarContentType != null) {
-            localVarHeaderParams.put("Content-Type", localVarContentType);
-        }
-
-        String[] localVarAuthNames = new String[] { "bearerAuth" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call listAiModelInfo1ValidateBeforeCall(final ApiCallback _callback) throws ApiException {
-        return listAiModelInfo1Call(_callback);
-
-    }
-
-    /**
-     * List Models
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * @return List&lt;AiModelInfoDTO&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public List<AiModelInfoDTO> listAiModelInfo1() throws ApiException {
-        ApiResponse<List<AiModelInfoDTO>> localVarResp = listAiModelInfo1WithHttpInfo();
-        return localVarResp.getData();
-    }
-
-    /**
-     * List Models
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * @return ApiResponse&lt;List&lt;AiModelInfoDTO&gt;&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<List<AiModelInfoDTO>> listAiModelInfo1WithHttpInfo() throws ApiException {
-        okhttp3.Call localVarCall = listAiModelInfo1ValidateBeforeCall(null);
-        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * List Models (asynchronously)
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call listAiModelInfo1Async(final ApiCallback<List<AiModelInfoDTO>> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = listAiModelInfo1ValidateBeforeCall(_callback);
-        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for listAiModelInfo2
-     * @param pageSize Maximum quantity (required)
      * @param pageNum Current page number (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -1184,7 +948,7 @@ public class AiServiceApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAiModelInfo2Call(Long pageSize, Long pageNum, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listAiModelInfoCall(Long pageSize, Long pageNum, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -1201,7 +965,7 @@ public class AiServiceApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/ai/models/{pageSize}/{pageNum}"
+        String localVarPath = "/api/v1/public/ai/models/{pageSize}/{pageNum}"
             .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()))
             .replace("{" + "pageNum" + "}", localVarApiClient.escapeString(pageNum.toString()));
 
@@ -1231,18 +995,18 @@ public class AiServiceApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listAiModelInfo2ValidateBeforeCall(Long pageSize, Long pageNum, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call listAiModelInfoValidateBeforeCall(Long pageSize, Long pageNum, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'pageSize' is set
         if (pageSize == null) {
-            throw new ApiException("Missing the required parameter 'pageSize' when calling listAiModelInfo2(Async)");
+            throw new ApiException("Missing the required parameter 'pageSize' when calling listAiModelInfo(Async)");
         }
 
         // verify the required parameter 'pageNum' is set
         if (pageNum == null) {
-            throw new ApiException("Missing the required parameter 'pageNum' when calling listAiModelInfo2(Async)");
+            throw new ApiException("Missing the required parameter 'pageNum' when calling listAiModelInfo(Async)");
         }
 
-        return listAiModelInfo2Call(pageSize, pageNum, _callback);
+        return listAiModelInfoCall(pageSize, pageNum, _callback);
 
     }
 
@@ -1259,8 +1023,8 @@ public class AiServiceApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<AiModelInfoDTO> listAiModelInfo2(Long pageSize, Long pageNum) throws ApiException {
-        ApiResponse<List<AiModelInfoDTO>> localVarResp = listAiModelInfo2WithHttpInfo(pageSize, pageNum);
+    public List<AiModelInfoDTO> listAiModelInfo(Long pageSize, Long pageNum) throws ApiException {
+        ApiResponse<List<AiModelInfoDTO>> localVarResp = listAiModelInfoWithHttpInfo(pageSize, pageNum);
         return localVarResp.getData();
     }
 
@@ -1277,8 +1041,8 @@ public class AiServiceApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<AiModelInfoDTO>> listAiModelInfo2WithHttpInfo(Long pageSize, Long pageNum) throws ApiException {
-        okhttp3.Call localVarCall = listAiModelInfo2ValidateBeforeCall(pageSize, pageNum, null);
+    public ApiResponse<List<AiModelInfoDTO>> listAiModelInfoWithHttpInfo(Long pageSize, Long pageNum) throws ApiException {
+        okhttp3.Call localVarCall = listAiModelInfoValidateBeforeCall(pageSize, pageNum, null);
         Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1297,9 +1061,245 @@ public class AiServiceApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listAiModelInfo2Async(Long pageSize, Long pageNum, final ApiCallback<List<AiModelInfoDTO>> _callback) throws ApiException {
+    public okhttp3.Call listAiModelInfoAsync(Long pageSize, Long pageNum, final ApiCallback<List<AiModelInfoDTO>> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = listAiModelInfo2ValidateBeforeCall(pageSize, pageNum, _callback);
+        okhttp3.Call localVarCall = listAiModelInfoValidateBeforeCall(pageSize, pageNum, _callback);
+        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for listAiModelInfo1
+     * @param pageSize Maximum quantity (required)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAiModelInfo1Call(Long pageSize, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v1/public/ai/models/{pageSize}"
+            .replace("{" + "pageSize" + "}", localVarApiClient.escapeString(pageSize.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call listAiModelInfo1ValidateBeforeCall(Long pageSize, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'pageSize' is set
+        if (pageSize == null) {
+            throw new ApiException("Missing the required parameter 'pageSize' when calling listAiModelInfo1(Async)");
+        }
+
+        return listAiModelInfo1Call(pageSize, _callback);
+
+    }
+
+    /**
+     * List Models
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * @param pageSize Maximum quantity (required)
+     * @return List&lt;AiModelInfoDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public List<AiModelInfoDTO> listAiModelInfo1(Long pageSize) throws ApiException {
+        ApiResponse<List<AiModelInfoDTO>> localVarResp = listAiModelInfo1WithHttpInfo(pageSize);
+        return localVarResp.getData();
+    }
+
+    /**
+     * List Models
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * @param pageSize Maximum quantity (required)
+     * @return ApiResponse&lt;List&lt;AiModelInfoDTO&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<AiModelInfoDTO>> listAiModelInfo1WithHttpInfo(Long pageSize) throws ApiException {
+        okhttp3.Call localVarCall = listAiModelInfo1ValidateBeforeCall(pageSize, null);
+        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * List Models (asynchronously)
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * @param pageSize Maximum quantity (required)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAiModelInfo1Async(Long pageSize, final ApiCallback<List<AiModelInfoDTO>> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = listAiModelInfo1ValidateBeforeCall(pageSize, _callback);
+        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for listAiModelInfo2
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAiModelInfo2Call(final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v1/public/ai/models";
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call listAiModelInfo2ValidateBeforeCall(final ApiCallback _callback) throws ApiException {
+        return listAiModelInfo2Call(_callback);
+
+    }
+
+    /**
+     * List Models
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * @return List&lt;AiModelInfoDTO&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public List<AiModelInfoDTO> listAiModelInfo2() throws ApiException {
+        ApiResponse<List<AiModelInfoDTO>> localVarResp = listAiModelInfo2WithHttpInfo();
+        return localVarResp.getData();
+    }
+
+    /**
+     * List Models
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * @return ApiResponse&lt;List&lt;AiModelInfoDTO&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<AiModelInfoDTO>> listAiModelInfo2WithHttpInfo() throws ApiException {
+        okhttp3.Call localVarCall = listAiModelInfo2ValidateBeforeCall(null);
+        Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * List Models (asynchronously)
+     * Return model information by page, return the pageNum page, up to pageSize model information.
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call listAiModelInfo2Async(final ApiCallback<List<AiModelInfoDTO>> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = listAiModelInfo2ValidateBeforeCall(_callback);
         Type localVarReturnType = new TypeToken<List<AiModelInfoDTO>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;

@@ -320,9 +320,10 @@ export class ObservableAIServiceApi {
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfoWithHttpInfo(pageSize: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo(pageSize, _options);
+    public listAiModelInfoWithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listAiModelInfo(pageSize, pageNum, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -344,17 +345,19 @@ export class ObservableAIServiceApi {
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfo(pageSize: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfoWithHttpInfo(pageSize, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
+    public listAiModelInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
+        return this.listAiModelInfoWithHttpInfo(pageSize, pageNum, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
     }
 
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
      */
-    public listAiModelInfo1WithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo1(_options);
+    public listAiModelInfo1WithHttpInfo(pageSize: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listAiModelInfo1(pageSize, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -375,19 +378,18 @@ export class ObservableAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
      */
-    public listAiModelInfo1(_options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfo1WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
+    public listAiModelInfo1(pageSize: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
+        return this.listAiModelInfo1WithHttpInfo(pageSize, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
     }
 
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfo2WithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo2(pageSize, pageNum, _options);
+    public listAiModelInfo2WithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listAiModelInfo2(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -408,11 +410,9 @@ export class ObservableAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfo2WithHttpInfo(pageSize, pageNum, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
+    public listAiModelInfo2(_options?: Configuration): Observable<Array<AiModelInfoDTO>> {
+        return this.listAiModelInfo2WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
     }
 
 }

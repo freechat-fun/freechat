@@ -52,6 +52,14 @@ public class AccountUtils implements ApplicationContextAware {
         return user;
     }
 
+    public static User currentUserOrNull() {
+        try {
+            return currentUser();
+        } catch (ResponseStatusException e) {
+            return null;
+        }
+    }
+
     public static void updateCurrentUser() {
         User currentUser = currentUser();
         SysUserDetails sysUser = ((SysUserDetailsManager) userDetailsManager).loadUserByUsernameAndPlatform(

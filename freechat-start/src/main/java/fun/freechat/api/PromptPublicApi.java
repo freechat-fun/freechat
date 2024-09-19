@@ -2,7 +2,9 @@ package fun.freechat.api;
 
 import fun.freechat.api.dto.PromptQueryDTO;
 import fun.freechat.api.dto.PromptSummaryDTO;
+import fun.freechat.api.util.AccountUtils;
 import fun.freechat.service.enums.Visibility;
+import fun.freechat.service.prompt.PromptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -28,7 +30,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class PromptPublicApi {
     @Autowired
-    private PromptApi promptApi;
+    private PromptService promptService;
 
     @Operation(
             operationId = "searchPublicPromptSummary",
@@ -83,7 +85,10 @@ public class PromptPublicApi {
         }
         // ensure 'visibility' is non-blank
         query.getWhere().setVisibility(Visibility.PUBLIC.text());
-        return promptApi.search(query);
+        return promptService.search(query.toPromptInfoQuery(), AccountUtils.currentUserOrNull())
+                .stream()
+                .map(PromptSummaryDTO::from)
+                .toList();
     }
 
     @Operation(
@@ -101,8 +106,11 @@ public class PromptPublicApi {
         if (Visibility.of(query.getWhere().getVisibility()) != Visibility.PUBLIC) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The visibility should be 'public'");
         }
-        // ensure 'visibility' is non-blank
-        query.getWhere().setVisibility(Visibility.PUBLIC.text());
-        return promptApi.count(query);
+        PromptService.Query infoQuery = query.toPromptInfoQuery();
+        infoQuery.setOffset(null);
+        infoQuery.setLimit(null);
+        infoQuery.setOrderBy(null);
+        infoQuery.getWhere().setVisibility(Visibility.PUBLIC.text());
+        return promptService.count(infoQuery, AccountUtils.currentUser());
     }
 }

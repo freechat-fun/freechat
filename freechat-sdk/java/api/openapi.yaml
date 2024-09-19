@@ -4824,6 +4824,118 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
+  /api/v1/public/ai/models/{pageSize}/{pageNum}:
+    get:
+      description: "Return model information by page, return the pageNum page, up\
+        \ to pageSize model information."
+      operationId: listAiModelInfo
+      parameters:
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: Current page number
+        explode: false
+        in: path
+        name: pageNum
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AiModelInfoDTO'
+                type: array
+          description: OK
+      summary: List Models
+      tags:
+      - AI Service
+      x-accepts:
+      - application/json
+  /api/v1/public/ai/models/{pageSize}:
+    get:
+      description: "Return model information by page, return the pageNum page, up\
+        \ to pageSize model information."
+      operationId: listAiModelInfo_1
+      parameters:
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AiModelInfoDTO'
+                type: array
+          description: OK
+      summary: List Models
+      tags:
+      - AI Service
+      x-accepts:
+      - application/json
+  /api/v1/public/ai/models:
+    get:
+      description: "Return model information by page, return the pageNum page, up\
+        \ to pageSize model information."
+      operationId: listAiModelInfo_2
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AiModelInfoDTO'
+                type: array
+          description: OK
+      summary: List Models
+      tags:
+      - AI Service
+      x-accepts:
+      - application/json
+  /api/v1/public/ai/model/{modelId}:
+    get:
+      description: Return specific model information.
+      operationId: getAiModelInfo
+      parameters:
+      - description: Model identifier
+        explode: false
+        in: path
+        name: modelId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiModelInfoDTO'
+          description: OK
+      summary: Get Model Information
+      tags:
+      - AI Service
+      x-accepts:
+      - application/json
   /api/v1/prompt/summary/{promptId}:
     get:
       description: Get prompt summary information.
@@ -5620,118 +5732,6 @@ paths:
       summary: Get Default Character Backend
       tags:
       - Character
-      x-accepts:
-      - application/json
-  /api/v1/ai/models/{pageSize}:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo
-      parameters:
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v1/ai/models:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo_1
-      parameters: []
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v1/ai/models/{pageSize}/{pageNum}:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo_2
-      parameters:
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v1/ai/model/{modelId}:
-    get:
-      description: Return specific model information.
-      operationId: getAiModelInfo
-      parameters:
-      - description: Model identifier
-        explode: false
-        in: path
-        name: modelId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AiModelInfoDTO'
-          description: OK
-      summary: Get Model Information
-      tags:
-      - AI Service
       x-accepts:
       - application/json
   /api/v1/ai/apikeys/{provider}:

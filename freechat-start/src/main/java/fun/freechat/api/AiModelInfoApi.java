@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Controller
 @Tag(name = "AI Service")
-@RequestMapping("/api/v1/ai")
+@RequestMapping("/api/v1/public/ai")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")
