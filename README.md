@@ -64,7 +64,7 @@ After setting up an unified persona and knowledge for a character, different bac
 
 ## How to Play
 ### Online Website
-You can visit [freechat.fun](https://www.freechat.fun) to experience FreeChat. Share your designed AI character!
+You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!
 
 ### Running in a Kubernetes Cluster
 FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:

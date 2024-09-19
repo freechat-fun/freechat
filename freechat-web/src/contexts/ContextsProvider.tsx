@@ -10,9 +10,8 @@ const ContextsProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const port = window.location.port;
 
     const location = document.querySelector('meta[name="_location"]')?.getAttribute('content');
-    console.log(`location: ${location}`)
     apiServer = location === 'CN' && host !== 'localhost' && host !== '127.0.0.1' ?
-      'https://www.freechat.fun' :
+      'https://freechat.fun' :
       `${protocol}//${host}${port ? `:${port}` : ''}`;
   }
 
