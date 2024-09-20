@@ -9,13 +9,13 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <revision>1.4.0</revision>
+        <revision>1.5.0</revision>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!--dependency versions-->
-        <spring-boot.version>3.2.9</spring-boot.version>
+        <spring-boot.version>3.3.4</spring-boot.version>
         <springdoc.version>2.6.0</springdoc.version>
         <mybatis.version>3.5.15</mybatis.version>
         <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
@@ -111,8 +111,8 @@
 
             <dependency>
                 <groupId>org.redisson</groupId>
-                <!-- for Spring Data Redis v.3.2.x -->
-                <artifactId>redisson-spring-data-32</artifactId>
+                <!-- for Spring Data Redis v.3.3.x -->
+                <artifactId>redisson-spring-data-33</artifactId>
                 <version>${redisson.version}</version>
             </dependency>
 
