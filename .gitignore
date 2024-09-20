@@ -243,4 +243,4 @@ docs/_build/
 .ipynb_checkpoints
 
 # SEO
-src/main/resources/static/baidu*.html
+freechat-start/src/main/resources/static/baidu*.html
