@@ -239,5 +239,8 @@ venv/
 # Sphinx documentation
 docs/_build/
 
-#Ipython Notebook
+# Ipython Notebook
 .ipynb_checkpoints
+
+# SEO
+src/main/resources/static/baidu*.html
