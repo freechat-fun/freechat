@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Divider, FormControl, FormLabel, Input, Link, Stack, Typography } from "@mui/joy";
+import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon } from '../../components/icon';
 import { useErrorMessageBusContext, useMetaInfoContext } from '../../contexts';
@@ -8,7 +8,7 @@ import { UserFullDetailsDTO } from 'freechat-sdk';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
-  const { csrfToken, csrfHeaderName, registrations, icpCode } = useMetaInfoContext();
+  const { csrfToken, csrfHeaderName, registrations } = useMetaInfoContext();
   const { handleError } = useErrorMessageBusContext();
 
   const [guestFormState, setGuestFormState] = useState({
@@ -211,13 +211,13 @@ export default function SignIn() {
                 </Button>
               </form>
             </Stack>
-            <Stack sx={{
+            {/* <Stack sx={{
               alignItems: 'center',
               display: icpCode ? 'flex' : 'none'
             }}>
               <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">ICP备{icpCode}</Link>
             </Stack>
-            {/* <Divider
+            <Divider
               sx={(theme) => ({
                 [theme.getColorSchemeSelector('light')]: {
                   color: { xs: '#FFF', md: 'text.tertiary' },
