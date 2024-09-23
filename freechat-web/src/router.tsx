@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import SignIn from './pages/account/SignIn';
 import MyProfile from './pages/account/MyProfile';
@@ -19,6 +19,10 @@ import Chats from './pages/chat/Chats';
 const sidebarRoutes = [
   {
     index: true,
+    element: <Home />,
+  },
+  {
+    path: 'w',
     element: <Home />,
   },
   {
@@ -85,18 +89,10 @@ const sidebarRoutes = [
 
 const routes = [
   {
-    path: '/w',
-    element: <Navigate to="/" />
-  },
-  {
     path: '/*',
     element: <SidebarFrame />,
     children: sidebarRoutes,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+  }
 ];
 
 const router = createBrowserRouter(routes);

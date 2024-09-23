@@ -46,8 +46,7 @@ public class MainController {
     }
 
     @RequestMapping("/w/**")
-    public String page(Model model) {
-        model.addAttribute("canonical", true);
+    public String page() {
         return "forward:/";
     }
 
