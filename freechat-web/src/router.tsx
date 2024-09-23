@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import SignIn from './pages/account/SignIn';
 import MyProfile from './pages/account/MyProfile';
@@ -22,59 +22,59 @@ const sidebarRoutes = [
     element: <Home />,
   },
   {
-    path: 'login',
+    path: 'w/login',
     element: <SignIn />,
   },
   {
-    path: 'chat/:id?/:mode?',
+    path: 'w/chat/:id?/:mode?',
     element: <Chats />,
   },
   {
-    path: 'prompts',
+    path: 'w/prompts',
     element: <Prompts />,
   },
   {
-    path: 'prompt/:id',
+    path: 'w/prompt/:id',
     element: <PromptInfo />,
   },
   {
-    path: 'prompt/edit/:id',
+    path: 'w/prompt/edit/:id',
     element: <PromptEdit />,
   },
   {
-    path: 'prompt/task/:id',
+    path: 'w/prompt/task/:id',
     element: <PromptTaskInfo />,
   },
   {
-    path: 'prompt/task/edit/:id',
+    path: 'w/prompt/task/edit/:id',
     element: <PromptTaskEdit />,
   },
   {
-    path: 'characters',
+    path: 'w/characters',
     element: <Characters />,
   },
   {
-    path: 'character/edit/:id',
+    path: 'w/character/edit/:id',
     element: <CharacterEdit />,
   },
   {
-    path: 'plugins',
+    path: 'w/plugins',
     element: <ComingSoon />,
   },
   {
-    path: 'agents',
+    path: 'w/agents',
     element: <ComingSoon />,
   },
   {
-    path: 'docs',
+    path: 'w/docs',
     element: <OpenApi />,
   },
   {
-    path: 'profile',
+    path: 'w/profile',
     element: <MyProfile />,
   },
   {
-    path: 'credentials',
+    path: 'w/credentials',
     element: <Credentials />,
   },
   {
@@ -85,7 +85,11 @@ const sidebarRoutes = [
 
 const routes = [
   {
-    path: '/w/*',
+    path: '/w',
+    element: <Navigate to="/" />
+  },
+  {
+    path: '/*',
     element: <SidebarFrame />,
     children: sidebarRoutes,
   },

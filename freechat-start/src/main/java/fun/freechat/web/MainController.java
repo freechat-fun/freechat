@@ -46,6 +46,11 @@ public class MainController {
     }
 
     @RequestMapping("/w/**")
+    public String page() {
+        return "forward:/";
+    }
+
+    @RequestMapping(value = {"/", "/undefined"})
     public String index(HttpServletRequest request, Model model) {
         try {
             User user = AccountUtils.currentUser();
@@ -87,11 +92,6 @@ public class MainController {
         }
 
         return "index";
-    }
-
-    @RequestMapping(value = {"/", "/undefined"})
-    public String home(Model model) {
-        return "redirect:/w";
     }
 
     @GetMapping({"/public/check/live"})

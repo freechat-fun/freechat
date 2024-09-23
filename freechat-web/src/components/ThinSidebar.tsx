@@ -104,7 +104,7 @@ export default function ThinSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Home')}>
-              <ItemButton href="/w" anonymous>
+              <ItemButton href="/" anonymous>
                 <HomeRounded />
               </ItemButton>
             </ItemTooltip>

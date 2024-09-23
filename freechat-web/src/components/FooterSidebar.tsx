@@ -33,10 +33,11 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
 
 type ItemButtonProps = ListItemButtonProps & {
   href: string,
+  anonymous?: boolean
 };
 
 const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
-  const { children, href, ...others } = props;
+  const { children, href, anonymous = false, ...others } = props;
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { isAuthorized } = useMetaInfoContext();
@@ -48,7 +49,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   return (
     <ListItemButton
       ref={ref}
-      disabled={!isAuthorized()}
+      disabled={!anonymous && !isAuthorized()}
       selected={isSelected(href, pathname)}
       onClick={(event) => {
         event.preventDefault();
@@ -106,7 +107,7 @@ export default function FooterSidebar() {
 
           <ListItem>
             <ItemTooltip title={t('Home')}>
-              <ItemButton href="/w">
+              <ItemButton href="/" anonymous>
                 <HomeRounded />
               </ItemButton>
             </ItemTooltip>

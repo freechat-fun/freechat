@@ -14,7 +14,7 @@ auth:
       successUri: /login/portal/success
   logout:
     uri: /logout
-    successUri: /w/login
+    successUri: /
   role:
     adminUri: /admin/**,/api/admin/**,/api/v1/admin/**
     bizAdminUri: /api/biz/admin/**,/api/v1/biz/admin/**

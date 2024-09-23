@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM freechat0sa1acr.azurecr.io/nginx:alpine
 
 # Copy static files to Nginx server directory
 COPY web/ /usr/share/nginx/html
