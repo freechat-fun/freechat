@@ -89,6 +89,9 @@ public class MainController {
         if ("CN".equalsIgnoreCase((String) model.getAttribute("location")) &&
                 StringUtils.isNotBlank(icpCode)) {
             model.addAttribute("icpCode", icpCode);
+            model.addAttribute("description", "狐狸猜用AI创建属于您的心灵伴侣。");
+        } else {
+            model.addAttribute("description", "FreeChat uses AI to create your soul mate.");
         }
 
         return "index";
