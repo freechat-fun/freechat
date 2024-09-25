@@ -27,7 +27,7 @@ export default function Home() {
           }}>
             <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
-            <Typography level="title-md">{t('Create some friends for yourself')}</Typography>
+            <Typography level="title-md">{t('Create friends for yourself')}</Typography>
           </Box>
           <AspectRatio
             variant="plain"
@@ -97,7 +97,7 @@ export default function Home() {
           }}>
             <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
-            <Typography level="title-md">{t('Create some friends for yourself')}</Typography>
+            <Typography level="title-md">{t('Create friends for yourself')}</Typography>
           </Box>
           <AspectRatio
             variant="plain"

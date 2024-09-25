@@ -88,13 +88,13 @@ public class MainController {
 
         if ("CN".equalsIgnoreCase((String) model.getAttribute("location"))) {
             model.addAttribute("title", "狐狸猜 | 智能虚拟角色 | 聊天智能体 | 智能聊天 | 角色扮演");
-            model.addAttribute("description", "狐狸猜用AI创建属于您的心灵伴侣。");
+            model.addAttribute("description", "狐狸猜用AI帮助您创造朋友。");
             if (StringUtils.isNotBlank(icpCode)) {
                 model.addAttribute("icpCode", icpCode);
             }
         } else {
             model.addAttribute("title", "FreeChat | Character AI | Chat Agent | Chat AI | Role Play");
-            model.addAttribute("description", "FreeChat uses AI to create your soul mate.");
+            model.addAttribute("description", "FreeChat uses AI to help you create friends.");
         }
 
         return "index";

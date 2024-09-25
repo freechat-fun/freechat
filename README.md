@@ -1,4 +1,4 @@
-# FreeChat: Create Some Friends for Yourself with AI
+# FreeChat: Create Friends for Yourself with AI
 
 English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)
 
