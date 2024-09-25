@@ -151,7 +151,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "count (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/w\"}\n        | pattern `<_> [<_>] <_> <_> - <_>|<username>|<_>`\n        | keep username [$__range]\n    )\n)",
+          "expr": "count (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/\"}\n        | pattern `<_> [<_>] <_> <_> - <_>|<username>|<_>`\n        | keep username [$__range]\n    )\n)",
           "queryType": "instant",
           "refId": "A"
         },
@@ -238,7 +238,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/w\"} [$__interval]\n    )\n) by () or vector(0)",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/\"} [$__interval]\n    )\n) by () or vector(0)",
           "queryType": "range",
           "refId": "A"
         }
@@ -3226,8 +3226,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3321,8 +3320,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3376,13 +3374,13 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Freechat",
   "uid": "cdu6mgjmttds0b",
-  "version": 40,
+  "version": 41,
   "weekStart": ""
 }
