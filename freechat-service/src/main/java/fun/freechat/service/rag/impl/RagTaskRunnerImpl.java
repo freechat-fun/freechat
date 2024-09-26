@@ -5,7 +5,7 @@ import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser
 import dev.langchain4j.data.document.source.FileSystemSource;
 import dev.langchain4j.data.document.source.UrlSource;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
-import dev.langchain4j.data.document.transformer.HtmlTextExtractor;
+import dev.langchain4j.data.document.transformer.jsoup.HtmlToTextDocumentTransformer;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.Tokenizer;
@@ -109,7 +109,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             Tokenizer tokenizer = embeddingModelService.tokenizerForLang(lang);
             EmbeddingStore<TextSegment> embeddingStore =
                     embeddingStoreService.of(memoryId, documentTypeForLang(lang));
-            DocumentTransformer documentTransformer = isHtml(document) ? new HtmlTextExtractor() : null;
+            DocumentTransformer documentTransformer = isHtml(document) ? new HtmlToTextDocumentTransformer() : null;
             DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenizer);
 
             EmbeddingStoreIngestor.builder()
