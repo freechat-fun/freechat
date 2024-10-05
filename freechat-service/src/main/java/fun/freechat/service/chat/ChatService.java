@@ -35,4 +35,6 @@ public interface ChatService {
         return chatId;
     }
     void clearMemory(String chatId);
+    Response<AiMessage> sendAssistant(String chatId, String assistantUid);
+    TokenStream streamSendAssistant(String chatId, String assistantUid);
 }

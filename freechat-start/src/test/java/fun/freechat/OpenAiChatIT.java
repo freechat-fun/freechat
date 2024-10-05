@@ -539,6 +539,62 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
                 .hasSize(2);
     }
 
+    private void testSendAssistantFailed() {
+        testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .exchange()
+                .expectStatus()
+                .isForbidden();
+    }
+
+    private void testSendAssistant() {
+        TestCharacterUtils.prioritizeCharacter(characterId);
+        TestCommonUtils.waitAWhile();
+
+        LlmResultDTO result = testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterId)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(LlmResultDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(result);
+        assertNotNull(result.getMessage());
+        System.out.println(CHARACTER_NICKNAME + " (Assistant): " + result.getMessage().getContents().getFirst().getContent() +
+                " (" + result.getTokenUsage() + ")");
+    }
+
+    private void testStreamSendAssistant() throws ExecutionException, InterruptedException, TimeoutException {
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        testClient.get().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + characterId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (text == null) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
+
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + " (Assistant): " + answer);
+    }
+
     private void testDeleteChatFailed() {
         testClient.delete().uri("/api/v1/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -684,6 +740,15 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         TestCommonUtils.waitAWhile();
 
         testListMessages();
+        TestCommonUtils.waitAWhile();
+
+        testSendAssistantFailed();
+        TestCommonUtils.waitAWhile();
+
+        testSendAssistant();
+        TestCommonUtils.waitAWhile();
+
+        testStreamSendAssistant();
         TestCommonUtils.waitAWhile();
 
         testDeleteChatFailed();

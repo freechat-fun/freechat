@@ -17,6 +17,7 @@ import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
 import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.tool.ToolExecutor;
+import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
@@ -42,6 +43,7 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
 import static fun.freechat.service.enums.ChatVar.*;
@@ -172,8 +174,7 @@ public class ChatServiceImpl implements ChatService {
         try {
             Object memoryId = asMemoryId(chatId);
             ChatMemory chatMemory = session.getChatMemory(memoryId);
-
-            var messages = handleMessages(message, context, memoryId, session, chatMemory);
+            var messages = handleMessages(message, context, memoryId, session);
 
             Future<Moderation> moderationFuture = session.getModerationModel() != null ?
                     chatSessionService.triggerModerationIfNeeded(session, messages) : null;
@@ -186,7 +187,7 @@ public class ChatServiceImpl implements ChatService {
                     chatModel.generate(messages);
             TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
-            chatSessionService.verifyModerationIfNeeded(session, moderationFuture);
+            chatSessionService.verifyModerationIfNeeded(moderationFuture);
 
             for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
                 if (chatMemory instanceof SystemAlwaysOnTopMessageWindowChatMemory myMemory) {
@@ -214,7 +215,6 @@ public class ChatServiceImpl implements ChatService {
                 tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
             }
 
-            session.getProcessing().set(false);
             return Response.from(response.content(), tokenUsageAccumulator, response.finishReason());
         } finally {
             session.release();
@@ -229,13 +229,9 @@ public class ChatServiceImpl implements ChatService {
             return null;
         }
 
-        session.getProcessing().set(true);
-
         try {
             Object memoryId = asMemoryId(chatId);
-            ChatMemory chatMemory = session.getChatMemory(memoryId);
-
-            var messages = handleMessages(message, context, memoryId, session, chatMemory);
+            var messages = handleMessages(message, context, memoryId, session);
             return new AiServiceTokenStream(messages,
                     session.getToolSpecifications(),
                     session.getToolExecutors(),
@@ -243,7 +239,7 @@ public class ChatServiceImpl implements ChatService {
                     session.getAiServiceContext(),
                     memoryId);
         } catch (Throwable e) {
-            session.getProcessing().set(false);
+            session.release();
             throw e;
         }
     }
@@ -267,11 +263,115 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
-    private List<ChatMessage> handleMessages(
-            ChatMessage message, String context, Object memoryId,
-            ChatSession session, ChatMemory chatMemory) {
+    @Override
+    public Response<AiMessage> sendAssistant(String chatId, String assistantUid) {
+        ChatSession session = chatSessionService.get(chatId);
+        if (session == null || assistantUid == null || session.isProcessing()) {
+            return null;
+        }
+
+        ChatSession assistantSession = createTemporarySession(session, chatId, assistantUid);
+        if (assistantSession == null) {
+            return null;
+        }
+
+        String assistantChatId = assistantChatId(chatId);
+        Object assistantMemoryId = asMemoryId(assistantChatId);
+
+        var messages = handleMessages(null, null, assistantChatId, assistantSession);
+
+        Future<Moderation> moderationFuture = assistantSession.getModerationModel() != null ?
+                chatSessionService.triggerModerationIfNeeded(assistantSession, messages) : null;
+
+        ChatLanguageModel chatModel = assistantSession.getChatModel();
+        List<ToolSpecification> toolSpecifications = assistantSession.getToolSpecifications();
+
+        Response<AiMessage> response = toolSpecifications != null ?
+                chatModel.generate(messages, toolSpecifications) :
+                chatModel.generate(messages);
+        TokenUsage tokenUsageAccumulator = response.tokenUsage();
+
+        chatSessionService.verifyModerationIfNeeded(moderationFuture);
+        ChatMemory chatMemory = assistantSession.getChatMemory(assistantChatId);
+
+        for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
+            chatMemory.add(response.content());
+
+            AiMessage aiMessage = response.content();
+            if (!aiMessage.hasToolExecutionRequests()) {
+                break;
+            }
+
+            for (ToolExecutionRequest toolExecutionRequest : aiMessage.toolExecutionRequests()) {
+                ToolExecutor toolExecutor = session.getToolExecutors().get(toolExecutionRequest.name());
+                String toolExecutionResult = toolExecutor.execute(toolExecutionRequest, assistantMemoryId);
+                ToolExecutionResultMessage toolExecutionResultMessage
+                        = toolExecutionResultMessage(toolExecutionRequest, toolExecutionResult);
+                chatMemory.add(toolExecutionResultMessage);
+            }
+
+            response = chatModel.generate(chatMemory.messages(), toolSpecifications);
+            tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
+        }
+
+        return Response.from(response.content(), tokenUsageAccumulator, response.finishReason());
+    }
+
+    @Override
+    public TokenStream streamSendAssistant(String chatId, String assistantUid) {
+        ChatSession session = chatSessionService.get(chatId);
+        if (session == null || assistantUid == null || session.isProcessing()) {
+            return null;
+        }
+
+        ChatSession assistantSession = createTemporarySession(session, chatId, assistantUid);
+        if (assistantSession == null) {
+            return null;
+        }
+
+        String assistantChatId = assistantChatId(chatId);
+        Object assistantMemoryId = asMemoryId(assistantChatId);
+        var messages = handleMessages(null, null, assistantChatId, assistantSession);
+
+        return new AiServiceTokenStream(
+                messages,
+                assistantSession.getToolSpecifications(),
+                assistantSession.getToolExecutors(),
+                null,
+                assistantSession.getAiServiceContext(),
+                assistantMemoryId);
+
+    }
+
+    private ChatSession createTemporarySession(ChatSession session, String chatId, String assistantUid) {
+        Long assistantId = characterService.getLatestIdByUid(assistantUid);
+        CharacterInfo assistantSummary = characterService.summary(assistantId);
+        String assistantBackendId = characterService.getDefaultBackend(assistantUid).getBackendId();
         Map<String, Object> variables = session.getVariables();
-        variables.put(INPUT.text().toLowerCase(), toSingleText(message));
+        String assistantChatId = assistantChatId(chatId);
+        Object assistantMemoryId = asMemoryId(assistantChatId);
+        InMemoryChatMemoryStore assistantMemoryStore = new InMemoryChatMemoryStore();
+        assistantMemoryStore.updateMessages(assistantMemoryId,
+                reverseMessages(session.getChatMemory(chatId).messages(), assistantSummary.getGreeting()));
+
+        ChatContext assistantChatContext = new ChatContext()
+                .withChatId(assistantChatId)
+                .withBackendId(assistantBackendId)
+                .withAbout((String) variables.get(CHAT_CONTEXT.text()))
+                .withCharacterNickname((String) variables.get(USER_NICKNAME.text()))
+                .withUserNickname((String) variables.get(CHARACTER_NICKNAME.text()))
+                .withUserProfile((String) variables.get(CHARACTER_DESCRIPTION.text()));
+        return chatSessionService.createTemporary(assistantChatContext, assistantMemoryStore);
+    }
+
+    private static String assistantChatId(String chatId) {
+        return chatId + "-assist";
+    }
+
+    private List<ChatMessage> handleMessages(
+            ChatMessage message, String context, Object memoryId, ChatSession session) {
+        ChatMemory chatMemory = session.getChatMemory(memoryId);
+        Map<String, Object> variables = session.getVariables();
         variables.put(MESSAGE_CONTEXT.text(), getOrBlank(context));
         variables.put(CURRENT_TIME.text(),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -280,7 +380,8 @@ public class ChatServiceImpl implements ChatService {
         List<ChatMessage> longTermMemoryMessages = null;
         RetrievalAugmentor knowledgeRetriever = session.getRetriever();
         RetrievalAugmentor longTermMemoryRetriever = session.getLongTermMemoryRetriever();
-        if (message.type() == USER &&
+        if (message != null &&
+                message.type() == USER &&
                 (knowledgeRetriever != null || longTermMemoryRetriever != null)) {
             List<ChatMessage> messages = chatMemory.messages();
             UserMessage userMessage = (UserMessage) message;
@@ -353,12 +454,10 @@ public class ChatServiceImpl implements ChatService {
         variables.put(RELEVANT_INFORMATION.text(), getOrBlank(relevantConcatenated));
 
         ChatPromptContent prompt = session.getPrompt();
-        SystemMessage systemMessage = SystemMessage.from(promptService.apply(
-                prompt.getSystem(), variables, session.getPromptFormat()));
-
         ChatMessage messageToSend = message;
-        if (message.type() == USER) {
+        if (message != null && message.type() == USER) {
             if (prompt.getMessageToSend() != null) {
+                variables.put(INPUT.text().toLowerCase(), toSingleText(message));
                 messageToSend = promptService.apply(
                         UserMessage.from(prompt.getMessageToSend().contents()),
                         variables,
@@ -366,8 +465,13 @@ public class ChatServiceImpl implements ChatService {
             }
         }
 
+        SystemMessage systemMessage = SystemMessage.from(promptService.apply(
+                prompt.getSystem(), variables, session.getPromptFormat()));
+
         chatMemory.add(systemMessage);
-        chatMemory.add(messageToSend);
+        if (messageToSend != null) {
+            chatMemory.add(messageToSend);
+        }
 
         return mergeMessages(chatMemory.messages(), longTermMemoryMessages);
     }
@@ -391,5 +495,34 @@ public class ChatServiceImpl implements ChatService {
         allMessages.addAll(messages.subList(1, messages.size()));
 
         return allMessages;
+    }
+
+    private static List<ChatMessage> reverseMessages(List<ChatMessage> messages, String greeting) {
+        LinkedList<ChatMessage> reversedMessages = messages.stream()
+                .map(message -> switch (message.type()) {
+                    case SYSTEM -> message;
+                    case AI -> ((AiMessage) message).hasToolExecutionRequests() ? null : UserMessage.from(toSingleText(message));
+                    case USER -> AiMessage.from(toSingleText(message));
+                    case null, default -> null;
+                })
+                .filter(Objects::nonNull)
+                .collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
+
+        int firstNonSystemMessageIndex = CollectionUtils.isNotEmpty(reversedMessages) &&
+                reversedMessages.getFirst().type() == SYSTEM ? 1: 0;
+
+        if (StringUtils.isNotBlank(greeting)) {
+            reversedMessages.add(firstNonSystemMessageIndex, UserMessage.from(greeting));
+        } else {
+            ChatMessage firstNonSystemMessage = firstNonSystemMessageIndex < reversedMessages.size() ?
+                    reversedMessages.get(firstNonSystemMessageIndex) : null;
+            while (firstNonSystemMessage != null && firstNonSystemMessage.type() != USER) {
+                reversedMessages.remove(firstNonSystemMessageIndex);
+                firstNonSystemMessage = firstNonSystemMessageIndex < reversedMessages.size() ?
+                        reversedMessages.get(firstNonSystemMessageIndex) : null;
+            }
+        }
+
+        return reversedMessages;
     }
 }

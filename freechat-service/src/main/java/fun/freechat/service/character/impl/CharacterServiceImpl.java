@@ -743,6 +743,34 @@ select distinct c.user_id, c.character_id, c.visibility... \
         return !characterInfoMapper.selectMany(statement).isEmpty();
     }
 
+    @Override
+    public boolean isOfficial(Long characterId) {
+        var statement = select(Info.name)
+                .from(Info.table)
+                .where(Info.characterId, isEqualTo(characterId))
+                .and(Info.visibility, isEqualTo(Visibility.PUBLIC.text()))
+                .and(Info.priority, isGreaterThan(1))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).isPresent();
+    }
+
+    @Override
+    public boolean isOfficialByUid(String characterUid) {
+        var statement = select(Info.name)
+                .from(Info.table)
+                .where(Info.characterUid, isEqualTo(characterUid))
+                .and(Info.visibility, isEqualTo(Visibility.PUBLIC.text()))
+                .and(Info.priority, isGreaterThan(1))
+                .orderBy(Info.version.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).isPresent();
+    }
+
     private void ensureDefaultBackend(CharacterBackend characterBackend, Date now) {
         String characterUid = characterBackend.getCharacterUid();
         if (StringUtils.isBlank(characterUid)) {

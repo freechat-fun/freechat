@@ -69,6 +69,8 @@ public interface CharacterService {
     String getUid(Long characterId);
     String getNameByUid(String characterUid);
     boolean existsName(String name, User user);
+    boolean isOfficial(Long characterId);
+    boolean isOfficialByUid(String characterUid);
 
     String addBackend(CharacterBackend characterBackend);
     boolean removeBackend(String characterUid, String characterBackendId);

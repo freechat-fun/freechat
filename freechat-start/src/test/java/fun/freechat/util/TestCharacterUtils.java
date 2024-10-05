@@ -43,6 +43,14 @@ public class TestCharacterUtils implements ApplicationContextAware {
         return backendId;
     }
 
+    public static void prioritizeCharacter(Long characterId) {
+        CharacterInfo info = new CharacterInfo()
+                .withCharacterId(characterId)
+                .withPriority(2);
+
+        characterService.update(Pair.of(info, null));
+    }
+
     public static void deleteCharacters(String userId) {
         if (StringUtils.isBlank(userId)) {
             return;

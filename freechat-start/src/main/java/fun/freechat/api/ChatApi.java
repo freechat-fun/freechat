@@ -548,4 +548,138 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId) {
         return MemoryUsageDTO.from(chatMemoryService.usage(chatId));
     }
+
+    @Operation(
+            operationId = "sendAssistant",
+            summary = "Send Assistant for Chat Message",
+            description = "Send a message to assistant for a new chat message."
+    )
+    @GetMapping("/send/assistant/{chatId}/{assistantId}")
+    @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
+    public LlmResultDTO sendAssistant(
+            @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
+            @Parameter(description = "Assistant id") @PathVariable("assistantId") @Positive Long assistantId) {
+        checkQuota(chatId);
+        Response<AiMessage> response = chatService.sendAssistant(chatId, characterService.getUid(assistantId));
+
+        if (response == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantId);
+        }
+
+        return LlmResultDTO.from(response);
+    }
+
+    @Operation(
+            operationId = "streamSendAssistant",
+            summary = "Send Assistant for Chat Message by Streaming Back",
+            description = "Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response."
+    )
+    @GetMapping(value = "/send/stream/assistant/{chatId}/{assistantId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
+    public SseEmitter streamSendAssistant(
+            @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
+            @Parameter(description = "Assistant id") @PathVariable("assistantId") @Positive Long assistantId) {
+        checkQuota(chatId);
+        String assistantUid = characterService.getUid(assistantId);
+        SseEmitter sseEmitter = new SseEmitter();
+        // avoid instruction reordering
+        AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
+        TokenStream tokenStream = chatService.streamSendAssistant(chatId, assistantUid);
+
+        if (tokenStream == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantId);
+        }
+
+
+        String traceId = TraceUtils.getTraceId();
+        String username = AccountUtils.currentUser().getUsername();
+        String assistantName = characterService.getNameByUid(assistantUid);
+        AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
+
+        tokenStream.onNext(partialResult -> {
+            if (!firstPackageReceived.get()) {
+                TraceUtils.putTraceAttribute("traceId", traceId);
+                TraceUtils.putTraceAttribute("username", username);
+                long firstPackageReceivedTime = System.currentTimeMillis();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{assistantName, assistantUid})
+                        .elapseTime(firstPackageReceivedTime - startTime.get())
+                        .method("ChatApi::assistantFirstPackageReceived")
+                        .response(partialResult)
+                        .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
+                firstPackageReceived.set(true);
+            }
+            try {
+                LlmResultDTO result = LlmResultDTO.from(
+                        partialResult, null, null, null);
+                result.setRequestId(null);
+                sseEmitter.send(result);
+            } catch (IllegalStateException | NullPointerException | IOException e) {
+                log.warn("Error when sending message.", e);
+                sseEmitter.completeWithError(e);
+                long lastPackageReceivedTime = System.currentTimeMillis();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{assistantName, assistantUid})
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
+                        .method("ChatApi::assistantLastPackageReceived")
+                        .response(partialResult)
+                        .throwable(e)
+                        .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
+            }
+        }).onComplete(response -> {
+            long lastPackageReceivedTime = System.currentTimeMillis();
+            try {
+                LlmResultDTO result = LlmResultDTO.from(response);
+                Objects.requireNonNull(result).setText(null);
+                result.setRequestId(null);
+                sseEmitter.send(result);
+                sseEmitter.complete();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{assistantName, assistantUid})
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
+                        .method("ChatApi::assistantLastPackageReceived")
+                        .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
+            } catch (Exception e) {
+                log.warn("Error when sending message.", e);
+                sseEmitter.completeWithError(e);
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{assistantName, assistantUid})
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
+                        .method("ChatApi::assistantLastPackageReceived")
+                        .throwable(e)
+                        .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
+            }
+        }).onError(ex -> {
+            log.error("SSE exception.", ex);
+            sseEmitter.completeWithError(ex);
+            long lastPackageReceivedTime = System.currentTimeMillis();
+            String traceInfo = new TraceUtils.TraceInfoBuilder()
+                    .args(new String[]{assistantName, assistantUid})
+                    .elapseTime(lastPackageReceivedTime - startTime.get())
+                    .method("ChatApi::assistantLastPackageReceived")
+                    .status(TraceUtils.TraceStatus.FAILED)
+                    .traceId(traceId)
+                    .username(username)
+                    .build();
+            TraceUtils.getPerfLogger().trace(traceInfo);
+        }).start();
+
+        return sseEmitter;
+    }
 }

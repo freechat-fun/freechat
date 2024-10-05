@@ -1,6 +1,7 @@
 package fun.freechat.service.chat;
 
 import dev.langchain4j.model.moderation.Moderation;
+import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.model.ChatContext;
 
 import java.util.List;
@@ -14,7 +15,6 @@ public interface ChatSessionService {
     CompletableFuture<Moderation> triggerModerationIfNeeded(
             ChatSession session,
             List<dev.langchain4j.data.message.ChatMessage> messages);
-    void verifyModerationIfNeeded(
-            ChatSession session,
-            Future<dev.langchain4j.model.moderation.Moderation> moderationFuture);
+    void verifyModerationIfNeeded(Future<dev.langchain4j.model.moderation.Moderation> moderationFuture);
+    ChatSession createTemporary(ChatContext chatContext, ChatMemoryStore chatMemoryStore);
 }

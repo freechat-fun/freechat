@@ -102,8 +102,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     Long infoId = Long.parseLong(targets[0]);
                     ownerId = getCharacterService().getOwner(infoId);
                     allow = currentUser.getUserId().equals(ownerId);
-                    if (targetNotBlank(targets[1])) {
-                        allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
+                    if (allow && targetNotBlank(targets[1])) {
+                        allow = currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
                 case "characterBackendUpdateOp" -> {
@@ -113,8 +113,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     }
                     ownerId = getCharacterService().getBackendOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
-                    if (targetNotBlank(targets[1])) {
-                        allow = allow && currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
+                    if (allow && targetNotBlank(targets[1])) {
+                        allow = currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));
                     }
                 }
                 case "promptCreateOp", "agentCreateOp", "pluginCreateOp", "characterCreateOp" ->
@@ -166,9 +166,9 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     }
                     ownerId = getPromptTaskService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
-                    if (targetNotBlank(targets[1])) {
+                    if (allow && targetNotBlank(targets[1])) {
                         Long infoId = Long.parseLong(targets[1]);
-                        allow = allow && currentUser.getUserId().equals(getPromptService().getOwner(infoId));
+                        allow = currentUser.getUserId().equals(getPromptService().getOwner(infoId));
                     }
                 }
                 case "promptDeleteOp" -> {
@@ -229,6 +229,19 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "apiTokenByIdDefaultOp" -> {
                     ownerId = getSysApiTokenService().getOwner((Long) targetObject);
                     allow = currentUser.getUserId().equals(ownerId);
+                }
+                case "chatAssistantDefaultOp" -> {
+                    targets = ((String) targetObject).split("\\|");
+                    if (targets.length != 2) {
+                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                    }
+                    ownerId = getChatContextService().getChatOwner(targets[0]);
+                    allow = currentUser.getUserId().equals(ownerId);
+                    if (allow && targetNotBlank(targets[1])) {
+                        Long assistantId = Long.parseLong(targets[1]);
+                        allow = getCharacterService().isOfficial(assistantId) ||
+                                currentUser.getUserId().equals(getCharacterService().getOwner(assistantId));
+                    }
                 }
                 default -> allow = false;
             }
