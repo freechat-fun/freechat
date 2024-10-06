@@ -4,7 +4,6 @@ import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterBackend;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Schema(description = "Character backend information")
@@ -38,7 +37,11 @@ public class CharacterBackendDTO {
             return null;
         }
         CharacterBackend backend = CommonUtils.convert(this, CharacterBackend.class).withCharacterUid(characterUid);
-        backend.setIsDefault(BooleanUtils.isTrue(getIsDefault()) ? (byte) 1 : (byte) 0);
+        if (getIsDefault() == Boolean.TRUE) {
+            backend.setIsDefault((byte) 1);
+        } else if (getIsDefault() == Boolean.FALSE) {
+            backend.setIsDefault((byte) 0);
+        }
         return backend;
     }
 

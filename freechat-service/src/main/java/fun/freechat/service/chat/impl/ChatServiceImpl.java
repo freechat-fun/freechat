@@ -346,7 +346,11 @@ public class ChatServiceImpl implements ChatService {
     private ChatSession createTemporarySession(ChatSession session, String chatId, String assistantUid) {
         Long assistantId = characterService.getLatestIdByUid(assistantUid);
         CharacterInfo assistantSummary = characterService.summary(assistantId);
-        String assistantBackendId = characterService.getDefaultBackend(assistantUid).getBackendId();
+        CharacterBackend assistantBackend = characterService.getDefaultBackend(assistantUid);
+        if (assistantBackend == null) {
+            return null;
+        }
+        String assistantBackendId = assistantBackend.getBackendId();
         Map<String, Object> variables = session.getVariables();
         String assistantChatId = assistantChatId(chatId);
         Object assistantMemoryId = asMemoryId(assistantChatId);

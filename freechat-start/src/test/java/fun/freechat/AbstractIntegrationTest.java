@@ -47,8 +47,8 @@ public class AbstractIntegrationTest {
                 .withExposedPorts(3306)
                 .withEnv("MYSQL_ROOT_PASSWORD", "hello1234");
 
-        milvus =  new MilvusContainer(milvusImageName())
-                .withCommand( "run", "standalone");
+        milvus =  new MilvusContainer(milvusImageName());
+//                .withCommand( "run", "standalone");
     }
 
     @Autowired
@@ -84,7 +84,8 @@ public class AbstractIntegrationTest {
     }
 
     private static DockerImageName milvusImageName() {
-        return DockerImageName.parse("bitnami/milvus:latest")
-                .asCompatibleSubstituteFor("milvusdb/milvus");
+//        return DockerImageName.parse("bitnami/milvus:latest")
+//                .asCompatibleSubstituteFor("milvusdb/milvus");
+        return DockerImageName.parse("milvusdb/milvus:latest");
     }
 }
