@@ -1,4 +1,4 @@
-FROM freechat0sa1acr.azurecr.io/openjdk:21-bullseye
+FROM openjdk:21-bullseye
 
 ARG APP_NAME=freechat
 ARG UNAME=admin
