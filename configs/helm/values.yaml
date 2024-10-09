@@ -69,6 +69,7 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
     nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
   hosts:
     - host: freechat.fun
       backend:
@@ -80,6 +81,7 @@ ingress:
           - path: /assets
             pathType: Prefix
     - host: www.freechat.fun
+      redirect: true
       backend:
         paths:
           - path: /
