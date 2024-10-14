@@ -50,7 +50,7 @@ public class MainController {
         return "forward:/";
     }
 
-    @RequestMapping(value = {"/", "/undefined"})
+    @RequestMapping(value = {"/", "/undefined", "/error"})
     public String index(HttpServletRequest request, Model model) {
         try {
             User user = AccountUtils.currentUser();
