@@ -238,9 +238,9 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     ownerId = getChatContextService().getChatOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
                     if (allow && targetNotBlank(targets[1])) {
-                        Long assistantId = Long.parseLong(targets[1]);
-                        allow = getCharacterService().isOfficial(assistantId) ||
-                                currentUser.getUserId().equals(getCharacterService().getOwner(assistantId));
+                        String assistantUid = targets[1];
+                        allow = getCharacterService().isOfficialByUid(assistantUid) ||
+                                currentUser.getUserId().equals(getCharacterService().getOwnerByUid(assistantUid));
                     }
                 }
                 default -> allow = false;

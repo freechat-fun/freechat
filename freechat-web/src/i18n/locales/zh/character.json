@@ -62,5 +62,7 @@
   "Max Segment Size": "最大分段尺寸",
   "The maximum size of a segment in tokens.": "以 tokens 计算的最大分段尺寸。",
   "Max Overlap Size": "最大重叠尺寸",
-  "The maximum size of the overlap between segments in tokens.": "以 tokens 计算的段落之间重叠的最大尺寸。"
+  "The maximum size of the overlap between segments in tokens.": "以 tokens 计算的段落之间重叠的最大尺寸。",
+  "Recommended Characters": "推荐角色",
+  "Your Characters": "你的角色"
 }

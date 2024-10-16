@@ -60,6 +60,10 @@ public class TestCharacterUtils implements ApplicationContextAware {
         characterService.delete(user);
     }
 
+    public static String idToUid(Long characterId) {
+        return characterService.getUid(characterId);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         characterService = applicationContext.getBean(CharacterService.class);

@@ -63,5 +63,7 @@
   "Max Segment Size": "Max Segment Size",
   "The maximum size of a segment in tokens.": "The maximum size of a segment in tokens.",
   "Max Overlap Size": "Max Overlap Size",
-  "The maximum size of the overlap between segments in tokens.": "The maximum size of the overlap between segments in tokens."
+  "The maximum size of the overlap between segments in tokens.": "The maximum size of the overlap between segments in tokens.",
+  "Recommended Characters": "Recommended Characters",
+  "Your Characters": "Your Characters"
 }

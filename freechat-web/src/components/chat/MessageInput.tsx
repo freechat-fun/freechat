@@ -1,7 +1,7 @@
-import { useRef, KeyboardEvent, useEffect } from "react";
+import { useRef, KeyboardEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
-import { SendRounded } from "@mui/icons-material";
+import { AndroidRounded, SendRounded } from "@mui/icons-material";
 
 export type MessageInputProps = {
   textAreaValue: string;
@@ -13,6 +13,8 @@ export type MessageInputProps = {
 export default function MessageInput(props: MessageInputProps) {
   const { textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
   const { t } = useTranslation('chat');
+
+  const [assistantId, setAssistantId] = useState<number>();
   
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -66,9 +68,10 @@ export default function MessageInput(props: MessageInputProps) {
   // }
 
   return (
-    <Box sx={{
+    <Stack sx={{
       px: 2,
       pb: { xs: 1, sm: 3 },
+      flexDirection: "row",
     }}>
         {/* <Textarea
           disabled={disabled}
@@ -110,6 +113,7 @@ export default function MessageInput(props: MessageInputProps) {
           onKeyDown={handleSendByEnter}
         /> */}
 
+      <Box flexGrow={1}>
         <Input
           disabled={disabled}
           placeholder="Type something here…"
@@ -176,6 +180,10 @@ export default function MessageInput(props: MessageInputProps) {
           }
           onKeyDown={handleSend}
         />
-    </Box>
+      </Box>
+      <IconButton sx={{ mx: 1, px: 1 }}>
+        <AndroidRounded fontSize="large" />
+      </IconButton>
+    </Stack>
   );
 }

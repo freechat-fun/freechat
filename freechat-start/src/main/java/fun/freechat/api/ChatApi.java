@@ -554,16 +554,16 @@ public class ChatApi {
             summary = "Send Assistant for Chat Message",
             description = "Send a message to assistant for a new chat message."
     )
-    @GetMapping("/send/assistant/{chatId}/{assistantId}")
+    @PostMapping("/send/assistant/{chatId}/{assistantUid}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
     public LlmResultDTO sendAssistant(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @Parameter(description = "Assistant id") @PathVariable("assistantId") @Positive Long assistantId) {
+            @Parameter(description = "Assistant uid") @PathVariable("assistantUid") @NotBlank String assistantUid) {
         checkQuota(chatId);
-        Response<AiMessage> response = chatService.sendAssistant(chatId, characterService.getUid(assistantId));
+        Response<AiMessage> response = chatService.sendAssistant(chatId, assistantUid);
 
         if (response == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantUid);
         }
 
         return LlmResultDTO.from(response);
@@ -574,20 +574,19 @@ public class ChatApi {
             summary = "Send Assistant for Chat Message by Streaming Back",
             description = "Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response."
     )
-    @GetMapping(value = "/send/stream/assistant/{chatId}/{assistantId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/send/stream/assistant/{chatId}/{assistantUid}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
     public SseEmitter streamSendAssistant(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @Parameter(description = "Assistant id") @PathVariable("assistantId") @Positive Long assistantId) {
+            @Parameter(description = "Assistant uid") @PathVariable("assistantUid") @NotBlank String assistantUid) {
         checkQuota(chatId);
-        String assistantUid = characterService.getUid(assistantId);
         SseEmitter sseEmitter = new SseEmitter();
         // avoid instruction reordering
         AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
         TokenStream tokenStream = chatService.streamSendAssistant(chatId, assistantUid);
 
         if (tokenStream == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantUid);
         }
 
 

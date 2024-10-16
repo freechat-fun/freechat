@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
+import static fun.freechat.util.TestCharacterUtils.idToUid;
 import static fun.freechat.util.TestCommonUtils.defaultModelFor;
 import static fun.freechat.util.TestCommonUtils.parametersFor;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -540,7 +541,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testSendAssistantFailed() {
-        testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterId)
+        testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + idToUid(characterId))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -552,7 +553,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         TestCharacterUtils.prioritizeCharacter(characterId);
         TestCommonUtils.waitAWhile();
 
-        LlmResultDTO result = testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterId)
+        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + idToUid(characterId))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -571,7 +572,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
-        testClient.get().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + characterId)
+        testClient.post().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + idToUid(characterId))
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
