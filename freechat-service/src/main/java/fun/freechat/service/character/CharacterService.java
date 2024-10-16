@@ -55,6 +55,8 @@ public interface CharacterService {
     CharacterInfo summary(Long characterId);
     Pair<CharacterInfo, List<String>> summary(Long characterId, User user);
     List<Pair<CharacterInfo, List<String>>> summary(Collection<Long> characterIds, User user);
+    CharacterInfo summaryByUid(String characterUid);
+    CharacterInfo summaryByUid(String characterUid, User user);
     Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(Long characterId, User user);
     List<Triple<CharacterInfo, List<String>, List<CharacterBackend>>> details(Collection<Long> characterIds, User user);
     List<Triple<Long, Integer, InteractiveStats>> listVersionsByName(String name, User user);

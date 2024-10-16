@@ -104,13 +104,13 @@ public class ChatApi {
             description = "Start a chat session."
     )
     @PostMapping(value = "", produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("hasPermission(#p0.characterId, 'chatCreateOp')")
+    @PreAuthorize("hasPermission(#p0.characterUid, 'chatCreateOp')")
     public String start(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Parameters for starting a chat session")
             @RequestBody
             @NotNull
             ChatCreateDTO chatCreateParams) {
-        String chatCharacterUid = characterService.getUid(chatCreateParams.getCharacterId());
+        String chatCharacterUid = chatCreateParams.getCharacterUid();
         String backendId = null;
         if (chatCreateParams.getBackendId() == null) {
             CharacterBackend backend = characterService.getDefaultBackend(chatCharacterUid);

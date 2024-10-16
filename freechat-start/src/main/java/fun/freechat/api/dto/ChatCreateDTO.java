@@ -16,8 +16,8 @@ public class ChatCreateDTO {
     private String characterNickname;
     @Schema(description = "Anything about this session")
     private String about;
-    @Schema(description = "Character id for this session", requiredMode = REQUIRED)
-    private Long characterId;
+    @Schema(description = "Character uid for this session", requiredMode = REQUIRED)
+    private String characterUid;
     @Schema(description = "Character backend for this session")
     private String backendId;
     @Schema(description = "API-KEY name, priority: apiKeyName > apiKeyValue")

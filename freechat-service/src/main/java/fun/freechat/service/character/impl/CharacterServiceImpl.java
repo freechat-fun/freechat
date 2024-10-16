@@ -555,6 +555,35 @@ select distinct c.user_id, c.character_id, c.visibility... \
     }
 
     @Override
+    public CharacterInfo summaryByUid(String characterUid) {
+        var statement = select(Info.summaryColumns())
+                .from(Info.table)
+                .where(Info.characterUid, isEqualTo(characterUid))
+                .and(Info.visibility, isNotEqualTo(Visibility.HIDDEN.text()))
+                .orderBy(Info.version.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).orElse(null);
+    }
+
+    @Override
+    public CharacterInfo summaryByUid(String characterUid, User user) {
+        var fields = select(Info.summaryColumns())
+                .from(Info.table);
+
+        var statement = wrapQueryExpression(fields, user.getUserId())
+                .and(Info.characterUid, isEqualTo(characterUid))
+                .orderBy(Info.version.descending())
+                .limit(1)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        return characterInfoMapper.selectOne(statement).orElse(null);
+    }
+
+    @Override
     @LongPeriodCache(keyBy = CACHE_KEY_SPEL_PREFIX + "#p0")
     public Triple<CharacterInfo, List<String>, List<CharacterBackend>> details(Long characterId, User user) {
         return characterInfoMapper.selectOne(c -> wrapQueryExpression(c, user.getUserId())

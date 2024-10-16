@@ -253,7 +253,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setCharacterNickname(CHARACTER_NICKNAME);
         dto.setUserNickname(USER_NICKNAME);
         dto.setUserProfile(USER_PROFILE);
-        dto.setCharacterId(characterId);
+        dto.setCharacterUid(idToUid(characterId));
 
         testClient.post().uri("/api/v1/chat")
                 .accept(MediaType.TEXT_PLAIN)
@@ -269,7 +269,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setCharacterNickname(CHARACTER_NICKNAME);
         dto.setUserNickname(USER_NICKNAME);
         dto.setUserProfile(USER_PROFILE);
-        dto.setCharacterId(characterId);
+        dto.setCharacterUid(idToUid(characterId));
 
         chatId = testClient.post().uri("/api/v1/chat")
                 .accept(MediaType.TEXT_PLAIN)

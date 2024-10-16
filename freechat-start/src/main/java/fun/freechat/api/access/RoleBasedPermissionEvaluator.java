@@ -78,16 +78,15 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "ragDefaultOp" -> allow = targetObject instanceof Long taskId &&
                         currentUser.getUserId().equals(getRagTaskService().getOwner(taskId));
                 case "chatCreateOp" -> {
-                    Long characterId  =(Long) targetObject;
-                    if (characterId == null) {
+                    String characterUid  =(String) targetObject;
+                    if (StringUtils.isBlank(characterUid)) {
                         allow = false;
                     } else {
                         String chatUserId = currentUser.getUserId();
-                        CharacterInfo summary = getCharacterService().summary(characterId);
+                        CharacterInfo summary = getCharacterService().summaryByUid(characterUid);
                         String characterOwnerId = summary.getUserId();
                         Visibility visibility = Visibility.of(summary.getVisibility());
-                        allow = chatUserId.equals(characterOwnerId) ||
-                                visibility == Visibility.PUBLIC;
+                        allow = chatUserId.equals(characterOwnerId) || visibility == Visibility.PUBLIC;
                         if (!allow && visibility == Visibility.PUBLIC_ORG) {
                                 allow = getOrgService().getOwners(characterOwnerId).contains(chatUserId) ||
                                         getOrgService().getSubordinates(characterOwnerId).contains(chatUserId);
