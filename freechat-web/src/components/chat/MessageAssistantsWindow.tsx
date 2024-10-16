@@ -5,8 +5,8 @@ import { DialogActions, DialogContent, DialogTitle, IconButton, Modal, ModalDial
 import { DoneRounded } from "@mui/icons-material";
 
 type MessageAssistantsWindowProps = TypographyProps<'div'> & {
-  characterId?: number;
-  setCharacterId?: (id: number | undefined) => void;
+  assistantUid?: string;
+  setAssistantUid?: (id: string | undefined) => void;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }
@@ -14,7 +14,7 @@ type MessageAssistantsWindowProps = TypographyProps<'div'> & {
 const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindowProps>> = ((props) => {
   const { t } = useTranslation('chat');
 
-  const { characterId, setCharacterId, open = false, setOpen = () => {} } = props;
+  const { assistantUid, setAssistantUid, open = false, setOpen = () => {} } = props;
 
   const title = t('Select an assistant');
 
@@ -39,8 +39,8 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
               alignItems: 'center'
             }}>
               <MessageAssistantsPane
-                characterId={characterId}
-                setCharacterId={setCharacterId}
+                assistantUid={assistantUid}
+                setAssistantUid={setAssistantUid}
               />
             </Stack>
           </DialogContent>

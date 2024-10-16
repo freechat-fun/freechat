@@ -6,13 +6,13 @@ import { Divider, Stack } from "@mui/joy";
 import { MessageAssistant } from ".";
 
 type MessageAssistantsPaneProps = {
-  characterId?: number;
-  setCharacterId?: (id: number | undefined) => void;
+  assistantUid?: string;
+  setAssistantUid?: (id: string | undefined) => void;
 }
 
 export default function MessageAssistantsPane({
-  characterId,
-  setCharacterId,
+  assistantUid,
+  setAssistantUid,
 }: MessageAssistantsPaneProps) {
   const { t } = useTranslation('character');
   const { characterApi } = useFreeChatApiContext();
@@ -61,10 +61,10 @@ export default function MessageAssistantsPane({
           <Divider>{t('Recommended Characters')}</Divider>
           {officialRecords.map((summary, index) => (
             <MessageAssistant
-              key={`message-assistant-official-${summary.characterId ?? index}`}
+              key={`message-assistant-official-${summary.characterUid ?? index}`}
               url={summary.avatar}
-              checked={characterId === summary.characterId}
-              onSelect={() => setCharacterId?.(summary.characterId)}>
+              checked={assistantUid === summary.characterUid}
+              onSelect={() => setAssistantUid?.(summary.characterUid)}>
             </MessageAssistant>
           ))}
         </Fragment>
@@ -74,10 +74,10 @@ export default function MessageAssistantsPane({
           <Divider>{t('Your Characters')}</Divider>
           {personalRecords.map((summary, index) => (
             <MessageAssistant
-              key={`message-assistant-personal-${summary.characterId ?? index}`}
+              key={`message-assistant-personal-${summary.characterUid ?? index}`}
               url={summary.avatar}
-              checked={characterId === summary.characterId}
-              onSelect={() => setCharacterId?.(summary.characterId)}>
+              checked={assistantUid === summary.characterUid}
+              onSelect={() => setAssistantUid?.(summary.characterUid)}>
             </MessageAssistant>
           ))}
         </Fragment>
