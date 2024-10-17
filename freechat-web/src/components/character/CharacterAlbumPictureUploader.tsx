@@ -7,13 +7,13 @@ import { useFreeChatApiContext, useErrorMessageBusContext } from "../../contexts
 import { getCompressedImage } from "../../libs/ui_utils";
 
 type CharacterAlbumPictureUploaderProps = {
-  characterId: number,
+  characterUid: string,
   sx?: SxProps,
   onUploaded?: (url: string) => void,
 }
 
 const CharacterAlbumPictureUploader = forwardRef<HTMLDivElement, CharacterAlbumPictureUploaderProps>((props, ref) => {
-  const { characterId, sx, onUploaded } = props;
+  const { characterUid, sx, onUploaded } = props;
 
   const { characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -22,7 +22,7 @@ const CharacterAlbumPictureUploader = forwardRef<HTMLDivElement, CharacterAlbumP
     getCompressedImage(file, 2 * 1024 * 1024)
       .then(imageInfo => {
         const request = new File([imageInfo.blob], name);
-        characterApi?.uploadCharacterPicture(characterId, request)
+        characterApi?.uploadCharacterPicture(characterUid, request)
           .then(url => onUploaded?.(url))
           .catch(handleError);
       })

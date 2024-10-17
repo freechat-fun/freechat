@@ -153,7 +153,7 @@ export default function CharacterEditor ({
     getCompressedImage(file, 100 * 1024)
       .then(imageInfo => {
         const request = new File([imageInfo.blob], name);
-        characterApi?.uploadCharacterAvatar(id as number, request)
+        recordUid && characterApi?.uploadCharacterAvatar(recordUid, request)
           .then(url => setAvatar(url))
           .catch(handleError);
       })
@@ -311,8 +311,8 @@ export default function CharacterEditor ({
             }
           })
           .catch(handleError);
-        } else if (id) {
-          characterApi?.addCharacterBackend(id, req)
+        } else if (recordUid) {
+          characterApi?.addCharacterBackend(recordUid, req)
             .then((bId) => {
               if (redirectToChatPrompt && req.chatPromptTaskId) {
                 saveAndNavigate(req.chatPromptTaskId, redirectHash);
@@ -731,7 +731,7 @@ export default function CharacterEditor ({
 
           <Card>
             <CharacterBackendsPane
-              characterId={id}
+              characterUid={recordUid}
               defaultBackends={backends}
               editMode={true}
               onEdit={handleBackendEdit}
@@ -748,7 +748,7 @@ export default function CharacterEditor ({
             </OptionTooltip>
           </CommonBox>
           <CharacterAlbumPane
-            characterId={id}
+            characterUid={recordUid}
             picture={picture}
             setPicture={setPicture}
           />

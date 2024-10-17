@@ -10,7 +10,7 @@ import { formatDateTime } from "../../libs/date_utils";
 import { CommonBox, ConfirmModal } from "..";
 
 type CharacterBackendsPaneProps = {
-  characterId?: number;
+  characterUid?: string;
   defaultBackends?: CharacterBackendDetailsDTO[];
   editMode?: boolean;
   sx?: SxProps;
@@ -18,7 +18,7 @@ type CharacterBackendsPaneProps = {
 }
 
 export default function CharacterBackendsPane({
-  characterId,
+  characterUid,
   defaultBackends = [],
   editMode = false,
   sx,
@@ -33,10 +33,10 @@ export default function CharacterBackendsPane({
   const [backendIdToConfirm, setBackendIdToConfirm] = useState('');
 
   const getBackends = useCallback(() => {
-    characterId && characterApi?.listCharacterBackends(characterId)
+    characterUid && characterApi?.listCharacterBackends(characterUid)
       .then(setBackends)
       .catch(handleError);
-  }, [characterApi, handleError, characterId]);
+  }, [characterApi, handleError, characterUid]);
 
   useEffect(() => {
     getBackends();

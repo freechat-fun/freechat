@@ -10,13 +10,13 @@ import { DeleteForeverRounded } from "@mui/icons-material";
 import { extractFilenameFromUrl } from "../../libs/url_utils";
 
 type CharacterAlbumPaneProps = {
-  characterId?: number;
+  characterUid?: string;
   picture?: string | undefined;
   setPicture?: (url: string | undefined) => void;
 }
 
 export default function CharacterAlbumPane({
-  characterId,
+  characterUid,
   picture,
   setPicture,
 }: CharacterAlbumPaneProps) {
@@ -34,11 +34,11 @@ export default function CharacterAlbumPane({
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   useEffect(() => {
-    characterId && characterApi?.listCharacterPictures(characterId)
+    characterUid && characterApi?.listCharacterPictures(characterUid)
       .then(setPictures)
       .catch(handleError);
       return initTransitionSequence(setShowPictures, undefined, pageSize);
-  }, [characterApi, characterId, handleError]);
+  }, [characterApi, characterUid, handleError]);
 
   function handlePictureUploaded(url: string): void {
     setPictures(prevPictures => [...prevPictures, url]);
@@ -91,7 +91,7 @@ export default function CharacterAlbumPane({
         </Transition>
       ))}
 
-      {characterId && pictures.length < pageSize && (
+      {characterUid && pictures.length < pageSize && (
         <Transition
           in={showPictures}
           timeout={pictures.length * defaultTransitionInterval}
@@ -103,7 +103,7 @@ export default function CharacterAlbumPane({
             <CharacterAlbumPictureUploader
               key="picture-new"
               ref={cardRefs.current[pageSize - 1]}
-              characterId={characterId}
+              characterUid={characterUid}
               onUploaded={handlePictureUploaded}
               sx={{
                 minHeight: pictureWidth,
