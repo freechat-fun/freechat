@@ -52,6 +52,7 @@ public interface CharacterService {
     boolean delete(Long characterId, User user);
     List<Long> delete(User user);
     List<Long> deleteByName(String name, User user);
+    List<Long> deleteByUid(String characterUid, User user);
     CharacterInfo summary(Long characterId);
     Pair<CharacterInfo, List<String>> summary(Long characterId, User user);
     List<Pair<CharacterInfo, List<String>>> summary(Collection<Long> characterIds, User user);

@@ -100,8 +100,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                     if (targets.length != 2) {
                         throw new RuntimeException("Wrong format of target: " + targetObject);
                     }
-                    Long infoId = Long.parseLong(targets[0]);
-                    ownerId = getCharacterService().getOwner(infoId);
+                    String infoUid = targets[0];
+                    ownerId = getCharacterService().getOwnerByUid(infoUid);
                     allow = currentUser.getUserId().equals(ownerId);
                     if (allow && targetNotBlank(targets[1])) {
                         allow = currentUser.getUserId().equals(getPromptTaskService().getOwner(targets[1]));

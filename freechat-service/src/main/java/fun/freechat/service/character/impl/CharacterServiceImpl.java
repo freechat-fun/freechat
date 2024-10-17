@@ -490,6 +490,22 @@ select distinct c.user_id, c.character_id, c.visibility... \
         return delete(ids, user);
     }
 
+    @Override
+    public List<Long> deleteByUid(String characterUid, User user) {
+        var statement = select(Info.characterId)
+                .from(Info.table)
+                .where(Info.userId, isEqualTo(user.getUserId()))
+                .and(Info.characterUid, isEqualTo(characterUid))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        List<Long> ids = characterInfoMapper.selectMany(statement)
+                .stream()
+                .map(CharacterInfo::getCharacterId)
+                .toList();
+
+        return delete(ids, user);
+    }
+
     private List<Long> delete(List<Long> ids, User user) {
         LinkedList<Long> deletedIds = new LinkedList<>();
         SqlSession session = sqlSessionFactory.openSession();
@@ -972,6 +988,10 @@ select distinct c.user_id, c.character_id, c.visibility... \
                 .stream()
                 .map(CharacterInfo::getCharacterUid)
                 .toList();
+
+        if (CollectionUtils.isEmpty(characterUidList)) {
+            return 0;
+        }
 
         return characterBackendMapper.delete(c ->
                 c.where(CharacterBackendDynamicSqlSupport.characterUid, isIn(characterUidList)));

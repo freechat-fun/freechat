@@ -428,7 +428,6 @@ public class CharacterApi {
     public Boolean delete(
             @Parameter(description = "The characterId to be deleted") @PathVariable("characterId") @Positive
             Long characterId) {
-
         return characterService.delete(characterId, AccountUtils.currentUser());
     }
 
@@ -442,6 +441,18 @@ public class CharacterApi {
             @Parameter(description = "The character name to be deleted") @PathVariable("name") @NotBlank
             String name) {
         return characterService.deleteByName(name, AccountUtils.currentUser());
+    }
+
+    @Operation(
+            operationId = "deleteCharacterByUid",
+            summary = "Delete Character by Uid",
+            description = "Delete character by uid. return the list of successfully deleted characterIds."
+    )
+    @DeleteMapping("/uid/{characterUid}")
+    public List<Long> deleteByUid(
+            @Parameter(description = "The character uid to be deleted") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
+        return characterService.deleteByUid(characterUid, AccountUtils.currentUser());
     }
 
     @Operation(
@@ -536,14 +547,13 @@ public class CharacterApi {
             summary = "Add Character Backend",
             description = "Add a backend configuration for a character."
     )
-    @PostMapping(value = "/backend/{characterId}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/backend/{characterUid}", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.chatPromptTaskId, 'characterBackendCreateOp')")
     public String addBackend(
-            @Parameter(description = "The characterId to be added a backend") @PathVariable("characterId") @Positive
-            Long characterId,
+            @Parameter(description = "The characterUid to be added a backend") @PathVariable("characterUid") @NotBlank
+            String characterUid,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The character backend to be added") @RequestBody @NotNull
             CharacterBackendDTO backend) {
-        String characterUid = characterService.getUid(characterId);
         CharacterBackend characterBackend = backend.toCharacterBackend(characterUid);
         if (characterBackend == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
@@ -628,12 +638,11 @@ public class CharacterApi {
             summary = "Get Default Character Backend",
             description = "Get the default backend configuration."
     )
-    @GetMapping("/backend/default/{characterId}")
-    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    @GetMapping("/backend/default/{characterUid}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public CharacterBackendDetailsDTO getDefaultBackend(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
-            Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+            @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         return CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterUid));
     }
 
@@ -642,12 +651,11 @@ public class CharacterApi {
             summary = "List Character Backend ids",
             description = "List character backend identifiers."
     )
-    @GetMapping("/backend/ids/{characterId}")
-    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    @GetMapping("/backend/ids/{characterUid}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public List<String> listBackendIds(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
-            Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+            @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         return characterService.listBackendIds(characterUid);
     }
 
@@ -656,12 +664,11 @@ public class CharacterApi {
             summary = "List Character Backends",
             description = "List character backends."
     )
-    @GetMapping("/backends/{characterId}")
-    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    @GetMapping("/backends/{characterUid}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public List<CharacterBackendDetailsDTO> listBackends(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
-            Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+            @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         return characterService.listBackends(characterUid)
                 .stream()
                 .map(CharacterBackendDetailsDTO::from)
@@ -690,14 +697,14 @@ public class CharacterApi {
             summary = "Upload Character Picture",
             description = "Upload a picture of the character."
     )
-    @PostMapping(value = "/picture/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("hasPermission(#p2, 'characterDefaultOp')")
+    @PostMapping(value = "/picture/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadPicture(
             HttpServletRequest request,
             @Parameter(description = "Character picture") @RequestParam("file") @NotNull
             MultipartFile file,
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
-            Long characterId) {
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         Properties properties = configService.load();
         long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
@@ -707,7 +714,6 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
         }
 
-        String characterUid = characterService.getUid(characterId);
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
         }
@@ -755,13 +761,12 @@ public class CharacterApi {
             summary = "List Character Pictures",
             description = "List pictures of the character."
     )
-    @GetMapping("/pictures/{characterId}")
-    @PreAuthorize("hasPermission(#p1, 'characterDefaultOp')")
+    @GetMapping("/pictures/{characterUid}")
+    @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
     public List<String> listPictures(
             HttpServletRequest request,
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
-            Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
         }
@@ -789,13 +794,14 @@ public class CharacterApi {
             summary = "Upload Character Avatar",
             description = "Upload an avatar of the character."
     )
-    @PostMapping(value = "/avatar/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/avatar/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
     public String uploadAvatar(
             HttpServletRequest request,
             @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
             MultipartFile file,
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
-            Long characterId) {
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         Properties properties = configService.load();
         long maxSize = ConfigUtils.getOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
@@ -804,7 +810,6 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
         }
 
-        String characterUid = characterService.getUid(characterId);
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
         }
@@ -828,14 +833,14 @@ public class CharacterApi {
             summary = "Upload Character Document",
             description = "Upload a document of the character."
     )
-    @PostMapping(value = "/document/{characterId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("hasPermission(#p2, 'characterDefaultOp')")
+    @PostMapping(value = "/document/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadDocument(
             HttpServletRequest request,
             @Parameter(description = "Character document") @RequestParam("file") @NotNull
             MultipartFile file,
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
-            Long characterId) {
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         Properties properties = configService.load();
         long maxSize = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_SIZE_KEY, DEFAULT_DOCUMENT_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_COUNT_KEY, DEFAULT_DOCUMENT_MAX_COUNT);
@@ -845,7 +850,6 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
         }
 
-        String characterUid = characterService.getUid(characterId);
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
         }
@@ -891,13 +895,12 @@ public class CharacterApi {
             summary = "List Character Documents",
             description = "List documents of the character."
     )
-    @GetMapping("/documents/{characterId}")
-    @PreAuthorize("hasPermission(#p1, 'characterDefaultOp')")
+    @GetMapping("/documents/{characterUid}")
+    @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
     public List<String> listDocuments(
             HttpServletRequest request,
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
-            Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
         }

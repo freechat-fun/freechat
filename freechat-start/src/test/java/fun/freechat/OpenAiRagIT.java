@@ -165,7 +165,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertNotNull(task1);
 
         List<RagTaskDetailsDTO> tasks;
-        tasks = testClient.get().uri("/api/v1/rag/task/" + characterUid)
+        tasks = testClient.get().uri("/api/v1/rag/task/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

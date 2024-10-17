@@ -25,7 +25,7 @@ public class CharacterIT extends AbstractIntegrationTest {
     private String otherId;
     private String ownerToken;
     private String otherToken;
-    private Long characterId;
+    private String characterUid;
 
     @BeforeEach
     public void setUp() {
@@ -39,8 +39,9 @@ public class CharacterIT extends AbstractIntegrationTest {
         otherId = otherAndToken.getLeft();
         otherToken = otherAndToken.getRight();
 
-        characterId = TestCharacterUtils.createCharacter(ownerId);
+        Long characterId = TestCharacterUtils.createCharacter(ownerId);
         TestCommonUtils.waitAWhile();
+        characterUid = TestCharacterUtils.idToUid(characterId);
     }
 
     @AfterEach
@@ -52,7 +53,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
     @Test
     public void testCharacterPictures() {
-        String url1 = testClient.post().uri("/api/v1/character/picture/" + characterId)
+        String url1 = testClient.post().uri("/api/v1/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -65,7 +66,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url1));
 
-        String url2 = testClient.post().uri("/api/v1/character/picture/" + characterId)
+        String url2 = testClient.post().uri("/api/v1/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -78,7 +79,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url2));
 
-        testClient.post().uri("/api/v1/character/picture/" + characterId)
+        testClient.post().uri("/api/v1/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -86,7 +87,7 @@ public class CharacterIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        List<String> urls = testClient.get().uri("/api/v1/character/pictures/" + characterId)
+        List<String> urls = testClient.get().uri("/api/v1/character/pictures/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -97,7 +98,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertThat(urls).hasSize(2).contains(url1, url2);
 
-        testClient.get().uri("/api/v1/character/pictures/" + characterId)
+        testClient.get().uri("/api/v1/character/pictures/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -137,7 +138,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
     @Test
     public void testCharacterDocuments() {
-        String url1 = testClient.post().uri("/api/v1/character/document/" + characterId)
+        String url1 = testClient.post().uri("/api/v1/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -150,7 +151,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url1));
 
-        String url2 = testClient.post().uri("/api/v1/character/document/" + characterId)
+        String url2 = testClient.post().uri("/api/v1/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -163,7 +164,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url2));
 
-        testClient.post().uri("/api/v1/character/document/" + characterId)
+        testClient.post().uri("/api/v1/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -171,7 +172,7 @@ public class CharacterIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        List<String> urls = testClient.get().uri("/api/v1/character/documents/" + characterId)
+        List<String> urls = testClient.get().uri("/api/v1/character/documents/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -182,7 +183,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertThat(urls).hasSize(2).contains(url1, url2);
 
-        testClient.get().uri("/api/v1/character/documents/" + characterId)
+        testClient.get().uri("/api/v1/character/documents/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

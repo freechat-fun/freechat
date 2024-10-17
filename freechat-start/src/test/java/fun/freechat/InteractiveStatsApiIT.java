@@ -59,7 +59,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(3L);
 
-        testClient.get().uri("/api/v1/stats/prompt/"+ promptUid + "/score")
+        testClient.get().uri("/api/v1/public/stats/prompt/"+ promptUid + "/score")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -67,7 +67,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(3L);
 
-        testClient.get().uri("/api/v1/score/prompt/" + promptUid)
+        testClient.get().uri("/api/v1/public/score/prompt/" + promptUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -75,7 +75,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(3L);
 
-        testClient.get().uri("/api/v1/stats/prompt/"+ promptUid)
+        testClient.get().uri("/api/v1/public/stats/prompt/"+ promptUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -90,15 +90,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
 
         String jsonPathPrefix = "$[?(@.promptId=='" + promptId + "')]";
 
-        String resp = testClient.get().uri("/api/v1/stats/prompts/by/score/10/0")
-                .accept(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer " + apiToken)
-                .exchange()
-                .expectBody(String.class)
-                .returnResult()
-                .getResponseBody();
-
-        testClient.get().uri("/api/v1/stats/prompts/by/score/10/0")
+        testClient.get().uri("/api/v1/public/stats/prompts/by/score/10/0")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()

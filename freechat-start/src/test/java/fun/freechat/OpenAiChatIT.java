@@ -20,6 +20,7 @@ import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
 import static fun.freechat.util.TestCharacterUtils.idToUid;
+import static fun.freechat.util.TestCharacterUtils.uidToId;
 import static fun.freechat.util.TestCommonUtils.defaultModelFor;
 import static fun.freechat.util.TestCommonUtils.parametersFor;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -80,7 +81,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     private String userApiKey;
     private Long promptId;
     private String promptTaskId;
-    private Long characterId;
+    private String characterUid;
     private String backendId;
     private String chatId;
 
@@ -188,7 +189,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setGreeting(CHARACTER_GREETING);
         dto.setVisibility(Visibility.PRIVATE.text());
 
-        characterId = testClient.post().uri("/api/v1/character")
+        Long characterId = testClient.post().uri("/api/v1/character")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
@@ -198,10 +199,13 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
                 .getResponseBody();
 
         assertNotNull(characterId);
+        TestCommonUtils.waitAWhile();
+        characterUid = idToUid(characterId);
+        assertNotNull(characterUid);
     }
 
     private void testPublishCharacter() {
-        characterId = testClient.post().uri("/api/v1/character/publish/" + characterId)
+        Long characterId = testClient.post().uri("/api/v1/character/publish/" + uidToId(characterUid))
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
                 .expectStatus().isOk()
@@ -210,6 +214,9 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
                 .getResponseBody();
 
         assertNotNull(characterId);
+        TestCommonUtils.waitAWhile();
+        characterUid = idToUid(characterId);
+        assertNotNull(characterUid);
     }
 
     private void testCreateBackend() {
@@ -221,7 +228,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setInitQuota(2L);
         dto.setQuotaType(QuotaType.MESSAGES.text());
 
-        backendId = testClient.post().uri("/api/v1/character/backend/" + characterId)
+        backendId = testClient.post().uri("/api/v1/character/backend/" + characterUid)
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
@@ -253,7 +260,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setCharacterNickname(CHARACTER_NICKNAME);
         dto.setUserNickname(USER_NICKNAME);
         dto.setUserProfile(USER_PROFILE);
-        dto.setCharacterUid(idToUid(characterId));
+        dto.setCharacterUid(characterUid);
 
         testClient.post().uri("/api/v1/chat")
                 .accept(MediaType.TEXT_PLAIN)
@@ -269,7 +276,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setCharacterNickname(CHARACTER_NICKNAME);
         dto.setUserNickname(USER_NICKNAME);
         dto.setUserProfile(USER_PROFILE);
-        dto.setCharacterUid(idToUid(characterId));
+        dto.setCharacterUid(characterUid);
 
         chatId = testClient.post().uri("/api/v1/chat")
                 .accept(MediaType.TEXT_PLAIN)
@@ -541,7 +548,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testSendAssistantFailed() {
-        testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + idToUid(characterId))
+        testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -550,10 +557,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testSendAssistant() {
-        TestCharacterUtils.prioritizeCharacter(characterId);
+        TestCharacterUtils.prioritizeCharacter(characterUid);
         TestCommonUtils.waitAWhile();
 
-        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + idToUid(characterId))
+        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -572,7 +579,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
-        testClient.post().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + idToUid(characterId))
+        testClient.post().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -634,17 +641,16 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testDeleteCharacter() {
-        Boolean succeed = testClient.delete().uri("/api/v1/character/" + characterId)
+        List<Long> ids = testClient.delete().uri("/api/v1/character/uid/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Boolean.class)
+                .expectBodyList(Long.class)
                 .returnResult()
                 .getResponseBody();
 
-        assertNotNull(succeed);
-        assertTrue(succeed);
+        assertThat(ids).hasSize(2);
     }
 
     private void testDeletePromptTask() {

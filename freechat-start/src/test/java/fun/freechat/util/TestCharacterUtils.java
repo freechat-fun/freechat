@@ -43,9 +43,9 @@ public class TestCharacterUtils implements ApplicationContextAware {
         return backendId;
     }
 
-    public static void prioritizeCharacter(Long characterId) {
+    public static void prioritizeCharacter(String characterUid) {
         CharacterInfo info = new CharacterInfo()
-                .withCharacterId(characterId)
+                .withCharacterId(characterService.getLatestIdByUid(characterUid))
                 .withPriority(2);
 
         characterService.update(Pair.of(info, null));
@@ -62,6 +62,10 @@ public class TestCharacterUtils implements ApplicationContextAware {
 
     public static String idToUid(Long characterId) {
         return characterService.getUid(characterId);
+    }
+
+    public static Long uidToId(String characterUid) {
+        return characterService.getLatestIdByUid(characterUid);
     }
 
     @Override
