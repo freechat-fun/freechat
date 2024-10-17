@@ -8,6 +8,7 @@ import fun.freechat.service.rag.RagTaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.apache.commons.lang3.StringUtils;
@@ -52,14 +53,13 @@ public class RagApi {
             summary = "Create RAG Task",
             description = "Create a RAG task."
     )
-    @PostMapping("/task/{characterId}")
-    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    @PostMapping("/task/{characterUid}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public Long create(
-            @Parameter(description = "The characterId to be added a RAG task") @PathVariable("characterId") @Positive
-            Long characterId,
+            @Parameter(description = "The characterUid to be added a RAG task") @PathVariable("characterUid") @NotBlank
+            String characterUid,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The RAG task to be added") @RequestBody @NotNull
             RagTaskDTO task) {
-        String characterUid = characterService.getUid(characterId);
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No character found.");
         }
@@ -153,12 +153,11 @@ public class RagApi {
             summary = "List RAG Tasks",
             description = "List the RAG tasks by characterId."
     )
-    @GetMapping("/tasks/{characterId}")
-    @PreAuthorize("hasPermission(#p0, 'characterDefaultOp')")
+    @GetMapping("/tasks/{characterUid}")
+    @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public List<RagTaskDetailsDTO> list(
-            @Parameter(description = "The characterId to be queried") @PathVariable("characterId") @Positive
-            Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+            @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No character found.");
         }

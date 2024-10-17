@@ -32,9 +32,9 @@ public class TestCharacterUtils implements ApplicationContextAware {
         return info.getCharacterId();
     }
 
-    public static String createCharacterBackend(Long characterId, String promptTaskId) {
+    public static String createCharacterBackend(String characterUid, String promptTaskId) {
         CharacterBackend backend = new CharacterBackend()
-                .withCharacterUid(characterService.getUid(characterId))
+                .withCharacterUid(characterUid)
                 .withChatPromptTaskId(promptTaskId)
                 .withIsDefault((byte) 1)
                 .withMessageWindowSize(50);

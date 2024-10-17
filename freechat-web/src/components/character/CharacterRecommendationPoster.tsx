@@ -44,7 +44,7 @@ const CharacterRecommendationPoster = forwardRef<HTMLDivElement, CharacterRecomm
                 request.userNickname = userDetails.nickname ?? userDetails.username;
                 request.userProfile = userDetails.profile;
                 request.characterNickname = record.nickname ?? record.name;
-                request.characterId = record.characterId as number;
+                request.characterUid = record.characterUid as string;
                 request.about = record.defaultScene;
 
                 chatApi.startChat(request)

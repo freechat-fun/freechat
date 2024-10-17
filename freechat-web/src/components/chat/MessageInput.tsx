@@ -14,9 +14,12 @@ export default function MessageInput(props: MessageInputProps) {
   const { textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
   const { t } = useTranslation('chat');
 
-  const [assistantId, setAssistantId] = useState<number>();
+  const [assistantId, setAssistantId] = useState<string>();
   
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const ASSISTANT_ID_KEY = 'SignIn.guestUsername';
+  const GUEST_PASSWORD_KEY = 'SignIn.guestPassword';
 
   useEffect(() => {
     if (!disabled) {

@@ -11,13 +11,13 @@ import { CommonBox, ConfirmModal } from "..";
 import { CharacterDocumentUploader } from ".";
 
 type CharacterDocumentsPaneProps = {
-  characterId?: number;
+  characterUid?: string;
   editMode?: boolean;
   sx?: SxProps;
 }
 
 export default function CharacterDocumentsPane({
-  characterId,
+  characterUid,
   editMode = false,
   sx,
 }: CharacterDocumentsPaneProps) {
@@ -30,17 +30,17 @@ export default function CharacterDocumentsPane({
   const [newTask, setNewTask] = useState<boolean>(false);
 
   const getBackends = useCallback(() => {
-    characterId && ragApi?.listRagTasks(characterId)
+    characterUid && ragApi?.listRagTasks(characterUid)
       .then(setRagTasks)
       .catch(handleError);
-  }, [characterId, ragApi, handleError]);
+  }, [characterUid, ragApi, handleError]);
 
   useEffect(() => {
     getBackends();
   }, [getBackends]);
 
   function handleRefreshTasks(): void {
-    characterId && ragApi?.listRagTasks(characterId)
+    characterUid && ragApi?.listRagTasks(characterUid)
       .then(setRagTasks)
       .catch(handleError);
   }
@@ -229,7 +229,7 @@ export default function CharacterDocumentsPane({
 
       <CharacterDocumentUploader
         key="document-uploader"
-        characterId={characterId}
+        characterUid={characterUid}
         open={newTask}
         onClose={handleUploaderClose}
       />

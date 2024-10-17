@@ -34,7 +34,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class OpenAiRagIT extends AbstractIntegrationTest {
     private String userId;
     private String userToken;
-    private Long characterId;
+    private String characterUid;
     private Long taskId;
     private boolean isFile;
     private String url;
@@ -70,7 +70,9 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
     }
 
     private void setUpCharacterForLang(String lang) {
-        characterId = TestCharacterUtils.createCharacter(userId, lang);
+        Long characterId = TestCharacterUtils.createCharacter(userId, lang);
+        TestCommonUtils.waitAWhile();
+        characterUid = TestCharacterUtils.idToUid(characterId);
     }
 
     private void testUploadDocument(String doc) {
@@ -80,7 +82,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
             return;
         }
 
-        url = testClient.post().uri("/api/v1/character/document/" + characterId)
+        url = testClient.post().uri("/api/v1/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -122,7 +124,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
             fileRequest.setSourceType(SourceType.URL.text());
         }
 
-        taskId = testClient.post().uri("/api/v1/rag/task/" + characterId)
+        taskId = testClient.post().uri("/api/v1/rag/task/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(fileRequest)
@@ -163,7 +165,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertNotNull(task1);
 
         List<RagTaskDetailsDTO> tasks;
-        tasks = testClient.get().uri("/api/v1/rag/task/" + characterId)
+        tasks = testClient.get().uri("/api/v1/rag/task/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -213,7 +215,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
 
     private void testChat(String modelId, String question, List<String> expected) throws JsonProcessingException {
         String promptTaskId = TestPromptUtils.createChatPromptTask(promptId, modelId, apiKeyFor(modelId));
-        String backend1 = TestCharacterUtils.createCharacterBackend(characterId, promptTaskId);
+        String backend1 = TestCharacterUtils.createCharacterBackend(characterUid, promptTaskId);
         String chatId1 = TestChatUtils.createChat(userId, backend1);
 
         ChatContentDTO content = ChatContentDTO.fromText(question);
@@ -236,7 +238,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertNotNull(result.getMessage());
         String answer = result.getMessage().getContents().getFirst().getContent();
         System.out.println("Question: " + content.getContent());
-        System.out.println("Answer[" + characterId + "]: " + answer + " (" + result.getTokenUsage() + ")");
+        System.out.println("Answer[" + characterUid + "]: " + answer + " (" + result.getTokenUsage() + ")");
         assertThat(answer).containsAnyOf(expected.toArray(new String[0]));
     }
 

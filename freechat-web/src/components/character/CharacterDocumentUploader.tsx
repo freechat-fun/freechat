@@ -13,14 +13,14 @@ const MAX_FILE_SIZE = 3 * 1024 * 1024;
 let idCounter = 0;
 
 type CharacterDocumentUploaderProps = {
-  characterId?: number;
+  characterUid?: string;
   open?: boolean;
   onClose?: (succeeded: boolean) => void;
   sx?: SxProps;
 }
 
 export default function CharacterDocumentUploader({
-  characterId,
+  characterUid,
   open = false,
   onClose = () => {},
   sx,
@@ -87,7 +87,7 @@ export default function CharacterDocumentUploader({
   }
 
   function handleDocumentConfirm(): void {
-    if (!characterId) {
+    if (!characterUid) {
       return;
     }
 
@@ -97,7 +97,7 @@ export default function CharacterDocumentUploader({
       request.sourceType = sourceType;
       request.maxSegmentSize = documentMaxSegmentSize;
       request.maxOverlapSize = documentMaxOverlapSize
-      ragApi?.createRagTask(characterId, request)
+      ragApi?.createRagTask(characterUid, request)
         .then(taskId => {
           ragApi.startRagTask(taskId)
             .then(() => close(true))
@@ -108,7 +108,7 @@ export default function CharacterDocumentUploader({
 
     if (documentType === 'file' && documentFile) {
       setDocumentUploading(true);
-      characterApi?.uploadCharacterDocument(characterId, documentFile)
+      characterApi?.uploadCharacterDocument(characterUid, documentFile)
         .then(url => {
           const key = extractFilenameFromUrl(url);
           startNewTask(key, documentType);

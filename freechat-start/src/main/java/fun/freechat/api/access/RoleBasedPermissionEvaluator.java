@@ -71,6 +71,8 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         currentUser.getUserId().equals(getPromptTaskService().getOwner(infoId));
                 case "characterDefaultOp" -> allow = targetObject instanceof Long infoId &&
                         currentUser.getUserId().equals(getCharacterService().getOwner(infoId));
+                case "characterDefaultOpByUid" -> allow = targetObject instanceof String infoUid &&
+                        currentUser.getUserId().equals(getCharacterService().getOwnerByUid(infoUid));
                 case "characterBackendDefaultOp" -> allow = targetObject instanceof String backendId &&
                         currentUser.getUserId().equals(getCharacterService().getBackendOwner(backendId));
                 case "chatDefaultOp" -> allow = targetObject instanceof String chatId &&

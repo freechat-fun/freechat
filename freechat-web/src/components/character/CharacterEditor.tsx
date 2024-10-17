@@ -32,6 +32,7 @@ export default function CharacterEditor ({
   const [editRecordName, setEditRecordName] = useState<string | null>(null);
   const [editRecordNameError, setEditRecordNameError] = useState(false);
 
+  const [recordUid, setRecordUid] = useState<string>();
   const [recordName, setRecordName] = useState<string>('');
   const [nickname, setNickname] = useState<string>();
   const [description, setDescription] = useState<string>();
@@ -83,6 +84,7 @@ export default function CharacterEditor ({
       
       originName.current = draftRecord.name ?? '';
 
+      setRecordUid(draftRecord.characterUid);
       setRecordName(draftRecord.name ?? '');
       setNickname(draftRecord.nickname);
       setDescription(draftRecord.description);
@@ -200,7 +202,7 @@ export default function CharacterEditor ({
                   request.userNickname = userDetails.nickname ?? userDetails.username;
                   request.userProfile = userDetails.profile;
                   request.characterNickname = nickname;
-                  request.characterId = characterId as number;
+                  request.characterUid = recordUid as string;
                   request.about = about;
 
                   chatApi.startChat(request)
@@ -721,7 +723,7 @@ export default function CharacterEditor ({
 
           <Card>
             <CharacterDocumentsPane
-              characterId={id}
+              characterUid={recordUid}
               editMode={true}
             />
           </Card>
