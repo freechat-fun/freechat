@@ -36,6 +36,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const context = session?.context;
   const avatarWithStatus = <AvatarWithStatus status={getSenderStatus(session)} src={sender?.avatar} />
 
+  const ENABLE_BACKGROUND_KEY = 'MessagesPane.enableBackground';
+
   const errorMessageRecord = useCallback((message?: string) => {
     const content = new ChatContentDTO();
     content.type = 'text';
@@ -121,14 +123,14 @@ export default function MessagesPane(props: MessagesPaneProps) {
   }, [chatApi, debugMode, context?.chatId, handleError, mode, onOpen, sender?.picture]);
 
   useEffect(() => {
-    const savedEnableBackground = localStorage.getItem('MessagesPane.enableBackground');
+    const savedEnableBackground = localStorage.getItem(ENABLE_BACKGROUND_KEY);
     if (savedEnableBackground) {
       setEnableBackground(savedEnableBackground === '1');
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('MessagesPane.enableBackground', enableBackground ? '1': '0');
+    localStorage.setItem(ENABLE_BACKGROUND_KEY, enableBackground ? '1': '0');
   }, [enableBackground]);
 
   useEffect(() => {

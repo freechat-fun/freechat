@@ -1,12 +1,13 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MessageAssistantsPane } from ".";
 import { DialogActions, DialogContent, DialogTitle, IconButton, Modal, ModalDialog, Stack, TypographyProps } from "@mui/joy";
 import { DoneRounded } from "@mui/icons-material";
+import { CharacterSummaryDTO } from "freechat-sdk";
 
 type MessageAssistantsWindowProps = TypographyProps<'div'> & {
   assistantUid?: string;
-  setAssistantUid?: (id: string | undefined) => void;
+  setAssistant?: (assistant?: CharacterSummaryDTO | null) => void;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }
@@ -14,14 +15,23 @@ type MessageAssistantsWindowProps = TypographyProps<'div'> & {
 const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindowProps>> = ((props) => {
   const { t } = useTranslation('chat');
 
-  const { assistantUid, setAssistantUid, open = false, setOpen = () => {} } = props;
+  const { assistantUid, setAssistant, open = false, setOpen = () => {} } = props;
+
+  const [selectedAssistant, setSelectedAssistant] = useState<CharacterSummaryDTO | null>();
 
   const title = t('Select an assistant');
 
-  function handleClose(_event: React.MouseEvent<HTMLButtonElement>, reason: string): void {
+  function handleClose(reason: string): void {
     if (reason !== 'backdropClick') {
       setOpen(false);
     }
+  }
+
+  function handleConfirm(): void {
+    if (selectedAssistant !== undefined) {
+      setAssistant?.(selectedAssistant);
+    }
+    setOpen(false);
   }
 
   return (
@@ -29,6 +39,9 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
       <Modal
         open={open}
         onClose={handleClose}
+        sx={{
+          mb: 'var(--Footer-height)',
+        }}
       >
         <ModalDialog>
           <DialogTitle>{title}</DialogTitle>
@@ -39,13 +52,13 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
               alignItems: 'center'
             }}>
               <MessageAssistantsPane
-                assistantUid={assistantUid}
-                setAssistantUid={setAssistantUid}
+                assistantUid={selectedAssistant?.characterUid ?? assistantUid}
+                setAssistant={setSelectedAssistant}
               />
             </Stack>
           </DialogContent>
           <DialogActions>
-            <IconButton onClick={() => setOpen(false)}><DoneRounded /></IconButton>
+            <IconButton onClick={handleConfirm}><DoneRounded /></IconButton>
           </DialogActions>
         </ModalDialog>
       </Modal>

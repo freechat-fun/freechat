@@ -6,7 +6,7 @@ type MessageAssistantProps = {
   url?: string,
   checked?: boolean,
   sx?: SxProps,
-  onSelect: (id: number | undefined) => void,
+  onSelect: () => void,
 }
 
 const MessageAssistant = forwardRef<HTMLDivElement, MessageAssistantProps>((props, ref) => {
@@ -16,7 +16,7 @@ const MessageAssistant = forwardRef<HTMLDivElement, MessageAssistantProps>((prop
     <Card ref={ref} onClick={() => onSelect()} sx={{
       ...sx,
       transition: 'transform 0.4s, box-shadow 0.4s',
-      border: checked ? 1 : 0,
+      border: checked ? 2 : 0,
       boxShadow: 'sm',
       '&:hover': {
         boxShadow: 'lg',
@@ -24,7 +24,10 @@ const MessageAssistant = forwardRef<HTMLDivElement, MessageAssistantProps>((prop
       },
     }}>
       <CardOverflow>
-        <AspectRatio ratio="1">
+        <AspectRatio ratio="1" sx={{
+          p: 0.5,
+          filter: checked ? 'brightness(60%)' : undefined,
+        }}>
           <img
             src={url}
             loading="lazy"

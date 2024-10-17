@@ -1,7 +1,9 @@
 import { useRef, KeyboardEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
+import { Avatar, Box, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
 import { AndroidRounded, SendRounded } from "@mui/icons-material";
+import { CharacterSummaryDTO } from "freechat-sdk";
+import { MessageAssistantsWindow } from ".";
 
 export type MessageInputProps = {
   textAreaValue: string;
@@ -14,12 +16,25 @@ export default function MessageInput(props: MessageInputProps) {
   const { textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
   const { t } = useTranslation('chat');
 
-  const [assistantId, setAssistantId] = useState<string>();
+  const [assistantAvatar, setAssistantAvatar] = useState<string>();
+  const [assistantName, setAssistantName] = useState<string>();
+  const [assistantUid, setAssistantUid] = useState<string>();
+  const [assistantWindowOpen, setAssistantWindowOpen] = useState<boolean>(false);
   
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const ASSISTANT_ID_KEY = 'SignIn.guestUsername';
-  const GUEST_PASSWORD_KEY = 'SignIn.guestPassword';
+  const ASSISTANT_UID_KEY = 'MessageInput.assistantUid';
+  const ASSISTANT_NAME_KEY = 'MessageInput.assistantName';
+  const ASSISTANT_AVATAR_KEY = 'MessageInput.assistantAvatar';
+
+  useEffect(() => {
+    const storedAssistantUid = localStorage.getItem(ASSISTANT_UID_KEY);
+    if (storedAssistantUid) {
+      setAssistantUid(storedAssistantUid);
+      setAssistantName(localStorage.getItem(ASSISTANT_NAME_KEY) ?? undefined)
+      setAssistantAvatar(localStorage.getItem(ASSISTANT_AVATAR_KEY) ?? undefined);
+    }
+  }, []);
 
   useEffect(() => {
     if (!disabled) {
@@ -44,7 +59,29 @@ export default function MessageInput(props: MessageInputProps) {
       event.preventDefault();
       handleClick();
     }
-  } 
+  }
+
+  function handleAssistantChoose() {
+    setAssistantWindowOpen(!assistantWindowOpen);
+  }
+
+  function handleAssistantSelect(assistant?: CharacterSummaryDTO | null) {
+    if (assistant === undefined) {
+      return;
+    }
+
+    setAssistantUid(assistant?.characterUid);
+    setAssistantName(assistant?.name);
+    setAssistantAvatar(assistant?.avatar);
+
+    localStorage.setItem(ASSISTANT_UID_KEY, assistant?.characterUid ?? '');
+    localStorage.setItem(ASSISTANT_NAME_KEY, assistant?.name ?? '');
+    localStorage.setItem(ASSISTANT_AVATAR_KEY, assistant?.avatar ?? '');
+  }
+
+  function handleAssistantSend() {
+    
+  }
 
   // function handleSendByEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
   //   if (event.nativeEvent.isComposing) {
@@ -151,8 +188,22 @@ export default function MessageInput(props: MessageInputProps) {
               sx={{
                 py: 1,
                 pr: 1,
+                gap: 1,
               }}
             >
+              <IconButton
+                disabled={disabled}
+                size="sm"
+                variant="plain"
+                sx={{
+                  display: assistantUid ? 'inherit' : 'none',
+                  alignSelf: 'center',
+                  mr: 1,
+                }}
+                onClick={handleAssistantSend}
+              >
+                <Avatar variant="plain" size="sm" alt={assistantName} src={assistantAvatar}>{assistantName}</Avatar>
+              </IconButton>
               <Button
                 disabled={disabled || !textAreaValue}
                 size="sm"
@@ -184,9 +235,26 @@ export default function MessageInput(props: MessageInputProps) {
           onKeyDown={handleSend}
         />
       </Box>
-      <IconButton sx={{ mx: 1, px: 1 }}>
+      <IconButton
+        disabled={disabled}
+        size="sm"
+        variant="outlined"
+        sx={{
+          mx: 1,
+          px: 1,
+          height: '100%',
+          alignSelf: 'center',
+        }}
+        onClick={handleAssistantChoose}
+      >
         <AndroidRounded fontSize="large" />
       </IconButton>
+      <MessageAssistantsWindow
+        assistantUid={assistantUid}
+        setAssistant={handleAssistantSelect}
+        open={assistantWindowOpen}
+        setOpen={setAssistantWindowOpen}
+      />
     </Stack>
   );
 }
