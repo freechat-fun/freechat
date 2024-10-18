@@ -51,9 +51,10 @@ export default function MessageAssistantsPane({
     const newQuery = new CharacterQueryDTO();
     newQuery.where = new CharacterQueryWhere();
     newQuery.where.visibility = 'public';
+    newQuery.where.highPriority = true;
     newQuery.pageSize = maxAssistantCount;
     newQuery.pageNum = 0;
-    newQuery.orderBy = ['viewCount', 'referCount', 'modifyTime'];
+    newQuery.orderBy = ['modifyTime'];
 
     return newQuery;
   }
