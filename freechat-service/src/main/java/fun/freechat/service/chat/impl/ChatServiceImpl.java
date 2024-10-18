@@ -356,7 +356,8 @@ public class ChatServiceImpl implements ChatService {
         Object assistantMemoryId = asMemoryId(assistantChatId);
         InMemoryChatMemoryStore assistantMemoryStore = new InMemoryChatMemoryStore();
         assistantMemoryStore.updateMessages(assistantMemoryId,
-                reverseMessages(session.getChatMemory(chatId).messages(), assistantSummary.getGreeting()));
+                reverseMessages(session.getChatMemory(chatId).messages(),
+                                (String) variables.get(CHARACTER_GREETING.text())));
 
         ChatContext assistantChatContext = new ChatContext()
                 .withChatId(assistantChatId)

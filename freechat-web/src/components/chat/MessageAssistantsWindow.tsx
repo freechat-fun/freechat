@@ -21,6 +21,14 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
 
   const title = t('Select an assistant');
 
+  function getAssistantUid() {
+    if (selectedAssistant === null) {
+      return undefined;
+    } else {
+      return selectedAssistant?.characterUid ?? assistantUid;
+    }
+  }
+
   function handleClose(reason: string): void {
     if (reason !== 'backdropClick') {
       setOpen(false);
@@ -52,7 +60,7 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
               alignItems: 'center'
             }}>
               <MessageAssistantsPane
-                assistantUid={selectedAssistant?.characterUid ?? assistantUid}
+                assistantUid={getAssistantUid()}
                 setAssistant={setSelectedAssistant}
               />
             </Stack>

@@ -172,6 +172,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
     if (!result) {
       return;
     }
+    
     const messageRecord = new ChatMessageRecordDTO();
     messageRecord.message = result.message;
     messageRecord.gmtCreate = new Date();
@@ -315,6 +316,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
 
       {/* input message */}
       <MessageInput
+        chatId={context?.chatId}
         disabled={!!messageToSend}
         textAreaValue={textAreaValue}
         setTextAreaValue={setTextAreaValue}

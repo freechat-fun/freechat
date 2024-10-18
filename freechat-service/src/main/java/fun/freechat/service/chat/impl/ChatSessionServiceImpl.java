@@ -554,9 +554,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
                     prompt.getMessages().forEach(chatMemory::add);
                 }
-            } else if (messages.getLast().type() == USER) {
-                Response<AiMessage> response = chatModel.generate(messages);
-                chatMemory.addAiMessage(response.content(), response.tokenUsage());
             }
 
             // knowledge

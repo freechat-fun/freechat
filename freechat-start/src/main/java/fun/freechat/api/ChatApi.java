@@ -554,7 +554,7 @@ public class ChatApi {
             summary = "Send Assistant for Chat Message",
             description = "Send a message to assistant for a new chat message."
     )
-    @PostMapping("/send/assistant/{chatId}/{assistantUid}")
+    @GetMapping("/send/assistant/{chatId}/{assistantUid}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
     public LlmResultDTO sendAssistant(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
@@ -574,7 +574,7 @@ public class ChatApi {
             summary = "Send Assistant for Chat Message by Streaming Back",
             description = "Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response."
     )
-    @PostMapping(value = "/send/stream/assistant/{chatId}/{assistantUid}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/send/stream/assistant/{chatId}/{assistantUid}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
     public SseEmitter streamSendAssistant(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,

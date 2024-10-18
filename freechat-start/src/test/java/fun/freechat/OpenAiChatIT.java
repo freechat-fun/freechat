@@ -548,7 +548,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testSendAssistantFailed() {
-        testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
+        testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -560,7 +560,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         TestCharacterUtils.prioritizeCharacter(characterUid);
         TestCommonUtils.waitAWhile();
 
-        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
+        LlmResultDTO result = testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -579,7 +579,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
-        testClient.post().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + characterUid)
+        testClient.get().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()

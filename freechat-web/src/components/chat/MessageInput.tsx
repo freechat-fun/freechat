@@ -1,11 +1,15 @@
 import { useRef, KeyboardEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar, Box, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
+import { Avatar, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
 import { AndroidRounded, SendRounded } from "@mui/icons-material";
-import { CharacterSummaryDTO } from "freechat-sdk";
+import { CharacterSummaryDTO, LlmResultDTO } from "freechat-sdk";
 import { MessageAssistantsWindow } from ".";
+import { fetchEventSource } from '@microsoft/fetch-event-source';
+import { getMessageText } from "../../libs/template_utils";
+import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 
 export type MessageInputProps = {
+  chatId?: string;
   textAreaValue: string;
   setTextAreaValue: (value: string) => void;
   onSubmit: () => void;
@@ -13,34 +17,101 @@ export type MessageInputProps = {
 };
 
 export default function MessageInput(props: MessageInputProps) {
-  const { textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
+  const { chatId, textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
   const { t } = useTranslation('chat');
+  const { handleError } = useErrorMessageBusContext();
+  const { serverUrl } = useFreeChatApiContext();
 
   const [assistantAvatar, setAssistantAvatar] = useState<string>();
   const [assistantName, setAssistantName] = useState<string>();
   const [assistantUid, setAssistantUid] = useState<string>();
   const [assistantWindowOpen, setAssistantWindowOpen] = useState<boolean>(false);
+  const [assistantHelp, setAssistantHelp] = useState(false);
+  const [assistantMessage, setAssistantMessaage] = useState('');
   
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const ASSISTANT_UID_KEY = 'MessageInput.assistantUid';
-  const ASSISTANT_NAME_KEY = 'MessageInput.assistantName';
-  const ASSISTANT_AVATAR_KEY = 'MessageInput.assistantAvatar';
+  const ASSISTANT_UID_KEY_PREFIX = 'MessageInput.assistantUid.';
+  const ASSISTANT_NAME_KEY_PREFIX = 'MessageInput.assistantName.';
+  const ASSISTANT_AVATAR_KEY_PREFIX = 'MessageInput.assistantAvatar.';
+  const apiPath = '/api/v1/chat/send/stream/assistant';
 
   useEffect(() => {
-    const storedAssistantUid = localStorage.getItem(ASSISTANT_UID_KEY);
+    const storedAssistantUid = localStorage.getItem(ASSISTANT_UID_KEY_PREFIX + chatId);
     if (storedAssistantUid) {
       setAssistantUid(storedAssistantUid);
-      setAssistantName(localStorage.getItem(ASSISTANT_NAME_KEY) ?? undefined)
-      setAssistantAvatar(localStorage.getItem(ASSISTANT_AVATAR_KEY) ?? undefined);
+      setAssistantName(localStorage.getItem(ASSISTANT_NAME_KEY_PREFIX + chatId) ?? undefined)
+      setAssistantAvatar(localStorage.getItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId) ?? undefined);
     }
-  }, []);
+  }, [chatId]);
 
   useEffect(() => {
     if (!disabled) {
       textAreaRef.current?.focus();
     }
   }, [disabled]);
+
+  useEffect(() => {
+    if (!assistantHelp || !chatId || !assistantUid) {
+      return;
+    }
+
+    const url = `${serverUrl}${apiPath}/${chatId}/${assistantUid}`;
+    const controller = new AbortController();
+    let shouldReconnect = true;
+
+    const startListening = async () => {
+      try {
+        await fetchEventSource(url, {
+          method: 'GET',
+          signal: controller.signal,
+          async onopen(response) {
+            if (response.ok) {
+              setAssistantMessaage('');
+            } else if (response.status === 429) {
+              const message = `[${t('Quota has been used up, you can use your API key to continue chatting.')}]`;
+              setTextAreaValue(message);
+            } else {
+              const message = `[${response.statusText}]`;
+              setTextAreaValue(message);
+            }
+            return Promise.resolve();
+          },
+          onmessage(event) {
+            const result = JSON.parse(event.data) as LlmResultDTO;
+            if (result.finishReason) {
+              const fullMessage = getMessageText(result.message);
+              if (fullMessage) {
+                setTextAreaValue(fullMessage);
+              }
+              setAssistantMessaage('');
+              setAssistantHelp(false);
+            } else if (result.text) {
+              setAssistantMessaage(prevMessage => prevMessage + result.text);
+            }
+          },
+          onerror(error) {
+            handleError(error);
+          },
+          onclose() {
+            if (shouldReconnect) {
+              console.error("The connection has been closed...");
+            }
+          }
+        });
+      } catch (error) {
+        handleError(error);
+      }
+    };
+
+    startListening();
+    return () => {
+      shouldReconnect = false;
+      controller.abort();
+      setAssistantHelp(false);
+    };
+    
+  }, [assistantHelp, assistantUid, chatId, handleError, serverUrl, setTextAreaValue, t]);
 
   function handleClick() {
     if (textAreaValue.trim() !== '') {
@@ -74,13 +145,13 @@ export default function MessageInput(props: MessageInputProps) {
     setAssistantName(assistant?.name);
     setAssistantAvatar(assistant?.avatar);
 
-    localStorage.setItem(ASSISTANT_UID_KEY, assistant?.characterUid ?? '');
-    localStorage.setItem(ASSISTANT_NAME_KEY, assistant?.name ?? '');
-    localStorage.setItem(ASSISTANT_AVATAR_KEY, assistant?.avatar ?? '');
+    localStorage.setItem(ASSISTANT_UID_KEY_PREFIX + chatId, assistant?.characterUid ?? '');
+    localStorage.setItem(ASSISTANT_NAME_KEY_PREFIX + chatId, assistant?.name ?? '');
+    localStorage.setItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId, assistant?.avatar ?? '');
   }
 
   function handleAssistantSend() {
-    
+    setAssistantHelp(true);
   }
 
   // function handleSendByEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -127,7 +198,7 @@ export default function MessageInput(props: MessageInputProps) {
               direction="row"
               justifyContent="space-between"
               alignItems="center"
-              flexGrow={1}
+              flex={1}
               sx={{
                 py: 1,
                 pr: 1,
@@ -153,13 +224,16 @@ export default function MessageInput(props: MessageInputProps) {
           onKeyDown={handleSendByEnter}
         /> */}
 
-      <Box flexGrow={1}>
+      <Stack flex={1} direction="row">
         <Input
           disabled={disabled}
           placeholder="Type something here…"
           aria-label="Message"
           onChange={(e) => setTextAreaValue(e.target.value)}
-          value={textAreaValue}
+          value={assistantMessage || textAreaValue}
+          sx={{
+            flex: 1,
+          }}
           slotProps={{
             input: {
               component: Textarea,
@@ -171,6 +245,7 @@ export default function MessageInput(props: MessageInputProps) {
                 '--Textarea-focusedInset': 'inset',
                 '--Textarea-focusedThickness': 0,
                 p: 1.2,
+                flex: 1
               },
             },
             endDecorator: {
@@ -184,7 +259,6 @@ export default function MessageInput(props: MessageInputProps) {
               direction="row"
               justifyContent="flex-end"
               alignItems="center"
-              flexGrow={1}
               sx={{
                 py: 1,
                 pr: 1,
@@ -192,11 +266,12 @@ export default function MessageInput(props: MessageInputProps) {
               }}
             >
               <IconButton
-                disabled={disabled}
+                disabled={disabled || assistantHelp}
+                loading={assistantHelp}
                 size="sm"
                 variant="plain"
                 sx={{
-                  display: assistantUid ? 'inherit' : 'none',
+                  display: assistantUid && !textAreaValue ? 'inherit' : 'none',
                   alignSelf: 'center',
                   mr: 1,
                 }}
@@ -205,11 +280,11 @@ export default function MessageInput(props: MessageInputProps) {
                 <Avatar variant="plain" size="sm" alt={assistantName} src={assistantAvatar}>{assistantName}</Avatar>
               </IconButton>
               <Button
-                disabled={disabled || !textAreaValue}
+                disabled={disabled || assistantHelp || !textAreaValue}
                 size="sm"
                 color="primary"
                 sx={{
-                  display: { xs: 'none', lg: 'inherit' },
+                  display: { xs: 'none', lg: assistantUid && !textAreaValue ? 'none' : 'inherit' },
                   alignSelf: 'center',
                 }}
                 endDecorator={<SendRounded />}
@@ -218,12 +293,12 @@ export default function MessageInput(props: MessageInputProps) {
                 {`${t('Send')} (Ctrl/⌘ + ⏎)`}
               </Button>
               <IconButton
-                disabled={disabled || !textAreaValue}
+                disabled={disabled || assistantHelp || !textAreaValue}
                 size="sm"
                 color="primary"
                 variant="solid"
                 sx={{
-                  display: { xs: 'inherit', lg: 'none' },
+                  display: { xs: assistantUid && !textAreaValue ? 'none' : 'inherit', lg: 'none' },
                   alignSelf: 'center',
                 }}
                 onClick={handleClick}
@@ -234,21 +309,24 @@ export default function MessageInput(props: MessageInputProps) {
           }
           onKeyDown={handleSend}
         />
-      </Box>
-      <IconButton
-        disabled={disabled}
-        size="sm"
-        variant="outlined"
-        sx={{
-          mx: 1,
-          px: 1,
-          height: '100%',
-          alignSelf: 'center',
-        }}
-        onClick={handleAssistantChoose}
-      >
-        <AndroidRounded fontSize="large" />
-      </IconButton>
+        <IconButton
+          disabled={disabled || assistantHelp }
+          size="sm"
+          variant="outlined"
+          sx={{
+            mx: 1,
+            mb: 0.1,
+            px: 1,
+            py: 0.5,
+            justifySelf: 'flex-end',
+            alignSelf: 'flex-end',
+            alignItems: 'flex-end',
+          }}
+          onClick={handleAssistantChoose}
+        >
+          <AndroidRounded fontSize="large" />
+        </IconButton>
+      </Stack>
       <MessageAssistantsWindow
         assistantUid={assistantUid}
         setAssistant={handleAssistantSelect}

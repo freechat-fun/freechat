@@ -18,6 +18,7 @@ It also serves as a prompt engineering platform.
 - Supports characters evoking **proactive chat**.
 - Supports setting **quota limits** for characters.
 - Supports characters **importing and exporting**.
+- Supports **character-to-character chats**.
 - Supports individual **debugging and sharing prompts**.
 
 ## Snapshots
