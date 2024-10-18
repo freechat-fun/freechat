@@ -19,14 +19,14 @@ Create a prompt task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptTaskApi } from '';
+import type { PromptTaskApiCreatePromptTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptTaskApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptTaskApi(configuration);
 
-let body:.PromptTaskApiCreatePromptTaskRequest = {
-  // PromptTaskDTO | The prompt task to be added
+const request: PromptTaskApiCreatePromptTaskRequest = {
+    // The prompt task to be added
   promptTaskDTO: {
     promptRef: {
       promptId: 1,
@@ -46,9 +46,8 @@ let body:.PromptTaskApiCreatePromptTaskRequest = {
   },
 };
 
-apiInstance.createPromptTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createPromptTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -89,20 +88,19 @@ Delete a prompt task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptTaskApi } from '';
+import type { PromptTaskApiDeletePromptTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptTaskApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptTaskApi(configuration);
 
-let body:.PromptTaskApiDeletePromptTaskRequest = {
-  // string | The promptTaskId to be deleted
+const request: PromptTaskApiDeletePromptTaskRequest = {
+    // The promptTaskId to be deleted
   promptTaskId: "promptTaskId_example",
 };
 
-apiInstance.deletePromptTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deletePromptTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -143,20 +141,19 @@ Get the prompt task details.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptTaskApi } from '';
+import type { PromptTaskApiGetPromptTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptTaskApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptTaskApi(configuration);
 
-let body:.PromptTaskApiGetPromptTaskRequest = {
-  // string | The promptTaskId to be queried
+const request: PromptTaskApiGetPromptTaskRequest = {
+    // The promptTaskId to be queried
   promptTaskId: "promptTaskId_example",
 };
 
-apiInstance.getPromptTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getPromptTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -197,16 +194,16 @@ Update a prompt task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptTaskApi } from '';
+import type { PromptTaskApiUpdatePromptTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptTaskApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptTaskApi(configuration);
 
-let body:.PromptTaskApiUpdatePromptTaskRequest = {
-  // string | The promptTaskId to be updated
+const request: PromptTaskApiUpdatePromptTaskRequest = {
+    // The promptTaskId to be updated
   promptTaskId: "promptTaskId_example",
-  // PromptTaskDTO | The prompt task info to be updated
+    // The prompt task info to be updated
   promptTaskDTO: {
     promptRef: {
       promptId: 1,
@@ -226,9 +223,8 @@ let body:.PromptTaskApiUpdatePromptTaskRequest = {
   },
 };
 
-apiInstance.updatePromptTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updatePromptTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

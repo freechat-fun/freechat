@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
-  description: "# FreeChat: Create Some Friends for Yourself with AI\n\nEnglish |\
-    \ [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)\n\n\
-    ## Introduction\nWelcome! FreeChat aims to build a cloud-native, robust, and quickly\
-    \ commercializable enterprise-level AI virtual character platform.\n\nIt also\
-    \ serves as a prompt engineering platform.\n\n## Features\n- Primarily uses Java\
-    \ and emphasizes **security, robustness, scalability, traceability, and maintainability**.\n\
-    - Boasts **account systems and permission management**, supporting OAuth2 authentication.\
-    \ Introduces the \"organization\" concept and related permission constraint functions.\n\
+  description: "# FreeChat: Create Friends for Yourself with AI\n\nEnglish | [中文版\
+    ](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)\n\n## Introduction\n\
+    Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable\
+    \ enterprise-level AI virtual character platform.\n\nIt also serves as a prompt\
+    \ engineering platform.\n\n## Features\n- Primarily uses Java and emphasizes **security,\
+    \ robustness, scalability, traceability, and maintainability**.\n- Boasts **account\
+    \ systems and permission management**, supporting OAuth2 authentication. Introduces\
+    \ the \"organization\" concept and related permission constraint functions.\n\
     - Extensively employs distributed technologies and caching to support **high concurrency**\
     \ access.\n- Provides flexible character customization options, supports direct\
     \ intervention in prompts, and supports **configuring multiple backends for each\
@@ -35,11 +35,11 @@ info:
     \ up an unified persona and knowledge for a character, different backends can\
     \ be configured. For example, different model may be adopted for different users\
     \ based on cost considerations.\n\n## How to Play\n### Online Website\nYou can\
-    \ visit [freechat.fun](https://www.freechat.fun) to experience FreeChat. Share\
-    \ your designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat\
-    \ is dedicated to the principles of cloud-native design. If you have a Kubernetes\
-    \ cluster, you can deploy FreeChat to your environment by following these steps:\n\
-    \n1. Put the Kubernetes configuration file in the `configs/helm/` directory, named\
+    \ visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your\
+    \ designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat is dedicated\
+    \ to the principles of cloud-native design. If you have a Kubernetes cluster,\
+    \ you can deploy FreeChat to your environment by following these steps:\n\n1.\
+    \ Put the Kubernetes configuration file in the `configs/helm/` directory, named\
     \ `kube-private.conf`.\n2. Place the Helm configuration file in the same directory,\
     \ named `values-private.yaml`. Make sure to reference the default `values.yaml`\
     \ and customize the variables as needed.\n3. Switch to the `scripts/` directory.\n\
@@ -126,25 +126,26 @@ info:
     \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
     \ [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n\
     | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/),\
-    \ [Milvus](https://milvus.io/)\n| Monitoring & Alerting | [Prometheus](https://prometheus.io/),\
-    \ [Grafana](https://grafana.com/)\n| OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/),\
-    \ [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI\
-    \ Explorer](https://github.com/Authress-Engineering/openapi-explorer)\n\n## Collaboration\n\
-    ### Application Integration\nThe FreeChat system is entirely oriented towards\
-    \ Open APIs. The site [freechat.fun](https://freechat.fun) is developed using\
-    \ its TypeScript SDK and hardly depends on private interfaces. You can use these\
-    \ online interfaces to develop your own applications or sites, making them fit\
-    \ your preferences. Currently, FreeChat is completely free with no paid plans\
-    \ (after all, users use their own API Key to call LLM services).\n\n### Model\
-    \ Integration\nFreeChat aims to explore AI virtual character technology with anthropomorphic\
-    \ characteristics. So far, it supports model services from OpenAI GPT and Alibaba\
-    \ Qwen series models. However, we are more interested in supporting models that\
-    \ are under research and can endow AI with more personality traits. If you are\
-    \ researching this area and hope FreeChat supports your model, please contact\
-    \ us. We look forward to AI technology helping people create their own \"soul\
-    \ mates\" in the future.\n"
+    \ [Milvus](https://milvus.io/)\n| Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/),\
+    \ [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/),\
+    \ [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/)\n| OpenAPI\
+    \ Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
+    \ [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)\n\
+    \n## Collaboration\n### Application Integration\nThe FreeChat system is entirely\
+    \ oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is\
+    \ developed using its TypeScript SDK and hardly depends on private interfaces.\
+    \ You can use these online interfaces to develop your own applications or sites,\
+    \ making them fit your preferences. Currently, FreeChat is completely free with\
+    \ no paid plans (after all, users use their own API Key to call LLM services).\n\
+    \n### Model Integration\nFreeChat aims to explore AI virtual character technology\
+    \ with anthropomorphic characteristics. So far, it supports model services from\
+    \ OpenAI GPT and Alibaba Qwen series models. However, we are more interested in\
+    \ supporting models that are under research and can endow AI with more personality\
+    \ traits. If you are researching this area and hope FreeChat supports your model,\
+    \ please contact us. We look forward to AI technology helping people create their\
+    \ own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 1.4.0
+  version: 2.0.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -1500,19 +1501,18 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/rag/task/{characterId}:
+  /api/v1/rag/task/{characterUid}:
     post:
       description: Create a RAG task.
       operationId: createRagTask
       parameters:
-      - description: The characterId to be added a RAG task
+      - description: The characterUid to be added a RAG task
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -3058,19 +3058,18 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/picture/{characterId}:
+  /api/v1/character/picture/{characterUid}:
     post:
       description: Upload a picture of the character.
       operationId: uploadCharacterPicture
       parameters:
-      - description: Character identifier
+      - description: Character unique identifier
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -3141,19 +3140,18 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - application/json
-  /api/v1/character/document/{characterId}:
+  /api/v1/character/document/{characterUid}:
     post:
       description: Upload a document of the character.
       operationId: uploadCharacterDocument
       parameters:
-      - description: Character identifier
+      - description: Character unique identifier
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -3393,19 +3391,18 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/backend/{characterId}:
+  /api/v1/character/backend/{characterUid}:
     post:
       description: Add a backend configuration for a character.
       operationId: addCharacterBackend
       parameters:
-      - description: The characterId to be added a backend
+      - description: The characterUid to be added a backend
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -3427,19 +3424,18 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/plain
-  /api/v1/character/avatar/{characterId}:
+  /api/v1/character/avatar/{characterUid}:
     post:
       description: Upload an avatar of the character.
       operationId: uploadCharacterAvatar
       parameters:
-      - description: Character identifier
+      - description: Character unique identifier
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -4062,19 +4058,18 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
-  /api/v1/rag/tasks/{characterId}:
+  /api/v1/rag/tasks/{characterUid}:
     get:
       description: List the RAG tasks by characterId.
       operationId: listRagTasks
       parameters:
-      - description: The characterId to be queried
+      - description: The characterUid to be queried
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -5230,6 +5225,73 @@ paths:
       - Chat
       x-accepts:
       - text/plain
+  /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid}:
+    get:
+      description: "Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid},\
+        \ stream back chunks of the response."
+      operationId: streamSendAssistant
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Assistant uid
+        explode: false
+        in: path
+        name: assistantUid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/SseEmitter'
+          description: OK
+      summary: Send Assistant for Chat Message by Streaming Back
+      tags:
+      - Chat
+      x-accepts:
+      - text/event-stream
+  /api/v1/chat/send/assistant/{chatId}/{assistantUid}:
+    get:
+      description: Send a message to assistant for a new chat message.
+      operationId: sendAssistant
+      parameters:
+      - description: Chat session identifier
+        explode: false
+        in: path
+        name: chatId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Assistant uid
+        explode: false
+        in: path
+        name: assistantUid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmResultDTO'
+          description: OK
+      summary: Send Assistant for Chat Message
+      tags:
+      - Chat
+      x-accepts:
+      - application/json
   /api/v1/chat/messages/{chatId}:
     get:
       description: List messages of a chat.
@@ -5497,19 +5559,18 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/pictures/{characterId}:
+  /api/v1/character/pictures/{characterUid}:
     get:
       description: List pictures of the character.
       operationId: listCharacterPictures
       parameters:
-      - description: Character identifier
+      - description: Character unique identifier
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -5573,19 +5634,18 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/documents/{characterId}:
+  /api/v1/character/documents/{characterUid}:
     get:
       description: List documents of the character.
       operationId: listCharacterDocuments
       parameters:
-      - description: Character identifier
+      - description: Character unique identifier
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -5652,19 +5712,18 @@ paths:
       - Character
       x-accepts:
       - text/plain
-  /api/v1/character/backends/{characterId}:
+  /api/v1/character/backends/{characterUid}:
     get:
       description: List character backends.
       operationId: listCharacterBackends
       parameters:
-      - description: The characterId to be queried
+      - description: The characterUid to be queried
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -5680,19 +5739,18 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/backend/ids/{characterId}:
+  /api/v1/character/backend/ids/{characterUid}:
     get:
       description: List character backend identifiers.
       operationId: listCharacterBackendIds
       parameters:
-      - description: The characterId to be queried
+      - description: The characterUid to be queried
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -5708,19 +5766,18 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/backend/default/{characterId}:
+  /api/v1/character/backend/default/{characterUid}:
     get:
       description: Get the default backend configuration.
       operationId: getDefaultCharacterBackend
       parameters:
-      - description: The characterId to be queried
+      - description: The characterUid to be queried
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -6257,6 +6314,35 @@ paths:
       summary: Clear Memory
       tags:
       - Chat
+      x-accepts:
+      - application/json
+  /api/v1/character/uid/{characterUid}:
+    delete:
+      description: Delete character by uid. return the list of successfully deleted
+        characterIds.
+      operationId: deleteCharacterByUid
+      parameters:
+      - description: The character uid to be deleted
+        explode: false
+        in: path
+        name: characterUid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  format: int64
+                  type: integer
+                type: array
+          description: OK
+      summary: Delete Character by Uid
+      tags:
+      - Character
       x-accepts:
       - application/json
   /api/v1/character/picture/{key}:
@@ -6797,7 +6883,7 @@ components:
         userNickname: userNickname
         backendId: backendId
         apiKeyName: apiKeyName
-        characterId: 0
+        characterUid: characterUid
         userProfile: userProfile
         gmtRead: 2000-01-23T04:56:07.000+00:00
       properties:
@@ -6813,10 +6899,9 @@ components:
         about:
           description: Anything about this session
           type: string
-        characterId:
-          description: Character id for this session
-          format: int64
-          type: integer
+        characterUid:
+          description: Character uid for this session
+          type: string
         backendId:
           description: Character backend for this session
           type: string
@@ -6834,7 +6919,7 @@ components:
           format: date-time
           type: string
       required:
-      - characterId
+      - characterUid
       type: object
     CharacterUpdateDTO:
       description: Request data for updating character information
@@ -8598,7 +8683,7 @@ components:
         userNickname: userNickname
         backendId: backendId
         apiKeyName: apiKeyName
-        characterId: 0
+        characterUid: characterUid
         userProfile: userProfile
       properties:
         userNickname:
@@ -8613,10 +8698,9 @@ components:
         about:
           description: Anything about this session
           type: string
-        characterId:
-          description: Character id for this session
-          format: int64
-          type: integer
+        characterUid:
+          description: Character uid for this session
+          type: string
         backendId:
           description: Character backend for this session
           type: string
@@ -8630,7 +8714,7 @@ components:
           description: Extra info for this session
           type: string
       required:
-      - characterId
+      - characterUid
       type: object
     CharacterCreateDTO:
       description: Request data for creating new character information

@@ -28,14 +28,14 @@ Batch call shortcut for /api/v1/plugin/details/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiBatchSearchPluginDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiBatchSearchPluginDetailsRequest = {
-  // Array<PluginQueryDTO> | Query conditions
+const request: PluginApiBatchSearchPluginDetailsRequest = {
+    // Query conditions
   pluginQueryDTO: [
     {
       where: {
@@ -64,9 +64,8 @@ let body:.PluginApiBatchSearchPluginDetailsRequest = {
   ],
 };
 
-apiInstance.batchSearchPluginDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchPluginDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -107,14 +106,14 @@ Batch call shortcut for /api/v1/plugin/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiBatchSearchPluginSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiBatchSearchPluginSummaryRequest = {
-  // Array<PluginQueryDTO> | Query conditions
+const request: PluginApiBatchSearchPluginSummaryRequest = {
+    // Query conditions
   pluginQueryDTO: [
     {
       where: {
@@ -143,9 +142,8 @@ let body:.PluginApiBatchSearchPluginSummaryRequest = {
   ],
 };
 
-apiInstance.batchSearchPluginSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchPluginSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -186,14 +184,14 @@ Calculate the number of plugins according to the specified query conditions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiCountPluginsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiCountPluginsRequest = {
-  // PluginQueryDTO | Query conditions
+const request: PluginApiCountPluginsRequest = {
+    // Query conditions
   pluginQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -220,9 +218,8 @@ let body:.PluginApiCountPluginsRequest = {
   },
 };
 
-apiInstance.countPlugins(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.countPlugins(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -263,14 +260,14 @@ Create a plugin, required fields: - Plugin name - Plugin manifestInfo (URL or JS
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiCreatePluginRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiCreatePluginRequest = {
-  // PluginCreateDTO | Information of the plugin to be created
+const request: PluginApiCreatePluginRequest = {
+    // Information of the plugin to be created
   pluginCreateDTO: {
     visibility: "visibility_example",
     name: "name_example",
@@ -289,9 +286,8 @@ let body:.PluginApiCreatePluginRequest = {
   },
 };
 
-apiInstance.createPlugin(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createPlugin(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -332,14 +328,14 @@ Batch create multiple plugins. Ensure transactionality, return the pluginId list
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiCreatePluginsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiCreatePluginsRequest = {
-  // Array<PluginCreateDTO> | List of plugin information to be created
+const request: PluginApiCreatePluginsRequest = {
+    // List of plugin information to be created
   pluginCreateDTO: [
     {
       visibility: "visibility_example",
@@ -360,9 +356,8 @@ let body:.PluginApiCreatePluginsRequest = {
   ],
 };
 
-apiInstance.createPlugins(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createPlugins(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -403,20 +398,19 @@ Delete plugin. Returns success or failure.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiDeletePluginRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiDeletePluginRequest = {
-  // number | The pluginId to be deleted
+const request: PluginApiDeletePluginRequest = {
+    // The pluginId to be deleted
   pluginId: 1,
 };
 
-apiInstance.deletePlugin(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deletePlugin(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -457,22 +451,21 @@ Delete multiple plugins. Ensure transactionality, return the list of successfull
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiDeletePluginsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiDeletePluginsRequest = {
-  // Array<number> | List of pluginIds to be deleted
+const request: PluginApiDeletePluginsRequest = {
+    // List of pluginIds to be deleted
   requestBody: [
     1,
   ],
 };
 
-apiInstance.deletePlugins(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deletePlugins(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -513,20 +506,19 @@ Get plugin detailed information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiGetPluginDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiGetPluginDetailsRequest = {
-  // number | PluginId to be obtained
+const request: PluginApiGetPluginDetailsRequest = {
+    // PluginId to be obtained
   pluginId: 1,
 };
 
-apiInstance.getPluginDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getPluginDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -567,20 +559,19 @@ Get plugin summary information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiGetPluginSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiGetPluginSummaryRequest = {
-  // number | PluginId to be obtained
+const request: PluginApiGetPluginSummaryRequest = {
+    // PluginId to be obtained
   pluginId: 1,
 };
 
-apiInstance.getPluginSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getPluginSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -621,20 +612,19 @@ For online manifest, api-docs information provided at the time of entry, this in
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiRefreshPluginInfoRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiRefreshPluginInfoRequest = {
-  // number | The pluginId to be fetched
+const request: PluginApiRefreshPluginInfoRequest = {
+    // The pluginId to be fetched
   pluginId: 1,
 };
 
-apiInstance.refreshPluginInfo(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.refreshPluginInfo(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -675,14 +665,14 @@ Same as /api/v1/plugin/search, but returns detailed information of the plugin.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiSearchPluginDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiSearchPluginDetailsRequest = {
-  // PluginQueryDTO | Query conditions
+const request: PluginApiSearchPluginDetailsRequest = {
+    // Query conditions
   pluginQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -709,9 +699,8 @@ let body:.PluginApiSearchPluginDetailsRequest = {
   },
 };
 
-apiInstance.searchPluginDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchPluginDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -752,14 +741,14 @@ Search plugins: - Specifiable query fields, and relationship:   - Scope: private
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiSearchPluginSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiSearchPluginSummaryRequest = {
-  // PluginQueryDTO | Query conditions
+const request: PluginApiSearchPluginSummaryRequest = {
+    // Query conditions
   pluginQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -786,9 +775,8 @@ let body:.PluginApiSearchPluginSummaryRequest = {
   },
 };
 
-apiInstance.searchPluginSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchPluginSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -829,16 +817,16 @@ Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PluginApi } from '';
+import type { PluginApiUpdatePluginRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PluginApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PluginApi(configuration);
 
-let body:.PluginApiUpdatePluginRequest = {
-  // number | The pluginId to be updated
+const request: PluginApiUpdatePluginRequest = {
+    // The pluginId to be updated
   pluginId: 1,
-  // PluginUpdateDTO | The plugin information to be updated
+    // The plugin information to be updated
   pluginUpdateDTO: {
     visibility: "visibility_example",
     name: "name_example",
@@ -857,9 +845,8 @@ let body:.PluginApiUpdatePluginRequest = {
   },
 };
 
-apiInstance.updatePlugin(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updatePlugin(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

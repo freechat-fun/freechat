@@ -12,7 +12,7 @@ Request data for updating a chat session
 |**userProfile** | **String** | User profile for this session |  [optional] |
 |**characterNickname** | **String** | Character nickname for this session |  [optional] |
 |**about** | **String** | Anything about this session |  [optional] |
-|**characterId** | **Long** | Character id for this session |  |
+|**characterUid** | **String** | Character uid for this session |  |
 |**backendId** | **String** | Character backend for this session |  [optional] |
 |**apiKeyName** | **String** | API-KEY name, priority: apiKeyName &gt; apiKeyValue |  [optional] |
 |**apiKeyValue** | **String** | API-KEY value |  [optional] |

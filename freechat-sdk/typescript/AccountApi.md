@@ -28,17 +28,15 @@ Create a timed API Token, valid for {duration} seconds.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.createToken(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createToken(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -76,20 +74,19 @@ Create a timed API Token, valid for {duration} seconds.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiCreateToken1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiCreateToken1Request = {
-  // number | Token validity duration (seconds)
+const request: AccountApiCreateToken1Request = {
+    // Token validity duration (seconds)
   duration: 1,
 };
 
-apiInstance.createToken1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createToken1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -130,20 +127,19 @@ Delete an API Token.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiDeleteTokenRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiDeleteTokenRequest = {
-  // string | Token content
+const request: AccountApiDeleteTokenRequest = {
+    // Token content
   token: "token_example",
 };
 
-apiInstance.deleteToken(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteToken(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -184,20 +180,19 @@ Delete the API token by id.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiDeleteTokenByIdRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiDeleteTokenByIdRequest = {
-  // number | Token id
+const request: AccountApiDeleteTokenByIdRequest = {
+    // Token id
   id: 1,
 };
 
-apiInstance.deleteTokenById(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteTokenById(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -238,20 +233,19 @@ Disable an API Token, the token is not deleted.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiDisableTokenRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiDisableTokenRequest = {
-  // string | Token content
+const request: AccountApiDisableTokenRequest = {
+    // Token content
   token: "token_example",
 };
 
-apiInstance.disableToken(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.disableToken(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -292,20 +286,19 @@ Disable the API token by id.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiDisableTokenByIdRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiDisableTokenByIdRequest = {
-  // number | Token id
+const request: AccountApiDisableTokenByIdRequest = {
+    // Token id
   id: 1,
 };
 
-apiInstance.disableTokenById(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.disableTokenById(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -346,20 +339,19 @@ Get the API token by id.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiGetTokenByIdRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiGetTokenByIdRequest = {
-  // number | Token id
+const request: AccountApiGetTokenByIdRequest = {
+    // Token id
   id: 1,
 };
 
-apiInstance.getTokenById(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getTokenById(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -400,17 +392,15 @@ Return user basic information, including: username, nickname, avatar link.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.getUserBasic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getUserBasic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -448,20 +438,19 @@ Return user basic information, including: username, nickname, avatar link.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiGetUserBasic1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiGetUserBasic1Request = {
-  // string | Username
+const request: AccountApiGetUserBasic1Request = {
+    // Username
   username: "username_example",
 };
 
-apiInstance.getUserBasic1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getUserBasic1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -502,17 +491,15 @@ Return the detailed user information of the current account, the fields refer to
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.getUserDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getUserDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -550,17 +537,15 @@ List currently valid tokens.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.listTokens(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listTokens(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -598,14 +583,14 @@ Update the detailed user information of the current account.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiUpdateUserInfoRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiUpdateUserInfoRequest = {
-  // UserDetailsDTO | User information
+const request: AccountApiUpdateUserInfoRequest = {
+    // User information
   userDetailsDTO: {
     requestId: "requestId_example",
     username: "username_example",
@@ -633,9 +618,8 @@ let body:.AccountApiUpdateUserInfoRequest = {
   },
 };
 
-apiInstance.updateUserInfo(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateUserInfo(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -676,20 +660,19 @@ Upload a picture of the user.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountApi } from '';
+import type { AccountApiUploadUserPictureRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountApi(configuration);
 
-let body:.AccountApiUploadUserPictureRequest = {
-  // HttpFile | User picture
+const request: AccountApiUploadUserPictureRequest = {
+    // User picture
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
 
-apiInstance.uploadUserPicture(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.uploadUserPicture(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

@@ -25,14 +25,14 @@ Add a credential for the model service.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiAddAiApiKeyRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiAddAiApiKeyRequest = {
-  // AiApiKeyCreateDTO | Model call credential information
+const request: AIServiceApiAddAiApiKeyRequest = {
+    // Model call credential information
   aiApiKeyCreateDTO: {
     name: "name_example",
     provider: "provider_example",
@@ -41,9 +41,8 @@ let body:.AIServiceApiAddAiApiKeyRequest = {
   },
 };
 
-apiInstance.addAiApiKey(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.addAiApiKey(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -84,20 +83,19 @@ Delete the credential information of the model provider.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiDeleteAiApiKeyRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiDeleteAiApiKeyRequest = {
-  // number | Credential identifier
+const request: AIServiceApiDeleteAiApiKeyRequest = {
+    // Credential identifier
   id: 1,
 };
 
-apiInstance.deleteAiApiKey(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteAiApiKey(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -138,20 +136,19 @@ Disable the credential information of the model provider.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiDisableAiApiKeyRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiDisableAiApiKeyRequest = {
-  // number | Credential identifier
+const request: AIServiceApiDisableAiApiKeyRequest = {
+    // Credential identifier
   id: 1,
 };
 
-apiInstance.disableAiApiKey(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.disableAiApiKey(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -192,20 +189,19 @@ Enable the credential information of the model provider.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiEnableAiApiKeyRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiEnableAiApiKeyRequest = {
-  // number | Credential identifier
+const request: AIServiceApiEnableAiApiKeyRequest = {
+    // Credential identifier
   id: 1,
 };
 
-apiInstance.enableAiApiKey(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.enableAiApiKey(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -246,20 +242,19 @@ Get the credential information of the model provider.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiGetAiApiKeyRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiGetAiApiKeyRequest = {
-  // number | Credential identifier
+const request: AIServiceApiGetAiApiKeyRequest = {
+    // Credential identifier
   id: 1,
 };
 
-apiInstance.getAiApiKey(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getAiApiKey(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -300,20 +295,19 @@ Return specific model information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiGetAiModelInfoRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiGetAiModelInfoRequest = {
-  // string | Model identifier
+const request: AIServiceApiGetAiModelInfoRequest = {
+    // Model identifier
   modelId: "modelId_example",
 };
 
-apiInstance.getAiModelInfo(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getAiModelInfo(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -354,20 +348,19 @@ List all credential information of the model provider.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiListAiApiKeysRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiListAiApiKeysRequest = {
-  // string | Model provider
+const request: AIServiceApiListAiApiKeysRequest = {
+    // Model provider
   provider: "provider_example",
 };
 
-apiInstance.listAiApiKeys(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAiApiKeys(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -408,22 +401,21 @@ Return model information by page, return the pageNum page, up to pageSize model 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiListAiModelInfoRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiListAiModelInfoRequest = {
-  // number | Maximum quantity
+const request: AIServiceApiListAiModelInfoRequest = {
+    // Maximum quantity
   pageSize: 1,
-  // number | Current page number
+    // Current page number
   pageNum: 1,
 };
 
-apiInstance.listAiModelInfo(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAiModelInfo(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -465,20 +457,19 @@ Return model information by page, return the pageNum page, up to pageSize model 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiListAiModelInfo1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:.AIServiceApiListAiModelInfo1Request = {
-  // number | Maximum quantity
+const request: AIServiceApiListAiModelInfo1Request = {
+    // Maximum quantity
   pageSize: 1,
 };
 
-apiInstance.listAiModelInfo1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAiModelInfo1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -519,17 +510,15 @@ Return model information by page, return the pageNum page, up to pageSize model 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AIServiceApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AIServiceApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AIServiceApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.listAiModelInfo2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAiModelInfo2(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

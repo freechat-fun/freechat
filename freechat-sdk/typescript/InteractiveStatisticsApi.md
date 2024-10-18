@@ -33,26 +33,25 @@ Add the statistics of the corresponding metrics of the corresponding resources. 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiAddStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiAddStatisticRequest = {
-  // string | Info type: prompt | agent | plugin | character
+const request: InteractiveStatisticsApiAddStatisticRequest = {
+    // Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
-  // string | Unique resource identifier
+    // Unique resource identifier
   infoId: "infoId_example",
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Delta in statistical value
+    // Delta in statistical value
   delta: 1,
 };
 
-apiInstance.addStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.addStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -96,22 +95,21 @@ Get the current user\'s score for the corresponding resource.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiGetScoreRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiGetScoreRequest = {
-  // string | Info type: prompt | agent | plugin | character
+const request: InteractiveStatisticsApiGetScoreRequest = {
+    // Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
-  // string | Unique resource identifier
+    // Unique resource identifier
   infoId: "infoId_example",
 };
 
-apiInstance.getScore(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getScore(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -153,24 +151,23 @@ Get the statistics of the corresponding metrics of the corresponding resources.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiGetStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiGetStatisticRequest = {
-  // string | Info type: prompt | agent | plugin | character
+const request: InteractiveStatisticsApiGetStatisticRequest = {
+    // Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
-  // string | Unique resource identifier
+    // Unique resource identifier
   infoId: "infoId_example",
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
 };
 
-apiInstance.getStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -213,22 +210,21 @@ Get all statistics of the corresponding resources.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiGetStatisticsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiGetStatisticsRequest = {
-  // string | Info type: prompt | agent | plugin | character
+const request: InteractiveStatisticsApiGetStatisticsRequest = {
+    // Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
-  // string | Unique resource identifier
+    // Unique resource identifier
   infoId: "infoId_example",
 };
 
-apiInstance.getStatistics(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getStatistics(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -270,24 +266,23 @@ Increase the statistics of the corresponding metrics of the corresponding resour
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiIncreaseStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiIncreaseStatisticRequest = {
-  // string | Info type: prompt | agent | plugin | character
+const request: InteractiveStatisticsApiIncreaseStatisticRequest = {
+    // Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
-  // string | Unique resource identifier
+    // Unique resource identifier
   infoId: "infoId_example",
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
 };
 
-apiInstance.increaseStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.increaseStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -330,24 +325,23 @@ List agents based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListAgentsByStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListAgentsByStatisticRequest = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListAgentsByStatisticRequest = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listAgentsByStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAgentsByStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -390,26 +384,25 @@ List agents based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListAgentsByStatistic1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListAgentsByStatistic1Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListAgentsByStatistic1Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // number | Current page number
+    // Current page number
   pageNum: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listAgentsByStatistic1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAgentsByStatistic1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -453,22 +446,21 @@ List agents based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListAgentsByStatistic2Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListAgentsByStatistic2Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListAgentsByStatistic2Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listAgentsByStatistic2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAgentsByStatistic2(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -510,22 +502,21 @@ List characters based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListCharactersByStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListCharactersByStatisticRequest = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListCharactersByStatisticRequest = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listCharactersByStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharactersByStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -567,26 +558,25 @@ List characters based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListCharactersByStatistic1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListCharactersByStatistic1Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListCharactersByStatistic1Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // number | Current page number
+    // Current page number
   pageNum: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listCharactersByStatistic1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharactersByStatistic1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -630,24 +620,23 @@ List characters based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListCharactersByStatistic2Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListCharactersByStatistic2Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListCharactersByStatistic2Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listCharactersByStatistic2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharactersByStatistic2(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -690,24 +679,23 @@ Get popular tags for a specified info type.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListHotTagsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListHotTagsRequest = {
-  // string | Info type: prompt | agent | plugin | character
+const request: InteractiveStatisticsApiListHotTagsRequest = {
+    // Info type: prompt | agent | plugin | character
   infoType: "infoType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // string | Key word (optional)
+    // Key word (optional)
   text: "text_example",
 };
 
-apiInstance.listHotTags(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listHotTags(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -750,24 +738,23 @@ List plugins based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListPluginsByStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListPluginsByStatisticRequest = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListPluginsByStatisticRequest = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listPluginsByStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPluginsByStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -810,26 +797,25 @@ List plugins based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListPluginsByStatistic1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListPluginsByStatistic1Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListPluginsByStatistic1Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // number | Current page number
+    // Current page number
   pageNum: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listPluginsByStatistic1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPluginsByStatistic1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -873,22 +859,21 @@ List plugins based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListPluginsByStatistic2Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListPluginsByStatistic2Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListPluginsByStatistic2Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listPluginsByStatistic2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPluginsByStatistic2(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -930,24 +915,23 @@ List prompts based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListPromptsByStatisticRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListPromptsByStatisticRequest = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListPromptsByStatisticRequest = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listPromptsByStatistic(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPromptsByStatistic(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -990,26 +974,25 @@ List prompts based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListPromptsByStatistic1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListPromptsByStatistic1Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListPromptsByStatistic1Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // number | Maximum quantity
+    // Maximum quantity
   pageSize: 1,
-  // number | Current page number
+    // Current page number
   pageNum: 1,
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listPromptsByStatistic1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPromptsByStatistic1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1053,22 +1036,21 @@ List prompts based on statistics, including interactive statistical data.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, InteractiveStatisticsApi } from '';
+import type { InteractiveStatisticsApiListPromptsByStatistic2Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .InteractiveStatisticsApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new InteractiveStatisticsApi(configuration);
 
-let body:.InteractiveStatisticsApiListPromptsByStatistic2Request = {
-  // string | Statistics type: view_count | refer_count | recommend_count | score
+const request: InteractiveStatisticsApiListPromptsByStatistic2Request = {
+    // Statistics type: view_count | refer_count | recommend_count | score
   statsType: "statsType_example",
-  // string | Default is descending order, set asc=1 for ascending order (optional)
+    // Default is descending order, set asc=1 for ascending order (optional)
   asc: "asc_example",
 };
 
-apiInstance.listPromptsByStatistic2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPromptsByStatistic2(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

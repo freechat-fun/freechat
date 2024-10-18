@@ -83,6 +83,7 @@ export interface AIServiceApiAddAiApiKeyRequest {
 export interface AIServiceApiDeleteAiApiKeyRequest {
     /**
      * Credential identifier
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApideleteAiApiKey
      */
@@ -92,6 +93,7 @@ export interface AIServiceApiDeleteAiApiKeyRequest {
 export interface AIServiceApiDisableAiApiKeyRequest {
     /**
      * Credential identifier
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApidisableAiApiKey
      */
@@ -101,6 +103,7 @@ export interface AIServiceApiDisableAiApiKeyRequest {
 export interface AIServiceApiEnableAiApiKeyRequest {
     /**
      * Credential identifier
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApienableAiApiKey
      */
@@ -110,6 +113,7 @@ export interface AIServiceApiEnableAiApiKeyRequest {
 export interface AIServiceApiGetAiApiKeyRequest {
     /**
      * Credential identifier
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApigetAiApiKey
      */
@@ -119,6 +123,7 @@ export interface AIServiceApiGetAiApiKeyRequest {
 export interface AIServiceApiGetAiModelInfoRequest {
     /**
      * Model identifier
+     * Defaults to: undefined
      * @type string
      * @memberof AIServiceApigetAiModelInfo
      */
@@ -128,6 +133,7 @@ export interface AIServiceApiGetAiModelInfoRequest {
 export interface AIServiceApiListAiApiKeysRequest {
     /**
      * Model provider
+     * Defaults to: undefined
      * @type string
      * @memberof AIServiceApilistAiApiKeys
      */
@@ -137,12 +143,14 @@ export interface AIServiceApiListAiApiKeysRequest {
 export interface AIServiceApiListAiModelInfoRequest {
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApilistAiModelInfo
      */
     pageSize: number
     /**
      * Current page number
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApilistAiModelInfo
      */
@@ -152,6 +160,7 @@ export interface AIServiceApiListAiModelInfoRequest {
 export interface AIServiceApiListAiModelInfo1Request {
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof AIServiceApilistAiModelInfo1
      */
@@ -359,6 +368,7 @@ export interface AccountApiCreateTokenRequest {
 export interface AccountApiCreateToken1Request {
     /**
      * Token validity duration (seconds)
+     * Defaults to: undefined
      * @type number
      * @memberof AccountApicreateToken1
      */
@@ -368,6 +378,7 @@ export interface AccountApiCreateToken1Request {
 export interface AccountApiDeleteTokenRequest {
     /**
      * Token content
+     * Defaults to: undefined
      * @type string
      * @memberof AccountApideleteToken
      */
@@ -377,6 +388,7 @@ export interface AccountApiDeleteTokenRequest {
 export interface AccountApiDeleteTokenByIdRequest {
     /**
      * Token id
+     * Defaults to: undefined
      * @type number
      * @memberof AccountApideleteTokenById
      */
@@ -386,6 +398,7 @@ export interface AccountApiDeleteTokenByIdRequest {
 export interface AccountApiDisableTokenRequest {
     /**
      * Token content
+     * Defaults to: undefined
      * @type string
      * @memberof AccountApidisableToken
      */
@@ -395,6 +408,7 @@ export interface AccountApiDisableTokenRequest {
 export interface AccountApiDisableTokenByIdRequest {
     /**
      * Token id
+     * Defaults to: undefined
      * @type number
      * @memberof AccountApidisableTokenById
      */
@@ -404,6 +418,7 @@ export interface AccountApiDisableTokenByIdRequest {
 export interface AccountApiGetTokenByIdRequest {
     /**
      * Token id
+     * Defaults to: undefined
      * @type number
      * @memberof AccountApigetTokenById
      */
@@ -416,6 +431,7 @@ export interface AccountApiGetUserBasicRequest {
 export interface AccountApiGetUserBasic1Request {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountApigetUserBasic1
      */
@@ -440,6 +456,7 @@ export interface AccountApiUpdateUserInfoRequest {
 export interface AccountApiUploadUserPictureRequest {
     /**
      * User picture
+     * Defaults to: undefined
      * @type HttpFile
      * @memberof AccountApiuploadUserPicture
      */
@@ -695,12 +712,15 @@ import { AccountManagerForAdminApiRequestFactory, AccountManagerForAdminApiRespo
 export interface AccountManagerForAdminApiCreateTokenForUserRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApicreateTokenForUser
      */
     username: string
     /**
      * Validity period (seconds)
+     * Minimum: 0
+     * Defaults to: undefined
      * @type number
      * @memberof AccountManagerForAdminApicreateTokenForUser
      */
@@ -719,6 +739,7 @@ export interface AccountManagerForAdminApiCreateUserRequest {
 export interface AccountManagerForAdminApiDeleteTokenForUserRequest {
     /**
      * API Token
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApideleteTokenForUser
      */
@@ -728,6 +749,7 @@ export interface AccountManagerForAdminApiDeleteTokenForUserRequest {
 export interface AccountManagerForAdminApiDeleteUserRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApideleteUser
      */
@@ -737,6 +759,7 @@ export interface AccountManagerForAdminApiDeleteUserRequest {
 export interface AccountManagerForAdminApiDisableTokenForUserRequest {
     /**
      * API Token
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApidisableTokenForUser
      */
@@ -746,6 +769,7 @@ export interface AccountManagerForAdminApiDisableTokenForUserRequest {
 export interface AccountManagerForAdminApiGetDetailsOfUserRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApigetDetailsOfUser
      */
@@ -755,6 +779,7 @@ export interface AccountManagerForAdminApiGetDetailsOfUserRequest {
 export interface AccountManagerForAdminApiGetUserByTokenRequest {
     /**
      * API Token
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApigetUserByToken
      */
@@ -764,6 +789,7 @@ export interface AccountManagerForAdminApiGetUserByTokenRequest {
 export interface AccountManagerForAdminApiListAuthoritiesOfUserRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApilistAuthoritiesOfUser
      */
@@ -773,6 +799,7 @@ export interface AccountManagerForAdminApiListAuthoritiesOfUserRequest {
 export interface AccountManagerForAdminApiListTokensOfUserRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApilistTokensOfUser
      */
@@ -782,12 +809,14 @@ export interface AccountManagerForAdminApiListTokensOfUserRequest {
 export interface AccountManagerForAdminApiListUsersRequest {
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof AccountManagerForAdminApilistUsers
      */
     pageSize: number
     /**
      * Current page number
+     * Defaults to: undefined
      * @type number
      * @memberof AccountManagerForAdminApilistUsers
      */
@@ -797,6 +826,7 @@ export interface AccountManagerForAdminApiListUsersRequest {
 export interface AccountManagerForAdminApiListUsers1Request {
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof AccountManagerForAdminApilistUsers1
      */
@@ -809,6 +839,7 @@ export interface AccountManagerForAdminApiListUsers2Request {
 export interface AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof AccountManagerForAdminApiupdateAuthoritiesOfUser
      */
@@ -1115,6 +1146,7 @@ export interface AgentApiBatchSearchAgentSummaryRequest {
 export interface AgentApiCloneAgentRequest {
     /**
      * The referenced agentId
+     * Defaults to: undefined
      * @type number
      * @memberof AgentApicloneAgent
      */
@@ -1160,6 +1192,7 @@ export interface AgentApiCreateAgentsRequest {
 export interface AgentApiDeleteAgentRequest {
     /**
      * AgentId to be deleted
+     * Defaults to: undefined
      * @type number
      * @memberof AgentApideleteAgent
      */
@@ -1178,6 +1211,7 @@ export interface AgentApiDeleteAgentsRequest {
 export interface AgentApiGetAgentDetailsRequest {
     /**
      * AgentId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof AgentApigetAgentDetails
      */
@@ -1187,6 +1221,7 @@ export interface AgentApiGetAgentDetailsRequest {
 export interface AgentApiGetAgentSummaryRequest {
     /**
      * agentId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof AgentApigetAgentSummary
      */
@@ -1196,6 +1231,7 @@ export interface AgentApiGetAgentSummaryRequest {
 export interface AgentApiListAgentVersionsByNameRequest {
     /**
      * Agent name
+     * Defaults to: undefined
      * @type string
      * @memberof AgentApilistAgentVersionsByName
      */
@@ -1205,12 +1241,14 @@ export interface AgentApiListAgentVersionsByNameRequest {
 export interface AgentApiPublishAgentRequest {
     /**
      * The agentId to be published
+     * Defaults to: undefined
      * @type number
      * @memberof AgentApipublishAgent
      */
     agentId: number
     /**
      * Visibility: public | private | ...
+     * Defaults to: undefined
      * @type string
      * @memberof AgentApipublishAgent
      */
@@ -1238,6 +1276,7 @@ export interface AgentApiSearchAgentSummaryRequest {
 export interface AgentApiUpdateAgentRequest {
     /**
      * AgentId to be updated
+     * Defaults to: undefined
      * @type number
      * @memberof AgentApiupdateAgent
      */
@@ -1586,12 +1625,14 @@ import { AppMetaForAdminApiRequestFactory, AppMetaForAdminApiResponseProcessor} 
 export interface AppMetaForAdminApiExposeRequest {
     /**
      * 
+     * Defaults to: undefined
      * @type OpenAiParamDTO
      * @memberof AppMetaForAdminApiexpose
      */
     openAiParam: OpenAiParamDTO
     /**
      * 
+     * Defaults to: undefined
      * @type QwenParamDTO
      * @memberof AppMetaForAdminApiexpose
      */
@@ -1651,11 +1692,12 @@ import { CharacterApiRequestFactory, CharacterApiResponseProcessor} from "../api
 
 export interface CharacterApiAddCharacterBackendRequest {
     /**
-     * The characterId to be added a backend
-     * @type number
+     * The characterUid to be added a backend
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApiaddCharacterBackend
      */
-    characterId: number
+    characterUid: string
     /**
      * The character backend to be added
      * @type CharacterBackendDTO
@@ -1685,6 +1727,7 @@ export interface CharacterApiBatchSearchCharacterSummaryRequest {
 export interface CharacterApiCloneCharacterRequest {
     /**
      * The referenced characterId
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApicloneCharacter
      */
@@ -1721,6 +1764,7 @@ export interface CharacterApiCreateCharacterRequest {
 export interface CharacterApiDeleteCharacterRequest {
     /**
      * The characterId to be deleted
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApideleteCharacter
      */
@@ -1730,15 +1774,27 @@ export interface CharacterApiDeleteCharacterRequest {
 export interface CharacterApiDeleteCharacterByNameRequest {
     /**
      * The character name to be deleted
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApideleteCharacterByName
      */
     name: string
 }
 
+export interface CharacterApiDeleteCharacterByUidRequest {
+    /**
+     * The character uid to be deleted
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApideleteCharacterByUid
+     */
+    characterUid: string
+}
+
 export interface CharacterApiDeleteCharacterDocumentRequest {
     /**
      * Document key
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApideleteCharacterDocument
      */
@@ -1748,6 +1804,7 @@ export interface CharacterApiDeleteCharacterDocumentRequest {
 export interface CharacterApiDeleteCharacterPictureRequest {
     /**
      * Image key
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApideleteCharacterPicture
      */
@@ -1757,6 +1814,7 @@ export interface CharacterApiDeleteCharacterPictureRequest {
 export interface CharacterApiExistsCharacterNameRequest {
     /**
      * Name
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApiexistsCharacterName
      */
@@ -1766,6 +1824,7 @@ export interface CharacterApiExistsCharacterNameRequest {
 export interface CharacterApiExportCharacterRequest {
     /**
      * Character identifier
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApiexportCharacter
      */
@@ -1775,6 +1834,7 @@ export interface CharacterApiExportCharacterRequest {
 export interface CharacterApiGetCharacterDetailsRequest {
     /**
      * CharacterId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApigetCharacterDetails
      */
@@ -1784,6 +1844,7 @@ export interface CharacterApiGetCharacterDetailsRequest {
 export interface CharacterApiGetCharacterLatestIdByNameRequest {
     /**
      * Character name
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApigetCharacterLatestIdByName
      */
@@ -1793,6 +1854,7 @@ export interface CharacterApiGetCharacterLatestIdByNameRequest {
 export interface CharacterApiGetCharacterSummaryRequest {
     /**
      * CharacterId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApigetCharacterSummary
      */
@@ -1801,16 +1863,18 @@ export interface CharacterApiGetCharacterSummaryRequest {
 
 export interface CharacterApiGetDefaultCharacterBackendRequest {
     /**
-     * The characterId to be queried
-     * @type number
+     * The characterUid to be queried
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApigetDefaultCharacterBackend
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface CharacterApiImportCharacterRequest {
     /**
      * Character avatar
+     * Defaults to: undefined
      * @type HttpFile
      * @memberof CharacterApiimportCharacter
      */
@@ -1819,43 +1883,48 @@ export interface CharacterApiImportCharacterRequest {
 
 export interface CharacterApiListCharacterBackendIdsRequest {
     /**
-     * The characterId to be queried
-     * @type number
+     * The characterUid to be queried
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApilistCharacterBackendIds
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface CharacterApiListCharacterBackendsRequest {
     /**
-     * The characterId to be queried
-     * @type number
+     * The characterUid to be queried
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApilistCharacterBackends
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface CharacterApiListCharacterDocumentsRequest {
     /**
-     * Character identifier
-     * @type number
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApilistCharacterDocuments
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface CharacterApiListCharacterPicturesRequest {
     /**
-     * Character identifier
-     * @type number
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApilistCharacterPictures
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface CharacterApiListCharacterVersionsByNameRequest {
     /**
      * Character name
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApilistCharacterVersionsByName
      */
@@ -1865,6 +1934,7 @@ export interface CharacterApiListCharacterVersionsByNameRequest {
 export interface CharacterApiNewCharacterNameRequest {
     /**
      * Desired name
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApinewCharacterName
      */
@@ -1874,6 +1944,7 @@ export interface CharacterApiNewCharacterNameRequest {
 export interface CharacterApiPublishCharacterRequest {
     /**
      * The characterId to be published
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApipublishCharacter
      */
@@ -1883,12 +1954,14 @@ export interface CharacterApiPublishCharacterRequest {
 export interface CharacterApiPublishCharacter1Request {
     /**
      * The characterId to be published
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApipublishCharacter1
      */
     characterId: number
     /**
      * Visibility: public | private | ...
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApipublishCharacter1
      */
@@ -1898,6 +1971,7 @@ export interface CharacterApiPublishCharacter1Request {
 export interface CharacterApiRemoveCharacterBackendRequest {
     /**
      * The characterBackendId to be removed
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApiremoveCharacterBackend
      */
@@ -1934,6 +2008,7 @@ export interface CharacterApiSearchPublicCharacterSummaryRequest {
 export interface CharacterApiSetDefaultCharacterBackendRequest {
     /**
      * The characterBackendId to be set to default
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApisetDefaultCharacterBackend
      */
@@ -1943,6 +2018,7 @@ export interface CharacterApiSetDefaultCharacterBackendRequest {
 export interface CharacterApiUpdateCharacterRequest {
     /**
      * The characterId to be updated
+     * Defaults to: undefined
      * @type number
      * @memberof CharacterApiupdateCharacter
      */
@@ -1958,6 +2034,7 @@ export interface CharacterApiUpdateCharacterRequest {
 export interface CharacterApiUpdateCharacterBackendRequest {
     /**
      * The characterBackendId to be updated
+     * Defaults to: undefined
      * @type string
      * @memberof CharacterApiupdateCharacterBackend
      */
@@ -1972,13 +2049,15 @@ export interface CharacterApiUpdateCharacterBackendRequest {
 
 export interface CharacterApiUploadCharacterAvatarRequest {
     /**
-     * Character identifier
-     * @type number
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApiuploadCharacterAvatar
      */
-    characterId: number
+    characterUid: string
     /**
      * Character avatar
+     * Defaults to: undefined
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterAvatar
      */
@@ -1987,13 +2066,15 @@ export interface CharacterApiUploadCharacterAvatarRequest {
 
 export interface CharacterApiUploadCharacterDocumentRequest {
     /**
-     * Character identifier
-     * @type number
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApiuploadCharacterDocument
      */
-    characterId: number
+    characterUid: string
     /**
      * Character document
+     * Defaults to: undefined
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterDocument
      */
@@ -2002,13 +2083,15 @@ export interface CharacterApiUploadCharacterDocumentRequest {
 
 export interface CharacterApiUploadCharacterPictureRequest {
     /**
-     * Character identifier
-     * @type number
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
      * @memberof CharacterApiuploadCharacterPicture
      */
-    characterId: number
+    characterUid: string
     /**
      * Character picture
+     * Defaults to: undefined
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterPicture
      */
@@ -2028,7 +2111,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public addCharacterBackendWithHttpInfo(param: CharacterApiAddCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.addCharacterBackendWithHttpInfo(param.characterId, param.characterBackendDTO,  options).toPromise();
+        return this.api.addCharacterBackendWithHttpInfo(param.characterUid, param.characterBackendDTO,  options).toPromise();
     }
 
     /**
@@ -2037,7 +2120,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public addCharacterBackend(param: CharacterApiAddCharacterBackendRequest, options?: Configuration): Promise<string> {
-        return this.api.addCharacterBackend(param.characterId, param.characterBackendDTO,  options).toPromise();
+        return this.api.addCharacterBackend(param.characterUid, param.characterBackendDTO,  options).toPromise();
     }
 
     /**
@@ -2185,6 +2268,24 @@ export class ObjectCharacterApi {
     }
 
     /**
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * Delete Character by Uid
+     * @param param the request object
+     */
+    public deleteCharacterByUidWithHttpInfo(param: CharacterApiDeleteCharacterByUidRequest, options?: Configuration): Promise<HttpInfo<Array<number>>> {
+        return this.api.deleteCharacterByUidWithHttpInfo(param.characterUid,  options).toPromise();
+    }
+
+    /**
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * Delete Character by Uid
+     * @param param the request object
+     */
+    public deleteCharacterByUid(param: CharacterApiDeleteCharacterByUidRequest, options?: Configuration): Promise<Array<number>> {
+        return this.api.deleteCharacterByUid(param.characterUid,  options).toPromise();
+    }
+
+    /**
      * Delete a document of the character by key.
      * Delete Character Document
      * @param param the request object
@@ -2316,7 +2417,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public getDefaultCharacterBackendWithHttpInfo(param: CharacterApiGetDefaultCharacterBackendRequest, options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
-        return this.api.getDefaultCharacterBackendWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.getDefaultCharacterBackendWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2325,7 +2426,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public getDefaultCharacterBackend(param: CharacterApiGetDefaultCharacterBackendRequest, options?: Configuration): Promise<CharacterBackendDetailsDTO> {
-        return this.api.getDefaultCharacterBackend(param.characterId,  options).toPromise();
+        return this.api.getDefaultCharacterBackend(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2352,7 +2453,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterBackendIdsWithHttpInfo(param: CharacterApiListCharacterBackendIdsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.listCharacterBackendIdsWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.listCharacterBackendIdsWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2361,7 +2462,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterBackendIds(param: CharacterApiListCharacterBackendIdsRequest, options?: Configuration): Promise<Array<string>> {
-        return this.api.listCharacterBackendIds(param.characterId,  options).toPromise();
+        return this.api.listCharacterBackendIds(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2370,7 +2471,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterBackendsWithHttpInfo(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
-        return this.api.listCharacterBackendsWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.listCharacterBackendsWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2379,7 +2480,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterBackends(param: CharacterApiListCharacterBackendsRequest, options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
-        return this.api.listCharacterBackends(param.characterId,  options).toPromise();
+        return this.api.listCharacterBackends(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2388,7 +2489,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterDocumentsWithHttpInfo(param: CharacterApiListCharacterDocumentsRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.listCharacterDocumentsWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.listCharacterDocumentsWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2397,7 +2498,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterDocuments(param: CharacterApiListCharacterDocumentsRequest, options?: Configuration): Promise<Array<string>> {
-        return this.api.listCharacterDocuments(param.characterId,  options).toPromise();
+        return this.api.listCharacterDocuments(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2406,7 +2507,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterPicturesWithHttpInfo(param: CharacterApiListCharacterPicturesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        return this.api.listCharacterPicturesWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.listCharacterPicturesWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2415,7 +2516,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public listCharacterPictures(param: CharacterApiListCharacterPicturesRequest, options?: Configuration): Promise<Array<string>> {
-        return this.api.listCharacterPictures(param.characterId,  options).toPromise();
+        return this.api.listCharacterPictures(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2622,7 +2723,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterAvatarWithHttpInfo(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.uploadCharacterAvatarWithHttpInfo(param.characterId, param.file,  options).toPromise();
+        return this.api.uploadCharacterAvatarWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
     /**
@@ -2631,7 +2732,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterAvatar(param: CharacterApiUploadCharacterAvatarRequest, options?: Configuration): Promise<string> {
-        return this.api.uploadCharacterAvatar(param.characterId, param.file,  options).toPromise();
+        return this.api.uploadCharacterAvatar(param.characterUid, param.file,  options).toPromise();
     }
 
     /**
@@ -2640,7 +2741,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterDocumentWithHttpInfo(param: CharacterApiUploadCharacterDocumentRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.uploadCharacterDocumentWithHttpInfo(param.characterId, param.file,  options).toPromise();
+        return this.api.uploadCharacterDocumentWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
     /**
@@ -2649,7 +2750,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterDocument(param: CharacterApiUploadCharacterDocumentRequest, options?: Configuration): Promise<string> {
-        return this.api.uploadCharacterDocument(param.characterId, param.file,  options).toPromise();
+        return this.api.uploadCharacterDocument(param.characterUid, param.file,  options).toPromise();
     }
 
     /**
@@ -2658,7 +2759,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterPictureWithHttpInfo(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.uploadCharacterPictureWithHttpInfo(param.characterId, param.file,  options).toPromise();
+        return this.api.uploadCharacterPictureWithHttpInfo(param.characterUid, param.file,  options).toPromise();
     }
 
     /**
@@ -2667,7 +2768,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public uploadCharacterPicture(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<string> {
-        return this.api.uploadCharacterPicture(param.characterId, param.file,  options).toPromise();
+        return this.api.uploadCharacterPicture(param.characterUid, param.file,  options).toPromise();
     }
 
 }
@@ -2678,6 +2779,7 @@ import { ChatApiRequestFactory, ChatApiResponseProcessor} from "../apis/ChatApi.
 export interface ChatApiClearMemoryRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApiclearMemory
      */
@@ -2687,6 +2789,7 @@ export interface ChatApiClearMemoryRequest {
 export interface ChatApiDeleteChatRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApideleteChat
      */
@@ -2696,6 +2799,7 @@ export interface ChatApiDeleteChatRequest {
 export interface ChatApiGetDefaultChatIdRequest {
     /**
      * Character identifier
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApigetDefaultChatId
      */
@@ -2705,6 +2809,7 @@ export interface ChatApiGetDefaultChatIdRequest {
 export interface ChatApiGetMemoryUsageRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApigetMemoryUsage
      */
@@ -2717,12 +2822,14 @@ export interface ChatApiListChatsRequest {
 export interface ChatApiListDebugMessagesRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApilistDebugMessages
      */
     chatId: string
     /**
      * Messages limit
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApilistDebugMessages
      */
@@ -2732,18 +2839,21 @@ export interface ChatApiListDebugMessagesRequest {
 export interface ChatApiListDebugMessages1Request {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApilistDebugMessages1
      */
     chatId: string
     /**
      * Messages limit
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApilistDebugMessages1
      */
     limit: number
     /**
      * Messages offset (from new to old)
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApilistDebugMessages1
      */
@@ -2753,6 +2863,7 @@ export interface ChatApiListDebugMessages1Request {
 export interface ChatApiListDebugMessages2Request {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApilistDebugMessages2
      */
@@ -2762,6 +2873,7 @@ export interface ChatApiListDebugMessages2Request {
 export interface ChatApiListMessagesRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApilistMessages
      */
@@ -2771,18 +2883,21 @@ export interface ChatApiListMessagesRequest {
 export interface ChatApiListMessages1Request {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApilistMessages1
      */
     chatId: string
     /**
      * Messages limit
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApilistMessages1
      */
     limit: number
     /**
      * Messages offset (from new to old)
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApilistMessages1
      */
@@ -2792,12 +2907,14 @@ export interface ChatApiListMessages1Request {
 export interface ChatApiListMessages2Request {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApilistMessages2
      */
     chatId: string
     /**
      * Messages limit
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApilistMessages2
      */
@@ -2807,21 +2924,41 @@ export interface ChatApiListMessages2Request {
 export interface ChatApiRollbackMessagesRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApirollbackMessages
      */
     chatId: string
     /**
      * Message count to be rolled back
+     * Defaults to: undefined
      * @type number
      * @memberof ChatApirollbackMessages
      */
     count: number
 }
 
+export interface ChatApiSendAssistantRequest {
+    /**
+     * Chat session identifier
+     * Defaults to: undefined
+     * @type string
+     * @memberof ChatApisendAssistant
+     */
+    chatId: string
+    /**
+     * Assistant uid
+     * Defaults to: undefined
+     * @type string
+     * @memberof ChatApisendAssistant
+     */
+    assistantUid: string
+}
+
 export interface ChatApiSendMessageRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApisendMessage
      */
@@ -2843,9 +2980,27 @@ export interface ChatApiStartChatRequest {
     chatCreateDTO: ChatCreateDTO
 }
 
+export interface ChatApiStreamSendAssistantRequest {
+    /**
+     * Chat session identifier
+     * Defaults to: undefined
+     * @type string
+     * @memberof ChatApistreamSendAssistant
+     */
+    chatId: string
+    /**
+     * Assistant uid
+     * Defaults to: undefined
+     * @type string
+     * @memberof ChatApistreamSendAssistant
+     */
+    assistantUid: string
+}
+
 export interface ChatApiStreamSendMessageRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApistreamSendMessage
      */
@@ -2861,6 +3016,7 @@ export interface ChatApiStreamSendMessageRequest {
 export interface ChatApiUpdateChatRequest {
     /**
      * Chat session identifier
+     * Defaults to: undefined
      * @type string
      * @memberof ChatApiupdateChat
      */
@@ -3097,6 +3253,24 @@ export class ObjectChatApi {
     }
 
     /**
+     * Send a message to assistant for a new chat message.
+     * Send Assistant for Chat Message
+     * @param param the request object
+     */
+    public sendAssistantWithHttpInfo(param: ChatApiSendAssistantRequest, options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+        return this.api.sendAssistantWithHttpInfo(param.chatId, param.assistantUid,  options).toPromise();
+    }
+
+    /**
+     * Send a message to assistant for a new chat message.
+     * Send Assistant for Chat Message
+     * @param param the request object
+     */
+    public sendAssistant(param: ChatApiSendAssistantRequest, options?: Configuration): Promise<LlmResultDTO> {
+        return this.api.sendAssistant(param.chatId, param.assistantUid,  options).toPromise();
+    }
+
+    /**
      * Send a chat message to character.
      * Send Chat Message
      * @param param the request object
@@ -3130,6 +3304,24 @@ export class ObjectChatApi {
      */
     public startChat(param: ChatApiStartChatRequest, options?: Configuration): Promise<string> {
         return this.api.startChat(param.chatCreateDTO,  options).toPromise();
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Send Assistant for Chat Message by Streaming Back
+     * @param param the request object
+     */
+    public streamSendAssistantWithHttpInfo(param: ChatApiStreamSendAssistantRequest, options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+        return this.api.streamSendAssistantWithHttpInfo(param.chatId, param.assistantUid,  options).toPromise();
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Send Assistant for Chat Message by Streaming Back
+     * @param param the request object
+     */
+    public streamSendAssistant(param: ChatApiStreamSendAssistantRequest, options?: Configuration): Promise<SseEmitter> {
+        return this.api.streamSendAssistant(param.chatId, param.assistantUid,  options).toPromise();
     }
 
     /**
@@ -3176,6 +3368,7 @@ import { EncryptionManagerForAdminApiRequestFactory, EncryptionManagerForAdminAp
 export interface EncryptionManagerForAdminApiEncryptTextRequest {
     /**
      * Text to be encrypted
+     * Defaults to: undefined
      * @type string
      * @memberof EncryptionManagerForAdminApiencryptText
      */
@@ -3215,24 +3408,28 @@ import { InteractiveStatisticsApiRequestFactory, InteractiveStatisticsApiRespons
 export interface InteractiveStatisticsApiAddStatisticRequest {
     /**
      * Info type: prompt | agent | plugin | character
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApiaddStatistic
      */
     infoType: string
     /**
      * Unique resource identifier
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApiaddStatistic
      */
     infoId: string
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApiaddStatistic
      */
     statsType: string
     /**
      * Delta in statistical value
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApiaddStatistic
      */
@@ -3242,12 +3439,14 @@ export interface InteractiveStatisticsApiAddStatisticRequest {
 export interface InteractiveStatisticsApiGetScoreRequest {
     /**
      * Info type: prompt | agent | plugin | character
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetScore
      */
     infoType: string
     /**
      * Unique resource identifier
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetScore
      */
@@ -3257,18 +3456,21 @@ export interface InteractiveStatisticsApiGetScoreRequest {
 export interface InteractiveStatisticsApiGetStatisticRequest {
     /**
      * Info type: prompt | agent | plugin | character
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetStatistic
      */
     infoType: string
     /**
      * Unique resource identifier
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetStatistic
      */
     infoId: string
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetStatistic
      */
@@ -3278,12 +3480,14 @@ export interface InteractiveStatisticsApiGetStatisticRequest {
 export interface InteractiveStatisticsApiGetStatisticsRequest {
     /**
      * Info type: prompt | agent | plugin | character
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetStatistics
      */
     infoType: string
     /**
      * Unique resource identifier
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApigetStatistics
      */
@@ -3293,18 +3497,21 @@ export interface InteractiveStatisticsApiGetStatisticsRequest {
 export interface InteractiveStatisticsApiIncreaseStatisticRequest {
     /**
      * Info type: prompt | agent | plugin | character
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApiincreaseStatistic
      */
     infoType: string
     /**
      * Unique resource identifier
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApiincreaseStatistic
      */
     infoId: string
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApiincreaseStatistic
      */
@@ -3314,18 +3521,21 @@ export interface InteractiveStatisticsApiIncreaseStatisticRequest {
 export interface InteractiveStatisticsApiListAgentsByStatisticRequest {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistAgentsByStatistic
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistAgentsByStatistic
      */
     pageSize: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistAgentsByStatistic
      */
@@ -3335,24 +3545,28 @@ export interface InteractiveStatisticsApiListAgentsByStatisticRequest {
 export interface InteractiveStatisticsApiListAgentsByStatistic1Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistAgentsByStatistic1
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistAgentsByStatistic1
      */
     pageSize: number
     /**
      * Current page number
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistAgentsByStatistic1
      */
     pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistAgentsByStatistic1
      */
@@ -3362,12 +3576,14 @@ export interface InteractiveStatisticsApiListAgentsByStatistic1Request {
 export interface InteractiveStatisticsApiListAgentsByStatistic2Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistAgentsByStatistic2
      */
     statsType: string
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistAgentsByStatistic2
      */
@@ -3377,12 +3593,14 @@ export interface InteractiveStatisticsApiListAgentsByStatistic2Request {
 export interface InteractiveStatisticsApiListCharactersByStatisticRequest {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistCharactersByStatistic
      */
     statsType: string
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistCharactersByStatistic
      */
@@ -3392,24 +3610,28 @@ export interface InteractiveStatisticsApiListCharactersByStatisticRequest {
 export interface InteractiveStatisticsApiListCharactersByStatistic1Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistCharactersByStatistic1
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistCharactersByStatistic1
      */
     pageSize: number
     /**
      * Current page number
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistCharactersByStatistic1
      */
     pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistCharactersByStatistic1
      */
@@ -3419,18 +3641,21 @@ export interface InteractiveStatisticsApiListCharactersByStatistic1Request {
 export interface InteractiveStatisticsApiListCharactersByStatistic2Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistCharactersByStatistic2
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistCharactersByStatistic2
      */
     pageSize: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistCharactersByStatistic2
      */
@@ -3440,18 +3665,21 @@ export interface InteractiveStatisticsApiListCharactersByStatistic2Request {
 export interface InteractiveStatisticsApiListHotTagsRequest {
     /**
      * Info type: prompt | agent | plugin | character
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistHotTags
      */
     infoType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistHotTags
      */
     pageSize: number
     /**
      * Key word
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistHotTags
      */
@@ -3461,18 +3689,21 @@ export interface InteractiveStatisticsApiListHotTagsRequest {
 export interface InteractiveStatisticsApiListPluginsByStatisticRequest {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPluginsByStatistic
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistPluginsByStatistic
      */
     pageSize: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPluginsByStatistic
      */
@@ -3482,24 +3713,28 @@ export interface InteractiveStatisticsApiListPluginsByStatisticRequest {
 export interface InteractiveStatisticsApiListPluginsByStatistic1Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPluginsByStatistic1
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistPluginsByStatistic1
      */
     pageSize: number
     /**
      * Current page number
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistPluginsByStatistic1
      */
     pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPluginsByStatistic1
      */
@@ -3509,12 +3744,14 @@ export interface InteractiveStatisticsApiListPluginsByStatistic1Request {
 export interface InteractiveStatisticsApiListPluginsByStatistic2Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPluginsByStatistic2
      */
     statsType: string
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPluginsByStatistic2
      */
@@ -3524,18 +3761,21 @@ export interface InteractiveStatisticsApiListPluginsByStatistic2Request {
 export interface InteractiveStatisticsApiListPromptsByStatisticRequest {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPromptsByStatistic
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistPromptsByStatistic
      */
     pageSize: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPromptsByStatistic
      */
@@ -3545,24 +3785,28 @@ export interface InteractiveStatisticsApiListPromptsByStatisticRequest {
 export interface InteractiveStatisticsApiListPromptsByStatistic1Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPromptsByStatistic1
      */
     statsType: string
     /**
      * Maximum quantity
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistPromptsByStatistic1
      */
     pageSize: number
     /**
      * Current page number
+     * Defaults to: undefined
      * @type number
      * @memberof InteractiveStatisticsApilistPromptsByStatistic1
      */
     pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPromptsByStatistic1
      */
@@ -3572,12 +3816,14 @@ export interface InteractiveStatisticsApiListPromptsByStatistic1Request {
 export interface InteractiveStatisticsApiListPromptsByStatistic2Request {
     /**
      * Statistics type: view_count | refer_count | recommend_count | score
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPromptsByStatistic2
      */
     statsType: string
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
+     * Defaults to: undefined
      * @type string
      * @memberof InteractiveStatisticsApilistPromptsByStatistic2
      */
@@ -3923,6 +4169,7 @@ import { OrganizationApiRequestFactory, OrganizationApiResponseProcessor} from "
 export interface OrganizationApiGetOwnersRequest {
     /**
      * Whether to return virtual reported owners
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetOwners
      */
@@ -3932,6 +4179,7 @@ export interface OrganizationApiGetOwnersRequest {
 export interface OrganizationApiGetOwnersDotRequest {
     /**
      * Whether to return virtual reported owners
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetOwnersDot
      */
@@ -3941,12 +4189,14 @@ export interface OrganizationApiGetOwnersDotRequest {
 export interface OrganizationApiGetSubordinateOwnersRequest {
     /**
      * The account being queried, must be a subordinate account of the current account
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetSubordinateOwners
      */
     username: string
     /**
      * Whether to return virtual reported owners
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetSubordinateOwners
      */
@@ -3956,12 +4206,14 @@ export interface OrganizationApiGetSubordinateOwnersRequest {
 export interface OrganizationApiGetSubordinateSubordinatesRequest {
     /**
      * The account being queried, must be a subordinate account of the current account
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetSubordinateSubordinates
      */
     username: string
     /**
      * Whether to return virtual managed subordinates
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetSubordinateSubordinates
      */
@@ -3971,6 +4223,7 @@ export interface OrganizationApiGetSubordinateSubordinatesRequest {
 export interface OrganizationApiGetSubordinatesRequest {
     /**
      * Whether to return virtual managed subordinates
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetSubordinates
      */
@@ -3980,6 +4233,7 @@ export interface OrganizationApiGetSubordinatesRequest {
 export interface OrganizationApiGetSubordinatesDotRequest {
     /**
      * Whether to return virtual managed subordinates
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApigetSubordinatesDot
      */
@@ -3989,6 +4243,7 @@ export interface OrganizationApiGetSubordinatesDotRequest {
 export interface OrganizationApiListSubordinateAuthoritiesRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApilistSubordinateAuthorities
      */
@@ -3998,6 +4253,7 @@ export interface OrganizationApiListSubordinateAuthoritiesRequest {
 export interface OrganizationApiRemoveSubordinateSubordinatesTreeRequest {
     /**
      * The account being operated, must be a subordinate account of the current account
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApiremoveSubordinateSubordinatesTree
      */
@@ -4007,6 +4263,7 @@ export interface OrganizationApiRemoveSubordinateSubordinatesTreeRequest {
 export interface OrganizationApiUpdateSubordinateAuthoritiesRequest {
     /**
      * Username
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApiupdateSubordinateAuthorities
      */
@@ -4022,6 +4279,7 @@ export interface OrganizationApiUpdateSubordinateAuthoritiesRequest {
 export interface OrganizationApiUpdateSubordinateOwnersRequest {
     /**
      * The account being operated, must be a subordinate account of the current account
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApiupdateSubordinateOwners
      */
@@ -4037,6 +4295,7 @@ export interface OrganizationApiUpdateSubordinateOwnersRequest {
 export interface OrganizationApiUpdateSubordinateSubordinatesRequest {
     /**
      * The account being operated, must be a subordinate account of the current account
+     * Defaults to: undefined
      * @type string
      * @memberof OrganizationApiupdateSubordinateSubordinates
      */
@@ -4307,6 +4566,7 @@ export interface PluginApiCreatePluginsRequest {
 export interface PluginApiDeletePluginRequest {
     /**
      * The pluginId to be deleted
+     * Defaults to: undefined
      * @type number
      * @memberof PluginApideletePlugin
      */
@@ -4325,6 +4585,7 @@ export interface PluginApiDeletePluginsRequest {
 export interface PluginApiGetPluginDetailsRequest {
     /**
      * PluginId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof PluginApigetPluginDetails
      */
@@ -4334,6 +4595,7 @@ export interface PluginApiGetPluginDetailsRequest {
 export interface PluginApiGetPluginSummaryRequest {
     /**
      * PluginId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof PluginApigetPluginSummary
      */
@@ -4343,6 +4605,7 @@ export interface PluginApiGetPluginSummaryRequest {
 export interface PluginApiRefreshPluginInfoRequest {
     /**
      * The pluginId to be fetched
+     * Defaults to: undefined
      * @type number
      * @memberof PluginApirefreshPluginInfo
      */
@@ -4370,6 +4633,7 @@ export interface PluginApiSearchPluginSummaryRequest {
 export interface PluginApiUpdatePluginRequest {
     /**
      * The pluginId to be updated
+     * Defaults to: undefined
      * @type number
      * @memberof PluginApiupdatePlugin
      */
@@ -4667,6 +4931,7 @@ export interface PromptApiBatchSearchPromptSummaryRequest {
 export interface PromptApiClonePromptRequest {
     /**
      * The referenced promptId
+     * Defaults to: undefined
      * @type number
      * @memberof PromptApiclonePrompt
      */
@@ -4721,6 +4986,7 @@ export interface PromptApiCreatePromptsRequest {
 export interface PromptApiDeletePromptRequest {
     /**
      * The promptId to be deleted
+     * Defaults to: undefined
      * @type number
      * @memberof PromptApideletePrompt
      */
@@ -4730,6 +4996,7 @@ export interface PromptApiDeletePromptRequest {
 export interface PromptApiDeletePromptByNameRequest {
     /**
      * The prompt name to be deleted
+     * Defaults to: undefined
      * @type string
      * @memberof PromptApideletePromptByName
      */
@@ -4748,6 +5015,7 @@ export interface PromptApiDeletePromptsRequest {
 export interface PromptApiExistsPromptNameRequest {
     /**
      * Name
+     * Defaults to: undefined
      * @type string
      * @memberof PromptApiexistsPromptName
      */
@@ -4757,6 +5025,7 @@ export interface PromptApiExistsPromptNameRequest {
 export interface PromptApiGetPromptDetailsRequest {
     /**
      * PromptId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof PromptApigetPromptDetails
      */
@@ -4766,6 +5035,7 @@ export interface PromptApiGetPromptDetailsRequest {
 export interface PromptApiGetPromptSummaryRequest {
     /**
      * PromptId to be obtained
+     * Defaults to: undefined
      * @type number
      * @memberof PromptApigetPromptSummary
      */
@@ -4775,6 +5045,7 @@ export interface PromptApiGetPromptSummaryRequest {
 export interface PromptApiListPromptVersionsByNameRequest {
     /**
      * Prompt name
+     * Defaults to: undefined
      * @type string
      * @memberof PromptApilistPromptVersionsByName
      */
@@ -4784,6 +5055,7 @@ export interface PromptApiListPromptVersionsByNameRequest {
 export interface PromptApiNewPromptNameRequest {
     /**
      * Desired name
+     * Defaults to: undefined
      * @type string
      * @memberof PromptApinewPromptName
      */
@@ -4793,12 +5065,14 @@ export interface PromptApiNewPromptNameRequest {
 export interface PromptApiPublishPromptRequest {
     /**
      * The promptId to be published
+     * Defaults to: undefined
      * @type number
      * @memberof PromptApipublishPrompt
      */
     promptId: number
     /**
      * Visibility: public | private | ...
+     * Defaults to: undefined
      * @type string
      * @memberof PromptApipublishPrompt
      */
@@ -4853,6 +5127,7 @@ export interface PromptApiStreamSendPromptRequest {
 export interface PromptApiUpdatePromptRequest {
     /**
      * The promptId to be updated
+     * Defaults to: undefined
      * @type number
      * @memberof PromptApiupdatePrompt
      */
@@ -5339,6 +5614,7 @@ export interface PromptTaskApiCreatePromptTaskRequest {
 export interface PromptTaskApiDeletePromptTaskRequest {
     /**
      * The promptTaskId to be deleted
+     * Defaults to: undefined
      * @type string
      * @memberof PromptTaskApideletePromptTask
      */
@@ -5348,6 +5624,7 @@ export interface PromptTaskApiDeletePromptTaskRequest {
 export interface PromptTaskApiGetPromptTaskRequest {
     /**
      * The promptTaskId to be queried
+     * Defaults to: undefined
      * @type string
      * @memberof PromptTaskApigetPromptTask
      */
@@ -5357,6 +5634,7 @@ export interface PromptTaskApiGetPromptTaskRequest {
 export interface PromptTaskApiUpdatePromptTaskRequest {
     /**
      * The promptTaskId to be updated
+     * Defaults to: undefined
      * @type string
      * @memberof PromptTaskApiupdatePromptTask
      */
@@ -5456,6 +5734,7 @@ import { RagApiRequestFactory, RagApiResponseProcessor} from "../apis/RagApi.js"
 export interface RagApiCancelRagTaskRequest {
     /**
      * The taskId to be canceled
+     * Defaults to: undefined
      * @type number
      * @memberof RagApicancelRagTask
      */
@@ -5464,11 +5743,12 @@ export interface RagApiCancelRagTaskRequest {
 
 export interface RagApiCreateRagTaskRequest {
     /**
-     * The characterId to be added a RAG task
-     * @type number
+     * The characterUid to be added a RAG task
+     * Defaults to: undefined
+     * @type string
      * @memberof RagApicreateRagTask
      */
-    characterId: number
+    characterUid: string
     /**
      * The RAG task to be added
      * @type RagTaskDTO
@@ -5480,6 +5760,7 @@ export interface RagApiCreateRagTaskRequest {
 export interface RagApiDeleteRagTaskRequest {
     /**
      * The taskId to be deleted
+     * Defaults to: undefined
      * @type number
      * @memberof RagApideleteRagTask
      */
@@ -5489,6 +5770,7 @@ export interface RagApiDeleteRagTaskRequest {
 export interface RagApiGetRagTaskRequest {
     /**
      * The taskId to be queried
+     * Defaults to: undefined
      * @type number
      * @memberof RagApigetRagTask
      */
@@ -5498,6 +5780,7 @@ export interface RagApiGetRagTaskRequest {
 export interface RagApiGetRagTaskStatusRequest {
     /**
      * The taskId to be queried status
+     * Defaults to: undefined
      * @type number
      * @memberof RagApigetRagTaskStatus
      */
@@ -5506,16 +5789,18 @@ export interface RagApiGetRagTaskStatusRequest {
 
 export interface RagApiListRagTasksRequest {
     /**
-     * The characterId to be queried
-     * @type number
+     * The characterUid to be queried
+     * Defaults to: undefined
+     * @type string
      * @memberof RagApilistRagTasks
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface RagApiStartRagTaskRequest {
     /**
      * The taskId to be started
+     * Defaults to: undefined
      * @type number
      * @memberof RagApistartRagTask
      */
@@ -5525,6 +5810,7 @@ export interface RagApiStartRagTaskRequest {
 export interface RagApiUpdateRagTaskRequest {
     /**
      * The taskId to be updated
+     * Defaults to: undefined
      * @type number
      * @memberof RagApiupdateRagTask
      */
@@ -5568,7 +5854,7 @@ export class ObjectRagApi {
      * @param param the request object
      */
     public createRagTaskWithHttpInfo(param: RagApiCreateRagTaskRequest, options?: Configuration): Promise<HttpInfo<number>> {
-        return this.api.createRagTaskWithHttpInfo(param.characterId, param.ragTaskDTO,  options).toPromise();
+        return this.api.createRagTaskWithHttpInfo(param.characterUid, param.ragTaskDTO,  options).toPromise();
     }
 
     /**
@@ -5577,7 +5863,7 @@ export class ObjectRagApi {
      * @param param the request object
      */
     public createRagTask(param: RagApiCreateRagTaskRequest, options?: Configuration): Promise<number> {
-        return this.api.createRagTask(param.characterId, param.ragTaskDTO,  options).toPromise();
+        return this.api.createRagTask(param.characterUid, param.ragTaskDTO,  options).toPromise();
     }
 
     /**
@@ -5640,7 +5926,7 @@ export class ObjectRagApi {
      * @param param the request object
      */
     public listRagTasksWithHttpInfo(param: RagApiListRagTasksRequest, options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
-        return this.api.listRagTasksWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.listRagTasksWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -5649,7 +5935,7 @@ export class ObjectRagApi {
      * @param param the request object
      */
     public listRagTasks(param: RagApiListRagTasksRequest, options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
-        return this.api.listRagTasks(param.characterId,  options).toPromise();
+        return this.api.listRagTasks(param.characterUid,  options).toPromise();
     }
 
     /**

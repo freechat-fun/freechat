@@ -1,10 +1,10 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 1.4.0
-  - Generator version: 7.7.0
+- API version: 2.0.0
+  - Generator version: 7.9.0
 
-# FreeChat: Create Some Friends for Yourself with AI
+# FreeChat: Create Friends for Yourself with AI
 
 English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)
 
@@ -70,7 +70,7 @@ After setting up an unified persona and knowledge for a character, different bac
 
 ## How to Play
 ### Online Website
-You can visit [freechat.fun](https://www.freechat.fun) to experience FreeChat. Share your designed AI character!
+You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!
 
 ### Running in a Kubernetes Cluster
 FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:
@@ -239,7 +239,7 @@ Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/
 | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/)
 | Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)
 | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/)
-| Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)
+| Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/)
 | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)
 
 ## Collaboration
@@ -284,7 +284,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>1.4.0</version>
+  <version>2.0.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -300,7 +300,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:1.4.0"
+     implementation "fun.freechat:freechat-sdk:2.0.0"
   }
 ```
 
@@ -314,7 +314,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-1.4.0.jar`
+* `target/freechat-sdk-2.0.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -328,7 +328,7 @@ import fun.freechat.client.ApiClient;
 import fun.freechat.client.ApiException;
 import fun.freechat.client.Configuration;
 import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
+import fun.freechat.client.model.*;
 import fun.freechat.client.api.AccountApi;
 
 public class Example {
@@ -418,7 +418,7 @@ Class | Method | HTTP request | Description
 *AppConfigForAdminApi* | [**getAppConfigs**](docs/AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v1/admin/app/configs | Get Configurations
 *AppMetaForAdminApi* | [**expose**](docs/AppMetaForAdminApi.md#expose) | **GET** /api/v1/admin/app/expose | Expose DTO definitions
 *AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v1/admin/app/meta | Get Application Information
-*CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterId} | Add Character Backend
+*CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterUid} | Add Character Backend
 *CharacterApi* | [**batchSearchCharacterDetails**](docs/CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v1/character/batch/details/search | Batch Search Character Details
 *CharacterApi* | [**batchSearchCharacterSummary**](docs/CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
 *CharacterApi* | [**cloneCharacter**](docs/CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character
@@ -427,6 +427,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 *CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 *CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+*CharacterApi* | [**deleteCharacterByUid**](docs/CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v1/character/uid/{characterUid} | Delete Character by Uid
 *CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
 *CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 *CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
@@ -434,12 +435,12 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 *CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 *CharacterApi* | [**getCharacterSummary**](docs/CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
-*CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
+*CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterUid} | Get Default Character Backend
 *CharacterApi* | [**importCharacter**](docs/CharacterApi.md#importCharacter) | **POST** /api/v1/character/import | Import Character Configuration
-*CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
-*CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
-*CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterId} | List Character Documents
-*CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
+*CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterUid} | List Character Backend ids
+*CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterUid} | List Character Backends
+*CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterUid} | List Character Documents
+*CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterUid} | List Character Pictures
 *CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 *CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 *CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
@@ -451,9 +452,9 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**setDefaultCharacterBackend**](docs/CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 *CharacterApi* | [**updateCharacter**](docs/CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 *CharacterApi* | [**updateCharacterBackend**](docs/CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-*CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
-*CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterId} | Upload Character Document
-*CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
+*CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterUid} | Upload Character Avatar
+*CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterUid} | Upload Character Document
+*CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterUid} | Upload Character Picture
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
 *ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
@@ -466,8 +467,10 @@ Class | Method | HTTP request | Description
 *ChatApi* | [**listMessages1**](docs/ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
 *ChatApi* | [**listMessages2**](docs/ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
 *ChatApi* | [**rollbackMessages**](docs/ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
+*ChatApi* | [**sendAssistant**](docs/ChatApi.md#sendAssistant) | **GET** /api/v1/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
 *ChatApi* | [**sendMessage**](docs/ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message
 *ChatApi* | [**startChat**](docs/ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session
+*ChatApi* | [**streamSendAssistant**](docs/ChatApi.md#streamSendAssistant) | **GET** /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
 *ChatApi* | [**streamSendMessage**](docs/ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
 *ChatApi* | [**updateChat**](docs/ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session
 *EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v1/admin/encryption/encrypt/{text} | Encrypt Text
@@ -543,11 +546,11 @@ Class | Method | HTTP request | Description
 *PromptTaskApi* | [**getPromptTask**](docs/PromptTaskApi.md#getPromptTask) | **GET** /api/v1/prompt/task/{promptTaskId} | Get Prompt Task
 *PromptTaskApi* | [**updatePromptTask**](docs/PromptTaskApi.md#updatePromptTask) | **PUT** /api/v1/prompt/task/{promptTaskId} | Update Prompt Task
 *RagApi* | [**cancelRagTask**](docs/RagApi.md#cancelRagTask) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task
-*RagApi* | [**createRagTask**](docs/RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterId} | Create RAG Task
+*RagApi* | [**createRagTask**](docs/RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterUid} | Create RAG Task
 *RagApi* | [**deleteRagTask**](docs/RagApi.md#deleteRagTask) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task
 *RagApi* | [**getRagTask**](docs/RagApi.md#getRagTask) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task
 *RagApi* | [**getRagTaskStatus**](docs/RagApi.md#getRagTaskStatus) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status
-*RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterId} | List RAG Tasks
+*RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterUid} | List RAG Tasks
 *RagApi* | [**startRagTask**](docs/RagApi.md#startRagTask) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task
 *RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task
 

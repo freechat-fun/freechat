@@ -25,15 +25,15 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Add a backend configuration for a character.
      * Add Character Backend
-     * @param characterId The characterId to be added a backend
+     * @param characterUid The characterUid to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public async addCharacterBackend(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<RequestContext> {
+    public async addCharacterBackend(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "addCharacterBackend", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "addCharacterBackend", "characterUid");
         }
 
 
@@ -44,8 +44,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/backend/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/backend/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -433,6 +433,44 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * Delete Character by Uid
+     * @param characterUid The character uid to be deleted
+     */
+    public async deleteCharacterByUid(characterUid: string, _options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "deleteCharacterByUid", "characterUid");
+        }
+
+
+        // Path Params
+        const localVarPath = '/api/v1/character/uid/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
      * Delete a document of the character by key.
      * Delete Character Document
      * @param key Document key
@@ -701,20 +739,20 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Get the default backend configuration.
      * Get Default Character Backend
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public async getDefaultCharacterBackend(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async getDefaultCharacterBackend(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "getDefaultCharacterBackend", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "getDefaultCharacterBackend", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/backend/default/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/backend/default/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -803,20 +841,20 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * List character backend identifiers.
      * List Character Backend ids
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public async listCharacterBackendIds(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async listCharacterBackendIds(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "listCharacterBackendIds", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "listCharacterBackendIds", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/backend/ids/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/backend/ids/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -841,20 +879,20 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * List character backends.
      * List Character Backends
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public async listCharacterBackends(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async listCharacterBackends(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "listCharacterBackends", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "listCharacterBackends", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/backends/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/backends/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -879,20 +917,20 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * List documents of the character.
      * List Character Documents
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      */
-    public async listCharacterDocuments(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async listCharacterDocuments(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "listCharacterDocuments", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "listCharacterDocuments", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/documents/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/documents/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -917,20 +955,20 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * List pictures of the character.
      * List Character Pictures
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      */
-    public async listCharacterPictures(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async listCharacterPictures(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "listCharacterPictures", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "listCharacterPictures", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/pictures/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/pictures/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -1447,15 +1485,15 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character avatar
      */
-    public async uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
+    public async uploadCharacterAvatar(characterUid: string, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "uploadCharacterAvatar", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "uploadCharacterAvatar", "characterUid");
         }
 
 
@@ -1466,8 +1504,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/avatar/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/avatar/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1519,15 +1557,15 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Upload a document of the character.
      * Upload Character Document
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character document
      */
-    public async uploadCharacterDocument(characterId: number, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
+    public async uploadCharacterDocument(characterUid: string, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "uploadCharacterDocument", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "uploadCharacterDocument", "characterUid");
         }
 
 
@@ -1538,8 +1576,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/document/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/document/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1591,15 +1629,15 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Upload a picture of the character.
      * Upload Character Picture
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character picture
      */
-    public async uploadCharacterPicture(characterId: number, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
+    public async uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("CharacterApi", "uploadCharacterPicture", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("CharacterApi", "uploadCharacterPicture", "characterUid");
         }
 
 
@@ -1610,8 +1648,8 @@ export class CharacterApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/character/picture/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/character/picture/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1904,6 +1942,35 @@ export class CharacterApiResponseProcessor {
      * @throws ApiException if the response code was not in [200, 299]
      */
      public async deleteCharacterByNameWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
+        const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
+        if (isCodeInRange("200", response.httpStatusCode)) {
+            const body: Array<number> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<number>", "int64"
+            ) as Array<number>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        // Work around for missing responses in specification, e.g. for petstore.yaml
+        if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
+            const body: Array<number> = ObjectSerializer.deserialize(
+                ObjectSerializer.parse(await response.body.text(), contentType),
+                "Array<number>", "int64"
+            ) as Array<number>;
+            return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
+        }
+
+        throw new ApiException<string | Blob | undefined>(response.httpStatusCode, "Unknown API Status Code!", await response.getBodyAsAny(), response.headers);
+    }
+
+    /**
+     * Unwraps the actual response sent by the server from the response context and deserializes the response content
+     * to the expected objects
+     *
+     * @params response Response returned by the server for a request to deleteCharacterByUid
+     * @throws ApiException if the response code was not in [200, 299]
+     */
+     public async deleteCharacterByUidWithHttpInfo(response: ResponseContext): Promise<HttpInfo<Array<number> >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: Array<number> = ObjectSerializer.deserialize(

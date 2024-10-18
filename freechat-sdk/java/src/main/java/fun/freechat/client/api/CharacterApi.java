@@ -1,8 +1,8 @@
 /*
  * FreeChat OpenAPI Definition
- * # FreeChat: Create Some Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat Prompt Task)     E --> K(Greeting Prompt Task)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Refence)     J --> P(Tool Specifications)     O --> Q(Template)     O --> R(Variables)     O --> S(Version)     O --> T(...)     style K stroke-dasharray: 5, 5     style L stroke-dasharray: 5, 5     style P stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://www.freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.      > By default, FreeChat operates files by accessing the \"local file system.\" You may want to use high-availability distributed storage in the cloud. As a cloud-native-designed system, we recommend interfacing through Kubernetes CSI to avoid individually adapting storage products for each cloud platform. Most cloud service providers offer cloud storage drivers for Kubernetes, with a series of predefined StorageClass resources. Please choose the appropriate configuration according to your actual needs and set it in Helm's `global.storageClass` option.     >      > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*  7. Run `install.sh` script to install FreeChat and its dependencies. 8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 9. Run `restart.sh` to restart the service. 10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   deployment:     enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   deployment:     enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   deployment:     enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   deployment:     enabled: true grafana:   deployment:     enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, FreeChat is completely free with no paid plans (after all, users use their own API Key to call LLM services).  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. So far, it supports model services from OpenAI GPT and Alibaba Qwen series models. However, we are more interested in supporting models that are under research and can endow AI with more personality traits. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
+ * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat Prompt Task)     E --> K(Greeting Prompt Task)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Refence)     J --> P(Tool Specifications)     O --> Q(Template)     O --> R(Variables)     O --> S(Version)     O --> T(...)     style K stroke-dasharray: 5, 5     style L stroke-dasharray: 5, 5     style P stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.      > By default, FreeChat operates files by accessing the \"local file system.\" You may want to use high-availability distributed storage in the cloud. As a cloud-native-designed system, we recommend interfacing through Kubernetes CSI to avoid individually adapting storage products for each cloud platform. Most cloud service providers offer cloud storage drivers for Kubernetes, with a series of predefined StorageClass resources. Please choose the appropriate configuration according to your actual needs and set it in Helm's `global.storageClass` option.     >      > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*  7. Run `install.sh` script to install FreeChat and its dependencies. 8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 9. Run `restart.sh` to restart the service. 10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   deployment:     enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   deployment:     enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   deployment:     enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   deployment:     enabled: true grafana:   deployment:     enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, FreeChat is completely free with no paid plans (after all, users use their own API Key to call LLM services).  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. So far, it supports model services from OpenAI GPT and Alibaba Qwen series models. However, we are more interested in supporting models that are under research and can endow AI with more personality traits. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
  *
- * The version of the OpenAPI document: 1.4.0
+ * The version of the OpenAPI document: 2.0.0
  * 
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -82,7 +82,7 @@ public class CharacterApi {
 
     /**
      * Build call for addCharacterBackend
-     * @param characterId The characterId to be added a backend (required)
+     * @param characterUid The characterUid to be added a backend (required)
      * @param characterBackendDTO The character backend to be added (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -93,7 +93,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call addCharacterBackendCall(Long characterId, CharacterBackendDTO characterBackendDTO, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call addCharacterBackendCall(String characterUid, CharacterBackendDTO characterBackendDTO, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -110,8 +110,8 @@ public class CharacterApi {
         Object localVarPostBody = characterBackendDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/backend/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -140,10 +140,10 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call addCharacterBackendValidateBeforeCall(Long characterId, CharacterBackendDTO characterBackendDTO, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling addCharacterBackend(Async)");
+    private okhttp3.Call addCharacterBackendValidateBeforeCall(String characterUid, CharacterBackendDTO characterBackendDTO, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling addCharacterBackend(Async)");
         }
 
         // verify the required parameter 'characterBackendDTO' is set
@@ -151,14 +151,14 @@ public class CharacterApi {
             throw new ApiException("Missing the required parameter 'characterBackendDTO' when calling addCharacterBackend(Async)");
         }
 
-        return addCharacterBackendCall(characterId, characterBackendDTO, _callback);
+        return addCharacterBackendCall(characterUid, characterBackendDTO, _callback);
 
     }
 
     /**
      * Add Character Backend
      * Add a backend configuration for a character.
-     * @param characterId The characterId to be added a backend (required)
+     * @param characterUid The characterUid to be added a backend (required)
      * @param characterBackendDTO The character backend to be added (required)
      * @return String
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -168,15 +168,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String addCharacterBackend(Long characterId, CharacterBackendDTO characterBackendDTO) throws ApiException {
-        ApiResponse<String> localVarResp = addCharacterBackendWithHttpInfo(characterId, characterBackendDTO);
+    public String addCharacterBackend(String characterUid, CharacterBackendDTO characterBackendDTO) throws ApiException {
+        ApiResponse<String> localVarResp = addCharacterBackendWithHttpInfo(characterUid, characterBackendDTO);
         return localVarResp.getData();
     }
 
     /**
      * Add Character Backend
      * Add a backend configuration for a character.
-     * @param characterId The characterId to be added a backend (required)
+     * @param characterUid The characterUid to be added a backend (required)
      * @param characterBackendDTO The character backend to be added (required)
      * @return ApiResponse&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -186,8 +186,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> addCharacterBackendWithHttpInfo(Long characterId, CharacterBackendDTO characterBackendDTO) throws ApiException {
-        okhttp3.Call localVarCall = addCharacterBackendValidateBeforeCall(characterId, characterBackendDTO, null);
+    public ApiResponse<String> addCharacterBackendWithHttpInfo(String characterUid, CharacterBackendDTO characterBackendDTO) throws ApiException {
+        okhttp3.Call localVarCall = addCharacterBackendValidateBeforeCall(characterUid, characterBackendDTO, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -195,7 +195,7 @@ public class CharacterApi {
     /**
      * Add Character Backend (asynchronously)
      * Add a backend configuration for a character.
-     * @param characterId The characterId to be added a backend (required)
+     * @param characterUid The characterUid to be added a backend (required)
      * @param characterBackendDTO The character backend to be added (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -206,9 +206,9 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call addCharacterBackendAsync(Long characterId, CharacterBackendDTO characterBackendDTO, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call addCharacterBackendAsync(String characterUid, CharacterBackendDTO characterBackendDTO, final ApiCallback<String> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = addCharacterBackendValidateBeforeCall(characterId, characterBackendDTO, _callback);
+        okhttp3.Call localVarCall = addCharacterBackendValidateBeforeCall(characterUid, characterBackendDTO, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
@@ -1198,6 +1198,129 @@ public class CharacterApi {
         return localVarCall;
     }
     /**
+     * Build call for deleteCharacterByUid
+     * @param characterUid The character uid to be deleted (required)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call deleteCharacterByUidCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v1/character/uid/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "DELETE", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call deleteCharacterByUidValidateBeforeCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling deleteCharacterByUid(Async)");
+        }
+
+        return deleteCharacterByUidCall(characterUid, _callback);
+
+    }
+
+    /**
+     * Delete Character by Uid
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * @param characterUid The character uid to be deleted (required)
+     * @return List&lt;Long&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public List<Long> deleteCharacterByUid(String characterUid) throws ApiException {
+        ApiResponse<List<Long>> localVarResp = deleteCharacterByUidWithHttpInfo(characterUid);
+        return localVarResp.getData();
+    }
+
+    /**
+     * Delete Character by Uid
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * @param characterUid The character uid to be deleted (required)
+     * @return ApiResponse&lt;List&lt;Long&gt;&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<List<Long>> deleteCharacterByUidWithHttpInfo(String characterUid) throws ApiException {
+        okhttp3.Call localVarCall = deleteCharacterByUidValidateBeforeCall(characterUid, null);
+        Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Delete Character by Uid (asynchronously)
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * @param characterUid The character uid to be deleted (required)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call deleteCharacterByUidAsync(String characterUid, final ApiCallback<List<Long>> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = deleteCharacterByUidValidateBeforeCall(characterUid, _callback);
+        Type localVarReturnType = new TypeToken<List<Long>>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
      * Build call for deleteCharacterDocument
      * @param key Document key (required)
      * @param _callback Callback for upload/download progress
@@ -2055,7 +2178,7 @@ public class CharacterApi {
     }
     /**
      * Build call for getDefaultCharacterBackend
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -2065,7 +2188,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getDefaultCharacterBackendCall(Long characterId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getDefaultCharacterBackendCall(String characterUid, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2082,8 +2205,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/default/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/backend/default/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -2111,20 +2234,20 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getDefaultCharacterBackendValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling getDefaultCharacterBackend(Async)");
+    private okhttp3.Call getDefaultCharacterBackendValidateBeforeCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling getDefaultCharacterBackend(Async)");
         }
 
-        return getDefaultCharacterBackendCall(characterId, _callback);
+        return getDefaultCharacterBackendCall(characterUid, _callback);
 
     }
 
     /**
      * Get Default Character Backend
      * Get the default backend configuration.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @return CharacterBackendDetailsDTO
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2133,15 +2256,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public CharacterBackendDetailsDTO getDefaultCharacterBackend(Long characterId) throws ApiException {
-        ApiResponse<CharacterBackendDetailsDTO> localVarResp = getDefaultCharacterBackendWithHttpInfo(characterId);
+    public CharacterBackendDetailsDTO getDefaultCharacterBackend(String characterUid) throws ApiException {
+        ApiResponse<CharacterBackendDetailsDTO> localVarResp = getDefaultCharacterBackendWithHttpInfo(characterUid);
         return localVarResp.getData();
     }
 
     /**
      * Get Default Character Backend
      * Get the default backend configuration.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @return ApiResponse&lt;CharacterBackendDetailsDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2150,8 +2273,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<CharacterBackendDetailsDTO> getDefaultCharacterBackendWithHttpInfo(Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = getDefaultCharacterBackendValidateBeforeCall(characterId, null);
+    public ApiResponse<CharacterBackendDetailsDTO> getDefaultCharacterBackendWithHttpInfo(String characterUid) throws ApiException {
+        okhttp3.Call localVarCall = getDefaultCharacterBackendValidateBeforeCall(characterUid, null);
         Type localVarReturnType = new TypeToken<CharacterBackendDetailsDTO>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -2159,7 +2282,7 @@ public class CharacterApi {
     /**
      * Get Default Character Backend (asynchronously)
      * Get the default backend configuration.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -2169,9 +2292,9 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getDefaultCharacterBackendAsync(Long characterId, final ApiCallback<CharacterBackendDetailsDTO> _callback) throws ApiException {
+    public okhttp3.Call getDefaultCharacterBackendAsync(String characterUid, final ApiCallback<CharacterBackendDetailsDTO> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getDefaultCharacterBackendValidateBeforeCall(characterId, _callback);
+        okhttp3.Call localVarCall = getDefaultCharacterBackendValidateBeforeCall(characterUid, _callback);
         Type localVarReturnType = new TypeToken<CharacterBackendDetailsDTO>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
@@ -2305,7 +2428,7 @@ public class CharacterApi {
     }
     /**
      * Build call for listCharacterBackendIds
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -2315,7 +2438,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterBackendIdsCall(Long characterId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharacterBackendIdsCall(String characterUid, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2332,8 +2455,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/ids/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/backend/ids/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -2361,20 +2484,20 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharacterBackendIdsValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling listCharacterBackendIds(Async)");
+    private okhttp3.Call listCharacterBackendIdsValidateBeforeCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling listCharacterBackendIds(Async)");
         }
 
-        return listCharacterBackendIdsCall(characterId, _callback);
+        return listCharacterBackendIdsCall(characterUid, _callback);
 
     }
 
     /**
      * List Character Backend ids
      * List character backend identifiers.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @return List&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2383,15 +2506,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<String> listCharacterBackendIds(Long characterId) throws ApiException {
-        ApiResponse<List<String>> localVarResp = listCharacterBackendIdsWithHttpInfo(characterId);
+    public List<String> listCharacterBackendIds(String characterUid) throws ApiException {
+        ApiResponse<List<String>> localVarResp = listCharacterBackendIdsWithHttpInfo(characterUid);
         return localVarResp.getData();
     }
 
     /**
      * List Character Backend ids
      * List character backend identifiers.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @return ApiResponse&lt;List&lt;String&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2400,8 +2523,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<String>> listCharacterBackendIdsWithHttpInfo(Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = listCharacterBackendIdsValidateBeforeCall(characterId, null);
+    public ApiResponse<List<String>> listCharacterBackendIdsWithHttpInfo(String characterUid) throws ApiException {
+        okhttp3.Call localVarCall = listCharacterBackendIdsValidateBeforeCall(characterUid, null);
         Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -2409,7 +2532,7 @@ public class CharacterApi {
     /**
      * List Character Backend ids (asynchronously)
      * List character backend identifiers.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -2419,16 +2542,16 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterBackendIdsAsync(Long characterId, final ApiCallback<List<String>> _callback) throws ApiException {
+    public okhttp3.Call listCharacterBackendIdsAsync(String characterUid, final ApiCallback<List<String>> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = listCharacterBackendIdsValidateBeforeCall(characterId, _callback);
+        okhttp3.Call localVarCall = listCharacterBackendIdsValidateBeforeCall(characterUid, _callback);
         Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
      * Build call for listCharacterBackends
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -2438,7 +2561,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterBackendsCall(Long characterId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharacterBackendsCall(String characterUid, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2455,8 +2578,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backends/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/backends/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -2484,20 +2607,20 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharacterBackendsValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling listCharacterBackends(Async)");
+    private okhttp3.Call listCharacterBackendsValidateBeforeCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling listCharacterBackends(Async)");
         }
 
-        return listCharacterBackendsCall(characterId, _callback);
+        return listCharacterBackendsCall(characterUid, _callback);
 
     }
 
     /**
      * List Character Backends
      * List character backends.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @return List&lt;CharacterBackendDetailsDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2506,15 +2629,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<CharacterBackendDetailsDTO> listCharacterBackends(Long characterId) throws ApiException {
-        ApiResponse<List<CharacterBackendDetailsDTO>> localVarResp = listCharacterBackendsWithHttpInfo(characterId);
+    public List<CharacterBackendDetailsDTO> listCharacterBackends(String characterUid) throws ApiException {
+        ApiResponse<List<CharacterBackendDetailsDTO>> localVarResp = listCharacterBackendsWithHttpInfo(characterUid);
         return localVarResp.getData();
     }
 
     /**
      * List Character Backends
      * List character backends.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @return ApiResponse&lt;List&lt;CharacterBackendDetailsDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2523,8 +2646,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<CharacterBackendDetailsDTO>> listCharacterBackendsWithHttpInfo(Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = listCharacterBackendsValidateBeforeCall(characterId, null);
+    public ApiResponse<List<CharacterBackendDetailsDTO>> listCharacterBackendsWithHttpInfo(String characterUid) throws ApiException {
+        okhttp3.Call localVarCall = listCharacterBackendsValidateBeforeCall(characterUid, null);
         Type localVarReturnType = new TypeToken<List<CharacterBackendDetailsDTO>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -2532,7 +2655,7 @@ public class CharacterApi {
     /**
      * List Character Backends (asynchronously)
      * List character backends.
-     * @param characterId The characterId to be queried (required)
+     * @param characterUid The characterUid to be queried (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -2542,16 +2665,16 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterBackendsAsync(Long characterId, final ApiCallback<List<CharacterBackendDetailsDTO>> _callback) throws ApiException {
+    public okhttp3.Call listCharacterBackendsAsync(String characterUid, final ApiCallback<List<CharacterBackendDetailsDTO>> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = listCharacterBackendsValidateBeforeCall(characterId, _callback);
+        okhttp3.Call localVarCall = listCharacterBackendsValidateBeforeCall(characterUid, _callback);
         Type localVarReturnType = new TypeToken<List<CharacterBackendDetailsDTO>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
      * Build call for listCharacterDocuments
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -2561,7 +2684,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterDocumentsCall(Long characterId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharacterDocumentsCall(String characterUid, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2578,8 +2701,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/documents/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/documents/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -2607,20 +2730,20 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharacterDocumentsValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling listCharacterDocuments(Async)");
+    private okhttp3.Call listCharacterDocumentsValidateBeforeCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling listCharacterDocuments(Async)");
         }
 
-        return listCharacterDocumentsCall(characterId, _callback);
+        return listCharacterDocumentsCall(characterUid, _callback);
 
     }
 
     /**
      * List Character Documents
      * List documents of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @return List&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2629,15 +2752,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<String> listCharacterDocuments(Long characterId) throws ApiException {
-        ApiResponse<List<String>> localVarResp = listCharacterDocumentsWithHttpInfo(characterId);
+    public List<String> listCharacterDocuments(String characterUid) throws ApiException {
+        ApiResponse<List<String>> localVarResp = listCharacterDocumentsWithHttpInfo(characterUid);
         return localVarResp.getData();
     }
 
     /**
      * List Character Documents
      * List documents of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @return ApiResponse&lt;List&lt;String&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2646,8 +2769,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<String>> listCharacterDocumentsWithHttpInfo(Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = listCharacterDocumentsValidateBeforeCall(characterId, null);
+    public ApiResponse<List<String>> listCharacterDocumentsWithHttpInfo(String characterUid) throws ApiException {
+        okhttp3.Call localVarCall = listCharacterDocumentsValidateBeforeCall(characterUid, null);
         Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -2655,7 +2778,7 @@ public class CharacterApi {
     /**
      * List Character Documents (asynchronously)
      * List documents of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -2665,16 +2788,16 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterDocumentsAsync(Long characterId, final ApiCallback<List<String>> _callback) throws ApiException {
+    public okhttp3.Call listCharacterDocumentsAsync(String characterUid, final ApiCallback<List<String>> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = listCharacterDocumentsValidateBeforeCall(characterId, _callback);
+        okhttp3.Call localVarCall = listCharacterDocumentsValidateBeforeCall(characterUid, _callback);
         Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
      * Build call for listCharacterPictures
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -2684,7 +2807,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterPicturesCall(Long characterId, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call listCharacterPicturesCall(String characterUid, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -2701,8 +2824,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/pictures/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/pictures/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -2730,20 +2853,20 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call listCharacterPicturesValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling listCharacterPictures(Async)");
+    private okhttp3.Call listCharacterPicturesValidateBeforeCall(String characterUid, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling listCharacterPictures(Async)");
         }
 
-        return listCharacterPicturesCall(characterId, _callback);
+        return listCharacterPicturesCall(characterUid, _callback);
 
     }
 
     /**
      * List Character Pictures
      * List pictures of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @return List&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2752,15 +2875,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public List<String> listCharacterPictures(Long characterId) throws ApiException {
-        ApiResponse<List<String>> localVarResp = listCharacterPicturesWithHttpInfo(characterId);
+    public List<String> listCharacterPictures(String characterUid) throws ApiException {
+        ApiResponse<List<String>> localVarResp = listCharacterPicturesWithHttpInfo(characterUid);
         return localVarResp.getData();
     }
 
     /**
      * List Character Pictures
      * List pictures of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @return ApiResponse&lt;List&lt;String&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -2769,8 +2892,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<List<String>> listCharacterPicturesWithHttpInfo(Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = listCharacterPicturesValidateBeforeCall(characterId, null);
+    public ApiResponse<List<String>> listCharacterPicturesWithHttpInfo(String characterUid) throws ApiException {
+        okhttp3.Call localVarCall = listCharacterPicturesValidateBeforeCall(characterUid, null);
         Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -2778,7 +2901,7 @@ public class CharacterApi {
     /**
      * List Character Pictures (asynchronously)
      * List pictures of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -2788,9 +2911,9 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call listCharacterPicturesAsync(Long characterId, final ApiCallback<List<String>> _callback) throws ApiException {
+    public okhttp3.Call listCharacterPicturesAsync(String characterUid, final ApiCallback<List<String>> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = listCharacterPicturesValidateBeforeCall(characterId, _callback);
+        okhttp3.Call localVarCall = listCharacterPicturesValidateBeforeCall(characterUid, _callback);
         Type localVarReturnType = new TypeToken<List<String>>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
@@ -4180,7 +4303,7 @@ public class CharacterApi {
     }
     /**
      * Build call for uploadCharacterAvatar
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character avatar (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -4191,7 +4314,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadCharacterAvatarCall(Long characterId, File _file, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call uploadCharacterAvatarCall(String characterUid, File _file, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -4208,8 +4331,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/avatar/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/avatar/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -4242,10 +4365,10 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadCharacterAvatarValidateBeforeCall(Long characterId, File _file, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling uploadCharacterAvatar(Async)");
+    private okhttp3.Call uploadCharacterAvatarValidateBeforeCall(String characterUid, File _file, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling uploadCharacterAvatar(Async)");
         }
 
         // verify the required parameter '_file' is set
@@ -4253,14 +4376,14 @@ public class CharacterApi {
             throw new ApiException("Missing the required parameter '_file' when calling uploadCharacterAvatar(Async)");
         }
 
-        return uploadCharacterAvatarCall(characterId, _file, _callback);
+        return uploadCharacterAvatarCall(characterUid, _file, _callback);
 
     }
 
     /**
      * Upload Character Avatar
      * Upload an avatar of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character avatar (required)
      * @return String
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -4270,15 +4393,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String uploadCharacterAvatar(Long characterId, File _file) throws ApiException {
-        ApiResponse<String> localVarResp = uploadCharacterAvatarWithHttpInfo(characterId, _file);
+    public String uploadCharacterAvatar(String characterUid, File _file) throws ApiException {
+        ApiResponse<String> localVarResp = uploadCharacterAvatarWithHttpInfo(characterUid, _file);
         return localVarResp.getData();
     }
 
     /**
      * Upload Character Avatar
      * Upload an avatar of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character avatar (required)
      * @return ApiResponse&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -4288,8 +4411,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> uploadCharacterAvatarWithHttpInfo(Long characterId, File _file) throws ApiException {
-        okhttp3.Call localVarCall = uploadCharacterAvatarValidateBeforeCall(characterId, _file, null);
+    public ApiResponse<String> uploadCharacterAvatarWithHttpInfo(String characterUid, File _file) throws ApiException {
+        okhttp3.Call localVarCall = uploadCharacterAvatarValidateBeforeCall(characterUid, _file, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -4297,7 +4420,7 @@ public class CharacterApi {
     /**
      * Upload Character Avatar (asynchronously)
      * Upload an avatar of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character avatar (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -4308,16 +4431,16 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadCharacterAvatarAsync(Long characterId, File _file, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call uploadCharacterAvatarAsync(String characterUid, File _file, final ApiCallback<String> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadCharacterAvatarValidateBeforeCall(characterId, _file, _callback);
+        okhttp3.Call localVarCall = uploadCharacterAvatarValidateBeforeCall(characterUid, _file, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
      * Build call for uploadCharacterDocument
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character document (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -4328,7 +4451,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadCharacterDocumentCall(Long characterId, File _file, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call uploadCharacterDocumentCall(String characterUid, File _file, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -4345,8 +4468,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/document/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/document/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -4379,10 +4502,10 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadCharacterDocumentValidateBeforeCall(Long characterId, File _file, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling uploadCharacterDocument(Async)");
+    private okhttp3.Call uploadCharacterDocumentValidateBeforeCall(String characterUid, File _file, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling uploadCharacterDocument(Async)");
         }
 
         // verify the required parameter '_file' is set
@@ -4390,14 +4513,14 @@ public class CharacterApi {
             throw new ApiException("Missing the required parameter '_file' when calling uploadCharacterDocument(Async)");
         }
 
-        return uploadCharacterDocumentCall(characterId, _file, _callback);
+        return uploadCharacterDocumentCall(characterUid, _file, _callback);
 
     }
 
     /**
      * Upload Character Document
      * Upload a document of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character document (required)
      * @return String
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -4407,15 +4530,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String uploadCharacterDocument(Long characterId, File _file) throws ApiException {
-        ApiResponse<String> localVarResp = uploadCharacterDocumentWithHttpInfo(characterId, _file);
+    public String uploadCharacterDocument(String characterUid, File _file) throws ApiException {
+        ApiResponse<String> localVarResp = uploadCharacterDocumentWithHttpInfo(characterUid, _file);
         return localVarResp.getData();
     }
 
     /**
      * Upload Character Document
      * Upload a document of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character document (required)
      * @return ApiResponse&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -4425,8 +4548,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> uploadCharacterDocumentWithHttpInfo(Long characterId, File _file) throws ApiException {
-        okhttp3.Call localVarCall = uploadCharacterDocumentValidateBeforeCall(characterId, _file, null);
+    public ApiResponse<String> uploadCharacterDocumentWithHttpInfo(String characterUid, File _file) throws ApiException {
+        okhttp3.Call localVarCall = uploadCharacterDocumentValidateBeforeCall(characterUid, _file, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -4434,7 +4557,7 @@ public class CharacterApi {
     /**
      * Upload Character Document (asynchronously)
      * Upload a document of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character document (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -4445,16 +4568,16 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadCharacterDocumentAsync(Long characterId, File _file, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call uploadCharacterDocumentAsync(String characterUid, File _file, final ApiCallback<String> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadCharacterDocumentValidateBeforeCall(characterId, _file, _callback);
+        okhttp3.Call localVarCall = uploadCharacterDocumentValidateBeforeCall(characterUid, _file, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
      * Build call for uploadCharacterPicture
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character picture (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -4465,7 +4588,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadCharacterPictureCall(Long characterId, File _file, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call uploadCharacterPictureCall(String characterUid, File _file, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -4482,8 +4605,8 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/picture/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+        String localVarPath = "/api/v1/character/picture/{characterUid}"
+            .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -4516,10 +4639,10 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadCharacterPictureValidateBeforeCall(Long characterId, File _file, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling uploadCharacterPicture(Async)");
+    private okhttp3.Call uploadCharacterPictureValidateBeforeCall(String characterUid, File _file, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterUid' is set
+        if (characterUid == null) {
+            throw new ApiException("Missing the required parameter 'characterUid' when calling uploadCharacterPicture(Async)");
         }
 
         // verify the required parameter '_file' is set
@@ -4527,14 +4650,14 @@ public class CharacterApi {
             throw new ApiException("Missing the required parameter '_file' when calling uploadCharacterPicture(Async)");
         }
 
-        return uploadCharacterPictureCall(characterId, _file, _callback);
+        return uploadCharacterPictureCall(characterUid, _file, _callback);
 
     }
 
     /**
      * Upload Character Picture
      * Upload a picture of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character picture (required)
      * @return String
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -4544,15 +4667,15 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public String uploadCharacterPicture(Long characterId, File _file) throws ApiException {
-        ApiResponse<String> localVarResp = uploadCharacterPictureWithHttpInfo(characterId, _file);
+    public String uploadCharacterPicture(String characterUid, File _file) throws ApiException {
+        ApiResponse<String> localVarResp = uploadCharacterPictureWithHttpInfo(characterUid, _file);
         return localVarResp.getData();
     }
 
     /**
      * Upload Character Picture
      * Upload a picture of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character picture (required)
      * @return ApiResponse&lt;String&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -4562,8 +4685,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<String> uploadCharacterPictureWithHttpInfo(Long characterId, File _file) throws ApiException {
-        okhttp3.Call localVarCall = uploadCharacterPictureValidateBeforeCall(characterId, _file, null);
+    public ApiResponse<String> uploadCharacterPictureWithHttpInfo(String characterUid, File _file) throws ApiException {
+        okhttp3.Call localVarCall = uploadCharacterPictureValidateBeforeCall(characterUid, _file, null);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -4571,7 +4694,7 @@ public class CharacterApi {
     /**
      * Upload Character Picture (asynchronously)
      * Upload a picture of the character.
-     * @param characterId Character identifier (required)
+     * @param characterUid Character unique identifier (required)
      * @param _file Character picture (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -4582,9 +4705,9 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadCharacterPictureAsync(Long characterId, File _file, final ApiCallback<String> _callback) throws ApiException {
+    public okhttp3.Call uploadCharacterPictureAsync(String characterUid, File _file, final ApiCallback<String> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadCharacterPictureValidateBeforeCall(characterId, _file, _callback);
+        okhttp3.Call localVarCall = uploadCharacterPictureValidateBeforeCall(characterUid, _file, _callback);
         Type localVarReturnType = new TypeToken<String>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;

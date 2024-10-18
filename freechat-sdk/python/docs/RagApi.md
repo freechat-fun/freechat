@@ -5,11 +5,11 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**cancel_rag_task**](RagApi.md#cancel_rag_task) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task
-[**create_rag_task**](RagApi.md#create_rag_task) | **POST** /api/v1/rag/task/{characterId} | Create RAG Task
+[**create_rag_task**](RagApi.md#create_rag_task) | **POST** /api/v1/rag/task/{characterUid} | Create RAG Task
 [**delete_rag_task**](RagApi.md#delete_rag_task) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task
 [**get_rag_task**](RagApi.md#get_rag_task) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task
 [**get_rag_task_status**](RagApi.md#get_rag_task_status) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status
-[**list_rag_tasks**](RagApi.md#list_rag_tasks) | **GET** /api/v1/rag/tasks/{characterId} | List RAG Tasks
+[**list_rag_tasks**](RagApi.md#list_rag_tasks) | **GET** /api/v1/rag/tasks/{characterUid} | List RAG Tasks
 [**start_rag_task**](RagApi.md#start_rag_task) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task
 [**update_rag_task**](RagApi.md#update_rag_task) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task
 
@@ -92,7 +92,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_rag_task**
-> int create_rag_task(character_id, rag_task_dto)
+> int create_rag_task(character_uid, rag_task_dto)
 
 Create RAG Task
 
@@ -128,12 +128,12 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.RagApi(api_client)
-    character_id = 56 # int | The characterId to be added a RAG task
+    character_uid = 'character_uid_example' # str | The characterUid to be added a RAG task
     rag_task_dto = freechat_sdk.RagTaskDTO() # RagTaskDTO | The RAG task to be added
 
     try:
         # Create RAG Task
-        api_response = api_instance.create_rag_task(character_id, rag_task_dto)
+        api_response = api_instance.create_rag_task(character_uid, rag_task_dto)
         print("The response of RagApi->create_rag_task:\n")
         pprint(api_response)
     except Exception as e:
@@ -147,7 +147,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be added a RAG task | 
+ **character_uid** | **str**| The characterUid to be added a RAG task | 
  **rag_task_dto** | [**RagTaskDTO**](RagTaskDTO.md)| The RAG task to be added | 
 
 ### Return type
@@ -404,7 +404,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_rag_tasks**
-> List[RagTaskDetailsDTO] list_rag_tasks(character_id)
+> List[RagTaskDetailsDTO] list_rag_tasks(character_uid)
 
 List RAG Tasks
 
@@ -440,11 +440,11 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.RagApi(api_client)
-    character_id = 56 # int | The characterId to be queried
+    character_uid = 'character_uid_example' # str | The characterUid to be queried
 
     try:
         # List RAG Tasks
-        api_response = api_instance.list_rag_tasks(character_id)
+        api_response = api_instance.list_rag_tasks(character_uid)
         print("The response of RagApi->list_rag_tasks:\n")
         pprint(api_response)
     except Exception as e:
@@ -458,7 +458,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be queried | 
+ **character_uid** | **str**| The characterUid to be queried | 
 
 ### Return type
 

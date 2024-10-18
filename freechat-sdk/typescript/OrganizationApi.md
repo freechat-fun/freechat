@@ -26,20 +26,19 @@ Get the superior relationships of the current account, including direct and indi
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiGetOwnersRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiGetOwnersRequest = {
-  // string | Whether to return virtual reported owners (optional)
+const request: OrganizationApiGetOwnersRequest = {
+    // Whether to return virtual reported owners (optional)
   all: "all_example",
 };
 
-apiInstance.getOwners(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getOwners(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -80,20 +79,19 @@ Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graph
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiGetOwnersDotRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiGetOwnersDotRequest = {
-  // string | Whether to return virtual reported owners (optional)
+const request: OrganizationApiGetOwnersDotRequest = {
+    // Whether to return virtual reported owners (optional)
   all: "all_example",
 };
 
-apiInstance.getOwnersDot(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getOwnersDot(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -134,22 +132,21 @@ Get the superior relationship of the subordinate account, including direct and i
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiGetSubordinateOwnersRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiGetSubordinateOwnersRequest = {
-  // string | The account being queried, must be a subordinate account of the current account
+const request: OrganizationApiGetSubordinateOwnersRequest = {
+    // The account being queried, must be a subordinate account of the current account
   username: "username_example",
-  // string | Whether to return virtual reported owners (optional)
+    // Whether to return virtual reported owners (optional)
   all: "all_example",
 };
 
-apiInstance.getSubordinateOwners(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getSubordinateOwners(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -191,22 +188,21 @@ Get the subordinate relationship of the subordinate account, including direct an
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiGetSubordinateSubordinatesRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiGetSubordinateSubordinatesRequest = {
-  // string | The account being queried, must be a subordinate account of the current account
+const request: OrganizationApiGetSubordinateSubordinatesRequest = {
+    // The account being queried, must be a subordinate account of the current account
   username: "username_example",
-  // string | Whether to return virtual managed subordinates (optional)
+    // Whether to return virtual managed subordinates (optional)
   all: "all_example",
 };
 
-apiInstance.getSubordinateSubordinates(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getSubordinateSubordinates(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -248,20 +244,19 @@ Get the subordinate relationships of the current account, including direct and i
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiGetSubordinatesRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiGetSubordinatesRequest = {
-  // string | Whether to return virtual managed subordinates (optional)
+const request: OrganizationApiGetSubordinatesRequest = {
+    // Whether to return virtual managed subordinates (optional)
   all: "all_example",
 };
 
-apiInstance.getSubordinates(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getSubordinates(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -302,20 +297,19 @@ Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiGetSubordinatesDotRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiGetSubordinatesDotRequest = {
-  // string | Whether to return virtual managed subordinates (optional)
+const request: OrganizationApiGetSubordinatesDotRequest = {
+    // Whether to return virtual managed subordinates (optional)
   all: "all_example",
 };
 
-apiInstance.getSubordinatesDot(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getSubordinatesDot(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -356,20 +350,19 @@ List the permission list of the subordinate account.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiListSubordinateAuthoritiesRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiListSubordinateAuthoritiesRequest = {
-  // string | Username
+const request: OrganizationApiListSubordinateAuthoritiesRequest = {
+    // Username
   username: "username_example",
 };
 
-apiInstance.listSubordinateAuthorities(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listSubordinateAuthorities(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -410,20 +403,19 @@ Fully delete the direct subordinate relationship of the subordinate account.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiRemoveSubordinateSubordinatesTreeRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiRemoveSubordinateSubordinatesTreeRequest = {
-  // string | The account being operated, must be a subordinate account of the current account
+const request: OrganizationApiRemoveSubordinateSubordinatesTreeRequest = {
+    // The account being operated, must be a subordinate account of the current account
   username: "username_example",
 };
 
-apiInstance.removeSubordinateSubordinatesTree(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.removeSubordinateSubordinatesTree(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -464,24 +456,23 @@ Update the permission list of the subordinate account, the granted permissions c
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiUpdateSubordinateAuthoritiesRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiUpdateSubordinateAuthoritiesRequest = {
-  // string | Username
+const request: OrganizationApiUpdateSubordinateAuthoritiesRequest = {
+    // Username
   username: "username_example",
-  // Set<string> | Permission list
+    // Permission list
   requestBody: [
     "requestBody_example",
   ],
 };
 
-apiInstance.updateSubordinateAuthorities(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateSubordinateAuthorities(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -523,24 +514,23 @@ Fully update the direct superior relationship of the subordinate account (i.e., 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiUpdateSubordinateOwnersRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiUpdateSubordinateOwnersRequest = {
-  // string | The account being operated, must be a subordinate account of the current account
+const request: OrganizationApiUpdateSubordinateOwnersRequest = {
+    // The account being operated, must be a subordinate account of the current account
   username: "username_example",
-  // Array<string> | The (direct) superior account of the subordinate account, all accounts must be subordinate accounts of the current account
+    // The (direct) superior account of the subordinate account, all accounts must be subordinate accounts of the current account
   requestBody: [
     "requestBody_example",
   ],
 };
 
-apiInstance.updateSubordinateOwners(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateSubordinateOwners(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -582,24 +572,23 @@ Fully update the direct subordinate relationship of the subordinate account (i.e
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, OrganizationApi } from '';
+import type { OrganizationApiUpdateSubordinateSubordinatesRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .OrganizationApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new OrganizationApi(configuration);
 
-let body:.OrganizationApiUpdateSubordinateSubordinatesRequest = {
-  // string | The account being operated, must be a subordinate account of the current account
+const request: OrganizationApiUpdateSubordinateSubordinatesRequest = {
+    // The account being operated, must be a subordinate account of the current account
   username: "username_example",
-  // Array<string> | The (direct) subordinate account of the subordinate account, all accounts must be subordinate accounts of the current account
+    // The (direct) subordinate account of the subordinate account, all accounts must be subordinate accounts of the current account
   requestBody: [
     "requestBody_example",
   ],
 };
 
-apiInstance.updateSubordinateSubordinates(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateSubordinateSubordinates(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

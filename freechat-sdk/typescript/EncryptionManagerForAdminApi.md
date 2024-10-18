@@ -16,20 +16,19 @@ Encrypt a piece of text with the built-in key.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, EncryptionManagerForAdminApi } from '';
+import type { EncryptionManagerForAdminApiEncryptTextRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .EncryptionManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new EncryptionManagerForAdminApi(configuration);
 
-let body:.EncryptionManagerForAdminApiEncryptTextRequest = {
-  // string | Text to be encrypted
+const request: EncryptionManagerForAdminApiEncryptTextRequest = {
+    // Text to be encrypted
   text: "text_example",
 };
 
-apiInstance.encryptText(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.encryptText(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

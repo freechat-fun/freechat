@@ -17,14 +17,14 @@ This method does nothing.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AppMetaForAdminApi } from '';
+import type { AppMetaForAdminApiExposeRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AppMetaForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AppMetaForAdminApi(configuration);
 
-let body:.AppMetaForAdminApiExposeRequest = {
-  // OpenAiParamDTO
+const request: AppMetaForAdminApiExposeRequest = {
+  
   openAiParam: {
     apiKey: "apiKey_example",
     apiKeyName: "apiKeyName_example",
@@ -40,7 +40,7 @@ let body:.AppMetaForAdminApiExposeRequest = {
       "stop_example",
     ],
   },
-  // QwenParamDTO
+  
   qwenParam: {
     apiKey: "apiKey_example",
     apiKeyName: "apiKeyName_example",
@@ -58,9 +58,8 @@ let body:.AppMetaForAdminApiExposeRequest = {
   },
 };
 
-apiInstance.expose(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.expose(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -102,17 +101,15 @@ Get application information to accurately locate the corresponding project versi
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AppMetaForAdminApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AppMetaForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AppMetaForAdminApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.getAppMeta(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getAppMeta(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

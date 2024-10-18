@@ -57,15 +57,15 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Create a RAG task.
      * Create RAG Task
-     * @param characterId The characterId to be added a RAG task
+     * @param characterUid The characterUid to be added a RAG task
      * @param ragTaskDTO The RAG task to be added
      */
-    public async createRagTask(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<RequestContext> {
+    public async createRagTask(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("RagApi", "createRagTask", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("RagApi", "createRagTask", "characterUid");
         }
 
 
@@ -76,8 +76,8 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/rag/task/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/rag/task/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -227,20 +227,20 @@ export class RagApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * List the RAG tasks by characterId.
      * List RAG Tasks
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public async listRagTasks(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async listRagTasks(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("RagApi", "listRagTasks", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("RagApi", "listRagTasks", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/rag/tasks/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v1/rag/tasks/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

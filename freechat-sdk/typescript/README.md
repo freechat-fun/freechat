@@ -1,4 +1,4 @@
-## freechat-sdk@1.4.0
+## freechat-sdk@2.0.0
 
 This generator creates TypeScript/JavaScript client that utilizes fetch-api.
 
@@ -21,7 +21,7 @@ Navigate to the folder of your consuming project and run one of the following co
 _published:_
 
 ```
-npm install freechat-sdk@1.4.0 --save
+npm install freechat-sdk@2.0.0 --save
 ```
 
 _unPublished (not recommended):_

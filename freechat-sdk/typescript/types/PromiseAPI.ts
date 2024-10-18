@@ -1257,8 +1257,8 @@ export class PromiseAppMetaForAdminApi {
     /**
      * This method does nothing.
      * Expose DTO definitions
-     * @param openAiParam 
-     * @param qwenParam 
+     * @param openAiParam
+     * @param qwenParam
      */
     public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<HttpInfo<string>> {
         const result = this.api.exposeWithHttpInfo(openAiParam, qwenParam, _options);
@@ -1268,8 +1268,8 @@ export class PromiseAppMetaForAdminApi {
     /**
      * This method does nothing.
      * Expose DTO definitions
-     * @param openAiParam 
-     * @param qwenParam 
+     * @param openAiParam
+     * @param qwenParam
      */
     public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<string> {
         const result = this.api.expose(openAiParam, qwenParam, _options);
@@ -1316,22 +1316,22 @@ export class PromiseCharacterApi {
     /**
      * Add a backend configuration for a character.
      * Add Character Backend
-     * @param characterId The characterId to be added a backend
+     * @param characterUid The characterUid to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackendWithHttpInfo(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.addCharacterBackendWithHttpInfo(characterId, characterBackendDTO, _options);
+    public addCharacterBackendWithHttpInfo(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.addCharacterBackendWithHttpInfo(characterUid, characterBackendDTO, _options);
         return result.toPromise();
     }
 
     /**
      * Add a backend configuration for a character.
      * Add Character Backend
-     * @param characterId The characterId to be added a backend
+     * @param characterUid The characterUid to be added a backend
      * @param characterBackendDTO The character backend to be added
      */
-    public addCharacterBackend(characterId: number, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.addCharacterBackend(characterId, characterBackendDTO, _options);
+    public addCharacterBackend(characterUid: string, characterBackendDTO: CharacterBackendDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.addCharacterBackend(characterUid, characterBackendDTO, _options);
         return result.toPromise();
     }
 
@@ -1496,6 +1496,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * Delete Character by Uid
+     * @param characterUid The character uid to be deleted
+     */
+    public deleteCharacterByUidWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<number>>> {
+        const result = this.api.deleteCharacterByUidWithHttpInfo(characterUid, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete character by uid. return the list of successfully deleted characterIds.
+     * Delete Character by Uid
+     * @param characterUid The character uid to be deleted
+     */
+    public deleteCharacterByUid(characterUid: string, _options?: Configuration): Promise<Array<number>> {
+        const result = this.api.deleteCharacterByUid(characterUid, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Delete a document of the character by key.
      * Delete Character Document
      * @param key Document key
@@ -1638,20 +1658,20 @@ export class PromiseCharacterApi {
     /**
      * Get the default backend configuration.
      * Get Default Character Backend
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public getDefaultCharacterBackendWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
-        const result = this.api.getDefaultCharacterBackendWithHttpInfo(characterId, _options);
+    public getDefaultCharacterBackendWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<CharacterBackendDetailsDTO>> {
+        const result = this.api.getDefaultCharacterBackendWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * Get the default backend configuration.
      * Get Default Character Backend
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public getDefaultCharacterBackend(characterId: number, _options?: Configuration): Promise<CharacterBackendDetailsDTO> {
-        const result = this.api.getDefaultCharacterBackend(characterId, _options);
+    public getDefaultCharacterBackend(characterUid: string, _options?: Configuration): Promise<CharacterBackendDetailsDTO> {
+        const result = this.api.getDefaultCharacterBackend(characterUid, _options);
         return result.toPromise();
     }
 
@@ -1678,80 +1698,80 @@ export class PromiseCharacterApi {
     /**
      * List character backend identifiers.
      * List Character Backend ids
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackendIdsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterBackendIdsWithHttpInfo(characterId, _options);
+    public listCharacterBackendIdsWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterBackendIdsWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List character backend identifiers.
      * List Character Backend ids
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackendIds(characterId: number, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterBackendIds(characterId, _options);
+    public listCharacterBackendIds(characterUid: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterBackendIds(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List character backends.
      * List Character Backends
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackendsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
-        const result = this.api.listCharacterBackendsWithHttpInfo(characterId, _options);
+    public listCharacterBackendsWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterBackendDetailsDTO>>> {
+        const result = this.api.listCharacterBackendsWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List character backends.
      * List Character Backends
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public listCharacterBackends(characterId: number, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
-        const result = this.api.listCharacterBackends(characterId, _options);
+    public listCharacterBackends(characterUid: string, _options?: Configuration): Promise<Array<CharacterBackendDetailsDTO>> {
+        const result = this.api.listCharacterBackends(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List documents of the character.
      * List Character Documents
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      */
-    public listCharacterDocumentsWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterDocumentsWithHttpInfo(characterId, _options);
+    public listCharacterDocumentsWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterDocumentsWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List documents of the character.
      * List Character Documents
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      */
-    public listCharacterDocuments(characterId: number, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterDocuments(characterId, _options);
+    public listCharacterDocuments(characterUid: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterDocuments(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List pictures of the character.
      * List Character Pictures
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      */
-    public listCharacterPicturesWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
-        const result = this.api.listCharacterPicturesWithHttpInfo(characterId, _options);
+    public listCharacterPicturesWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterPicturesWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List pictures of the character.
      * List Character Pictures
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      */
-    public listCharacterPictures(characterId: number, _options?: Configuration): Promise<Array<string>> {
-        const result = this.api.listCharacterPictures(characterId, _options);
+    public listCharacterPictures(characterUid: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterPictures(characterUid, _options);
         return result.toPromise();
     }
 
@@ -1984,66 +2004,66 @@ export class PromiseCharacterApi {
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatarWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterAvatarWithHttpInfo(characterId, file, _options);
+    public uploadCharacterAvatarWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterAvatarWithHttpInfo(characterUid, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload an avatar of the character.
      * Upload Character Avatar
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character avatar
      */
-    public uploadCharacterAvatar(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterAvatar(characterId, file, _options);
+    public uploadCharacterAvatar(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterAvatar(characterUid, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload a document of the character.
      * Upload Character Document
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character document
      */
-    public uploadCharacterDocumentWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterDocumentWithHttpInfo(characterId, file, _options);
+    public uploadCharacterDocumentWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterDocumentWithHttpInfo(characterUid, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload a document of the character.
      * Upload Character Document
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character document
      */
-    public uploadCharacterDocument(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterDocument(characterId, file, _options);
+    public uploadCharacterDocument(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterDocument(characterUid, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload a picture of the character.
      * Upload Character Picture
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character picture
      */
-    public uploadCharacterPictureWithHttpInfo(characterId: number, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.uploadCharacterPictureWithHttpInfo(characterId, file, _options);
+    public uploadCharacterPictureWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterPictureWithHttpInfo(characterUid, file, _options);
         return result.toPromise();
     }
 
     /**
      * Upload a picture of the character.
      * Upload Character Picture
-     * @param characterId Character identifier
+     * @param characterUid Character unique identifier
      * @param file Character picture
      */
-    public uploadCharacterPicture(characterId: number, file: HttpFile, _options?: Configuration): Promise<string> {
-        const result = this.api.uploadCharacterPicture(characterId, file, _options);
+    public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterPicture(characterUid, file, _options);
         return result.toPromise();
     }
 
@@ -2319,6 +2339,28 @@ export class PromiseChatApi {
     }
 
     /**
+     * Send a message to assistant for a new chat message.
+     * Send Assistant for Chat Message
+     * @param chatId Chat session identifier
+     * @param assistantUid Assistant uid
+     */
+    public sendAssistantWithHttpInfo(chatId: string, assistantUid: string, _options?: Configuration): Promise<HttpInfo<LlmResultDTO>> {
+        const result = this.api.sendAssistantWithHttpInfo(chatId, assistantUid, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Send a message to assistant for a new chat message.
+     * Send Assistant for Chat Message
+     * @param chatId Chat session identifier
+     * @param assistantUid Assistant uid
+     */
+    public sendAssistant(chatId: string, assistantUid: string, _options?: Configuration): Promise<LlmResultDTO> {
+        const result = this.api.sendAssistant(chatId, assistantUid, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Send a chat message to character.
      * Send Chat Message
      * @param chatId Chat session identifier
@@ -2357,6 +2399,28 @@ export class PromiseChatApi {
      */
     public startChat(chatCreateDTO: ChatCreateDTO, _options?: Configuration): Promise<string> {
         const result = this.api.startChat(chatCreateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Send Assistant for Chat Message by Streaming Back
+     * @param chatId Chat session identifier
+     * @param assistantUid Assistant uid
+     */
+    public streamSendAssistantWithHttpInfo(chatId: string, assistantUid: string, _options?: Configuration): Promise<HttpInfo<SseEmitter>> {
+        const result = this.api.streamSendAssistantWithHttpInfo(chatId, assistantUid, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Send Assistant for Chat Message by Streaming Back
+     * @param chatId Chat session identifier
+     * @param assistantUid Assistant uid
+     */
+    public streamSendAssistant(chatId: string, assistantUid: string, _options?: Configuration): Promise<SseEmitter> {
+        const result = this.api.streamSendAssistant(chatId, assistantUid, _options);
         return result.toPromise();
     }
 
@@ -2585,7 +2649,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listAgentsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
         const result = this.api.listAgentsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
@@ -2597,7 +2661,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listAgentsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
         const result = this.api.listAgentsByStatistic(statsType, pageSize, asc, _options);
@@ -2610,7 +2674,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listAgentsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
         const result = this.api.listAgentsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
@@ -2623,7 +2687,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listAgentsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
         const result = this.api.listAgentsByStatistic1(statsType, pageSize, pageNum, asc, _options);
@@ -2634,7 +2698,7 @@ export class PromiseInteractiveStatisticsApi {
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listAgentsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<AgentSummaryStatsDTO>>> {
         const result = this.api.listAgentsByStatistic2WithHttpInfo(statsType, asc, _options);
@@ -2645,7 +2709,7 @@ export class PromiseInteractiveStatisticsApi {
      * List agents based on statistics, including interactive statistical data.
      * List Agents by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listAgentsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<AgentSummaryStatsDTO>> {
         const result = this.api.listAgentsByStatistic2(statsType, asc, _options);
@@ -2656,7 +2720,7 @@ export class PromiseInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listCharactersByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
         const result = this.api.listCharactersByStatisticWithHttpInfo(statsType, asc, _options);
@@ -2667,7 +2731,7 @@ export class PromiseInteractiveStatisticsApi {
      * List characters based on statistics, including interactive statistical data.
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listCharactersByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
         const result = this.api.listCharactersByStatistic(statsType, asc, _options);
@@ -2680,7 +2744,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
         const result = this.api.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
@@ -2693,7 +2757,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listCharactersByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
         const result = this.api.listCharactersByStatistic1(statsType, pageSize, pageNum, asc, _options);
@@ -2705,7 +2769,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
         const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, asc, _options);
@@ -2717,7 +2781,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listCharactersByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
         const result = this.api.listCharactersByStatistic2(statsType, pageSize, asc, _options);
@@ -2729,7 +2793,7 @@ export class PromiseInteractiveStatisticsApi {
      * Hot Tags
      * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
-     * @param text Key word
+     * @param [text] Key word
      */
     public listHotTagsWithHttpInfo(infoType: string, pageSize: number, text?: string, _options?: Configuration): Promise<HttpInfo<Array<HotTagDTO>>> {
         const result = this.api.listHotTagsWithHttpInfo(infoType, pageSize, text, _options);
@@ -2741,7 +2805,7 @@ export class PromiseInteractiveStatisticsApi {
      * Hot Tags
      * @param infoType Info type: prompt | agent | plugin | character
      * @param pageSize Maximum quantity
-     * @param text Key word
+     * @param [text] Key word
      */
     public listHotTags(infoType: string, pageSize: number, text?: string, _options?: Configuration): Promise<Array<HotTagDTO>> {
         const result = this.api.listHotTags(infoType, pageSize, text, _options);
@@ -2753,7 +2817,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
         const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
@@ -2765,7 +2829,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPluginsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
         const result = this.api.listPluginsByStatistic(statsType, pageSize, asc, _options);
@@ -2778,7 +2842,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
         const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
@@ -2791,7 +2855,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPluginsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
         const result = this.api.listPluginsByStatistic1(statsType, pageSize, pageNum, asc, _options);
@@ -2802,7 +2866,7 @@ export class PromiseInteractiveStatisticsApi {
      * List plugins based on statistics, including interactive statistical data.
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPluginsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
         const result = this.api.listPluginsByStatistic2WithHttpInfo(statsType, asc, _options);
@@ -2813,7 +2877,7 @@ export class PromiseInteractiveStatisticsApi {
      * List plugins based on statistics, including interactive statistical data.
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPluginsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
         const result = this.api.listPluginsByStatistic2(statsType, asc, _options);
@@ -2825,7 +2889,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPromptsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
         const result = this.api.listPromptsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
@@ -2837,7 +2901,7 @@ export class PromiseInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPromptsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
         const result = this.api.listPromptsByStatistic(statsType, pageSize, asc, _options);
@@ -2850,7 +2914,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
         const result = this.api.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
@@ -2863,7 +2927,7 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
      * @param pageNum Current page number
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPromptsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
         const result = this.api.listPromptsByStatistic1(statsType, pageSize, pageNum, asc, _options);
@@ -2874,7 +2938,7 @@ export class PromiseInteractiveStatisticsApi {
      * List prompts based on statistics, including interactive statistical data.
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPromptsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
         const result = this.api.listPromptsByStatistic2WithHttpInfo(statsType, asc, _options);
@@ -2885,7 +2949,7 @@ export class PromiseInteractiveStatisticsApi {
      * List prompts based on statistics, including interactive statistical data.
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param asc Default is descending order, set asc&#x3D;1 for ascending order
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
     public listPromptsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
         const result = this.api.listPromptsByStatistic2(statsType, asc, _options);
@@ -2914,7 +2978,7 @@ export class PromiseOrganizationApi {
     /**
      * Get the superior relationships of the current account, including direct and indirect owners, by default does not include virtual reported owners, so there will be no circular relationship.<br/>By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship.
      * Get My Superior Relationship
-     * @param all Whether to return virtual reported owners
+     * @param [all] Whether to return virtual reported owners
      */
     public getOwnersWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
         const result = this.api.getOwnersWithHttpInfo(all, _options);
@@ -2924,7 +2988,7 @@ export class PromiseOrganizationApi {
     /**
      * Get the superior relationships of the current account, including direct and indirect owners, by default does not include virtual reported owners, so there will be no circular relationship.<br/>By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship.
      * Get My Superior Relationship
-     * @param all Whether to return virtual reported owners
+     * @param [all] Whether to return virtual reported owners
      */
     public getOwners(all?: string, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.getOwners(all, _options);
@@ -2934,7 +2998,7 @@ export class PromiseOrganizationApi {
     /**
      * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
-     * @param all Whether to return virtual reported owners
+     * @param [all] Whether to return virtual reported owners
      */
     public getOwnersDotWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<string>> {
         const result = this.api.getOwnersDotWithHttpInfo(all, _options);
@@ -2944,7 +3008,7 @@ export class PromiseOrganizationApi {
     /**
      * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
-     * @param all Whether to return virtual reported owners
+     * @param [all] Whether to return virtual reported owners
      */
     public getOwnersDot(all?: string, _options?: Configuration): Promise<string> {
         const result = this.api.getOwnersDot(all, _options);
@@ -2955,7 +3019,7 @@ export class PromiseOrganizationApi {
      * Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship. 
      * Get Superior Relationship
      * @param username The account being queried, must be a subordinate account of the current account
-     * @param all Whether to return virtual reported owners
+     * @param [all] Whether to return virtual reported owners
      */
     public getSubordinateOwnersWithHttpInfo(username: string, all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
         const result = this.api.getSubordinateOwnersWithHttpInfo(username, all, _options);
@@ -2966,7 +3030,7 @@ export class PromiseOrganizationApi {
      * Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/> By specifying all=1, virtual reported owners can be returned, in this case, there may be a circular relationship. 
      * Get Superior Relationship
      * @param username The account being queried, must be a subordinate account of the current account
-     * @param all Whether to return virtual reported owners
+     * @param [all] Whether to return virtual reported owners
      */
     public getSubordinateOwners(username: string, all?: string, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.getSubordinateOwners(username, all, _options);
@@ -2977,7 +3041,7 @@ export class PromiseOrganizationApi {
      * Get the subordinate relationship of the subordinate account, including direct and indirect subordinates, default does not include virtual managed subordinates, so there will be no circular relationship.<br/>By specifying all=1, virtual managed subordinates can be returned, in this case, there may be a circular relationship.
      * Get Subordinate Relationship
      * @param username The account being queried, must be a subordinate account of the current account
-     * @param all Whether to return virtual managed subordinates
+     * @param [all] Whether to return virtual managed subordinates
      */
     public getSubordinateSubordinatesWithHttpInfo(username: string, all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
         const result = this.api.getSubordinateSubordinatesWithHttpInfo(username, all, _options);
@@ -2988,7 +3052,7 @@ export class PromiseOrganizationApi {
      * Get the subordinate relationship of the subordinate account, including direct and indirect subordinates, default does not include virtual managed subordinates, so there will be no circular relationship.<br/>By specifying all=1, virtual managed subordinates can be returned, in this case, there may be a circular relationship.
      * Get Subordinate Relationship
      * @param username The account being queried, must be a subordinate account of the current account
-     * @param all Whether to return virtual managed subordinates
+     * @param [all] Whether to return virtual managed subordinates
      */
     public getSubordinateSubordinates(username: string, all?: string, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.getSubordinateSubordinates(username, all, _options);
@@ -2998,7 +3062,7 @@ export class PromiseOrganizationApi {
     /**
      * Get the subordinate relationships of the current account, including direct and indirect subordinates, by default does not include virtual managed subordinates, so there will be no circular relationship.<br/>By specifying all=1, virtual managed subordinates can be returned, in this case, there may be a circular relationship.
      * Get My Subordinate Relationship
-     * @param all Whether to return virtual managed subordinates
+     * @param [all] Whether to return virtual managed subordinates
      */
     public getSubordinatesWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
         const result = this.api.getSubordinatesWithHttpInfo(all, _options);
@@ -3008,7 +3072,7 @@ export class PromiseOrganizationApi {
     /**
      * Get the subordinate relationships of the current account, including direct and indirect subordinates, by default does not include virtual managed subordinates, so there will be no circular relationship.<br/>By specifying all=1, virtual managed subordinates can be returned, in this case, there may be a circular relationship.
      * Get My Subordinate Relationship
-     * @param all Whether to return virtual managed subordinates
+     * @param [all] Whether to return virtual managed subordinates
      */
     public getSubordinates(all?: string, _options?: Configuration): Promise<Array<string>> {
         const result = this.api.getSubordinates(all, _options);
@@ -3018,7 +3082,7 @@ export class PromiseOrganizationApi {
     /**
      * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
-     * @param all Whether to return virtual managed subordinates
+     * @param [all] Whether to return virtual managed subordinates
      */
     public getSubordinatesDotWithHttpInfo(all?: string, _options?: Configuration): Promise<HttpInfo<string>> {
         const result = this.api.getSubordinatesDotWithHttpInfo(all, _options);
@@ -3028,7 +3092,7 @@ export class PromiseOrganizationApi {
     /**
      * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
-     * @param all Whether to return virtual managed subordinates
+     * @param [all] Whether to return virtual managed subordinates
      */
     public getSubordinatesDot(all?: string, _options?: Configuration): Promise<string> {
         const result = this.api.getSubordinatesDot(all, _options);
@@ -4088,22 +4152,22 @@ export class PromiseRagApi {
     /**
      * Create a RAG task.
      * Create RAG Task
-     * @param characterId The characterId to be added a RAG task
+     * @param characterUid The characterUid to be added a RAG task
      * @param ragTaskDTO The RAG task to be added
      */
-    public createRagTaskWithHttpInfo(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.createRagTaskWithHttpInfo(characterId, ragTaskDTO, _options);
+    public createRagTaskWithHttpInfo(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.createRagTaskWithHttpInfo(characterUid, ragTaskDTO, _options);
         return result.toPromise();
     }
 
     /**
      * Create a RAG task.
      * Create RAG Task
-     * @param characterId The characterId to be added a RAG task
+     * @param characterUid The characterUid to be added a RAG task
      * @param ragTaskDTO The RAG task to be added
      */
-    public createRagTask(characterId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<number> {
-        const result = this.api.createRagTask(characterId, ragTaskDTO, _options);
+    public createRagTask(characterUid: string, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<number> {
+        const result = this.api.createRagTask(characterUid, ragTaskDTO, _options);
         return result.toPromise();
     }
 
@@ -4170,20 +4234,20 @@ export class PromiseRagApi {
     /**
      * List the RAG tasks by characterId.
      * List RAG Tasks
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public listRagTasksWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
-        const result = this.api.listRagTasksWithHttpInfo(characterId, _options);
+    public listRagTasksWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<RagTaskDetailsDTO>>> {
+        const result = this.api.listRagTasksWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * List the RAG tasks by characterId.
      * List RAG Tasks
-     * @param characterId The characterId to be queried
+     * @param characterUid The characterUid to be queried
      */
-    public listRagTasks(characterId: number, _options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
-        const result = this.api.listRagTasks(characterId, _options);
+    public listRagTasks(characterUid: string, _options?: Configuration): Promise<Array<RagTaskDetailsDTO>> {
+        const result = this.api.listRagTasks(characterUid, _options);
         return result.toPromise();
     }
 

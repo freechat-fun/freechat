@@ -31,14 +31,14 @@ Batch call shortcut for /api/v1/agent/details/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiBatchSearchAgentDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiBatchSearchAgentDetailsRequest = {
-  // Array<AgentQueryDTO> | Query conditions
+const request: AgentApiBatchSearchAgentDetailsRequest = {
+    // Query conditions
   agentQueryDTO: [
     {
       where: {
@@ -65,9 +65,8 @@ let body:.AgentApiBatchSearchAgentDetailsRequest = {
   ],
 };
 
-apiInstance.batchSearchAgentDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchAgentDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -108,14 +107,14 @@ Batch call shortcut for /api/v1/agent/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiBatchSearchAgentSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiBatchSearchAgentSummaryRequest = {
-  // Array<AgentQueryDTO> | Query conditions
+const request: AgentApiBatchSearchAgentSummaryRequest = {
+    // Query conditions
   agentQueryDTO: [
     {
       where: {
@@ -142,9 +141,8 @@ let body:.AgentApiBatchSearchAgentSummaryRequest = {
   ],
 };
 
-apiInstance.batchSearchAgentSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchAgentSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -185,20 +183,19 @@ Enter the agentId, generate a new record, the content is basically the same as t
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiCloneAgentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiCloneAgentRequest = {
-  // number | The referenced agentId
+const request: AgentApiCloneAgentRequest = {
+    // The referenced agentId
   agentId: 1,
 };
 
-apiInstance.cloneAgent(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.cloneAgent(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -239,22 +236,21 @@ Batch clone multiple agents. Ensure transactionality, return the agentId list af
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiCloneAgentsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiCloneAgentsRequest = {
-  // Array<number> | List of agent information to be created
+const request: AgentApiCloneAgentsRequest = {
+    // List of agent information to be created
   requestBody: [
     1,
   ],
 };
 
-apiInstance.cloneAgents(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.cloneAgents(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -295,14 +291,14 @@ Calculate the number of agents according to the specified query conditions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiCountAgentsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiCountAgentsRequest = {
-  // AgentQueryDTO | Query conditions
+const request: AgentApiCountAgentsRequest = {
+    // Query conditions
   agentQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -327,9 +323,8 @@ let body:.AgentApiCountAgentsRequest = {
   },
 };
 
-apiInstance.countAgents(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.countAgents(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -370,14 +365,14 @@ Create a agent, ignore required fields: - Agent name - Agent configuration  Limi
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiCreateAgentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiCreateAgentRequest = {
-  // AgentCreateDTO | Information of the agent to be created
+const request: AgentApiCreateAgentRequest = {
+    // Information of the agent to be created
   agentCreateDTO: {
     parentUid: "parentUid_example",
     visibility: "visibility_example",
@@ -398,9 +393,8 @@ let body:.AgentApiCreateAgentRequest = {
   },
 };
 
-apiInstance.createAgent(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createAgent(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -441,14 +435,14 @@ Batch create multiple agents. Ensure transactionality, return the agentId list a
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiCreateAgentsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiCreateAgentsRequest = {
-  // Array<AgentCreateDTO> | List of agent information to be created
+const request: AgentApiCreateAgentsRequest = {
+    // List of agent information to be created
   agentCreateDTO: [
     {
       parentUid: "parentUid_example",
@@ -471,9 +465,8 @@ let body:.AgentApiCreateAgentsRequest = {
   ],
 };
 
-apiInstance.createAgents(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createAgents(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -514,20 +507,19 @@ Delete agent. Return success or failure.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiDeleteAgentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiDeleteAgentRequest = {
-  // number | AgentId to be deleted
+const request: AgentApiDeleteAgentRequest = {
+    // AgentId to be deleted
   agentId: 1,
 };
 
-apiInstance.deleteAgent(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteAgent(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -568,22 +560,21 @@ Delete multiple agents. Ensure transactionality, return the list of successfully
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiDeleteAgentsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiDeleteAgentsRequest = {
-  // Array<number> | List of agentId to be deleted
+const request: AgentApiDeleteAgentsRequest = {
+    // List of agentId to be deleted
   requestBody: [
     1,
   ],
 };
 
-apiInstance.deleteAgents(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteAgents(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -624,20 +615,19 @@ Get agent detailed information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiGetAgentDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiGetAgentDetailsRequest = {
-  // number | AgentId to be obtained
+const request: AgentApiGetAgentDetailsRequest = {
+    // AgentId to be obtained
   agentId: 1,
 };
 
-apiInstance.getAgentDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getAgentDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -678,20 +668,19 @@ Get agent summary information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiGetAgentSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiGetAgentSummaryRequest = {
-  // number | agentId to be obtained
+const request: AgentApiGetAgentSummaryRequest = {
+    // agentId to be obtained
   agentId: 1,
 };
 
-apiInstance.getAgentSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getAgentSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -732,20 +721,19 @@ List the versions and corresponding agentIds by agent name.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiListAgentVersionsByNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiListAgentVersionsByNameRequest = {
-  // string | Agent name
+const request: AgentApiListAgentVersionsByNameRequest = {
+    // Agent name
   name: "name_example",
 };
 
-apiInstance.listAgentVersionsByName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAgentVersionsByName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -786,22 +774,21 @@ Publish agent, draft content becomes formal content, version number increases by
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiPublishAgentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiPublishAgentRequest = {
-  // number | The agentId to be published
+const request: AgentApiPublishAgentRequest = {
+    // The agentId to be published
   agentId: 1,
-  // string | Visibility: public | private | ...
+    // Visibility: public | private | ...
   visibility: "visibility_example",
 };
 
-apiInstance.publishAgent(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.publishAgent(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -843,14 +830,14 @@ Same as /api/v1/agent/search, but returns detailed information of the agent.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiSearchAgentDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiSearchAgentDetailsRequest = {
-  // AgentQueryDTO | Query conditions
+const request: AgentApiSearchAgentDetailsRequest = {
+    // Query conditions
   agentQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -875,9 +862,8 @@ let body:.AgentApiSearchAgentDetailsRequest = {
   },
 };
 
-apiInstance.searchAgentDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchAgentDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -918,14 +904,14 @@ Search agents: - Specifiable query fields, and relationship:   - Scope: private,
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiSearchAgentSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiSearchAgentSummaryRequest = {
-  // AgentQueryDTO | Query conditions
+const request: AgentApiSearchAgentSummaryRequest = {
+    // Query conditions
   agentQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -950,9 +936,8 @@ let body:.AgentApiSearchAgentSummaryRequest = {
   },
 };
 
-apiInstance.searchAgentSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchAgentSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -993,16 +978,16 @@ Update agent, refer to /api/v1/agent/create, required field: agentId. Return suc
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AgentApi } from '';
+import type { AgentApiUpdateAgentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AgentApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AgentApi(configuration);
 
-let body:.AgentApiUpdateAgentRequest = {
-  // number | AgentId to be updated
+const request: AgentApiUpdateAgentRequest = {
+    // AgentId to be updated
   agentId: 1,
-  // AgentUpdateDTO | Agent information to be updated
+    // Agent information to be updated
   agentUpdateDTO: {
     parentUid: "parentUid_example",
     visibility: "visibility_example",
@@ -1023,9 +1008,8 @@ let body:.AgentApiUpdateAgentRequest = {
   },
 };
 
-apiInstance.updateAgent(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateAgent(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

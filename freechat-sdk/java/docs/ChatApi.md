@@ -16,8 +16,10 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages |
 | [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages |
 | [**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages |
+| [**sendAssistant**](ChatApi.md#sendAssistant) | **GET** /api/v1/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message |
 | [**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message |
 | [**startChat**](ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session |
+| [**streamSendAssistant**](ChatApi.md#streamSendAssistant) | **GET** /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back |
 | [**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back |
 | [**updateChat**](ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session |
 
@@ -836,6 +838,75 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
+<a id="sendAssistant"></a>
+# **sendAssistant**
+> LlmResultDTO sendAssistant(chatId, assistantUid)
+
+Send Assistant for Chat Message
+
+Send a message to assistant for a new chat message.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    String assistantUid = "assistantUid_example"; // String | Assistant uid
+    try {
+      LlmResultDTO result = apiInstance.sendAssistant(chatId, assistantUid);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#sendAssistant");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+| **assistantUid** | **String**| Assistant uid | |
+
+### Return type
+
+[**LlmResultDTO**](LlmResultDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
 <a id="sendMessage"></a>
 # **sendMessage**
 > LlmResultDTO sendMessage(chatId, chatMessageDTO)
@@ -966,6 +1037,75 @@ public class Example {
 
  - **Content-Type**: application/json
  - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="streamSendAssistant"></a>
+# **streamSendAssistant**
+> SseEmitter streamSendAssistant(chatId, assistantUid)
+
+Send Assistant for Chat Message by Streaming Back
+
+Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.ChatApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    ChatApi apiInstance = new ChatApi(defaultClient);
+    String chatId = "chatId_example"; // String | Chat session identifier
+    String assistantUid = "assistantUid_example"; // String | Assistant uid
+    try {
+      SseEmitter result = apiInstance.streamSendAssistant(chatId, assistantUid);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling ChatApi#streamSendAssistant");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **chatId** | **String**| Chat session identifier | |
+| **assistantUid** | **String**| Assistant uid | |
+
+### Return type
+
+[**SseEmitter**](SseEmitter.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/event-stream
 
 ### HTTP response details
 | Status code | Description | Response headers |

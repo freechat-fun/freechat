@@ -29,22 +29,21 @@ Create an API Token for a specified user, valid for duration seconds.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiCreateTokenForUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiCreateTokenForUserRequest = {
-  // string | Username
+const request: AccountManagerForAdminApiCreateTokenForUserRequest = {
+    // Username
   username: "username_example",
-  // number | Validity period (seconds)
+    // Validity period (seconds)
   duration: 0,
 };
 
-apiInstance.createTokenForUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createTokenForUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -86,14 +85,14 @@ Create user.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiCreateUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiCreateUserRequest = {
-  // UserFullDetailsDTO | User information
+const request: AccountManagerForAdminApiCreateUserRequest = {
+    // User information
   userFullDetailsDTO: {
     requestId: "requestId_example",
     username: "username_example",
@@ -122,9 +121,8 @@ let body:.AccountManagerForAdminApiCreateUserRequest = {
   },
 };
 
-apiInstance.createUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -165,20 +163,19 @@ Delete the specified API Token.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiDeleteTokenForUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiDeleteTokenForUserRequest = {
-  // string | API Token
+const request: AccountManagerForAdminApiDeleteTokenForUserRequest = {
+    // API Token
   token: "token_example",
 };
 
-apiInstance.deleteTokenForUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteTokenForUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -219,20 +216,19 @@ Delete user by username.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiDeleteUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiDeleteUserRequest = {
-  // string | Username
+const request: AccountManagerForAdminApiDeleteUserRequest = {
+    // Username
   username: "username_example",
 };
 
-apiInstance.deleteUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -273,20 +269,19 @@ Disable the specified API Token.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiDisableTokenForUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiDisableTokenForUserRequest = {
-  // string | API Token
+const request: AccountManagerForAdminApiDisableTokenForUserRequest = {
+    // API Token
   token: "token_example",
 };
 
-apiInstance.disableTokenForUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.disableTokenForUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -327,20 +322,19 @@ Return detailed user information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiGetDetailsOfUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiGetDetailsOfUserRequest = {
-  // string | Username
+const request: AccountManagerForAdminApiGetDetailsOfUserRequest = {
+    // Username
   username: "username_example",
 };
 
-apiInstance.getDetailsOfUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getDetailsOfUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -381,20 +375,19 @@ Get the detailed user information corresponding to the API Token.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiGetUserByTokenRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiGetUserByTokenRequest = {
-  // string | API Token
+const request: AccountManagerForAdminApiGetUserByTokenRequest = {
+    // API Token
   token: "token_example",
 };
 
-apiInstance.getUserByToken(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getUserByToken(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -435,20 +428,19 @@ List the user\'s permissions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiListAuthoritiesOfUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiListAuthoritiesOfUserRequest = {
-  // string | Username
+const request: AccountManagerForAdminApiListAuthoritiesOfUserRequest = {
+    // Username
   username: "username_example",
 };
 
-apiInstance.listAuthoritiesOfUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listAuthoritiesOfUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -489,20 +481,19 @@ Get the list of API Tokens of the user.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiListTokensOfUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiListTokensOfUserRequest = {
-  // string | Username
+const request: AccountManagerForAdminApiListTokensOfUserRequest = {
+    // Username
   username: "username_example",
 };
 
-apiInstance.listTokensOfUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listTokensOfUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -543,22 +534,21 @@ Return user information by page, return the pageNum page, up to pageSize user in
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiListUsersRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiListUsersRequest = {
-  // number | Maximum quantity
+const request: AccountManagerForAdminApiListUsersRequest = {
+    // Maximum quantity
   pageSize: 1,
-  // number | Current page number
+    // Current page number
   pageNum: 1,
 };
 
-apiInstance.listUsers(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listUsers(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -600,20 +590,19 @@ Return user information by page, return the pageNum page, up to pageSize user in
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiListUsers1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiListUsers1Request = {
-  // number | Maximum quantity
+const request: AccountManagerForAdminApiListUsers1Request = {
+    // Maximum quantity
   pageSize: 1,
 };
 
-apiInstance.listUsers1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listUsers1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -654,17 +643,15 @@ Return user information by page, return the pageNum page, up to pageSize user in
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.listUsers2(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listUsers2(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -702,24 +689,23 @@ Update the user\'s permission list.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest = {
-  // string | Username
+const request: AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest = {
+    // Username
   username: "username_example",
-  // Set<string> | Permission list
+    // Permission list
   requestBody: [
     "requestBody_example",
   ],
 };
 
-apiInstance.updateAuthoritiesOfUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateAuthoritiesOfUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -761,14 +747,14 @@ Update user information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiUpdateUserRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AccountManagerForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AccountManagerForAdminApi(configuration);
 
-let body:.AccountManagerForAdminApiUpdateUserRequest = {
-  // UserFullDetailsDTO | User information
+const request: AccountManagerForAdminApiUpdateUserRequest = {
+    // User information
   userFullDetailsDTO: {
     requestId: "requestId_example",
     username: "username_example",
@@ -797,9 +783,8 @@ let body:.AccountManagerForAdminApiUpdateUserRequest = {
   },
 };
 
-apiInstance.updateUser(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateUser(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

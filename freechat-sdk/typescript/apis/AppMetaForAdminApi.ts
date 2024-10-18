@@ -47,12 +47,18 @@ export class AppMetaForAdminApiRequestFactory extends BaseAPIRequestFactory {
 
         // Query Params
         if (openAiParam !== undefined) {
-            requestContext.setQueryParam("openAiParam", ObjectSerializer.serialize(openAiParam, "OpenAiParamDTO", ""));
+            const serializedParams = ObjectSerializer.serialize(openAiParam, "OpenAiParamDTO", "");
+            for (const key of Object.keys(serializedParams)) {
+                requestContext.setQueryParam(key, serializedParams[key]);
+            }
         }
 
         // Query Params
         if (qwenParam !== undefined) {
-            requestContext.setQueryParam("qwenParam", ObjectSerializer.serialize(qwenParam, "QwenParamDTO", ""));
+            const serializedParams = ObjectSerializer.serialize(qwenParam, "QwenParamDTO", "");
+            for (const key of Object.keys(serializedParams)) {
+                requestContext.setQueryParam(key, serializedParams[key]);
+            }
         }
 
 

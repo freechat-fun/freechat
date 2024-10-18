@@ -4,7 +4,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**add_character_backend**](CharacterApi.md#add_character_backend) | **POST** /api/v1/character/backend/{characterId} | Add Character Backend
+[**add_character_backend**](CharacterApi.md#add_character_backend) | **POST** /api/v1/character/backend/{characterUid} | Add Character Backend
 [**batch_search_character_details**](CharacterApi.md#batch_search_character_details) | **POST** /api/v1/character/batch/details/search | Batch Search Character Details
 [**batch_search_character_summary**](CharacterApi.md#batch_search_character_summary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
 [**clone_character**](CharacterApi.md#clone_character) | **POST** /api/v1/character/clone/{characterId} | Clone Character
@@ -13,6 +13,7 @@ Method | HTTP request | Description
 [**create_character**](CharacterApi.md#create_character) | **POST** /api/v1/character | Create Character
 [**delete_character**](CharacterApi.md#delete_character) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**delete_character_by_name**](CharacterApi.md#delete_character_by_name) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+[**delete_character_by_uid**](CharacterApi.md#delete_character_by_uid) | **DELETE** /api/v1/character/uid/{characterUid} | Delete Character by Uid
 [**delete_character_document**](CharacterApi.md#delete_character_document) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
 [**delete_character_picture**](CharacterApi.md#delete_character_picture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 [**exists_character_name**](CharacterApi.md#exists_character_name) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
@@ -20,12 +21,12 @@ Method | HTTP request | Description
 [**get_character_details**](CharacterApi.md#get_character_details) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 [**get_character_latest_id_by_name**](CharacterApi.md#get_character_latest_id_by_name) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 [**get_character_summary**](CharacterApi.md#get_character_summary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
-[**get_default_character_backend**](CharacterApi.md#get_default_character_backend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
+[**get_default_character_backend**](CharacterApi.md#get_default_character_backend) | **GET** /api/v1/character/backend/default/{characterUid} | Get Default Character Backend
 [**import_character**](CharacterApi.md#import_character) | **POST** /api/v1/character/import | Import Character Configuration
-[**list_character_backend_ids**](CharacterApi.md#list_character_backend_ids) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
-[**list_character_backends**](CharacterApi.md#list_character_backends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
-[**list_character_documents**](CharacterApi.md#list_character_documents) | **GET** /api/v1/character/documents/{characterId} | List Character Documents
-[**list_character_pictures**](CharacterApi.md#list_character_pictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
+[**list_character_backend_ids**](CharacterApi.md#list_character_backend_ids) | **GET** /api/v1/character/backend/ids/{characterUid} | List Character Backend ids
+[**list_character_backends**](CharacterApi.md#list_character_backends) | **GET** /api/v1/character/backends/{characterUid} | List Character Backends
+[**list_character_documents**](CharacterApi.md#list_character_documents) | **GET** /api/v1/character/documents/{characterUid} | List Character Documents
+[**list_character_pictures**](CharacterApi.md#list_character_pictures) | **GET** /api/v1/character/pictures/{characterUid} | List Character Pictures
 [**list_character_versions_by_name**](CharacterApi.md#list_character_versions_by_name) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 [**new_character_name**](CharacterApi.md#new_character_name) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 [**publish_character**](CharacterApi.md#publish_character) | **POST** /api/v1/character/publish/{characterId} | Publish Character
@@ -37,13 +38,13 @@ Method | HTTP request | Description
 [**set_default_character_backend**](CharacterApi.md#set_default_character_backend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 [**update_character**](CharacterApi.md#update_character) | **PUT** /api/v1/character/{characterId} | Update Character
 [**update_character_backend**](CharacterApi.md#update_character_backend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-[**upload_character_avatar**](CharacterApi.md#upload_character_avatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
-[**upload_character_document**](CharacterApi.md#upload_character_document) | **POST** /api/v1/character/document/{characterId} | Upload Character Document
-[**upload_character_picture**](CharacterApi.md#upload_character_picture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
+[**upload_character_avatar**](CharacterApi.md#upload_character_avatar) | **POST** /api/v1/character/avatar/{characterUid} | Upload Character Avatar
+[**upload_character_document**](CharacterApi.md#upload_character_document) | **POST** /api/v1/character/document/{characterUid} | Upload Character Document
+[**upload_character_picture**](CharacterApi.md#upload_character_picture) | **POST** /api/v1/character/picture/{characterUid} | Upload Character Picture
 
 
 # **add_character_backend**
-> str add_character_backend(character_id, character_backend_dto)
+> str add_character_backend(character_uid, character_backend_dto)
 
 Add Character Backend
 
@@ -79,12 +80,12 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | The characterId to be added a backend
+    character_uid = 'character_uid_example' # str | The characterUid to be added a backend
     character_backend_dto = freechat_sdk.CharacterBackendDTO() # CharacterBackendDTO | The character backend to be added
 
     try:
         # Add Character Backend
-        api_response = api_instance.add_character_backend(character_id, character_backend_dto)
+        api_response = api_instance.add_character_backend(character_uid, character_backend_dto)
         print("The response of CharacterApi->add_character_backend:\n")
         pprint(api_response)
     except Exception as e:
@@ -98,7 +99,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be added a backend | 
+ **character_uid** | **str**| The characterUid to be added a backend | 
  **character_backend_dto** | [**CharacterBackendDTO**](CharacterBackendDTO.md)| The character backend to be added | 
 
 ### Return type
@@ -745,6 +746,83 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **delete_character_by_uid**
+> List[int] delete_character_by_uid(character_uid)
+
+Delete Character by Uid
+
+Delete character by uid. return the list of successfully deleted characterIds.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_uid = 'character_uid_example' # str | The character uid to be deleted
+
+    try:
+        # Delete Character by Uid
+        api_response = api_instance.delete_character_by_uid(character_uid)
+        print("The response of CharacterApi->delete_character_by_uid:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->delete_character_by_uid: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_uid** | **str**| The character uid to be deleted | 
+
+### Return type
+
+**List[int]**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **delete_character_document**
 > bool delete_character_document(key)
 
@@ -1285,7 +1363,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_default_character_backend**
-> CharacterBackendDetailsDTO get_default_character_backend(character_id)
+> CharacterBackendDetailsDTO get_default_character_backend(character_uid)
 
 Get Default Character Backend
 
@@ -1321,11 +1399,11 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | The characterId to be queried
+    character_uid = 'character_uid_example' # str | The characterUid to be queried
 
     try:
         # Get Default Character Backend
-        api_response = api_instance.get_default_character_backend(character_id)
+        api_response = api_instance.get_default_character_backend(character_uid)
         print("The response of CharacterApi->get_default_character_backend:\n")
         pprint(api_response)
     except Exception as e:
@@ -1339,7 +1417,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be queried | 
+ **character_uid** | **str**| The characterUid to be queried | 
 
 ### Return type
 
@@ -1440,7 +1518,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_character_backend_ids**
-> List[str] list_character_backend_ids(character_id)
+> List[str] list_character_backend_ids(character_uid)
 
 List Character Backend ids
 
@@ -1475,11 +1553,11 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | The characterId to be queried
+    character_uid = 'character_uid_example' # str | The characterUid to be queried
 
     try:
         # List Character Backend ids
-        api_response = api_instance.list_character_backend_ids(character_id)
+        api_response = api_instance.list_character_backend_ids(character_uid)
         print("The response of CharacterApi->list_character_backend_ids:\n")
         pprint(api_response)
     except Exception as e:
@@ -1493,7 +1571,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be queried | 
+ **character_uid** | **str**| The characterUid to be queried | 
 
 ### Return type
 
@@ -1517,7 +1595,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_character_backends**
-> List[CharacterBackendDetailsDTO] list_character_backends(character_id)
+> List[CharacterBackendDetailsDTO] list_character_backends(character_uid)
 
 List Character Backends
 
@@ -1553,11 +1631,11 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | The characterId to be queried
+    character_uid = 'character_uid_example' # str | The characterUid to be queried
 
     try:
         # List Character Backends
-        api_response = api_instance.list_character_backends(character_id)
+        api_response = api_instance.list_character_backends(character_uid)
         print("The response of CharacterApi->list_character_backends:\n")
         pprint(api_response)
     except Exception as e:
@@ -1571,7 +1649,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| The characterId to be queried | 
+ **character_uid** | **str**| The characterUid to be queried | 
 
 ### Return type
 
@@ -1595,7 +1673,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_character_documents**
-> List[str] list_character_documents(character_id)
+> List[str] list_character_documents(character_uid)
 
 List Character Documents
 
@@ -1630,11 +1708,11 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | Character identifier
+    character_uid = 'character_uid_example' # str | Character unique identifier
 
     try:
         # List Character Documents
-        api_response = api_instance.list_character_documents(character_id)
+        api_response = api_instance.list_character_documents(character_uid)
         print("The response of CharacterApi->list_character_documents:\n")
         pprint(api_response)
     except Exception as e:
@@ -1648,7 +1726,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| Character identifier | 
+ **character_uid** | **str**| Character unique identifier | 
 
 ### Return type
 
@@ -1672,7 +1750,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_character_pictures**
-> List[str] list_character_pictures(character_id)
+> List[str] list_character_pictures(character_uid)
 
 List Character Pictures
 
@@ -1707,11 +1785,11 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | Character identifier
+    character_uid = 'character_uid_example' # str | Character unique identifier
 
     try:
         # List Character Pictures
-        api_response = api_instance.list_character_pictures(character_id)
+        api_response = api_instance.list_character_pictures(character_uid)
         print("The response of CharacterApi->list_character_pictures:\n")
         pprint(api_response)
     except Exception as e:
@@ -1725,7 +1803,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| Character identifier | 
+ **character_uid** | **str**| Character unique identifier | 
 
 ### Return type
 
@@ -2611,7 +2689,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upload_character_avatar**
-> str upload_character_avatar(character_id, file)
+> str upload_character_avatar(character_uid, file)
 
 Upload Character Avatar
 
@@ -2646,12 +2724,12 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | Character identifier
+    character_uid = 'character_uid_example' # str | Character unique identifier
     file = None # bytearray | Character avatar
 
     try:
         # Upload Character Avatar
-        api_response = api_instance.upload_character_avatar(character_id, file)
+        api_response = api_instance.upload_character_avatar(character_uid, file)
         print("The response of CharacterApi->upload_character_avatar:\n")
         pprint(api_response)
     except Exception as e:
@@ -2665,7 +2743,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| Character identifier | 
+ **character_uid** | **str**| Character unique identifier | 
  **file** | **bytearray**| Character avatar | 
 
 ### Return type
@@ -2690,7 +2768,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upload_character_document**
-> str upload_character_document(character_id, file)
+> str upload_character_document(character_uid, file)
 
 Upload Character Document
 
@@ -2725,12 +2803,12 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | Character identifier
+    character_uid = 'character_uid_example' # str | Character unique identifier
     file = None # bytearray | Character document
 
     try:
         # Upload Character Document
-        api_response = api_instance.upload_character_document(character_id, file)
+        api_response = api_instance.upload_character_document(character_uid, file)
         print("The response of CharacterApi->upload_character_document:\n")
         pprint(api_response)
     except Exception as e:
@@ -2744,7 +2822,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| Character identifier | 
+ **character_uid** | **str**| Character unique identifier | 
  **file** | **bytearray**| Character document | 
 
 ### Return type
@@ -2769,7 +2847,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upload_character_picture**
-> str upload_character_picture(character_id, file)
+> str upload_character_picture(character_uid, file)
 
 Upload Character Picture
 
@@ -2804,12 +2882,12 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.CharacterApi(api_client)
-    character_id = 56 # int | Character identifier
+    character_uid = 'character_uid_example' # str | Character unique identifier
     file = None # bytearray | Character picture
 
     try:
         # Upload Character Picture
-        api_response = api_instance.upload_character_picture(character_id, file)
+        api_response = api_instance.upload_character_picture(character_uid, file)
         print("The response of CharacterApi->upload_character_picture:\n")
         pprint(api_response)
     except Exception as e:
@@ -2823,7 +2901,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **character_id** | **int**| Character identifier | 
+ **character_uid** | **str**| Character unique identifier | 
  **file** | **bytearray**| Character picture | 
 
 ### Return type

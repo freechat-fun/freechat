@@ -40,14 +40,14 @@ Apply parameters to prompt record.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiApplyPromptRefRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiApplyPromptRefRequest = {
-  // PromptRefDTO | Prompt record
+const request: PromptApiApplyPromptRefRequest = {
+    // Prompt record
   promptRefDTO: {
     promptId: 1,
     variables: {
@@ -57,9 +57,8 @@ let body:.PromptApiApplyPromptRefRequest = {
   },
 };
 
-apiInstance.applyPromptRef(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.applyPromptRef(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -100,14 +99,14 @@ Apply parameters to prompt template.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiApplyPromptTemplateRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiApplyPromptTemplateRequest = {
-  // PromptTemplateDTO | String type prompt template
+const request: PromptApiApplyPromptTemplateRequest = {
+    // String type prompt template
   promptTemplateDTO: {
     template: "template_example",
     chatTemplate: {
@@ -160,9 +159,8 @@ let body:.PromptApiApplyPromptTemplateRequest = {
   },
 };
 
-apiInstance.applyPromptTemplate(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.applyPromptTemplate(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -203,14 +201,14 @@ Batch call shortcut for /api/v1/prompt/details/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiBatchSearchPromptDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiBatchSearchPromptDetailsRequest = {
-  // Array<PromptQueryDTO> | Query conditions
+const request: PromptApiBatchSearchPromptDetailsRequest = {
+    // Query conditions
   promptQueryDTO: [
     {
       where: {
@@ -238,9 +236,8 @@ let body:.PromptApiBatchSearchPromptDetailsRequest = {
   ],
 };
 
-apiInstance.batchSearchPromptDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchPromptDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -281,14 +278,14 @@ Batch call shortcut for /api/v1/prompt/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiBatchSearchPromptSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiBatchSearchPromptSummaryRequest = {
-  // Array<PromptQueryDTO> | Query conditions
+const request: PromptApiBatchSearchPromptSummaryRequest = {
+    // Query conditions
   promptQueryDTO: [
     {
       where: {
@@ -316,9 +313,8 @@ let body:.PromptApiBatchSearchPromptSummaryRequest = {
   ],
 };
 
-apiInstance.batchSearchPromptSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchPromptSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -359,20 +355,19 @@ Enter the promptId, generate a new record, the content is basically the same as 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiClonePromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiClonePromptRequest = {
-  // number | The referenced promptId
+const request: PromptApiClonePromptRequest = {
+    // The referenced promptId
   promptId: 1,
 };
 
-apiInstance.clonePrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.clonePrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -413,22 +408,21 @@ Batch clone multiple prompts. Ensure transactionality, return the promptId list 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiClonePromptsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiClonePromptsRequest = {
-  // Array<number> | List of prompt information to be created
+const request: PromptApiClonePromptsRequest = {
+    // List of prompt information to be created
   requestBody: [
     1,
   ],
 };
 
-apiInstance.clonePrompts(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.clonePrompts(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -469,14 +463,14 @@ Calculate the number of prompts according to the specified query conditions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiCountPromptsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiCountPromptsRequest = {
-  // PromptQueryDTO | Query conditions
+const request: PromptApiCountPromptsRequest = {
+    // Query conditions
   promptQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -502,9 +496,8 @@ let body:.PromptApiCountPromptsRequest = {
   },
 };
 
-apiInstance.countPrompts(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.countPrompts(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -545,14 +538,14 @@ Calculate the number of prompts according to the specified query conditions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiCountPublicPromptsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiCountPublicPromptsRequest = {
-  // PromptQueryDTO | Query conditions
+const request: PromptApiCountPublicPromptsRequest = {
+    // Query conditions
   promptQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -578,9 +571,8 @@ let body:.PromptApiCountPublicPromptsRequest = {
   },
 };
 
-apiInstance.countPublicPrompts(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.countPublicPrompts(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -621,14 +613,14 @@ Create a prompt, required fields: - Prompt name - Prompt content - Applicable mo
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiCreatePromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiCreatePromptRequest = {
-  // PromptCreateDTO | Information of the prompt to be created
+const request: PromptApiCreatePromptRequest = {
+    // Information of the prompt to be created
   promptCreateDTO: {
     parentUid: "parentUid_example",
     visibility: "visibility_example",
@@ -693,9 +685,8 @@ let body:.PromptApiCreatePromptRequest = {
   },
 };
 
-apiInstance.createPrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createPrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -736,14 +727,14 @@ Batch create multiple prompts. Ensure transactionality, return the promptId list
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiCreatePromptsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiCreatePromptsRequest = {
-  // Array<PromptCreateDTO> | List of prompt information to be created
+const request: PromptApiCreatePromptsRequest = {
+    // List of prompt information to be created
   promptCreateDTO: [
     {
       parentUid: "parentUid_example",
@@ -810,9 +801,8 @@ let body:.PromptApiCreatePromptsRequest = {
   ],
 };
 
-apiInstance.createPrompts(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createPrompts(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -853,20 +843,19 @@ Delete prompt. Returns success or failure.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiDeletePromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiDeletePromptRequest = {
-  // number | The promptId to be deleted
+const request: PromptApiDeletePromptRequest = {
+    // The promptId to be deleted
   promptId: 1,
 };
 
-apiInstance.deletePrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deletePrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -907,20 +896,19 @@ Delete prompt by name. return the list of successfully deleted promptIds.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiDeletePromptByNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiDeletePromptByNameRequest = {
-  // string | The prompt name to be deleted
+const request: PromptApiDeletePromptByNameRequest = {
+    // The prompt name to be deleted
   name: "name_example",
 };
 
-apiInstance.deletePromptByName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deletePromptByName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -961,22 +949,21 @@ Delete multiple prompts. Ensure transactionality, return the list of successfull
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiDeletePromptsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiDeletePromptsRequest = {
-  // Array<number> | List of promptIds to be deleted
+const request: PromptApiDeletePromptsRequest = {
+    // List of promptIds to be deleted
   requestBody: [
     1,
   ],
 };
 
-apiInstance.deletePrompts(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deletePrompts(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1017,20 +1004,19 @@ Check if the prompt name already exists.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiExistsPromptNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiExistsPromptNameRequest = {
-  // string | Name
+const request: PromptApiExistsPromptNameRequest = {
+    // Name
   name: "name_example",
 };
 
-apiInstance.existsPromptName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.existsPromptName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1071,20 +1057,19 @@ Get prompt detailed information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiGetPromptDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiGetPromptDetailsRequest = {
-  // number | PromptId to be obtained
+const request: PromptApiGetPromptDetailsRequest = {
+    // PromptId to be obtained
   promptId: 1,
 };
 
-apiInstance.getPromptDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getPromptDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1125,20 +1110,19 @@ Get prompt summary information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiGetPromptSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiGetPromptSummaryRequest = {
-  // number | PromptId to be obtained
+const request: PromptApiGetPromptSummaryRequest = {
+    // PromptId to be obtained
   promptId: 1,
 };
 
-apiInstance.getPromptSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getPromptSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1179,20 +1163,19 @@ List the versions and corresponding promptIds by prompt name.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiListPromptVersionsByNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiListPromptVersionsByNameRequest = {
-  // string | Prompt name
+const request: PromptApiListPromptVersionsByNameRequest = {
+    // Prompt name
   name: "name_example",
 };
 
-apiInstance.listPromptVersionsByName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listPromptVersionsByName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1233,20 +1216,19 @@ Create a new prompt name starting with a desired name.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiNewPromptNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiNewPromptNameRequest = {
-  // string | Desired name
+const request: PromptApiNewPromptNameRequest = {
+    // Desired name
   desired: "desired_example",
 };
 
-apiInstance.newPromptName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.newPromptName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1287,22 +1269,21 @@ Publish prompt, draft content becomes formal content, version number increases b
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiPublishPromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiPublishPromptRequest = {
-  // number | The promptId to be published
+const request: PromptApiPublishPromptRequest = {
+    // The promptId to be published
   promptId: 1,
-  // string | Visibility: public | private | ...
+    // Visibility: public | private | ...
   visibility: "visibility_example",
 };
 
-apiInstance.publishPrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.publishPrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1344,14 +1325,14 @@ Same as /api/v1/prompt/search, but returns detailed information of the prompt.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiSearchPromptDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiSearchPromptDetailsRequest = {
-  // PromptQueryDTO | Query conditions
+const request: PromptApiSearchPromptDetailsRequest = {
+    // Query conditions
   promptQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -1377,9 +1358,8 @@ let body:.PromptApiSearchPromptDetailsRequest = {
   },
 };
 
-apiInstance.searchPromptDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchPromptDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1420,14 +1400,14 @@ Search prompts: - Specifiable query fields, and relationship:   - Scope: private
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiSearchPromptSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiSearchPromptSummaryRequest = {
-  // PromptQueryDTO | Query conditions
+const request: PromptApiSearchPromptSummaryRequest = {
+    // Query conditions
   promptQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -1453,9 +1433,8 @@ let body:.PromptApiSearchPromptSummaryRequest = {
   },
 };
 
-apiInstance.searchPromptSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchPromptSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1496,14 +1475,14 @@ Search prompts: - Specifiable query fields, and relationship:   - Scope: public(
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiSearchPublicPromptSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiSearchPublicPromptSummaryRequest = {
-  // PromptQueryDTO | Query conditions
+const request: PromptApiSearchPublicPromptSummaryRequest = {
+    // Query conditions
   promptQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -1529,9 +1508,8 @@ let body:.PromptApiSearchPublicPromptSummaryRequest = {
   },
 };
 
-apiInstance.searchPublicPromptSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchPublicPromptSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1572,14 +1550,14 @@ Send the prompt to the AI service. Note that if the embedding model is called, t
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiSendPromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiSendPromptRequest = {
-  // PromptAiParamDTO | Call parameters
+const request: PromptApiSendPromptRequest = {
+    // Call parameters
   promptAiParamDTO: {
     prompt: "prompt_example",
     promptTemplate: {
@@ -1645,9 +1623,8 @@ let body:.PromptApiSendPromptRequest = {
   },
 };
 
-apiInstance.sendPrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.sendPrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1688,14 +1665,14 @@ Refer to /api/v1/prompt/send, stream back chunks of the response.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiStreamSendPromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiStreamSendPromptRequest = {
-  // PromptAiParamDTO | Call parameters
+const request: PromptApiStreamSendPromptRequest = {
+    // Call parameters
   promptAiParamDTO: {
     prompt: "prompt_example",
     promptTemplate: {
@@ -1761,9 +1738,8 @@ let body:.PromptApiStreamSendPromptRequest = {
   },
 };
 
-apiInstance.streamSendPrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.streamSendPrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1804,16 +1780,16 @@ Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, PromptApi } from '';
+import type { PromptApiUpdatePromptRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .PromptApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new PromptApi(configuration);
 
-let body:.PromptApiUpdatePromptRequest = {
-  // number | The promptId to be updated
+const request: PromptApiUpdatePromptRequest = {
+    // The promptId to be updated
   promptId: 1,
-  // PromptUpdateDTO | The prompt information to be updated
+    // The prompt information to be updated
   promptUpdateDTO: {
     parentUid: "parentUid_example",
     visibility: "visibility_example",
@@ -1878,9 +1854,8 @@ let body:.PromptApiUpdatePromptRequest = {
   },
 };
 
-apiInstance.updatePrompt(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updatePrompt(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

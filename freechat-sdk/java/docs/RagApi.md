@@ -5,11 +5,11 @@ All URIs are relative to *http://127.0.0.1:8080*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**cancelRagTask**](RagApi.md#cancelRagTask) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task |
-| [**createRagTask**](RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterId} | Create RAG Task |
+| [**createRagTask**](RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterUid} | Create RAG Task |
 | [**deleteRagTask**](RagApi.md#deleteRagTask) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task |
 | [**getRagTask**](RagApi.md#getRagTask) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task |
 | [**getRagTaskStatus**](RagApi.md#getRagTaskStatus) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status |
-| [**listRagTasks**](RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterId} | List RAG Tasks |
+| [**listRagTasks**](RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterUid} | List RAG Tasks |
 | [**startRagTask**](RagApi.md#startRagTask) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task |
 | [**updateRagTask**](RagApi.md#updateRagTask) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task |
 
@@ -83,7 +83,7 @@ public class Example {
 
 <a id="createRagTask"></a>
 # **createRagTask**
-> Long createRagTask(characterId, ragTaskDTO)
+> Long createRagTask(characterUid, ragTaskDTO)
 
 Create RAG Task
 
@@ -109,10 +109,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     RagApi apiInstance = new RagApi(defaultClient);
-    Long characterId = 56L; // Long | The characterId to be added a RAG task
+    String characterUid = "characterUid_example"; // String | The characterUid to be added a RAG task
     RagTaskDTO ragTaskDTO = new RagTaskDTO(); // RagTaskDTO | The RAG task to be added
     try {
-      Long result = apiInstance.createRagTask(characterId, ragTaskDTO);
+      Long result = apiInstance.createRagTask(characterUid, ragTaskDTO);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling RagApi#createRagTask");
@@ -129,7 +129,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **Long**| The characterId to be added a RAG task | |
+| **characterUid** | **String**| The characterUid to be added a RAG task | |
 | **ragTaskDTO** | [**RagTaskDTO**](RagTaskDTO.md)| The RAG task to be added | |
 
 ### Return type
@@ -353,7 +353,7 @@ public class Example {
 
 <a id="listRagTasks"></a>
 # **listRagTasks**
-> List&lt;RagTaskDetailsDTO&gt; listRagTasks(characterId)
+> List&lt;RagTaskDetailsDTO&gt; listRagTasks(characterUid)
 
 List RAG Tasks
 
@@ -379,9 +379,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     RagApi apiInstance = new RagApi(defaultClient);
-    Long characterId = 56L; // Long | The characterId to be queried
+    String characterUid = "characterUid_example"; // String | The characterUid to be queried
     try {
-      List<RagTaskDetailsDTO> result = apiInstance.listRagTasks(characterId);
+      List<RagTaskDetailsDTO> result = apiInstance.listRagTasks(characterUid);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling RagApi#listRagTasks");
@@ -398,7 +398,7 @@ public class Example {
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **characterId** | **Long**| The characterId to be queried | |
+| **characterUid** | **String**| The characterUid to be queried | |
 
 ### Return type
 

@@ -16,17 +16,15 @@ Get all configuration information of the application.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, AppConfigForAdminApi } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .AppConfigForAdminApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new AppConfigForAdminApi(configuration);
 
-let body:any = {};
+const request = {};
 
-apiInstance.getAppConfigs(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getAppConfigs(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 

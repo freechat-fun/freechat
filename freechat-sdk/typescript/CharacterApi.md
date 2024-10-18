@@ -4,7 +4,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**addCharacterBackend**](CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterId} | Add Character Backend
+[**addCharacterBackend**](CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterUid} | Add Character Backend
 [**batchSearchCharacterDetails**](CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v1/character/batch/details/search | Batch Search Character Details
 [**batchSearchCharacterSummary**](CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
 [**cloneCharacter**](CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character
@@ -13,6 +13,7 @@ Method | HTTP request | Description
 [**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
 [**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
 [**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
+[**deleteCharacterByUid**](CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v1/character/uid/{characterUid} | Delete Character by Uid
 [**deleteCharacterDocument**](CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
 [**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
 [**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
@@ -20,12 +21,12 @@ Method | HTTP request | Description
 [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
 [**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
 [**getCharacterSummary**](CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
-[**getDefaultCharacterBackend**](CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterId} | Get Default Character Backend
+[**getDefaultCharacterBackend**](CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterUid} | Get Default Character Backend
 [**importCharacter**](CharacterApi.md#importCharacter) | **POST** /api/v1/character/import | Import Character Configuration
-[**listCharacterBackendIds**](CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterId} | List Character Backend ids
-[**listCharacterBackends**](CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterId} | List Character Backends
-[**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterId} | List Character Documents
-[**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterId} | List Character Pictures
+[**listCharacterBackendIds**](CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterUid} | List Character Backend ids
+[**listCharacterBackends**](CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterUid} | List Character Backends
+[**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterUid} | List Character Documents
+[**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterUid} | List Character Pictures
 [**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
 [**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
 [**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
@@ -37,9 +38,9 @@ Method | HTTP request | Description
 [**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
 [**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
 [**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-[**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterId} | Upload Character Avatar
-[**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterId} | Upload Character Document
-[**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterId} | Upload Character Picture
+[**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterUid} | Upload Character Avatar
+[**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterUid} | Upload Character Document
+[**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterUid} | Upload Character Picture
 
 
 # **addCharacterBackend**
@@ -51,16 +52,16 @@ Add a backend configuration for a character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiAddCharacterBackendRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiAddCharacterBackendRequest = {
-  // number | The characterId to be added a backend
-  characterId: 1,
-  // CharacterBackendDTO | The character backend to be added
+const request: CharacterApiAddCharacterBackendRequest = {
+    // The characterUid to be added a backend
+  characterUid: "characterUid_example",
+    // The character backend to be added
   characterBackendDTO: {
     isDefault: true,
     chatPromptTaskId: "chatPromptTaskId_example",
@@ -76,9 +77,8 @@ let body:.CharacterApiAddCharacterBackendRequest = {
   },
 };
 
-apiInstance.addCharacterBackend(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.addCharacterBackend(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -87,7 +87,7 @@ apiInstance.addCharacterBackend(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterBackendDTO** | **CharacterBackendDTO**| The character backend to be added |
- **characterId** | [**number**] | The characterId to be added a backend | defaults to undefined
+ **characterUid** | [**string**] | The characterUid to be added a backend | defaults to undefined
 
 
 ### Return type
@@ -120,14 +120,14 @@ Batch call shortcut for /api/v1/character/details/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiBatchSearchCharacterDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiBatchSearchCharacterDetailsRequest = {
-  // Array<CharacterQueryDTO> | Query conditions
+const request: CharacterApiBatchSearchCharacterDetailsRequest = {
+    // Query conditions
   characterQueryDTO: [
     {
       where: {
@@ -151,9 +151,8 @@ let body:.CharacterApiBatchSearchCharacterDetailsRequest = {
   ],
 };
 
-apiInstance.batchSearchCharacterDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchCharacterDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -194,14 +193,14 @@ Batch call shortcut for /api/v1/character/search.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiBatchSearchCharacterSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiBatchSearchCharacterSummaryRequest = {
-  // Array<CharacterQueryDTO> | Query conditions
+const request: CharacterApiBatchSearchCharacterSummaryRequest = {
+    // Query conditions
   characterQueryDTO: [
     {
       where: {
@@ -225,9 +224,8 @@ let body:.CharacterApiBatchSearchCharacterSummaryRequest = {
   ],
 };
 
-apiInstance.batchSearchCharacterSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.batchSearchCharacterSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -268,20 +266,19 @@ Enter the characterId, generate a new record, the content is basically the same 
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiCloneCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiCloneCharacterRequest = {
-  // number | The referenced characterId
+const request: CharacterApiCloneCharacterRequest = {
+    // The referenced characterId
   characterId: 1,
 };
 
-apiInstance.cloneCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.cloneCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -322,14 +319,14 @@ Calculate the number of characters according to the specified query conditions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiCountCharactersRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiCountCharactersRequest = {
-  // CharacterQueryDTO | Query conditions
+const request: CharacterApiCountCharactersRequest = {
+    // Query conditions
   characterQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -351,9 +348,8 @@ let body:.CharacterApiCountCharactersRequest = {
   },
 };
 
-apiInstance.countCharacters(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.countCharacters(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -394,14 +390,14 @@ Calculate the number of characters according to the specified query conditions.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiCountPublicCharactersRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiCountPublicCharactersRequest = {
-  // CharacterQueryDTO | Query conditions
+const request: CharacterApiCountPublicCharactersRequest = {
+    // Query conditions
   characterQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -423,9 +419,8 @@ let body:.CharacterApiCountPublicCharactersRequest = {
   },
 };
 
-apiInstance.countPublicCharacters(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.countPublicCharacters(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -466,14 +461,14 @@ Create a character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiCreateCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiCreateCharacterRequest = {
-  // CharacterCreateDTO | Information of the character to be created
+const request: CharacterApiCreateCharacterRequest = {
+    // Information of the character to be created
   characterCreateDTO: {
     parentUid: "parentUid_example",
     visibility: "visibility_example",
@@ -497,9 +492,8 @@ let body:.CharacterApiCreateCharacterRequest = {
   },
 };
 
-apiInstance.createCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -540,20 +534,19 @@ Delete character. Returns success or failure.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiDeleteCharacterRequest = {
-  // number | The characterId to be deleted
+const request: CharacterApiDeleteCharacterRequest = {
+    // The characterId to be deleted
   characterId: 1,
 };
 
-apiInstance.deleteCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -594,20 +587,19 @@ Delete character by name. return the list of successfully deleted characterIds.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterByNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiDeleteCharacterByNameRequest = {
-  // string | The character name to be deleted
+const request: CharacterApiDeleteCharacterByNameRequest = {
+    // The character name to be deleted
   name: "name_example",
 };
 
-apiInstance.deleteCharacterByName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteCharacterByName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -616,6 +608,59 @@ apiInstance.deleteCharacterByName(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **name** | [**string**] | The character name to be deleted | defaults to undefined
+
+
+### Return type
+
+**Array<number>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **deleteCharacterByUid**
+> Array<number> deleteCharacterByUid()
+
+Delete character by uid. return the list of successfully deleted characterIds.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterByUidRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiDeleteCharacterByUidRequest = {
+    // The character uid to be deleted
+  characterUid: "characterUid_example",
+};
+
+const data = await apiInstance.deleteCharacterByUid(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterUid** | [**string**] | The character uid to be deleted | defaults to undefined
 
 
 ### Return type
@@ -648,20 +693,19 @@ Delete a document of the character by key.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterDocumentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiDeleteCharacterDocumentRequest = {
-  // string | Document key
+const request: CharacterApiDeleteCharacterDocumentRequest = {
+    // Document key
   key: "key_example",
 };
 
-apiInstance.deleteCharacterDocument(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteCharacterDocument(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -702,20 +746,19 @@ Delete a picture of the character by key.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterPictureRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiDeleteCharacterPictureRequest = {
-  // string | Image key
+const request: CharacterApiDeleteCharacterPictureRequest = {
+    // Image key
   key: "key_example",
 };
 
-apiInstance.deleteCharacterPicture(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteCharacterPicture(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -756,20 +799,19 @@ Check if the character name already exists.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiExistsCharacterNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiExistsCharacterNameRequest = {
-  // string | Name
+const request: CharacterApiExistsCharacterNameRequest = {
+    // Name
   name: "name_example",
 };
 
-apiInstance.existsCharacterName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.existsCharacterName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -810,20 +852,19 @@ Export character configuration in tar.gz format, including settings, documents a
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiExportCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiExportCharacterRequest = {
-  // number | Character identifier
+const request: CharacterApiExportCharacterRequest = {
+    // Character identifier
   characterId: 1,
 };
 
-apiInstance.exportCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.exportCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -864,20 +905,19 @@ Get character detailed information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiGetCharacterDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiGetCharacterDetailsRequest = {
-  // number | CharacterId to be obtained
+const request: CharacterApiGetCharacterDetailsRequest = {
+    // CharacterId to be obtained
   characterId: 1,
 };
 
-apiInstance.getCharacterDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getCharacterDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -918,20 +958,19 @@ Get latest characterId by character name.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiGetCharacterLatestIdByNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiGetCharacterLatestIdByNameRequest = {
-  // string | Character name
+const request: CharacterApiGetCharacterLatestIdByNameRequest = {
+    // Character name
   name: "name_example",
 };
 
-apiInstance.getCharacterLatestIdByName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getCharacterLatestIdByName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -972,20 +1011,19 @@ Get character summary information.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiGetCharacterSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiGetCharacterSummaryRequest = {
-  // number | CharacterId to be obtained
+const request: CharacterApiGetCharacterSummaryRequest = {
+    // CharacterId to be obtained
   characterId: 1,
 };
 
-apiInstance.getCharacterSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getCharacterSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1026,20 +1064,19 @@ Get the default backend configuration.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiGetDefaultCharacterBackendRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiGetDefaultCharacterBackendRequest = {
-  // number | The characterId to be queried
-  characterId: 1,
+const request: CharacterApiGetDefaultCharacterBackendRequest = {
+    // The characterUid to be queried
+  characterUid: "characterUid_example",
 };
 
-apiInstance.getDefaultCharacterBackend(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getDefaultCharacterBackend(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1047,7 +1084,7 @@ apiInstance.getDefaultCharacterBackend(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | The characterId to be queried | defaults to undefined
+ **characterUid** | [**string**] | The characterUid to be queried | defaults to undefined
 
 
 ### Return type
@@ -1080,20 +1117,19 @@ Import character configuration from a tar.gz file.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiImportCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiImportCharacterRequest = {
-  // HttpFile | Character avatar
+const request: CharacterApiImportCharacterRequest = {
+    // Character avatar
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
 
-apiInstance.importCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.importCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1134,20 +1170,19 @@ List character backend identifiers.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterBackendIdsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiListCharacterBackendIdsRequest = {
-  // number | The characterId to be queried
-  characterId: 1,
+const request: CharacterApiListCharacterBackendIdsRequest = {
+    // The characterUid to be queried
+  characterUid: "characterUid_example",
 };
 
-apiInstance.listCharacterBackendIds(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharacterBackendIds(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1155,7 +1190,7 @@ apiInstance.listCharacterBackendIds(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | The characterId to be queried | defaults to undefined
+ **characterUid** | [**string**] | The characterUid to be queried | defaults to undefined
 
 
 ### Return type
@@ -1188,20 +1223,19 @@ List character backends.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterBackendsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiListCharacterBackendsRequest = {
-  // number | The characterId to be queried
-  characterId: 1,
+const request: CharacterApiListCharacterBackendsRequest = {
+    // The characterUid to be queried
+  characterUid: "characterUid_example",
 };
 
-apiInstance.listCharacterBackends(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharacterBackends(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1209,7 +1243,7 @@ apiInstance.listCharacterBackends(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | The characterId to be queried | defaults to undefined
+ **characterUid** | [**string**] | The characterUid to be queried | defaults to undefined
 
 
 ### Return type
@@ -1242,20 +1276,19 @@ List documents of the character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterDocumentsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiListCharacterDocumentsRequest = {
-  // number | Character identifier
-  characterId: 1,
+const request: CharacterApiListCharacterDocumentsRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
 };
 
-apiInstance.listCharacterDocuments(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharacterDocuments(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1263,7 +1296,7 @@ apiInstance.listCharacterDocuments(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | Character identifier | defaults to undefined
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
 
 
 ### Return type
@@ -1296,20 +1329,19 @@ List pictures of the character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterPicturesRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiListCharacterPicturesRequest = {
-  // number | Character identifier
-  characterId: 1,
+const request: CharacterApiListCharacterPicturesRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
 };
 
-apiInstance.listCharacterPictures(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharacterPictures(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1317,7 +1349,7 @@ apiInstance.listCharacterPictures(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | Character identifier | defaults to undefined
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
 
 
 ### Return type
@@ -1350,20 +1382,19 @@ List the versions and corresponding characterIds by character name.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterVersionsByNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiListCharacterVersionsByNameRequest = {
-  // string | Character name
+const request: CharacterApiListCharacterVersionsByNameRequest = {
+    // Character name
   name: "name_example",
 };
 
-apiInstance.listCharacterVersionsByName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listCharacterVersionsByName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1404,20 +1435,19 @@ Create a new character name starting with a desired name.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiNewCharacterNameRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiNewCharacterNameRequest = {
-  // string | Desired name
+const request: CharacterApiNewCharacterNameRequest = {
+    // Desired name
   desired: "desired_example",
 };
 
-apiInstance.newCharacterName(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.newCharacterName(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1458,20 +1488,19 @@ Publish character, draft content becomes formal content, version number increase
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiPublishCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiPublishCharacterRequest = {
-  // number | The characterId to be published
+const request: CharacterApiPublishCharacterRequest = {
+    // The characterId to be published
   characterId: 1,
 };
 
-apiInstance.publishCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.publishCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1512,22 +1541,21 @@ Publish character, draft content becomes formal content, version number increase
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiPublishCharacter1Request } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiPublishCharacter1Request = {
-  // number | The characterId to be published
+const request: CharacterApiPublishCharacter1Request = {
+    // The characterId to be published
   characterId: 1,
-  // string | Visibility: public | private | ...
+    // Visibility: public | private | ...
   visibility: "visibility_example",
 };
 
-apiInstance.publishCharacter1(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.publishCharacter1(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1569,20 +1597,19 @@ Remove a backend configuration.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiRemoveCharacterBackendRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiRemoveCharacterBackendRequest = {
-  // string | The characterBackendId to be removed
+const request: CharacterApiRemoveCharacterBackendRequest = {
+    // The characterBackendId to be removed
   characterBackendId: "characterBackendId_example",
 };
 
-apiInstance.removeCharacterBackend(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.removeCharacterBackend(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1623,14 +1650,14 @@ Same as /api/v1/character/search, but returns detailed information of the charac
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiSearchCharacterDetailsRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiSearchCharacterDetailsRequest = {
-  // CharacterQueryDTO | Query conditions
+const request: CharacterApiSearchCharacterDetailsRequest = {
+    // Query conditions
   characterQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -1652,9 +1679,8 @@ let body:.CharacterApiSearchCharacterDetailsRequest = {
   },
 };
 
-apiInstance.searchCharacterDetails(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchCharacterDetails(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1695,14 +1721,14 @@ Search characters: - Specifiable query fields, and relationship:   - Scope: priv
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiSearchCharacterSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiSearchCharacterSummaryRequest = {
-  // CharacterQueryDTO | Query conditions
+const request: CharacterApiSearchCharacterSummaryRequest = {
+    // Query conditions
   characterQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -1724,9 +1750,8 @@ let body:.CharacterApiSearchCharacterSummaryRequest = {
   },
 };
 
-apiInstance.searchCharacterSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchCharacterSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1767,14 +1792,14 @@ Search characters: - Specifiable query fields, and relationship:   - Scope: publ
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiSearchPublicCharacterSummaryRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiSearchPublicCharacterSummaryRequest = {
-  // CharacterQueryDTO | Query conditions
+const request: CharacterApiSearchPublicCharacterSummaryRequest = {
+    // Query conditions
   characterQueryDTO: {
     where: {
       visibility: "visibility_example",
@@ -1796,9 +1821,8 @@ let body:.CharacterApiSearchPublicCharacterSummaryRequest = {
   },
 };
 
-apiInstance.searchPublicCharacterSummary(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.searchPublicCharacterSummary(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1839,20 +1863,19 @@ Set the default backend configuration.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiSetDefaultCharacterBackendRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiSetDefaultCharacterBackendRequest = {
-  // string | The characterBackendId to be set to default
+const request: CharacterApiSetDefaultCharacterBackendRequest = {
+    // The characterBackendId to be set to default
   characterBackendId: "characterBackendId_example",
 };
 
-apiInstance.setDefaultCharacterBackend(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.setDefaultCharacterBackend(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1893,16 +1916,16 @@ Update character, refer to /api/v1/character/create, required field: characterId
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUpdateCharacterRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiUpdateCharacterRequest = {
-  // number | The characterId to be updated
+const request: CharacterApiUpdateCharacterRequest = {
+    // The characterId to be updated
   characterId: 1,
-  // CharacterUpdateDTO | The character information to be updated
+    // The character information to be updated
   characterUpdateDTO: {
     parentUid: "parentUid_example",
     visibility: "visibility_example",
@@ -1926,9 +1949,8 @@ let body:.CharacterApiUpdateCharacterRequest = {
   },
 };
 
-apiInstance.updateCharacter(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateCharacter(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -1970,16 +1992,16 @@ Update a backend configuration.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUpdateCharacterBackendRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiUpdateCharacterBackendRequest = {
-  // string | The characterBackendId to be updated
+const request: CharacterApiUpdateCharacterBackendRequest = {
+    // The characterBackendId to be updated
   characterBackendId: "characterBackendId_example",
-  // CharacterBackendDTO | The character backend configuration to be updated
+    // The character backend configuration to be updated
   characterBackendDTO: {
     isDefault: true,
     chatPromptTaskId: "chatPromptTaskId_example",
@@ -1995,9 +2017,8 @@ let body:.CharacterApiUpdateCharacterBackendRequest = {
   },
 };
 
-apiInstance.updateCharacterBackend(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateCharacterBackend(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -2039,22 +2060,21 @@ Upload an avatar of the character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUploadCharacterAvatarRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiUploadCharacterAvatarRequest = {
-  // number | Character identifier
-  characterId: 1,
-  // HttpFile | Character avatar
+const request: CharacterApiUploadCharacterAvatarRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
+    // Character avatar
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
 
-apiInstance.uploadCharacterAvatar(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.uploadCharacterAvatar(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -2062,7 +2082,7 @@ apiInstance.uploadCharacterAvatar(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | Character identifier | defaults to undefined
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
  **file** | [**HttpFile**] | Character avatar | defaults to undefined
 
 
@@ -2096,22 +2116,21 @@ Upload a document of the character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUploadCharacterDocumentRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiUploadCharacterDocumentRequest = {
-  // number | Character identifier
-  characterId: 1,
-  // HttpFile | Character document
+const request: CharacterApiUploadCharacterDocumentRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
+    // Character document
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
 
-apiInstance.uploadCharacterDocument(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.uploadCharacterDocument(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -2119,7 +2138,7 @@ apiInstance.uploadCharacterDocument(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | Character identifier | defaults to undefined
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
  **file** | [**HttpFile**] | Character document | defaults to undefined
 
 
@@ -2153,22 +2172,21 @@ Upload a picture of the character.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUploadCharacterPictureRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .CharacterApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
 
-let body:.CharacterApiUploadCharacterPictureRequest = {
-  // number | Character identifier
-  characterId: 1,
-  // HttpFile | Character picture
+const request: CharacterApiUploadCharacterPictureRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
+    // Character picture
   file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
 };
 
-apiInstance.uploadCharacterPicture(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.uploadCharacterPicture(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -2176,7 +2194,7 @@ apiInstance.uploadCharacterPicture(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | Character identifier | defaults to undefined
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
  **file** | [**HttpFile**] | Character picture | defaults to undefined
 
 

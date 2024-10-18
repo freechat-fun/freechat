@@ -5,11 +5,11 @@ All URIs are relative to *http://127.0.0.1:8080*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**cancelRagTask**](RagApi.md#cancelRagTask) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task
-[**createRagTask**](RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterId} | Create RAG Task
+[**createRagTask**](RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterUid} | Create RAG Task
 [**deleteRagTask**](RagApi.md#deleteRagTask) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task
 [**getRagTask**](RagApi.md#getRagTask) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task
 [**getRagTaskStatus**](RagApi.md#getRagTaskStatus) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status
-[**listRagTasks**](RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterId} | List RAG Tasks
+[**listRagTasks**](RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterUid} | List RAG Tasks
 [**startRagTask**](RagApi.md#startRagTask) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task
 [**updateRagTask**](RagApi.md#updateRagTask) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task
 
@@ -23,20 +23,19 @@ Cancel a RAG task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiCancelRagTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiCancelRagTaskRequest = {
-  // number | The taskId to be canceled
+const request: RagApiCancelRagTaskRequest = {
+    // The taskId to be canceled
   taskId: 1,
 };
 
-apiInstance.cancelRagTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.cancelRagTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -77,16 +76,16 @@ Create a RAG task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiCreateRagTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiCreateRagTaskRequest = {
-  // number | The characterId to be added a RAG task
-  characterId: 1,
-  // RagTaskDTO | The RAG task to be added
+const request: RagApiCreateRagTaskRequest = {
+    // The characterUid to be added a RAG task
+  characterUid: "characterUid_example",
+    // The RAG task to be added
   ragTaskDTO: {
     sourceType: "sourceType_example",
     source: "source_example",
@@ -95,9 +94,8 @@ let body:.RagApiCreateRagTaskRequest = {
   },
 };
 
-apiInstance.createRagTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.createRagTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -106,7 +104,7 @@ apiInstance.createRagTask(body).then((data:any) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ragTaskDTO** | **RagTaskDTO**| The RAG task to be added |
- **characterId** | [**number**] | The characterId to be added a RAG task | defaults to undefined
+ **characterUid** | [**string**] | The characterUid to be added a RAG task | defaults to undefined
 
 
 ### Return type
@@ -139,20 +137,19 @@ Delete a RAG task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiDeleteRagTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiDeleteRagTaskRequest = {
-  // number | The taskId to be deleted
+const request: RagApiDeleteRagTaskRequest = {
+    // The taskId to be deleted
   taskId: 1,
 };
 
-apiInstance.deleteRagTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.deleteRagTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -193,20 +190,19 @@ Get the RAG task details.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiGetRagTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiGetRagTaskRequest = {
-  // number | The taskId to be queried
+const request: RagApiGetRagTaskRequest = {
+    // The taskId to be queried
   taskId: 1,
 };
 
-apiInstance.getRagTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getRagTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -247,20 +243,19 @@ Get the RAG task execution status: pending | running | succeeded | failed | canc
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiGetRagTaskStatusRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiGetRagTaskStatusRequest = {
-  // number | The taskId to be queried status
+const request: RagApiGetRagTaskStatusRequest = {
+    // The taskId to be queried status
   taskId: 1,
 };
 
-apiInstance.getRagTaskStatus(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.getRagTaskStatus(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -301,20 +296,19 @@ List the RAG tasks by characterId.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiListRagTasksRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiListRagTasksRequest = {
-  // number | The characterId to be queried
-  characterId: 1,
+const request: RagApiListRagTasksRequest = {
+    // The characterUid to be queried
+  characterUid: "characterUid_example",
 };
 
-apiInstance.listRagTasks(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.listRagTasks(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -322,7 +316,7 @@ apiInstance.listRagTasks(body).then((data:any) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | The characterId to be queried | defaults to undefined
+ **characterUid** | [**string**] | The characterUid to be queried | defaults to undefined
 
 
 ### Return type
@@ -355,20 +349,19 @@ Start a RAG task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiStartRagTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiStartRagTaskRequest = {
-  // number | The taskId to be started
+const request: RagApiStartRagTaskRequest = {
+    // The taskId to be started
   taskId: 1,
 };
 
-apiInstance.startRagTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.startRagTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
@@ -409,16 +402,16 @@ Update a RAG task.
 
 
 ```typescript
-import {  } from '';
-import * as fs from 'fs';
+import { createConfiguration, RagApi } from '';
+import type { RagApiUpdateRagTaskRequest } from '';
 
-const configuration = .createConfiguration();
-const apiInstance = new .RagApi(configuration);
+const configuration = createConfiguration();
+const apiInstance = new RagApi(configuration);
 
-let body:.RagApiUpdateRagTaskRequest = {
-  // number | The taskId to be updated
+const request: RagApiUpdateRagTaskRequest = {
+    // The taskId to be updated
   taskId: 1,
-  // RagTaskDTO | The prompt task info to be updated
+    // The prompt task info to be updated
   ragTaskDTO: {
     sourceType: "sourceType_example",
     source: "source_example",
@@ -427,9 +420,8 @@ let body:.RagApiUpdateRagTaskRequest = {
   },
 };
 
-apiInstance.updateRagTask(body).then((data:any) => {
-  console.log('API called successfully. Returned data: ' + data);
-}).catch((error:any) => console.error(error));
+const data = await apiInstance.updateRagTask(request);
+console.log('API called successfully. Returned data:', data);
 ```
 
 
