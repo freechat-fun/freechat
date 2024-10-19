@@ -4,19 +4,19 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**batchSearchPluginDetails**](PluginApi.md#batchSearchPluginDetails) | **POST** /api/v1/plugin/batch/details/search | Batch Search Plugin Details |
-| [**batchSearchPluginSummary**](PluginApi.md#batchSearchPluginSummary) | **POST** /api/v1/plugin/batch/search | Batch Search Plugin Summaries |
-| [**countPlugins**](PluginApi.md#countPlugins) | **POST** /api/v1/plugin/count | Calculate Number of Plugins |
-| [**createPlugin**](PluginApi.md#createPlugin) | **POST** /api/v1/plugin | Create Plugin |
-| [**createPlugins**](PluginApi.md#createPlugins) | **POST** /api/v1/plugin/batch | Batch Create Plugins |
-| [**deletePlugin**](PluginApi.md#deletePlugin) | **DELETE** /api/v1/plugin/{pluginId} | Delete Plugin |
-| [**deletePlugins**](PluginApi.md#deletePlugins) | **DELETE** /api/v1/plugin/batch | Batch Delete Plugins |
-| [**getPluginDetails**](PluginApi.md#getPluginDetails) | **GET** /api/v1/plugin/details/{pluginId} | Get Plugin Details |
-| [**getPluginSummary**](PluginApi.md#getPluginSummary) | **GET** /api/v1/plugin/summary/{pluginId} | Get Plugin Summary |
-| [**refreshPluginInfo**](PluginApi.md#refreshPluginInfo) | **PUT** /api/v1/plugin/refresh/{pluginId} | Refresh Plugin Information |
-| [**searchPluginDetails**](PluginApi.md#searchPluginDetails) | **POST** /api/v1/plugin/details/search | Search Plugin Details |
-| [**searchPluginSummary**](PluginApi.md#searchPluginSummary) | **POST** /api/v1/plugin/search | Search Plugin Summary |
-| [**updatePlugin**](PluginApi.md#updatePlugin) | **PUT** /api/v1/plugin/{pluginId} | Update Plugin |
+| [**batchSearchPluginDetails**](PluginApi.md#batchSearchPluginDetails) | **POST** /api/v2/plugin/batch/details/search | Batch Search Plugin Details |
+| [**batchSearchPluginSummary**](PluginApi.md#batchSearchPluginSummary) | **POST** /api/v2/plugin/batch/search | Batch Search Plugin Summaries |
+| [**countPlugins**](PluginApi.md#countPlugins) | **POST** /api/v2/plugin/count | Calculate Number of Plugins |
+| [**createPlugin**](PluginApi.md#createPlugin) | **POST** /api/v2/plugin | Create Plugin |
+| [**createPlugins**](PluginApi.md#createPlugins) | **POST** /api/v2/plugin/batch | Batch Create Plugins |
+| [**deletePlugin**](PluginApi.md#deletePlugin) | **DELETE** /api/v2/plugin/{pluginId} | Delete Plugin |
+| [**deletePlugins**](PluginApi.md#deletePlugins) | **DELETE** /api/v2/plugin/batch | Batch Delete Plugins |
+| [**getPluginDetails**](PluginApi.md#getPluginDetails) | **GET** /api/v2/plugin/details/{pluginId} | Get Plugin Details |
+| [**getPluginSummary**](PluginApi.md#getPluginSummary) | **GET** /api/v2/plugin/summary/{pluginId} | Get Plugin Summary |
+| [**refreshPluginInfo**](PluginApi.md#refreshPluginInfo) | **PUT** /api/v2/plugin/refresh/{pluginId} | Refresh Plugin Information |
+| [**searchPluginDetails**](PluginApi.md#searchPluginDetails) | **POST** /api/v2/plugin/details/search | Search Plugin Details |
+| [**searchPluginSummary**](PluginApi.md#searchPluginSummary) | **POST** /api/v2/plugin/search | Search Plugin Summary |
+| [**updatePlugin**](PluginApi.md#updatePlugin) | **PUT** /api/v2/plugin/{pluginId} | Update Plugin |
 
 
 <a id="batchSearchPluginDetails"></a>
@@ -25,7 +25,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Batch Search Plugin Details
 
-Batch call shortcut for /api/v1/plugin/details/search.
+Batch call shortcut for /api/v2/plugin/details/search.
 
 ### Example
 ```java
@@ -92,7 +92,7 @@ public class Example {
 
 Batch Search Plugin Summaries
 
-Batch call shortcut for /api/v1/plugin/search.
+Batch call shortcut for /api/v2/plugin/search.
 
 ### Example
 ```java
@@ -694,7 +694,7 @@ null (empty response body)
 
 Search Plugin Details
 
-Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+Same as /api/v2/plugin/search, but returns detailed information of the plugin.
 
 ### Example
 ```java
@@ -828,7 +828,7 @@ public class Example {
 
 Update Plugin
 
-Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
 
 ### Example
 ```java

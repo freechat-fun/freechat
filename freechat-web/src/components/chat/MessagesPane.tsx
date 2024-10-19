@@ -101,7 +101,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
         })
         .catch(handleError);
     } else {
-      context?.chatId && chatApi?.listMessages(context.chatId)
+      context?.chatId && chatApi?.listMessages2(context.chatId)
         .then(resp => {
           if (!resp) {
             return;
@@ -304,7 +304,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
                   record={messageToSend}
                   variant="received"
                   debugMode={debugMode}
-                  apiPath={`/api/v1/chat/send/stream/${context?.chatId}`}
+                  apiPath={`/api/v2/chat/send/stream/${context?.chatId}`}
                   onFinish={handleReceiveFinish}
                   onError={handleReceiveError}
                 />

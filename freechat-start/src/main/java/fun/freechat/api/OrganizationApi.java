@@ -28,7 +28,7 @@ import java.util.Set;
 
 @Controller
 @Tag(name = "Organization")
-@RequestMapping("/api/v1/org")
+@RequestMapping("/api/v2/org")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")
@@ -85,7 +85,7 @@ public class OrganizationApi {
     @Operation(
             operationId = "getOwnersDot",
             summary = "Get DOT of Superior Relationship",
-            description = "Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)"
+            description = "Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)"
     )
     @GetMapping("/owners/dot")
     public String getOwnersDot(
@@ -113,7 +113,7 @@ public class OrganizationApi {
     @Operation(
             operationId = "getSubordinatesDot",
             summary = "Get DOT of Subordinate Relationship",
-            description = "Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)"
+            description = "Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)"
     )
     @GetMapping("/subordinates/dot")
     public String getSubordinatesDot(

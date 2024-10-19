@@ -20,12 +20,20 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
+     * @param duration Token validity duration (seconds)
      */
-    public async createToken(_options?: Configuration): Promise<RequestContext> {
+    public async createToken(duration: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
+        // verify required parameter 'duration' is not null or undefined
+        if (duration === null || duration === undefined) {
+            throw new RequiredError("AccountApi", "createToken", "duration");
+        }
+
+
         // Path Params
-        const localVarPath = '/api/v1/account/token';
+        const localVarPath = '/api/v2/account/token/{duration}'
+            .replace('{' + 'duration' + '}', encodeURIComponent(String(duration)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -50,20 +58,12 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
-     * @param duration Token validity duration (seconds)
      */
-    public async createToken1(duration: number, _options?: Configuration): Promise<RequestContext> {
+    public async createToken1(_options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'duration' is not null or undefined
-        if (duration === null || duration === undefined) {
-            throw new RequiredError("AccountApi", "createToken1", "duration");
-        }
-
-
         // Path Params
-        const localVarPath = '/api/v1/account/token/{duration}'
-            .replace('{' + 'duration' + '}', encodeURIComponent(String(duration)));
+        const localVarPath = '/api/v2/account/token';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -100,7 +100,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/token/{token}'
+        const localVarPath = '/api/v2/account/token/{token}'
             .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
 
         // Make Request Context
@@ -138,7 +138,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/token/id/{id}'
+        const localVarPath = '/api/v2/account/token/id/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
 
         // Make Request Context
@@ -176,7 +176,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/token/{token}'
+        const localVarPath = '/api/v2/account/token/{token}'
             .replace('{' + 'token' + '}', encodeURIComponent(String(token)));
 
         // Make Request Context
@@ -214,7 +214,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/token/id/{id}'
+        const localVarPath = '/api/v2/account/token/id/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
 
         // Make Request Context
@@ -252,38 +252,8 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/token/id/{id}'
+        const localVarPath = '/api/v2/account/token/id/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
-
-        // Make Request Context
-        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
-        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
-
-
-        let authMethod: SecurityAuthentication | undefined;
-        // Apply auth methods
-        authMethod = _config.authMethods["bearerAuth"]
-        if (authMethod?.applySecurityAuthentication) {
-            await authMethod?.applySecurityAuthentication(requestContext);
-        }
-        
-        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
-        if (defaultAuth?.applySecurityAuthentication) {
-            await defaultAuth?.applySecurityAuthentication(requestContext);
-        }
-
-        return requestContext;
-    }
-
-    /**
-     * Return user basic information, including: username, nickname, avatar link.
-     * Get User Basic Information
-     */
-    public async getUserBasic(_options?: Configuration): Promise<RequestContext> {
-        let _config = _options || this.configuration;
-
-        // Path Params
-        const localVarPath = '/api/v1/account/basic';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -310,18 +280,48 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
      * Get User Basic Information
      * @param username Username
      */
-    public async getUserBasic1(username: string, _options?: Configuration): Promise<RequestContext> {
+    public async getUserBasic(username: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // verify required parameter 'username' is not null or undefined
         if (username === null || username === undefined) {
-            throw new RequiredError("AccountApi", "getUserBasic1", "username");
+            throw new RequiredError("AccountApi", "getUserBasic", "username");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/basic/{username}'
+        const localVarPath = '/api/v2/account/basic/{username}'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
+
+        // Make Request Context
+        const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
+        requestContext.setHeaderParam("Accept", "application/json, */*;q=0.8")
+
+
+        let authMethod: SecurityAuthentication | undefined;
+        // Apply auth methods
+        authMethod = _config.authMethods["bearerAuth"]
+        if (authMethod?.applySecurityAuthentication) {
+            await authMethod?.applySecurityAuthentication(requestContext);
+        }
+        
+        const defaultAuth: SecurityAuthentication | undefined = _options?.authMethods?.default || this.configuration?.authMethods?.default
+        if (defaultAuth?.applySecurityAuthentication) {
+            await defaultAuth?.applySecurityAuthentication(requestContext);
+        }
+
+        return requestContext;
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     */
+    public async getUserBasic1(_options?: Configuration): Promise<RequestContext> {
+        let _config = _options || this.configuration;
+
+        // Path Params
+        const localVarPath = '/api/v2/account/basic';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -351,7 +351,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
         let _config = _options || this.configuration;
 
         // Path Params
-        const localVarPath = '/api/v1/account/details';
+        const localVarPath = '/api/v2/account/details';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -381,7 +381,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
         let _config = _options || this.configuration;
 
         // Path Params
-        const localVarPath = '/api/v1/account/tokens';
+        const localVarPath = '/api/v2/account/tokens';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -418,7 +418,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/details';
+        const localVarPath = '/api/v2/account/details';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.PUT);
@@ -466,7 +466,7 @@ export class AccountApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/account/picture';
+        const localVarPath = '/api/v2/account/picture';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);

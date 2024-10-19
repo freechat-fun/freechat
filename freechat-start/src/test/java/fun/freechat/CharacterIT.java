@@ -53,7 +53,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
     @Test
     public void testCharacterPictures() {
-        String url1 = testClient.post().uri("/api/v1/character/picture/" + characterUid)
+        String url1 = testClient.post().uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -66,7 +66,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url1));
 
-        String url2 = testClient.post().uri("/api/v1/character/picture/" + characterUid)
+        String url2 = testClient.post().uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -79,7 +79,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url2));
 
-        testClient.post().uri("/api/v1/character/picture/" + characterUid)
+        testClient.post().uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -87,7 +87,7 @@ public class CharacterIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        List<String> urls = testClient.get().uri("/api/v1/character/pictures/" + characterUid)
+        List<String> urls = testClient.get().uri("/api/v2/character/pictures/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -98,7 +98,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertThat(urls).hasSize(2).contains(url1, url2);
 
-        testClient.get().uri("/api/v1/character/pictures/" + characterUid)
+        testClient.get().uri("/api/v2/character/pictures/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -107,13 +107,13 @@ public class CharacterIT extends AbstractIntegrationTest {
         String key1 = getKeyFromUrl(url1);
         String key2 = getKeyFromUrl(url2);
 
-        testClient.delete().uri("/api/v1/character/picture/" + key1)
+        testClient.delete().uri("/api/v2/character/picture/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isForbidden();
 
-        Boolean success = testClient.delete().uri("/api/v1/character/picture/" + key1)
+        Boolean success = testClient.delete().uri("/api/v2/character/picture/" + key1)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -124,7 +124,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(BooleanUtils.isTrue(success));
 
-        success = testClient.delete().uri("/api/v1/character/picture/" + key2)
+        success = testClient.delete().uri("/api/v2/character/picture/" + key2)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -138,7 +138,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
     @Test
     public void testCharacterDocuments() {
-        String url1 = testClient.post().uri("/api/v1/character/document/" + characterUid)
+        String url1 = testClient.post().uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -151,7 +151,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url1));
 
-        String url2 = testClient.post().uri("/api/v1/character/document/" + characterUid)
+        String url2 = testClient.post().uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -164,7 +164,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(StringUtils.isNotBlank(url2));
 
-        testClient.post().uri("/api/v1/character/document/" + characterUid)
+        testClient.post().uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -172,7 +172,7 @@ public class CharacterIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        List<String> urls = testClient.get().uri("/api/v1/character/documents/" + characterUid)
+        List<String> urls = testClient.get().uri("/api/v2/character/documents/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -183,7 +183,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertThat(urls).hasSize(2).contains(url1, url2);
 
-        testClient.get().uri("/api/v1/character/documents/" + characterUid)
+        testClient.get().uri("/api/v2/character/documents/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -192,13 +192,13 @@ public class CharacterIT extends AbstractIntegrationTest {
         String key1 = getKeyFromUrl(url1);
         String key2 = getKeyFromUrl(url2);
 
-        testClient.delete().uri("/api/v1/character/document/" + key1)
+        testClient.delete().uri("/api/v2/character/document/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isForbidden();
 
-        Boolean success = testClient.delete().uri("/api/v1/character/document/" + key1)
+        Boolean success = testClient.delete().uri("/api/v2/character/document/" + key1)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -209,7 +209,7 @@ public class CharacterIT extends AbstractIntegrationTest {
 
         assertTrue(BooleanUtils.isTrue(success));
 
-        success = testClient.delete().uri("/api/v1/character/document/" + key2)
+        success = testClient.delete().uri("/api/v2/character/document/" + key2)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

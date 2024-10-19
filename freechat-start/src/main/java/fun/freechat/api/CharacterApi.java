@@ -65,7 +65,7 @@ import static org.yaml.snakeyaml.nodes.Tag.MAP;
 
 @Controller
 @Tag(name = "Character")
-@RequestMapping("/api/v1/character")
+@RequestMapping("/api/v2/character")
 @ResponseBody
 @Validated
 @Slf4j
@@ -164,7 +164,7 @@ public class CharacterApi {
     @Operation(
             operationId = "searchCharacterDetails",
             summary = "Search Character Details",
-            description = "Same as /api/v1/character/search, but returns detailed information of the character."
+            description = "Same as /api/v2/character/search, but returns detailed information of the character."
     )
     @PostMapping("/details/search")
     public List<CharacterDetailsDTO> detailsSearch(
@@ -200,7 +200,7 @@ public class CharacterApi {
     @Operation(
             operationId = "batchSearchCharacterSummary",
             summary = "Batch Search Character Summaries",
-            description = "Batch call shortcut for /api/v1/character/search."
+            description = "Batch call shortcut for /api/v2/character/search."
     )
     @PostMapping("/batch/search")
     public List<List<CharacterSummaryDTO>> batchSearch(
@@ -259,7 +259,7 @@ public class CharacterApi {
     @Operation(
             operationId = "batchSearchCharacterDetails",
             summary = "Batch Search Character Details",
-            description = "Batch call shortcut for /api/v1/character/details/search."
+            description = "Batch call shortcut for /api/v2/character/details/search."
     )
     @PostMapping("/batch/details/search")
     public List<List<CharacterDetailsDTO>> batchDetailsSearch(
@@ -352,7 +352,7 @@ public class CharacterApi {
     @Operation(
             operationId = "updateCharacter",
             summary = "Update Character",
-            description = "Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure."
+            description = "Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure."
     )
     @PutMapping("/{characterId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'characterUpdateOp')")

@@ -4,8 +4,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**expose**](AppMetaForAdminApi.md#expose) | **GET** /api/v1/admin/app/expose | Expose DTO definitions
-[**get_app_meta**](AppMetaForAdminApi.md#get_app_meta) | **GET** /api/v1/admin/app/meta | Get Application Information
+[**expose**](AppMetaForAdminApi.md#expose) | **GET** /api/v2/admin/app/expose | Expose DTO definitions
+[**get_app_meta**](AppMetaForAdminApi.md#get_app_meta) | **GET** /api/v2/admin/app/meta | Get Application Information
 
 
 # **expose**

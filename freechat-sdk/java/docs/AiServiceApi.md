@@ -4,16 +4,16 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**addAiApiKey**](AiServiceApi.md#addAiApiKey) | **POST** /api/v1/ai/apikey | Add Model Provider Credential |
-| [**deleteAiApiKey**](AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v1/ai/apikey/{id} | Delete Credential of Model Provider |
-| [**disableAiApiKey**](AiServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential |
-| [**enableAiApiKey**](AiServiceApi.md#enableAiApiKey) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential |
-| [**getAiApiKey**](AiServiceApi.md#getAiApiKey) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider |
-| [**getAiModelInfo**](AiServiceApi.md#getAiModelInfo) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information |
-| [**listAiApiKeys**](AiServiceApi.md#listAiApiKeys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider |
-| [**listAiModelInfo**](AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models |
-| [**listAiModelInfo1**](AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models |
-| [**listAiModelInfo2**](AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/public/ai/models | List Models |
+| [**addAiApiKey**](AiServiceApi.md#addAiApiKey) | **POST** /api/v2/ai/apikey | Add Model Provider Credential |
+| [**deleteAiApiKey**](AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v2/ai/apikey/{id} | Delete Credential of Model Provider |
+| [**disableAiApiKey**](AiServiceApi.md#disableAiApiKey) | **PUT** /api/v2/ai/apikey/disable/{id} | Disable Model Provider Credential |
+| [**enableAiApiKey**](AiServiceApi.md#enableAiApiKey) | **PUT** /api/v2/ai/apikey/enable/{id} | Enable Model Provider Credential |
+| [**getAiApiKey**](AiServiceApi.md#getAiApiKey) | **GET** /api/v2/ai/apikey/{id} | Get credential of Model Provider |
+| [**getAiModelInfo**](AiServiceApi.md#getAiModelInfo) | **GET** /api/v2/public/ai/model/{modelId} | Get Model Information |
+| [**listAiApiKeys**](AiServiceApi.md#listAiApiKeys) | **GET** /api/v2/ai/apikeys/{provider} | List Credentials of Model Provider |
+| [**listAiModelInfo**](AiServiceApi.md#listAiModelInfo) | **GET** /api/v2/public/ai/models | List Models |
+| [**listAiModelInfo1**](AiServiceApi.md#listAiModelInfo1) | **GET** /api/v2/public/ai/models/{pageSize} | List Models |
+| [**listAiModelInfo2**](AiServiceApi.md#listAiModelInfo2) | **GET** /api/v2/public/ai/models/{pageSize}/{pageNum} | List Models |
 
 
 <a id="addAiApiKey"></a>
@@ -487,7 +487,7 @@ public class Example {
 
 <a id="listAiModelInfo"></a>
 # **listAiModelInfo**
-> List&lt;AiModelInfoDTO&gt; listAiModelInfo(pageSize, pageNum)
+> List&lt;AiModelInfoDTO&gt; listAiModelInfo()
 
 List Models
 
@@ -513,10 +513,8 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AiServiceApi apiInstance = new AiServiceApi(defaultClient);
-    Long pageSize = 56L; // Long | Maximum quantity
-    Long pageNum = 56L; // Long | Current page number
     try {
-      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo(pageSize, pageNum);
+      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo();
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AiServiceApi#listAiModelInfo");
@@ -530,11 +528,7 @@ public class Example {
 ```
 
 ### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **pageSize** | **Long**| Maximum quantity | |
-| **pageNum** | **Long**| Current page number | |
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -623,7 +617,7 @@ public class Example {
 
 <a id="listAiModelInfo2"></a>
 # **listAiModelInfo2**
-> List&lt;AiModelInfoDTO&gt; listAiModelInfo2()
+> List&lt;AiModelInfoDTO&gt; listAiModelInfo2(pageSize, pageNum)
 
 List Models
 
@@ -649,8 +643,10 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AiServiceApi apiInstance = new AiServiceApi(defaultClient);
+    Long pageSize = 56L; // Long | Maximum quantity
+    Long pageNum = 56L; // Long | Current page number
     try {
-      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo2();
+      List<AiModelInfoDTO> result = apiInstance.listAiModelInfo2(pageSize, pageNum);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AiServiceApi#listAiModelInfo2");
@@ -664,7 +660,11 @@ public class Example {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **pageSize** | **Long**| Maximum quantity | |
+| **pageNum** | **Long**| Current page number | |
 
 ### Return type
 

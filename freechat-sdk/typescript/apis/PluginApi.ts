@@ -20,7 +20,7 @@ import { PluginUpdateDTO } from '../models/PluginUpdateDTO.js';
 export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -34,7 +34,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/batch/details/search';
+        const localVarPath = '/api/v2/plugin/batch/details/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -68,7 +68,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
@@ -82,7 +82,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/batch/search';
+        const localVarPath = '/api/v2/plugin/batch/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -130,7 +130,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/count';
+        const localVarPath = '/api/v2/plugin/count';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -178,7 +178,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin';
+        const localVarPath = '/api/v2/plugin';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -226,7 +226,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/batch';
+        const localVarPath = '/api/v2/plugin/batch';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -274,7 +274,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/{pluginId}'
+        const localVarPath = '/api/v2/plugin/{pluginId}'
             .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
@@ -312,7 +312,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/batch';
+        const localVarPath = '/api/v2/plugin/batch';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -360,7 +360,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/details/{pluginId}'
+        const localVarPath = '/api/v2/plugin/details/{pluginId}'
             .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
@@ -398,7 +398,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/summary/{pluginId}'
+        const localVarPath = '/api/v2/plugin/summary/{pluginId}'
             .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
@@ -436,7 +436,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/refresh/{pluginId}'
+        const localVarPath = '/api/v2/plugin/refresh/{pluginId}'
             .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context
@@ -460,7 +460,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -474,7 +474,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/details/search';
+        const localVarPath = '/api/v2/plugin/details/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -522,7 +522,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/search';
+        const localVarPath = '/api/v2/plugin/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -556,7 +556,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
@@ -577,7 +577,7 @@ export class PluginApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/plugin/{pluginId}'
+        const localVarPath = '/api/v2/plugin/{pluginId}'
             .replace('{' + 'pluginId' + '}', encodeURIComponent(String(pluginId)));
 
         // Make Request Context

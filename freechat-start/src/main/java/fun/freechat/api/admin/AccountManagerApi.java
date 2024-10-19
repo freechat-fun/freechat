@@ -29,7 +29,7 @@ import java.util.Set;
 
 @Controller
 @Tag(name = "Account Manager (for admin)", description = "Manage users, callable only by super administrators.")
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v2/admin")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

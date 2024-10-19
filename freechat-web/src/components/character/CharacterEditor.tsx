@@ -189,7 +189,7 @@ export default function CharacterEditor ({
       return;
     }
     const onUpdated = (currentId: number, visibility: string, nickname: string, about: string | undefined) => {
-      characterApi?.publishCharacter1(currentId, visibility)
+      characterApi?.publishCharacter(currentId, visibility)
         .then(characterId => {
           chatApi?.getDefaultChatId(characterId)
             .then(resp => {

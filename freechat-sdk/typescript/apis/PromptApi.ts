@@ -40,7 +40,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/apply/ref';
+        const localVarPath = '/api/v2/prompt/apply/ref';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -88,7 +88,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/apply/template';
+        const localVarPath = '/api/v2/prompt/apply/template';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -122,7 +122,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -136,7 +136,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/batch/details/search';
+        const localVarPath = '/api/v2/prompt/batch/details/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -170,7 +170,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
@@ -184,7 +184,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/batch/search';
+        const localVarPath = '/api/v2/prompt/batch/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -232,7 +232,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/clone/{promptId}'
+        const localVarPath = '/api/v2/prompt/clone/{promptId}'
             .replace('{' + 'promptId' + '}', encodeURIComponent(String(promptId)));
 
         // Make Request Context
@@ -270,7 +270,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/batch/clone';
+        const localVarPath = '/api/v2/prompt/batch/clone';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -318,7 +318,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/count';
+        const localVarPath = '/api/v2/prompt/count';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -366,7 +366,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/public/prompt/count';
+        const localVarPath = '/api/v2/public/prompt/count';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -414,7 +414,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt';
+        const localVarPath = '/api/v2/prompt';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -462,7 +462,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/batch';
+        const localVarPath = '/api/v2/prompt/batch';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -510,7 +510,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/{promptId}'
+        const localVarPath = '/api/v2/prompt/{promptId}'
             .replace('{' + 'promptId' + '}', encodeURIComponent(String(promptId)));
 
         // Make Request Context
@@ -548,7 +548,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/name/{name}'
+        const localVarPath = '/api/v2/prompt/name/{name}'
             .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
 
         // Make Request Context
@@ -586,7 +586,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/batch';
+        const localVarPath = '/api/v2/prompt/batch';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -634,7 +634,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/exists/name/{name}'
+        const localVarPath = '/api/v2/prompt/exists/name/{name}'
             .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
 
         // Make Request Context
@@ -672,7 +672,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/details/{promptId}'
+        const localVarPath = '/api/v2/prompt/details/{promptId}'
             .replace('{' + 'promptId' + '}', encodeURIComponent(String(promptId)));
 
         // Make Request Context
@@ -710,7 +710,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/summary/{promptId}'
+        const localVarPath = '/api/v2/prompt/summary/{promptId}'
             .replace('{' + 'promptId' + '}', encodeURIComponent(String(promptId)));
 
         // Make Request Context
@@ -748,7 +748,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/versions/{name}'
+        const localVarPath = '/api/v2/prompt/versions/{name}'
             .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
 
         // Make Request Context
@@ -786,7 +786,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/create/name/{desired}'
+        const localVarPath = '/api/v2/prompt/create/name/{desired}'
             .replace('{' + 'desired' + '}', encodeURIComponent(String(desired)));
 
         // Make Request Context
@@ -831,7 +831,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/publish/{promptId}/{visibility}'
+        const localVarPath = '/api/v2/prompt/publish/{promptId}/{visibility}'
             .replace('{' + 'promptId' + '}', encodeURIComponent(String(promptId)))
             .replace('{' + 'visibility' + '}', encodeURIComponent(String(visibility)));
 
@@ -856,7 +856,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -870,7 +870,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/details/search';
+        const localVarPath = '/api/v2/prompt/details/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -918,7 +918,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/search';
+        const localVarPath = '/api/v2/prompt/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -966,7 +966,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/public/prompt/search';
+        const localVarPath = '/api/v2/public/prompt/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1014,7 +1014,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/send';
+        const localVarPath = '/api/v2/prompt/send';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1048,7 +1048,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
@@ -1062,7 +1062,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/send/stream';
+        const localVarPath = '/api/v2/prompt/send/stream';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -1096,7 +1096,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
@@ -1117,7 +1117,7 @@ export class PromptApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/prompt/{promptId}'
+        const localVarPath = '/api/v2/prompt/{promptId}'
             .replace('{' + 'promptId' + '}', encodeURIComponent(String(promptId)));
 
         // Make Request Context

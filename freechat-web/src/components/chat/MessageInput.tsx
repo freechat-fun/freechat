@@ -34,7 +34,7 @@ export default function MessageInput(props: MessageInputProps) {
   const ASSISTANT_UID_KEY_PREFIX = 'MessageInput.assistantUid.';
   const ASSISTANT_NAME_KEY_PREFIX = 'MessageInput.assistantName.';
   const ASSISTANT_AVATAR_KEY_PREFIX = 'MessageInput.assistantAvatar.';
-  const apiPath = '/api/v1/chat/send/stream/assistant';
+  const apiPath = '/api/v2/chat/send/stream/assistant';
 
   useEffect(() => {
     const storedAssistantUid = localStorage.getItem(ASSISTANT_UID_KEY_PREFIX + chatId);

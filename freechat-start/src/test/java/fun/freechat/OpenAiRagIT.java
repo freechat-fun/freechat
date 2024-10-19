@@ -82,7 +82,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
             return;
         }
 
-        url = testClient.post().uri("/api/v1/character/document/" + characterUid)
+        url = testClient.post().uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
@@ -102,7 +102,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
             return;
         }
 
-        Boolean success = testClient.delete().uri("/api/v1/character/document/" + getKeyFromUrl(url))
+        Boolean success = testClient.delete().uri("/api/v2/character/document/" + getKeyFromUrl(url))
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -124,7 +124,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
             fileRequest.setSourceType(SourceType.URL.text());
         }
 
-        taskId = testClient.post().uri("/api/v1/rag/task/" + characterUid)
+        taskId = testClient.post().uri("/api/v2/rag/task/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(fileRequest)
@@ -139,7 +139,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
 
     private void testDeleteTask() {
         Boolean result;
-        result = testClient.delete().uri("/api/v1/rag/task/" + taskId)
+        result = testClient.delete().uri("/api/v2/rag/task/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -152,7 +152,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
     }
 
     private void testQueryTask() {
-        RagTaskDetailsDTO task1 = testClient.get().uri("/api/v1/rag/task/" + taskId)
+        RagTaskDetailsDTO task1 = testClient.get().uri("/api/v2/rag/task/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -165,7 +165,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertNotNull(task1);
 
         List<RagTaskDetailsDTO> tasks;
-        tasks = testClient.get().uri("/api/v1/rag/task/" + taskId)
+        tasks = testClient.get().uri("/api/v2/rag/task/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -181,7 +181,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         Boolean result;
         TaskStatus latestStatus = TaskStatus.PENDING;
 
-        result = testClient.post().uri("/api/v1/rag/task/start/" + taskId)
+        result = testClient.post().uri("/api/v2/rag/task/start/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -193,7 +193,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertTrue(BooleanUtils.isTrue(result));
 
         for (int i = 0; i < 30; ++i) {
-            String status = testClient.get().uri("/api/v1/rag/task/status/" + taskId)
+            String status = testClient.get().uri("/api/v2/rag/task/status/" + taskId)
                     .header(AUTHORIZATION, "Bearer " + userToken)
                     .accept(MediaType.TEXT_PLAIN)
                     .exchange()
@@ -224,7 +224,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         dto.setContents(List.of(content));
         dto.setRole("user");
 
-        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/" + chatId1)
+        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId1)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .bodyValue(dto)

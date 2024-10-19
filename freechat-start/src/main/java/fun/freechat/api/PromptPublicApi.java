@@ -24,7 +24,7 @@ import java.util.List;
 
 @Controller
 @Tag(name = "Prompt")
-@RequestMapping("/api/v1/public/prompt")
+@RequestMapping("/api/v2/public/prompt")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

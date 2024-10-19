@@ -28,7 +28,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const [tags, setTags] = useState(record?.tags ?? []);
 
   useEffect(() => {
-    record.username && accountApi?.getUserBasic1(record.username)
+    record.username && accountApi?.getUserBasic(record.username)
       .then(resp => {
         setUser(resp);
         setUserName(resp?.nickname ?? resp?.username ?? '');

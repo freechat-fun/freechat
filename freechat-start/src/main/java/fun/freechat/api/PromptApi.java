@@ -38,7 +38,7 @@ import java.util.Map;
 
 @Controller
 @Tag(name = "Prompt")
-@RequestMapping("/api/v1/prompt")
+@RequestMapping("/api/v2/prompt")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")
@@ -107,7 +107,7 @@ public class PromptApi {
     @Operation(
             operationId = "searchPromptDetails",
             summary = "Search Prompt Details",
-            description = "Same as /api/v1/prompt/search, but returns detailed information of the prompt."
+            description = "Same as /api/v2/prompt/search, but returns detailed information of the prompt."
     )
     @PostMapping("/details/search")
     public List<PromptDetailsDTO> detailsSearch(
@@ -144,7 +144,7 @@ public class PromptApi {
     @Operation(
             operationId = "batchSearchPromptSummary",
             summary = "Batch Search Prompt Summaries",
-            description = "Batch call shortcut for /api/v1/prompt/search."
+            description = "Batch call shortcut for /api/v2/prompt/search."
     )
     @PostMapping("/batch/search")
     public List<List<PromptSummaryDTO>> batchSearch(
@@ -204,7 +204,7 @@ public class PromptApi {
     @Operation(
             operationId = "batchSearchPromptDetails",
             summary = "Batch Search Prompt Details",
-            description = "Batch call shortcut for /api/v1/prompt/details/search."
+            description = "Batch call shortcut for /api/v2/prompt/details/search."
     )
     @PostMapping("/batch/details/search")
     public List<List<PromptDetailsDTO>> batchDetailsSearch(
@@ -364,7 +364,7 @@ public class PromptApi {
     @Operation(
             operationId = "updatePrompt",
             summary = "Update Prompt",
-            description = "Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure."
+            description = "Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure."
     )
     @PutMapping("/{promptId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'promptUpdateOp')")

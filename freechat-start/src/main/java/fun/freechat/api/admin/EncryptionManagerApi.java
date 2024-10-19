@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Tag(name = "Encryption Manager (for admin)", description = "System encryption service, callable only by super administrators.")
-@RequestMapping("/api/v1/admin/encryption")
+@RequestMapping("/api/v2/admin/encryption")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

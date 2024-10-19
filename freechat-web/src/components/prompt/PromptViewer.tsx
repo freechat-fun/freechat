@@ -164,7 +164,7 @@ export default function PromptViewer({
           <PromptRunner
             minWidth="16rem"
             maxWidth="50%"
-            apiPath="/api/v1/prompt/send/stream"
+            apiPath="/api/v2/prompt/send/stream"
             record={record}
             defaultVariables={defaultVariables}
             defaultParameters={defaultParameters}

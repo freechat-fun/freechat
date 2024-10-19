@@ -4,17 +4,17 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**getOwners**](OrganizationApi.md#getOwners) | **GET** /api/v1/org/owners | Get My Superior Relationship |
-| [**getOwnersDot**](OrganizationApi.md#getOwnersDot) | **GET** /api/v1/org/owners/dot | Get DOT of Superior Relationship |
-| [**getSubordinateOwners**](OrganizationApi.md#getSubordinateOwners) | **GET** /api/v1/org/manage/{username}/owners | Get Superior Relationship |
-| [**getSubordinateSubordinates**](OrganizationApi.md#getSubordinateSubordinates) | **GET** /api/v1/org/manage/{username}/subordinates | Get Subordinate Relationship |
-| [**getSubordinates**](OrganizationApi.md#getSubordinates) | **GET** /api/v1/org/subordinates | Get My Subordinate Relationship |
-| [**getSubordinatesDot**](OrganizationApi.md#getSubordinatesDot) | **GET** /api/v1/org/subordinates/dot | Get DOT of Subordinate Relationship |
-| [**listSubordinateAuthorities**](OrganizationApi.md#listSubordinateAuthorities) | **GET** /api/v1/org/authority/{username} | List Subordinate Permissions |
-| [**removeSubordinateSubordinatesTree**](OrganizationApi.md#removeSubordinateSubordinatesTree) | **DELETE** /api/v1/org/manage/{username}/subordinates | Clear Subordinate Relationship |
-| [**updateSubordinateAuthorities**](OrganizationApi.md#updateSubordinateAuthorities) | **PUT** /api/v1/org/authority/{username} | Update Subordinate Permissions |
-| [**updateSubordinateOwners**](OrganizationApi.md#updateSubordinateOwners) | **PUT** /api/v1/org/manage/{username}/owners | Update Superior Relationship |
-| [**updateSubordinateSubordinates**](OrganizationApi.md#updateSubordinateSubordinates) | **PUT** /api/v1/org/manage/{username}/subordinates | Update Subordinate Relationship |
+| [**getOwners**](OrganizationApi.md#getOwners) | **GET** /api/v2/org/owners | Get My Superior Relationship |
+| [**getOwnersDot**](OrganizationApi.md#getOwnersDot) | **GET** /api/v2/org/owners/dot | Get DOT of Superior Relationship |
+| [**getSubordinateOwners**](OrganizationApi.md#getSubordinateOwners) | **GET** /api/v2/org/manage/{username}/owners | Get Superior Relationship |
+| [**getSubordinateSubordinates**](OrganizationApi.md#getSubordinateSubordinates) | **GET** /api/v2/org/manage/{username}/subordinates | Get Subordinate Relationship |
+| [**getSubordinates**](OrganizationApi.md#getSubordinates) | **GET** /api/v2/org/subordinates | Get My Subordinate Relationship |
+| [**getSubordinatesDot**](OrganizationApi.md#getSubordinatesDot) | **GET** /api/v2/org/subordinates/dot | Get DOT of Subordinate Relationship |
+| [**listSubordinateAuthorities**](OrganizationApi.md#listSubordinateAuthorities) | **GET** /api/v2/org/authority/{username} | List Subordinate Permissions |
+| [**removeSubordinateSubordinatesTree**](OrganizationApi.md#removeSubordinateSubordinatesTree) | **DELETE** /api/v2/org/manage/{username}/subordinates | Clear Subordinate Relationship |
+| [**updateSubordinateAuthorities**](OrganizationApi.md#updateSubordinateAuthorities) | **PUT** /api/v2/org/authority/{username} | Update Subordinate Permissions |
+| [**updateSubordinateOwners**](OrganizationApi.md#updateSubordinateOwners) | **PUT** /api/v2/org/manage/{username}/owners | Update Superior Relationship |
+| [**updateSubordinateSubordinates**](OrganizationApi.md#updateSubordinateSubordinates) | **PUT** /api/v2/org/manage/{username}/subordinates | Update Subordinate Relationship |
 
 
 <a id="getOwners"></a>
@@ -90,7 +90,7 @@ public class Example {
 
 Get DOT of Superior Relationship
 
-Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
 
 ### Example
 ```java
@@ -362,7 +362,7 @@ public class Example {
 
 Get DOT of Subordinate Relationship
 
-Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
 
 ### Example
 ```java

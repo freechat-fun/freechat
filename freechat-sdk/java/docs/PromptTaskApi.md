@@ -4,10 +4,10 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**createPromptTask**](PromptTaskApi.md#createPromptTask) | **POST** /api/v1/prompt/task | Create Prompt Task |
-| [**deletePromptTask**](PromptTaskApi.md#deletePromptTask) | **DELETE** /api/v1/prompt/task/{promptTaskId} | Delete Prompt Task |
-| [**getPromptTask**](PromptTaskApi.md#getPromptTask) | **GET** /api/v1/prompt/task/{promptTaskId} | Get Prompt Task |
-| [**updatePromptTask**](PromptTaskApi.md#updatePromptTask) | **PUT** /api/v1/prompt/task/{promptTaskId} | Update Prompt Task |
+| [**createPromptTask**](PromptTaskApi.md#createPromptTask) | **POST** /api/v2/prompt/task | Create Prompt Task |
+| [**deletePromptTask**](PromptTaskApi.md#deletePromptTask) | **DELETE** /api/v2/prompt/task/{promptTaskId} | Delete Prompt Task |
+| [**getPromptTask**](PromptTaskApi.md#getPromptTask) | **GET** /api/v2/prompt/task/{promptTaskId} | Get Prompt Task |
+| [**updatePromptTask**](PromptTaskApi.md#updatePromptTask) | **PUT** /api/v2/prompt/task/{promptTaskId} | Update Prompt Task |
 
 
 <a id="createPromptTask"></a>

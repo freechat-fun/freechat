@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Tag(name = "App Config (for admin)", description = "Application configuration information, viewable only by super administrators.")
-@RequestMapping("/api/v1/admin/app")
+@RequestMapping("/api/v2/admin/app")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

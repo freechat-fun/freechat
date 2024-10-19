@@ -1,8 +1,8 @@
 /*
  * FreeChat OpenAPI Definition
- * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat Prompt Task)     E --> K(Greeting Prompt Task)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Refence)     J --> P(Tool Specifications)     O --> Q(Template)     O --> R(Variables)     O --> S(Version)     O --> T(...)     style K stroke-dasharray: 5, 5     style L stroke-dasharray: 5, 5     style P stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.      > By default, FreeChat operates files by accessing the \"local file system.\" You may want to use high-availability distributed storage in the cloud. As a cloud-native-designed system, we recommend interfacing through Kubernetes CSI to avoid individually adapting storage products for each cloud platform. Most cloud service providers offer cloud storage drivers for Kubernetes, with a series of predefined StorageClass resources. Please choose the appropriate configuration according to your actual needs and set it in Helm's `global.storageClass` option.     >      > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*  7. Run `install.sh` script to install FreeChat and its dependencies. 8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 9. Run `restart.sh` to restart the service. 10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   deployment:     enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   deployment:     enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   deployment:     enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   deployment:     enabled: true grafana:   deployment:     enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, FreeChat is completely free with no paid plans (after all, users use their own API Key to call LLM services).  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. So far, it supports model services from OpenAI GPT and Alibaba Qwen series models. However, we are more interested in supporting models that are under research and can endow AI with more personality traits. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
+ * # FreeChat: Create Friends for Yourself with AI  English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)  ## Introduction Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.  It also serves as a prompt engineering platform.  ## Features - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**. - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions. - Extensively employs distributed technologies and caching to support **high concurrency** access. - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**. - **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users. - Supports setting **RAG** (Retrieval Augmented Generation) for characters. - Supports **long-term memory, preset memory** for characters. - Supports characters evoking **proactive chat**. - Supports setting **quota limits** for characters. - Supports characters **importing and exporting**. - Supports **character-to-character chats**. - Supports individual **debugging and sharing prompts**.  ## Snapshots ### On PC #### Home Page ![Home Page Snapshot](/img/snapshot_w1.jpg) #### Development View ![Development View Snapshot](/img/snapshot_w2.jpg) #### Chat View ![Chat View Snapshot](/img/snapshot_w3.jpg)  ### On Mobile ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br /> ![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)  ## Character Design ```mermaid flowchart TD     A(Character) --> B(Profile)     A --> C(Knowledge/RAG)     A --> D(Album)     A --> E(Backend-1)     A --> F(Backend-n...)     E --> G(Message Window)     E --> H(Long Term Memory Settings)     E --> I(Quota Limit)     E --> J(Chat Prompt Task)     E --> K(Greeting Prompt Task)     E --> L(Moderation Settings)     J --> M(Model & Parameters)     J --> N(API Keys)     J --> O(Prompt Refence)     J --> P(Tool Specifications)     O --> Q(Template)     O --> R(Variables)     O --> S(Version)     O --> T(...)     style K stroke-dasharray: 5, 5     style L stroke-dasharray: 5, 5     style P stroke-dasharray: 5, 5 ```  After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.  ## How to Play ### Online Website You can visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your designed AI character!  ### Running in a Kubernetes Cluster FreeChat is dedicated to the principles of cloud-native design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment by following these steps:  1. Put the Kubernetes configuration file in the `configs/helm/` directory, named `kube-private.conf`. 2. Place the Helm configuration file in the same directory, named `values-private.yaml`. Make sure to reference the default `values.yaml` and customize the variables as needed. 3. Switch to the `scripts/` directory. 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster. 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`. 6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.      > By default, FreeChat operates files by accessing the \"local file system.\" You may want to use high-availability distributed storage in the cloud. As a cloud-native-designed system, we recommend interfacing through Kubernetes CSI to avoid individually adapting storage products for each cloud platform. Most cloud service providers offer cloud storage drivers for Kubernetes, with a series of predefined StorageClass resources. Please choose the appropriate configuration according to your actual needs and set it in Helm's `global.storageClass` option.     >      > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*  7. Run `install.sh` script to install FreeChat and its dependencies. 8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application. 9. Run `restart.sh` to restart the service. 10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources. 11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.  As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.  If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`: ```yaml mysql:   deployment:     enabled: false   url: <your mysql url>   auth:     rootPassword: <your mysql root password>     username: <your mysql username>     password: <your mysql password for the username>  redis:   deployment:     enabled: false   url: <your redis url>   auth:     password: <your redis password>   milvus:   deployment:     enabled: false   url: <your milvus url>   milvus:     auth:       token: <your milvus api-key> ```  With this, FreeChat will not automatically install these services, but rather use the configuration information to connect directly.  If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application: ```yaml prometheus:   deployment:     enabled: true grafana:   deployment:     enabled: true ```  ### Running Locally You can also run FreeChat locally. Currently supported on MacOS and Linux (although only tested on MacOS). You need to install the Docker toolset and have a network that can access [Docker Hub](https://hub.docker.com/).  Once ready, enter the `scripts/` directory and run `local-run.sh`, which will download and run the necessary docker containers. After a successful startup, you can access `http://localhost` via a browser to see the locally running freechat.fun. The built-in administrator username and password are \"admin:freechat\". Use `local-run.sh --help` to view the supported options of the script. Good luck!  ### Running in an IDE To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options: ```shell -Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \\ -DAPP_HOME=local-data/freechat \\ -Dspring.profiles.active=local ```  ### Use SDK #### Java - **Dependency** ```xml <dependency>   <groupId>fun.freechat</groupId>   <artifactId>freechat-sdk</artifactId>   <version>${freechat-sdk.version}</version> </dependency> ```  - **Example** ```java import fun.freechat.client.ApiClient; import fun.freechat.client.ApiException; import fun.freechat.client.Configuration; import fun.freechat.client.api.AccountApi; import fun.freechat.client.auth.ApiKeyAuth; import fun.freechat.client.model.UserDetailsDTO;  public class AccountClientExample {     public static void main(String[] args) {         ApiClient defaultClient = Configuration.getDefaultApiClient();         defaultClient.setBasePath(\"https://freechat.fun\");                  // Configure HTTP bearer authorization: bearerAuth         HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication(\"bearerAuth\");         bearerAuth.setBearerToken(\"FREECHAT_TOKEN\");          AccountApi apiInstance = new AccountApi(defaultClient);         try {             UserDetailsDTO result = apiInstance.getUserDetails();             System.out.println(result);         } catch (ApiException e) {             e.printStackTrace();         }     } } ```  #### Python - **Installation** ```shell pip install freechat-sdk ```  - **Example** ```python import freechat_sdk from freechat_sdk.rest import ApiException from pprint import pprint  # Defining the host is optional and defaults to https://freechat.fun # See configuration.py for a list of all supported configuration parameters. configuration = freechat_sdk.Configuration(     host = \"https://freechat.fun\" )  # Configure Bearer authorization: bearerAuth configuration = freechat_sdk.Configuration(     access_token = os.environ[\"FREECHAT_TOKEN\"] )  # Enter a context with an instance of the API client with freechat_sdk.ApiClient(configuration) as api_client:     # Create an instance of the API class     api_instance = freechat_sdk.AccountApi(api_client)      try:         details = api_instance.get_user_details()         pprint(details)     except ApiException as e:         print(\"Exception when calling AccountClient->get_user_details: %s\\n\" % e) ```  #### TypeScript - **Installation** ```shell npm install freechat-sdk --save ```  - **Example**  Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)  ## System Dependencies | | Projects | ---- | ---- | Application Framework | [Spring Boot](https://spring.io/projects/spring-boot/) | LLM Framework | [LangChain4j](https://docs.langchain4j.dev/) | Model Providers | [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/) | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/), [Milvus](https://milvus.io/) | Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/), [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/) | OpenAPI Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator), [OpenAPI Explorer](https://github.com/Authress-Engineering/openapi-explorer)  ## Collaboration ### Application Integration The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, FreeChat is completely free with no paid plans (after all, users use their own API Key to call LLM services).  ### Model Integration FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. So far, it supports model services from OpenAI GPT and Alibaba Qwen series models. However, we are more interested in supporting models that are under research and can endow AI with more personality traits. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future. 
  *
- * The version of the OpenAPI document: 2.0.0
+ * The version of the OpenAPI document: 2.0.1
  * 
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -110,7 +110,7 @@ public class CharacterApi {
         Object localVarPostBody = characterBackendDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/{characterUid}"
+        String localVarPath = "/api/v2/character/backend/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -242,7 +242,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/batch/details/search";
+        String localVarPath = "/api/v2/character/batch/details/search";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -283,7 +283,7 @@ public class CharacterApi {
 
     /**
      * Batch Search Character Details
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * @param characterQueryDTO Query conditions (required)
      * @return List&lt;List&lt;CharacterDetailsDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -300,7 +300,7 @@ public class CharacterApi {
 
     /**
      * Batch Search Character Details
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * @param characterQueryDTO Query conditions (required)
      * @return ApiResponse&lt;List&lt;List&lt;CharacterDetailsDTO&gt;&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -318,7 +318,7 @@ public class CharacterApi {
 
     /**
      * Batch Search Character Details (asynchronously)
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * @param characterQueryDTO Query conditions (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -365,7 +365,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/batch/search";
+        String localVarPath = "/api/v2/character/batch/search";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -406,7 +406,7 @@ public class CharacterApi {
 
     /**
      * Batch Search Character Summaries
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * @param characterQueryDTO Query conditions (required)
      * @return List&lt;List&lt;CharacterSummaryDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -423,7 +423,7 @@ public class CharacterApi {
 
     /**
      * Batch Search Character Summaries
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * @param characterQueryDTO Query conditions (required)
      * @return ApiResponse&lt;List&lt;List&lt;CharacterSummaryDTO&gt;&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -441,7 +441,7 @@ public class CharacterApi {
 
     /**
      * Batch Search Character Summaries (asynchronously)
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * @param characterQueryDTO Query conditions (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -488,7 +488,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/clone/{characterId}"
+        String localVarPath = "/api/v2/character/clone/{characterId}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -611,7 +611,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/count";
+        String localVarPath = "/api/v2/character/count";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -734,7 +734,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/public/character/count";
+        String localVarPath = "/api/v2/public/character/count";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -857,7 +857,7 @@ public class CharacterApi {
         Object localVarPostBody = characterCreateDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character";
+        String localVarPath = "/api/v2/character";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -980,7 +980,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/{characterId}"
+        String localVarPath = "/api/v2/character/{characterId}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1103,7 +1103,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/name/{name}"
+        String localVarPath = "/api/v2/character/name/{name}"
             .replace("{" + "name" + "}", localVarApiClient.escapeString(name.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1226,7 +1226,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/uid/{characterUid}"
+        String localVarPath = "/api/v2/character/uid/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1349,7 +1349,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/document/{key}"
+        String localVarPath = "/api/v2/character/document/{key}"
             .replace("{" + "key" + "}", localVarApiClient.escapeString(key.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1472,7 +1472,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/picture/{key}"
+        String localVarPath = "/api/v2/character/picture/{key}"
             .replace("{" + "key" + "}", localVarApiClient.escapeString(key.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1595,7 +1595,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/exists/name/{name}"
+        String localVarPath = "/api/v2/character/exists/name/{name}"
             .replace("{" + "name" + "}", localVarApiClient.escapeString(name.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1718,7 +1718,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/export/{characterId}"
+        String localVarPath = "/api/v2/character/export/{characterId}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1836,7 +1836,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/details/{characterId}"
+        String localVarPath = "/api/v2/character/details/{characterId}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -1959,7 +1959,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/latest/{name}"
+        String localVarPath = "/api/v2/character/latest/{name}"
             .replace("{" + "name" + "}", localVarApiClient.escapeString(name.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2082,7 +2082,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/summary/{characterId}"
+        String localVarPath = "/api/v2/character/summary/{characterId}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2205,7 +2205,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/default/{characterUid}"
+        String localVarPath = "/api/v2/character/backend/default/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2328,7 +2328,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/import";
+        String localVarPath = "/api/v2/character/import";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -2455,7 +2455,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/ids/{characterUid}"
+        String localVarPath = "/api/v2/character/backend/ids/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2578,7 +2578,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backends/{characterUid}"
+        String localVarPath = "/api/v2/character/backends/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2701,7 +2701,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/documents/{characterUid}"
+        String localVarPath = "/api/v2/character/documents/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2824,7 +2824,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/pictures/{characterUid}"
+        String localVarPath = "/api/v2/character/pictures/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -2947,7 +2947,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/versions/{name}"
+        String localVarPath = "/api/v2/character/versions/{name}"
             .replace("{" + "name" + "}", localVarApiClient.escapeString(name.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -3070,7 +3070,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/create/name/{desired}"
+        String localVarPath = "/api/v2/character/create/name/{desired}"
             .replace("{" + "desired" + "}", localVarApiClient.escapeString(desired.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -3167,129 +3167,6 @@ public class CharacterApi {
     /**
      * Build call for publishCharacter
      * @param characterId The characterId to be published (required)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call publishCharacterCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        String basePath = null;
-        // Operation Servers
-        String[] localBasePaths = new String[] {  };
-
-        // Determine Base Path to Use
-        if (localCustomBaseUrl != null){
-            basePath = localCustomBaseUrl;
-        } else if ( localBasePaths.length > 0 ) {
-            basePath = localBasePaths[localHostIndex];
-        } else {
-            basePath = null;
-        }
-
-        Object localVarPostBody = null;
-
-        // create path and map variables
-        String localVarPath = "/api/v1/character/publish/{characterId}"
-            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        final String[] localVarAccepts = {
-            "application/json"
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        if (localVarContentType != null) {
-            localVarHeaderParams.put("Content-Type", localVarContentType);
-        }
-
-        String[] localVarAuthNames = new String[] { "bearerAuth" };
-        return localVarApiClient.buildCall(basePath, localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call publishCharacterValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
-        // verify the required parameter 'characterId' is set
-        if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling publishCharacter(Async)");
-        }
-
-        return publishCharacterCall(characterId, _callback);
-
-    }
-
-    /**
-     * Publish Character
-     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
-     * @param characterId The characterId to be published (required)
-     * @return Long
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public Long publishCharacter(Long characterId) throws ApiException {
-        ApiResponse<Long> localVarResp = publishCharacterWithHttpInfo(characterId);
-        return localVarResp.getData();
-    }
-
-    /**
-     * Publish Character
-     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
-     * @param characterId The characterId to be published (required)
-     * @return ApiResponse&lt;Long&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<Long> publishCharacterWithHttpInfo(Long characterId) throws ApiException {
-        okhttp3.Call localVarCall = publishCharacterValidateBeforeCall(characterId, null);
-        Type localVarReturnType = new TypeToken<Long>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
-    }
-
-    /**
-     * Publish Character (asynchronously)
-     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
-     * @param characterId The characterId to be published (required)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call publishCharacterAsync(Long characterId, final ApiCallback<Long> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = publishCharacterValidateBeforeCall(characterId, _callback);
-        Type localVarReturnType = new TypeToken<Long>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
-        return localVarCall;
-    }
-    /**
-     * Build call for publishCharacter1
-     * @param characterId The characterId to be published (required)
      * @param visibility Visibility: public | private | ... (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -3300,7 +3177,7 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call publishCharacter1Call(Long characterId, String visibility, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call publishCharacterCall(Long characterId, String visibility, final ApiCallback _callback) throws ApiException {
         String basePath = null;
         // Operation Servers
         String[] localBasePaths = new String[] {  };
@@ -3317,7 +3194,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/publish/{characterId}/{visibility}"
+        String localVarPath = "/api/v2/character/publish/{characterId}/{visibility}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()))
             .replace("{" + "visibility" + "}", localVarApiClient.escapeString(visibility.toString()));
 
@@ -3347,18 +3224,18 @@ public class CharacterApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call publishCharacter1ValidateBeforeCall(Long characterId, String visibility, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call publishCharacterValidateBeforeCall(Long characterId, String visibility, final ApiCallback _callback) throws ApiException {
         // verify the required parameter 'characterId' is set
         if (characterId == null) {
-            throw new ApiException("Missing the required parameter 'characterId' when calling publishCharacter1(Async)");
+            throw new ApiException("Missing the required parameter 'characterId' when calling publishCharacter(Async)");
         }
 
         // verify the required parameter 'visibility' is set
         if (visibility == null) {
-            throw new ApiException("Missing the required parameter 'visibility' when calling publishCharacter1(Async)");
+            throw new ApiException("Missing the required parameter 'visibility' when calling publishCharacter(Async)");
         }
 
-        return publishCharacter1Call(characterId, visibility, _callback);
+        return publishCharacterCall(characterId, visibility, _callback);
 
     }
 
@@ -3375,8 +3252,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public Long publishCharacter1(Long characterId, String visibility) throws ApiException {
-        ApiResponse<Long> localVarResp = publishCharacter1WithHttpInfo(characterId, visibility);
+    public Long publishCharacter(Long characterId, String visibility) throws ApiException {
+        ApiResponse<Long> localVarResp = publishCharacterWithHttpInfo(characterId, visibility);
         return localVarResp.getData();
     }
 
@@ -3393,8 +3270,8 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Long> publishCharacter1WithHttpInfo(Long characterId, String visibility) throws ApiException {
-        okhttp3.Call localVarCall = publishCharacter1ValidateBeforeCall(characterId, visibility, null);
+    public ApiResponse<Long> publishCharacterWithHttpInfo(Long characterId, String visibility) throws ApiException {
+        okhttp3.Call localVarCall = publishCharacterValidateBeforeCall(characterId, visibility, null);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -3413,9 +3290,132 @@ public class CharacterApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call publishCharacter1Async(Long characterId, String visibility, final ApiCallback<Long> _callback) throws ApiException {
+    public okhttp3.Call publishCharacterAsync(Long characterId, String visibility, final ApiCallback<Long> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = publishCharacter1ValidateBeforeCall(characterId, visibility, _callback);
+        okhttp3.Call localVarCall = publishCharacterValidateBeforeCall(characterId, visibility, _callback);
+        Type localVarReturnType = new TypeToken<Long>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for publishCharacter1
+     * @param characterId The characterId to be published (required)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call publishCharacter1Call(Long characterId, final ApiCallback _callback) throws ApiException {
+        String basePath = null;
+        // Operation Servers
+        String[] localBasePaths = new String[] {  };
+
+        // Determine Base Path to Use
+        if (localCustomBaseUrl != null){
+            basePath = localCustomBaseUrl;
+        } else if ( localBasePaths.length > 0 ) {
+            basePath = localBasePaths[localHostIndex];
+        } else {
+            basePath = null;
+        }
+
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/api/v2/character/publish/{characterId}"
+            .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        if (localVarContentType != null) {
+            localVarHeaderParams.put("Content-Type", localVarContentType);
+        }
+
+        String[] localVarAuthNames = new String[] { "bearerAuth" };
+        return localVarApiClient.buildCall(basePath, localVarPath, "POST", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call publishCharacter1ValidateBeforeCall(Long characterId, final ApiCallback _callback) throws ApiException {
+        // verify the required parameter 'characterId' is set
+        if (characterId == null) {
+            throw new ApiException("Missing the required parameter 'characterId' when calling publishCharacter1(Async)");
+        }
+
+        return publishCharacter1Call(characterId, _callback);
+
+    }
+
+    /**
+     * Publish Character
+     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
+     * @param characterId The characterId to be published (required)
+     * @return Long
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public Long publishCharacter1(Long characterId) throws ApiException {
+        ApiResponse<Long> localVarResp = publishCharacter1WithHttpInfo(characterId);
+        return localVarResp.getData();
+    }
+
+    /**
+     * Publish Character
+     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
+     * @param characterId The characterId to be published (required)
+     * @return ApiResponse&lt;Long&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Long> publishCharacter1WithHttpInfo(Long characterId) throws ApiException {
+        okhttp3.Call localVarCall = publishCharacter1ValidateBeforeCall(characterId, null);
+        Type localVarReturnType = new TypeToken<Long>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     * Publish Character (asynchronously)
+     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
+     * @param characterId The characterId to be published (required)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call publishCharacter1Async(Long characterId, final ApiCallback<Long> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = publishCharacter1ValidateBeforeCall(characterId, _callback);
         Type localVarReturnType = new TypeToken<Long>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
@@ -3449,7 +3449,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/{characterBackendId}"
+        String localVarPath = "/api/v2/character/backend/{characterBackendId}"
             .replace("{" + "characterBackendId" + "}", localVarApiClient.escapeString(characterBackendId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -3572,7 +3572,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/details/search";
+        String localVarPath = "/api/v2/character/details/search";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -3613,7 +3613,7 @@ public class CharacterApi {
 
     /**
      * Search Character Details
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * @param characterQueryDTO Query conditions (required)
      * @return List&lt;CharacterDetailsDTO&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -3630,7 +3630,7 @@ public class CharacterApi {
 
     /**
      * Search Character Details
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * @param characterQueryDTO Query conditions (required)
      * @return ApiResponse&lt;List&lt;CharacterDetailsDTO&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -3648,7 +3648,7 @@ public class CharacterApi {
 
     /**
      * Search Character Details (asynchronously)
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * @param characterQueryDTO Query conditions (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -3695,7 +3695,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/search";
+        String localVarPath = "/api/v2/character/search";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -3818,7 +3818,7 @@ public class CharacterApi {
         Object localVarPostBody = characterQueryDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/public/character/search";
+        String localVarPath = "/api/v2/public/character/search";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -3941,7 +3941,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/default/{characterBackendId}"
+        String localVarPath = "/api/v2/character/backend/default/{characterBackendId}"
             .replace("{" + "characterBackendId" + "}", localVarApiClient.escapeString(characterBackendId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -4065,7 +4065,7 @@ public class CharacterApi {
         Object localVarPostBody = characterUpdateDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/{characterId}"
+        String localVarPath = "/api/v2/character/{characterId}"
             .replace("{" + "characterId" + "}", localVarApiClient.escapeString(characterId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -4112,7 +4112,7 @@ public class CharacterApi {
 
     /**
      * Update Character
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * @param characterId The characterId to be updated (required)
      * @param characterUpdateDTO The character information to be updated (required)
      * @return Boolean
@@ -4130,7 +4130,7 @@ public class CharacterApi {
 
     /**
      * Update Character
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * @param characterId The characterId to be updated (required)
      * @param characterUpdateDTO The character information to be updated (required)
      * @return ApiResponse&lt;Boolean&gt;
@@ -4149,7 +4149,7 @@ public class CharacterApi {
 
     /**
      * Update Character (asynchronously)
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * @param characterId The characterId to be updated (required)
      * @param characterUpdateDTO The character information to be updated (required)
      * @param _callback The callback to be executed when the API call finishes
@@ -4198,7 +4198,7 @@ public class CharacterApi {
         Object localVarPostBody = characterBackendDTO;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/backend/{characterBackendId}"
+        String localVarPath = "/api/v2/character/backend/{characterBackendId}"
             .replace("{" + "characterBackendId" + "}", localVarApiClient.escapeString(characterBackendId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -4331,7 +4331,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/avatar/{characterUid}"
+        String localVarPath = "/api/v2/character/avatar/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -4468,7 +4468,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/document/{characterUid}"
+        String localVarPath = "/api/v2/character/document/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -4605,7 +4605,7 @@ public class CharacterApi {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/api/v1/character/picture/{characterUid}"
+        String localVarPath = "/api/v2/character/picture/{characterUid}"
             .replace("{" + "characterUid" + "}", localVarApiClient.escapeString(characterUid.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();

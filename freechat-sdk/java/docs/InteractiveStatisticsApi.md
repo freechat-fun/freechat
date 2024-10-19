@@ -4,24 +4,24 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**addStatistic**](InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics |
-| [**getScore**](InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/public/score/{infoType}/{infoId} | Get Score for Resource |
-| [**getStatistic**](InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/public/stats/{infoType}/{infoId}/{statsType} | Get Statistics |
-| [**getStatistics**](InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/public/stats/{infoType}/{infoId} | Get All Statistics |
-| [**increaseStatistic**](InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics |
-| [**listAgentsByStatistic**](InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics |
-| [**listAgentsByStatistic1**](InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics |
-| [**listAgentsByStatistic2**](InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/public/stats/agents/by/{statsType} | List Agents by Statistics |
-| [**listCharactersByStatistic**](InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/public/stats/characters/by/{statsType} | List Characters by Statistics |
-| [**listCharactersByStatistic1**](InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics |
-| [**listCharactersByStatistic2**](InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics |
-| [**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/public/tags/hot/{infoType}/{pageSize} | Hot Tags |
-| [**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics |
-| [**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics |
-| [**listPluginsByStatistic2**](InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/public/stats/plugins/by/{statsType} | List Plugins by Statistics |
-| [**listPromptsByStatistic**](InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics |
-| [**listPromptsByStatistic1**](InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics |
-| [**listPromptsByStatistic2**](InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v1/public/stats/prompts/by/{statsType} | List Prompts by Statistics |
+| [**addStatistic**](InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v2/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics |
+| [**getScore**](InteractiveStatisticsApi.md#getScore) | **GET** /api/v2/public/score/{infoType}/{infoId} | Get Score for Resource |
+| [**getStatistic**](InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v2/public/stats/{infoType}/{infoId}/{statsType} | Get Statistics |
+| [**getStatistics**](InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v2/public/stats/{infoType}/{infoId} | Get All Statistics |
+| [**increaseStatistic**](InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v2/stats/{infoType}/{infoId}/{statsType} | Increase Statistics |
+| [**listAgentsByStatistic**](InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v2/public/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics |
+| [**listAgentsByStatistic1**](InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v2/public/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics |
+| [**listAgentsByStatistic2**](InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v2/public/stats/agents/by/{statsType} | List Agents by Statistics |
+| [**listCharactersByStatistic**](InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v2/public/stats/characters/by/{statsType} | List Characters by Statistics |
+| [**listCharactersByStatistic1**](InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v2/public/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics |
+| [**listCharactersByStatistic2**](InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v2/public/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics |
+| [**listHotTags**](InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v2/public/tags/hot/{infoType}/{pageSize} | Hot Tags |
+| [**listPluginsByStatistic**](InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v2/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics |
+| [**listPluginsByStatistic1**](InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v2/public/stats/plugins/by/{statsType} | List Plugins by Statistics |
+| [**listPluginsByStatistic2**](InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v2/public/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics |
+| [**listPromptsByStatistic**](InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v2/public/stats/prompts/by/{statsType} | List Prompts by Statistics |
+| [**listPromptsByStatistic1**](InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v2/public/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics |
+| [**listPromptsByStatistic2**](InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v2/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics |
 
 
 <a id="addStatistic"></a>
@@ -661,7 +661,78 @@ public class Example {
 
 <a id="listCharactersByStatistic1"></a>
 # **listCharactersByStatistic1**
-> List&lt;CharacterSummaryStatsDTO&gt; listCharactersByStatistic1(statsType, pageSize, pageNum, asc)
+> List&lt;CharacterSummaryStatsDTO&gt; listCharactersByStatistic1(statsType, pageSize, asc)
+
+List Characters by Statistics
+
+List characters based on statistics, including interactive statistical data.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.InteractiveStatisticsApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
+    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
+    Long pageSize = 56L; // Long | Maximum quantity
+    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
+    try {
+      List<CharacterSummaryStatsDTO> result = apiInstance.listCharactersByStatistic1(statsType, pageSize, asc);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling InteractiveStatisticsApi#listCharactersByStatistic1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **pageSize** | **Long**| Maximum quantity | |
+| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
+
+### Return type
+
+[**List&lt;CharacterSummaryStatsDTO&gt;**](CharacterSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listCharactersByStatistic2"></a>
+# **listCharactersByStatistic2**
+> List&lt;CharacterSummaryStatsDTO&gt; listCharactersByStatistic2(statsType, pageSize, pageNum, asc)
 
 List Characters by Statistics
 
@@ -692,79 +763,7 @@ public class Example {
     Long pageNum = 56L; // Long | Current page number
     String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
     try {
-      List<CharacterSummaryStatsDTO> result = apiInstance.listCharactersByStatistic1(statsType, pageSize, pageNum, asc);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling InteractiveStatisticsApi#listCharactersByStatistic1");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
-| **pageSize** | **Long**| Maximum quantity | |
-| **pageNum** | **Long**| Current page number | |
-| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
-
-### Return type
-
-[**List&lt;CharacterSummaryStatsDTO&gt;**](CharacterSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listCharactersByStatistic2"></a>
-# **listCharactersByStatistic2**
-> List&lt;CharacterSummaryStatsDTO&gt; listCharactersByStatistic2(statsType, pageSize, asc)
-
-List Characters by Statistics
-
-List characters based on statistics, including interactive statistical data.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.InteractiveStatisticsApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
-    Long pageSize = 56L; // Long | Maximum quantity
-    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
-    try {
-      List<CharacterSummaryStatsDTO> result = apiInstance.listCharactersByStatistic2(statsType, pageSize, asc);
+      List<CharacterSummaryStatsDTO> result = apiInstance.listCharactersByStatistic2(statsType, pageSize, pageNum, asc);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling InteractiveStatisticsApi#listCharactersByStatistic2");
@@ -783,6 +782,7 @@ public class Example {
 |------------- | ------------- | ------------- | -------------|
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 | **pageSize** | **Long**| Maximum quantity | |
+| **pageNum** | **Long**| Current page number | |
 | **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
 
 ### Return type
@@ -876,7 +876,7 @@ public class Example {
 
 <a id="listPluginsByStatistic"></a>
 # **listPluginsByStatistic**
-> List&lt;PluginSummaryStatsDTO&gt; listPluginsByStatistic(statsType, pageSize, asc)
+> List&lt;PluginSummaryStatsDTO&gt; listPluginsByStatistic(statsType, pageSize, pageNum, asc)
 
 List Plugins by Statistics
 
@@ -904,9 +904,10 @@ public class Example {
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
     Long pageSize = 56L; // Long | Maximum quantity
+    Long pageNum = 56L; // Long | Current page number
     String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
     try {
-      List<PluginSummaryStatsDTO> result = apiInstance.listPluginsByStatistic(statsType, pageSize, asc);
+      List<PluginSummaryStatsDTO> result = apiInstance.listPluginsByStatistic(statsType, pageSize, pageNum, asc);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling InteractiveStatisticsApi#listPluginsByStatistic");
@@ -925,6 +926,7 @@ public class Example {
 |------------- | ------------- | ------------- | -------------|
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
 | **pageSize** | **Long**| Maximum quantity | |
+| **pageNum** | **Long**| Current page number | |
 | **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
 
 ### Return type
@@ -947,7 +949,7 @@ public class Example {
 
 <a id="listPluginsByStatistic1"></a>
 # **listPluginsByStatistic1**
-> List&lt;PluginSummaryStatsDTO&gt; listPluginsByStatistic1(statsType, pageSize, pageNum, asc)
+> List&lt;PluginSummaryStatsDTO&gt; listPluginsByStatistic1(statsType, asc)
 
 List Plugins by Statistics
 
@@ -974,11 +976,9 @@ public class Example {
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
-    Long pageSize = 56L; // Long | Maximum quantity
-    Long pageNum = 56L; // Long | Current page number
     String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
     try {
-      List<PluginSummaryStatsDTO> result = apiInstance.listPluginsByStatistic1(statsType, pageSize, pageNum, asc);
+      List<PluginSummaryStatsDTO> result = apiInstance.listPluginsByStatistic1(statsType, asc);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling InteractiveStatisticsApi#listPluginsByStatistic1");
@@ -996,8 +996,6 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
-| **pageSize** | **Long**| Maximum quantity | |
-| **pageNum** | **Long**| Current page number | |
 | **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
 
 ### Return type
@@ -1020,7 +1018,7 @@ public class Example {
 
 <a id="listPluginsByStatistic2"></a>
 # **listPluginsByStatistic2**
-> List&lt;PluginSummaryStatsDTO&gt; listPluginsByStatistic2(statsType, asc)
+> List&lt;PluginSummaryStatsDTO&gt; listPluginsByStatistic2(statsType, pageSize, asc)
 
 List Plugins by Statistics
 
@@ -1047,9 +1045,10 @@ public class Example {
 
     InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
     String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
+    Long pageSize = 56L; // Long | Maximum quantity
     String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
     try {
-      List<PluginSummaryStatsDTO> result = apiInstance.listPluginsByStatistic2(statsType, asc);
+      List<PluginSummaryStatsDTO> result = apiInstance.listPluginsByStatistic2(statsType, pageSize, asc);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling InteractiveStatisticsApi#listPluginsByStatistic2");
@@ -1067,6 +1066,7 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **pageSize** | **Long**| Maximum quantity | |
 | **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
 
 ### Return type
@@ -1089,7 +1089,76 @@ public class Example {
 
 <a id="listPromptsByStatistic"></a>
 # **listPromptsByStatistic**
-> List&lt;PromptSummaryStatsDTO&gt; listPromptsByStatistic(statsType, pageSize, asc)
+> List&lt;PromptSummaryStatsDTO&gt; listPromptsByStatistic(statsType, asc)
+
+List Prompts by Statistics
+
+List prompts based on statistics, including interactive statistical data.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.InteractiveStatisticsApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
+    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
+    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
+    try {
+      List<PromptSummaryStatsDTO> result = apiInstance.listPromptsByStatistic(statsType, asc);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling InteractiveStatisticsApi#listPromptsByStatistic");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
+
+### Return type
+
+[**List&lt;PromptSummaryStatsDTO&gt;**](PromptSummaryStatsDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listPromptsByStatistic1"></a>
+# **listPromptsByStatistic1**
+> List&lt;PromptSummaryStatsDTO&gt; listPromptsByStatistic1(statsType, pageSize, asc)
 
 List Prompts by Statistics
 
@@ -1119,10 +1188,10 @@ public class Example {
     Long pageSize = 56L; // Long | Maximum quantity
     String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
     try {
-      List<PromptSummaryStatsDTO> result = apiInstance.listPromptsByStatistic(statsType, pageSize, asc);
+      List<PromptSummaryStatsDTO> result = apiInstance.listPromptsByStatistic1(statsType, pageSize, asc);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling InteractiveStatisticsApi#listPromptsByStatistic");
+      System.err.println("Exception when calling InteractiveStatisticsApi#listPromptsByStatistic1");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -1158,9 +1227,9 @@ public class Example {
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
 
-<a id="listPromptsByStatistic1"></a>
-# **listPromptsByStatistic1**
-> List&lt;PromptSummaryStatsDTO&gt; listPromptsByStatistic1(statsType, pageSize, pageNum, asc)
+<a id="listPromptsByStatistic2"></a>
+# **listPromptsByStatistic2**
+> List&lt;PromptSummaryStatsDTO&gt; listPromptsByStatistic2(statsType, pageSize, pageNum, asc)
 
 List Prompts by Statistics
 
@@ -1191,78 +1260,7 @@ public class Example {
     Long pageNum = 56L; // Long | Current page number
     String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
     try {
-      List<PromptSummaryStatsDTO> result = apiInstance.listPromptsByStatistic1(statsType, pageSize, pageNum, asc);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling InteractiveStatisticsApi#listPromptsByStatistic1");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
-| **pageSize** | **Long**| Maximum quantity | |
-| **pageNum** | **Long**| Current page number | |
-| **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
-
-### Return type
-
-[**List&lt;PromptSummaryStatsDTO&gt;**](PromptSummaryStatsDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listPromptsByStatistic2"></a>
-# **listPromptsByStatistic2**
-> List&lt;PromptSummaryStatsDTO&gt; listPromptsByStatistic2(statsType, asc)
-
-List Prompts by Statistics
-
-List prompts based on statistics, including interactive statistical data.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.InteractiveStatisticsApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    InteractiveStatisticsApi apiInstance = new InteractiveStatisticsApi(defaultClient);
-    String statsType = "statsType_example"; // String | Statistics type: view_count | refer_count | recommend_count | score
-    String asc = "asc_example"; // String | Default is descending order, set asc=1 for ascending order
-    try {
-      List<PromptSummaryStatsDTO> result = apiInstance.listPromptsByStatistic2(statsType, asc);
+      List<PromptSummaryStatsDTO> result = apiInstance.listPromptsByStatistic2(statsType, pageSize, pageNum, asc);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling InteractiveStatisticsApi#listPromptsByStatistic2");
@@ -1280,6 +1278,8 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **statsType** | **String**| Statistics type: view_count | refer_count | recommend_count | score | |
+| **pageSize** | **Long**| Maximum quantity | |
+| **pageNum** | **Long**| Current page number | |
 | **asc** | **String**| Default is descending order, set asc&#x3D;1 for ascending order | [optional] |
 
 ### Return type

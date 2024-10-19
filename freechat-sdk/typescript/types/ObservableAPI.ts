@@ -319,11 +319,9 @@ export class ObservableAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfoWithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo(pageSize, pageNum, _options);
+    public listAiModelInfoWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listAiModelInfo(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -344,11 +342,9 @@ export class ObservableAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfoWithHttpInfo(pageSize, pageNum, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
+    public listAiModelInfo(_options?: Configuration): Observable<Array<AiModelInfoDTO>> {
+        return this.listAiModelInfoWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
     }
 
     /**
@@ -387,9 +383,11 @@ export class ObservableAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfo2WithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo2(_options);
+    public listAiModelInfo2WithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listAiModelInfo2(pageSize, pageNum, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -410,9 +408,11 @@ export class ObservableAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfo2(_options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfo2WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
+    public listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
+        return this.listAiModelInfo2WithHttpInfo(pageSize, pageNum, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
     }
 
 }
@@ -436,9 +436,10 @@ export class ObservableAccountApi {
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
+     * @param duration Token validity duration (seconds)
      */
-    public createTokenWithHttpInfo(_options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.createToken(_options);
+    public createTokenWithHttpInfo(duration: number, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.createToken(duration, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -459,18 +460,18 @@ export class ObservableAccountApi {
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
+     * @param duration Token validity duration (seconds)
      */
-    public createToken(_options?: Configuration): Observable<string> {
-        return this.createTokenWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createToken(duration: number, _options?: Configuration): Observable<string> {
+        return this.createTokenWithHttpInfo(duration, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
-     * @param duration Token validity duration (seconds)
      */
-    public createToken1WithHttpInfo(duration: number, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.createToken1(duration, _options);
+    public createToken1WithHttpInfo(_options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.createToken1(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -491,10 +492,9 @@ export class ObservableAccountApi {
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
-     * @param duration Token validity duration (seconds)
      */
-    public createToken1(duration: number, _options?: Configuration): Observable<string> {
-        return this.createToken1WithHttpInfo(duration, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public createToken1(_options?: Configuration): Observable<string> {
+        return this.createToken1WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**
@@ -665,9 +665,10 @@ export class ObservableAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
+     * @param username Username
      */
-    public getUserBasicWithHttpInfo(_options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getUserBasic(_options);
+    public getUserBasicWithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
+        const requestContextPromise = this.requestFactory.getUserBasic(username, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -688,18 +689,18 @@ export class ObservableAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
+     * @param username Username
      */
-    public getUserBasic(_options?: Configuration): Observable<UserBasicInfoDTO> {
-        return this.getUserBasicWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
+    public getUserBasic(username: string, _options?: Configuration): Observable<UserBasicInfoDTO> {
+        return this.getUserBasicWithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
     }
 
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
-     * @param username Username
      */
-    public getUserBasic1WithHttpInfo(username: string, _options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getUserBasic1(username, _options);
+    public getUserBasic1WithHttpInfo(_options?: Configuration): Observable<HttpInfo<UserBasicInfoDTO>> {
+        const requestContextPromise = this.requestFactory.getUserBasic1(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -720,10 +721,9 @@ export class ObservableAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
-     * @param username Username
      */
-    public getUserBasic1(username: string, _options?: Configuration): Observable<UserBasicInfoDTO> {
-        return this.getUserBasic1WithHttpInfo(username, _options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
+    public getUserBasic1(_options?: Configuration): Observable<UserBasicInfoDTO> {
+        return this.getUserBasic1WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<UserBasicInfoDTO>) => apiResponse.data));
     }
 
     /**
@@ -1209,10 +1209,9 @@ export class ObservableAccountManagerForAdminApi {
     /**
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
-     * @param pageSize Maximum quantity
      */
-    public listUsers1WithHttpInfo(pageSize: number, _options?: Configuration): Observable<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listUsers1(pageSize, _options);
+    public listUsers1WithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listUsers1(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -1233,18 +1232,18 @@ export class ObservableAccountManagerForAdminApi {
     /**
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
-     * @param pageSize Maximum quantity
      */
-    public listUsers1(pageSize: number, _options?: Configuration): Observable<Array<UserBasicInfoDTO>> {
-        return this.listUsers1WithHttpInfo(pageSize, _options).pipe(map((apiResponse: HttpInfo<Array<UserBasicInfoDTO>>) => apiResponse.data));
+    public listUsers1(_options?: Configuration): Observable<Array<UserBasicInfoDTO>> {
+        return this.listUsers1WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<UserBasicInfoDTO>>) => apiResponse.data));
     }
 
     /**
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
+     * @param pageSize Maximum quantity
      */
-    public listUsers2WithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listUsers2(_options);
+    public listUsers2WithHttpInfo(pageSize: number, _options?: Configuration): Observable<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const requestContextPromise = this.requestFactory.listUsers2(pageSize, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -1265,9 +1264,10 @@ export class ObservableAccountManagerForAdminApi {
     /**
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
+     * @param pageSize Maximum quantity
      */
-    public listUsers2(_options?: Configuration): Observable<Array<UserBasicInfoDTO>> {
-        return this.listUsers2WithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<UserBasicInfoDTO>>) => apiResponse.data));
+    public listUsers2(pageSize: number, _options?: Configuration): Observable<Array<UserBasicInfoDTO>> {
+        return this.listUsers2WithHttpInfo(pageSize, _options).pipe(map((apiResponse: HttpInfo<Array<UserBasicInfoDTO>>) => apiResponse.data));
     }
 
     /**
@@ -1357,7 +1357,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -1381,7 +1381,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -1390,7 +1390,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
@@ -1414,7 +1414,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
@@ -1788,7 +1788,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -1812,7 +1812,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -1854,7 +1854,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
@@ -1879,7 +1879,7 @@ export class ObservableAgentApi {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
@@ -2075,7 +2075,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * Batch Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -2099,7 +2099,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * Batch Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -2108,7 +2108,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * Batch Search Character Summaries
      * @param characterQueryDTO Query conditions
      */
@@ -2132,7 +2132,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * Batch Search Character Summaries
      * @param characterQueryDTO Query conditions
      */
@@ -2870,9 +2870,10 @@ export class ObservableCharacterApi {
      * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
      * Publish Character
      * @param characterId The characterId to be published
+     * @param visibility Visibility: public | private | ...
      */
-    public publishCharacterWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<number>> {
-        const requestContextPromise = this.requestFactory.publishCharacter(characterId, _options);
+    public publishCharacterWithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.publishCharacter(characterId, visibility, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2894,19 +2895,19 @@ export class ObservableCharacterApi {
      * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
      * Publish Character
      * @param characterId The characterId to be published
+     * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter(characterId: number, _options?: Configuration): Observable<number> {
-        return this.publishCharacterWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    public publishCharacter(characterId: number, visibility: string, _options?: Configuration): Observable<number> {
+        return this.publishCharacterWithHttpInfo(characterId, visibility, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
      * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
      * Publish Character
      * @param characterId The characterId to be published
-     * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1WithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Observable<HttpInfo<number>> {
-        const requestContextPromise = this.requestFactory.publishCharacter1(characterId, visibility, _options);
+    public publishCharacter1WithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<number>> {
+        const requestContextPromise = this.requestFactory.publishCharacter1(characterId, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2928,10 +2929,9 @@ export class ObservableCharacterApi {
      * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
      * Publish Character
      * @param characterId The characterId to be published
-     * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1(characterId: number, visibility: string, _options?: Configuration): Observable<number> {
-        return this.publishCharacter1WithHttpInfo(characterId, visibility, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
+    public publishCharacter1(characterId: number, _options?: Configuration): Observable<number> {
+        return this.publishCharacter1WithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<number>) => apiResponse.data));
     }
 
     /**
@@ -2968,7 +2968,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -2992,7 +2992,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -3100,7 +3100,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * Update Character
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
@@ -3125,7 +3125,7 @@ export class ObservableCharacterApi {
     }
 
     /**
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * Update Character
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
@@ -3564,9 +3564,10 @@ export class ObservableChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
+     * @param limit Messages limit
      */
-    public listMessagesWithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const requestContextPromise = this.requestFactory.listMessages(chatId, _options);
+    public listMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listMessages(chatId, limit, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -3588,9 +3589,10 @@ export class ObservableChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
+     * @param limit Messages limit
      */
-    public listMessages(chatId: string, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
-        return this.listMessagesWithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    public listMessages(chatId: string, limit: number, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listMessagesWithHttpInfo(chatId, limit, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
     }
 
     /**
@@ -3634,10 +3636,9 @@ export class ObservableChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
-     * @param limit Messages limit
      */
-    public listMessages2WithHttpInfo(chatId: string, limit: number, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const requestContextPromise = this.requestFactory.listMessages2(chatId, limit, _options);
+    public listMessages2WithHttpInfo(chatId: string, _options?: Configuration): Observable<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const requestContextPromise = this.requestFactory.listMessages2(chatId, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -3659,10 +3660,9 @@ export class ObservableChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
-     * @param limit Messages limit
      */
-    public listMessages2(chatId: string, limit: number, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
-        return this.listMessages2WithHttpInfo(chatId, limit, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
+    public listMessages2(chatId: string, _options?: Configuration): Observable<Array<ChatMessageRecordDTO>> {
+        return this.listMessages2WithHttpInfo(chatId, _options).pipe(map((apiResponse: HttpInfo<Array<ChatMessageRecordDTO>>) => apiResponse.data));
     }
 
     /**
@@ -3804,7 +3804,7 @@ export class ObservableChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
      * Send Assistant for Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
@@ -3829,7 +3829,7 @@ export class ObservableChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
      * Send Assistant for Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
@@ -3839,7 +3839,7 @@ export class ObservableChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
@@ -3864,7 +3864,7 @@ export class ObservableChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
@@ -4311,11 +4311,10 @@ export class ObservableInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listCharactersByStatistic1(statsType, pageSize, pageNum, asc, _options);
+    public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listCharactersByStatistic1(statsType, pageSize, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4338,11 +4337,10 @@ export class ObservableInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
-        return this.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
+    public listCharactersByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
+        return this.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4350,10 +4348,11 @@ export class ObservableInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listCharactersByStatistic2(statsType, pageSize, asc, _options);
+    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listCharactersByStatistic2(statsType, pageSize, pageNum, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4376,10 +4375,11 @@ export class ObservableInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
-        return this.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
+    public listCharactersByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<CharacterSummaryStatsDTO>> {
+        return this.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4424,10 +4424,11 @@ export class ObservableInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPluginsByStatistic(statsType, pageSize, asc, _options);
+    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPluginsByStatistic(statsType, pageSize, pageNum, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4450,22 +4451,21 @@ export class ObservableInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
-        return this.listPluginsByStatisticWithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
+    public listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
+        return this.listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
      * List plugins based on statistics, including interactive statistical data.
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPluginsByStatistic1(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatistic1WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPluginsByStatistic1(statsType, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4487,22 +4487,21 @@ export class ObservableInteractiveStatisticsApi {
      * List plugins based on statistics, including interactive statistical data.
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
-        return this.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
+    public listPluginsByStatistic1(statsType: string, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
+        return this.listPluginsByStatistic1WithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
      * List plugins based on statistics, including interactive statistical data.
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPluginsByStatistic2(statsType, asc, _options);
+    public listPluginsByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPluginsByStatistic2(statsType, pageSize, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4524,21 +4523,21 @@ export class ObservableInteractiveStatisticsApi {
      * List plugins based on statistics, including interactive statistical data.
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
-        return this.listPluginsByStatistic2WithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
+    public listPluginsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<PluginSummaryStatsDTO>> {
+        return this.listPluginsByStatistic2WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PluginSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
      * List prompts based on statistics, including interactive statistical data.
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPromptsByStatistic(statsType, pageSize, asc, _options);
+    public listPromptsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPromptsByStatistic(statsType, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4560,11 +4559,10 @@ export class ObservableInteractiveStatisticsApi {
      * List prompts based on statistics, including interactive statistical data.
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<PromptSummaryStatsDTO>> {
-        return this.listPromptsByStatisticWithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryStatsDTO>>) => apiResponse.data));
+    public listPromptsByStatistic(statsType: string, asc?: string, _options?: Configuration): Observable<Array<PromptSummaryStatsDTO>> {
+        return this.listPromptsByStatisticWithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
@@ -4572,11 +4570,10 @@ export class ObservableInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPromptsByStatistic1(statsType, pageSize, pageNum, asc, _options);
+    public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPromptsByStatistic1(statsType, pageSize, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4599,21 +4596,22 @@ export class ObservableInteractiveStatisticsApi {
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<PromptSummaryStatsDTO>> {
-        return this.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryStatsDTO>>) => apiResponse.data));
+    public listPromptsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Observable<Array<PromptSummaryStatsDTO>> {
+        return this.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryStatsDTO>>) => apiResponse.data));
     }
 
     /**
      * List prompts based on statistics, including interactive statistical data.
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const requestContextPromise = this.requestFactory.listPromptsByStatistic2(statsType, asc, _options);
+    public listPromptsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const requestContextPromise = this.requestFactory.listPromptsByStatistic2(statsType, pageSize, pageNum, asc, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -4635,10 +4633,12 @@ export class ObservableInteractiveStatisticsApi {
      * List prompts based on statistics, including interactive statistical data.
      * List Prompts by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Observable<Array<PromptSummaryStatsDTO>> {
-        return this.listPromptsByStatistic2WithHttpInfo(statsType, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryStatsDTO>>) => apiResponse.data));
+    public listPromptsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Observable<Array<PromptSummaryStatsDTO>> {
+        return this.listPromptsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options).pipe(map((apiResponse: HttpInfo<Array<PromptSummaryStatsDTO>>) => apiResponse.data));
     }
 
 }
@@ -4693,7 +4693,7 @@ export class ObservableOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
@@ -4717,7 +4717,7 @@ export class ObservableOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
@@ -4829,7 +4829,7 @@ export class ObservableOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
@@ -4853,7 +4853,7 @@ export class ObservableOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
@@ -5051,7 +5051,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -5075,7 +5075,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -5084,7 +5084,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
@@ -5108,7 +5108,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
@@ -5381,7 +5381,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -5405,7 +5405,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -5447,7 +5447,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
@@ -5472,7 +5472,7 @@ export class ObservablePluginApi {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
@@ -5566,7 +5566,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -5590,7 +5590,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -5599,7 +5599,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
@@ -5623,7 +5623,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
@@ -6129,7 +6129,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -6153,7 +6153,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -6261,7 +6261,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
@@ -6285,7 +6285,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
@@ -6294,7 +6294,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
@@ -6319,7 +6319,7 @@ export class ObservablePromptApi {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated

@@ -4,87 +4,24 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**createToken**](AccountApi.md#createToken) | **POST** /api/v1/account/token | Create API Token |
-| [**createToken1**](AccountApi.md#createToken1) | **POST** /api/v1/account/token/{duration} | Create API Token |
-| [**deleteToken**](AccountApi.md#deleteToken) | **DELETE** /api/v1/account/token/{token} | Delete API Token |
-| [**deleteTokenById**](AccountApi.md#deleteTokenById) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id |
-| [**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token |
-| [**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id |
-| [**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id |
-| [**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic | Get User Basic Information |
-| [**getUserBasic1**](AccountApi.md#getUserBasic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information |
-| [**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details |
-| [**listTokens**](AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens |
-| [**updateUserInfo**](AccountApi.md#updateUserInfo) | **PUT** /api/v1/account/details | Update User Details |
-| [**uploadUserPicture**](AccountApi.md#uploadUserPicture) | **POST** /api/v1/account/picture | Upload User Picture |
+| [**createToken**](AccountApi.md#createToken) | **POST** /api/v2/account/token/{duration} | Create API Token |
+| [**createToken1**](AccountApi.md#createToken1) | **POST** /api/v2/account/token | Create API Token |
+| [**deleteToken**](AccountApi.md#deleteToken) | **DELETE** /api/v2/account/token/{token} | Delete API Token |
+| [**deleteTokenById**](AccountApi.md#deleteTokenById) | **DELETE** /api/v2/account/token/id/{id} | Delete API Token by Id |
+| [**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v2/account/token/{token} | Disable API Token |
+| [**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v2/account/token/id/{id} | Disable API Token by Id |
+| [**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v2/account/token/id/{id} | Get API Token by Id |
+| [**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v2/account/basic/{username} | Get User Basic Information |
+| [**getUserBasic1**](AccountApi.md#getUserBasic1) | **GET** /api/v2/account/basic | Get User Basic Information |
+| [**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v2/account/details | Get User Details |
+| [**listTokens**](AccountApi.md#listTokens) | **GET** /api/v2/account/tokens | List API Tokens |
+| [**updateUserInfo**](AccountApi.md#updateUserInfo) | **PUT** /api/v2/account/details | Update User Details |
+| [**uploadUserPicture**](AccountApi.md#uploadUserPicture) | **POST** /api/v2/account/picture | Upload User Picture |
 
 
 <a id="createToken"></a>
 # **createToken**
-> String createToken()
-
-Create API Token
-
-Create a timed API Token, valid for {duration} seconds.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.AccountApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    AccountApi apiInstance = new AccountApi(defaultClient);
-    try {
-      String result = apiInstance.createToken();
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling AccountApi#createToken");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-This endpoint does not need any parameter.
-
-### Return type
-
-**String**
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: text/plain
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="createToken1"></a>
-# **createToken1**
-> String createToken1(duration)
+> String createToken(duration)
 
 Create API Token
 
@@ -112,10 +49,10 @@ public class Example {
     AccountApi apiInstance = new AccountApi(defaultClient);
     Long duration = 56L; // Long | Token validity duration (seconds)
     try {
-      String result = apiInstance.createToken1(duration);
+      String result = apiInstance.createToken(duration);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling AccountApi#createToken1");
+      System.err.println("Exception when calling AccountApi#createToken");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -130,6 +67,69 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **duration** | **Long**| Token validity duration (seconds) | |
+
+### Return type
+
+**String**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="createToken1"></a>
+# **createToken1**
+> String createToken1()
+
+Create API Token
+
+Create a timed API Token, valid for {duration} seconds.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountApi apiInstance = new AccountApi(defaultClient);
+    try {
+      String result = apiInstance.createToken1();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountApi#createToken1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -486,70 +486,7 @@ public class Example {
 
 <a id="getUserBasic"></a>
 # **getUserBasic**
-> UserBasicInfoDTO getUserBasic()
-
-Get User Basic Information
-
-Return user basic information, including: username, nickname, avatar link.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.AccountApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    AccountApi apiInstance = new AccountApi(defaultClient);
-    try {
-      UserBasicInfoDTO result = apiInstance.getUserBasic();
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling AccountApi#getUserBasic");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-This endpoint does not need any parameter.
-
-### Return type
-
-[**UserBasicInfoDTO**](UserBasicInfoDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="getUserBasic1"></a>
-# **getUserBasic1**
-> UserBasicInfoDTO getUserBasic1(username)
+> UserBasicInfoDTO getUserBasic(username)
 
 Get User Basic Information
 
@@ -577,10 +514,10 @@ public class Example {
     AccountApi apiInstance = new AccountApi(defaultClient);
     String username = "username_example"; // String | Username
     try {
-      UserBasicInfoDTO result = apiInstance.getUserBasic1(username);
+      UserBasicInfoDTO result = apiInstance.getUserBasic(username);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling AccountApi#getUserBasic1");
+      System.err.println("Exception when calling AccountApi#getUserBasic");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -595,6 +532,69 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **username** | **String**| Username | |
+
+### Return type
+
+[**UserBasicInfoDTO**](UserBasicInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="getUserBasic1"></a>
+# **getUserBasic1**
+> UserBasicInfoDTO getUserBasic1()
+
+Get User Basic Information
+
+Return user basic information, including: username, nickname, avatar link.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountApi apiInstance = new AccountApi(defaultClient);
+    try {
+      UserBasicInfoDTO result = apiInstance.getUserBasic1();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountApi#getUserBasic1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
 
 ### Return type
 

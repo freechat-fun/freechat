@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Service
 @Tag(name = "Tag Manager (for biz, admin)", description = "Manage tags, callable only by super administrators and business administrators.")
-@RequestMapping("/api/v1/biz/admin/tag")
+@RequestMapping("/api/v2/biz/admin/tag")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

@@ -35,11 +35,11 @@ export default function ApiTokenPanel() {
   function handleCreate(): void {
     const duration = getSecondsBetweenDates(new Date(), tokenExpiresTime);
     if (tokenNeverExpires || duration <= 0) {
-      accountApi?.createToken()
+      accountApi?.createToken1()
         .then(() => getTokens())
         .catch(handleError);
     } else {
-      accountApi?.createToken1(duration)
+      accountApi?.createToken(duration)
         .then(() => getTokens())
         .catch(handleError);
     }

@@ -4,16 +4,16 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**addAiApiKey**](AIServiceApi.md#addAiApiKey) | **POST** /api/v1/ai/apikey | Add Model Provider Credential
-[**deleteAiApiKey**](AIServiceApi.md#deleteAiApiKey) | **DELETE** /api/v1/ai/apikey/{id} | Delete Credential of Model Provider
-[**disableAiApiKey**](AIServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
-[**enableAiApiKey**](AIServiceApi.md#enableAiApiKey) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
-[**getAiApiKey**](AIServiceApi.md#getAiApiKey) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-[**getAiModelInfo**](AIServiceApi.md#getAiModelInfo) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
-[**listAiApiKeys**](AIServiceApi.md#listAiApiKeys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-[**listAiModelInfo**](AIServiceApi.md#listAiModelInfo) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
-[**listAiModelInfo1**](AIServiceApi.md#listAiModelInfo1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
-[**listAiModelInfo2**](AIServiceApi.md#listAiModelInfo2) | **GET** /api/v1/public/ai/models | List Models
+[**addAiApiKey**](AIServiceApi.md#addAiApiKey) | **POST** /api/v2/ai/apikey | Add Model Provider Credential
+[**deleteAiApiKey**](AIServiceApi.md#deleteAiApiKey) | **DELETE** /api/v2/ai/apikey/{id} | Delete Credential of Model Provider
+[**disableAiApiKey**](AIServiceApi.md#disableAiApiKey) | **PUT** /api/v2/ai/apikey/disable/{id} | Disable Model Provider Credential
+[**enableAiApiKey**](AIServiceApi.md#enableAiApiKey) | **PUT** /api/v2/ai/apikey/enable/{id} | Enable Model Provider Credential
+[**getAiApiKey**](AIServiceApi.md#getAiApiKey) | **GET** /api/v2/ai/apikey/{id} | Get credential of Model Provider
+[**getAiModelInfo**](AIServiceApi.md#getAiModelInfo) | **GET** /api/v2/public/ai/model/{modelId} | Get Model Information
+[**listAiApiKeys**](AIServiceApi.md#listAiApiKeys) | **GET** /api/v2/ai/apikeys/{provider} | List Credentials of Model Provider
+[**listAiModelInfo**](AIServiceApi.md#listAiModelInfo) | **GET** /api/v2/public/ai/models | List Models
+[**listAiModelInfo1**](AIServiceApi.md#listAiModelInfo1) | **GET** /api/v2/public/ai/models/{pageSize} | List Models
+[**listAiModelInfo2**](AIServiceApi.md#listAiModelInfo2) | **GET** /api/v2/public/ai/models/{pageSize}/{pageNum} | List Models
 
 
 # **addAiApiKey**
@@ -402,17 +402,11 @@ Return model information by page, return the pageNum page, up to pageSize model 
 
 ```typescript
 import { createConfiguration, AIServiceApi } from '';
-import type { AIServiceApiListAiModelInfoRequest } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AIServiceApi(configuration);
 
-const request: AIServiceApiListAiModelInfoRequest = {
-    // Maximum quantity
-  pageSize: 1,
-    // Current page number
-  pageNum: 1,
-};
+const request = {};
 
 const data = await apiInstance.listAiModelInfo(request);
 console.log('API called successfully. Returned data:', data);
@@ -420,11 +414,7 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
- **pageNum** | [**number**] | Current page number | defaults to undefined
+This endpoint does not need any parameter.
 
 
 ### Return type
@@ -511,11 +501,17 @@ Return model information by page, return the pageNum page, up to pageSize model 
 
 ```typescript
 import { createConfiguration, AIServiceApi } from '';
+import type { AIServiceApiListAiModelInfo2Request } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AIServiceApi(configuration);
 
-const request = {};
+const request: AIServiceApiListAiModelInfo2Request = {
+    // Maximum quantity
+  pageSize: 1,
+    // Current page number
+  pageNum: 1,
+};
 
 const data = await apiInstance.listAiModelInfo2(request);
 console.log('API called successfully. Returned data:', data);
@@ -523,7 +519,11 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+ **pageNum** | [**number**] | Current page number | defaults to undefined
 
 
 ### Return type

@@ -4,43 +4,43 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**addCharacterBackend**](CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterUid} | Add Character Backend
-[**batchSearchCharacterDetails**](CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v1/character/batch/details/search | Batch Search Character Details
-[**batchSearchCharacterSummary**](CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
-[**cloneCharacter**](CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character
-[**countCharacters**](CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters
-[**countPublicCharacters**](CharacterApi.md#countPublicCharacters) | **POST** /api/v1/public/character/count | Calculate Number of Public Characters
-[**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
-[**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
-[**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
-[**deleteCharacterByUid**](CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v1/character/uid/{characterUid} | Delete Character by Uid
-[**deleteCharacterDocument**](CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
-[**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
-[**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
-[**exportCharacter**](CharacterApi.md#exportCharacter) | **GET** /api/v1/character/export/{characterId} | Export Character Configuration
-[**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
-[**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
-[**getCharacterSummary**](CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
-[**getDefaultCharacterBackend**](CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterUid} | Get Default Character Backend
-[**importCharacter**](CharacterApi.md#importCharacter) | **POST** /api/v1/character/import | Import Character Configuration
-[**listCharacterBackendIds**](CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterUid} | List Character Backend ids
-[**listCharacterBackends**](CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterUid} | List Character Backends
-[**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterUid} | List Character Documents
-[**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterUid} | List Character Pictures
-[**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
-[**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
-[**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
-[**publishCharacter1**](CharacterApi.md#publishCharacter1) | **POST** /api/v1/character/publish/{characterId}/{visibility} | Publish Character
-[**removeCharacterBackend**](CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
-[**searchCharacterDetails**](CharacterApi.md#searchCharacterDetails) | **POST** /api/v1/character/details/search | Search Character Details
-[**searchCharacterSummary**](CharacterApi.md#searchCharacterSummary) | **POST** /api/v1/character/search | Search Character Summary
-[**searchPublicCharacterSummary**](CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v1/public/character/search | Search Public Character Summary
-[**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
-[**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
-[**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-[**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterUid} | Upload Character Avatar
-[**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterUid} | Upload Character Document
-[**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterUid} | Upload Character Picture
+[**addCharacterBackend**](CharacterApi.md#addCharacterBackend) | **POST** /api/v2/character/backend/{characterUid} | Add Character Backend
+[**batchSearchCharacterDetails**](CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v2/character/batch/details/search | Batch Search Character Details
+[**batchSearchCharacterSummary**](CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v2/character/batch/search | Batch Search Character Summaries
+[**cloneCharacter**](CharacterApi.md#cloneCharacter) | **POST** /api/v2/character/clone/{characterId} | Clone Character
+[**countCharacters**](CharacterApi.md#countCharacters) | **POST** /api/v2/character/count | Calculate Number of Characters
+[**countPublicCharacters**](CharacterApi.md#countPublicCharacters) | **POST** /api/v2/public/character/count | Calculate Number of Public Characters
+[**createCharacter**](CharacterApi.md#createCharacter) | **POST** /api/v2/character | Create Character
+[**deleteCharacter**](CharacterApi.md#deleteCharacter) | **DELETE** /api/v2/character/{characterId} | Delete Character
+[**deleteCharacterByName**](CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v2/character/name/{name} | Delete Character by Name
+[**deleteCharacterByUid**](CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
+[**deleteCharacterDocument**](CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
+[**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+[**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
+[**exportCharacter**](CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
+[**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v2/character/details/{characterId} | Get Character Details
+[**getCharacterLatestIdByName**](CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v2/character/latest/{name} | Get Latest Character Id by Name
+[**getCharacterSummary**](CharacterApi.md#getCharacterSummary) | **GET** /api/v2/character/summary/{characterId} | Get Character Summary
+[**getDefaultCharacterBackend**](CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v2/character/backend/default/{characterUid} | Get Default Character Backend
+[**importCharacter**](CharacterApi.md#importCharacter) | **POST** /api/v2/character/import | Import Character Configuration
+[**listCharacterBackendIds**](CharacterApi.md#listCharacterBackendIds) | **GET** /api/v2/character/backend/ids/{characterUid} | List Character Backend ids
+[**listCharacterBackends**](CharacterApi.md#listCharacterBackends) | **GET** /api/v2/character/backends/{characterUid} | List Character Backends
+[**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
+[**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
+[**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+[**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
+[**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
+[**publishCharacter1**](CharacterApi.md#publishCharacter1) | **POST** /api/v2/character/publish/{characterId} | Publish Character
+[**removeCharacterBackend**](CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v2/character/backend/{characterBackendId} | Remove Character Backend
+[**searchCharacterDetails**](CharacterApi.md#searchCharacterDetails) | **POST** /api/v2/character/details/search | Search Character Details
+[**searchCharacterSummary**](CharacterApi.md#searchCharacterSummary) | **POST** /api/v2/character/search | Search Character Summary
+[**searchPublicCharacterSummary**](CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v2/public/character/search | Search Public Character Summary
+[**setDefaultCharacterBackend**](CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v2/character/backend/default/{characterBackendId} | Set Default Character Backend
+[**updateCharacter**](CharacterApi.md#updateCharacter) | **PUT** /api/v2/character/{characterId} | Update Character
+[**updateCharacterBackend**](CharacterApi.md#updateCharacterBackend) | **PUT** /api/v2/character/backend/{characterBackendId} | Update Character Backend
+[**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
+[**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
+[**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
 
 
 # **addCharacterBackend**
@@ -114,7 +114,7 @@ Name | Type | Description  | Notes
 # **batchSearchCharacterDetails**
 > Array<Array<CharacterDetailsDTO>> batchSearchCharacterDetails(characterQueryDTO)
 
-Batch call shortcut for /api/v1/character/details/search.
+Batch call shortcut for /api/v2/character/details/search.
 
 ### Example
 
@@ -187,7 +187,7 @@ Name | Type | Description  | Notes
 # **batchSearchCharacterSummary**
 > Array<Array<CharacterSummaryDTO>> batchSearchCharacterSummary(characterQueryDTO)
 
-Batch call shortcut for /api/v1/character/search.
+Batch call shortcut for /api/v2/character/search.
 
 ### Example
 
@@ -1497,6 +1497,8 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiPublishCharacterRequest = {
     // The characterId to be published
   characterId: 1,
+    // Visibility: public | private | ...
+  visibility: "visibility_example",
 };
 
 const data = await apiInstance.publishCharacter(request);
@@ -1509,6 +1511,7 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterId** | [**number**] | The characterId to be published | defaults to undefined
+ **visibility** | [**string**] | Visibility: public | private | ... | defaults to undefined
 
 
 ### Return type
@@ -1550,8 +1553,6 @@ const apiInstance = new CharacterApi(configuration);
 const request: CharacterApiPublishCharacter1Request = {
     // The characterId to be published
   characterId: 1,
-    // Visibility: public | private | ...
-  visibility: "visibility_example",
 };
 
 const data = await apiInstance.publishCharacter1(request);
@@ -1564,7 +1565,6 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterId** | [**number**] | The characterId to be published | defaults to undefined
- **visibility** | [**string**] | Visibility: public | private | ... | defaults to undefined
 
 
 ### Return type
@@ -1644,7 +1644,7 @@ Name | Type | Description  | Notes
 # **searchCharacterDetails**
 > Array<CharacterDetailsDTO> searchCharacterDetails(characterQueryDTO)
 
-Same as /api/v1/character/search, but returns detailed information of the character.
+Same as /api/v2/character/search, but returns detailed information of the character.
 
 ### Example
 
@@ -1910,7 +1910,7 @@ Name | Type | Description  | Notes
 # **updateCharacter**
 > boolean updateCharacter(characterUpdateDTO)
 
-Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
 
 ### Example
 

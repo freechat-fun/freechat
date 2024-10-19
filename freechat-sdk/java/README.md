@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.0.0
+- API version: 2.0.1
   - Generator version: 7.9.0
 
 # FreeChat: Create Friends for Yourself with AI
@@ -24,6 +24,7 @@ It also serves as a prompt engineering platform.
 - Supports characters evoking **proactive chat**.
 - Supports setting **quota limits** for characters.
 - Supports characters **importing and exporting**.
+- Supports **character-to-character chats**.
 - Supports individual **debugging and sharing prompts**.
 
 ## Snapshots
@@ -284,7 +285,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -300,7 +301,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.0.0"
+     implementation "fun.freechat:freechat-sdk:2.0.1"
   }
 ```
 
@@ -314,7 +315,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.0.0.jar`
+* `target/freechat-sdk-2.0.1.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -341,8 +342,9 @@ public class Example {
     bearerAuth.setBearerToken("BEARER TOKEN");
 
     AccountApi apiInstance = new AccountApi(defaultClient);
+    Long duration = 56L; // Long | Token validity duration (seconds)
     try {
-      String result = apiInstance.createToken();
+      String result = apiInstance.createToken(duration);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling AccountApi#createToken");
@@ -362,197 +364,197 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*AccountApi* | [**createToken**](docs/AccountApi.md#createToken) | **POST** /api/v1/account/token | Create API Token
-*AccountApi* | [**createToken1**](docs/AccountApi.md#createToken1) | **POST** /api/v1/account/token/{duration} | Create API Token
-*AccountApi* | [**deleteToken**](docs/AccountApi.md#deleteToken) | **DELETE** /api/v1/account/token/{token} | Delete API Token
-*AccountApi* | [**deleteTokenById**](docs/AccountApi.md#deleteTokenById) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id
-*AccountApi* | [**disableToken**](docs/AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token
-*AccountApi* | [**disableTokenById**](docs/AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
-*AccountApi* | [**getTokenById**](docs/AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
-*AccountApi* | [**getUserBasic**](docs/AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic | Get User Basic Information
-*AccountApi* | [**getUserBasic1**](docs/AccountApi.md#getUserBasic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
-*AccountApi* | [**getUserDetails**](docs/AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details
-*AccountApi* | [**listTokens**](docs/AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens
-*AccountApi* | [**updateUserInfo**](docs/AccountApi.md#updateUserInfo) | **PUT** /api/v1/account/details | Update User Details
-*AccountApi* | [**uploadUserPicture**](docs/AccountApi.md#uploadUserPicture) | **POST** /api/v1/account/picture | Upload User Picture
-*AccountManagerForAdminApi* | [**createTokenForUser**](docs/AccountManagerForAdminApi.md#createTokenForUser) | **POST** /api/v1/admin/token/{username}/{duration} | Create API Token for User.
-*AccountManagerForAdminApi* | [**createUser**](docs/AccountManagerForAdminApi.md#createUser) | **POST** /api/v1/admin/user | Create User
-*AccountManagerForAdminApi* | [**deleteTokenForUser**](docs/AccountManagerForAdminApi.md#deleteTokenForUser) | **DELETE** /api/v1/admin/token/{token} | Delete API Token
-*AccountManagerForAdminApi* | [**deleteUser**](docs/AccountManagerForAdminApi.md#deleteUser) | **DELETE** /api/v1/admin/user/{username} | Delete User
-*AccountManagerForAdminApi* | [**disableTokenForUser**](docs/AccountManagerForAdminApi.md#disableTokenForUser) | **PUT** /api/v1/admin/token/{token} | Disable API Token
-*AccountManagerForAdminApi* | [**getDetailsOfUser**](docs/AccountManagerForAdminApi.md#getDetailsOfUser) | **GET** /api/v1/admin/user/{username} | Get User Details
-*AccountManagerForAdminApi* | [**getUserByToken**](docs/AccountManagerForAdminApi.md#getUserByToken) | **GET** /api/v1/admin/tokenBy/{token} | Get User by API Token
-*AccountManagerForAdminApi* | [**listAuthoritiesOfUser**](docs/AccountManagerForAdminApi.md#listAuthoritiesOfUser) | **GET** /api/v1/admin/authority/{username} | List User Permissions
-*AccountManagerForAdminApi* | [**listTokensOfUser**](docs/AccountManagerForAdminApi.md#listTokensOfUser) | **GET** /api/v1/admin/token/{username} | Get API Token of User
-*AccountManagerForAdminApi* | [**listUsers**](docs/AccountManagerForAdminApi.md#listUsers) | **GET** /api/v1/admin/users/{pageSize}/{pageNum} | List User Information
-*AccountManagerForAdminApi* | [**listUsers1**](docs/AccountManagerForAdminApi.md#listUsers1) | **GET** /api/v1/admin/users/{pageSize} | List User Information
-*AccountManagerForAdminApi* | [**listUsers2**](docs/AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v1/admin/users | List User Information
-*AccountManagerForAdminApi* | [**updateAuthoritiesOfUser**](docs/AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v1/admin/authority/{username} | Update User Permissions
-*AccountManagerForAdminApi* | [**updateUser**](docs/AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v1/admin/user | Update User
-*AgentApi* | [**batchSearchAgentDetails**](docs/AgentApi.md#batchSearchAgentDetails) | **POST** /api/v1/agent/batch/details/search | Batch Search Agent Details
-*AgentApi* | [**batchSearchAgentSummary**](docs/AgentApi.md#batchSearchAgentSummary) | **POST** /api/v1/agent/batch/search | Batch Search Agent Summaries
-*AgentApi* | [**cloneAgent**](docs/AgentApi.md#cloneAgent) | **POST** /api/v1/agent/clone/{agentId} | Clone Agent
-*AgentApi* | [**cloneAgents**](docs/AgentApi.md#cloneAgents) | **POST** /api/v1/agent/batch/clone | Batch Clone Agents
-*AgentApi* | [**countAgents**](docs/AgentApi.md#countAgents) | **POST** /api/v1/agent/count | Calculate Number of Agents
-*AgentApi* | [**createAgent**](docs/AgentApi.md#createAgent) | **POST** /api/v1/agent | Create Agent
-*AgentApi* | [**createAgents**](docs/AgentApi.md#createAgents) | **POST** /api/v1/agent/batch | Batch Create Agents
-*AgentApi* | [**deleteAgent**](docs/AgentApi.md#deleteAgent) | **DELETE** /api/v1/agent/{agentId} | Delete Agent
-*AgentApi* | [**deleteAgents**](docs/AgentApi.md#deleteAgents) | **DELETE** /api/v1/agent/batch/delete | Batch Delete Agents
-*AgentApi* | [**getAgentDetails**](docs/AgentApi.md#getAgentDetails) | **GET** /api/v1/agent/details/{agentId} | Get Agent Details
-*AgentApi* | [**getAgentSummary**](docs/AgentApi.md#getAgentSummary) | **GET** /api/v1/agent/summary/{agentId} | Get Agent Summary
-*AgentApi* | [**listAgentVersionsByName**](docs/AgentApi.md#listAgentVersionsByName) | **POST** /api/v1/agent/versions/{name} | List Versions by Agent Name
-*AgentApi* | [**publishAgent**](docs/AgentApi.md#publishAgent) | **POST** /api/v1/agent/publish/{agentId}/{visibility} | Publish Agent
-*AgentApi* | [**searchAgentDetails**](docs/AgentApi.md#searchAgentDetails) | **POST** /api/v1/agent/details/search | Search Agent Details
-*AgentApi* | [**searchAgentSummary**](docs/AgentApi.md#searchAgentSummary) | **POST** /api/v1/agent/search | Search Agent Summary
-*AgentApi* | [**updateAgent**](docs/AgentApi.md#updateAgent) | **PUT** /api/v1/agent/{agentId} | Update Agent
-*AiServiceApi* | [**addAiApiKey**](docs/AiServiceApi.md#addAiApiKey) | **POST** /api/v1/ai/apikey | Add Model Provider Credential
-*AiServiceApi* | [**deleteAiApiKey**](docs/AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v1/ai/apikey/{id} | Delete Credential of Model Provider
-*AiServiceApi* | [**disableAiApiKey**](docs/AiServiceApi.md#disableAiApiKey) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
-*AiServiceApi* | [**enableAiApiKey**](docs/AiServiceApi.md#enableAiApiKey) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
-*AiServiceApi* | [**getAiApiKey**](docs/AiServiceApi.md#getAiApiKey) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-*AiServiceApi* | [**getAiModelInfo**](docs/AiServiceApi.md#getAiModelInfo) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
-*AiServiceApi* | [**listAiApiKeys**](docs/AiServiceApi.md#listAiApiKeys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-*AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
-*AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
-*AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v1/public/ai/models | List Models
-*AppConfigForAdminApi* | [**getAppConfigs**](docs/AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v1/admin/app/configs | Get Configurations
-*AppMetaForAdminApi* | [**expose**](docs/AppMetaForAdminApi.md#expose) | **GET** /api/v1/admin/app/expose | Expose DTO definitions
-*AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v1/admin/app/meta | Get Application Information
-*CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v1/character/backend/{characterUid} | Add Character Backend
-*CharacterApi* | [**batchSearchCharacterDetails**](docs/CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v1/character/batch/details/search | Batch Search Character Details
-*CharacterApi* | [**batchSearchCharacterSummary**](docs/CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v1/character/batch/search | Batch Search Character Summaries
-*CharacterApi* | [**cloneCharacter**](docs/CharacterApi.md#cloneCharacter) | **POST** /api/v1/character/clone/{characterId} | Clone Character
-*CharacterApi* | [**countCharacters**](docs/CharacterApi.md#countCharacters) | **POST** /api/v1/character/count | Calculate Number of Characters
-*CharacterApi* | [**countPublicCharacters**](docs/CharacterApi.md#countPublicCharacters) | **POST** /api/v1/public/character/count | Calculate Number of Public Characters
-*CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v1/character | Create Character
-*CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v1/character/{characterId} | Delete Character
-*CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v1/character/name/{name} | Delete Character by Name
-*CharacterApi* | [**deleteCharacterByUid**](docs/CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v1/character/uid/{characterUid} | Delete Character by Uid
-*CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v1/character/document/{key} | Delete Character Document
-*CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v1/character/picture/{key} | Delete Character Picture
-*CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v1/character/exists/name/{name} | Check If Character Name Exists
-*CharacterApi* | [**exportCharacter**](docs/CharacterApi.md#exportCharacter) | **GET** /api/v1/character/export/{characterId} | Export Character Configuration
-*CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v1/character/details/{characterId} | Get Character Details
-*CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v1/character/latest/{name} | Get Latest Character Id by Name
-*CharacterApi* | [**getCharacterSummary**](docs/CharacterApi.md#getCharacterSummary) | **GET** /api/v1/character/summary/{characterId} | Get Character Summary
-*CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v1/character/backend/default/{characterUid} | Get Default Character Backend
-*CharacterApi* | [**importCharacter**](docs/CharacterApi.md#importCharacter) | **POST** /api/v1/character/import | Import Character Configuration
-*CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v1/character/backend/ids/{characterUid} | List Character Backend ids
-*CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v1/character/backends/{characterUid} | List Character Backends
-*CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v1/character/documents/{characterUid} | List Character Documents
-*CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v1/character/pictures/{characterUid} | List Character Pictures
-*CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v1/character/versions/{name} | List Versions by Character Name
-*CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v1/character/create/name/{desired} | Create New Character Name
-*CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v1/character/publish/{characterId} | Publish Character
-*CharacterApi* | [**publishCharacter1**](docs/CharacterApi.md#publishCharacter1) | **POST** /api/v1/character/publish/{characterId}/{visibility} | Publish Character
-*CharacterApi* | [**removeCharacterBackend**](docs/CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v1/character/backend/{characterBackendId} | Remove Character Backend
-*CharacterApi* | [**searchCharacterDetails**](docs/CharacterApi.md#searchCharacterDetails) | **POST** /api/v1/character/details/search | Search Character Details
-*CharacterApi* | [**searchCharacterSummary**](docs/CharacterApi.md#searchCharacterSummary) | **POST** /api/v1/character/search | Search Character Summary
-*CharacterApi* | [**searchPublicCharacterSummary**](docs/CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v1/public/character/search | Search Public Character Summary
-*CharacterApi* | [**setDefaultCharacterBackend**](docs/CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v1/character/backend/default/{characterBackendId} | Set Default Character Backend
-*CharacterApi* | [**updateCharacter**](docs/CharacterApi.md#updateCharacter) | **PUT** /api/v1/character/{characterId} | Update Character
-*CharacterApi* | [**updateCharacterBackend**](docs/CharacterApi.md#updateCharacterBackend) | **PUT** /api/v1/character/backend/{characterBackendId} | Update Character Backend
-*CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v1/character/avatar/{characterUid} | Upload Character Avatar
-*CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v1/character/document/{characterUid} | Upload Character Document
-*CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v1/character/picture/{characterUid} | Upload Character Picture
-*ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
-*ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
-*ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
-*ChatApi* | [**getMemoryUsage**](docs/ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
-*ChatApi* | [**listChats**](docs/ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
-*ChatApi* | [**listDebugMessages**](docs/ChatApi.md#listDebugMessages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
-*ChatApi* | [**listDebugMessages1**](docs/ChatApi.md#listDebugMessages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
-*ChatApi* | [**listDebugMessages2**](docs/ChatApi.md#listDebugMessages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages
-*ChatApi* | [**listMessages**](docs/ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
-*ChatApi* | [**listMessages1**](docs/ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
-*ChatApi* | [**listMessages2**](docs/ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
-*ChatApi* | [**rollbackMessages**](docs/ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
-*ChatApi* | [**sendAssistant**](docs/ChatApi.md#sendAssistant) | **GET** /api/v1/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
-*ChatApi* | [**sendMessage**](docs/ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message
-*ChatApi* | [**startChat**](docs/ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session
-*ChatApi* | [**streamSendAssistant**](docs/ChatApi.md#streamSendAssistant) | **GET** /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
-*ChatApi* | [**streamSendMessage**](docs/ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
-*ChatApi* | [**updateChat**](docs/ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session
-*EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v1/admin/encryption/encrypt/{text} | Encrypt Text
-*InteractiveStatisticsApi* | [**addStatistic**](docs/InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
-*InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v1/public/score/{infoType}/{infoId} | Get Score for Resource
-*InteractiveStatisticsApi* | [**getStatistic**](docs/InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v1/public/stats/{infoType}/{infoId}/{statsType} | Get Statistics
-*InteractiveStatisticsApi* | [**getStatistics**](docs/InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v1/public/stats/{infoType}/{infoId} | Get All Statistics
-*InteractiveStatisticsApi* | [**increaseStatistic**](docs/InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v1/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
-*InteractiveStatisticsApi* | [**listAgentsByStatistic**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
-*InteractiveStatisticsApi* | [**listAgentsByStatistic1**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
-*InteractiveStatisticsApi* | [**listAgentsByStatistic2**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v1/public/stats/agents/by/{statsType} | List Agents by Statistics
-*InteractiveStatisticsApi* | [**listCharactersByStatistic**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v1/public/stats/characters/by/{statsType} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listCharactersByStatistic1**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listCharactersByStatistic2**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v1/public/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
-*InteractiveStatisticsApi* | [**listHotTags**](docs/InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v1/public/tags/hot/{infoType}/{pageSize} | Hot Tags
-*InteractiveStatisticsApi* | [**listPluginsByStatistic**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
-*InteractiveStatisticsApi* | [**listPluginsByStatistic1**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
-*InteractiveStatisticsApi* | [**listPluginsByStatistic2**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v1/public/stats/plugins/by/{statsType} | List Plugins by Statistics
-*InteractiveStatisticsApi* | [**listPromptsByStatistic**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics
-*InteractiveStatisticsApi* | [**listPromptsByStatistic1**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics
-*InteractiveStatisticsApi* | [**listPromptsByStatistic2**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v1/public/stats/prompts/by/{statsType} | List Prompts by Statistics
-*OrganizationApi* | [**getOwners**](docs/OrganizationApi.md#getOwners) | **GET** /api/v1/org/owners | Get My Superior Relationship
-*OrganizationApi* | [**getOwnersDot**](docs/OrganizationApi.md#getOwnersDot) | **GET** /api/v1/org/owners/dot | Get DOT of Superior Relationship
-*OrganizationApi* | [**getSubordinateOwners**](docs/OrganizationApi.md#getSubordinateOwners) | **GET** /api/v1/org/manage/{username}/owners | Get Superior Relationship
-*OrganizationApi* | [**getSubordinateSubordinates**](docs/OrganizationApi.md#getSubordinateSubordinates) | **GET** /api/v1/org/manage/{username}/subordinates | Get Subordinate Relationship
-*OrganizationApi* | [**getSubordinates**](docs/OrganizationApi.md#getSubordinates) | **GET** /api/v1/org/subordinates | Get My Subordinate Relationship
-*OrganizationApi* | [**getSubordinatesDot**](docs/OrganizationApi.md#getSubordinatesDot) | **GET** /api/v1/org/subordinates/dot | Get DOT of Subordinate Relationship
-*OrganizationApi* | [**listSubordinateAuthorities**](docs/OrganizationApi.md#listSubordinateAuthorities) | **GET** /api/v1/org/authority/{username} | List Subordinate Permissions
-*OrganizationApi* | [**removeSubordinateSubordinatesTree**](docs/OrganizationApi.md#removeSubordinateSubordinatesTree) | **DELETE** /api/v1/org/manage/{username}/subordinates | Clear Subordinate Relationship
-*OrganizationApi* | [**updateSubordinateAuthorities**](docs/OrganizationApi.md#updateSubordinateAuthorities) | **PUT** /api/v1/org/authority/{username} | Update Subordinate Permissions
-*OrganizationApi* | [**updateSubordinateOwners**](docs/OrganizationApi.md#updateSubordinateOwners) | **PUT** /api/v1/org/manage/{username}/owners | Update Superior Relationship
-*OrganizationApi* | [**updateSubordinateSubordinates**](docs/OrganizationApi.md#updateSubordinateSubordinates) | **PUT** /api/v1/org/manage/{username}/subordinates | Update Subordinate Relationship
-*PluginApi* | [**batchSearchPluginDetails**](docs/PluginApi.md#batchSearchPluginDetails) | **POST** /api/v1/plugin/batch/details/search | Batch Search Plugin Details
-*PluginApi* | [**batchSearchPluginSummary**](docs/PluginApi.md#batchSearchPluginSummary) | **POST** /api/v1/plugin/batch/search | Batch Search Plugin Summaries
-*PluginApi* | [**countPlugins**](docs/PluginApi.md#countPlugins) | **POST** /api/v1/plugin/count | Calculate Number of Plugins
-*PluginApi* | [**createPlugin**](docs/PluginApi.md#createPlugin) | **POST** /api/v1/plugin | Create Plugin
-*PluginApi* | [**createPlugins**](docs/PluginApi.md#createPlugins) | **POST** /api/v1/plugin/batch | Batch Create Plugins
-*PluginApi* | [**deletePlugin**](docs/PluginApi.md#deletePlugin) | **DELETE** /api/v1/plugin/{pluginId} | Delete Plugin
-*PluginApi* | [**deletePlugins**](docs/PluginApi.md#deletePlugins) | **DELETE** /api/v1/plugin/batch | Batch Delete Plugins
-*PluginApi* | [**getPluginDetails**](docs/PluginApi.md#getPluginDetails) | **GET** /api/v1/plugin/details/{pluginId} | Get Plugin Details
-*PluginApi* | [**getPluginSummary**](docs/PluginApi.md#getPluginSummary) | **GET** /api/v1/plugin/summary/{pluginId} | Get Plugin Summary
-*PluginApi* | [**refreshPluginInfo**](docs/PluginApi.md#refreshPluginInfo) | **PUT** /api/v1/plugin/refresh/{pluginId} | Refresh Plugin Information
-*PluginApi* | [**searchPluginDetails**](docs/PluginApi.md#searchPluginDetails) | **POST** /api/v1/plugin/details/search | Search Plugin Details
-*PluginApi* | [**searchPluginSummary**](docs/PluginApi.md#searchPluginSummary) | **POST** /api/v1/plugin/search | Search Plugin Summary
-*PluginApi* | [**updatePlugin**](docs/PluginApi.md#updatePlugin) | **PUT** /api/v1/plugin/{pluginId} | Update Plugin
-*PromptApi* | [**applyPromptRef**](docs/PromptApi.md#applyPromptRef) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-*PromptApi* | [**applyPromptTemplate**](docs/PromptApi.md#applyPromptTemplate) | **POST** /api/v1/prompt/apply/template | Apply Parameters to Prompt Template
-*PromptApi* | [**batchSearchPromptDetails**](docs/PromptApi.md#batchSearchPromptDetails) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
-*PromptApi* | [**batchSearchPromptSummary**](docs/PromptApi.md#batchSearchPromptSummary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
-*PromptApi* | [**clonePrompt**](docs/PromptApi.md#clonePrompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
-*PromptApi* | [**clonePrompts**](docs/PromptApi.md#clonePrompts) | **POST** /api/v1/prompt/batch/clone | Batch Clone Prompts
-*PromptApi* | [**countPrompts**](docs/PromptApi.md#countPrompts) | **POST** /api/v1/prompt/count | Calculate Number of Prompts
-*PromptApi* | [**countPublicPrompts**](docs/PromptApi.md#countPublicPrompts) | **POST** /api/v1/public/prompt/count | Calculate Number of Public Prompts
-*PromptApi* | [**createPrompt**](docs/PromptApi.md#createPrompt) | **POST** /api/v1/prompt | Create Prompt
-*PromptApi* | [**createPrompts**](docs/PromptApi.md#createPrompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
-*PromptApi* | [**deletePrompt**](docs/PromptApi.md#deletePrompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
-*PromptApi* | [**deletePromptByName**](docs/PromptApi.md#deletePromptByName) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
-*PromptApi* | [**deletePrompts**](docs/PromptApi.md#deletePrompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
-*PromptApi* | [**existsPromptName**](docs/PromptApi.md#existsPromptName) | **GET** /api/v1/prompt/exists/name/{name} | Check If Prompt Name Exists
-*PromptApi* | [**getPromptDetails**](docs/PromptApi.md#getPromptDetails) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
-*PromptApi* | [**getPromptSummary**](docs/PromptApi.md#getPromptSummary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
-*PromptApi* | [**listPromptVersionsByName**](docs/PromptApi.md#listPromptVersionsByName) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
-*PromptApi* | [**newPromptName**](docs/PromptApi.md#newPromptName) | **GET** /api/v1/prompt/create/name/{desired} | Create New Prompt Name
-*PromptApi* | [**publishPrompt**](docs/PromptApi.md#publishPrompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
-*PromptApi* | [**searchPromptDetails**](docs/PromptApi.md#searchPromptDetails) | **POST** /api/v1/prompt/details/search | Search Prompt Details
-*PromptApi* | [**searchPromptSummary**](docs/PromptApi.md#searchPromptSummary) | **POST** /api/v1/prompt/search | Search Prompt Summary
-*PromptApi* | [**searchPublicPromptSummary**](docs/PromptApi.md#searchPublicPromptSummary) | **POST** /api/v1/public/prompt/search | Search Public Prompt Summary
-*PromptApi* | [**sendPrompt**](docs/PromptApi.md#sendPrompt) | **POST** /api/v1/prompt/send | Send Prompt
-*PromptApi* | [**streamSendPrompt**](docs/PromptApi.md#streamSendPrompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back
-*PromptApi* | [**updatePrompt**](docs/PromptApi.md#updatePrompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
-*PromptTaskApi* | [**createPromptTask**](docs/PromptTaskApi.md#createPromptTask) | **POST** /api/v1/prompt/task | Create Prompt Task
-*PromptTaskApi* | [**deletePromptTask**](docs/PromptTaskApi.md#deletePromptTask) | **DELETE** /api/v1/prompt/task/{promptTaskId} | Delete Prompt Task
-*PromptTaskApi* | [**getPromptTask**](docs/PromptTaskApi.md#getPromptTask) | **GET** /api/v1/prompt/task/{promptTaskId} | Get Prompt Task
-*PromptTaskApi* | [**updatePromptTask**](docs/PromptTaskApi.md#updatePromptTask) | **PUT** /api/v1/prompt/task/{promptTaskId} | Update Prompt Task
-*RagApi* | [**cancelRagTask**](docs/RagApi.md#cancelRagTask) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task
-*RagApi* | [**createRagTask**](docs/RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterUid} | Create RAG Task
-*RagApi* | [**deleteRagTask**](docs/RagApi.md#deleteRagTask) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task
-*RagApi* | [**getRagTask**](docs/RagApi.md#getRagTask) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task
-*RagApi* | [**getRagTaskStatus**](docs/RagApi.md#getRagTaskStatus) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status
-*RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterUid} | List RAG Tasks
-*RagApi* | [**startRagTask**](docs/RagApi.md#startRagTask) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task
-*RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task
+*AccountApi* | [**createToken**](docs/AccountApi.md#createToken) | **POST** /api/v2/account/token/{duration} | Create API Token
+*AccountApi* | [**createToken1**](docs/AccountApi.md#createToken1) | **POST** /api/v2/account/token | Create API Token
+*AccountApi* | [**deleteToken**](docs/AccountApi.md#deleteToken) | **DELETE** /api/v2/account/token/{token} | Delete API Token
+*AccountApi* | [**deleteTokenById**](docs/AccountApi.md#deleteTokenById) | **DELETE** /api/v2/account/token/id/{id} | Delete API Token by Id
+*AccountApi* | [**disableToken**](docs/AccountApi.md#disableToken) | **PUT** /api/v2/account/token/{token} | Disable API Token
+*AccountApi* | [**disableTokenById**](docs/AccountApi.md#disableTokenById) | **PUT** /api/v2/account/token/id/{id} | Disable API Token by Id
+*AccountApi* | [**getTokenById**](docs/AccountApi.md#getTokenById) | **GET** /api/v2/account/token/id/{id} | Get API Token by Id
+*AccountApi* | [**getUserBasic**](docs/AccountApi.md#getUserBasic) | **GET** /api/v2/account/basic/{username} | Get User Basic Information
+*AccountApi* | [**getUserBasic1**](docs/AccountApi.md#getUserBasic1) | **GET** /api/v2/account/basic | Get User Basic Information
+*AccountApi* | [**getUserDetails**](docs/AccountApi.md#getUserDetails) | **GET** /api/v2/account/details | Get User Details
+*AccountApi* | [**listTokens**](docs/AccountApi.md#listTokens) | **GET** /api/v2/account/tokens | List API Tokens
+*AccountApi* | [**updateUserInfo**](docs/AccountApi.md#updateUserInfo) | **PUT** /api/v2/account/details | Update User Details
+*AccountApi* | [**uploadUserPicture**](docs/AccountApi.md#uploadUserPicture) | **POST** /api/v2/account/picture | Upload User Picture
+*AccountManagerForAdminApi* | [**createTokenForUser**](docs/AccountManagerForAdminApi.md#createTokenForUser) | **POST** /api/v2/admin/token/{username}/{duration} | Create API Token for User.
+*AccountManagerForAdminApi* | [**createUser**](docs/AccountManagerForAdminApi.md#createUser) | **POST** /api/v2/admin/user | Create User
+*AccountManagerForAdminApi* | [**deleteTokenForUser**](docs/AccountManagerForAdminApi.md#deleteTokenForUser) | **DELETE** /api/v2/admin/token/{token} | Delete API Token
+*AccountManagerForAdminApi* | [**deleteUser**](docs/AccountManagerForAdminApi.md#deleteUser) | **DELETE** /api/v2/admin/user/{username} | Delete User
+*AccountManagerForAdminApi* | [**disableTokenForUser**](docs/AccountManagerForAdminApi.md#disableTokenForUser) | **PUT** /api/v2/admin/token/{token} | Disable API Token
+*AccountManagerForAdminApi* | [**getDetailsOfUser**](docs/AccountManagerForAdminApi.md#getDetailsOfUser) | **GET** /api/v2/admin/user/{username} | Get User Details
+*AccountManagerForAdminApi* | [**getUserByToken**](docs/AccountManagerForAdminApi.md#getUserByToken) | **GET** /api/v2/admin/tokenBy/{token} | Get User by API Token
+*AccountManagerForAdminApi* | [**listAuthoritiesOfUser**](docs/AccountManagerForAdminApi.md#listAuthoritiesOfUser) | **GET** /api/v2/admin/authority/{username} | List User Permissions
+*AccountManagerForAdminApi* | [**listTokensOfUser**](docs/AccountManagerForAdminApi.md#listTokensOfUser) | **GET** /api/v2/admin/token/{username} | Get API Token of User
+*AccountManagerForAdminApi* | [**listUsers**](docs/AccountManagerForAdminApi.md#listUsers) | **GET** /api/v2/admin/users/{pageSize}/{pageNum} | List User Information
+*AccountManagerForAdminApi* | [**listUsers1**](docs/AccountManagerForAdminApi.md#listUsers1) | **GET** /api/v2/admin/users | List User Information
+*AccountManagerForAdminApi* | [**listUsers2**](docs/AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v2/admin/users/{pageSize} | List User Information
+*AccountManagerForAdminApi* | [**updateAuthoritiesOfUser**](docs/AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v2/admin/authority/{username} | Update User Permissions
+*AccountManagerForAdminApi* | [**updateUser**](docs/AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v2/admin/user | Update User
+*AgentApi* | [**batchSearchAgentDetails**](docs/AgentApi.md#batchSearchAgentDetails) | **POST** /api/v2/agent/batch/details/search | Batch Search Agent Details
+*AgentApi* | [**batchSearchAgentSummary**](docs/AgentApi.md#batchSearchAgentSummary) | **POST** /api/v2/agent/batch/search | Batch Search Agent Summaries
+*AgentApi* | [**cloneAgent**](docs/AgentApi.md#cloneAgent) | **POST** /api/v2/agent/clone/{agentId} | Clone Agent
+*AgentApi* | [**cloneAgents**](docs/AgentApi.md#cloneAgents) | **POST** /api/v2/agent/batch/clone | Batch Clone Agents
+*AgentApi* | [**countAgents**](docs/AgentApi.md#countAgents) | **POST** /api/v2/agent/count | Calculate Number of Agents
+*AgentApi* | [**createAgent**](docs/AgentApi.md#createAgent) | **POST** /api/v2/agent | Create Agent
+*AgentApi* | [**createAgents**](docs/AgentApi.md#createAgents) | **POST** /api/v2/agent/batch | Batch Create Agents
+*AgentApi* | [**deleteAgent**](docs/AgentApi.md#deleteAgent) | **DELETE** /api/v2/agent/{agentId} | Delete Agent
+*AgentApi* | [**deleteAgents**](docs/AgentApi.md#deleteAgents) | **DELETE** /api/v2/agent/batch/delete | Batch Delete Agents
+*AgentApi* | [**getAgentDetails**](docs/AgentApi.md#getAgentDetails) | **GET** /api/v2/agent/details/{agentId} | Get Agent Details
+*AgentApi* | [**getAgentSummary**](docs/AgentApi.md#getAgentSummary) | **GET** /api/v2/agent/summary/{agentId} | Get Agent Summary
+*AgentApi* | [**listAgentVersionsByName**](docs/AgentApi.md#listAgentVersionsByName) | **POST** /api/v2/agent/versions/{name} | List Versions by Agent Name
+*AgentApi* | [**publishAgent**](docs/AgentApi.md#publishAgent) | **POST** /api/v2/agent/publish/{agentId}/{visibility} | Publish Agent
+*AgentApi* | [**searchAgentDetails**](docs/AgentApi.md#searchAgentDetails) | **POST** /api/v2/agent/details/search | Search Agent Details
+*AgentApi* | [**searchAgentSummary**](docs/AgentApi.md#searchAgentSummary) | **POST** /api/v2/agent/search | Search Agent Summary
+*AgentApi* | [**updateAgent**](docs/AgentApi.md#updateAgent) | **PUT** /api/v2/agent/{agentId} | Update Agent
+*AiServiceApi* | [**addAiApiKey**](docs/AiServiceApi.md#addAiApiKey) | **POST** /api/v2/ai/apikey | Add Model Provider Credential
+*AiServiceApi* | [**deleteAiApiKey**](docs/AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v2/ai/apikey/{id} | Delete Credential of Model Provider
+*AiServiceApi* | [**disableAiApiKey**](docs/AiServiceApi.md#disableAiApiKey) | **PUT** /api/v2/ai/apikey/disable/{id} | Disable Model Provider Credential
+*AiServiceApi* | [**enableAiApiKey**](docs/AiServiceApi.md#enableAiApiKey) | **PUT** /api/v2/ai/apikey/enable/{id} | Enable Model Provider Credential
+*AiServiceApi* | [**getAiApiKey**](docs/AiServiceApi.md#getAiApiKey) | **GET** /api/v2/ai/apikey/{id} | Get credential of Model Provider
+*AiServiceApi* | [**getAiModelInfo**](docs/AiServiceApi.md#getAiModelInfo) | **GET** /api/v2/public/ai/model/{modelId} | Get Model Information
+*AiServiceApi* | [**listAiApiKeys**](docs/AiServiceApi.md#listAiApiKeys) | **GET** /api/v2/ai/apikeys/{provider} | List Credentials of Model Provider
+*AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v2/public/ai/models | List Models
+*AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v2/public/ai/models/{pageSize} | List Models
+*AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v2/public/ai/models/{pageSize}/{pageNum} | List Models
+*AppConfigForAdminApi* | [**getAppConfigs**](docs/AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v2/admin/app/configs | Get Configurations
+*AppMetaForAdminApi* | [**expose**](docs/AppMetaForAdminApi.md#expose) | **GET** /api/v2/admin/app/expose | Expose DTO definitions
+*AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v2/admin/app/meta | Get Application Information
+*CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v2/character/backend/{characterUid} | Add Character Backend
+*CharacterApi* | [**batchSearchCharacterDetails**](docs/CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v2/character/batch/details/search | Batch Search Character Details
+*CharacterApi* | [**batchSearchCharacterSummary**](docs/CharacterApi.md#batchSearchCharacterSummary) | **POST** /api/v2/character/batch/search | Batch Search Character Summaries
+*CharacterApi* | [**cloneCharacter**](docs/CharacterApi.md#cloneCharacter) | **POST** /api/v2/character/clone/{characterId} | Clone Character
+*CharacterApi* | [**countCharacters**](docs/CharacterApi.md#countCharacters) | **POST** /api/v2/character/count | Calculate Number of Characters
+*CharacterApi* | [**countPublicCharacters**](docs/CharacterApi.md#countPublicCharacters) | **POST** /api/v2/public/character/count | Calculate Number of Public Characters
+*CharacterApi* | [**createCharacter**](docs/CharacterApi.md#createCharacter) | **POST** /api/v2/character | Create Character
+*CharacterApi* | [**deleteCharacter**](docs/CharacterApi.md#deleteCharacter) | **DELETE** /api/v2/character/{characterId} | Delete Character
+*CharacterApi* | [**deleteCharacterByName**](docs/CharacterApi.md#deleteCharacterByName) | **DELETE** /api/v2/character/name/{name} | Delete Character by Name
+*CharacterApi* | [**deleteCharacterByUid**](docs/CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
+*CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
+*CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+*CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
+*CharacterApi* | [**exportCharacter**](docs/CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
+*CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v2/character/details/{characterId} | Get Character Details
+*CharacterApi* | [**getCharacterLatestIdByName**](docs/CharacterApi.md#getCharacterLatestIdByName) | **POST** /api/v2/character/latest/{name} | Get Latest Character Id by Name
+*CharacterApi* | [**getCharacterSummary**](docs/CharacterApi.md#getCharacterSummary) | **GET** /api/v2/character/summary/{characterId} | Get Character Summary
+*CharacterApi* | [**getDefaultCharacterBackend**](docs/CharacterApi.md#getDefaultCharacterBackend) | **GET** /api/v2/character/backend/default/{characterUid} | Get Default Character Backend
+*CharacterApi* | [**importCharacter**](docs/CharacterApi.md#importCharacter) | **POST** /api/v2/character/import | Import Character Configuration
+*CharacterApi* | [**listCharacterBackendIds**](docs/CharacterApi.md#listCharacterBackendIds) | **GET** /api/v2/character/backend/ids/{characterUid} | List Character Backend ids
+*CharacterApi* | [**listCharacterBackends**](docs/CharacterApi.md#listCharacterBackends) | **GET** /api/v2/character/backends/{characterUid} | List Character Backends
+*CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
+*CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
+*CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+*CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
+*CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
+*CharacterApi* | [**publishCharacter1**](docs/CharacterApi.md#publishCharacter1) | **POST** /api/v2/character/publish/{characterId} | Publish Character
+*CharacterApi* | [**removeCharacterBackend**](docs/CharacterApi.md#removeCharacterBackend) | **DELETE** /api/v2/character/backend/{characterBackendId} | Remove Character Backend
+*CharacterApi* | [**searchCharacterDetails**](docs/CharacterApi.md#searchCharacterDetails) | **POST** /api/v2/character/details/search | Search Character Details
+*CharacterApi* | [**searchCharacterSummary**](docs/CharacterApi.md#searchCharacterSummary) | **POST** /api/v2/character/search | Search Character Summary
+*CharacterApi* | [**searchPublicCharacterSummary**](docs/CharacterApi.md#searchPublicCharacterSummary) | **POST** /api/v2/public/character/search | Search Public Character Summary
+*CharacterApi* | [**setDefaultCharacterBackend**](docs/CharacterApi.md#setDefaultCharacterBackend) | **PUT** /api/v2/character/backend/default/{characterBackendId} | Set Default Character Backend
+*CharacterApi* | [**updateCharacter**](docs/CharacterApi.md#updateCharacter) | **PUT** /api/v2/character/{characterId} | Update Character
+*CharacterApi* | [**updateCharacterBackend**](docs/CharacterApi.md#updateCharacterBackend) | **PUT** /api/v2/character/backend/{characterBackendId} | Update Character Backend
+*CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
+*CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
+*CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
+*ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
+*ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
+*ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterId} | Get Default Chat
+*ChatApi* | [**getMemoryUsage**](docs/ChatApi.md#getMemoryUsage) | **GET** /api/v2/chat/memory/usage/{chatId} | Get Memory Usage
+*ChatApi* | [**listChats**](docs/ChatApi.md#listChats) | **GET** /api/v2/chat | List Chats
+*ChatApi* | [**listDebugMessages**](docs/ChatApi.md#listDebugMessages) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
+*ChatApi* | [**listDebugMessages1**](docs/ChatApi.md#listDebugMessages1) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
+*ChatApi* | [**listDebugMessages2**](docs/ChatApi.md#listDebugMessages2) | **GET** /api/v2/chat/messages/debug/{chatId} | List Chat Debug Messages
+*ChatApi* | [**listMessages**](docs/ChatApi.md#listMessages) | **GET** /api/v2/chat/messages/{chatId}/{limit} | List Chat Messages
+*ChatApi* | [**listMessages1**](docs/ChatApi.md#listMessages1) | **GET** /api/v2/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
+*ChatApi* | [**listMessages2**](docs/ChatApi.md#listMessages2) | **GET** /api/v2/chat/messages/{chatId} | List Chat Messages
+*ChatApi* | [**rollbackMessages**](docs/ChatApi.md#rollbackMessages) | **POST** /api/v2/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
+*ChatApi* | [**sendAssistant**](docs/ChatApi.md#sendAssistant) | **GET** /api/v2/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
+*ChatApi* | [**sendMessage**](docs/ChatApi.md#sendMessage) | **POST** /api/v2/chat/send/{chatId} | Send Chat Message
+*ChatApi* | [**startChat**](docs/ChatApi.md#startChat) | **POST** /api/v2/chat | Start Chat Session
+*ChatApi* | [**streamSendAssistant**](docs/ChatApi.md#streamSendAssistant) | **GET** /api/v2/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
+*ChatApi* | [**streamSendMessage**](docs/ChatApi.md#streamSendMessage) | **POST** /api/v2/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
+*ChatApi* | [**updateChat**](docs/ChatApi.md#updateChat) | **PUT** /api/v2/chat/{chatId} | Update Chat Session
+*EncryptionManagerForAdminApi* | [**encryptText**](docs/EncryptionManagerForAdminApi.md#encryptText) | **GET** /api/v2/admin/encryption/encrypt/{text} | Encrypt Text
+*InteractiveStatisticsApi* | [**addStatistic**](docs/InteractiveStatisticsApi.md#addStatistic) | **POST** /api/v2/stats/{infoType}/{infoId}/{statsType}/{delta} | Add Statistics
+*InteractiveStatisticsApi* | [**getScore**](docs/InteractiveStatisticsApi.md#getScore) | **GET** /api/v2/public/score/{infoType}/{infoId} | Get Score for Resource
+*InteractiveStatisticsApi* | [**getStatistic**](docs/InteractiveStatisticsApi.md#getStatistic) | **GET** /api/v2/public/stats/{infoType}/{infoId}/{statsType} | Get Statistics
+*InteractiveStatisticsApi* | [**getStatistics**](docs/InteractiveStatisticsApi.md#getStatistics) | **GET** /api/v2/public/stats/{infoType}/{infoId} | Get All Statistics
+*InteractiveStatisticsApi* | [**increaseStatistic**](docs/InteractiveStatisticsApi.md#increaseStatistic) | **POST** /api/v2/stats/{infoType}/{infoId}/{statsType} | Increase Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic) | **GET** /api/v2/public/stats/agents/by/{statsType}/{pageSize} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic1**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic1) | **GET** /api/v2/public/stats/agents/by/{statsType}/{pageSize}/{pageNum} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listAgentsByStatistic2**](docs/InteractiveStatisticsApi.md#listAgentsByStatistic2) | **GET** /api/v2/public/stats/agents/by/{statsType} | List Agents by Statistics
+*InteractiveStatisticsApi* | [**listCharactersByStatistic**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic) | **GET** /api/v2/public/stats/characters/by/{statsType} | List Characters by Statistics
+*InteractiveStatisticsApi* | [**listCharactersByStatistic1**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic1) | **GET** /api/v2/public/stats/characters/by/{statsType}/{pageSize} | List Characters by Statistics
+*InteractiveStatisticsApi* | [**listCharactersByStatistic2**](docs/InteractiveStatisticsApi.md#listCharactersByStatistic2) | **GET** /api/v2/public/stats/characters/by/{statsType}/{pageSize}/{pageNum} | List Characters by Statistics
+*InteractiveStatisticsApi* | [**listHotTags**](docs/InteractiveStatisticsApi.md#listHotTags) | **GET** /api/v2/public/tags/hot/{infoType}/{pageSize} | Hot Tags
+*InteractiveStatisticsApi* | [**listPluginsByStatistic**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic) | **GET** /api/v2/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum} | List Plugins by Statistics
+*InteractiveStatisticsApi* | [**listPluginsByStatistic1**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic1) | **GET** /api/v2/public/stats/plugins/by/{statsType} | List Plugins by Statistics
+*InteractiveStatisticsApi* | [**listPluginsByStatistic2**](docs/InteractiveStatisticsApi.md#listPluginsByStatistic2) | **GET** /api/v2/public/stats/plugins/by/{statsType}/{pageSize} | List Plugins by Statistics
+*InteractiveStatisticsApi* | [**listPromptsByStatistic**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic) | **GET** /api/v2/public/stats/prompts/by/{statsType} | List Prompts by Statistics
+*InteractiveStatisticsApi* | [**listPromptsByStatistic1**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic1) | **GET** /api/v2/public/stats/prompts/by/{statsType}/{pageSize} | List Prompts by Statistics
+*InteractiveStatisticsApi* | [**listPromptsByStatistic2**](docs/InteractiveStatisticsApi.md#listPromptsByStatistic2) | **GET** /api/v2/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum} | List Prompts by Statistics
+*OrganizationApi* | [**getOwners**](docs/OrganizationApi.md#getOwners) | **GET** /api/v2/org/owners | Get My Superior Relationship
+*OrganizationApi* | [**getOwnersDot**](docs/OrganizationApi.md#getOwnersDot) | **GET** /api/v2/org/owners/dot | Get DOT of Superior Relationship
+*OrganizationApi* | [**getSubordinateOwners**](docs/OrganizationApi.md#getSubordinateOwners) | **GET** /api/v2/org/manage/{username}/owners | Get Superior Relationship
+*OrganizationApi* | [**getSubordinateSubordinates**](docs/OrganizationApi.md#getSubordinateSubordinates) | **GET** /api/v2/org/manage/{username}/subordinates | Get Subordinate Relationship
+*OrganizationApi* | [**getSubordinates**](docs/OrganizationApi.md#getSubordinates) | **GET** /api/v2/org/subordinates | Get My Subordinate Relationship
+*OrganizationApi* | [**getSubordinatesDot**](docs/OrganizationApi.md#getSubordinatesDot) | **GET** /api/v2/org/subordinates/dot | Get DOT of Subordinate Relationship
+*OrganizationApi* | [**listSubordinateAuthorities**](docs/OrganizationApi.md#listSubordinateAuthorities) | **GET** /api/v2/org/authority/{username} | List Subordinate Permissions
+*OrganizationApi* | [**removeSubordinateSubordinatesTree**](docs/OrganizationApi.md#removeSubordinateSubordinatesTree) | **DELETE** /api/v2/org/manage/{username}/subordinates | Clear Subordinate Relationship
+*OrganizationApi* | [**updateSubordinateAuthorities**](docs/OrganizationApi.md#updateSubordinateAuthorities) | **PUT** /api/v2/org/authority/{username} | Update Subordinate Permissions
+*OrganizationApi* | [**updateSubordinateOwners**](docs/OrganizationApi.md#updateSubordinateOwners) | **PUT** /api/v2/org/manage/{username}/owners | Update Superior Relationship
+*OrganizationApi* | [**updateSubordinateSubordinates**](docs/OrganizationApi.md#updateSubordinateSubordinates) | **PUT** /api/v2/org/manage/{username}/subordinates | Update Subordinate Relationship
+*PluginApi* | [**batchSearchPluginDetails**](docs/PluginApi.md#batchSearchPluginDetails) | **POST** /api/v2/plugin/batch/details/search | Batch Search Plugin Details
+*PluginApi* | [**batchSearchPluginSummary**](docs/PluginApi.md#batchSearchPluginSummary) | **POST** /api/v2/plugin/batch/search | Batch Search Plugin Summaries
+*PluginApi* | [**countPlugins**](docs/PluginApi.md#countPlugins) | **POST** /api/v2/plugin/count | Calculate Number of Plugins
+*PluginApi* | [**createPlugin**](docs/PluginApi.md#createPlugin) | **POST** /api/v2/plugin | Create Plugin
+*PluginApi* | [**createPlugins**](docs/PluginApi.md#createPlugins) | **POST** /api/v2/plugin/batch | Batch Create Plugins
+*PluginApi* | [**deletePlugin**](docs/PluginApi.md#deletePlugin) | **DELETE** /api/v2/plugin/{pluginId} | Delete Plugin
+*PluginApi* | [**deletePlugins**](docs/PluginApi.md#deletePlugins) | **DELETE** /api/v2/plugin/batch | Batch Delete Plugins
+*PluginApi* | [**getPluginDetails**](docs/PluginApi.md#getPluginDetails) | **GET** /api/v2/plugin/details/{pluginId} | Get Plugin Details
+*PluginApi* | [**getPluginSummary**](docs/PluginApi.md#getPluginSummary) | **GET** /api/v2/plugin/summary/{pluginId} | Get Plugin Summary
+*PluginApi* | [**refreshPluginInfo**](docs/PluginApi.md#refreshPluginInfo) | **PUT** /api/v2/plugin/refresh/{pluginId} | Refresh Plugin Information
+*PluginApi* | [**searchPluginDetails**](docs/PluginApi.md#searchPluginDetails) | **POST** /api/v2/plugin/details/search | Search Plugin Details
+*PluginApi* | [**searchPluginSummary**](docs/PluginApi.md#searchPluginSummary) | **POST** /api/v2/plugin/search | Search Plugin Summary
+*PluginApi* | [**updatePlugin**](docs/PluginApi.md#updatePlugin) | **PUT** /api/v2/plugin/{pluginId} | Update Plugin
+*PromptApi* | [**applyPromptRef**](docs/PromptApi.md#applyPromptRef) | **POST** /api/v2/prompt/apply/ref | Apply Parameters to Prompt Record
+*PromptApi* | [**applyPromptTemplate**](docs/PromptApi.md#applyPromptTemplate) | **POST** /api/v2/prompt/apply/template | Apply Parameters to Prompt Template
+*PromptApi* | [**batchSearchPromptDetails**](docs/PromptApi.md#batchSearchPromptDetails) | **POST** /api/v2/prompt/batch/details/search | Batch Search Prompt Details
+*PromptApi* | [**batchSearchPromptSummary**](docs/PromptApi.md#batchSearchPromptSummary) | **POST** /api/v2/prompt/batch/search | Batch Search Prompt Summaries
+*PromptApi* | [**clonePrompt**](docs/PromptApi.md#clonePrompt) | **POST** /api/v2/prompt/clone/{promptId} | Clone Prompt
+*PromptApi* | [**clonePrompts**](docs/PromptApi.md#clonePrompts) | **POST** /api/v2/prompt/batch/clone | Batch Clone Prompts
+*PromptApi* | [**countPrompts**](docs/PromptApi.md#countPrompts) | **POST** /api/v2/prompt/count | Calculate Number of Prompts
+*PromptApi* | [**countPublicPrompts**](docs/PromptApi.md#countPublicPrompts) | **POST** /api/v2/public/prompt/count | Calculate Number of Public Prompts
+*PromptApi* | [**createPrompt**](docs/PromptApi.md#createPrompt) | **POST** /api/v2/prompt | Create Prompt
+*PromptApi* | [**createPrompts**](docs/PromptApi.md#createPrompts) | **POST** /api/v2/prompt/batch | Batch Create Prompts
+*PromptApi* | [**deletePrompt**](docs/PromptApi.md#deletePrompt) | **DELETE** /api/v2/prompt/{promptId} | Delete Prompt
+*PromptApi* | [**deletePromptByName**](docs/PromptApi.md#deletePromptByName) | **DELETE** /api/v2/prompt/name/{name} | Delete Prompt by Name
+*PromptApi* | [**deletePrompts**](docs/PromptApi.md#deletePrompts) | **DELETE** /api/v2/prompt/batch | Batch Delete Prompts
+*PromptApi* | [**existsPromptName**](docs/PromptApi.md#existsPromptName) | **GET** /api/v2/prompt/exists/name/{name} | Check If Prompt Name Exists
+*PromptApi* | [**getPromptDetails**](docs/PromptApi.md#getPromptDetails) | **GET** /api/v2/prompt/details/{promptId} | Get Prompt Details
+*PromptApi* | [**getPromptSummary**](docs/PromptApi.md#getPromptSummary) | **GET** /api/v2/prompt/summary/{promptId} | Get Prompt Summary
+*PromptApi* | [**listPromptVersionsByName**](docs/PromptApi.md#listPromptVersionsByName) | **POST** /api/v2/prompt/versions/{name} | List Versions by Prompt Name
+*PromptApi* | [**newPromptName**](docs/PromptApi.md#newPromptName) | **GET** /api/v2/prompt/create/name/{desired} | Create New Prompt Name
+*PromptApi* | [**publishPrompt**](docs/PromptApi.md#publishPrompt) | **POST** /api/v2/prompt/publish/{promptId}/{visibility} | Publish Prompt
+*PromptApi* | [**searchPromptDetails**](docs/PromptApi.md#searchPromptDetails) | **POST** /api/v2/prompt/details/search | Search Prompt Details
+*PromptApi* | [**searchPromptSummary**](docs/PromptApi.md#searchPromptSummary) | **POST** /api/v2/prompt/search | Search Prompt Summary
+*PromptApi* | [**searchPublicPromptSummary**](docs/PromptApi.md#searchPublicPromptSummary) | **POST** /api/v2/public/prompt/search | Search Public Prompt Summary
+*PromptApi* | [**sendPrompt**](docs/PromptApi.md#sendPrompt) | **POST** /api/v2/prompt/send | Send Prompt
+*PromptApi* | [**streamSendPrompt**](docs/PromptApi.md#streamSendPrompt) | **POST** /api/v2/prompt/send/stream | Send Prompt by Streaming Back
+*PromptApi* | [**updatePrompt**](docs/PromptApi.md#updatePrompt) | **PUT** /api/v2/prompt/{promptId} | Update Prompt
+*PromptTaskApi* | [**createPromptTask**](docs/PromptTaskApi.md#createPromptTask) | **POST** /api/v2/prompt/task | Create Prompt Task
+*PromptTaskApi* | [**deletePromptTask**](docs/PromptTaskApi.md#deletePromptTask) | **DELETE** /api/v2/prompt/task/{promptTaskId} | Delete Prompt Task
+*PromptTaskApi* | [**getPromptTask**](docs/PromptTaskApi.md#getPromptTask) | **GET** /api/v2/prompt/task/{promptTaskId} | Get Prompt Task
+*PromptTaskApi* | [**updatePromptTask**](docs/PromptTaskApi.md#updatePromptTask) | **PUT** /api/v2/prompt/task/{promptTaskId} | Update Prompt Task
+*RagApi* | [**cancelRagTask**](docs/RagApi.md#cancelRagTask) | **POST** /api/v2/rag/task/cancel/{taskId} | Cancel RAG Task
+*RagApi* | [**createRagTask**](docs/RagApi.md#createRagTask) | **POST** /api/v2/rag/task/{characterUid} | Create RAG Task
+*RagApi* | [**deleteRagTask**](docs/RagApi.md#deleteRagTask) | **DELETE** /api/v2/rag/task/{taskId} | Delete RAG Task
+*RagApi* | [**getRagTask**](docs/RagApi.md#getRagTask) | **GET** /api/v2/rag/task/{taskId} | Get RAG Task
+*RagApi* | [**getRagTaskStatus**](docs/RagApi.md#getRagTaskStatus) | **GET** /api/v2/rag/task/status/{taskId} | Get RAG Task Status
+*RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v2/rag/tasks/{characterUid} | List RAG Tasks
+*RagApi* | [**startRagTask**](docs/RagApi.md#startRagTask) | **POST** /api/v2/rag/task/start/{taskId} | Start RAG Task
+*RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v2/rag/task/{taskId} | Update RAG Task
 
 
 ## Documentation for Models

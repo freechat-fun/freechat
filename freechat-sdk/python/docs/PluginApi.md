@@ -4,19 +4,19 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**batch_search_plugin_details**](PluginApi.md#batch_search_plugin_details) | **POST** /api/v1/plugin/batch/details/search | Batch Search Plugin Details
-[**batch_search_plugin_summary**](PluginApi.md#batch_search_plugin_summary) | **POST** /api/v1/plugin/batch/search | Batch Search Plugin Summaries
-[**count_plugins**](PluginApi.md#count_plugins) | **POST** /api/v1/plugin/count | Calculate Number of Plugins
-[**create_plugin**](PluginApi.md#create_plugin) | **POST** /api/v1/plugin | Create Plugin
-[**create_plugins**](PluginApi.md#create_plugins) | **POST** /api/v1/plugin/batch | Batch Create Plugins
-[**delete_plugin**](PluginApi.md#delete_plugin) | **DELETE** /api/v1/plugin/{pluginId} | Delete Plugin
-[**delete_plugins**](PluginApi.md#delete_plugins) | **DELETE** /api/v1/plugin/batch | Batch Delete Plugins
-[**get_plugin_details**](PluginApi.md#get_plugin_details) | **GET** /api/v1/plugin/details/{pluginId} | Get Plugin Details
-[**get_plugin_summary**](PluginApi.md#get_plugin_summary) | **GET** /api/v1/plugin/summary/{pluginId} | Get Plugin Summary
-[**refresh_plugin_info**](PluginApi.md#refresh_plugin_info) | **PUT** /api/v1/plugin/refresh/{pluginId} | Refresh Plugin Information
-[**search_plugin_details**](PluginApi.md#search_plugin_details) | **POST** /api/v1/plugin/details/search | Search Plugin Details
-[**search_plugin_summary**](PluginApi.md#search_plugin_summary) | **POST** /api/v1/plugin/search | Search Plugin Summary
-[**update_plugin**](PluginApi.md#update_plugin) | **PUT** /api/v1/plugin/{pluginId} | Update Plugin
+[**batch_search_plugin_details**](PluginApi.md#batch_search_plugin_details) | **POST** /api/v2/plugin/batch/details/search | Batch Search Plugin Details
+[**batch_search_plugin_summary**](PluginApi.md#batch_search_plugin_summary) | **POST** /api/v2/plugin/batch/search | Batch Search Plugin Summaries
+[**count_plugins**](PluginApi.md#count_plugins) | **POST** /api/v2/plugin/count | Calculate Number of Plugins
+[**create_plugin**](PluginApi.md#create_plugin) | **POST** /api/v2/plugin | Create Plugin
+[**create_plugins**](PluginApi.md#create_plugins) | **POST** /api/v2/plugin/batch | Batch Create Plugins
+[**delete_plugin**](PluginApi.md#delete_plugin) | **DELETE** /api/v2/plugin/{pluginId} | Delete Plugin
+[**delete_plugins**](PluginApi.md#delete_plugins) | **DELETE** /api/v2/plugin/batch | Batch Delete Plugins
+[**get_plugin_details**](PluginApi.md#get_plugin_details) | **GET** /api/v2/plugin/details/{pluginId} | Get Plugin Details
+[**get_plugin_summary**](PluginApi.md#get_plugin_summary) | **GET** /api/v2/plugin/summary/{pluginId} | Get Plugin Summary
+[**refresh_plugin_info**](PluginApi.md#refresh_plugin_info) | **PUT** /api/v2/plugin/refresh/{pluginId} | Refresh Plugin Information
+[**search_plugin_details**](PluginApi.md#search_plugin_details) | **POST** /api/v2/plugin/details/search | Search Plugin Details
+[**search_plugin_summary**](PluginApi.md#search_plugin_summary) | **POST** /api/v2/plugin/search | Search Plugin Summary
+[**update_plugin**](PluginApi.md#update_plugin) | **PUT** /api/v2/plugin/{pluginId} | Update Plugin
 
 
 # **batch_search_plugin_details**
@@ -24,7 +24,7 @@ Method | HTTP request | Description
 
 Batch Search Plugin Details
 
-Batch call shortcut for /api/v1/plugin/details/search.
+Batch call shortcut for /api/v2/plugin/details/search.
 
 ### Example
 
@@ -103,7 +103,7 @@ Name | Type | Description  | Notes
 
 Batch Search Plugin Summaries
 
-Batch call shortcut for /api/v1/plugin/search.
+Batch call shortcut for /api/v2/plugin/search.
 
 ### Example
 
@@ -801,7 +801,7 @@ void (empty response body)
 
 Search Plugin Details
 
-Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+Same as /api/v2/plugin/search, but returns detailed information of the plugin.
 
 ### Example
 
@@ -959,7 +959,7 @@ Name | Type | Description  | Notes
 
 Update Plugin
 
-Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
 
 ### Example
 

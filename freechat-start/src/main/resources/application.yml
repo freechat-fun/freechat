@@ -16,11 +16,11 @@ auth:
     uri: /logout
     successUri: /
   role:
-    adminUri: /admin/**,/api/admin/**,/api/v1/admin/**
-    bizAdminUri: /api/biz/admin/**,/api/v1/biz/admin/**
+    adminUri: /admin/**,/api/v2/admin/**
+    bizAdminUri: /api/v2/biz/admin/**
     apiUri: /api/**
     privateUri: /private/**
-    publicUri: /,/undefined,/error,/w,/public/**,/api/v1/public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico,/baidu*.html
+    publicUri: /,/undefined,/error,/w,/public/**,/api/v2/public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico,/baidu*.html
   token:
     limits: 5
     prefix: fc-
@@ -124,40 +124,40 @@ springdoc:
       pathsToMatch: /api/**
     - group: g-admin
       displayName: Admin
-      pathsToMatch: /api/v1/admin/**
+      pathsToMatch: /api/v2/admin/**
     - group: g-biz-admin
       displayName: BizAdmin
-      pathsToMatch: /api/v1/biz/admin/**
+      pathsToMatch: /api/v2/biz/admin/**
     - group: g-account
       displayName: Account
-      pathsToMatch: /api/v1/account/**
+      pathsToMatch: /api/v2/account/**
     - group: g-prompt
       displayName: Prompt
-      pathsToMatch: /api/v1/prompt/**
+      pathsToMatch: /api/v2/prompt/**
     - group: g-plugin
       displayName: Plugin
-      pathsToMatch: /api/v1/plugin/**
+      pathsToMatch: /api/v2/plugin/**
     - group: g-agent
       displayName: Agent
-      pathsToMatch: /api/v1/agent/**
+      pathsToMatch: /api/v2/agent/**
     - group: g-character
       displayName: Character
-      pathsToMatch: /api/v1/character/**
+      pathsToMatch: /api/v2/character/**
     - group: g-chat
       displayName: Chat
-      pathsToMatch: /api/v1/chat/**
+      pathsToMatch: /api/v2/chat/**
     - group: g-rag
       displayName: RAG
-      pathsToMatch: /api/v1/rag/**
+      pathsToMatch: /api/v2/rag/**
     - group: g-organization
       displayName: Organization
-      pathsToMatch: /api/v1/org/**
+      pathsToMatch: /api/v2/org/**
     - group: g-ai
       displayName: AI
-      pathsToMatch: /api/v1/ai/**
+      pathsToMatch: /api/v2/ai/**
     - group: g-stats
       displayName: Stats
-      pathsToMatch: /api/v1/stats/**,/api/v1/score/**
+      pathsToMatch: /api/v2/stats/**,/api/v2/score/**
 perf:
   trace:
     excludeUri: /public/check/**,/favicon.ico,/assets/**,/css/**,/js/**,/img/**,/logo/**,/error

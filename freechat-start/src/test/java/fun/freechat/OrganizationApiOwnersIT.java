@@ -32,7 +32,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
 
     @Test
     public void testGetSolidOwners() {
-        testClient.get().uri("/api/v1/org/owners")
+        testClient.get().uri("/api/v2/org/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -44,7 +44,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
 
     @Test
     public void testGetAllOwners() {
-        testClient.get().uri("/api/v1/org/manage/41/owners")
+        testClient.get().uri("/api/v2/org/manage/41/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -56,7 +56,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
 
     @Test
     public void testGetSubordinateSolidOwners() {
-        testClient.get().uri("/api/v1/org/manage/41/owners")
+        testClient.get().uri("/api/v2/org/manage/41/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -68,7 +68,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
 
     @Test
     public void testUpdateSubordinateOwners() {
-        testClient.get().uri("/api/v1/org/manage/40/owners")
+        testClient.get().uri("/api/v2/org/manage/40/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -77,7 +77,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
                 .expectBody()
                     .jsonPath("$.length()").isEqualTo(5);
 
-        testClient.put().uri("/api/v1/org/manage/40/owners")
+        testClient.put().uri("/api/v2/org/manage/40/owners")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -86,7 +86,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(Void.class);
 
-        testClient.get().uri("/api/v1/org/manage/40/owners")
+        testClient.get().uri("/api/v2/org/manage/40/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()

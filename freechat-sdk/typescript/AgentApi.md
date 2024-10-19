@@ -4,28 +4,28 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**batchSearchAgentDetails**](AgentApi.md#batchSearchAgentDetails) | **POST** /api/v1/agent/batch/details/search | Batch Search Agent Details
-[**batchSearchAgentSummary**](AgentApi.md#batchSearchAgentSummary) | **POST** /api/v1/agent/batch/search | Batch Search Agent Summaries
-[**cloneAgent**](AgentApi.md#cloneAgent) | **POST** /api/v1/agent/clone/{agentId} | Clone Agent
-[**cloneAgents**](AgentApi.md#cloneAgents) | **POST** /api/v1/agent/batch/clone | Batch Clone Agents
-[**countAgents**](AgentApi.md#countAgents) | **POST** /api/v1/agent/count | Calculate Number of Agents
-[**createAgent**](AgentApi.md#createAgent) | **POST** /api/v1/agent | Create Agent
-[**createAgents**](AgentApi.md#createAgents) | **POST** /api/v1/agent/batch | Batch Create Agents
-[**deleteAgent**](AgentApi.md#deleteAgent) | **DELETE** /api/v1/agent/{agentId} | Delete Agent
-[**deleteAgents**](AgentApi.md#deleteAgents) | **DELETE** /api/v1/agent/batch/delete | Batch Delete Agents
-[**getAgentDetails**](AgentApi.md#getAgentDetails) | **GET** /api/v1/agent/details/{agentId} | Get Agent Details
-[**getAgentSummary**](AgentApi.md#getAgentSummary) | **GET** /api/v1/agent/summary/{agentId} | Get Agent Summary
-[**listAgentVersionsByName**](AgentApi.md#listAgentVersionsByName) | **POST** /api/v1/agent/versions/{name} | List Versions by Agent Name
-[**publishAgent**](AgentApi.md#publishAgent) | **POST** /api/v1/agent/publish/{agentId}/{visibility} | Publish Agent
-[**searchAgentDetails**](AgentApi.md#searchAgentDetails) | **POST** /api/v1/agent/details/search | Search Agent Details
-[**searchAgentSummary**](AgentApi.md#searchAgentSummary) | **POST** /api/v1/agent/search | Search Agent Summary
-[**updateAgent**](AgentApi.md#updateAgent) | **PUT** /api/v1/agent/{agentId} | Update Agent
+[**batchSearchAgentDetails**](AgentApi.md#batchSearchAgentDetails) | **POST** /api/v2/agent/batch/details/search | Batch Search Agent Details
+[**batchSearchAgentSummary**](AgentApi.md#batchSearchAgentSummary) | **POST** /api/v2/agent/batch/search | Batch Search Agent Summaries
+[**cloneAgent**](AgentApi.md#cloneAgent) | **POST** /api/v2/agent/clone/{agentId} | Clone Agent
+[**cloneAgents**](AgentApi.md#cloneAgents) | **POST** /api/v2/agent/batch/clone | Batch Clone Agents
+[**countAgents**](AgentApi.md#countAgents) | **POST** /api/v2/agent/count | Calculate Number of Agents
+[**createAgent**](AgentApi.md#createAgent) | **POST** /api/v2/agent | Create Agent
+[**createAgents**](AgentApi.md#createAgents) | **POST** /api/v2/agent/batch | Batch Create Agents
+[**deleteAgent**](AgentApi.md#deleteAgent) | **DELETE** /api/v2/agent/{agentId} | Delete Agent
+[**deleteAgents**](AgentApi.md#deleteAgents) | **DELETE** /api/v2/agent/batch/delete | Batch Delete Agents
+[**getAgentDetails**](AgentApi.md#getAgentDetails) | **GET** /api/v2/agent/details/{agentId} | Get Agent Details
+[**getAgentSummary**](AgentApi.md#getAgentSummary) | **GET** /api/v2/agent/summary/{agentId} | Get Agent Summary
+[**listAgentVersionsByName**](AgentApi.md#listAgentVersionsByName) | **POST** /api/v2/agent/versions/{name} | List Versions by Agent Name
+[**publishAgent**](AgentApi.md#publishAgent) | **POST** /api/v2/agent/publish/{agentId}/{visibility} | Publish Agent
+[**searchAgentDetails**](AgentApi.md#searchAgentDetails) | **POST** /api/v2/agent/details/search | Search Agent Details
+[**searchAgentSummary**](AgentApi.md#searchAgentSummary) | **POST** /api/v2/agent/search | Search Agent Summary
+[**updateAgent**](AgentApi.md#updateAgent) | **PUT** /api/v2/agent/{agentId} | Update Agent
 
 
 # **batchSearchAgentDetails**
 > Array<Array<AgentDetailsDTO>> batchSearchAgentDetails(agentQueryDTO)
 
-Batch call shortcut for /api/v1/agent/details/search.
+Batch call shortcut for /api/v2/agent/details/search.
 
 ### Example
 
@@ -101,7 +101,7 @@ Name | Type | Description  | Notes
 # **batchSearchAgentSummary**
 > Array<Array<AgentSummaryDTO>> batchSearchAgentSummary(agentQueryDTO)
 
-Batch call shortcut for /api/v1/agent/search.
+Batch call shortcut for /api/v2/agent/search.
 
 ### Example
 
@@ -824,7 +824,7 @@ Name | Type | Description  | Notes
 # **searchAgentDetails**
 > Array<AgentDetailsDTO> searchAgentDetails(agentQueryDTO)
 
-Same as /api/v1/agent/search, but returns detailed information of the agent.
+Same as /api/v2/agent/search, but returns detailed information of the agent.
 
 ### Example
 
@@ -972,7 +972,7 @@ Name | Type | Description  | Notes
 # **updateAgent**
 > boolean updateAgent(agentUpdateDTO)
 
-Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
 
 ### Example
 

@@ -4,20 +4,20 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createTokenForUser**](AccountManagerForAdminApi.md#createTokenForUser) | **POST** /api/v1/admin/token/{username}/{duration} | Create API Token for User.
-[**createUser**](AccountManagerForAdminApi.md#createUser) | **POST** /api/v1/admin/user | Create User
-[**deleteTokenForUser**](AccountManagerForAdminApi.md#deleteTokenForUser) | **DELETE** /api/v1/admin/token/{token} | Delete API Token
-[**deleteUser**](AccountManagerForAdminApi.md#deleteUser) | **DELETE** /api/v1/admin/user/{username} | Delete User
-[**disableTokenForUser**](AccountManagerForAdminApi.md#disableTokenForUser) | **PUT** /api/v1/admin/token/{token} | Disable API Token
-[**getDetailsOfUser**](AccountManagerForAdminApi.md#getDetailsOfUser) | **GET** /api/v1/admin/user/{username} | Get User Details
-[**getUserByToken**](AccountManagerForAdminApi.md#getUserByToken) | **GET** /api/v1/admin/tokenBy/{token} | Get User by API Token
-[**listAuthoritiesOfUser**](AccountManagerForAdminApi.md#listAuthoritiesOfUser) | **GET** /api/v1/admin/authority/{username} | List User Permissions
-[**listTokensOfUser**](AccountManagerForAdminApi.md#listTokensOfUser) | **GET** /api/v1/admin/token/{username} | Get API Token of User
-[**listUsers**](AccountManagerForAdminApi.md#listUsers) | **GET** /api/v1/admin/users/{pageSize}/{pageNum} | List User Information
-[**listUsers1**](AccountManagerForAdminApi.md#listUsers1) | **GET** /api/v1/admin/users/{pageSize} | List User Information
-[**listUsers2**](AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v1/admin/users | List User Information
-[**updateAuthoritiesOfUser**](AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v1/admin/authority/{username} | Update User Permissions
-[**updateUser**](AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v1/admin/user | Update User
+[**createTokenForUser**](AccountManagerForAdminApi.md#createTokenForUser) | **POST** /api/v2/admin/token/{username}/{duration} | Create API Token for User.
+[**createUser**](AccountManagerForAdminApi.md#createUser) | **POST** /api/v2/admin/user | Create User
+[**deleteTokenForUser**](AccountManagerForAdminApi.md#deleteTokenForUser) | **DELETE** /api/v2/admin/token/{token} | Delete API Token
+[**deleteUser**](AccountManagerForAdminApi.md#deleteUser) | **DELETE** /api/v2/admin/user/{username} | Delete User
+[**disableTokenForUser**](AccountManagerForAdminApi.md#disableTokenForUser) | **PUT** /api/v2/admin/token/{token} | Disable API Token
+[**getDetailsOfUser**](AccountManagerForAdminApi.md#getDetailsOfUser) | **GET** /api/v2/admin/user/{username} | Get User Details
+[**getUserByToken**](AccountManagerForAdminApi.md#getUserByToken) | **GET** /api/v2/admin/tokenBy/{token} | Get User by API Token
+[**listAuthoritiesOfUser**](AccountManagerForAdminApi.md#listAuthoritiesOfUser) | **GET** /api/v2/admin/authority/{username} | List User Permissions
+[**listTokensOfUser**](AccountManagerForAdminApi.md#listTokensOfUser) | **GET** /api/v2/admin/token/{username} | Get API Token of User
+[**listUsers**](AccountManagerForAdminApi.md#listUsers) | **GET** /api/v2/admin/users/{pageSize}/{pageNum} | List User Information
+[**listUsers1**](AccountManagerForAdminApi.md#listUsers1) | **GET** /api/v2/admin/users | List User Information
+[**listUsers2**](AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v2/admin/users/{pageSize} | List User Information
+[**updateAuthoritiesOfUser**](AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v2/admin/authority/{username} | Update User Permissions
+[**updateUser**](AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v2/admin/user | Update User
 
 
 # **createTokenForUser**
@@ -591,15 +591,11 @@ Return user information by page, return the pageNum page, up to pageSize user in
 
 ```typescript
 import { createConfiguration, AccountManagerForAdminApi } from '';
-import type { AccountManagerForAdminApiListUsers1Request } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AccountManagerForAdminApi(configuration);
 
-const request: AccountManagerForAdminApiListUsers1Request = {
-    // Maximum quantity
-  pageSize: 1,
-};
+const request = {};
 
 const data = await apiInstance.listUsers1(request);
 console.log('API called successfully. Returned data:', data);
@@ -607,10 +603,7 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **pageSize** | [**number**] | Maximum quantity | defaults to undefined
+This endpoint does not need any parameter.
 
 
 ### Return type
@@ -644,11 +637,15 @@ Return user information by page, return the pageNum page, up to pageSize user in
 
 ```typescript
 import { createConfiguration, AccountManagerForAdminApi } from '';
+import type { AccountManagerForAdminApiListUsers2Request } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AccountManagerForAdminApi(configuration);
 
-const request = {};
+const request: AccountManagerForAdminApiListUsers2Request = {
+    // Maximum quantity
+  pageSize: 1,
+};
 
 const data = await apiInstance.listUsers2(request);
 console.log('API called successfully. Returned data:', data);
@@ -656,7 +653,10 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **pageSize** | [**number**] | Maximum quantity | defaults to undefined
 
 
 ### Return type

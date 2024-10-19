@@ -88,7 +88,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
   }, []);
 
   useEffect(() => {
-    aiServiceApi?.listAiModelInfo2()
+    aiServiceApi?.listAiModelInfo()
       .then(setModels)
       .catch(handleError);
   }, [aiServiceApi, handleError]);

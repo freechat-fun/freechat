@@ -143,7 +143,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setVisibility(Visibility.PUBLIC.text());
         dto.setChatTemplate(prompt);
 
-        promptId = testClient.post().uri("/api/v1/prompt")
+        promptId = testClient.post().uri("/api/v2/prompt")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
@@ -166,7 +166,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setParams(parametersFor(modelId()));
         dto.setPromptRef(promptRef);
 
-        promptTaskId = testClient.post().uri("/api/v1/prompt/task")
+        promptTaskId = testClient.post().uri("/api/v2/prompt/task")
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
@@ -189,7 +189,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setGreeting(CHARACTER_GREETING);
         dto.setVisibility(Visibility.PRIVATE.text());
 
-        Long characterId = testClient.post().uri("/api/v1/character")
+        Long characterId = testClient.post().uri("/api/v2/character")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
@@ -205,7 +205,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testPublishCharacter() {
-        Long characterId = testClient.post().uri("/api/v1/character/publish/" + uidToId(characterUid))
+        Long characterId = testClient.post().uri("/api/v2/character/publish/" + uidToId(characterUid))
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
                 .expectStatus().isOk()
@@ -228,7 +228,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setInitQuota(2L);
         dto.setQuotaType(QuotaType.MESSAGES.text());
 
-        backendId = testClient.post().uri("/api/v1/character/backend/" + characterUid)
+        backendId = testClient.post().uri("/api/v2/character/backend/" + characterUid)
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
@@ -245,7 +245,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         CharacterBackendDTO dto = new CharacterBackendDTO();
         dto.setLongTermMemoryWindowSize(2);
 
-        testClient.put().uri("/api/v1/character/backend/" + backendId)
+        testClient.put().uri("/api/v2/character/backend/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .bodyValue(dto)
                 .exchange()
@@ -262,7 +262,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setUserProfile(USER_PROFILE);
         dto.setCharacterUid(characterUid);
 
-        testClient.post().uri("/api/v1/chat")
+        testClient.post().uri("/api/v2/chat")
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -278,7 +278,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setUserProfile(USER_PROFILE);
         dto.setCharacterUid(characterUid);
 
-        chatId = testClient.post().uri("/api/v1/chat")
+        chatId = testClient.post().uri("/api/v2/chat")
                 .accept(MediaType.TEXT_PLAIN)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -298,7 +298,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setContents(List.of(content));
         dto.setRole("user");
 
-        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/" + chatId)
+        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -316,7 +316,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
 
         content.setContent("How about the weather today?");
 
-        result = testClient.post().uri("/api/v1/chat/send/" + chatId)
+        result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -334,7 +334,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testMemoryUsage() {
-        MemoryUsageDTO usage = testClient.get().uri("/api/v1/chat/memory/usage/" + chatId)
+        MemoryUsageDTO usage = testClient.get().uri("/api/v2/chat/memory/usage/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -355,14 +355,14 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setContents(List.of(content));
         dto.setRole("user");
 
-        testClient.post().uri("/api/v1/chat/send/" + chatId)
+        testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
 
-        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
+        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -374,7 +374,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         ChatUpdateDTO updateDto = new ChatUpdateDTO();
         updateDto.setApiKeyValue(apiKey());
 
-        testClient.put().uri("/api/v1/chat/" + chatId)
+        testClient.put().uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(updateDto)
@@ -389,7 +389,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setContents(List.of(content));
         dto.setRole("user");
 
-        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/" + chatId)
+        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -413,7 +413,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         dto.setContents(List.of(content));
         dto.setRole("user");
 
-        LlmResultDTO result = testClient.post().uri("/api/v1/chat/send/" + chatId)
+        LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -444,7 +444,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
+        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -482,7 +482,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
         System.out.println(USER_NICKNAME + ": " + content.getContent());
-        testClient.post().uri("/api/v1/chat/send/stream/" + chatId)
+        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
@@ -509,7 +509,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testListMessagesFailed() {
-        testClient.get().uri("/api/v1/chat/messages/" + chatId)
+        testClient.get().uri("/api/v2/chat/messages/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -517,7 +517,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testListMessages() {
-        List<ChatMessageRecordDTO> messages = testClient.get().uri("/api/v1/chat/messages/" + chatId)
+        List<ChatMessageRecordDTO> messages = testClient.get().uri("/api/v2/chat/messages/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -538,7 +538,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testRollbackMessages() {
-        testClient.post().uri("/api/v1/chat/messages/rollback/" + chatId + "/2")
+        testClient.post().uri("/api/v2/chat/messages/rollback/" + chatId + "/2")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -548,7 +548,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testSendAssistantFailed() {
-        testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
+        testClient.get().uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -560,7 +560,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         TestCharacterUtils.prioritizeCharacter(characterUid);
         TestCommonUtils.waitAWhile();
 
-        LlmResultDTO result = testClient.get().uri("/api/v1/chat/send/assistant/" + chatId + "/" + characterUid)
+        LlmResultDTO result = testClient.get().uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -579,7 +579,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
-        testClient.get().uri("/api/v1/chat/send/stream/assistant/" + chatId + "/" + characterUid)
+        testClient.get().uri("/api/v2/chat/send/stream/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -604,7 +604,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testDeleteChatFailed() {
-        testClient.delete().uri("/api/v1/chat/" + chatId)
+        testClient.delete().uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -612,7 +612,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testDeleteChat() {
-        Boolean succeed = testClient.delete().uri("/api/v1/chat/" + chatId)
+        Boolean succeed = testClient.delete().uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
@@ -627,7 +627,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
 
 
     private void testDeleteBackend() {
-        Boolean succeed = testClient.delete().uri("/api/v1/character/backend/" + backendId)
+        Boolean succeed = testClient.delete().uri("/api/v2/character/backend/" + backendId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -641,7 +641,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testDeleteCharacter() {
-        List<Long> ids = testClient.delete().uri("/api/v1/character/uid/" + characterUid)
+        List<Long> ids = testClient.delete().uri("/api/v2/character/uid/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -654,7 +654,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testDeletePromptTask() {
-        Boolean succeed = testClient.delete().uri("/api/v1/prompt/task/" + promptTaskId)
+        Boolean succeed = testClient.delete().uri("/api/v2/prompt/task/" + promptTaskId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -668,7 +668,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
     }
 
     private void testDeletePrompt() {
-        Boolean succeed = testClient.delete().uri("/api/v1/prompt/" + promptId)
+        Boolean succeed = testClient.delete().uri("/api/v2/prompt/" + promptId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()

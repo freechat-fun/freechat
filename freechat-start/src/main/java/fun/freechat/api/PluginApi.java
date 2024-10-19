@@ -26,7 +26,7 @@ import java.util.List;
 
 @Controller
 @Tag(name = "Plugin")
-@RequestMapping("/api/v1/plugin")
+@RequestMapping("/api/v2/plugin")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")
@@ -91,7 +91,7 @@ public class PluginApi {
     @Operation(
             operationId = "searchPluginDetails",
             summary = "Search Plugin Details",
-            description = "Same as /api/v1/plugin/search, but returns detailed information of the plugin."
+            description = "Same as /api/v2/plugin/search, but returns detailed information of the plugin."
     )
     @PostMapping("/details/search")
     public List<PluginDetailsDTO> detailsSearch(
@@ -127,7 +127,7 @@ public class PluginApi {
     @Operation(
             operationId = "batchSearchPluginSummary",
             summary = "Batch Search Plugin Summaries",
-            description = "Batch call shortcut for /api/v1/plugin/search."
+            description = "Batch call shortcut for /api/v2/plugin/search."
     )
     @PostMapping("/batch/search")
     public List<List<PluginSummaryDTO>> batchSearch(
@@ -190,7 +190,7 @@ public class PluginApi {
     @Operation(
             operationId = "batchSearchPluginDetails",
             summary = "Batch Search Plugin Details",
-            description = "Batch call shortcut for /api/v1/plugin/details/search."
+            description = "Batch call shortcut for /api/v2/plugin/details/search."
     )
     @PostMapping("/batch/details/search")
     public List<List<PluginDetailsDTO>> batchDetailsSearch(
@@ -344,7 +344,7 @@ public class PluginApi {
     @Operation(
             operationId = "updatePlugin",
             summary = "Update Plugin",
-            description = "Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure."
+            description = "Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure."
     )
     @PutMapping("/{pluginId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'pluginUpdateOp')")

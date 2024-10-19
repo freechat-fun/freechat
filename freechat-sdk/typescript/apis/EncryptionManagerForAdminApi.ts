@@ -29,7 +29,7 @@ export class EncryptionManagerForAdminApiRequestFactory extends BaseAPIRequestFa
 
 
         // Path Params
-        const localVarPath = '/api/v1/admin/encryption/encrypt/{text}'
+        const localVarPath = '/api/v2/admin/encryption/encrypt/{text}'
             .replace('{' + 'text' + '}', encodeURIComponent(String(text)));
 
         // Make Request Context

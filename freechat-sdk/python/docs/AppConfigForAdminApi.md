@@ -4,7 +4,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**get_app_configs**](AppConfigForAdminApi.md#get_app_configs) | **GET** /api/v1/admin/app/configs | Get Configurations
+[**get_app_configs**](AppConfigForAdminApi.md#get_app_configs) | **GET** /api/v2/admin/app/configs | Get Configurations
 
 
 # **get_app_configs**

@@ -23,7 +23,7 @@ export class AppConfigForAdminApiRequestFactory extends BaseAPIRequestFactory {
         let _config = _options || this.configuration;
 
         // Path Params
-        const localVarPath = '/api/v1/admin/app/configs';
+        const localVarPath = '/api/v2/admin/app/configs';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

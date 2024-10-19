@@ -2,7 +2,7 @@ lazy val root = (project in file(".")).
   settings(
     organization := "fun.freechat",
     name := "freechat-sdk",
-    version := "2.0.0",
+    version := "2.0.1",
     scalaVersion := "2.11.4",
     scalacOptions ++= Seq("-feature"),
     javacOptions in compile ++= Seq("-Xlint:deprecation"),

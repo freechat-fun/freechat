@@ -32,7 +32,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/apikey';
+        const localVarPath = '/api/v2/ai/apikey';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -80,7 +80,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/apikey/{id}'
+        const localVarPath = '/api/v2/ai/apikey/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
 
         // Make Request Context
@@ -118,7 +118,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/apikey/disable/{id}'
+        const localVarPath = '/api/v2/ai/apikey/disable/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
 
         // Make Request Context
@@ -156,7 +156,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/apikey/enable/{id}'
+        const localVarPath = '/api/v2/ai/apikey/enable/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
 
         // Make Request Context
@@ -194,7 +194,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/apikey/{id}'
+        const localVarPath = '/api/v2/ai/apikey/{id}'
             .replace('{' + 'id' + '}', encodeURIComponent(String(id)));
 
         // Make Request Context
@@ -232,7 +232,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/public/ai/model/{modelId}'
+        const localVarPath = '/api/v2/public/ai/model/{modelId}'
             .replace('{' + 'modelId' + '}', encodeURIComponent(String(modelId)));
 
         // Make Request Context
@@ -270,7 +270,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/ai/apikeys/{provider}'
+        const localVarPath = '/api/v2/ai/apikeys/{provider}'
             .replace('{' + 'provider' + '}', encodeURIComponent(String(provider)));
 
         // Make Request Context
@@ -296,28 +296,12 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public async listAiModelInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<RequestContext> {
+    public async listAiModelInfo(_options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'pageSize' is not null or undefined
-        if (pageSize === null || pageSize === undefined) {
-            throw new RequiredError("AIServiceApi", "listAiModelInfo", "pageSize");
-        }
-
-
-        // verify required parameter 'pageNum' is not null or undefined
-        if (pageNum === null || pageNum === undefined) {
-            throw new RequiredError("AIServiceApi", "listAiModelInfo", "pageNum");
-        }
-
-
         // Path Params
-        const localVarPath = '/api/v1/public/ai/models/{pageSize}/{pageNum}'
-            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
-            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
+        const localVarPath = '/api/v2/public/ai/models';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -354,7 +338,7 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/public/ai/models/{pageSize}'
+        const localVarPath = '/api/v2/public/ai/models/{pageSize}'
             .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)));
 
         // Make Request Context
@@ -380,12 +364,28 @@ export class AIServiceApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public async listAiModelInfo2(_options?: Configuration): Promise<RequestContext> {
+    public async listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
+        // verify required parameter 'pageSize' is not null or undefined
+        if (pageSize === null || pageSize === undefined) {
+            throw new RequiredError("AIServiceApi", "listAiModelInfo2", "pageSize");
+        }
+
+
+        // verify required parameter 'pageNum' is not null or undefined
+        if (pageNum === null || pageNum === undefined) {
+            throw new RequiredError("AIServiceApi", "listAiModelInfo2", "pageNum");
+        }
+
+
         // Path Params
-        const localVarPath = '/api/v1/public/ai/models';
+        const localVarPath = '/api/v2/public/ai/models/{pageSize}/{pageNum}'
+            .replace('{' + 'pageSize' + '}', encodeURIComponent(String(pageSize)))
+            .replace('{' + 'pageNum' + '}', encodeURIComponent(String(pageNum)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

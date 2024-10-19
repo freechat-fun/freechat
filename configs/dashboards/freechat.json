@@ -151,7 +151,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "count (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/api/v1/public/character/search\"}\n        | pattern `<_> [<_>] <_> <_> - <_>|<username>|<_>`\n        | keep username [$__range]\n    )\n)",
+          "expr": "count (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/api/v2/public/character/search\"}\n        | pattern `<_> [<_>] <_> <_> - <_>|<username>|<_>`\n        | keep username [$__range]\n    )\n)",
           "queryType": "instant",
           "refId": "A"
         },
@@ -238,7 +238,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/api/v1/public/character/search\"} [$__interval]\n    )\n) by () or vector(0)",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/api/v2/public/character/search\"} [$__interval]\n    )\n) by () or vector(0)",
           "queryType": "range",
           "refId": "A"
         }
@@ -305,7 +305,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v1/chat/send/stream.*\", method=\"POST\"} [$__interval]\n    )\n) by () or vector(0)",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\"} [$__interval]\n    )\n) by () or vector(0)",
           "queryType": "range",
           "refId": "A"
         }
@@ -368,7 +368,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/api/v1/character\", method=\"POST\"} [$__interval]\n    )\n) by () or vector(0)",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=\"/api/v2/character\", method=\"POST\"} [$__interval]\n    )\n) by () or vector(0)",
           "queryType": "instant",
           "refId": "A"
         }
@@ -1172,7 +1172,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v1/chat/send/stream.*\", method=\"POST\"} [$__range]\n    )\n) by () or vector(0)",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\"} [$__range]\n    )\n) by () or vector(0)",
           "legendFormat": "Requests",
           "queryType": "instant",
           "refId": "A"
@@ -1183,7 +1183,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v1/chat/send/stream.*\", method=\"POST\", status!=\"F\"} [$__range]\n    )\n) by () or vector(0)",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\", status!=\"F\"} [$__range]\n    )\n) by () or vector(0)",
           "hide": true,
           "legendFormat": "Succeed",
           "queryType": "instant",
@@ -1305,7 +1305,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v1/chat/send/stream.*\", method=\"POST\", status!=\"F\"} [1m]\n        )\n    ) by () or vector(0)\n) * 100 / \n(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v1/chat/send/stream.*\", method=\"POST\"} [1m]\n        )\n    ) by () or vector(0)\n)",
+          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\", status!=\"F\"} [1m]\n        )\n    ) by () or vector(0)\n) * 100 / \n(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\"} [1m]\n        )\n    ) by () or vector(0)\n)",
           "legendFormat": "Success Rate",
           "queryType": "range",
           "refId": "A"
@@ -1400,7 +1400,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v1/chat/send/stream.*\", method=\"POST\"} [1m]\n        )\n    ) by () or vector(0)\n) * 60",
+          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\"} [1m]\n        )\n    ) by () or vector(0)\n) * 60",
           "legendFormat": "qpm",
           "queryType": "range",
           "refId": "A"

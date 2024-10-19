@@ -17,11 +17,11 @@ info:
     \ Augmented Generation) for characters.\n- Supports **long-term memory, preset\
     \ memory** for characters.\n- Supports characters evoking **proactive chat**.\n\
     - Supports setting **quota limits** for characters.\n- Supports characters **importing\
-    \ and exporting**.\n- Supports individual **debugging and sharing prompts**.\n\
-    \n## Snapshots\n### On PC\n#### Home Page\n![Home Page Snapshot](/img/snapshot_w1.jpg)\n\
-    #### Development View\n![Development View Snapshot](/img/snapshot_w2.jpg)\n####\
-    \ Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\n### On Mobile\n![Chat\
-    \ Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
+    \ and exporting**.\n- Supports **character-to-character chats**.\n- Supports individual\
+    \ **debugging and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n\
+    ![Home Page Snapshot](/img/snapshot_w1.jpg)\n#### Development View\n![Development\
+    \ View Snapshot](/img/snapshot_w2.jpg)\n#### Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\
+    \n### On Mobile\n![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
     \ />\n![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
@@ -145,7 +145,7 @@ info:
     \ please contact us. We look forward to AI technology helping people create their\
     \ own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.0.0
+  version: 2.0.1
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -160,7 +160,7 @@ tags:
 - description: "Manage users, callable only by super administrators."
   name: Account Manager (for admin)
 paths:
-  /api/v1/rag/task/{taskId}:
+  /api/v2/rag/task/{taskId}:
     delete:
       description: Delete a RAG task.
       operationId: deleteRagTask
@@ -244,7 +244,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/{promptId}:
+  /api/v2/prompt/{promptId}:
     delete:
       description: Delete prompt. Returns success or failure.
       operationId: deletePrompt
@@ -271,7 +271,7 @@ paths:
       x-accepts:
       - application/json
     put:
-      description: "Update prompt, refer to /api/v1/prompt/create, required field:\
+      description: "Update prompt, refer to /api/v2/prompt/create, required field:\
         \ promptId. Returns success or failure."
       operationId: updatePrompt
       parameters:
@@ -318,7 +318,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/task/{promptTaskId}:
+  /api/v2/prompt/task/{promptTaskId}:
     delete:
       description: Delete a prompt task.
       operationId: deletePromptTask
@@ -399,7 +399,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/{pluginId}:
+  /api/v2/plugin/{pluginId}:
     delete:
       description: Delete plugin. Returns success or failure.
       operationId: deletePlugin
@@ -426,7 +426,7 @@ paths:
       x-accepts:
       - application/json
     put:
-      description: "Update plugin, refer to /api/v1/plugin/create, required field:\
+      description: "Update plugin, refer to /api/v2/plugin/create, required field:\
         \ pluginId. Returns success or failure."
       operationId: updatePlugin
       parameters:
@@ -466,7 +466,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/refresh/{pluginId}:
+  /api/v2/plugin/refresh/{pluginId}:
     put:
       description: "For online manifest, api-docs information provided at the time\
         \ of entry, this interface can immediately refresh the information in the\
@@ -493,7 +493,7 @@ paths:
       - Plugin
       x-accepts:
       - application/json
-  /api/v1/org/manage/{username}/subordinates:
+  /api/v2/org/manage/{username}/subordinates:
     delete:
       description: Fully delete the direct subordinate relationship of the subordinate
         account.
@@ -598,7 +598,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/org/manage/{username}/owners:
+  /api/v2/org/manage/{username}/owners:
     get:
       description: |
         Get the superior relationship of the subordinate account, including direct and indirect owners, default does not include virtual reported owners, so there will be no circular relationship.<br/>
@@ -675,7 +675,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/org/authority/{username}:
+  /api/v2/org/authority/{username}:
     get:
       description: List the permission list of the subordinate account.
       operationId: listSubordinateAuthorities
@@ -740,7 +740,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/chat/{chatId}:
+  /api/v2/chat/{chatId}:
     delete:
       description: Delete the chat session.
       operationId: deleteChat
@@ -797,7 +797,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/{characterId}:
+  /api/v2/character/{characterId}:
     delete:
       description: Delete character. Returns success or failure.
       operationId: deleteCharacter
@@ -824,7 +824,7 @@ paths:
       x-accepts:
       - application/json
     put:
-      description: "Update character, refer to /api/v1/character/create, required\
+      description: "Update character, refer to /api/v2/character/create, required\
         \ field: characterId. Returns success or failure."
       operationId: updateCharacter
       parameters:
@@ -867,7 +867,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/backend/{characterBackendId}:
+  /api/v2/character/backend/{characterBackendId}:
     delete:
       description: Remove a backend configuration.
       operationId: removeCharacterBackend
@@ -924,7 +924,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/backend/default/{characterBackendId}:
+  /api/v2/character/backend/default/{characterBackendId}:
     put:
       description: Set the default backend configuration.
       operationId: setDefaultCharacterBackend
@@ -949,7 +949,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/ai/apikey/enable/{id}:
+  /api/v2/ai/apikey/enable/{id}:
     put:
       description: Enable the credential information of the model provider.
       operationId: enableAiApiKey
@@ -975,7 +975,7 @@ paths:
       - AI Service
       x-accepts:
       - application/json
-  /api/v1/ai/apikey/disable/{id}:
+  /api/v2/ai/apikey/disable/{id}:
     put:
       description: Disable the credential information of the model provider.
       operationId: disableAiApiKey
@@ -1001,7 +1001,7 @@ paths:
       - AI Service
       x-accepts:
       - application/json
-  /api/v1/agent/{agentId}:
+  /api/v2/agent/{agentId}:
     delete:
       description: Delete agent. Return success or failure.
       operationId: deleteAgent
@@ -1028,7 +1028,7 @@ paths:
       x-accepts:
       - application/json
     put:
-      description: "Update agent, refer to /api/v1/agent/create, required field: agentId.\
+      description: "Update agent, refer to /api/v2/agent/create, required field: agentId.\
         \ Return success or failure."
       operationId: updateAgent
       parameters:
@@ -1075,7 +1075,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/admin/user:
+  /api/v2/admin/user:
     post:
       description: Create user.
       operationId: createUser
@@ -1126,7 +1126,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/admin/token/{token}:
+  /api/v2/admin/token/{token}:
     delete:
       description: Delete the specified API Token.
       operationId: deleteTokenForUser
@@ -1175,7 +1175,7 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/authority/{username}:
+  /api/v2/admin/authority/{username}:
     get:
       description: List the user's permissions.
       operationId: listAuthoritiesOfUser
@@ -1238,7 +1238,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/account/token/{token}:
+  /api/v2/account/token/{token}:
     delete:
       description: Delete an API Token.
       operationId: deleteToken
@@ -1287,7 +1287,7 @@ paths:
       - Account
       x-accepts:
       - text/plain
-  /api/v1/account/token/id/{id}:
+  /api/v2/account/token/id/{id}:
     delete:
       description: Delete the API token by id.
       operationId: deleteTokenById
@@ -1363,7 +1363,7 @@ paths:
       - Account
       x-accepts:
       - application/json
-  /api/v1/account/details:
+  /api/v2/account/details:
     get:
       description: "Return the detailed user information of the current account, the\
         \ fields refer to the [standard claims](https://openid.net/specs/openid-connect-core-1_0.html#Claims)\
@@ -1404,7 +1404,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/stats/{infoType}/{infoId}/{statsType}:
+  /api/v2/stats/{infoType}/{infoId}/{statsType}:
     post:
       description: Increase the statistics of the corresponding metrics of the corresponding
         resources by one. Return the latest statistics.
@@ -1448,7 +1448,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/stats/{infoType}/{infoId}/{statsType}/{delta}:
+  /api/v2/stats/{infoType}/{infoId}/{statsType}/{delta}:
     post:
       description: Add the statistics of the corresponding metrics of the corresponding
         resources. The increment can be negative. Return the latest statistics.
@@ -1501,7 +1501,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/rag/task/{characterUid}:
+  /api/v2/rag/task/{characterUid}:
     post:
       description: Create a RAG task.
       operationId: createRagTask
@@ -1535,7 +1535,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/rag/task/start/{taskId}:
+  /api/v2/rag/task/start/{taskId}:
     post:
       description: Start a RAG task.
       operationId: startRagTask
@@ -1561,7 +1561,7 @@ paths:
       - Rag
       x-accepts:
       - application/json
-  /api/v1/rag/task/cancel/{taskId}:
+  /api/v2/rag/task/cancel/{taskId}:
     post:
       description: Cancel a RAG task.
       operationId: cancelRagTask
@@ -1587,7 +1587,7 @@ paths:
       - Rag
       x-accepts:
       - application/json
-  /api/v1/public/prompt/search:
+  /api/v2/public/prompt/search:
     post:
       description: |
         Search prompts:
@@ -1641,7 +1641,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/public/prompt/count:
+  /api/v2/public/prompt/count:
     post:
       description: Calculate the number of prompts according to the specified query
         conditions.
@@ -1667,7 +1667,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/public/character/search:
+  /api/v2/public/character/search:
     post:
       description: |
         Search characters:
@@ -1717,7 +1717,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/public/character/count:
+  /api/v2/public/character/count:
     post:
       description: Calculate the number of characters according to the specified query
         conditions.
@@ -1743,7 +1743,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt:
+  /api/v2/prompt:
     post:
       description: |
         Create a prompt, required fields:
@@ -1789,7 +1789,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/versions/{name}:
+  /api/v2/prompt/versions/{name}:
     post:
       description: List the versions and corresponding promptIds by prompt name.
       operationId: listPromptVersionsByName
@@ -1816,7 +1816,7 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/prompt/task:
+  /api/v2/prompt/task:
     post:
       description: Create a prompt task.
       operationId: createPromptTask
@@ -1840,7 +1840,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/plain
-  /api/v1/prompt/send:
+  /api/v2/prompt/send:
     post:
       description: "Send the prompt to the AI service. Note that if the embedding\
         \ model is called, the return is an embedding array, placed in the details\
@@ -1871,9 +1871,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/send/stream:
+  /api/v2/prompt/send/stream:
     post:
-      description: "Refer to /api/v1/prompt/send, stream back chunks of the response."
+      description: "Refer to /api/v2/prompt/send, stream back chunks of the response."
       operationId: streamSendPrompt
       requestBody:
         content:
@@ -1900,7 +1900,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/event-stream
-  /api/v1/prompt/search:
+  /api/v2/prompt/search:
     post:
       description: |
         Search prompts:
@@ -1954,7 +1954,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/publish/{promptId}/{visibility}:
+  /api/v2/prompt/publish/{promptId}/{visibility}:
     post:
       description: "Publish prompt, draft content becomes formal content, version\
         \ number increases by 1. After successful publication, a new promptId will\
@@ -1991,9 +1991,9 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/prompt/details/search:
+  /api/v2/prompt/details/search:
     post:
-      description: "Same as /api/v1/prompt/search, but returns detailed information\
+      description: "Same as /api/v2/prompt/search, but returns detailed information\
         \ of the prompt."
       operationId: searchPromptDetails
       requestBody:
@@ -2033,7 +2033,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/count:
+  /api/v2/prompt/count:
     post:
       description: Calculate the number of prompts according to the specified query
         conditions.
@@ -2059,7 +2059,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/clone/{promptId}:
+  /api/v2/prompt/clone/{promptId}:
     post:
       description: |
         Enter the promptId, generate a new record, the content is basically the same as the original prompt, but the following fields are different:
@@ -2094,7 +2094,7 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/prompt/batch:
+  /api/v2/prompt/batch:
     delete:
       description: "Delete multiple prompts. Ensure transactionality, return the list\
         \ of successfully deleted promptIds."
@@ -2175,9 +2175,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/batch/search:
+  /api/v2/prompt/batch/search:
     post:
-      description: Batch call shortcut for /api/v1/prompt/search.
+      description: Batch call shortcut for /api/v2/prompt/search.
       operationId: batchSearchPromptSummary
       requestBody:
         content:
@@ -2236,9 +2236,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/batch/details/search:
+  /api/v2/prompt/batch/details/search:
     post:
-      description: Batch call shortcut for /api/v1/prompt/details/search.
+      description: Batch call shortcut for /api/v2/prompt/details/search.
       operationId: batchSearchPromptDetails
       requestBody:
         content:
@@ -2297,7 +2297,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/batch/clone:
+  /api/v2/prompt/batch/clone:
     post:
       description: "Batch clone multiple prompts. Ensure transactionality, return\
         \ the promptId list after success."
@@ -2328,7 +2328,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/prompt/apply/template:
+  /api/v2/prompt/apply/template:
     post:
       description: Apply parameters to prompt template.
       operationId: applyPromptTemplate
@@ -2352,7 +2352,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/plain
-  /api/v1/prompt/apply/ref:
+  /api/v2/prompt/apply/ref:
     post:
       description: Apply parameters to prompt record.
       operationId: applyPromptRef
@@ -2376,7 +2376,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/plain
-  /api/v1/plugin:
+  /api/v2/plugin:
     post:
       description: |
         Create a plugin, required fields:
@@ -2418,7 +2418,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/search:
+  /api/v2/plugin/search:
     post:
       description: |
         Search plugins:
@@ -2471,9 +2471,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/details/search:
+  /api/v2/plugin/details/search:
     post:
-      description: "Same as /api/v1/plugin/search, but returns detailed information\
+      description: "Same as /api/v2/plugin/search, but returns detailed information\
         \ of the plugin."
       operationId: searchPluginDetails
       requestBody:
@@ -2510,7 +2510,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/count:
+  /api/v2/plugin/count:
     post:
       description: Calculate the number of plugins according to the specified query
         conditions.
@@ -2536,7 +2536,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/batch:
+  /api/v2/plugin/batch:
     delete:
       description: "Delete multiple plugins. Ensure transactionality, return the list\
         \ of successfully deleted pluginIds."
@@ -2614,9 +2614,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/batch/search:
+  /api/v2/plugin/batch/search:
     post:
-      description: Batch call shortcut for /api/v1/plugin/search.
+      description: Batch call shortcut for /api/v2/plugin/search.
       operationId: batchSearchPluginSummary
       requestBody:
         content:
@@ -2676,9 +2676,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/plugin/batch/details/search:
+  /api/v2/plugin/batch/details/search:
     post:
-      description: Batch call shortcut for /api/v1/plugin/details/search.
+      description: Batch call shortcut for /api/v2/plugin/details/search.
       operationId: batchSearchPluginDetails
       requestBody:
         content:
@@ -2738,7 +2738,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/chat:
+  /api/v2/chat:
     get:
       description: List chats of current user.
       operationId: listChats
@@ -2779,7 +2779,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/plain
-  /api/v1/chat/send/{chatId}:
+  /api/v2/chat/send/{chatId}:
     post:
       description: Send a chat message to character.
       operationId: sendMessage
@@ -2812,9 +2812,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/chat/send/stream/{chatId}:
+  /api/v2/chat/send/stream/{chatId}:
     post:
-      description: "Refer to /api/v1/chat/send/{chatId}, stream back chunks of the\
+      description: "Refer to /api/v2/chat/send/{chatId}, stream back chunks of the\
         \ response."
       operationId: streamSendMessage
       parameters:
@@ -2846,7 +2846,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/event-stream
-  /api/v1/chat/messages/rollback/{chatId}/{count}:
+  /api/v2/chat/messages/rollback/{chatId}/{count}:
     post:
       description: Rollback messages of a chat.
       operationId: rollbackMessages
@@ -2883,7 +2883,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/character:
+  /api/v2/character:
     post:
       description: Create a character.
       operationId: createCharacter
@@ -2915,7 +2915,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/versions/{name}:
+  /api/v2/character/versions/{name}:
     post:
       description: List the versions and corresponding characterIds by character name.
       operationId: listCharacterVersionsByName
@@ -2942,7 +2942,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/search:
+  /api/v2/character/search:
     post:
       description: |
         Search characters:
@@ -2992,41 +2992,12 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/publish/{characterId}:
+  /api/v2/character/publish/{characterId}/{visibility}:
     post:
       description: "Publish character, draft content becomes formal content, version\
         \ number increases by 1. After successful publication, a new characterId will\
         \ be generated and returned. You need to specify the visibility for publication."
       operationId: publishCharacter
-      parameters:
-      - description: The characterId to be published
-        explode: false
-        in: path
-        name: characterId
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                format: int64
-                type: integer
-          description: OK
-      summary: Publish Character
-      tags:
-      - Character
-      x-accepts:
-      - application/json
-  /api/v1/character/publish/{characterId}/{visibility}:
-    post:
-      description: "Publish character, draft content becomes formal content, version\
-        \ number increases by 1. After successful publication, a new characterId will\
-        \ be generated and returned. You need to specify the visibility for publication."
-      operationId: publishCharacter_1
       parameters:
       - description: The characterId to be published
         explode: false
@@ -3058,7 +3029,36 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/picture/{characterUid}:
+  /api/v2/character/publish/{characterId}:
+    post:
+      description: "Publish character, draft content becomes formal content, version\
+        \ number increases by 1. After successful publication, a new characterId will\
+        \ be generated and returned. You need to specify the visibility for publication."
+      operationId: publishCharacter_1
+      parameters:
+      - description: The characterId to be published
+        explode: false
+        in: path
+        name: characterId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                format: int64
+                type: integer
+          description: OK
+      summary: Publish Character
+      tags:
+      - Character
+      x-accepts:
+      - application/json
+  /api/v2/character/picture/{characterUid}:
     post:
       description: Upload a picture of the character.
       operationId: uploadCharacterPicture
@@ -3090,7 +3090,7 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
-  /api/v1/character/latest/{name}:
+  /api/v2/character/latest/{name}:
     post:
       description: Get latest characterId by character name.
       operationId: getCharacterLatestIdByName
@@ -3116,7 +3116,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/import:
+  /api/v2/character/import:
     post:
       description: Import character configuration from a tar.gz file.
       operationId: importCharacter
@@ -3140,7 +3140,7 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - application/json
-  /api/v1/character/document/{characterUid}:
+  /api/v2/character/document/{characterUid}:
     post:
       description: Upload a document of the character.
       operationId: uploadCharacterDocument
@@ -3172,9 +3172,9 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
-  /api/v1/character/details/search:
+  /api/v2/character/details/search:
     post:
-      description: "Same as /api/v1/character/search, but returns detailed information\
+      description: "Same as /api/v2/character/search, but returns detailed information\
         \ of the character."
       operationId: searchCharacterDetails
       requestBody:
@@ -3212,7 +3212,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/count:
+  /api/v2/character/count:
     post:
       description: Calculate the number of characters according to the specified query
         conditions.
@@ -3238,7 +3238,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/clone/{characterId}:
+  /api/v2/character/clone/{characterId}:
     post:
       description: |
         Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different:
@@ -3273,9 +3273,9 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/batch/search:
+  /api/v2/character/batch/search:
     post:
-      description: Batch call shortcut for /api/v1/character/search.
+      description: Batch call shortcut for /api/v2/character/search.
       operationId: batchSearchCharacterSummary
       requestBody:
         content:
@@ -3332,9 +3332,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/batch/details/search:
+  /api/v2/character/batch/details/search:
     post:
-      description: Batch call shortcut for /api/v1/character/details/search.
+      description: Batch call shortcut for /api/v2/character/details/search.
       operationId: batchSearchCharacterDetails
       requestBody:
         content:
@@ -3391,7 +3391,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/character/backend/{characterUid}:
+  /api/v2/character/backend/{characterUid}:
     post:
       description: Add a backend configuration for a character.
       operationId: addCharacterBackend
@@ -3424,7 +3424,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - text/plain
-  /api/v1/character/avatar/{characterUid}:
+  /api/v2/character/avatar/{characterUid}:
     post:
       description: Upload an avatar of the character.
       operationId: uploadCharacterAvatar
@@ -3456,7 +3456,7 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
-  /api/v1/ai/apikey:
+  /api/v2/ai/apikey:
     post:
       description: Add a credential for the model service.
       operationId: addAiApiKey
@@ -3481,7 +3481,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent:
+  /api/v2/agent:
     post:
       description: |
         Create a agent, ignore required fields:
@@ -3527,7 +3527,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/versions/{name}:
+  /api/v2/agent/versions/{name}:
     post:
       description: List the versions and corresponding agentIds by agent name.
       operationId: listAgentVersionsByName
@@ -3554,7 +3554,7 @@ paths:
       - Agent
       x-accepts:
       - application/json
-  /api/v1/agent/search:
+  /api/v2/agent/search:
     post:
       description: |
         Search agents:
@@ -3608,7 +3608,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/publish/{agentId}/{visibility}:
+  /api/v2/agent/publish/{agentId}/{visibility}:
     post:
       description: "Publish agent, draft content becomes formal content, version number\
         \ increases by 1. After successful publication, a new agentId will be generated\
@@ -3645,9 +3645,9 @@ paths:
       - Agent
       x-accepts:
       - application/json
-  /api/v1/agent/details/search:
+  /api/v2/agent/details/search:
     post:
-      description: "Same as /api/v1/agent/search, but returns detailed information\
+      description: "Same as /api/v2/agent/search, but returns detailed information\
         \ of the agent."
       operationId: searchAgentDetails
       requestBody:
@@ -3688,7 +3688,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/count:
+  /api/v2/agent/count:
     post:
       description: Calculate the number of agents according to the specified query
         conditions.
@@ -3714,7 +3714,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/clone/{agentId}:
+  /api/v2/agent/clone/{agentId}:
     post:
       description: |
         Enter the agentId, generate a new record, the content is basically the same as the original agent, but the following fields are different:
@@ -3749,7 +3749,7 @@ paths:
       - Agent
       x-accepts:
       - application/json
-  /api/v1/agent/batch:
+  /api/v2/agent/batch:
     post:
       description: "Batch create multiple agents. Ensure transactionality, return\
         \ the agentId list after success."
@@ -3802,9 +3802,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/batch/search:
+  /api/v2/agent/batch/search:
     post:
-      description: Batch call shortcut for /api/v1/agent/search.
+      description: Batch call shortcut for /api/v2/agent/search.
       operationId: batchSearchAgentSummary
       requestBody:
         content:
@@ -3864,9 +3864,9 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/batch/details/search:
+  /api/v2/agent/batch/details/search:
     post:
-      description: Batch call shortcut for /api/v1/agent/details/search.
+      description: Batch call shortcut for /api/v2/agent/details/search.
       operationId: batchSearchAgentDetails
       requestBody:
         content:
@@ -3926,7 +3926,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/agent/batch/clone:
+  /api/v2/agent/batch/clone:
     post:
       description: "Batch clone multiple agents. Ensure transactionality, return the\
         \ agentId list after success."
@@ -3957,7 +3957,7 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
-  /api/v1/admin/token/{username}/{duration}:
+  /api/v2/admin/token/{username}/{duration}:
     post:
       description: "Create an API Token for a specified user, valid for duration seconds."
       operationId: createTokenForUser
@@ -3992,27 +3992,10 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - text/plain
-  /api/v1/account/token:
+  /api/v2/account/token/{duration}:
     post:
       description: "Create a timed API Token, valid for {duration} seconds."
       operationId: createToken
-      parameters: []
-      responses:
-        "200":
-          content:
-            text/plain:
-              schema:
-                type: string
-          description: OK
-      summary: Create API Token
-      tags:
-      - Account
-      x-accepts:
-      - text/plain
-  /api/v1/account/token/{duration}:
-    post:
-      description: "Create a timed API Token, valid for {duration} seconds."
-      operationId: createToken_1
       parameters:
       - description: Token validity duration (seconds)
         explode: false
@@ -4035,7 +4018,24 @@ paths:
       - Account
       x-accepts:
       - text/plain
-  /api/v1/account/picture:
+  /api/v2/account/token:
+    post:
+      description: "Create a timed API Token, valid for {duration} seconds."
+      operationId: createToken_1
+      parameters: []
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Create API Token
+      tags:
+      - Account
+      x-accepts:
+      - text/plain
+  /api/v2/account/picture:
     post:
       description: Upload a picture of the user.
       operationId: uploadUserPicture
@@ -4058,7 +4058,7 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
-  /api/v1/rag/tasks/{characterUid}:
+  /api/v2/rag/tasks/{characterUid}:
     get:
       description: List the RAG tasks by characterId.
       operationId: listRagTasks
@@ -4085,7 +4085,7 @@ paths:
       - Rag
       x-accepts:
       - application/json
-  /api/v1/rag/task/status/{taskId}:
+  /api/v2/rag/task/status/{taskId}:
     get:
       description: "Get the RAG task execution status: pending | running | succeeded\
         \ | failed | canceled."
@@ -4112,7 +4112,7 @@ paths:
       - Rag
       x-accepts:
       - text/plain
-  /api/v1/public/tags/hot/{infoType}/{pageSize}:
+  /api/v2/public/tags/hot/{infoType}/{pageSize}:
     get:
       description: Get popular tags for a specified info type.
       operationId: listHotTags
@@ -4156,7 +4156,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/{infoType}/{infoId}:
+  /api/v2/public/stats/{infoType}/{infoId}:
     get:
       description: Get all statistics of the corresponding resources.
       operationId: getStatistics
@@ -4189,7 +4189,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/{infoType}/{infoId}/{statsType}:
+  /api/v2/public/stats/{infoType}/{infoId}/{statsType}:
     get:
       description: Get the statistics of the corresponding metrics of the corresponding
         resources.
@@ -4233,7 +4233,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/prompts/by/{statsType}/{pageSize}:
+  /api/v2/public/stats/prompts/by/{statsType}:
     get:
       description: "List prompts based on statistics, including interactive statistical\
         \ data."
@@ -4247,15 +4247,6 @@ paths:
         required: true
         schema:
           type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
         explode: true
@@ -4279,7 +4270,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum}:
+  /api/v2/public/stats/prompts/by/{statsType}/{pageSize}:
     get:
       description: "List prompts based on statistics, including interactive statistical\
         \ data."
@@ -4303,6 +4294,52 @@ paths:
           format: int64
           type: integer
         style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Prompts by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v2/public/stats/prompts/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List prompts based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPromptsByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
       - description: Current page number
         explode: false
         in: path
@@ -4334,44 +4371,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/prompts/by/{statsType}:
-    get:
-      description: "List prompts based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPromptsByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PromptSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Prompts by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/public/stats/plugins/by/{statsType}/{pageSize}:
+  /api/v2/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum}:
     get:
       description: "List plugins based on statistics, including interactive statistical\
         \ data."
@@ -4395,52 +4395,6 @@ paths:
           format: int64
           type: integer
         style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Plugins by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/public/stats/plugins/by/{statsType}/{pageSize}/{pageNum}:
-    get:
-      description: "List plugins based on statistics, including interactive statistical\
-        \ data."
-      operationId: listPluginsByStatistic_1
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
       - description: Current page number
         explode: false
         in: path
@@ -4472,11 +4426,11 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/plugins/by/{statsType}:
+  /api/v2/public/stats/plugins/by/{statsType}:
     get:
       description: "List plugins based on statistics, including interactive statistical\
         \ data."
-      operationId: listPluginsByStatistic_2
+      operationId: listPluginsByStatistic_1
       parameters:
       - description: "Statistics type: view_count | refer_count | recommend_count\
           \ | score"
@@ -4509,7 +4463,53 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/characters/by/{statsType}:
+  /api/v2/public/stats/plugins/by/{statsType}/{pageSize}:
+    get:
+      description: "List plugins based on statistics, including interactive statistical\
+        \ data."
+      operationId: listPluginsByStatistic_2
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PluginSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Plugins by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v2/public/stats/characters/by/{statsType}:
     get:
       description: "List characters based on statistics, including interactive statistical\
         \ data."
@@ -4546,11 +4546,57 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/characters/by/{statsType}/{pageSize}/{pageNum}:
+  /api/v2/public/stats/characters/by/{statsType}/{pageSize}:
     get:
       description: "List characters based on statistics, including interactive statistical\
         \ data."
       operationId: listCharactersByStatistic_1
+      parameters:
+      - description: "Statistics type: view_count | refer_count | recommend_count\
+          \ | score"
+        explode: false
+        in: path
+        name: statsType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      - description: "Default is descending order, set asc=1 for ascending order"
+        explode: true
+        in: query
+        name: asc
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
+                type: array
+          description: OK
+      summary: List Characters by Statistics
+      tags:
+      - Interactive Statistics
+      x-accepts:
+      - application/json
+  /api/v2/public/stats/characters/by/{statsType}/{pageSize}/{pageNum}:
+    get:
+      description: "List characters based on statistics, including interactive statistical\
+        \ data."
+      operationId: listCharactersByStatistic_2
       parameters:
       - description: "Statistics type: view_count | refer_count | recommend_count\
           \ | score"
@@ -4601,53 +4647,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/characters/by/{statsType}/{pageSize}:
-    get:
-      description: "List characters based on statistics, including interactive statistical\
-        \ data."
-      operationId: listCharactersByStatistic_2
-      parameters:
-      - description: "Statistics type: view_count | refer_count | recommend_count\
-          \ | score"
-        explode: false
-        in: path
-        name: statsType
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: "Default is descending order, set asc=1 for ascending order"
-        explode: true
-        in: query
-        name: asc
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/CharacterSummaryStatsDTO'
-                type: array
-          description: OK
-      summary: List Characters by Statistics
-      tags:
-      - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v1/public/stats/agents/by/{statsType}/{pageSize}:
+  /api/v2/public/stats/agents/by/{statsType}/{pageSize}:
     get:
       description: "List agents based on statistics, including interactive statistical\
         \ data."
@@ -4693,7 +4693,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/agents/by/{statsType}/{pageSize}/{pageNum}:
+  /api/v2/public/stats/agents/by/{statsType}/{pageSize}/{pageNum}:
     get:
       description: "List agents based on statistics, including interactive statistical\
         \ data."
@@ -4748,7 +4748,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/stats/agents/by/{statsType}:
+  /api/v2/public/stats/agents/by/{statsType}:
     get:
       description: "List agents based on statistics, including interactive statistical\
         \ data."
@@ -4785,7 +4785,7 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/score/{infoType}/{infoId}:
+  /api/v2/public/score/{infoType}/{infoId}:
     get:
       description: Get the current user's score for the corresponding resource.
       operationId: getScore
@@ -4819,11 +4819,60 @@ paths:
       - Interactive Statistics
       x-accepts:
       - application/json
-  /api/v1/public/ai/models/{pageSize}/{pageNum}:
+  /api/v2/public/ai/models:
     get:
       description: "Return model information by page, return the pageNum page, up\
         \ to pageSize model information."
       operationId: listAiModelInfo
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AiModelInfoDTO'
+                type: array
+          description: OK
+      summary: List Models
+      tags:
+      - AI Service
+      x-accepts:
+      - application/json
+  /api/v2/public/ai/models/{pageSize}:
+    get:
+      description: "Return model information by page, return the pageNum page, up\
+        \ to pageSize model information."
+      operationId: listAiModelInfo_1
+      parameters:
+      - description: Maximum quantity
+        explode: false
+        in: path
+        name: pageSize
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AiModelInfoDTO'
+                type: array
+          description: OK
+      summary: List Models
+      tags:
+      - AI Service
+      x-accepts:
+      - application/json
+  /api/v2/public/ai/models/{pageSize}/{pageNum}:
+    get:
+      description: "Return model information by page, return the pageNum page, up\
+        \ to pageSize model information."
+      operationId: listAiModelInfo_2
       parameters:
       - description: Maximum quantity
         explode: false
@@ -4857,56 +4906,7 @@ paths:
       - AI Service
       x-accepts:
       - application/json
-  /api/v1/public/ai/models/{pageSize}:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo_1
-      parameters:
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v1/public/ai/models:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo_2
-      parameters: []
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v1/public/ai/model/{modelId}:
+  /api/v2/public/ai/model/{modelId}:
     get:
       description: Return specific model information.
       operationId: getAiModelInfo
@@ -4931,7 +4931,7 @@ paths:
       - AI Service
       x-accepts:
       - application/json
-  /api/v1/prompt/summary/{promptId}:
+  /api/v2/prompt/summary/{promptId}:
     get:
       description: Get prompt summary information.
       operationId: getPromptSummary
@@ -4957,7 +4957,7 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/prompt/exists/name/{name}:
+  /api/v2/prompt/exists/name/{name}:
     get:
       description: Check if the prompt name already exists.
       operationId: existsPromptName
@@ -4982,7 +4982,7 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/prompt/details/{promptId}:
+  /api/v2/prompt/details/{promptId}:
     get:
       description: Get prompt detailed information.
       operationId: getPromptDetails
@@ -5008,7 +5008,7 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/prompt/create/name/{desired}:
+  /api/v2/prompt/create/name/{desired}:
     get:
       description: Create a new prompt name starting with a desired name.
       operationId: newPromptName
@@ -5033,7 +5033,7 @@ paths:
       - Prompt
       x-accepts:
       - text/plain
-  /api/v1/plugin/summary/{pluginId}:
+  /api/v2/plugin/summary/{pluginId}:
     get:
       description: Get plugin summary information.
       operationId: getPluginSummary
@@ -5059,7 +5059,7 @@ paths:
       - Plugin
       x-accepts:
       - application/json
-  /api/v1/plugin/details/{pluginId}:
+  /api/v2/plugin/details/{pluginId}:
     get:
       description: Get plugin detailed information.
       operationId: getPluginDetails
@@ -5085,7 +5085,7 @@ paths:
       - Plugin
       x-accepts:
       - application/json
-  /api/v1/org/subordinates:
+  /api/v2/org/subordinates:
     get:
       description: "Get the subordinate relationships of the current account, including\
         \ direct and indirect subordinates, by default does not include virtual managed\
@@ -5116,9 +5116,9 @@ paths:
       - Organization
       x-accepts:
       - application/json
-  /api/v1/org/subordinates/dot:
+  /api/v2/org/subordinates/dot:
     get:
-      description: "Same as /api/v1/org/subordinates, but returns a DOT format view,\
+      description: "Same as /api/v2/org/subordinates, but returns a DOT format view,\
         \ DOT reference: [graphviz](https://www.graphviz.org/)"
       operationId: getSubordinatesDot
       parameters:
@@ -5142,7 +5142,7 @@ paths:
       - Organization
       x-accepts:
       - application/json
-  /api/v1/org/owners:
+  /api/v2/org/owners:
     get:
       description: "Get the superior relationships of the current account, including\
         \ direct and indirect owners, by default does not include virtual reported\
@@ -5173,9 +5173,9 @@ paths:
       - Organization
       x-accepts:
       - application/json
-  /api/v1/org/owners/dot:
+  /api/v2/org/owners/dot:
     get:
-      description: "Same as /api/v1/org/owners, but returns a DOT format view, DOT\
+      description: "Same as /api/v2/org/owners, but returns a DOT format view, DOT\
         \ reference: [graphviz](https://www.graphviz.org/)"
       operationId: getOwnersDot
       parameters:
@@ -5199,7 +5199,7 @@ paths:
       - Organization
       x-accepts:
       - application/json
-  /api/v1/chat/{characterId}:
+  /api/v2/chat/{characterId}:
     get:
       description: Get default chat id of current user and the character.
       operationId: getDefaultChatId
@@ -5225,9 +5225,9 @@ paths:
       - Chat
       x-accepts:
       - text/plain
-  /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid}:
+  /api/v2/chat/send/stream/assistant/{chatId}/{assistantUid}:
     get:
-      description: "Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid},\
+      description: "Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid},\
         \ stream back chunks of the response."
       operationId: streamSendAssistant
       parameters:
@@ -5259,7 +5259,7 @@ paths:
       - Chat
       x-accepts:
       - text/event-stream
-  /api/v1/chat/send/assistant/{chatId}/{assistantUid}:
+  /api/v2/chat/send/assistant/{chatId}/{assistantUid}:
     get:
       description: Send a message to assistant for a new chat message.
       operationId: sendAssistant
@@ -5292,7 +5292,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/messages/{chatId}:
+  /api/v2/chat/messages/{chatId}/{limit}:
     get:
       description: List messages of a chat.
       operationId: listMessages
@@ -5304,6 +5304,15 @@ paths:
         required: true
         schema:
           type: string
+        style: simple
+      - description: Messages limit
+        explode: false
+        in: path
+        name: limit
+        required: true
+        schema:
+          format: int32
+          type: integer
         style: simple
       responses:
         "200":
@@ -5319,7 +5328,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/messages/{chatId}/{limit}/{offset}:
+  /api/v2/chat/messages/{chatId}/{limit}/{offset}:
     get:
       description: List messages of a chat.
       operationId: listMessages_1
@@ -5364,7 +5373,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/messages/{chatId}/{limit}:
+  /api/v2/chat/messages/{chatId}:
     get:
       description: List messages of a chat.
       operationId: listMessages_2
@@ -5376,15 +5385,6 @@ paths:
         required: true
         schema:
           type: string
-        style: simple
-      - description: Messages limit
-        explode: false
-        in: path
-        name: limit
-        required: true
-        schema:
-          format: int32
-          type: integer
         style: simple
       responses:
         "200":
@@ -5400,7 +5400,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/messages/debug/{chatId}/{limit}:
+  /api/v2/chat/messages/debug/{chatId}/{limit}:
     get:
       description: List debug messages of a chat.
       operationId: listDebugMessages
@@ -5436,7 +5436,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/messages/debug/{chatId}/{limit}/{offset}:
+  /api/v2/chat/messages/debug/{chatId}/{limit}/{offset}:
     get:
       description: List debug messages of a chat.
       operationId: listDebugMessages_1
@@ -5481,7 +5481,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/messages/debug/{chatId}:
+  /api/v2/chat/messages/debug/{chatId}:
     get:
       description: List debug messages of a chat.
       operationId: listDebugMessages_2
@@ -5508,7 +5508,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/chat/memory/usage/{chatId}:
+  /api/v2/chat/memory/usage/{chatId}:
     get:
       description: Get memory usage of a chat.
       operationId: getMemoryUsage
@@ -5533,7 +5533,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/character/summary/{characterId}:
+  /api/v2/character/summary/{characterId}:
     get:
       description: Get character summary information.
       operationId: getCharacterSummary
@@ -5559,7 +5559,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/pictures/{characterUid}:
+  /api/v2/character/pictures/{characterUid}:
     get:
       description: List pictures of the character.
       operationId: listCharacterPictures
@@ -5586,7 +5586,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/export/{characterId}:
+  /api/v2/character/export/{characterId}:
     get:
       description: "Export character configuration in tar.gz format, including settings,\
         \ documents and pictures."
@@ -5609,7 +5609,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/exists/name/{name}:
+  /api/v2/character/exists/name/{name}:
     get:
       description: Check if the character name already exists.
       operationId: existsCharacterName
@@ -5634,7 +5634,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/documents/{characterUid}:
+  /api/v2/character/documents/{characterUid}:
     get:
       description: List documents of the character.
       operationId: listCharacterDocuments
@@ -5661,7 +5661,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/details/{characterId}:
+  /api/v2/character/details/{characterId}:
     get:
       description: Get character detailed information.
       operationId: getCharacterDetails
@@ -5687,7 +5687,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/create/name/{desired}:
+  /api/v2/character/create/name/{desired}:
     get:
       description: Create a new character name starting with a desired name.
       operationId: newCharacterName
@@ -5712,7 +5712,7 @@ paths:
       - Character
       x-accepts:
       - text/plain
-  /api/v1/character/backends/{characterUid}:
+  /api/v2/character/backends/{characterUid}:
     get:
       description: List character backends.
       operationId: listCharacterBackends
@@ -5739,7 +5739,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/backend/ids/{characterUid}:
+  /api/v2/character/backend/ids/{characterUid}:
     get:
       description: List character backend identifiers.
       operationId: listCharacterBackendIds
@@ -5766,7 +5766,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/backend/default/{characterUid}:
+  /api/v2/character/backend/default/{characterUid}:
     get:
       description: Get the default backend configuration.
       operationId: getDefaultCharacterBackend
@@ -5791,7 +5791,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/ai/apikeys/{provider}:
+  /api/v2/ai/apikeys/{provider}:
     get:
       description: List all credential information of the model provider.
       operationId: listAiApiKeys
@@ -5818,7 +5818,7 @@ paths:
       - AI Service
       x-accepts:
       - application/json
-  /api/v1/ai/apikey/{id}:
+  /api/v2/ai/apikey/{id}:
     delete:
       description: Delete the credential information of the model provider.
       operationId: deleteAiApiKey
@@ -5869,7 +5869,7 @@ paths:
       - AI Service
       x-accepts:
       - application/json
-  /api/v1/agent/summary/{agentId}:
+  /api/v2/agent/summary/{agentId}:
     get:
       description: Get agent summary information.
       operationId: getAgentSummary
@@ -5895,7 +5895,7 @@ paths:
       - Agent
       x-accepts:
       - application/json
-  /api/v1/agent/details/{agentId}:
+  /api/v2/agent/details/{agentId}:
     get:
       description: Get agent detailed information.
       operationId: getAgentDetails
@@ -5921,7 +5921,7 @@ paths:
       - Agent
       x-accepts:
       - application/json
-  /api/v1/admin/users/{pageSize}/{pageNum}:
+  /api/v2/admin/users/{pageSize}/{pageNum}:
     get:
       description: "Return user information by page, return the pageNum page, up to\
         \ pageSize user information."
@@ -5959,11 +5959,31 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/users/{pageSize}:
+  /api/v2/admin/users:
     get:
       description: "Return user information by page, return the pageNum page, up to\
         \ pageSize user information."
       operationId: listUsers_1
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UserBasicInfoDTO'
+                type: array
+          description: OK
+      summary: List User Information
+      tags:
+      - Account Manager (for admin)
+      x-accepts:
+      - application/json
+  /api/v2/admin/users/{pageSize}:
+    get:
+      description: "Return user information by page, return the pageNum page, up to\
+        \ pageSize user information."
+      operationId: listUsers_2
       parameters:
       - description: Maximum quantity
         explode: false
@@ -5988,27 +6008,7 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/users:
-    get:
-      description: "Return user information by page, return the pageNum page, up to\
-        \ pageSize user information."
-      operationId: listUsers_2
-      parameters: []
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/UserBasicInfoDTO'
-                type: array
-          description: OK
-      summary: List User Information
-      tags:
-      - Account Manager (for admin)
-      x-accepts:
-      - application/json
-  /api/v1/admin/user/{username}:
+  /api/v2/admin/user/{username}:
     delete:
       description: Delete user by username.
       operationId: deleteUser
@@ -6057,7 +6057,7 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/tokenBy/{token}:
+  /api/v2/admin/tokenBy/{token}:
     get:
       description: Get the detailed user information corresponding to the API Token.
       operationId: getUserByToken
@@ -6082,7 +6082,7 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/token/{username}:
+  /api/v2/admin/token/{username}:
     get:
       description: Get the list of API Tokens of the user.
       operationId: listTokensOfUser
@@ -6109,7 +6109,7 @@ paths:
       - Account Manager (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/encryption/encrypt/{text}:
+  /api/v2/admin/encryption/encrypt/{text}:
     get:
       description: Encrypt a piece of text with the built-in key.
       operationId: encryptText
@@ -6134,7 +6134,7 @@ paths:
       - Encryption Manager (for admin)
       x-accepts:
       - text/plain
-  /api/v1/admin/app/meta:
+  /api/v2/admin/app/meta:
     get:
       description: Get application information to accurately locate the corresponding
         project version.
@@ -6151,7 +6151,7 @@ paths:
       - App Meta (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/app/expose:
+  /api/v2/admin/app/expose:
     get:
       description: This method does nothing.
       operationId: expose
@@ -6182,7 +6182,7 @@ paths:
       - App Meta (for admin)
       x-accepts:
       - application/json
-  /api/v1/admin/app/configs:
+  /api/v2/admin/app/configs:
     get:
       description: Get all configuration information of the application.
       operationId: getAppConfigs
@@ -6198,7 +6198,7 @@ paths:
       - App Config (for admin)
       x-accepts:
       - application/json
-  /api/v1/account/tokens:
+  /api/v2/account/tokens:
     get:
       description: List currently valid tokens.
       operationId: listTokens
@@ -6216,29 +6216,11 @@ paths:
       - Account
       x-accepts:
       - application/json
-  /api/v1/account/basic:
+  /api/v2/account/basic/{username}:
     get:
       description: "Return user basic information, including: username, nickname,\
         \ avatar link."
       operationId: getUserBasic
-      parameters: []
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserBasicInfoDTO'
-          description: OK
-      summary: Get User Basic Information
-      tags:
-      - Account
-      x-accepts:
-      - application/json
-  /api/v1/account/basic/{username}:
-    get:
-      description: "Return user basic information, including: username, nickname,\
-        \ avatar link."
-      operationId: getUserBasic_1
       parameters:
       - description: Username
         explode: false
@@ -6260,7 +6242,25 @@ paths:
       - Account
       x-accepts:
       - application/json
-  /api/v1/prompt/name/{name}:
+  /api/v2/account/basic:
+    get:
+      description: "Return user basic information, including: username, nickname,\
+        \ avatar link."
+      operationId: getUserBasic_1
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBasicInfoDTO'
+          description: OK
+      summary: Get User Basic Information
+      tags:
+      - Account
+      x-accepts:
+      - application/json
+  /api/v2/prompt/name/{name}:
     delete:
       description: Delete prompt by name. return the list of successfully deleted
         promptIds.
@@ -6289,7 +6289,7 @@ paths:
       - Prompt
       x-accepts:
       - application/json
-  /api/v1/chat/memory/{chatId}:
+  /api/v2/chat/memory/{chatId}:
     delete:
       description: Clear memory of the chat session.
       operationId: clearMemory
@@ -6316,7 +6316,7 @@ paths:
       - Chat
       x-accepts:
       - application/json
-  /api/v1/character/uid/{characterUid}:
+  /api/v2/character/uid/{characterUid}:
     delete:
       description: Delete character by uid. return the list of successfully deleted
         characterIds.
@@ -6345,7 +6345,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/picture/{key}:
+  /api/v2/character/picture/{key}:
     delete:
       description: Delete a picture of the character by key.
       operationId: deleteCharacterPicture
@@ -6370,7 +6370,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/name/{name}:
+  /api/v2/character/name/{name}:
     delete:
       description: Delete character by name. return the list of successfully deleted
         characterIds.
@@ -6399,7 +6399,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/character/document/{key}:
+  /api/v2/character/document/{key}:
     delete:
       description: Delete a document of the character by key.
       operationId: deleteCharacterDocument
@@ -6424,7 +6424,7 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v1/agent/batch/delete:
+  /api/v2/agent/batch/delete:
     delete:
       description: "Delete multiple agents. Ensure transactionality, return the list\
         \ of successfully deleted agentId."

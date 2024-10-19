@@ -4,16 +4,16 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**add_ai_api_key**](AIServiceApi.md#add_ai_api_key) | **POST** /api/v1/ai/apikey | Add Model Provider Credential
-[**delete_ai_api_key**](AIServiceApi.md#delete_ai_api_key) | **DELETE** /api/v1/ai/apikey/{id} | Delete Credential of Model Provider
-[**disable_ai_api_key**](AIServiceApi.md#disable_ai_api_key) | **PUT** /api/v1/ai/apikey/disable/{id} | Disable Model Provider Credential
-[**enable_ai_api_key**](AIServiceApi.md#enable_ai_api_key) | **PUT** /api/v1/ai/apikey/enable/{id} | Enable Model Provider Credential
-[**get_ai_api_key**](AIServiceApi.md#get_ai_api_key) | **GET** /api/v1/ai/apikey/{id} | Get credential of Model Provider
-[**get_ai_model_info**](AIServiceApi.md#get_ai_model_info) | **GET** /api/v1/public/ai/model/{modelId} | Get Model Information
-[**list_ai_api_keys**](AIServiceApi.md#list_ai_api_keys) | **GET** /api/v1/ai/apikeys/{provider} | List Credentials of Model Provider
-[**list_ai_model_info**](AIServiceApi.md#list_ai_model_info) | **GET** /api/v1/public/ai/models/{pageSize}/{pageNum} | List Models
-[**list_ai_model_info1**](AIServiceApi.md#list_ai_model_info1) | **GET** /api/v1/public/ai/models/{pageSize} | List Models
-[**list_ai_model_info2**](AIServiceApi.md#list_ai_model_info2) | **GET** /api/v1/public/ai/models | List Models
+[**add_ai_api_key**](AIServiceApi.md#add_ai_api_key) | **POST** /api/v2/ai/apikey | Add Model Provider Credential
+[**delete_ai_api_key**](AIServiceApi.md#delete_ai_api_key) | **DELETE** /api/v2/ai/apikey/{id} | Delete Credential of Model Provider
+[**disable_ai_api_key**](AIServiceApi.md#disable_ai_api_key) | **PUT** /api/v2/ai/apikey/disable/{id} | Disable Model Provider Credential
+[**enable_ai_api_key**](AIServiceApi.md#enable_ai_api_key) | **PUT** /api/v2/ai/apikey/enable/{id} | Enable Model Provider Credential
+[**get_ai_api_key**](AIServiceApi.md#get_ai_api_key) | **GET** /api/v2/ai/apikey/{id} | Get credential of Model Provider
+[**get_ai_model_info**](AIServiceApi.md#get_ai_model_info) | **GET** /api/v2/public/ai/model/{modelId} | Get Model Information
+[**list_ai_api_keys**](AIServiceApi.md#list_ai_api_keys) | **GET** /api/v2/ai/apikeys/{provider} | List Credentials of Model Provider
+[**list_ai_model_info**](AIServiceApi.md#list_ai_model_info) | **GET** /api/v2/public/ai/models | List Models
+[**list_ai_model_info1**](AIServiceApi.md#list_ai_model_info1) | **GET** /api/v2/public/ai/models/{pageSize} | List Models
+[**list_ai_model_info2**](AIServiceApi.md#list_ai_model_info2) | **GET** /api/v2/public/ai/models/{pageSize}/{pageNum} | List Models
 
 
 # **add_ai_api_key**
@@ -560,7 +560,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_ai_model_info**
-> List[AiModelInfoDTO] list_ai_model_info(page_size, page_num)
+> List[AiModelInfoDTO] list_ai_model_info()
 
 List Models
 
@@ -596,12 +596,10 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AIServiceApi(api_client)
-    page_size = 56 # int | Maximum quantity
-    page_num = 56 # int | Current page number
 
     try:
         # List Models
-        api_response = api_instance.list_ai_model_info(page_size, page_num)
+        api_response = api_instance.list_ai_model_info()
         print("The response of AIServiceApi->list_ai_model_info:\n")
         pprint(api_response)
     except Exception as e:
@@ -612,11 +610,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **page_size** | **int**| Maximum quantity | 
- **page_num** | **int**| Current page number | 
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -718,7 +712,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_ai_model_info2**
-> List[AiModelInfoDTO] list_ai_model_info2()
+> List[AiModelInfoDTO] list_ai_model_info2(page_size, page_num)
 
 List Models
 
@@ -754,10 +748,12 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.AIServiceApi(api_client)
+    page_size = 56 # int | Maximum quantity
+    page_num = 56 # int | Current page number
 
     try:
         # List Models
-        api_response = api_instance.list_ai_model_info2()
+        api_response = api_instance.list_ai_model_info2(page_size, page_num)
         print("The response of AIServiceApi->list_ai_model_info2:\n")
         pprint(api_response)
     except Exception as e:
@@ -768,7 +764,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **page_size** | **int**| Maximum quantity | 
+ **page_num** | **int**| Current page number | 
 
 ### Return type
 

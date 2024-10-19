@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @Tag(name = "App Meta (for admin)", description = "Application metadata, viewable only by super administrators.")
-@RequestMapping("/api/v1/admin/app")
+@RequestMapping("/api/v2/admin/app")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

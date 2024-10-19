@@ -4,24 +4,24 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
-[**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
-[**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat
-[**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
-[**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats
-[**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
-[**listDebugMessages1**](ChatApi.md#listDebugMessages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
-[**listDebugMessages2**](ChatApi.md#listDebugMessages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages
-[**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
-[**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
-[**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
-[**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
-[**sendAssistant**](ChatApi.md#sendAssistant) | **GET** /api/v1/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
-[**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message
-[**startChat**](ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session
-[**streamSendAssistant**](ChatApi.md#streamSendAssistant) | **GET** /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
-[**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
-[**updateChat**](ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session
+[**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
+[**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
+[**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterId} | Get Default Chat
+[**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v2/chat/memory/usage/{chatId} | Get Memory Usage
+[**listChats**](ChatApi.md#listChats) | **GET** /api/v2/chat | List Chats
+[**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
+[**listDebugMessages1**](ChatApi.md#listDebugMessages1) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
+[**listDebugMessages2**](ChatApi.md#listDebugMessages2) | **GET** /api/v2/chat/messages/debug/{chatId} | List Chat Debug Messages
+[**listMessages**](ChatApi.md#listMessages) | **GET** /api/v2/chat/messages/{chatId}/{limit} | List Chat Messages
+[**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v2/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
+[**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v2/chat/messages/{chatId} | List Chat Messages
+[**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v2/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
+[**sendAssistant**](ChatApi.md#sendAssistant) | **GET** /api/v2/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
+[**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v2/chat/send/{chatId} | Send Chat Message
+[**startChat**](ChatApi.md#startChat) | **POST** /api/v2/chat | Start Chat Session
+[**streamSendAssistant**](ChatApi.md#streamSendAssistant) | **GET** /api/v2/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
+[**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v2/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
+[**updateChat**](ChatApi.md#updateChat) | **PUT** /api/v2/chat/{chatId} | Update Chat Session
 
 
 # **clearMemory**
@@ -468,6 +468,8 @@ const apiInstance = new ChatApi(configuration);
 const request: ChatApiListMessagesRequest = {
     // Chat session identifier
   chatId: "chatId_example",
+    // Messages limit
+  limit: 1,
 };
 
 const data = await apiInstance.listMessages(request);
@@ -480,6 +482,7 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chatId** | [**string**] | Chat session identifier | defaults to undefined
+ **limit** | [**number**] | Messages limit | defaults to undefined
 
 
 ### Return type
@@ -580,8 +583,6 @@ const apiInstance = new ChatApi(configuration);
 const request: ChatApiListMessages2Request = {
     // Chat session identifier
   chatId: "chatId_example",
-    // Messages limit
-  limit: 1,
 };
 
 const data = await apiInstance.listMessages2(request);
@@ -594,7 +595,6 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chatId** | [**string**] | Chat session identifier | defaults to undefined
- **limit** | [**number**] | Messages limit | defaults to undefined
 
 
 ### Return type
@@ -870,7 +870,7 @@ Name | Type | Description  | Notes
 # **streamSendAssistant**
 > SseEmitter streamSendAssistant()
 
-Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
 
 ### Example
 
@@ -926,7 +926,7 @@ Name | Type | Description  | Notes
 # **streamSendMessage**
 > SseEmitter streamSendMessage(chatMessageDTO)
 
-Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
 
 ### Example
 

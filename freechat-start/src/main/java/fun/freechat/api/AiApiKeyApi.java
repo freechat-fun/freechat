@@ -23,7 +23,7 @@ import java.util.List;
 
 @Controller
 @Tag(name = "AI Service")
-@RequestMapping("/api/v1/ai")
+@RequestMapping("/api/v2/ai")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

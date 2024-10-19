@@ -113,7 +113,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPrompt(PROMPT);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -131,7 +131,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKeyName", apiKeyName());
         aiRequest.setPrompt(PROMPT);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -155,7 +155,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPromptTemplate(promptTemplate);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -186,7 +186,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPromptRef(promptRef);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -199,7 +199,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
 
         promptRef.setDraft(true);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -217,7 +217,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPrompt(PROMPT);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -241,7 +241,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKeyName", "No Key");
         aiRequest.setPrompt(PROMPT);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -254,7 +254,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPromptRef(promptRef);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)
@@ -290,7 +290,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPromptTemplate(promptTemplate);
 
-        testClient.post().uri("/api/v1/prompt/send")
+        testClient.post().uri("/api/v2/prompt/send")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(aiRequest)

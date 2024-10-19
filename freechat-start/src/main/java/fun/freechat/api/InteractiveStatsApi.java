@@ -31,7 +31,7 @@ import java.util.Optional;
 
 @Controller
 @Tag(name = "Interactive Statistics")
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v2")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

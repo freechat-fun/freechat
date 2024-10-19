@@ -34,7 +34,7 @@ import java.util.List;
 
 @Controller
 @Tag(name = "Agent")
-@RequestMapping("/api/v1/agent")
+@RequestMapping("/api/v2/agent")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")
@@ -118,7 +118,7 @@ public class AgentApi {
     @Operation(
             operationId = "searchAgentDetails",
             summary = "Search Agent Details",
-            description = "Same as /api/v1/agent/search, but returns detailed information of the agent."
+            description = "Same as /api/v2/agent/search, but returns detailed information of the agent."
     )
     @PostMapping("/details/search")
     public List<AgentDetailsDTO> detailsSearch(
@@ -157,7 +157,7 @@ public class AgentApi {
     @Operation(
             operationId = "batchSearchAgentSummary",
             summary = "Batch Search Agent Summaries",
-            description = "Batch call shortcut for /api/v1/agent/search."
+            description = "Batch call shortcut for /api/v2/agent/search."
     )
     @PostMapping("/batch/search")
     public List<List<AgentSummaryDTO>> batchSearch(
@@ -218,7 +218,7 @@ public class AgentApi {
     @Operation(
             operationId = "batchSearchAgentDetails",
             summary = "Batch Search Agent Details",
-            description = "Batch call shortcut for /api/v1/agent/details/search."
+            description = "Batch call shortcut for /api/v2/agent/details/search."
     )
     @PostMapping("/batch/details/search")
     public List<List<AgentDetailsDTO>> batchDetailsSearch(
@@ -382,7 +382,7 @@ public class AgentApi {
     @Operation(
             operationId = "updateAgent",
             summary = "Update Agent",
-            description = "Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure."
+            description = "Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure."
     )
     @PutMapping("/{agentId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'agentUpdateOp')")

@@ -39,7 +39,7 @@ export class AppMetaForAdminApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/admin/app/expose';
+        const localVarPath = '/api/v2/admin/app/expose';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -85,7 +85,7 @@ export class AppMetaForAdminApiRequestFactory extends BaseAPIRequestFactory {
         let _config = _options || this.configuration;
 
         // Path Params
-        const localVarPath = '/api/v1/admin/app/meta';
+        const localVarPath = '/api/v2/admin/app/meta';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

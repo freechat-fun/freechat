@@ -4,24 +4,24 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**clear_memory**](ChatApi.md#clear_memory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory
-[**delete_chat**](ChatApi.md#delete_chat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session
-[**get_default_chat_id**](ChatApi.md#get_default_chat_id) | **GET** /api/v1/chat/{characterId} | Get Default Chat
-[**get_memory_usage**](ChatApi.md#get_memory_usage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage
-[**list_chats**](ChatApi.md#list_chats) | **GET** /api/v1/chat | List Chats
-[**list_debug_messages**](ChatApi.md#list_debug_messages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
-[**list_debug_messages1**](ChatApi.md#list_debug_messages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
-[**list_debug_messages2**](ChatApi.md#list_debug_messages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages
-[**list_messages**](ChatApi.md#list_messages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages
-[**list_messages1**](ChatApi.md#list_messages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
-[**list_messages2**](ChatApi.md#list_messages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages
-[**rollback_messages**](ChatApi.md#rollback_messages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
-[**send_assistant**](ChatApi.md#send_assistant) | **GET** /api/v1/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
-[**send_message**](ChatApi.md#send_message) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message
-[**start_chat**](ChatApi.md#start_chat) | **POST** /api/v1/chat | Start Chat Session
-[**stream_send_assistant**](ChatApi.md#stream_send_assistant) | **GET** /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
-[**stream_send_message**](ChatApi.md#stream_send_message) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
-[**update_chat**](ChatApi.md#update_chat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session
+[**clear_memory**](ChatApi.md#clear_memory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
+[**delete_chat**](ChatApi.md#delete_chat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
+[**get_default_chat_id**](ChatApi.md#get_default_chat_id) | **GET** /api/v2/chat/{characterId} | Get Default Chat
+[**get_memory_usage**](ChatApi.md#get_memory_usage) | **GET** /api/v2/chat/memory/usage/{chatId} | Get Memory Usage
+[**list_chats**](ChatApi.md#list_chats) | **GET** /api/v2/chat | List Chats
+[**list_debug_messages**](ChatApi.md#list_debug_messages) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
+[**list_debug_messages1**](ChatApi.md#list_debug_messages1) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages
+[**list_debug_messages2**](ChatApi.md#list_debug_messages2) | **GET** /api/v2/chat/messages/debug/{chatId} | List Chat Debug Messages
+[**list_messages**](ChatApi.md#list_messages) | **GET** /api/v2/chat/messages/{chatId}/{limit} | List Chat Messages
+[**list_messages1**](ChatApi.md#list_messages1) | **GET** /api/v2/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages
+[**list_messages2**](ChatApi.md#list_messages2) | **GET** /api/v2/chat/messages/{chatId} | List Chat Messages
+[**rollback_messages**](ChatApi.md#rollback_messages) | **POST** /api/v2/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages
+[**send_assistant**](ChatApi.md#send_assistant) | **GET** /api/v2/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message
+[**send_message**](ChatApi.md#send_message) | **POST** /api/v2/chat/send/{chatId} | Send Chat Message
+[**start_chat**](ChatApi.md#start_chat) | **POST** /api/v2/chat | Start Chat Session
+[**stream_send_assistant**](ChatApi.md#stream_send_assistant) | **GET** /api/v2/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back
+[**stream_send_message**](ChatApi.md#stream_send_message) | **POST** /api/v2/chat/send/stream/{chatId} | Send Chat Message by Streaming Back
+[**update_chat**](ChatApi.md#update_chat) | **PUT** /api/v2/chat/{chatId} | Update Chat Session
 
 
 # **clear_memory**
@@ -649,7 +649,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_messages**
-> List[ChatMessageRecordDTO] list_messages(chat_id)
+> List[ChatMessageRecordDTO] list_messages(chat_id, limit)
 
 List Chat Messages
 
@@ -686,10 +686,11 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.ChatApi(api_client)
     chat_id = 'chat_id_example' # str | Chat session identifier
+    limit = 56 # int | Messages limit
 
     try:
         # List Chat Messages
-        api_response = api_instance.list_messages(chat_id)
+        api_response = api_instance.list_messages(chat_id, limit)
         print("The response of ChatApi->list_messages:\n")
         pprint(api_response)
     except Exception as e:
@@ -704,6 +705,7 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chat_id** | **str**| Chat session identifier | 
+ **limit** | **int**| Messages limit | 
 
 ### Return type
 
@@ -809,7 +811,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_messages2**
-> List[ChatMessageRecordDTO] list_messages2(chat_id, limit)
+> List[ChatMessageRecordDTO] list_messages2(chat_id)
 
 List Chat Messages
 
@@ -846,11 +848,10 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.ChatApi(api_client)
     chat_id = 'chat_id_example' # str | Chat session identifier
-    limit = 56 # int | Messages limit
 
     try:
         # List Chat Messages
-        api_response = api_instance.list_messages2(chat_id, limit)
+        api_response = api_instance.list_messages2(chat_id)
         print("The response of ChatApi->list_messages2:\n")
         pprint(api_response)
     except Exception as e:
@@ -865,7 +866,6 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **chat_id** | **str**| Chat session identifier | 
- **limit** | **int**| Messages limit | 
 
 ### Return type
 
@@ -1211,7 +1211,7 @@ Name | Type | Description  | Notes
 
 Send Assistant for Chat Message by Streaming Back
 
-Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
 
 ### Example
 
@@ -1291,7 +1291,7 @@ Name | Type | Description  | Notes
 
 Send Chat Message by Streaming Back
 
-Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
 
 ### Example
 

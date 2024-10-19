@@ -26,7 +26,7 @@ import java.util.List;
 
 @Controller
 @Tag(name = "Rag")
-@RequestMapping("/api/v1/rag")
+@RequestMapping("/api/v2/rag")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

@@ -21,7 +21,7 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -35,7 +35,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/batch/details/search';
+        const localVarPath = '/api/v2/agent/batch/details/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -69,7 +69,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
@@ -83,7 +83,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/batch/search';
+        const localVarPath = '/api/v2/agent/batch/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -131,7 +131,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/clone/{agentId}'
+        const localVarPath = '/api/v2/agent/clone/{agentId}'
             .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
@@ -169,7 +169,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/batch/clone';
+        const localVarPath = '/api/v2/agent/batch/clone';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -217,7 +217,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/count';
+        const localVarPath = '/api/v2/agent/count';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -265,7 +265,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent';
+        const localVarPath = '/api/v2/agent';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -313,7 +313,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/batch';
+        const localVarPath = '/api/v2/agent/batch';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -361,7 +361,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/{agentId}'
+        const localVarPath = '/api/v2/agent/{agentId}'
             .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
@@ -399,7 +399,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/batch/delete';
+        const localVarPath = '/api/v2/agent/batch/delete';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.DELETE);
@@ -447,7 +447,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/details/{agentId}'
+        const localVarPath = '/api/v2/agent/details/{agentId}'
             .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
@@ -485,7 +485,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/summary/{agentId}'
+        const localVarPath = '/api/v2/agent/summary/{agentId}'
             .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
 
         // Make Request Context
@@ -523,7 +523,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/versions/{name}'
+        const localVarPath = '/api/v2/agent/versions/{name}'
             .replace('{' + 'name' + '}', encodeURIComponent(String(name)));
 
         // Make Request Context
@@ -568,7 +568,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/publish/{agentId}/{visibility}'
+        const localVarPath = '/api/v2/agent/publish/{agentId}/{visibility}'
             .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)))
             .replace('{' + 'visibility' + '}', encodeURIComponent(String(visibility)));
 
@@ -593,7 +593,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -607,7 +607,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/details/search';
+        const localVarPath = '/api/v2/agent/details/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -655,7 +655,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/search';
+        const localVarPath = '/api/v2/agent/search';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.POST);
@@ -689,7 +689,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
@@ -710,7 +710,7 @@ export class AgentApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/agent/{agentId}'
+        const localVarPath = '/api/v2/agent/{agentId}'
             .replace('{' + 'agentId' + '}', encodeURIComponent(String(agentId)));
 
         // Make Request Context

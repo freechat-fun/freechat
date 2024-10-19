@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 @Tag(name = "Chat")
-@RequestMapping("/api/v1/chat")
+@RequestMapping("/api/v2/chat")
 @ResponseBody
 @Validated
 @Slf4j
@@ -290,7 +290,7 @@ public class ChatApi {
     @Operation(
             operationId = "streamSendMessage",
             summary = "Send Chat Message by Streaming Back",
-            description = "Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response."
+            description = "Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response."
     )
     @PostMapping(value = "/send/stream/{chatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
@@ -572,7 +572,7 @@ public class ChatApi {
     @Operation(
             operationId = "streamSendAssistant",
             summary = "Send Assistant for Chat Message by Streaming Back",
-            description = "Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response."
+            description = "Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response."
     )
     @GetMapping(value = "/send/stream/assistant/{chatId}/{assistantUid}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")

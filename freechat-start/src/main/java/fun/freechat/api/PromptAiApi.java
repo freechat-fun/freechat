@@ -41,7 +41,7 @@ import java.util.Map;
 
 @Controller
 @Tag(name = "Prompt")
-@RequestMapping("/api/v1/prompt")
+@RequestMapping("/api/v2/prompt")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")
@@ -105,7 +105,7 @@ public class PromptAiApi {
     @Operation(
             operationId = "streamSendPrompt",
             summary = "Send Prompt by Streaming Back",
-            description = "Refer to /api/v1/prompt/send, stream back chunks of the response."
+            description = "Refer to /api/v2/prompt/send, stream back chunks of the response."
     )
     @PostMapping(value = "/send/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @PreAuthorize("hasPermission(#p0, 'aiForPromptOp')")

@@ -4,20 +4,20 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**createTokenForUser**](AccountManagerForAdminApi.md#createTokenForUser) | **POST** /api/v1/admin/token/{username}/{duration} | Create API Token for User. |
-| [**createUser**](AccountManagerForAdminApi.md#createUser) | **POST** /api/v1/admin/user | Create User |
-| [**deleteTokenForUser**](AccountManagerForAdminApi.md#deleteTokenForUser) | **DELETE** /api/v1/admin/token/{token} | Delete API Token |
-| [**deleteUser**](AccountManagerForAdminApi.md#deleteUser) | **DELETE** /api/v1/admin/user/{username} | Delete User |
-| [**disableTokenForUser**](AccountManagerForAdminApi.md#disableTokenForUser) | **PUT** /api/v1/admin/token/{token} | Disable API Token |
-| [**getDetailsOfUser**](AccountManagerForAdminApi.md#getDetailsOfUser) | **GET** /api/v1/admin/user/{username} | Get User Details |
-| [**getUserByToken**](AccountManagerForAdminApi.md#getUserByToken) | **GET** /api/v1/admin/tokenBy/{token} | Get User by API Token |
-| [**listAuthoritiesOfUser**](AccountManagerForAdminApi.md#listAuthoritiesOfUser) | **GET** /api/v1/admin/authority/{username} | List User Permissions |
-| [**listTokensOfUser**](AccountManagerForAdminApi.md#listTokensOfUser) | **GET** /api/v1/admin/token/{username} | Get API Token of User |
-| [**listUsers**](AccountManagerForAdminApi.md#listUsers) | **GET** /api/v1/admin/users/{pageSize}/{pageNum} | List User Information |
-| [**listUsers1**](AccountManagerForAdminApi.md#listUsers1) | **GET** /api/v1/admin/users/{pageSize} | List User Information |
-| [**listUsers2**](AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v1/admin/users | List User Information |
-| [**updateAuthoritiesOfUser**](AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v1/admin/authority/{username} | Update User Permissions |
-| [**updateUser**](AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v1/admin/user | Update User |
+| [**createTokenForUser**](AccountManagerForAdminApi.md#createTokenForUser) | **POST** /api/v2/admin/token/{username}/{duration} | Create API Token for User. |
+| [**createUser**](AccountManagerForAdminApi.md#createUser) | **POST** /api/v2/admin/user | Create User |
+| [**deleteTokenForUser**](AccountManagerForAdminApi.md#deleteTokenForUser) | **DELETE** /api/v2/admin/token/{token} | Delete API Token |
+| [**deleteUser**](AccountManagerForAdminApi.md#deleteUser) | **DELETE** /api/v2/admin/user/{username} | Delete User |
+| [**disableTokenForUser**](AccountManagerForAdminApi.md#disableTokenForUser) | **PUT** /api/v2/admin/token/{token} | Disable API Token |
+| [**getDetailsOfUser**](AccountManagerForAdminApi.md#getDetailsOfUser) | **GET** /api/v2/admin/user/{username} | Get User Details |
+| [**getUserByToken**](AccountManagerForAdminApi.md#getUserByToken) | **GET** /api/v2/admin/tokenBy/{token} | Get User by API Token |
+| [**listAuthoritiesOfUser**](AccountManagerForAdminApi.md#listAuthoritiesOfUser) | **GET** /api/v2/admin/authority/{username} | List User Permissions |
+| [**listTokensOfUser**](AccountManagerForAdminApi.md#listTokensOfUser) | **GET** /api/v2/admin/token/{username} | Get API Token of User |
+| [**listUsers**](AccountManagerForAdminApi.md#listUsers) | **GET** /api/v2/admin/users/{pageSize}/{pageNum} | List User Information |
+| [**listUsers1**](AccountManagerForAdminApi.md#listUsers1) | **GET** /api/v2/admin/users | List User Information |
+| [**listUsers2**](AccountManagerForAdminApi.md#listUsers2) | **GET** /api/v2/admin/users/{pageSize} | List User Information |
+| [**updateAuthoritiesOfUser**](AccountManagerForAdminApi.md#updateAuthoritiesOfUser) | **PUT** /api/v2/admin/authority/{username} | Update User Permissions |
+| [**updateUser**](AccountManagerForAdminApi.md#updateUser) | **PUT** /api/v2/admin/user | Update User |
 
 
 <a id="createTokenForUser"></a>
@@ -696,7 +696,70 @@ public class Example {
 
 <a id="listUsers1"></a>
 # **listUsers1**
-> List&lt;UserBasicInfoDTO&gt; listUsers1(pageSize)
+> List&lt;UserBasicInfoDTO&gt; listUsers1()
+
+List User Information
+
+Return user information by page, return the pageNum page, up to pageSize user information.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.AccountManagerForAdminApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    AccountManagerForAdminApi apiInstance = new AccountManagerForAdminApi(defaultClient);
+    try {
+      List<UserBasicInfoDTO> result = apiInstance.listUsers1();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling AccountManagerForAdminApi#listUsers1");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**List&lt;UserBasicInfoDTO&gt;**](UserBasicInfoDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listUsers2"></a>
+# **listUsers2**
+> List&lt;UserBasicInfoDTO&gt; listUsers2(pageSize)
 
 List User Information
 
@@ -724,10 +787,10 @@ public class Example {
     AccountManagerForAdminApi apiInstance = new AccountManagerForAdminApi(defaultClient);
     Long pageSize = 56L; // Long | Maximum quantity
     try {
-      List<UserBasicInfoDTO> result = apiInstance.listUsers1(pageSize);
+      List<UserBasicInfoDTO> result = apiInstance.listUsers2(pageSize);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling AccountManagerForAdminApi#listUsers1");
+      System.err.println("Exception when calling AccountManagerForAdminApi#listUsers2");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -742,69 +805,6 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **pageSize** | **Long**| Maximum quantity | |
-
-### Return type
-
-[**List&lt;UserBasicInfoDTO&gt;**](UserBasicInfoDTO.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
-
-<a id="listUsers2"></a>
-# **listUsers2**
-> List&lt;UserBasicInfoDTO&gt; listUsers2()
-
-List User Information
-
-Return user information by page, return the pageNum page, up to pageSize user information.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.AccountManagerForAdminApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    AccountManagerForAdminApi apiInstance = new AccountManagerForAdminApi(defaultClient);
-    try {
-      List<UserBasicInfoDTO> result = apiInstance.listUsers2();
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling AccountManagerForAdminApi#listUsers2");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-This endpoint does not need any parameter.
 
 ### Return type
 

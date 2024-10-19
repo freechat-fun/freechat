@@ -4,19 +4,19 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createToken**](AccountApi.md#createToken) | **POST** /api/v1/account/token | Create API Token
-[**createToken1**](AccountApi.md#createToken1) | **POST** /api/v1/account/token/{duration} | Create API Token
-[**deleteToken**](AccountApi.md#deleteToken) | **DELETE** /api/v1/account/token/{token} | Delete API Token
-[**deleteTokenById**](AccountApi.md#deleteTokenById) | **DELETE** /api/v1/account/token/id/{id} | Delete API Token by Id
-[**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v1/account/token/{token} | Disable API Token
-[**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v1/account/token/id/{id} | Disable API Token by Id
-[**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v1/account/token/id/{id} | Get API Token by Id
-[**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v1/account/basic | Get User Basic Information
-[**getUserBasic1**](AccountApi.md#getUserBasic1) | **GET** /api/v1/account/basic/{username} | Get User Basic Information
-[**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v1/account/details | Get User Details
-[**listTokens**](AccountApi.md#listTokens) | **GET** /api/v1/account/tokens | List API Tokens
-[**updateUserInfo**](AccountApi.md#updateUserInfo) | **PUT** /api/v1/account/details | Update User Details
-[**uploadUserPicture**](AccountApi.md#uploadUserPicture) | **POST** /api/v1/account/picture | Upload User Picture
+[**createToken**](AccountApi.md#createToken) | **POST** /api/v2/account/token/{duration} | Create API Token
+[**createToken1**](AccountApi.md#createToken1) | **POST** /api/v2/account/token | Create API Token
+[**deleteToken**](AccountApi.md#deleteToken) | **DELETE** /api/v2/account/token/{token} | Delete API Token
+[**deleteTokenById**](AccountApi.md#deleteTokenById) | **DELETE** /api/v2/account/token/id/{id} | Delete API Token by Id
+[**disableToken**](AccountApi.md#disableToken) | **PUT** /api/v2/account/token/{token} | Disable API Token
+[**disableTokenById**](AccountApi.md#disableTokenById) | **PUT** /api/v2/account/token/id/{id} | Disable API Token by Id
+[**getTokenById**](AccountApi.md#getTokenById) | **GET** /api/v2/account/token/id/{id} | Get API Token by Id
+[**getUserBasic**](AccountApi.md#getUserBasic) | **GET** /api/v2/account/basic/{username} | Get User Basic Information
+[**getUserBasic1**](AccountApi.md#getUserBasic1) | **GET** /api/v2/account/basic | Get User Basic Information
+[**getUserDetails**](AccountApi.md#getUserDetails) | **GET** /api/v2/account/details | Get User Details
+[**listTokens**](AccountApi.md#listTokens) | **GET** /api/v2/account/tokens | List API Tokens
+[**updateUserInfo**](AccountApi.md#updateUserInfo) | **PUT** /api/v2/account/details | Update User Details
+[**uploadUserPicture**](AccountApi.md#uploadUserPicture) | **POST** /api/v2/account/picture | Upload User Picture
 
 
 # **createToken**
@@ -29,11 +29,15 @@ Create a timed API Token, valid for {duration} seconds.
 
 ```typescript
 import { createConfiguration, AccountApi } from '';
+import type { AccountApiCreateTokenRequest } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AccountApi(configuration);
 
-const request = {};
+const request: AccountApiCreateTokenRequest = {
+    // Token validity duration (seconds)
+  duration: 1,
+};
 
 const data = await apiInstance.createToken(request);
 console.log('API called successfully. Returned data:', data);
@@ -41,7 +45,10 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **duration** | [**number**] | Token validity duration (seconds) | defaults to undefined
 
 
 ### Return type
@@ -75,15 +82,11 @@ Create a timed API Token, valid for {duration} seconds.
 
 ```typescript
 import { createConfiguration, AccountApi } from '';
-import type { AccountApiCreateToken1Request } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AccountApi(configuration);
 
-const request: AccountApiCreateToken1Request = {
-    // Token validity duration (seconds)
-  duration: 1,
-};
+const request = {};
 
 const data = await apiInstance.createToken1(request);
 console.log('API called successfully. Returned data:', data);
@@ -91,10 +94,7 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **duration** | [**number**] | Token validity duration (seconds) | defaults to undefined
+This endpoint does not need any parameter.
 
 
 ### Return type
@@ -393,11 +393,15 @@ Return user basic information, including: username, nickname, avatar link.
 
 ```typescript
 import { createConfiguration, AccountApi } from '';
+import type { AccountApiGetUserBasicRequest } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AccountApi(configuration);
 
-const request = {};
+const request: AccountApiGetUserBasicRequest = {
+    // Username
+  username: "username_example",
+};
 
 const data = await apiInstance.getUserBasic(request);
 console.log('API called successfully. Returned data:', data);
@@ -405,7 +409,10 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **username** | [**string**] | Username | defaults to undefined
 
 
 ### Return type
@@ -439,15 +446,11 @@ Return user basic information, including: username, nickname, avatar link.
 
 ```typescript
 import { createConfiguration, AccountApi } from '';
-import type { AccountApiGetUserBasic1Request } from '';
 
 const configuration = createConfiguration();
 const apiInstance = new AccountApi(configuration);
 
-const request: AccountApiGetUserBasic1Request = {
-    // Username
-  username: "username_example",
-};
+const request = {};
 
 const data = await apiInstance.getUserBasic1(request);
 console.log('API called successfully. Returned data:', data);
@@ -455,10 +458,7 @@ console.log('API called successfully. Returned data:', data);
 
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **username** | [**string**] | Username | defaults to undefined
+This endpoint does not need any parameter.
 
 
 ### Return type

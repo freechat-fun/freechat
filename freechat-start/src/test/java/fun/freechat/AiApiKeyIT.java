@@ -53,7 +53,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest{
     public void testAll() {
         List<Long> ids = new ArrayList<>(maxCount);
         for (int i = 0; i < apiKeys.size() - 1; ++i) {
-            testClient.post().uri("/api/v1/ai/apikey")
+            testClient.post().uri("/api/v2/ai/apikey")
                     .accept(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer " + apiToken)
                     .bodyValue(apiKeys.get(i))
@@ -66,14 +66,14 @@ public class AiApiKeyIT extends AbstractIntegrationTest{
                     });
         }
 
-        testClient.post().uri("/api/v1/ai/apikey")
+        testClient.post().uri("/api/v2/ai/apikey")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue(apiKeys.getLast())
                 .exchange()
                 .expectStatus().is4xxClientError();
 
-        testClient.get().uri("/api/v1/ai/apikeys/dash_scope")
+        testClient.get().uri("/api/v2/ai/apikeys/dash_scope")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -82,7 +82,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest{
                     .jsonPath("$.length()").isEqualTo(3);
 
         for (int i = 0; i < maxCount; ++i) {
-            testClient.get().uri("/api/v1/ai/apikey/" + ids.get(i))
+            testClient.get().uri("/api/v2/ai/apikey/" + ids.get(i))
                     .accept(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer " + apiToken)
                     .exchange()
@@ -93,14 +93,14 @@ public class AiApiKeyIT extends AbstractIntegrationTest{
                         .jsonPath("$.token").value(token -> assertThat(token.toString()).contains("*"));
         }
 
-        testClient.get().uri("/api/v1/ai/apikey/" + 1)
+        testClient.get().uri("/api/v2/ai/apikey/" + 1)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
                 .expectStatus().isForbidden();
 
         for (int i = 0; i < maxCount; ++i) {
-            testClient.put().uri("/api/v1/ai/apikey/disable/" + ids.get(i))
+            testClient.put().uri("/api/v2/ai/apikey/disable/" + ids.get(i))
                     .accept(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer " + apiToken)
                     .exchange()
@@ -110,7 +110,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest{
         }
 
         for (int i = 0; i < maxCount; ++i) {
-            testClient.put().uri("/api/v1/ai/apikey/enable/" + ids.get(i))
+            testClient.put().uri("/api/v2/ai/apikey/enable/" + ids.get(i))
                     .accept(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer " + apiToken)
                     .exchange()
@@ -120,7 +120,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest{
         }
 
         for (int i = 0; i < maxCount; ++i) {
-            testClient.delete().uri("/api/v1/ai/apikey/" + ids.get(i))
+            testClient.delete().uri("/api/v2/ai/apikey/" + ids.get(i))
                     .accept(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer " + apiToken)
                     .exchange()

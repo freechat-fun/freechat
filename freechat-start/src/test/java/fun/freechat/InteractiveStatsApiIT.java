@@ -35,7 +35,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
 
     @Test
     public void testAll() {
-        testClient.post().uri("/api/v1/stats/prompt/"+ promptUid + "/score/5")
+        testClient.post().uri("/api/v2/stats/prompt/"+ promptUid + "/score/5")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -43,7 +43,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(5L);
 
-        testClient.post().uri("/api/v1/stats/prompt/"+ promptUid + "/refer_count")
+        testClient.post().uri("/api/v2/stats/prompt/"+ promptUid + "/refer_count")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -51,7 +51,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(1L);
 
-        testClient.post().uri("/api/v1/stats/prompt/"+ promptUid + "/score/3")
+        testClient.post().uri("/api/v2/stats/prompt/"+ promptUid + "/score/3")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -59,7 +59,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(3L);
 
-        testClient.get().uri("/api/v1/public/stats/prompt/"+ promptUid + "/score")
+        testClient.get().uri("/api/v2/public/stats/prompt/"+ promptUid + "/score")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -67,7 +67,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(3L);
 
-        testClient.get().uri("/api/v1/public/score/prompt/" + promptUid)
+        testClient.get().uri("/api/v2/public/score/prompt/" + promptUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -75,7 +75,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(Long.class).isEqualTo(3L);
 
-        testClient.get().uri("/api/v1/public/stats/prompt/"+ promptUid)
+        testClient.get().uri("/api/v2/public/stats/prompt/"+ promptUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
@@ -90,7 +90,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
 
         String jsonPathPrefix = "$[?(@.promptId=='" + promptId + "')]";
 
-        testClient.get().uri("/api/v1/public/stats/prompts/by/score/10/0")
+        testClient.get().uri("/api/v2/public/stats/prompts/by/score/10/0")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()

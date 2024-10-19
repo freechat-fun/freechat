@@ -42,7 +42,7 @@ import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
 
 @Controller
 @Tag(name = "Account")
-@RequestMapping("/api/v1/account")
+@RequestMapping("/api/v2/account")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

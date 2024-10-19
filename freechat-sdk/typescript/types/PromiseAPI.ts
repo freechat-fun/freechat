@@ -224,22 +224,18 @@ export class PromiseAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfoWithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfoWithHttpInfo(pageSize, pageNum, _options);
+    public listAiModelInfoWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        const result = this.api.listAiModelInfoWithHttpInfo(_options);
         return result.toPromise();
     }
 
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      */
-    public listAiModelInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo(pageSize, pageNum, _options);
+    public listAiModelInfo(_options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        const result = this.api.listAiModelInfo(_options);
         return result.toPromise();
     }
 
@@ -266,18 +262,22 @@ export class PromiseAIServiceApi {
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfo2WithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfo2WithHttpInfo(_options);
+    public listAiModelInfo2WithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        const result = this.api.listAiModelInfo2WithHttpInfo(pageSize, pageNum, _options);
         return result.toPromise();
     }
 
     /**
      * Return model information by page, return the pageNum page, up to pageSize model information.
      * List Models
+     * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      */
-    public listAiModelInfo2(_options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo2(_options);
+    public listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        const result = this.api.listAiModelInfo2(pageSize, pageNum, _options);
         return result.toPromise();
     }
 
@@ -303,18 +303,10 @@ export class PromiseAccountApi {
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
+     * @param duration Token validity duration (seconds)
      */
-    public createTokenWithHttpInfo(_options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createTokenWithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Create a timed API Token, valid for {duration} seconds.
-     * Create API Token
-     */
-    public createToken(_options?: Configuration): Promise<string> {
-        const result = this.api.createToken(_options);
+    public createTokenWithHttpInfo(duration: number, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.createTokenWithHttpInfo(duration, _options);
         return result.toPromise();
     }
 
@@ -323,18 +315,26 @@ export class PromiseAccountApi {
      * Create API Token
      * @param duration Token validity duration (seconds)
      */
-    public createToken1WithHttpInfo(duration: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createToken1WithHttpInfo(duration, _options);
+    public createToken(duration: number, _options?: Configuration): Promise<string> {
+        const result = this.api.createToken(duration, _options);
         return result.toPromise();
     }
 
     /**
      * Create a timed API Token, valid for {duration} seconds.
      * Create API Token
-     * @param duration Token validity duration (seconds)
      */
-    public createToken1(duration: number, _options?: Configuration): Promise<string> {
-        const result = this.api.createToken1(duration, _options);
+    public createToken1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.createToken1WithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a timed API Token, valid for {duration} seconds.
+     * Create API Token
+     */
+    public createToken1(_options?: Configuration): Promise<string> {
+        const result = this.api.createToken1(_options);
         return result.toPromise();
     }
 
@@ -441,18 +441,10 @@ export class PromiseAccountApi {
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
+     * @param username Username
      */
-    public getUserBasicWithHttpInfo(_options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        const result = this.api.getUserBasicWithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return user basic information, including: username, nickname, avatar link.
-     * Get User Basic Information
-     */
-    public getUserBasic(_options?: Configuration): Promise<UserBasicInfoDTO> {
-        const result = this.api.getUserBasic(_options);
+    public getUserBasicWithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        const result = this.api.getUserBasicWithHttpInfo(username, _options);
         return result.toPromise();
     }
 
@@ -461,18 +453,26 @@ export class PromiseAccountApi {
      * Get User Basic Information
      * @param username Username
      */
-    public getUserBasic1WithHttpInfo(username: string, _options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        const result = this.api.getUserBasic1WithHttpInfo(username, _options);
+    public getUserBasic(username: string, _options?: Configuration): Promise<UserBasicInfoDTO> {
+        const result = this.api.getUserBasic(username, _options);
         return result.toPromise();
     }
 
     /**
      * Return user basic information, including: username, nickname, avatar link.
      * Get User Basic Information
-     * @param username Username
      */
-    public getUserBasic1(username: string, _options?: Configuration): Promise<UserBasicInfoDTO> {
-        const result = this.api.getUserBasic1(username, _options);
+    public getUserBasic1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        const result = this.api.getUserBasic1WithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return user basic information, including: username, nickname, avatar link.
+     * Get User Basic Information
+     */
+    public getUserBasic1(_options?: Configuration): Promise<UserBasicInfoDTO> {
+        const result = this.api.getUserBasic1(_options);
         return result.toPromise();
     }
 
@@ -778,10 +778,18 @@ export class PromiseAccountManagerForAdminApi {
     /**
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
-     * @param pageSize Maximum quantity
      */
-    public listUsers1WithHttpInfo(pageSize: number, _options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const result = this.api.listUsers1WithHttpInfo(pageSize, _options);
+    public listUsers1WithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const result = this.api.listUsers1WithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return user information by page, return the pageNum page, up to pageSize user information.
+     * List User Information
+     */
+    public listUsers1(_options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+        const result = this.api.listUsers1(_options);
         return result.toPromise();
     }
 
@@ -790,26 +798,18 @@ export class PromiseAccountManagerForAdminApi {
      * List User Information
      * @param pageSize Maximum quantity
      */
-    public listUsers1(pageSize: number, _options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        const result = this.api.listUsers1(pageSize, _options);
+    public listUsers2WithHttpInfo(pageSize: number, _options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        const result = this.api.listUsers2WithHttpInfo(pageSize, _options);
         return result.toPromise();
     }
 
     /**
      * Return user information by page, return the pageNum page, up to pageSize user information.
      * List User Information
+     * @param pageSize Maximum quantity
      */
-    public listUsers2WithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        const result = this.api.listUsers2WithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return user information by page, return the pageNum page, up to pageSize user information.
-     * List User Information
-     */
-    public listUsers2(_options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        const result = this.api.listUsers2(_options);
+    public listUsers2(pageSize: number, _options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+        const result = this.api.listUsers2(pageSize, _options);
         return result.toPromise();
     }
 
@@ -875,7 +875,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -885,7 +885,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -895,7 +895,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
@@ -905,7 +905,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param agentQueryDTO Query conditions
      */
@@ -1137,7 +1137,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -1147,7 +1147,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param agentQueryDTO Query conditions
      */
@@ -1177,7 +1177,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
@@ -1188,7 +1188,7 @@ export class PromiseAgentApi {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param agentId AgentId to be updated
      * @param agentUpdateDTO Agent information to be updated
@@ -1336,7 +1336,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * Batch Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -1346,7 +1346,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * Batch Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -1356,7 +1356,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * Batch Search Character Summaries
      * @param characterQueryDTO Query conditions
      */
@@ -1366,7 +1366,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * Batch Search Character Summaries
      * @param characterQueryDTO Query conditions
      */
@@ -1819,19 +1819,10 @@ export class PromiseCharacterApi {
      * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
      * Publish Character
      * @param characterId The characterId to be published
+     * @param visibility Visibility: public | private | ...
      */
-    public publishCharacterWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishCharacterWithHttpInfo(characterId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
-     * Publish Character
-     * @param characterId The characterId to be published
-     */
-    public publishCharacter(characterId: number, _options?: Configuration): Promise<number> {
-        const result = this.api.publishCharacter(characterId, _options);
+    public publishCharacterWithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.publishCharacterWithHttpInfo(characterId, visibility, _options);
         return result.toPromise();
     }
 
@@ -1841,8 +1832,8 @@ export class PromiseCharacterApi {
      * @param characterId The characterId to be published
      * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1WithHttpInfo(characterId: number, visibility: string, _options?: Configuration): Promise<HttpInfo<number>> {
-        const result = this.api.publishCharacter1WithHttpInfo(characterId, visibility, _options);
+    public publishCharacter(characterId: number, visibility: string, _options?: Configuration): Promise<number> {
+        const result = this.api.publishCharacter(characterId, visibility, _options);
         return result.toPromise();
     }
 
@@ -1850,10 +1841,19 @@ export class PromiseCharacterApi {
      * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
      * Publish Character
      * @param characterId The characterId to be published
-     * @param visibility Visibility: public | private | ...
      */
-    public publishCharacter1(characterId: number, visibility: string, _options?: Configuration): Promise<number> {
-        const result = this.api.publishCharacter1(characterId, visibility, _options);
+    public publishCharacter1WithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<number>> {
+        const result = this.api.publishCharacter1WithHttpInfo(characterId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.
+     * Publish Character
+     * @param characterId The characterId to be published
+     */
+    public publishCharacter1(characterId: number, _options?: Configuration): Promise<number> {
+        const result = this.api.publishCharacter1(characterId, _options);
         return result.toPromise();
     }
 
@@ -1878,7 +1878,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -1888,7 +1888,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * Search Character Details
      * @param characterQueryDTO Query conditions
      */
@@ -1958,7 +1958,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * Update Character
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
@@ -1969,7 +1969,7 @@ export class PromiseCharacterApi {
     }
 
     /**
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * Update Character
      * @param characterId The characterId to be updated
      * @param characterUpdateDTO The character information to be updated
@@ -2254,9 +2254,10 @@ export class PromiseChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
+     * @param limit Messages limit
      */
-    public listMessagesWithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listMessagesWithHttpInfo(chatId, _options);
+    public listMessagesWithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listMessagesWithHttpInfo(chatId, limit, _options);
         return result.toPromise();
     }
 
@@ -2264,9 +2265,10 @@ export class PromiseChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
+     * @param limit Messages limit
      */
-    public listMessages(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listMessages(chatId, _options);
+    public listMessages(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listMessages(chatId, limit, _options);
         return result.toPromise();
     }
 
@@ -2298,10 +2300,9 @@ export class PromiseChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
-     * @param limit Messages limit
      */
-    public listMessages2WithHttpInfo(chatId: string, limit: number, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        const result = this.api.listMessages2WithHttpInfo(chatId, limit, _options);
+    public listMessages2WithHttpInfo(chatId: string, _options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
+        const result = this.api.listMessages2WithHttpInfo(chatId, _options);
         return result.toPromise();
     }
 
@@ -2309,10 +2310,9 @@ export class PromiseChatApi {
      * List messages of a chat.
      * List Chat Messages
      * @param chatId Chat session identifier
-     * @param limit Messages limit
      */
-    public listMessages2(chatId: string, limit: number, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        const result = this.api.listMessages2(chatId, limit, _options);
+    public listMessages2(chatId: string, _options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
+        const result = this.api.listMessages2(chatId, _options);
         return result.toPromise();
     }
 
@@ -2403,7 +2403,7 @@ export class PromiseChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
      * Send Assistant for Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
@@ -2414,7 +2414,7 @@ export class PromiseChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
      * Send Assistant for Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param assistantUid Assistant uid
@@ -2425,7 +2425,7 @@ export class PromiseChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
@@ -2436,7 +2436,7 @@ export class PromiseChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param chatId Chat session identifier
      * @param chatMessageDTO Chat message
@@ -2743,11 +2743,22 @@ export class PromiseInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
-     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listCharactersByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const result = this.api.listCharactersByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List characters based on statistics, including interactive statistical data.
+     * List Characters by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listCharactersByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+        const result = this.api.listCharactersByStatistic1(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2759,8 +2770,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic1(statsType, pageSize, pageNum, asc, _options);
+    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
+        const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2769,22 +2780,11 @@ export class PromiseInteractiveStatisticsApi {
      * List Characters by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listCharactersByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        const result = this.api.listCharactersByStatistic2WithHttpInfo(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List characters based on statistics, including interactive statistical data.
-     * List Characters by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listCharactersByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        const result = this.api.listCharactersByStatistic2(statsType, pageSize, asc, _options);
+    public listCharactersByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
+        const result = this.api.listCharactersByStatistic2(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2817,22 +2817,11 @@ export class PromiseInteractiveStatisticsApi {
      * List Plugins by Statistics
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param pageSize Maximum quantity
+     * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List plugins based on statistics, including interactive statistical data.
-     * List Plugins by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listPluginsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic(statsType, pageSize, asc, _options);
+    public listPluginsByStatisticWithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const result = this.api.listPluginsByStatisticWithHttpInfo(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2844,21 +2833,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List plugins based on statistics, including interactive statistical data.
-     * List Plugins by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listPluginsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic1(statsType, pageSize, pageNum, asc, _options);
+    public listPluginsByStatistic(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+        const result = this.api.listPluginsByStatistic(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2868,8 +2844,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        const result = this.api.listPluginsByStatistic2WithHttpInfo(statsType, asc, _options);
+    public listPluginsByStatistic1WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const result = this.api.listPluginsByStatistic1WithHttpInfo(statsType, asc, _options);
         return result.toPromise();
     }
 
@@ -2879,8 +2855,54 @@ export class PromiseInteractiveStatisticsApi {
      * @param statsType Statistics type: view_count | refer_count | recommend_count | score
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPluginsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        const result = this.api.listPluginsByStatistic2(statsType, asc, _options);
+    public listPluginsByStatistic1(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+        const result = this.api.listPluginsByStatistic1(statsType, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List plugins based on statistics, including interactive statistical data.
+     * List Plugins by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listPluginsByStatistic2WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
+        const result = this.api.listPluginsByStatistic2WithHttpInfo(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List plugins based on statistics, including interactive statistical data.
+     * List Plugins by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param pageSize Maximum quantity
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listPluginsByStatistic2(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
+        const result = this.api.listPluginsByStatistic2(statsType, pageSize, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List prompts based on statistics, including interactive statistical data.
+     * List Prompts by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listPromptsByStatisticWithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const result = this.api.listPromptsByStatisticWithHttpInfo(statsType, asc, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List prompts based on statistics, including interactive statistical data.
+     * List Prompts by Statistics
+     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
+     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
+     */
+    public listPromptsByStatistic(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
+        const result = this.api.listPromptsByStatistic(statsType, asc, _options);
         return result.toPromise();
     }
 
@@ -2891,8 +2913,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatisticWithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const result = this.api.listPromptsByStatisticWithHttpInfo(statsType, pageSize, asc, _options);
+    public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const result = this.api.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2903,8 +2925,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageSize Maximum quantity
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        const result = this.api.listPromptsByStatistic(statsType, pageSize, asc, _options);
+    public listPromptsByStatistic1(statsType: string, pageSize: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
+        const result = this.api.listPromptsByStatistic1(statsType, pageSize, asc, _options);
         return result.toPromise();
     }
 
@@ -2916,8 +2938,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic1WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const result = this.api.listPromptsByStatistic1WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
+    public listPromptsByStatistic2WithHttpInfo(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
+        const result = this.api.listPromptsByStatistic2WithHttpInfo(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2929,30 +2951,8 @@ export class PromiseInteractiveStatisticsApi {
      * @param pageNum Current page number
      * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
      */
-    public listPromptsByStatistic1(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        const result = this.api.listPromptsByStatistic1(statsType, pageSize, pageNum, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List prompts based on statistics, including interactive statistical data.
-     * List Prompts by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listPromptsByStatistic2WithHttpInfo(statsType: string, asc?: string, _options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        const result = this.api.listPromptsByStatistic2WithHttpInfo(statsType, asc, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * List prompts based on statistics, including interactive statistical data.
-     * List Prompts by Statistics
-     * @param statsType Statistics type: view_count | refer_count | recommend_count | score
-     * @param [asc] Default is descending order, set asc&#x3D;1 for ascending order
-     */
-    public listPromptsByStatistic2(statsType: string, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        const result = this.api.listPromptsByStatistic2(statsType, asc, _options);
+    public listPromptsByStatistic2(statsType: string, pageSize: number, pageNum: number, asc?: string, _options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
+        const result = this.api.listPromptsByStatistic2(statsType, pageSize, pageNum, asc, _options);
         return result.toPromise();
     }
 
@@ -2996,7 +2996,7 @@ export class PromiseOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
@@ -3006,7 +3006,7 @@ export class PromiseOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param [all] Whether to return virtual reported owners
      */
@@ -3080,7 +3080,7 @@ export class PromiseOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
@@ -3090,7 +3090,7 @@ export class PromiseOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param [all] Whether to return virtual managed subordinates
      */
@@ -3225,7 +3225,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -3235,7 +3235,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -3245,7 +3245,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
@@ -3255,7 +3255,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param pluginQueryDTO Query conditions
      */
@@ -3425,7 +3425,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -3435,7 +3435,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param pluginQueryDTO Query conditions
      */
@@ -3465,7 +3465,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
@@ -3476,7 +3476,7 @@ export class PromisePluginApi {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param pluginId The pluginId to be updated
      * @param pluginUpdateDTO The plugin information to be updated
@@ -3546,7 +3546,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -3556,7 +3556,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -3566,7 +3566,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
@@ -3576,7 +3576,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param promptQueryDTO Query conditions
      */
@@ -3888,7 +3888,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -3898,7 +3898,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param promptQueryDTO Query conditions
      */
@@ -3968,7 +3968,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
@@ -3978,7 +3978,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param promptAiParamDTO Call parameters
      */
@@ -3988,7 +3988,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated
@@ -3999,7 +3999,7 @@ export class PromisePromptApi {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param promptId The promptId to be updated
      * @param promptUpdateDTO The prompt information to be updated

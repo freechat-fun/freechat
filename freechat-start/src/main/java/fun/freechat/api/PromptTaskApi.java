@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @Tag(name = "Prompt Task")
-@RequestMapping("/api/v1/prompt/task")
+@RequestMapping("/api/v2/prompt/task")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

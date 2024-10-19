@@ -141,20 +141,6 @@ export interface AIServiceApiListAiApiKeysRequest {
 }
 
 export interface AIServiceApiListAiModelInfoRequest {
-    /**
-     * Maximum quantity
-     * Defaults to: undefined
-     * @type number
-     * @memberof AIServiceApilistAiModelInfo
-     */
-    pageSize: number
-    /**
-     * Current page number
-     * Defaults to: undefined
-     * @type number
-     * @memberof AIServiceApilistAiModelInfo
-     */
-    pageNum: number
 }
 
 export interface AIServiceApiListAiModelInfo1Request {
@@ -168,6 +154,20 @@ export interface AIServiceApiListAiModelInfo1Request {
 }
 
 export interface AIServiceApiListAiModelInfo2Request {
+    /**
+     * Maximum quantity
+     * Defaults to: undefined
+     * @type number
+     * @memberof AIServiceApilistAiModelInfo2
+     */
+    pageSize: number
+    /**
+     * Current page number
+     * Defaults to: undefined
+     * @type number
+     * @memberof AIServiceApilistAiModelInfo2
+     */
+    pageNum: number
 }
 
 export class ObjectAIServiceApi {
@@ -308,8 +308,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfoWithHttpInfo(param: AIServiceApiListAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfoWithHttpInfo(param.pageSize, param.pageNum,  options).toPromise();
+    public listAiModelInfoWithHttpInfo(param: AIServiceApiListAiModelInfoRequest = {}, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        return this.api.listAiModelInfoWithHttpInfo( options).toPromise();
     }
 
     /**
@@ -317,8 +317,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo(param: AIServiceApiListAiModelInfoRequest, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo(param.pageSize, param.pageNum,  options).toPromise();
+    public listAiModelInfo(param: AIServiceApiListAiModelInfoRequest = {}, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        return this.api.listAiModelInfo( options).toPromise();
     }
 
     /**
@@ -344,8 +344,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo2WithHttpInfo(param: AIServiceApiListAiModelInfo2Request = {}, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfo2WithHttpInfo( options).toPromise();
+    public listAiModelInfo2WithHttpInfo(param: AIServiceApiListAiModelInfo2Request, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
+        return this.api.listAiModelInfo2WithHttpInfo(param.pageSize, param.pageNum,  options).toPromise();
     }
 
     /**
@@ -353,8 +353,8 @@ export class ObjectAIServiceApi {
      * List Models
      * @param param the request object
      */
-    public listAiModelInfo2(param: AIServiceApiListAiModelInfo2Request = {}, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo2( options).toPromise();
+    public listAiModelInfo2(param: AIServiceApiListAiModelInfo2Request, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
+        return this.api.listAiModelInfo2(param.pageSize, param.pageNum,  options).toPromise();
     }
 
 }
@@ -363,16 +363,16 @@ import { ObservableAccountApi } from "./ObservableAPI.js";
 import { AccountApiRequestFactory, AccountApiResponseProcessor} from "../apis/AccountApi.js";
 
 export interface AccountApiCreateTokenRequest {
-}
-
-export interface AccountApiCreateToken1Request {
     /**
      * Token validity duration (seconds)
      * Defaults to: undefined
      * @type number
-     * @memberof AccountApicreateToken1
+     * @memberof AccountApicreateToken
      */
     duration: number
+}
+
+export interface AccountApiCreateToken1Request {
 }
 
 export interface AccountApiDeleteTokenRequest {
@@ -426,16 +426,16 @@ export interface AccountApiGetTokenByIdRequest {
 }
 
 export interface AccountApiGetUserBasicRequest {
-}
-
-export interface AccountApiGetUserBasic1Request {
     /**
      * Username
      * Defaults to: undefined
      * @type string
-     * @memberof AccountApigetUserBasic1
+     * @memberof AccountApigetUserBasic
      */
     username: string
+}
+
+export interface AccountApiGetUserBasic1Request {
 }
 
 export interface AccountApiGetUserDetailsRequest {
@@ -475,8 +475,8 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createTokenWithHttpInfo(param: AccountApiCreateTokenRequest = {}, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.createTokenWithHttpInfo( options).toPromise();
+    public createTokenWithHttpInfo(param: AccountApiCreateTokenRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.createTokenWithHttpInfo(param.duration,  options).toPromise();
     }
 
     /**
@@ -484,8 +484,8 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createToken(param: AccountApiCreateTokenRequest = {}, options?: Configuration): Promise<string> {
-        return this.api.createToken( options).toPromise();
+    public createToken(param: AccountApiCreateTokenRequest, options?: Configuration): Promise<string> {
+        return this.api.createToken(param.duration,  options).toPromise();
     }
 
     /**
@@ -493,8 +493,8 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createToken1WithHttpInfo(param: AccountApiCreateToken1Request, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.createToken1WithHttpInfo(param.duration,  options).toPromise();
+    public createToken1WithHttpInfo(param: AccountApiCreateToken1Request = {}, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.createToken1WithHttpInfo( options).toPromise();
     }
 
     /**
@@ -502,8 +502,8 @@ export class ObjectAccountApi {
      * Create API Token
      * @param param the request object
      */
-    public createToken1(param: AccountApiCreateToken1Request, options?: Configuration): Promise<string> {
-        return this.api.createToken1(param.duration,  options).toPromise();
+    public createToken1(param: AccountApiCreateToken1Request = {}, options?: Configuration): Promise<string> {
+        return this.api.createToken1( options).toPromise();
     }
 
     /**
@@ -601,8 +601,8 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasicWithHttpInfo(param: AccountApiGetUserBasicRequest = {}, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        return this.api.getUserBasicWithHttpInfo( options).toPromise();
+    public getUserBasicWithHttpInfo(param: AccountApiGetUserBasicRequest, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        return this.api.getUserBasicWithHttpInfo(param.username,  options).toPromise();
     }
 
     /**
@@ -610,8 +610,8 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic(param: AccountApiGetUserBasicRequest = {}, options?: Configuration): Promise<UserBasicInfoDTO> {
-        return this.api.getUserBasic( options).toPromise();
+    public getUserBasic(param: AccountApiGetUserBasicRequest, options?: Configuration): Promise<UserBasicInfoDTO> {
+        return this.api.getUserBasic(param.username,  options).toPromise();
     }
 
     /**
@@ -619,8 +619,8 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic1WithHttpInfo(param: AccountApiGetUserBasic1Request, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
-        return this.api.getUserBasic1WithHttpInfo(param.username,  options).toPromise();
+    public getUserBasic1WithHttpInfo(param: AccountApiGetUserBasic1Request = {}, options?: Configuration): Promise<HttpInfo<UserBasicInfoDTO>> {
+        return this.api.getUserBasic1WithHttpInfo( options).toPromise();
     }
 
     /**
@@ -628,8 +628,8 @@ export class ObjectAccountApi {
      * Get User Basic Information
      * @param param the request object
      */
-    public getUserBasic1(param: AccountApiGetUserBasic1Request, options?: Configuration): Promise<UserBasicInfoDTO> {
-        return this.api.getUserBasic1(param.username,  options).toPromise();
+    public getUserBasic1(param: AccountApiGetUserBasic1Request = {}, options?: Configuration): Promise<UserBasicInfoDTO> {
+        return this.api.getUserBasic1( options).toPromise();
     }
 
     /**
@@ -824,16 +824,16 @@ export interface AccountManagerForAdminApiListUsersRequest {
 }
 
 export interface AccountManagerForAdminApiListUsers1Request {
+}
+
+export interface AccountManagerForAdminApiListUsers2Request {
     /**
      * Maximum quantity
      * Defaults to: undefined
      * @type number
-     * @memberof AccountManagerForAdminApilistUsers1
+     * @memberof AccountManagerForAdminApilistUsers2
      */
     pageSize: number
-}
-
-export interface AccountManagerForAdminApiListUsers2Request {
 }
 
 export interface AccountManagerForAdminApiUpdateAuthoritiesOfUserRequest {
@@ -1053,8 +1053,8 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers1WithHttpInfo(param: AccountManagerForAdminApiListUsers1Request, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        return this.api.listUsers1WithHttpInfo(param.pageSize,  options).toPromise();
+    public listUsers1WithHttpInfo(param: AccountManagerForAdminApiListUsers1Request = {}, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        return this.api.listUsers1WithHttpInfo( options).toPromise();
     }
 
     /**
@@ -1062,8 +1062,8 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers1(param: AccountManagerForAdminApiListUsers1Request, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        return this.api.listUsers1(param.pageSize,  options).toPromise();
+    public listUsers1(param: AccountManagerForAdminApiListUsers1Request = {}, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+        return this.api.listUsers1( options).toPromise();
     }
 
     /**
@@ -1071,8 +1071,8 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers2WithHttpInfo(param: AccountManagerForAdminApiListUsers2Request = {}, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
-        return this.api.listUsers2WithHttpInfo( options).toPromise();
+    public listUsers2WithHttpInfo(param: AccountManagerForAdminApiListUsers2Request, options?: Configuration): Promise<HttpInfo<Array<UserBasicInfoDTO>>> {
+        return this.api.listUsers2WithHttpInfo(param.pageSize,  options).toPromise();
     }
 
     /**
@@ -1080,8 +1080,8 @@ export class ObjectAccountManagerForAdminApi {
      * List User Information
      * @param param the request object
      */
-    public listUsers2(param: AccountManagerForAdminApiListUsers2Request = {}, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
-        return this.api.listUsers2( options).toPromise();
+    public listUsers2(param: AccountManagerForAdminApiListUsers2Request, options?: Configuration): Promise<Array<UserBasicInfoDTO>> {
+        return this.api.listUsers2(param.pageSize,  options).toPromise();
     }
 
     /**
@@ -1297,7 +1297,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param param the request object
      */
@@ -1306,7 +1306,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/details/search.
+     * Batch call shortcut for /api/v2/agent/details/search.
      * Batch Search Agent Details
      * @param param the request object
      */
@@ -1315,7 +1315,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param param the request object
      */
@@ -1324,7 +1324,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/agent/search.
+     * Batch call shortcut for /api/v2/agent/search.
      * Batch Search Agent Summaries
      * @param param the request object
      */
@@ -1531,7 +1531,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param param the request object
      */
@@ -1540,7 +1540,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Same as /api/v1/agent/search, but returns detailed information of the agent.
+     * Same as /api/v2/agent/search, but returns detailed information of the agent.
      * Search Agent Details
      * @param param the request object
      */
@@ -1567,7 +1567,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param param the request object
      */
@@ -1576,7 +1576,7 @@ export class ObjectAgentApi {
     }
 
     /**
-     * Update agent, refer to /api/v1/agent/create, required field: agentId. Return success or failure.
+     * Update agent, refer to /api/v2/agent/create, required field: agentId. Return success or failure.
      * Update Agent
      * @param param the request object
      */
@@ -1949,6 +1949,13 @@ export interface CharacterApiPublishCharacterRequest {
      * @memberof CharacterApipublishCharacter
      */
     characterId: number
+    /**
+     * Visibility: public | private | ...
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApipublishCharacter
+     */
+    visibility: string
 }
 
 export interface CharacterApiPublishCharacter1Request {
@@ -1959,13 +1966,6 @@ export interface CharacterApiPublishCharacter1Request {
      * @memberof CharacterApipublishCharacter1
      */
     characterId: number
-    /**
-     * Visibility: public | private | ...
-     * Defaults to: undefined
-     * @type string
-     * @memberof CharacterApipublishCharacter1
-     */
-    visibility: string
 }
 
 export interface CharacterApiRemoveCharacterBackendRequest {
@@ -2124,7 +2124,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * Batch Search Character Details
      * @param param the request object
      */
@@ -2133,7 +2133,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/details/search.
+     * Batch call shortcut for /api/v2/character/details/search.
      * Batch Search Character Details
      * @param param the request object
      */
@@ -2142,7 +2142,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * Batch Search Character Summaries
      * @param param the request object
      */
@@ -2151,7 +2151,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/character/search.
+     * Batch call shortcut for /api/v2/character/search.
      * Batch Search Character Summaries
      * @param param the request object
      */
@@ -2561,7 +2561,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public publishCharacterWithHttpInfo(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<HttpInfo<number>> {
-        return this.api.publishCharacterWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.publishCharacterWithHttpInfo(param.characterId, param.visibility,  options).toPromise();
     }
 
     /**
@@ -2570,7 +2570,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public publishCharacter(param: CharacterApiPublishCharacterRequest, options?: Configuration): Promise<number> {
-        return this.api.publishCharacter(param.characterId,  options).toPromise();
+        return this.api.publishCharacter(param.characterId, param.visibility,  options).toPromise();
     }
 
     /**
@@ -2579,7 +2579,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public publishCharacter1WithHttpInfo(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<HttpInfo<number>> {
-        return this.api.publishCharacter1WithHttpInfo(param.characterId, param.visibility,  options).toPromise();
+        return this.api.publishCharacter1WithHttpInfo(param.characterId,  options).toPromise();
     }
 
     /**
@@ -2588,7 +2588,7 @@ export class ObjectCharacterApi {
      * @param param the request object
      */
     public publishCharacter1(param: CharacterApiPublishCharacter1Request, options?: Configuration): Promise<number> {
-        return this.api.publishCharacter1(param.characterId, param.visibility,  options).toPromise();
+        return this.api.publishCharacter1(param.characterId,  options).toPromise();
     }
 
     /**
@@ -2610,7 +2610,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * Search Character Details
      * @param param the request object
      */
@@ -2619,7 +2619,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Same as /api/v1/character/search, but returns detailed information of the character.
+     * Same as /api/v2/character/search, but returns detailed information of the character.
      * Search Character Details
      * @param param the request object
      */
@@ -2682,7 +2682,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * Update Character
      * @param param the request object
      */
@@ -2691,7 +2691,7 @@ export class ObjectCharacterApi {
     }
 
     /**
-     * Update character, refer to /api/v1/character/create, required field: characterId. Returns success or failure.
+     * Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.
      * Update Character
      * @param param the request object
      */
@@ -2878,6 +2878,13 @@ export interface ChatApiListMessagesRequest {
      * @memberof ChatApilistMessages
      */
     chatId: string
+    /**
+     * Messages limit
+     * Defaults to: undefined
+     * @type number
+     * @memberof ChatApilistMessages
+     */
+    limit: number
 }
 
 export interface ChatApiListMessages1Request {
@@ -2912,13 +2919,6 @@ export interface ChatApiListMessages2Request {
      * @memberof ChatApilistMessages2
      */
     chatId: string
-    /**
-     * Messages limit
-     * Defaults to: undefined
-     * @type number
-     * @memberof ChatApilistMessages2
-     */
-    limit: number
 }
 
 export interface ChatApiRollbackMessagesRequest {
@@ -3186,7 +3186,7 @@ export class ObjectChatApi {
      * @param param the request object
      */
     public listMessagesWithHttpInfo(param: ChatApiListMessagesRequest, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        return this.api.listMessagesWithHttpInfo(param.chatId,  options).toPromise();
+        return this.api.listMessagesWithHttpInfo(param.chatId, param.limit,  options).toPromise();
     }
 
     /**
@@ -3195,7 +3195,7 @@ export class ObjectChatApi {
      * @param param the request object
      */
     public listMessages(param: ChatApiListMessagesRequest, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        return this.api.listMessages(param.chatId,  options).toPromise();
+        return this.api.listMessages(param.chatId, param.limit,  options).toPromise();
     }
 
     /**
@@ -3222,7 +3222,7 @@ export class ObjectChatApi {
      * @param param the request object
      */
     public listMessages2WithHttpInfo(param: ChatApiListMessages2Request, options?: Configuration): Promise<HttpInfo<Array<ChatMessageRecordDTO>>> {
-        return this.api.listMessages2WithHttpInfo(param.chatId, param.limit,  options).toPromise();
+        return this.api.listMessages2WithHttpInfo(param.chatId,  options).toPromise();
     }
 
     /**
@@ -3231,7 +3231,7 @@ export class ObjectChatApi {
      * @param param the request object
      */
     public listMessages2(param: ChatApiListMessages2Request, options?: Configuration): Promise<Array<ChatMessageRecordDTO>> {
-        return this.api.listMessages2(param.chatId, param.limit,  options).toPromise();
+        return this.api.listMessages2(param.chatId,  options).toPromise();
     }
 
     /**
@@ -3307,7 +3307,7 @@ export class ObjectChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
      * Send Assistant for Chat Message by Streaming Back
      * @param param the request object
      */
@@ -3316,7 +3316,7 @@ export class ObjectChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
      * Send Assistant for Chat Message by Streaming Back
      * @param param the request object
      */
@@ -3325,7 +3325,7 @@ export class ObjectChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param param the request object
      */
@@ -3334,7 +3334,7 @@ export class ObjectChatApi {
     }
 
     /**
-     * Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+     * Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
      * Send Chat Message by Streaming Back
      * @param param the request object
      */
@@ -3623,13 +3623,6 @@ export interface InteractiveStatisticsApiListCharactersByStatistic1Request {
      */
     pageSize: number
     /**
-     * Current page number
-     * Defaults to: undefined
-     * @type number
-     * @memberof InteractiveStatisticsApilistCharactersByStatistic1
-     */
-    pageNum: number
-    /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
      * @type string
@@ -3653,6 +3646,13 @@ export interface InteractiveStatisticsApiListCharactersByStatistic2Request {
      * @memberof InteractiveStatisticsApilistCharactersByStatistic2
      */
     pageSize: number
+    /**
+     * Current page number
+     * Defaults to: undefined
+     * @type number
+     * @memberof InteractiveStatisticsApilistCharactersByStatistic2
+     */
+    pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
@@ -3702,6 +3702,13 @@ export interface InteractiveStatisticsApiListPluginsByStatisticRequest {
      */
     pageSize: number
     /**
+     * Current page number
+     * Defaults to: undefined
+     * @type number
+     * @memberof InteractiveStatisticsApilistPluginsByStatistic
+     */
+    pageNum: number
+    /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
      * @type string
@@ -3718,20 +3725,6 @@ export interface InteractiveStatisticsApiListPluginsByStatistic1Request {
      * @memberof InteractiveStatisticsApilistPluginsByStatistic1
      */
     statsType: string
-    /**
-     * Maximum quantity
-     * Defaults to: undefined
-     * @type number
-     * @memberof InteractiveStatisticsApilistPluginsByStatistic1
-     */
-    pageSize: number
-    /**
-     * Current page number
-     * Defaults to: undefined
-     * @type number
-     * @memberof InteractiveStatisticsApilistPluginsByStatistic1
-     */
-    pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
@@ -3750,6 +3743,13 @@ export interface InteractiveStatisticsApiListPluginsByStatistic2Request {
      */
     statsType: string
     /**
+     * Maximum quantity
+     * Defaults to: undefined
+     * @type number
+     * @memberof InteractiveStatisticsApilistPluginsByStatistic2
+     */
+    pageSize: number
+    /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
      * @type string
@@ -3766,13 +3766,6 @@ export interface InteractiveStatisticsApiListPromptsByStatisticRequest {
      * @memberof InteractiveStatisticsApilistPromptsByStatistic
      */
     statsType: string
-    /**
-     * Maximum quantity
-     * Defaults to: undefined
-     * @type number
-     * @memberof InteractiveStatisticsApilistPromptsByStatistic
-     */
-    pageSize: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
@@ -3798,13 +3791,6 @@ export interface InteractiveStatisticsApiListPromptsByStatistic1Request {
      */
     pageSize: number
     /**
-     * Current page number
-     * Defaults to: undefined
-     * @type number
-     * @memberof InteractiveStatisticsApilistPromptsByStatistic1
-     */
-    pageNum: number
-    /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
      * @type string
@@ -3821,6 +3807,20 @@ export interface InteractiveStatisticsApiListPromptsByStatistic2Request {
      * @memberof InteractiveStatisticsApilistPromptsByStatistic2
      */
     statsType: string
+    /**
+     * Maximum quantity
+     * Defaults to: undefined
+     * @type number
+     * @memberof InteractiveStatisticsApilistPromptsByStatistic2
+     */
+    pageSize: number
+    /**
+     * Current page number
+     * Defaults to: undefined
+     * @type number
+     * @memberof InteractiveStatisticsApilistPromptsByStatistic2
+     */
+    pageNum: number
     /**
      * Default is descending order, set asc&#x3D;1 for ascending order
      * Defaults to: undefined
@@ -4005,7 +4005,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listCharactersByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        return this.api.listCharactersByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+        return this.api.listCharactersByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**
@@ -4014,7 +4014,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listCharactersByStatistic1(param: InteractiveStatisticsApiListCharactersByStatistic1Request, options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        return this.api.listCharactersByStatistic1(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+        return this.api.listCharactersByStatistic1(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**
@@ -4023,7 +4023,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listCharactersByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<CharacterSummaryStatsDTO>>> {
-        return this.api.listCharactersByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
+        return this.api.listCharactersByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
     /**
@@ -4032,7 +4032,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listCharactersByStatistic2(param: InteractiveStatisticsApiListCharactersByStatistic2Request, options?: Configuration): Promise<Array<CharacterSummaryStatsDTO>> {
-        return this.api.listCharactersByStatistic2(param.statsType, param.pageSize, param.asc,  options).toPromise();
+        return this.api.listCharactersByStatistic2(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
     /**
@@ -4059,7 +4059,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPluginsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        return this.api.listPluginsByStatisticWithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
+        return this.api.listPluginsByStatisticWithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
     /**
@@ -4068,7 +4068,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPluginsByStatistic(param: InteractiveStatisticsApiListPluginsByStatisticRequest, options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        return this.api.listPluginsByStatistic(param.statsType, param.pageSize, param.asc,  options).toPromise();
+        return this.api.listPluginsByStatistic(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
     /**
@@ -4077,7 +4077,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPluginsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        return this.api.listPluginsByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+        return this.api.listPluginsByStatistic1WithHttpInfo(param.statsType, param.asc,  options).toPromise();
     }
 
     /**
@@ -4086,7 +4086,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPluginsByStatistic1(param: InteractiveStatisticsApiListPluginsByStatistic1Request, options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        return this.api.listPluginsByStatistic1(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+        return this.api.listPluginsByStatistic1(param.statsType, param.asc,  options).toPromise();
     }
 
     /**
@@ -4095,7 +4095,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPluginsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListPluginsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<PluginSummaryStatsDTO>>> {
-        return this.api.listPluginsByStatistic2WithHttpInfo(param.statsType, param.asc,  options).toPromise();
+        return this.api.listPluginsByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**
@@ -4104,7 +4104,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPluginsByStatistic2(param: InteractiveStatisticsApiListPluginsByStatistic2Request, options?: Configuration): Promise<Array<PluginSummaryStatsDTO>> {
-        return this.api.listPluginsByStatistic2(param.statsType, param.asc,  options).toPromise();
+        return this.api.listPluginsByStatistic2(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**
@@ -4113,7 +4113,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPromptsByStatisticWithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatisticRequest, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        return this.api.listPromptsByStatisticWithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
+        return this.api.listPromptsByStatisticWithHttpInfo(param.statsType, param.asc,  options).toPromise();
     }
 
     /**
@@ -4122,7 +4122,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPromptsByStatistic(param: InteractiveStatisticsApiListPromptsByStatisticRequest, options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        return this.api.listPromptsByStatistic(param.statsType, param.pageSize, param.asc,  options).toPromise();
+        return this.api.listPromptsByStatistic(param.statsType, param.asc,  options).toPromise();
     }
 
     /**
@@ -4131,7 +4131,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPromptsByStatistic1WithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatistic1Request, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        return this.api.listPromptsByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+        return this.api.listPromptsByStatistic1WithHttpInfo(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**
@@ -4140,7 +4140,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPromptsByStatistic1(param: InteractiveStatisticsApiListPromptsByStatistic1Request, options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        return this.api.listPromptsByStatistic1(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
+        return this.api.listPromptsByStatistic1(param.statsType, param.pageSize, param.asc,  options).toPromise();
     }
 
     /**
@@ -4149,7 +4149,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPromptsByStatistic2WithHttpInfo(param: InteractiveStatisticsApiListPromptsByStatistic2Request, options?: Configuration): Promise<HttpInfo<Array<PromptSummaryStatsDTO>>> {
-        return this.api.listPromptsByStatistic2WithHttpInfo(param.statsType, param.asc,  options).toPromise();
+        return this.api.listPromptsByStatistic2WithHttpInfo(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
     /**
@@ -4158,7 +4158,7 @@ export class ObjectInteractiveStatisticsApi {
      * @param param the request object
      */
     public listPromptsByStatistic2(param: InteractiveStatisticsApiListPromptsByStatistic2Request, options?: Configuration): Promise<Array<PromptSummaryStatsDTO>> {
-        return this.api.listPromptsByStatistic2(param.statsType, param.asc,  options).toPromise();
+        return this.api.listPromptsByStatistic2(param.statsType, param.pageSize, param.pageNum, param.asc,  options).toPromise();
     }
 
 }
@@ -4334,7 +4334,7 @@ export class ObjectOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param param the request object
      */
@@ -4343,7 +4343,7 @@ export class ObjectOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param param the request object
      */
@@ -4406,7 +4406,7 @@ export class ObjectOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param param the request object
      */
@@ -4415,7 +4415,7 @@ export class ObjectOrganizationApi {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param param the request object
      */
@@ -4654,7 +4654,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param param the request object
      */
@@ -4663,7 +4663,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/details/search.
+     * Batch call shortcut for /api/v2/plugin/details/search.
      * Batch Search Plugin Details
      * @param param the request object
      */
@@ -4672,7 +4672,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param param the request object
      */
@@ -4681,7 +4681,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/plugin/search.
+     * Batch call shortcut for /api/v2/plugin/search.
      * Batch Search Plugin Summaries
      * @param param the request object
      */
@@ -4834,7 +4834,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param param the request object
      */
@@ -4843,7 +4843,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Same as /api/v1/plugin/search, but returns detailed information of the plugin.
+     * Same as /api/v2/plugin/search, but returns detailed information of the plugin.
      * Search Plugin Details
      * @param param the request object
      */
@@ -4870,7 +4870,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param param the request object
      */
@@ -4879,7 +4879,7 @@ export class ObjectPluginApi {
     }
 
     /**
-     * Update plugin, refer to /api/v1/plugin/create, required field: pluginId. Returns success or failure.
+     * Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.
      * Update Plugin
      * @param param the request object
      */
@@ -5184,7 +5184,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param param the request object
      */
@@ -5193,7 +5193,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/details/search.
+     * Batch call shortcut for /api/v2/prompt/details/search.
      * Batch Search Prompt Details
      * @param param the request object
      */
@@ -5202,7 +5202,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param param the request object
      */
@@ -5211,7 +5211,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Batch call shortcut for /api/v1/prompt/search.
+     * Batch call shortcut for /api/v2/prompt/search.
      * Batch Search Prompt Summaries
      * @param param the request object
      */
@@ -5490,7 +5490,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param param the request object
      */
@@ -5499,7 +5499,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+     * Same as /api/v2/prompt/search, but returns detailed information of the prompt.
      * Search Prompt Details
      * @param param the request object
      */
@@ -5562,7 +5562,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param param the request object
      */
@@ -5571,7 +5571,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Refer to /api/v1/prompt/send, stream back chunks of the response.
+     * Refer to /api/v2/prompt/send, stream back chunks of the response.
      * Send Prompt by Streaming Back
      * @param param the request object
      */
@@ -5580,7 +5580,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param param the request object
      */
@@ -5589,7 +5589,7 @@ export class ObjectPromptApi {
     }
 
     /**
-     * Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+     * Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
      * Update Prompt
      * @param param the request object
      */

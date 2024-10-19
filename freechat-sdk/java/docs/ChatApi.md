@@ -4,24 +4,24 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v1/chat/memory/{chatId} | Clear Memory |
-| [**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v1/chat/{chatId} | Delete Chat Session |
-| [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v1/chat/{characterId} | Get Default Chat |
-| [**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v1/chat/memory/usage/{chatId} | Get Memory Usage |
-| [**listChats**](ChatApi.md#listChats) | **GET** /api/v1/chat | List Chats |
-| [**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages |
-| [**listDebugMessages1**](ChatApi.md#listDebugMessages1) | **GET** /api/v1/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages |
-| [**listDebugMessages2**](ChatApi.md#listDebugMessages2) | **GET** /api/v1/chat/messages/debug/{chatId} | List Chat Debug Messages |
-| [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v1/chat/messages/{chatId} | List Chat Messages |
-| [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v1/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages |
-| [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v1/chat/messages/{chatId}/{limit} | List Chat Messages |
-| [**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v1/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages |
-| [**sendAssistant**](ChatApi.md#sendAssistant) | **GET** /api/v1/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message |
-| [**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v1/chat/send/{chatId} | Send Chat Message |
-| [**startChat**](ChatApi.md#startChat) | **POST** /api/v1/chat | Start Chat Session |
-| [**streamSendAssistant**](ChatApi.md#streamSendAssistant) | **GET** /api/v1/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back |
-| [**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v1/chat/send/stream/{chatId} | Send Chat Message by Streaming Back |
-| [**updateChat**](ChatApi.md#updateChat) | **PUT** /api/v1/chat/{chatId} | Update Chat Session |
+| [**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory |
+| [**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session |
+| [**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterId} | Get Default Chat |
+| [**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v2/chat/memory/usage/{chatId} | Get Memory Usage |
+| [**listChats**](ChatApi.md#listChats) | **GET** /api/v2/chat | List Chats |
+| [**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages |
+| [**listDebugMessages1**](ChatApi.md#listDebugMessages1) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit}/{offset} | List Chat Debug Messages |
+| [**listDebugMessages2**](ChatApi.md#listDebugMessages2) | **GET** /api/v2/chat/messages/debug/{chatId} | List Chat Debug Messages |
+| [**listMessages**](ChatApi.md#listMessages) | **GET** /api/v2/chat/messages/{chatId}/{limit} | List Chat Messages |
+| [**listMessages1**](ChatApi.md#listMessages1) | **GET** /api/v2/chat/messages/{chatId}/{limit}/{offset} | List Chat Messages |
+| [**listMessages2**](ChatApi.md#listMessages2) | **GET** /api/v2/chat/messages/{chatId} | List Chat Messages |
+| [**rollbackMessages**](ChatApi.md#rollbackMessages) | **POST** /api/v2/chat/messages/rollback/{chatId}/{count} | Rollback Chat Messages |
+| [**sendAssistant**](ChatApi.md#sendAssistant) | **GET** /api/v2/chat/send/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message |
+| [**sendMessage**](ChatApi.md#sendMessage) | **POST** /api/v2/chat/send/{chatId} | Send Chat Message |
+| [**startChat**](ChatApi.md#startChat) | **POST** /api/v2/chat | Start Chat Session |
+| [**streamSendAssistant**](ChatApi.md#streamSendAssistant) | **GET** /api/v2/chat/send/stream/assistant/{chatId}/{assistantUid} | Send Assistant for Chat Message by Streaming Back |
+| [**streamSendMessage**](ChatApi.md#streamSendMessage) | **POST** /api/v2/chat/send/stream/{chatId} | Send Chat Message by Streaming Back |
+| [**updateChat**](ChatApi.md#updateChat) | **PUT** /api/v2/chat/{chatId} | Update Chat Session |
 
 
 <a id="clearMemory"></a>
@@ -564,7 +564,7 @@ public class Example {
 
 <a id="listMessages"></a>
 # **listMessages**
-> List&lt;ChatMessageRecordDTO&gt; listMessages(chatId)
+> List&lt;ChatMessageRecordDTO&gt; listMessages(chatId, limit)
 
 List Chat Messages
 
@@ -591,8 +591,9 @@ public class Example {
 
     ChatApi apiInstance = new ChatApi(defaultClient);
     String chatId = "chatId_example"; // String | Chat session identifier
+    Integer limit = 56; // Integer | Messages limit
     try {
-      List<ChatMessageRecordDTO> result = apiInstance.listMessages(chatId);
+      List<ChatMessageRecordDTO> result = apiInstance.listMessages(chatId, limit);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling ChatApi#listMessages");
@@ -610,6 +611,7 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **chatId** | **String**| Chat session identifier | |
+| **limit** | **Integer**| Messages limit | |
 
 ### Return type
 
@@ -702,7 +704,7 @@ public class Example {
 
 <a id="listMessages2"></a>
 # **listMessages2**
-> List&lt;ChatMessageRecordDTO&gt; listMessages2(chatId, limit)
+> List&lt;ChatMessageRecordDTO&gt; listMessages2(chatId)
 
 List Chat Messages
 
@@ -729,9 +731,8 @@ public class Example {
 
     ChatApi apiInstance = new ChatApi(defaultClient);
     String chatId = "chatId_example"; // String | Chat session identifier
-    Integer limit = 56; // Integer | Messages limit
     try {
-      List<ChatMessageRecordDTO> result = apiInstance.listMessages2(chatId, limit);
+      List<ChatMessageRecordDTO> result = apiInstance.listMessages2(chatId);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling ChatApi#listMessages2");
@@ -749,7 +750,6 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **chatId** | **String**| Chat session identifier | |
-| **limit** | **Integer**| Messages limit | |
 
 ### Return type
 
@@ -1049,7 +1049,7 @@ public class Example {
 
 Send Assistant for Chat Message by Streaming Back
 
-Refer to /api/v1/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
+Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks of the response.
 
 ### Example
 ```java
@@ -1118,7 +1118,7 @@ public class Example {
 
 Send Chat Message by Streaming Back
 
-Refer to /api/v1/chat/send/{chatId}, stream back chunks of the response.
+Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
 
 ### Example
 ```java

@@ -24,7 +24,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/owners';
+        const localVarPath = '/api/v2/org/owners';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -52,7 +52,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Same as /api/v1/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Superior Relationship
      * @param all Whether to return virtual reported owners
      */
@@ -61,7 +61,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/owners/dot';
+        const localVarPath = '/api/v2/org/owners/dot';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -105,7 +105,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/manage/{username}/owners'
+        const localVarPath = '/api/v2/org/manage/{username}/owners'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context
@@ -150,7 +150,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/manage/{username}/subordinates'
+        const localVarPath = '/api/v2/org/manage/{username}/subordinates'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context
@@ -188,7 +188,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/subordinates';
+        const localVarPath = '/api/v2/org/subordinates';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -216,7 +216,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
     }
 
     /**
-     * Same as /api/v1/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
+     * Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: [graphviz](https://www.graphviz.org/)
      * Get DOT of Subordinate Relationship
      * @param all Whether to return virtual managed subordinates
      */
@@ -225,7 +225,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/subordinates/dot';
+        const localVarPath = '/api/v2/org/subordinates/dot';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -267,7 +267,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/authority/{username}'
+        const localVarPath = '/api/v2/org/authority/{username}'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context
@@ -305,7 +305,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/manage/{username}/subordinates'
+        const localVarPath = '/api/v2/org/manage/{username}/subordinates'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context
@@ -350,7 +350,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/authority/{username}'
+        const localVarPath = '/api/v2/org/authority/{username}'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context
@@ -406,7 +406,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/manage/{username}/owners'
+        const localVarPath = '/api/v2/org/manage/{username}/owners'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context
@@ -462,7 +462,7 @@ export class OrganizationApiRequestFactory extends BaseAPIRequestFactory {
 
 
         // Path Params
-        const localVarPath = '/api/v1/org/manage/{username}/subordinates'
+        const localVarPath = '/api/v2/org/manage/{username}/subordinates'
             .replace('{' + 'username' + '}', encodeURIComponent(String(username)));
 
         // Make Request Context

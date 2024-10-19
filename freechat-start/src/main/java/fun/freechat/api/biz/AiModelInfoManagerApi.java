@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Service
 @Tag(name = "AI Manager (for biz, admin)", description = "Manage model information, callable only by super administrators and business administrators.")
-@RequestMapping("/api/v1/biz/admin/ai/model")
+@RequestMapping("/api/v2/biz/admin/ai/model")
 @ResponseBody
 @Validated
 @SuppressWarnings("unused")

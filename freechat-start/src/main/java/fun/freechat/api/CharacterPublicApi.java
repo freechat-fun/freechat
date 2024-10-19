@@ -25,7 +25,7 @@ import java.util.List;
 
 @Controller
 @Tag(name = "Character")
-@RequestMapping("/api/v1/public/character")
+@RequestMapping("/api/v2/public/character")
 @ResponseBody
 @Validated
 @Slf4j

@@ -133,7 +133,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
         .catch(handleError);
     }
 
-    aiServiceApi?.listAiModelInfo2()
+    aiServiceApi?.listAiModelInfo()
       .then(setModelInfos)
       .catch(handleError);
   }, [handleError, id, promptApi, aiServiceApi]);
@@ -1124,7 +1124,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
           <PromptRunner
             minWidth="16rem"
             maxWidth="50%"
-            apiPath="/api/v1/prompt/send/stream"
+            apiPath="/api/v2/prompt/send/stream"
             record={getEditRecord(JSON.stringify(inputs))}
             defaultVariables={defaultVariables}
             defaultParameters={defaultParameters}

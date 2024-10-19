@@ -4,31 +4,31 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**apply_prompt_ref**](PromptApi.md#apply_prompt_ref) | **POST** /api/v1/prompt/apply/ref | Apply Parameters to Prompt Record
-[**apply_prompt_template**](PromptApi.md#apply_prompt_template) | **POST** /api/v1/prompt/apply/template | Apply Parameters to Prompt Template
-[**batch_search_prompt_details**](PromptApi.md#batch_search_prompt_details) | **POST** /api/v1/prompt/batch/details/search | Batch Search Prompt Details
-[**batch_search_prompt_summary**](PromptApi.md#batch_search_prompt_summary) | **POST** /api/v1/prompt/batch/search | Batch Search Prompt Summaries
-[**clone_prompt**](PromptApi.md#clone_prompt) | **POST** /api/v1/prompt/clone/{promptId} | Clone Prompt
-[**clone_prompts**](PromptApi.md#clone_prompts) | **POST** /api/v1/prompt/batch/clone | Batch Clone Prompts
-[**count_prompts**](PromptApi.md#count_prompts) | **POST** /api/v1/prompt/count | Calculate Number of Prompts
-[**count_public_prompts**](PromptApi.md#count_public_prompts) | **POST** /api/v1/public/prompt/count | Calculate Number of Public Prompts
-[**create_prompt**](PromptApi.md#create_prompt) | **POST** /api/v1/prompt | Create Prompt
-[**create_prompts**](PromptApi.md#create_prompts) | **POST** /api/v1/prompt/batch | Batch Create Prompts
-[**delete_prompt**](PromptApi.md#delete_prompt) | **DELETE** /api/v1/prompt/{promptId} | Delete Prompt
-[**delete_prompt_by_name**](PromptApi.md#delete_prompt_by_name) | **DELETE** /api/v1/prompt/name/{name} | Delete Prompt by Name
-[**delete_prompts**](PromptApi.md#delete_prompts) | **DELETE** /api/v1/prompt/batch | Batch Delete Prompts
-[**exists_prompt_name**](PromptApi.md#exists_prompt_name) | **GET** /api/v1/prompt/exists/name/{name} | Check If Prompt Name Exists
-[**get_prompt_details**](PromptApi.md#get_prompt_details) | **GET** /api/v1/prompt/details/{promptId} | Get Prompt Details
-[**get_prompt_summary**](PromptApi.md#get_prompt_summary) | **GET** /api/v1/prompt/summary/{promptId} | Get Prompt Summary
-[**list_prompt_versions_by_name**](PromptApi.md#list_prompt_versions_by_name) | **POST** /api/v1/prompt/versions/{name} | List Versions by Prompt Name
-[**new_prompt_name**](PromptApi.md#new_prompt_name) | **GET** /api/v1/prompt/create/name/{desired} | Create New Prompt Name
-[**publish_prompt**](PromptApi.md#publish_prompt) | **POST** /api/v1/prompt/publish/{promptId}/{visibility} | Publish Prompt
-[**search_prompt_details**](PromptApi.md#search_prompt_details) | **POST** /api/v1/prompt/details/search | Search Prompt Details
-[**search_prompt_summary**](PromptApi.md#search_prompt_summary) | **POST** /api/v1/prompt/search | Search Prompt Summary
-[**search_public_prompt_summary**](PromptApi.md#search_public_prompt_summary) | **POST** /api/v1/public/prompt/search | Search Public Prompt Summary
-[**send_prompt**](PromptApi.md#send_prompt) | **POST** /api/v1/prompt/send | Send Prompt
-[**stream_send_prompt**](PromptApi.md#stream_send_prompt) | **POST** /api/v1/prompt/send/stream | Send Prompt by Streaming Back
-[**update_prompt**](PromptApi.md#update_prompt) | **PUT** /api/v1/prompt/{promptId} | Update Prompt
+[**apply_prompt_ref**](PromptApi.md#apply_prompt_ref) | **POST** /api/v2/prompt/apply/ref | Apply Parameters to Prompt Record
+[**apply_prompt_template**](PromptApi.md#apply_prompt_template) | **POST** /api/v2/prompt/apply/template | Apply Parameters to Prompt Template
+[**batch_search_prompt_details**](PromptApi.md#batch_search_prompt_details) | **POST** /api/v2/prompt/batch/details/search | Batch Search Prompt Details
+[**batch_search_prompt_summary**](PromptApi.md#batch_search_prompt_summary) | **POST** /api/v2/prompt/batch/search | Batch Search Prompt Summaries
+[**clone_prompt**](PromptApi.md#clone_prompt) | **POST** /api/v2/prompt/clone/{promptId} | Clone Prompt
+[**clone_prompts**](PromptApi.md#clone_prompts) | **POST** /api/v2/prompt/batch/clone | Batch Clone Prompts
+[**count_prompts**](PromptApi.md#count_prompts) | **POST** /api/v2/prompt/count | Calculate Number of Prompts
+[**count_public_prompts**](PromptApi.md#count_public_prompts) | **POST** /api/v2/public/prompt/count | Calculate Number of Public Prompts
+[**create_prompt**](PromptApi.md#create_prompt) | **POST** /api/v2/prompt | Create Prompt
+[**create_prompts**](PromptApi.md#create_prompts) | **POST** /api/v2/prompt/batch | Batch Create Prompts
+[**delete_prompt**](PromptApi.md#delete_prompt) | **DELETE** /api/v2/prompt/{promptId} | Delete Prompt
+[**delete_prompt_by_name**](PromptApi.md#delete_prompt_by_name) | **DELETE** /api/v2/prompt/name/{name} | Delete Prompt by Name
+[**delete_prompts**](PromptApi.md#delete_prompts) | **DELETE** /api/v2/prompt/batch | Batch Delete Prompts
+[**exists_prompt_name**](PromptApi.md#exists_prompt_name) | **GET** /api/v2/prompt/exists/name/{name} | Check If Prompt Name Exists
+[**get_prompt_details**](PromptApi.md#get_prompt_details) | **GET** /api/v2/prompt/details/{promptId} | Get Prompt Details
+[**get_prompt_summary**](PromptApi.md#get_prompt_summary) | **GET** /api/v2/prompt/summary/{promptId} | Get Prompt Summary
+[**list_prompt_versions_by_name**](PromptApi.md#list_prompt_versions_by_name) | **POST** /api/v2/prompt/versions/{name} | List Versions by Prompt Name
+[**new_prompt_name**](PromptApi.md#new_prompt_name) | **GET** /api/v2/prompt/create/name/{desired} | Create New Prompt Name
+[**publish_prompt**](PromptApi.md#publish_prompt) | **POST** /api/v2/prompt/publish/{promptId}/{visibility} | Publish Prompt
+[**search_prompt_details**](PromptApi.md#search_prompt_details) | **POST** /api/v2/prompt/details/search | Search Prompt Details
+[**search_prompt_summary**](PromptApi.md#search_prompt_summary) | **POST** /api/v2/prompt/search | Search Prompt Summary
+[**search_public_prompt_summary**](PromptApi.md#search_public_prompt_summary) | **POST** /api/v2/public/prompt/search | Search Public Prompt Summary
+[**send_prompt**](PromptApi.md#send_prompt) | **POST** /api/v2/prompt/send | Send Prompt
+[**stream_send_prompt**](PromptApi.md#stream_send_prompt) | **POST** /api/v2/prompt/send/stream | Send Prompt by Streaming Back
+[**update_prompt**](PromptApi.md#update_prompt) | **PUT** /api/v2/prompt/{promptId} | Update Prompt
 
 
 # **apply_prompt_ref**
@@ -192,7 +192,7 @@ Name | Type | Description  | Notes
 
 Batch Search Prompt Details
 
-Batch call shortcut for /api/v1/prompt/details/search.
+Batch call shortcut for /api/v2/prompt/details/search.
 
 ### Example
 
@@ -271,7 +271,7 @@ Name | Type | Description  | Notes
 
 Batch Search Prompt Summaries
 
-Batch call shortcut for /api/v1/prompt/search.
+Batch call shortcut for /api/v2/prompt/search.
 
 ### Example
 
@@ -1514,7 +1514,7 @@ Name | Type | Description  | Notes
 
 Search Prompt Details
 
-Same as /api/v1/prompt/search, but returns detailed information of the prompt.
+Same as /api/v2/prompt/search, but returns detailed information of the prompt.
 
 ### Example
 
@@ -1830,7 +1830,7 @@ Name | Type | Description  | Notes
 
 Send Prompt by Streaming Back
 
-Refer to /api/v1/prompt/send, stream back chunks of the response.
+Refer to /api/v2/prompt/send, stream back chunks of the response.
 
 ### Example
 
@@ -1909,7 +1909,7 @@ Name | Type | Description  | Notes
 
 Update Prompt
 
-Update prompt, refer to /api/v1/prompt/create, required field: promptId. Returns success or failure.
+Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns success or failure.
 
 ### Example
 

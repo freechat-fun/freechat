@@ -4,14 +4,14 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**cancelRagTask**](RagApi.md#cancelRagTask) | **POST** /api/v1/rag/task/cancel/{taskId} | Cancel RAG Task
-[**createRagTask**](RagApi.md#createRagTask) | **POST** /api/v1/rag/task/{characterUid} | Create RAG Task
-[**deleteRagTask**](RagApi.md#deleteRagTask) | **DELETE** /api/v1/rag/task/{taskId} | Delete RAG Task
-[**getRagTask**](RagApi.md#getRagTask) | **GET** /api/v1/rag/task/{taskId} | Get RAG Task
-[**getRagTaskStatus**](RagApi.md#getRagTaskStatus) | **GET** /api/v1/rag/task/status/{taskId} | Get RAG Task Status
-[**listRagTasks**](RagApi.md#listRagTasks) | **GET** /api/v1/rag/tasks/{characterUid} | List RAG Tasks
-[**startRagTask**](RagApi.md#startRagTask) | **POST** /api/v1/rag/task/start/{taskId} | Start RAG Task
-[**updateRagTask**](RagApi.md#updateRagTask) | **PUT** /api/v1/rag/task/{taskId} | Update RAG Task
+[**cancelRagTask**](RagApi.md#cancelRagTask) | **POST** /api/v2/rag/task/cancel/{taskId} | Cancel RAG Task
+[**createRagTask**](RagApi.md#createRagTask) | **POST** /api/v2/rag/task/{characterUid} | Create RAG Task
+[**deleteRagTask**](RagApi.md#deleteRagTask) | **DELETE** /api/v2/rag/task/{taskId} | Delete RAG Task
+[**getRagTask**](RagApi.md#getRagTask) | **GET** /api/v2/rag/task/{taskId} | Get RAG Task
+[**getRagTaskStatus**](RagApi.md#getRagTaskStatus) | **GET** /api/v2/rag/task/status/{taskId} | Get RAG Task Status
+[**listRagTasks**](RagApi.md#listRagTasks) | **GET** /api/v2/rag/tasks/{characterUid} | List RAG Tasks
+[**startRagTask**](RagApi.md#startRagTask) | **POST** /api/v2/rag/task/start/{taskId} | Start RAG Task
+[**updateRagTask**](RagApi.md#updateRagTask) | **PUT** /api/v2/rag/task/{taskId} | Update RAG Task
 
 
 # **cancelRagTask**
