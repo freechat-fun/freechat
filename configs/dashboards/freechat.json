@@ -33,7 +33,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.2.0"
+      "version": "11.2.2"
     },
     {
       "type": "datasource",
@@ -143,7 +143,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -198,7 +198,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "orange",
                 "value": null
               }
             ]
@@ -230,7 +230,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -297,7 +297,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -360,7 +360,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -401,7 +401,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 7
       },
@@ -425,7 +425,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -440,6 +440,87 @@
         }
       ],
       "title": "Character Activity Ranking",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Value #A"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 7
+      },
+      "id": 48,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "limit": 5,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "topk(5, \n    sum by (name) (\n        count_over_time (\n            {app=\"freechat-main\", level=\"PERF\", class=\"ChatApi\", method=\"assistantFirstPackageReceived\"}\n            | pattern `<_>|\"<name>\",<_>` [$__range]\n        )\n    )\n)",
+          "legendFormat": "{{name}}",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "Assistant Activity Ranking",
       "transformations": [
         {
           "id": "sortBy",
@@ -727,7 +808,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -1164,7 +1245,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -1712,7 +1793,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -2055,7 +2136,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "purple",
+                "color": "light-purple",
                 "value": null
               }
             ]
@@ -2104,7 +2185,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -2480,7 +2561,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -2564,7 +2645,7 @@
         "text": {},
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.2.2",
       "targets": [
         {
           "datasource": {
@@ -2694,7 +2775,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=~\"firstPackageReceived|assistantFirstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
           "legendFormat": "{{name}}",
           "queryType": "range",
           "refId": "A"
@@ -2789,7 +2870,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=~\"firstPackageReceived|assistantFirstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
           "legendFormat": "{{name}}",
           "queryType": "range",
           "refId": "A"
@@ -2884,7 +2965,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"lastPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=~\"lastPackageReceived|assistantLastPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
           "legendFormat": "{{name}}",
           "queryType": "range",
           "refId": "A"
@@ -2979,7 +3060,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"firstPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=~\"lastPackageReceived|assistantLastPackageReceived\"}\n    | pattern `<_>|<_>::<_>|<_>|<rt>|\"<name>\",<_>`\n    | unwrap rt [1m]\n) by (name)",
           "legendFormat": "{{name}}",
           "queryType": "range",
           "refId": "A"
@@ -3036,7 +3117,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3130,7 +3212,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3224,7 +3307,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3318,7 +3402,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3378,7 +3463,7 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Freechat",
-  "uid": "cdu6mgjmttds0b",
-  "version": 42,
+  "uid": "cdu6mgjmttds0c",
+  "version": 5,
   "weekStart": ""
 }
