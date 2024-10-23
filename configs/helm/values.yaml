@@ -51,11 +51,11 @@ image:
   backend:
     pullPolicy: Always
     repository: freechatfun/freechat
-    tag: 'latest'
+    tag: ''
   frontend:
     pullPolicy: Always
     repository: freechatfun/freechat-web
-    tag: 'latest'
+    tag: ''
   busybox:
     pullPolicy: IfNotPresent
     repository: busybox

@@ -1,7 +1,7 @@
 annotations:
   licenses: Apache-2.0
   group: fun.freechat
-apiVersion: v1
+apiVersion: v2
 appVersion: '2.0.1'
 dependencies:
   - condition: mysql.deployment.enabled
