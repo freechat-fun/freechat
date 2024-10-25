@@ -186,6 +186,8 @@ milvus:
       rootPassword: ''
       token: ''
   etcd:
+    pdb:
+      minAvailable: ''
     replicaCount: 1
   kafka:
     broker:
@@ -258,6 +260,10 @@ grafana-loki:
 kube-state-metrics:
   deployment:
     enabled: false
+pdb:
+  create: true
+  minAvailable: ""
+  maxUnavailable: ""
 replicaCount: 2
 resources:
   limits: {}
