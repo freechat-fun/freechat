@@ -11,7 +11,7 @@ import static fun.freechat.service.util.CacheUtils.MIDDLE_PERIOD_CACHE_NAME;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Cacheable(cacheNames = MIDDLE_PERIOD_CACHE_NAME, keyGenerator=KEY_GENERATOR, unless="#result == null")
+@Cacheable(cacheNames = MIDDLE_PERIOD_CACHE_NAME, keyGenerator = KEY_GENERATOR, unless = "#result == null")
 @SuppressWarnings("unused")
 public @interface MiddlePeriodCache {
     String keyBy() default "";

@@ -11,7 +11,7 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME, keyGenerator=KEY_GENERATOR, unless="#result == null")
+@Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME, keyGenerator = KEY_GENERATOR, unless = "#result == null")
 @SuppressWarnings("unused")
 public @interface LongPeriodCache {
     String keyBy() default "";
