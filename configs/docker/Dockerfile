@@ -1,6 +1,6 @@
 FROM openjdk:21-bullseye
 
-ARG APP_NAME=freechat
+ARG APP_NAME
 ARG UNAME=admin
 ARG UID=2024
 ARG GID=2024

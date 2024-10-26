@@ -1,5 +1,5 @@
 {{- define "application-private.yml" -}}
-{{- if and .Values.app.icpCode }}
+{{- if .Values.app.icpCode }}
 app:
   icpCode: {{ .Values.app.icpCode | quote }}
 {{- end }}

@@ -30,8 +30,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: dependencies-listener
-          image: '{{ .Values.image.busybox.repository }}:{{ .Values.image.busybox.tag | default "latest" }}'
-          imagePullPolicy: {{ .Values.image.busybox.pullPolicy }}
+          image: '{{ .Values.image.busybox.repository | default "busybox" }}:{{ .Values.image.busybox.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.busybox.pullPolicy | default "IfNotPresent" }}
           command:
             - sh
             - -ec
@@ -57,7 +57,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: '{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag | default .Chart.AppVersion }}'
-          imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.backend.pullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
               containerPort: 8080
@@ -94,8 +94,8 @@ spec:
               subPath: data
         {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
         - name: promtail
-          image: '{{ .Values.image.promtail.repository }}:{{ .Values.image.promtail.tag | default "latest" }}'
-          imagePullPolicy: {{ .Values.image.promtail.pullPolicy }}
+          image: '{{ .Values.image.promtail.repository | default "grafana/promtail" }}:{{ .Values.image.promtail.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.promtail.pullPolicy | default "IfNotPresent" }}
           args:
             - "-config.file=/etc/promtail/promtail.yaml"
           volumeMounts:

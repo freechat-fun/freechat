@@ -77,7 +77,7 @@ eval $(parse_yaml "${HELM_CONFIG_HOME}/values.yaml" HELM_)
 values_yaml="${HELM_CONFIG_HOME}/values.yaml"
 if [[ -f "${HELM_CONFIG}" ]]; then
   eval $(parse_yaml "${HELM_CONFIG}" HELM_)
-  values_yaml="${HELM_CONFIG}"
+  values_yaml="${values_yaml} -f ${HELM_CONFIG}"
 fi
 
 if [[ -f "${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/application-local.yml" ]]; then
