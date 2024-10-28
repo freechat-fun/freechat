@@ -14,6 +14,6 @@ helm upgrade --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} -f ${values_ya
   --set kube-state-metrics.deployment.enabled=false \
   --set deployment.backend.enabled=false \
   --set deployment.frontend.enabled=true \
-  --set deployment.pvc.enabled=false \
+  --set persistence.enabled=false \
   ${ARGS[*]} \
   ${PROJECT_NAME}-web ${HELM_CONFIG_HOME}

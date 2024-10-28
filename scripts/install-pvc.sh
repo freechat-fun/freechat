@@ -14,6 +14,6 @@ helm install --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} --create-names
   --set kube-state-metrics.deployment.enabled=false \
   --set deployment.backend.enabled=false \
   --set deployment.frontend.enabled=false \
-  --set deployment.pvc.enabled=true \
+  --set persistence.enabled=true \
   ${ARGS[*]} \
   ${PROJECT_NAME}-pvc ${HELM_CONFIG_HOME}

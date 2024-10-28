@@ -40,10 +40,6 @@ deployment:
     enabled: true
   frontend:
     enabled: false
-  pvc:
-    enabled: false
-    accessModes: [ReadWriteOnce]
-    storage: 8Gi
 image:
   backend:
     pullPolicy: Always
@@ -261,6 +257,10 @@ pdb:
   create: true
   minAvailable: ""
   maxUnavailable: ""
+persistence:
+  enabled: false
+  accessModes: [ ReadWriteOnce ]
+  storage: 8Gi
 replicaCount: 2
 resources:
   limits: {}
