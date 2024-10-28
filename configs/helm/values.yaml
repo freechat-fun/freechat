@@ -31,9 +31,6 @@ cert:
   manager:
     namespace: cert-manager
     version: v1.16.1
-  clusterIssuer:
-    enabled: false
-  email: dev.freechat.fun@gmail.com
 debug:
   jpda:
     enabled: false

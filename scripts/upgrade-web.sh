@@ -11,7 +11,7 @@ helm upgrade --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} -f ${values_ya
   --set prometheus.deployment.enabled=false \
   --set grafana.deployment.enabled=false \
   --set grafana-loki.deployment.enabled=false \
-  --set cert.clusterIssuer.enabled=false \
+  --set kube-state-metrics.deployment.enabled=false \
   --set deployment.backend.enabled=false \
   --set deployment.frontend.enabled=true \
   --set deployment.pvc.enabled=false \
