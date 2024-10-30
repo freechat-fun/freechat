@@ -1,4 +1,4 @@
-{{- if and .Values.prometheus.deployment.enabled .Values.prometheus.server.existingConfigmap -}}
+{{- if and .Values.prometheus.enabled .Values.prometheus.server.existingConfigmap -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -92,8 +92,7 @@ As a cloud-native application, the services FreeChat relies on are obtained and 
 If you prefer cloud services with SLA (Service Level Agreement) guarantees, simply make the relevant settings in `configs/helm/values-private.yaml`:
 ```yaml
 mysql:
-  deployment:
-    enabled: false
+  enabled: false
   url: <your mysql url>
   auth:
     rootPassword: <your mysql root password>
@@ -101,16 +100,14 @@ mysql:
     password: <your mysql password for the username>
 
 redis:
-  deployment:
-    enabled: false
+  enabled: false
   url: <your redis url>
   auth:
     password: <your redis password>
 
 
 milvus:
-  deployment:
-    enabled: false
+  enabled: false
   url: <your milvus url>
   milvus:
     auth:
@@ -122,11 +119,9 @@ With this, FreeChat will not automatically install these services, but rather us
 If your Kubernetes cluster does not have a standalone monitoring system, you can enable the following switch. This will install Prometheus and Grafana services in the same namespace, dedicated to monitoring the status of the services under the FreeChat application:
 ```yaml
 prometheus:
-  deployment:
-    enabled: true
+  enabled: true
 grafana:
-  deployment:
-    enabled: true
+  enabled: true
 ```
 
 ### Running Locally

@@ -4,59 +4,66 @@ annotations:
 apiVersion: v2
 appVersion: '2.0.1'
 dependencies:
-  - condition: mysql.deployment.enabled
+  - condition: mysql.enabled
     name: mysql
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - mysql
       - sql
       - database
     version: 11.x.x
-  - condition: redis.deployment.enabled
+  - condition: redis.enabled
     name: redis
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - redis
       - keyvalue
       - database
     version: 19.x.x
-  - condition: milvus.deployment.enabled
+  - condition: milvus.enabled
     name: milvus
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - milvus
       - embedding
       - database
     version: 8.x.x
-  - condition: prometheus.deployment.enabled
+  - condition: prometheus.enabled
     name: prometheus
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - prometheus
       - metrics
       - alert
     version: 1.x.x
-  - condition: grafana.deployment.enabled
+  - condition: grafana.enabled
     name: grafana
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - grafana
       - metrics
       - dashboard
     version: 11.x.x
-  - condition: grafana-loki.deployment.enabled
+  - condition: grafana-loki.enabled
     name: grafana-loki
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - grafana-loki
       - metrics
       - log
       - alert
     version: 4.x.x
-  - condition: kube-state-metrics.deployment.enabled
+  - condition: kube-state-metrics.enabled
     name: kube-state-metrics
     repository: https://charts.bitnami.com/bitnami
     tags:
+      - backend
       - kube-state-metrics
       - metrics
     version: 4.x.x

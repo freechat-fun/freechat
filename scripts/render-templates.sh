@@ -10,5 +10,12 @@ helm template --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} --create-name
   --set backend.enabled=true \
   --set frontend.enabled=true \
   --set persistence.enabled=true \
+  --set mysql.enabled=true \
+  --set redis.enabled=true \
+  --set milvus.enabled=true \
+  --set prometheus.enabled=true \
+  --set grafana.enabled=true \
+  --set grafana-loki.enabled=true \
+  --set kube-state-metrics.enabled=true \
   ${ARGS[*]} \
   ${PROJECT_NAME} ${HELM_CONFIG_HOME}

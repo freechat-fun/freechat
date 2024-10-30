@@ -121,8 +121,7 @@ cert:
     namespace: cert-manager
     version: v1.16.1
 mysql:
-  deployment:
-    enabled: true
+  enabled: true
   url: jdbc:mysql://freechat-mysql:3306/freechat?useUnicode=true&characterEncoding=utf-8
   auth:
     database: freechat
@@ -146,8 +145,7 @@ mysql:
   volumePermissions:
     resourcesPreset: none
 redis:
-  deployment:
-    enabled: true
+  enabled: true
   url: redis://freechat-redis-master:6379
   replica:
     replicaCount: 0
@@ -158,8 +156,7 @@ redis:
     readinessProbe:
       enabled: false
 milvus:
-  deployment:
-    enabled: true
+  enabled: true
   url: http://freechat-milvus-proxy:19530
   initJob:
     resourcesPreset: none
@@ -244,8 +241,7 @@ milvus:
         cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
     resourcesPreset: none
 prometheus:
-  deployment:
-    enabled: false
+  enabled: false
   server:
     service:
       type: ClusterIP
@@ -256,8 +252,7 @@ prometheus:
     service:
       type: ClusterIP
 grafana:
-  deployment:
-    enabled: false
+  enabled: false
   admin:
     user: freechat
     password: ''
@@ -271,14 +266,12 @@ grafana:
     annotations:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
 grafana-loki:
-  deployment:
-    enabled: false
+  enabled: false
   promtail:
     containerPorts:
       http: 9080
 kube-state-metrics:
-  deployment:
-    enabled: false
+  enabled: false
 pdb:
   create: true
   minAvailable: ''

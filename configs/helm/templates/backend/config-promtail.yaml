@@ -1,4 +1,4 @@
-{{- if (index .Values "grafana-loki" "deployment" "enabled") -}}
+{{- if (index .Values "grafana-loki" "enabled") -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
