@@ -3,6 +3,8 @@ global:
     password: ''
   defaultStorageClass: 'default'
   storageClass: 'default'
+backend:
+  enabled: true
 auth:
   aes:
     key: ''
@@ -255,8 +257,8 @@ kube-state-metrics:
     enabled: false
 pdb:
   create: true
-  minAvailable: ""
-  maxUnavailable: ""
+  minAvailable: ''
+  maxUnavailable: ''
 persistence:
   enabled: false
   accessModes: [ ReadWriteOnce ]
