@@ -94,7 +94,7 @@ spec:
             - name: persistence
               mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/data
               subPath: data
-        {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
+        {{- if (index .Values "grafana-loki" "enabled") }}
         - name: promtail
           image: '{{ .Values.backend.promtail.image.repository | default "grafana/promtail" }}:{{ .Values.backend.promtail.image.tag | default "latest" }}'
           imagePullPolicy: {{ .Values.backend.promtail.image.pullPolicy | default "IfNotPresent" }}
@@ -125,7 +125,7 @@ spec:
         - name: persistence
           persistentVolumeClaim:
             claimName: {{ include "helpers.fullname" . }}-pvc
-        {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
+        {{- if (index .Values "grafana-loki" "enabled") }}
         - name: promtail-config
           configMap:
             name: {{ include "helpers.fullname" . }}-promtail-configuration
