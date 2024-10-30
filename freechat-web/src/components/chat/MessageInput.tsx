@@ -273,7 +273,6 @@ export default function MessageInput(props: MessageInputProps) {
                 sx={{
                   display: assistantUid && !textAreaValue ? 'inherit' : 'none',
                   alignSelf: 'center',
-                  mr: 1,
                 }}
                 onClick={handleAssistantSend}
               >
