@@ -107,13 +107,13 @@ frontend:
             pathType: Prefix
     tls:
       enabled: true
-    replicaCount: 2
-    podSecurityContext:
-      fsGroup: 2024
-    service:
-      ports:
-        http: 80
-      type: ClusterIP
+  replicaCount: 2
+  podSecurityContext:
+    fsGroup: 2024
+  service:
+    ports:
+      http: 80
+    type: ClusterIP
 autoscaling:
   enabled: false
 cert:
