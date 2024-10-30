@@ -1,9 +1,9 @@
-{{- if .Values.deployment.backend.enabled -}}
+{{- if .Values.backend.enabled -}}
 {{- $fullName := include "helpers.fullname" . -}}
-{{- $svcPort := .Values.service.ports.http -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+{{- $svcPort := .Values.backend.service.ports.http -}}
+{{- if and .Values.backend.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.backend.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.backend.ingress.annotations "kubernetes.io/ingress.class" .Values.backend.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -18,29 +18,29 @@ metadata:
   name: {{ $fullName }}-in
   labels:
     {{- include "helpers.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.backend.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.backend.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.backend.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if .Values.backend.ingress.tls.enabled }}
   tls:
     - hosts:
-        {{- range .Values.ingress.hosts }}
+        {{- range .Values.backend.ingress.hosts }}
         - {{ .host | quote }}
         {{- end }}
       secretName: {{ include "helpers.name" . }}-tls
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
+    {{- range .Values.backend.ingress.hosts }}
     {{- if not .redirect }}
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- range .backend.paths }}
+          {{- range .paths }}
           - path: {{ .path }}
             {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
             pathType: {{ .pathType }}

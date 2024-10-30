@@ -1,4 +1,4 @@
-{{- if .Values.deployment.frontend.enabled -}}
+{{- if .Values.frontend.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,9 +6,9 @@ metadata:
   labels:
     {{- include "helpers.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.frontend.service.type }}
   ports:
-    - port: {{ .Values.service.ports.http }}
+    - port: {{ .Values.frontend.service.ports.http }}
       targetPort: http
       protocol: TCP
       name: http

@@ -5,97 +5,121 @@ global:
   storageClass: 'default'
 backend:
   enabled: true
-auth:
-  aes:
-    key: ''
-  oauth2:
-    aliyun:
-      enable: true
-      authorizationGrantType: authorization_code
-      clientAuthenticationMethod: client_secret_basic
-      clientName: Aliyun
-      scope: openid
-      clientId: ''
-      clientSecret: ''
-    github:
-      enable: true
-      scope: ''
-      clientId: ''
-      clientSecret: ''
-    google:
-      enable: true
-      scope: openid,profile,email
-      clientId: ''
-      clientSecret: ''
+  auth:
+    aes:
+      key: ''
+    oauth2:
+      aliyun:
+        enable: true
+        authorizationGrantType: authorization_code
+        clientAuthenticationMethod: client_secret_basic
+        clientName: Aliyun
+        scope: openid
+        clientId: ''
+        clientSecret: ''
+      github:
+        enable: true
+        scope: ''
+        clientId: ''
+        clientSecret: ''
+      google:
+        enable: true
+        scope: openid,profile,email
+        clientId: ''
+        clientSecret: ''
+  debug:
+    jpda:
+      enabled: false
+      port: 5005
+  image:
+    pullPolicy: Always
+    repository: freechatfun/freechat
+    tag: ''
+  ingress:
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+      nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+      nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    hosts:
+      - host: freechat.fun
+        paths:
+          - path: /
+            pathType: Prefix
+      - host: www.freechat.fun
+        redirect: true
+        paths:
+          - path: /
+            pathType: Prefix
+      - host: cn.freechat.fun
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      enabled: true
+  replicaCount: 2
+  podSecurityContext:
+    fsGroup: 2024
+  securityContext:
+    runAsUser: 2024
+    runAsGroup: 2024
+  service:
+    ports:
+      http: 80
+    type: ClusterIP
+  systemAccount: admin
+  spring: {}
+  busybox:
+    image:
+      pullPolicy: IfNotPresent
+      repository: busybox
+      tag: 'latest'
+  promtail:
+    image:
+      pullPolicy: IfNotPresent
+      repository: grafana/promtail
+      tag: 'latest'
+frontend:
+  enabled: false
+  image:
+    pullPolicy: Always
+    repository: freechatfun/freechat
+    tag: ''
+  ingress:
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+      nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+      nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    hosts:
+      - host: freechat.fun
+        paths:
+          - path: /assets
+            pathType: Prefix
+      - host: www.freechat.fun
+        redirect: true
+        paths:
+          - path: /assets
+            pathType: Prefix
+      - host: cn.freechat.fun
+        paths:
+          - path: /assets
+            pathType: Prefix
+    tls:
+      enabled: true
+    replicaCount: 2
+    podSecurityContext:
+      fsGroup: 2024
+    service:
+      ports:
+        http: 80
+      type: ClusterIP
 autoscaling:
   enabled: false
 cert:
   manager:
     namespace: cert-manager
     version: v1.16.1
-debug:
-  jpda:
-    enabled: false
-    port: 5005
-deployment:
-  backend:
-    enabled: true
-  frontend:
-    enabled: false
-image:
-  backend:
-    pullPolicy: Always
-    repository: freechatfun/freechat
-    tag: ''
-  frontend:
-    pullPolicy: Always
-    repository: freechatfun/freechat-web
-    tag: ''
-  busybox:
-    pullPolicy: IfNotPresent
-    repository: busybox
-    tag: 'latest'
-  promtail:
-    pullPolicy: IfNotPresent
-    repository: grafana/promtail
-    tag: 'latest'
-ingress:
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
-    nginx.ingress.kubernetes.io/proxy-body-size: "20M"
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-  hosts:
-    - host: freechat.fun
-      backend:
-        paths:
-          - path: /
-            pathType: Prefix
-      frontend:
-        paths:
-          - path: /assets
-            pathType: Prefix
-    - host: www.freechat.fun
-      redirect: true
-      backend:
-        paths:
-          - path: /
-            pathType: Prefix
-      frontend:
-        paths:
-          - path: /assets
-            pathType: Prefix
-    - host: cn.freechat.fun
-      backend:
-        paths:
-          - path: /
-            pathType: Prefix
-      frontend:
-        paths:
-          - path: /assets
-            pathType: Prefix
-  tls:
-    enabled: true
 mysql:
   deployment:
     enabled: true
@@ -263,20 +287,5 @@ persistence:
   enabled: false
   accessModes: [ ReadWriteOnce ]
   storage: 8Gi
-replicaCount: 2
-resources:
-  limits: {}
-  requests: {}
-podSecurityContext:
-  fsGroup: 2024
-securityContext:
-  runAsUser: 2024
-  runAsGroup: 2024
-service:
-  ports:
-    http: 80
-  type: ClusterIP
 serviceAccount:
   create: true
-systemAccount: admin
-spring: {}

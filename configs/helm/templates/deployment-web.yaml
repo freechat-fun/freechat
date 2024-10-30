@@ -1,4 +1,4 @@
-{{- if .Values.deployment.frontend.enabled -}}
+{{- if .Values.frontend.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,7 +7,7 @@ metadata:
     {{- include "helpers.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.frontend.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -27,11 +27,15 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "helpers.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.frontend.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}-web
-          image: '{{ .Values.image.frontend.repository }}:{{ .Values.image.frontend.tag | default .Chart.AppVersion }}'
-          imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
+          {{- if .Values.frontend.securityContext }}
+          securityContext:
+            {{- toYaml .Values.frontend.securityContext | nindent 12 }}
+          {{- end }}
+          image: '{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}'
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 80

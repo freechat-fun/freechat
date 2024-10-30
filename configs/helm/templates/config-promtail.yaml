@@ -34,7 +34,7 @@ data:
               container: main
               namespace: {{ template "helpers.namespace" . }}
               job: {{ template "helpers.namespace" . }}/{{ template "helpers.fullname" . }}-main
-              __path__: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs/common-*.log*
+              __path__: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/logs/common-*.log*
         pipeline_stages:
           - multiline:
               firstline: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}'

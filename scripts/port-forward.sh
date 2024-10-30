@@ -19,5 +19,5 @@ while true;do
   echo "Found ${pod}"
 
   kubectl port-forward --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} \
-    pod/${pod} ${HELM_debug_jpda_port}:${HELM_debug_jpda_port}
+    pod/${pod} ${HELM_backend_debug_jpda_port}:${HELM_backend_debug_jpda_port}
 done

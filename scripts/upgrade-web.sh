@@ -12,8 +12,8 @@ helm upgrade --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} -f ${values_ya
   --set grafana.deployment.enabled=false \
   --set grafana-loki.deployment.enabled=false \
   --set kube-state-metrics.deployment.enabled=false \
-  --set deployment.backend.enabled=false \
-  --set deployment.frontend.enabled=true \
+  --set backend.enabled=false \
+  --set frontend.enabled=true \
   --set persistence.enabled=false \
   ${ARGS[*]} \
   ${PROJECT_NAME}-web ${HELM_CONFIG_HOME}

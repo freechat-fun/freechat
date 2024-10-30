@@ -36,10 +36,10 @@ services:
       args:
         - APP_NAME=${WEB_MODULE}
       tags:
-        - ${HELM_image_frontend_repository}:${VERSION}
+        - ${HELM_frontend_image_repository}:${VERSION}
       platforms:
         - linux/amd64
-    image: ${HELM_image_frontend_repository}:latest
+    image: ${HELM_frontend_image_repository}:latest
 EOF
 
 if [[ "${VERBOSE}" == "1" ]];then

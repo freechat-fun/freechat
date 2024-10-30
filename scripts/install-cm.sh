@@ -36,7 +36,7 @@ spec:
     solvers:
     - http01:
         ingress:
-          class: ${HELM_ingress_className}
+          class: ${HELM_backend_ingress_className}
 EOF
 
 if [[ "${VERBOSE}" == "1" ]];then

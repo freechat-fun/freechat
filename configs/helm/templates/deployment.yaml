@@ -1,4 +1,4 @@
-{{- if .Values.deployment.backend.enabled -}}
+{{- if .Values.backend.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,7 +7,7 @@ metadata:
     {{- include "helpers.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.backend.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -27,11 +27,11 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "helpers.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
       initContainers:
         - name: dependencies-listener
-          image: '{{ .Values.image.busybox.repository | default "busybox" }}:{{ .Values.image.busybox.tag | default "latest" }}'
-          imagePullPolicy: {{ .Values.image.busybox.pullPolicy | default "IfNotPresent" }}
+          image: '{{ .Values.backend.busybox.image.repository | default "busybox" }}:{{ .Values.backend.busybox.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.backend.busybox.image.pullPolicy | default "IfNotPresent" }}
           command:
             - sh
             - -ec
@@ -47,24 +47,26 @@ spec:
         - name: main
           env:
             - name: SERVICE_OPTS
-              value: '-Dspring.config.location=classpath:/application.yml,/home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config/application-private.yml -Dspring.profiles.active=online'
-            {{- if .Values.debug.jpda.enabled }}
+              value: '-Dspring.config.location=classpath:/application.yml,/home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/config/application-private.yml -Dspring.profiles.active=online'
+            {{- if .Values.backend.debug.jpda.enabled }}
             - name: JPDA_ENABLE
               value: "true"
             - name: JPDA_PORT
-              value: {{ default "5005" .Values.debug.jpda.port | quote }}
+              value: {{ default "5005" .Values.backend.debug.jpda.port | quote }}
             {{- end }}
+          {{- if .Values.backend.securityContext }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: '{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag | default .Chart.AppVersion }}'
-          imagePullPolicy: {{ .Values.image.backend.pullPolicy | default "IfNotPresent" }}
+            {{- toYaml .Values.backend.securityContext | nindent 12 }}
+          {{- end }}
+          image: '{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}'
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
-            {{- if .Values.debug.jpda.enabled }}
+            {{- if .Values.backend.debug.jpda.enabled }}
             - name: jpda
-              containerPort: {{ default 5005 .Values.debug.jpda.port }}
+              containerPort: {{ default 5005 .Values.backend.debug.jpda.port }}
               protocol: TCP
             {{- end }}
           livenessProbe:
@@ -83,19 +85,19 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: config-private
-              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config
+              mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/config
             - name: config-runtime
-              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/config.run
+              mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/config.run
             - name: persistence
-              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
+              mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/logs
               subPath: logs
             - name: persistence
-              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/data
+              mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/data
               subPath: data
         {{- if (index .Values "grafana-loki" "deployment" "enabled") }}
         - name: promtail
-          image: '{{ .Values.image.promtail.repository | default "grafana/promtail" }}:{{ .Values.image.promtail.tag | default "latest" }}'
-          imagePullPolicy: {{ .Values.image.promtail.pullPolicy | default "IfNotPresent" }}
+          image: '{{ .Values.backend.promtail.image.repository | default "grafana/promtail" }}:{{ .Values.backend.promtail.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.backend.promtail.image.pullPolicy | default "IfNotPresent" }}
           args:
             - "-config.file=/etc/promtail/promtail.yaml"
           volumeMounts:
@@ -104,7 +106,7 @@ spec:
             - name: promtail-positions
               mountPath: /run/promtail
             - name: persistence
-              mountPath: /home/{{ .Values.systemAccount }}/{{ include "helpers.name" . }}/logs
+              mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/logs
               subPath: logs
         {{- end }}
       volumes:

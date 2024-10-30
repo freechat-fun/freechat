@@ -12,8 +12,8 @@ helm install --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} --create-names
   --set grafana.deployment.enabled=false \
   --set grafana-loki.deployment.enabled=false \
   --set kube-state-metrics.deployment.enabled=false \
-  --set deployment.backend.enabled=false \
-  --set deployment.frontend.enabled=false \
+  --set backend.enabled=false \
+  --set frontend.enabled=false \
   --set persistence.enabled=true \
   ${ARGS[*]} \
   ${PROJECT_NAME}-pvc ${HELM_CONFIG_HOME}

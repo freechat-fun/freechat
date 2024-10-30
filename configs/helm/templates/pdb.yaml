@@ -1,4 +1,4 @@
-{{- if and .Values.pdb.create (or .Values.deployment.backend.enabled .Values.deployment.frontend.enabled) }}
+{{- if and .Values.pdb.create (or .Values.backend.enabled .Values.frontend.enabled) }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
