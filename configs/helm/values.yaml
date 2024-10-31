@@ -27,6 +27,8 @@ backend:
         scope: openid,profile,email
         clientId: ''
         clientSecret: ''
+  autoscaling:
+    enabled: false
   debug:
     jpda:
       enabled: false
@@ -57,12 +59,19 @@ backend:
             pathType: Prefix
     tls:
       enabled: true
-  replicaCount: 2
+  pdb:
+    create: true
+    minAvailable: ''
+    maxUnavailable: ''
   podSecurityContext:
-    fsGroup: 2024
+    fsGroup: 10000
+  replicaCount: 2
+  resources:
+    limits: {}
+    requests: {}
   securityContext:
-    runAsUser: 2024
-    runAsGroup: 2024
+    runAsGroup: 10000
+    runAsUser: 10000
   service:
     ports:
       http: 80
@@ -81,6 +90,8 @@ backend:
       tag: 'latest'
 frontend:
   enabled: false
+  autoscaling:
+    enabled: false
   image:
     pullPolicy: Always
     repository: freechatfun/freechat
@@ -107,15 +118,18 @@ frontend:
             pathType: Prefix
     tls:
       enabled: true
+  pdb:
+    create: true
+    minAvailable: ''
+    maxUnavailable: ''
   replicaCount: 2
-  podSecurityContext:
-    fsGroup: 2024
+  resources:
+    limits: {}
+    requests: {}
   service:
     ports:
       http: 80
     type: ClusterIP
-autoscaling:
-  enabled: false
 cert:
   manager:
     namespace: cert-manager
@@ -272,10 +286,6 @@ grafana-loki:
       http: 9080
 kube-state-metrics:
   enabled: false
-pdb:
-  create: true
-  minAvailable: ''
-  maxUnavailable: ''
 persistence:
   enabled: false
   accessModes: [ ReadWriteOnce ]

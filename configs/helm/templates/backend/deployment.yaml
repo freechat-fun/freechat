@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "helpers.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if not .Values.backend.autoscaling.enabled }}
   replicas: {{ .Values.backend.replicaCount }}
   {{- end }}
   selector:
@@ -26,8 +26,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "helpers.serviceAccountName" . }}
+      {{- if .Values.backend.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: dependencies-listener
           image: '{{ .Values.backend.busybox.image.repository | default "busybox" }}:{{ .Values.backend.busybox.image.tag | default "latest" }}'

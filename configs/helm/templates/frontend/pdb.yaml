@@ -1,0 +1,21 @@
+{{- if and .Values.frontend.enabled .Values.frontend.pdb.create }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "helpers.fullname" . }}
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "helpers.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.frontend.pdb.minAvailable }}
+  minAvailable: {{ .Values.frontend.pdb.minAvailable }}
+  {{- end }}
+  {{- if or .Values.frontend.pdb.maxUnavailable (not .Values.frontend.pdb.minAvailable) }}
+  maxUnavailable: {{ .Values.frontend.pdb.maxUnavailable | default 1 }}
+  {{- end }}
+  {{- $podLabels := include "helpers.tplvalues.merge" ( dict "values" ( list .Values.podLabels .Values.commonLabels ) "context" . ) }}
+  selector:
+    matchLabels: {{- include "helpers.matchLabels" ( dict "customLabels" $podLabels "context" $ ) | nindent 6 }}
+{{- end }}
