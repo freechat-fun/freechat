@@ -38,11 +38,12 @@ backend:
     repository: freechatfun/freechat
     tag: ''
   ingress:
-    className: nginx
     annotations:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
       nginx.ingress.kubernetes.io/proxy-body-size: "20M"
       nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    className: nginx
+    enabled: true
     hosts:
       - host: freechat.fun
         paths:
@@ -97,11 +98,12 @@ frontend:
     repository: freechatfun/freechat
     tag: ''
   ingress:
-    className: nginx
     annotations:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
       nginx.ingress.kubernetes.io/proxy-body-size: "20M"
       nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    className: nginx
+    enabled: true
     hosts:
       - host: freechat.fun
         paths:

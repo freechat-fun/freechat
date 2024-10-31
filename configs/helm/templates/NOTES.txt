@@ -1,4 +1,4 @@
-Visit the website via the following URLs:
+Visit the website via following URLs:
 {{- range $host := .Values.backend.ingress.hosts }}
   {{- range .paths }}
   http{{ if $.Values.backend.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
