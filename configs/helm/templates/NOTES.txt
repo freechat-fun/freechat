@@ -1,4 +1,4 @@
-1. Get the application URL by running these commands:
+Visit the website via the following URLs:
 {{- range $host := .Values.backend.ingress.hosts }}
   {{- range .paths }}
   http{{ if $.Values.backend.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
