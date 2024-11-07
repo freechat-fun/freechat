@@ -68,11 +68,6 @@ public class OpenAiChatIT extends AbstractIntegrationTest{
             [[[The one who is talking with you]]]
             Name: {{USER_NICKNAME}}
             {{{USER_PROFILE}}}
-            
-            [[[Some information you may need to know about this conversation]]]
-            {{{CHAT_CONTEXT}}}
-            {{{MESSAGE_CONTEXT}}}
-            {{{RELEVANT_INFORMATION}}}
             """;
 
     private String developerId;

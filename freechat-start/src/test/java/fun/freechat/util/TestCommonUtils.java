@@ -19,8 +19,9 @@ public class TestCommonUtils {
 
     public static String defaultModelFor(ModelProvider provider) {
         return switch (provider) {
-            case OPEN_AI, AZURE_OPEN_AI -> "gpt-4o";
+            case OPEN_AI, AZURE_OPEN_AI -> "gpt-4o-mini";
             case DASH_SCOPE -> "qwen-max";
+            case OLLAMA -> "llama3.2:1b|text2chat";
             default -> null;
         };
     }
@@ -28,7 +29,8 @@ public class TestCommonUtils {
     public static String defaultEmbeddingModelFor(ModelProvider provider) {
         return switch (provider) {
             case OPEN_AI, AZURE_OPEN_AI -> "text-embedding-ada-002";
-            case DASH_SCOPE -> "text-embedding-v1";
+            case DASH_SCOPE -> "text-embedding-v2";
+            case OLLAMA -> "all-minilm|embedding";
             default -> null;
         };
     }

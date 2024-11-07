@@ -208,6 +208,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                         chatModel = createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         streamingChatModel = createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
+                    case OLLAMA -> {
+                        chatModel = createOllamaChatModel(modelInfo.getName(), parameters);
+                        streamingChatModel = createOllamaStreamingChatModel(modelInfo.getName(), parameters);
+                    }
                     default -> throw new NotImplementedException("Not implemented.");
                 }
             }
@@ -467,6 +471,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     case DASH_SCOPE -> {
                         chatModel = createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         streamingChatModel = createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    }
+                    case OLLAMA -> {
+                        chatModel = createOllamaChatModel(modelInfo.getName(), parameters);
+                        streamingChatModel = createOllamaStreamingChatModel(modelInfo.getName(), parameters);
                     }
                     default -> throw new NotImplementedException("Not implemented.");
                 }

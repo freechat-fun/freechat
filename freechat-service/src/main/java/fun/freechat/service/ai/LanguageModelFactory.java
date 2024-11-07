@@ -4,6 +4,7 @@ import com.azure.ai.openai.models.ChatCompletionsJsonResponseFormat;
 import com.azure.ai.openai.models.ChatCompletionsTextResponseFormat;
 import dev.langchain4j.model.azure.*;
 import dev.langchain4j.model.dashscope.*;
+import dev.langchain4j.model.ollama.*;
 import dev.langchain4j.model.openai.*;
 
 import java.time.Duration;
@@ -181,6 +182,82 @@ public class LanguageModelFactory {
                 .endpoint(getString(parameters, "baseUrl"))
                 .deploymentName(modelName)
                 .tokenizer(new OpenAiTokenizer(modelName))
+                .build();
+    }
+
+    public static OllamaLanguageModel createOllamaLanguageModel(
+            String modelName, Map<String, Object> parameters) {
+        return OllamaLanguageModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .modelName(modelName)
+                .temperature(getDouble(parameters, "temperature"))
+                .topK(getInteger(parameters, "topK"))
+                .topP(getDouble(parameters, "topP"))
+                .repeatPenalty(getDouble(parameters, "repeatPenalty"))
+                .seed(getInteger(parameters, "seed"))
+                .numPredict(getInteger(parameters, "numPredict"))
+                .numCtx(getInteger(parameters, "numCtx"))
+                .stop((List<String>) parameters.get("stop"))
+                .format(getString(parameters, "format"))
+                .build();
+    }
+
+    public static OllamaStreamingLanguageModel createOllamaStreamingLanguageModel (
+            String modelName, Map<String, Object> parameters) {
+        return OllamaStreamingLanguageModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .modelName(modelName)
+                .temperature(getDouble(parameters, "temperature"))
+                .topK(getInteger(parameters, "topK"))
+                .topP(getDouble(parameters, "topP"))
+                .repeatPenalty(getDouble(parameters, "repeatPenalty"))
+                .seed(getInteger(parameters, "seed"))
+                .numPredict(getInteger(parameters, "numPredict"))
+                .numCtx(getInteger(parameters, "numCtx"))
+                .stop((List<String>) parameters.get("stop"))
+                .format(getString(parameters, "format"))
+                .build();
+    }
+
+    public static OllamaChatModel createOllamaChatModel(
+            String modelName, Map<String, Object> parameters) {
+        return OllamaChatModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .modelName(modelName)
+                .temperature(getDouble(parameters, "temperature"))
+                .topK(getInteger(parameters, "topK"))
+                .topP(getDouble(parameters, "topP"))
+                .repeatPenalty(getDouble(parameters, "repeatPenalty"))
+                .seed(getInteger(parameters, "seed"))
+                .numPredict(getInteger(parameters, "numPredict"))
+                .numCtx(getInteger(parameters, "numCtx"))
+                .stop((List<String>) parameters.get("stop"))
+                .format(getString(parameters, "format"))
+                .build();
+    }
+
+    public static OllamaStreamingChatModel createOllamaStreamingChatModel(
+            String modelName, Map<String, Object> parameters) {
+        return OllamaStreamingChatModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .modelName(modelName)
+                .temperature(getDouble(parameters, "temperature"))
+                .topK(getInteger(parameters, "topK"))
+                .topP(getDouble(parameters, "topP"))
+                .repeatPenalty(getDouble(parameters, "repeatPenalty"))
+                .seed(getInteger(parameters, "seed"))
+                .numPredict(getInteger(parameters, "numPredict"))
+                .numCtx(getInteger(parameters, "numCtx"))
+                .stop((List<String>) parameters.get("stop"))
+                .format(getString(parameters, "format"))
+                .build();
+    }
+
+    public static OllamaEmbeddingModel createOllamaEmbeddingModel (
+            String modelName, Map<String, Object> parameters) {
+        return OllamaEmbeddingModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .modelName(modelName)
                 .build();
     }
 

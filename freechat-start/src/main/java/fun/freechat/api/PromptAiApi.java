@@ -154,14 +154,12 @@ public class PromptAiApi {
         String apiKeyInfo;
         String apiKey = getString(parameters, "apiKey");
         String apiKeyName = getString(parameters, "apiKeyName");
-        if (StringUtils.isBlank(apiKey) && StringUtils.isBlank(apiKeyName)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "apiKey or apiKeyName must be defined.");
-        } else if (StringUtils.isBlank(apiKey)) {
-            user = AccountUtils.currentUser();
-            apiKeyInfo = apiKeyName;
-        } else {
+        if (StringUtils.isBlank(apiKeyName) || StringUtils.isNotBlank(apiKey)) {
             user = null;
             apiKeyInfo = apiKey;
+        } else {
+            user = AccountUtils.currentUser();
+            apiKeyInfo = apiKeyName;
         }
 
         String prompt = null;

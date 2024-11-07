@@ -10,6 +10,7 @@ public enum ModelProvider {
     LOCAL_AI,
     IN_PROCESS,
     DASH_SCOPE,
+    OLLAMA,
     UNKNOWN;
     public static ModelProvider of(String text) {
         if (StringUtils.isBlank(text)) {
@@ -33,7 +34,7 @@ public enum ModelProvider {
     }
 
     public static Boolean hasPrivateEndpoint(ModelProvider provider) {
-        return provider == AZURE_OPEN_AI;
+        return provider == AZURE_OPEN_AI || provider == OLLAMA;
     }
 
     public static Boolean hasPublicEndpoint(ModelProvider provider) {

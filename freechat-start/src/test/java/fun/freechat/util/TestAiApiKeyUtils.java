@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+import static fun.freechat.AbstractIntegrationTest.ollama;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Component
@@ -53,6 +54,7 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
             case OPEN_AI -> System.getenv("OPENAI_API_KEY");
             case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_KEY");
             case DASH_SCOPE -> System.getenv("DASHSCOPE_API_KEY");
+            case OLLAMA -> "placeholder";
             default -> null;
         };
     }
@@ -66,6 +68,7 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
         return switch (provider) {
             case OPEN_AI -> System.getenv("OPENAI_BASE_URL");
             case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_ENDPOINT");
+            case OLLAMA -> ollama().getEndpoint();
             default -> null;
         };
     }

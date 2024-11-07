@@ -1,5 +1,8 @@
 package fun.freechat;
 
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.model.Image;
+import fun.freechat.util.TestOllamaContainer;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -12,16 +15,22 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.List;
+
+import static fun.freechat.service.enums.ModelProvider.OLLAMA;
+import static fun.freechat.util.TestCommonUtils.defaultEmbeddingModelFor;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "20000")
+@AutoConfigureWebTestClient(timeout = "60000")
 @ActiveProfiles("local")
 @TestPropertySource(properties = "APP_HOME=${TMPDIR}")
 @Sql({"classpath:/sql/data.sql"})
@@ -29,8 +38,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class AbstractIntegrationTest {
     static GenericContainer<?> redis;
     static MySQLContainer<?> mysql;
-
     static MilvusContainer milvus;
+    static TestOllamaContainer ollama;
 
     static {
         redis = new GenericContainer<>(redisImageName())
@@ -49,6 +58,11 @@ public class AbstractIntegrationTest {
 
         milvus =  new MilvusContainer(milvusImageName());
 //                .withCommand( "run", "standalone");
+
+        ollama = new TestOllamaContainer(ollamaImageName())
+                .withModels(
+                        ollamaModelName(defaultEmbeddingModelFor(OLLAMA)),
+                        ollamaModelName(defaultModelFor(OLLAMA)));
     }
 
     @Autowired
@@ -72,6 +86,14 @@ public class AbstractIntegrationTest {
         registry.add("embedding.milvus.url", milvus::getEndpoint);
     }
 
+    public static TestOllamaContainer ollama() {
+        if (!ollama.isRunning()) {
+            ollama.start();
+            ollama.commitToImage(localOllamaImageName());
+        }
+        return ollama;
+    }
+
     // In order to unify with the k8s environment, use the bitnami images for testing.
     private static DockerImageName redisImageName() {
         return DockerImageName.parse("bitnami/redis:latest")
@@ -87,5 +109,28 @@ public class AbstractIntegrationTest {
 //        return DockerImageName.parse("bitnami/milvus:latest")
 //                .asCompatibleSubstituteFor("milvusdb/milvus");
         return DockerImageName.parse("milvusdb/milvus:latest");
+    }
+
+    private static DockerImageName ollamaImageName() {
+        DockerImageName dockerImageName = DockerImageName.parse("ollama/ollama:latest");
+        String localImageName = localOllamaImageName();
+        DockerClient dockerClient = DockerClientFactory.instance().client();
+        List<Image> images = dockerClient.listImagesCmd()
+                .withReferenceFilter(localImageName)
+                .exec();
+        if (images.isEmpty()) {
+            return dockerImageName;
+        }
+        return DockerImageName.parse(localImageName)
+                .asCompatibleSubstituteFor("ollama/ollama:latest");
+    }
+
+    private static String localOllamaImageName() {
+        String prefix = System.getenv("TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX");
+        return prefix == null ? "tc-freechat/ollama:latest" : prefix + "tc-freechat/ollama:latest";
+    }
+
+    private static String ollamaModelName(String modelName) {
+        return modelName.split("\\|")[0];
     }
 }

@@ -61,6 +61,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                     case OPEN_AI -> createOpenAiLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    case OLLAMA -> createOllamaLanguageModel(modelInfo.getName(), parameters);
                     default -> throw new NotImplementedException("Not implemented.");
                 };
                 if (promptType == PromptType.CHAT) {
@@ -79,6 +80,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                     case OPEN_AI -> createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    case OLLAMA -> createOllamaChatModel(modelInfo.getName(), parameters);
                     default -> throw new NotImplementedException("Not implemented.");
                 };
                 if (promptType == PromptType.CHAT) {
@@ -93,6 +95,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                     case OPEN_AI -> createOpenAiEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenEmbeddingModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    case OLLAMA -> createOllamaEmbeddingModel(modelInfo.getName(), parameters);
                     default -> throw new NotImplementedException("Not implemented.");
                 };
                 return Optional.ofNullable(model.embed(prompt))
@@ -126,6 +129,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                     case OPEN_AI -> createOpenAiStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenStreamingLanguageModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    case OLLAMA -> createOllamaStreamingLanguageModel(modelInfo.getName(), parameters);
                     default -> throw new NotImplementedException("Not implemented.");
                 };
                 if (promptType == PromptType.CHAT) {
@@ -139,6 +143,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                     case OPEN_AI -> createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                    case OLLAMA -> createOllamaStreamingChatModel(modelInfo.getName(), parameters);
                     default -> throw new NotImplementedException("Not implemented.");
                 };
                 if (promptType == PromptType.CHAT) {
