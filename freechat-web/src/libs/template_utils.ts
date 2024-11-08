@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Mustache from 'mustache';
 import { ChatContentDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
+import { providers } from '../configs/model-providers-config';
 
 export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
   const variables: string[] = [];
@@ -110,6 +111,24 @@ export function extractModelProvider(modelId: string | undefined): string | unde
   const match = modelId.match(regex);
 
   return match?.[1];
+}
+
+export function extractModelName(modelId: string): string | undefined {
+  if (!modelId) {
+    return undefined;
+  }
+  const MODEL_ID_PATTERN = /^\[[^\]]+\](.+?)(\|[^|]*)?$/;
+
+  const match = modelId.match(MODEL_ID_PATTERN);
+  return match?.[1];
+}
+
+export function toModelInfo(provider: string, name: string, type?: string): string {
+  return type ? `[${provider}]${name}|${type}` : `[${provider}]${name}`
+}
+
+export function enabledApiKey(provider: string): boolean {
+  return !!provider && (providers.find(item => item.provider === provider)?.enableApiKey ?? false);
 }
 
 const EXAMPLE_TEMPLATE = `### Variable Settings

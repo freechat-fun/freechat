@@ -6,9 +6,9 @@ import { AiModelInfoDTO, CharacterBackendDetailsDTO, PromptTaskDTO, PromptTaskDe
 import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
 import { CommonBox, CommonContainer, CommonGridBox, LinePlaceholder, OptionCard, OptionTooltip, TinyInput } from "..";
 import { HelpIcon } from "../icon";
-import { extractModelProvider } from "../../libs/template_utils";
+import { enabledApiKey, extractModelProvider } from "../../libs/template_utils";
 import { providers as modelProviders } from "../../configs/model-providers-config";
-import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OpenAiSettings } from "../prompt";
+import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OllamaSettings, OpenAiSettings } from "../prompt";
 
 type CharacterBackendSettingsProps = CardProps & {
   backend?: CharacterBackendDetailsDTO;
@@ -350,7 +350,7 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                 size="sm"
                 variant="soft"
                 color={apiKeyName || apiKeyValue ? 'neutral' : 'danger'}
-                disabled={!provider}
+                disabled={!enabledApiKey(provider)}
                 startDecorator={<KeyRounded />}
                 onClick={() => setOpenApiKeySetting(true)}
               >
@@ -439,6 +439,10 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
         models={matchingModels}
+        onClose={handleModelSettings}
+        defaultParameters={parameters} />
+      <OllamaSettings
+        open={modelSetting && provider === 'ollama'}
         onClose={handleModelSettings}
         defaultParameters={parameters} />
     </Fragment>

@@ -9,3 +9,4 @@ export { default as AiApiKeySettings } from './AiApiKeySettings';
 export { default as DashScopeSettings } from './DashScopeSettings';
 export { default as OpenAiSettings } from './OpenAiSettings';
 export { default as AzureOpenAiSettings } from './AzureOpenAiSettings';
+export { default as OllamaSettings } from './OllamaSettings';

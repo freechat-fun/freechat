@@ -5,10 +5,10 @@ import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts
 import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, IconButton, Tooltip, Chip, ChipDelete } from "@mui/joy";
 import { AttachmentRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
 import { CommonContainer, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
-import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OpenAiSettings } from ".";
+import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OllamaSettings, OpenAiSettings } from ".";
 import { defaultBaseURLs, defaultModels, providers as modelProviders } from "../../configs/model-providers-config";
 import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
-import { extractModelProvider, extractVariables } from "../../libs/template_utils";
+import { enabledApiKey, extractModelProvider, extractVariables } from "../../libs/template_utils";
 import { HelpIcon } from "../icon";
 import { getCompressedImage } from "../../libs/ui_utils";
 
@@ -31,7 +31,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
   const { aiServiceApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [provider, setProvider] = useState<string | undefined>(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
+  const [provider, setProvider] = useState<string>(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
   const [inputs, setInputs] = useState(defaultVariables ?? extractVariables(record));
   const [attachment, setAttachment] = useState<string>();
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
@@ -284,7 +284,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
           <Button
             variant="soft"
             color={apiKeyName || apiKeyValue ? 'neutral' : 'danger'}
-            disabled={!provider}
+            disabled={!enabledApiKey(provider)}
             startDecorator={<KeyRounded />}
             onClick={() => setOpenApiKeySetting(true)}
           >
@@ -384,6 +384,10 @@ export default function PromptRunner(props: PromptRunnerProps) {
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
+      <OllamaSettings
+        open={modelSetting && provider === 'ollama'}
+        onClose={handleModelSettings}
+        defaultParameters={parameters} />
     </Fragment>
     
   );

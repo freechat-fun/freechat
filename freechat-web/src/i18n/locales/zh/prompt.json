@@ -18,5 +18,13 @@
   "Sequences where the API will stop generating further tokens.": "停止词集合，用于控制 API 停止生成更多令牌。",
   "The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length.": "聊天完成时生成的最大令牌数。 输入标记和生成标记的总长度受到模型上下文长度的限制。",
   "Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.": "数字范围在 -2.0 到 2.0 之间。正数值会根据新词汇是否已经出现在文本中来对其进行惩罚，从而提高模型谈论新话题的可能性。",
-  "Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.": "数字范围在 -2.0 到 2.0 之间。正数值根据新词汇在目前文本中的出现频率来进行惩罚，降低模型逐字重复同一句话的可能性。"
+  "Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.": "数字范围在 -2.0 到 2.0 之间。正数值根据新词汇在目前文本中的出现频率来进行惩罚，降低模型逐字重复同一句话的可能性。",
+  "Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a lower value (e.g. 10) will be more conservative. (Default: 40)": "降低产生无意义答案的概率。值越高（例如 100）答案就越多样化，值越低（例如 10）答案就越保守。（默认值：40）",
+  "The temperature of the model. Increasing the temperature will make the model answer more creatively. (Default: 0.8)": "模型的温度。增加温度将使模型的回答更具创意。（默认值：0.8）",
+  "Works together with topK. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. (Default: 0.9)": "与 topK 配合使用。较高的值（例如 0.95）将产生更多样化的文本，而较低的值（例如 0.5）将产生更集中和保守的文本。（默认值：0.9）",
+  "Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. (Default: 1.1)": "设置对重复的惩罚力度。值越高（例如 1.5），对重复的惩罚力度就越强，值越低（例如 0.9），惩罚力度就越宽松。（默认值：1.1）",
+  "Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt. (Default: 0)": "设置用于生成的随机数种子。将其设置为特定数字将使模型针对同一提示生成相同的文本。（默认值：0）",
+  "Maximum number of tokens to predict when generating text. (Default: 128, -1 = infinite generation, -2 = fill context)": "生成文本时要预测的最大标记数。（默认值：128，-1 = 无限生成，-2 = 填充上下文）",
+  "Sets the size of the context window used to generate the next token. (Default: 2048)": "设置用于生成下一个标记的上下文窗口的大小。（默认值：2048）",
+  "Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return. Multiple stop patterns may be set by specifying multiple separate stop parameters in a modelfile.": "设置要使用的停止序列。遇到此模式时，LLM 将停止生成文本并返回。可以通过在模型文件中指定多个单独的停止参数来设置多个停止模式。"
 }

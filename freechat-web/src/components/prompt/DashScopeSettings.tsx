@@ -182,7 +182,7 @@ export default function DashScopeSettings(props: {
                   },
                 }}
                 value={topP}
-                onChange={(event => setTopP(+event.target.value))}
+                onChange={event => setTopP(+event.target.value)}
               />
               <Switch checked={enableTopP} onChange={() => setEnableTopP(!enableTopP)} />
             </CommonContainer>
@@ -218,7 +218,7 @@ export default function DashScopeSettings(props: {
                   },
                 }}
                 value={topK}
-                onChange={(event => setTopK(+event.target.value))}
+                onChange={event => setTopK(+event.target.value)}
               />
               <Switch checked={enableTopK} onChange={() => setEnableTopK(!enableTopK)} />
             </CommonContainer>
@@ -253,7 +253,7 @@ export default function DashScopeSettings(props: {
                   },
                 }}
                 value={maxTokens}
-                onChange={(event => setMaxTokens(+event.target.value))}
+                onChange={event => setMaxTokens(+event.target.value)}
               />
               <Switch checked={enableMaxTokens} onChange={() => setEnableMaxTokens(!enableMaxTokens)} />
             </CommonContainer>
@@ -318,7 +318,7 @@ export default function DashScopeSettings(props: {
                   },
                 }}
                 value={repetitionPenalty}
-                onChange={(event => setRepetitionPenalty(+event.target.value))}
+                onChange={event => setRepetitionPenalty(+event.target.value)}
               />
               <Switch checked={enableRepetitionPenalty} onChange={() => setEnableRepetitionPenalty(!enableRepetitionPenalty)} />
             </CommonContainer>
@@ -345,7 +345,7 @@ export default function DashScopeSettings(props: {
                   },
                 }}
                 value={temperature}
-                onChange={(event => setTemperature(+event.target.value))}
+                onChange={event => setTemperature(+event.target.value)}
               />
               <Switch checked={enableTemperature} onChange={() => setEnableTemperature(!enableTemperature)} />
             </CommonContainer>
@@ -398,7 +398,7 @@ export default function DashScopeSettings(props: {
                   disabled={!enableStop}
                   type="text"
                   value={stopWord}
-                  onChange={(event => setStopWord(event.target.value))}
+                  onChange={event => setStopWord(event.target.value)}
                 />
               </form>
             )}

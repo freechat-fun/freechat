@@ -174,7 +174,7 @@ export default function OpenAiSettings(props: {
                 ml: 0.5,
                 flex: 1,
               }}
-              onChange={(event => setBaseUrl(event.target.value))}
+              onChange={event => setBaseUrl(event.target.value)}
             />
           </CommonContainer>
         </OptionCard>
@@ -199,7 +199,7 @@ export default function OpenAiSettings(props: {
                   },
                 }}
                 value={topP}
-                onChange={(event => setTopP(+event.target.value))}
+                onChange={event => setTopP(+event.target.value)}
               />
               <Switch checked={enableTopP} onChange={() => setEnableTopP(!enableTopP)} />
             </CommonContainer>
@@ -234,7 +234,7 @@ export default function OpenAiSettings(props: {
                   },
                 }}
                 value={maxTokens}
-                onChange={(event => setMaxTokens(+event.target.value))}
+                onChange={event => setMaxTokens(+event.target.value)}
               />
               <Switch checked={enableMaxTokens} onChange={() => setEnableMaxTokens(!enableMaxTokens)} />
             </CommonContainer>
@@ -260,7 +260,7 @@ export default function OpenAiSettings(props: {
                   },
                 }}
                 value={seed}
-                onChange={(event => setSeed(+event.target.value))}
+                onChange={event => setSeed(+event.target.value)}
               />
               <Switch checked={enableSeed} onChange={() => setEnableSeed(!enableSeed)} />
             </CommonContainer>
@@ -287,7 +287,7 @@ export default function OpenAiSettings(props: {
                   },
                 }}
                 value={presencePenalty}
-                onChange={(event => setPresencePenalty(+event.target.value))}
+                onChange={event => setPresencePenalty(+event.target.value)}
               />
               <Switch checked={enablePresencePenalty} onChange={() => setEnablePresencePenalty(!enablePresencePenalty)} />
             </CommonContainer>
@@ -323,7 +323,7 @@ export default function OpenAiSettings(props: {
                   },
                 }}
                 value={frequencyPenalty}
-                onChange={(event => setFrequencyPenalty(+event.target.value))}
+                onChange={event => setFrequencyPenalty(+event.target.value)}
               />
               <Switch checked={enableFrequencyPenalty} onChange={() => setEnableFrequencyPenalty(!enableFrequencyPenalty)} />
             </CommonContainer>
@@ -359,7 +359,7 @@ export default function OpenAiSettings(props: {
                   },
                 }}
                 value={temperature}
-                onChange={(event => setTemperature(+event.target.value))}
+                onChange={event => setTemperature(+event.target.value)}
               />
               <Switch checked={enableTemperature} onChange={() => setEnableTemperature(!enableTemperature)} />
             </CommonContainer>
@@ -412,7 +412,7 @@ export default function OpenAiSettings(props: {
                   disabled={!enableStop}
                   type="text"
                   value={stopWord}
-                  onChange={(event => setStopWord(event.target.value))}
+                  onChange={event => setStopWord(event.target.value)}
                 />
               </form>
             )}
