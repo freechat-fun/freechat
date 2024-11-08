@@ -7,8 +7,6 @@ public enum ModelProvider {
     HUGGING_FACE,
     OPEN_AI,
     AZURE_OPEN_AI,
-    LOCAL_AI,
-    IN_PROCESS,
     DASH_SCOPE,
     OLLAMA,
     UNKNOWN;

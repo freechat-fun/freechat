@@ -20,7 +20,7 @@ public class AiModelInfoDTO extends TraceableDTO {
     private String name;
     @Schema(description = "Model description")
     private String description;
-    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown")
+    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown")
     private String provider;
     @Schema(description = "Model type: text2text | text2chat | text2image | embedding | moderation")
     private String type;

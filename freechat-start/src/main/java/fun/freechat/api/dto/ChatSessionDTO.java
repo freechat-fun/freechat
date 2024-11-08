@@ -24,7 +24,7 @@ public class ChatSessionDTO {
     private ChatContextDTO context;
     @Schema(description = "Character summary info")
     private CharacterSummaryDTO character;
-    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown")
+    @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown")
     private String provider;
     @Schema(description = "Latest message record")
     private ChatMessageRecordDTO latestMessageRecord;
