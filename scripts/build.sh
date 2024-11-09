@@ -7,7 +7,18 @@ check_helm
 
 COMPOSE_CONFIG=$(mktemp -d)/build.yml
 
-cd ${PROJECT_PATH}/${WEB_MODULE}
+if [[ " ${ARGS[*]} " =~ " --release " ]]; then
+  cd ${PROJECT_PATH}/${SDK_MODULE}/typescript
+  npm install;ret=$?
+  test ${ret} -eq 0 || die "ERROR: Failed to build${SDK_MODULE}/typescript!"
+  npm run build;ret=$?
+  test ${ret} -eq 0 || die "ERROR: Failed to build${SDK_MODULE}/typescript!"
+  cd ${PROJECT_PATH}/${WEB_MODULE}
+  npm install
+  test ${ret} -eq 0 || die "ERROR: Failed to build ${WEB_MODULE}!"
+else
+  cd ${PROJECT_PATH}/${WEB_MODULE}
+fi
 
 rm -rf dist
 npm run build;ret=$?
