@@ -3,6 +3,7 @@ package fun.freechat.api;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
 import dev.langchain4j.internal.Utils;
+import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.*;
@@ -368,6 +369,9 @@ public class ChatApi {
             try {
                 session.addMemoryUsage(1L, response.tokenUsage());
                 chatMemoryService.updateChatMessageTokenUsage(chatId, response.content(), response.tokenUsage());
+                if (response.finishReason() == null) {
+                    response = Response.from(response.content(), response.tokenUsage(), FinishReason.STOP);
+                }
                 LlmResultDTO result = LlmResultDTO.from(response);
                 Objects.requireNonNull(result).setText(null);
                 result.setRequestId(null);

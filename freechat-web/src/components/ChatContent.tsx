@@ -18,7 +18,7 @@ type ChatContentProps = {
   initialData?: string;
   sx?: SxProps;
   onMessage?: (partialResult: LlmResultDTO) => boolean;
-  onFinish?: (result: LlmResultDTO | undefined) => void;
+  onFinish?: (result?: LlmResultDTO) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onError?: (reason: any) => void;
 }
@@ -44,7 +44,6 @@ export default function ChatContent({
   useEffect(() => {
     const hasBody = body !== undefined;
     const controller = new AbortController();
-    let shouldReconnect = true;
 
     if (disabled || !url) {
       return;
@@ -96,11 +95,8 @@ export default function ChatContent({
             onError ? onError(error) : handleError(error);
           },
           onclose() {
-            if (shouldReconnect) {
-              // console.log("Trying to reconnect...");
-              // setTimeout(startListening, 3000);
-              console.error("The connection has been closed...");
-            }
+            console.error("The connection has been closed...");
+            onFinish?.();
           }
         });
       } catch (error) {
@@ -110,8 +106,6 @@ export default function ChatContent({
 
     startListening();
     return () => {
-      // console.log('ChatContent was closed!');
-      shouldReconnect = false;
       controller.abort();
     };
     
