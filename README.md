@@ -7,6 +7,8 @@ Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializ
 
 It also serves as a prompt engineering platform.
 
+It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](https://github.com/freechat-fun/freechat?tab=readme-ov-file#running-locally)
+
 ## Features
 - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**.
 - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the "organization" concept and related permission constraint functions.
