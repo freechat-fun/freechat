@@ -66,19 +66,18 @@ info:
     \nAs a cloud-native application, the services FreeChat relies on are obtained\
     \ and deployed to your cluster through the helm repository.\n\nIf you prefer cloud\
     \ services with SLA (Service Level Agreement) guarantees, simply make the relevant\
-    \ settings in `configs/helm/values-private.yaml`:\n```yaml\nmysql:\n  deployment:\n\
-    \    enabled: false\n  url: <your mysql url>\n  auth:\n    rootPassword: <your\
-    \ mysql root password>\n    username: <your mysql username>\n    password: <your\
-    \ mysql password for the username>\n\nredis:\n  deployment:\n    enabled: false\n\
-    \  url: <your redis url>\n  auth:\n    password: <your redis password>\n\n\nmilvus:\n\
-    \  deployment:\n    enabled: false\n  url: <your milvus url>\n  milvus:\n    auth:\n\
-    \      token: <your milvus api-key>\n```\n\nWith this, FreeChat will not automatically\
-    \ install these services, but rather use the configuration information to connect\
-    \ directly.\n\nIf your Kubernetes cluster does not have a standalone monitoring\
-    \ system, you can enable the following switch. This will install Prometheus and\
-    \ Grafana services in the same namespace, dedicated to monitoring the status of\
-    \ the services under the FreeChat application:\n```yaml\nprometheus:\n  deployment:\n\
-    \    enabled: true\ngrafana:\n  deployment:\n    enabled: true\n```\n\n### Running\
+    \ settings in `configs/helm/values-private.yaml`:\n```yaml\nmysql:\n  enabled:\
+    \ false\n  url: <your mysql url>\n  auth:\n    rootPassword: <your mysql root\
+    \ password>\n    username: <your mysql username>\n    password: <your mysql password\
+    \ for the username>\n\nredis:\n  enabled: false\n  url: <your redis url>\n  auth:\n\
+    \    password: <your redis password>\n\n\nmilvus:\n  enabled: false\n  url: <your\
+    \ milvus url>\n  milvus:\n    auth:\n      token: <your milvus api-key>\n```\n\
+    \nWith this, FreeChat will not automatically install these services, but rather\
+    \ use the configuration information to connect directly.\n\nIf your Kubernetes\
+    \ cluster does not have a standalone monitoring system, you can enable the following\
+    \ switch. This will install Prometheus and Grafana services in the same namespace,\
+    \ dedicated to monitoring the status of the services under the FreeChat application:\n\
+    ```yaml\nprometheus:\n  enabled: true\ngrafana:\n  enabled: true\n```\n\n### Running\
     \ Locally\nYou can also run FreeChat locally. Currently supported on MacOS and\
     \ Linux (although only tested on MacOS). You need to install the Docker toolset\
     \ and have a network that can access [Docker Hub](https://hub.docker.com/).\n\n\
@@ -123,10 +122,11 @@ info:
     \ freechat-sdk --save\n```\n\n- **Example**\n\nRefer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/main/freechat-web/src/contexts/FreeChatApiProvider.tsx)\n\
     \n## System Dependencies\n| | Projects\n| ---- | ----\n| Application Framework\
     \ | [Spring Boot](https://spring.io/projects/spring-boot/)\n| LLM Framework |\
-    \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [OpenAI](https://platform.openai.com/),\
-    \ [Azure OpenAI](https://oai.azure.com/), [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n\
-    | Database Systems | [MySQL](https://www.mysql.com/), [Redis](https://redis.io/),\
-    \ [Milvus](https://milvus.io/)\n| Monitoring & Alerting | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/),\
+    \ [LangChain4j](https://docs.langchain4j.dev/)\n| Model Providers | [Ollama](https://ollama.com/),\
+    \ [OpenAI](https://platform.openai.com/), [Azure OpenAI](https://oai.azure.com/),\
+    \ [DashScope(Alibaba)](https://dashscope.aliyun.com/)\n| Database Systems | [MySQL](https://www.mysql.com/),\
+    \ [Redis](https://redis.io/), [Milvus](https://milvus.io/)\n| Monitoring & Alerting\
+    \ | [Kube State Metrics](https://kubernetes.io/docs/concepts/cluster-administration/kube-state-metrics/),\
     \ [Prometheus](https://prometheus.io/), [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/),\
     \ [Loki](https://grafana.com/oss/loki/), [Grafana](https://grafana.com/)\n| OpenAPI\
     \ Tools | [Springdoc-openapi](https://springdoc.org/), [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator),\
@@ -138,16 +138,13 @@ info:
     \ making them fit your preferences. Currently, FreeChat is completely free with\
     \ no paid plans (after all, users use their own API Key to call LLM services).\n\
     \n### Model Integration\nFreeChat aims to explore AI virtual character technology\
-    \ with anthropomorphic characteristics. So far, it supports model services from\
-    \ OpenAI GPT and Alibaba Qwen series models. However, we are more interested in\
-    \ supporting models that are under research and can endow AI with more personality\
-    \ traits. If you are researching this area and hope FreeChat supports your model,\
-    \ please contact us. We look forward to AI technology helping people create their\
-    \ own \"soul mates\" in the future.\n"
+    \ with anthropomorphic characteristics. If you are researching this area and hope\
+    \ FreeChat supports your model, please contact us. We look forward to AI technology\
+    \ helping people create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.0.1
+  version: 2.1.0
 servers:
-- url: http://127.0.0.1:8080/
+- url: http://localhost/
 security:
 - bearerAuth: []
 tags:
@@ -7419,8 +7416,8 @@ components:
           description: Model description
           type: string
         provider:
-          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
-            \ | in_process | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
+            \ | ollama | unknown"
           type: string
         type:
           description: "Model type: text2text | text2chat | text2image | embedding\
@@ -9067,8 +9064,8 @@ components:
           description: Credential name
           type: string
         provider:
-          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
-            \ | in_process | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
+            \ | ollama | unknown"
           type: string
         token:
           description: Credential content
@@ -10260,8 +10257,8 @@ components:
         character:
           $ref: '#/components/schemas/CharacterSummaryDTO'
         provider:
-          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
-            \ | in_process | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
+            \ | ollama | unknown"
           type: string
         latestMessageRecord:
           $ref: '#/components/schemas/ChatMessageRecordDTO'
@@ -10336,8 +10333,8 @@ components:
           description: Credential name
           type: string
         provider:
-          description: "Model provider: hugging_face | open_ai | azure_open_ai | local_ai\
-            \ | in_process | dash_scope | unknown"
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
+            \ | ollama | unknown"
           type: string
         token:
           description: Credential content

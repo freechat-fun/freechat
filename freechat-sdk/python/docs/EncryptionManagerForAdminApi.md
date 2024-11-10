@@ -1,6 +1,6 @@
 # freechat_sdk.EncryptionManagerForAdminApi
 
-All URIs are relative to *http://127.0.0.1:8080*
+All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -23,10 +23,10 @@ import freechat_sdk
 from freechat_sdk.rest import ApiException
 from pprint import pprint
 
-# Defining the host is optional and defaults to http://127.0.0.1:8080
+# Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
 configuration = freechat_sdk.Configuration(
-    host = "http://127.0.0.1:8080"
+    host = "http://localhost"
 )
 
 # The client must configure the authentication and authorization parameters

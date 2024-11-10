@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **gmt_modified** | **datetime** | Modification time | [optional] 
 **gmt_used** | **datetime** | Last use time | [optional] 
 **name** | **str** | Credential name | [optional] 
-**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | local_ai | in_process | dash_scope | unknown | [optional] 
+**provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | [optional] 
 **token** | **str** | Credential content | [optional] 
 **enabled** | **bool** | Whether to enable | [optional] 
 **username** | **str** | Credential owner | [optional] 

@@ -228,10 +228,12 @@ licenseUrl=${LICENSE_URL}
   python3 -m venv typescript-sdk-private.env
   (
     source typescript-sdk-private.env/bin/activate
+    python3 -m pip install --upgrade pip
     python3 -m pip install -r requirements.txt
     python3 merge-json.py -i ${output}/package.json package.json -o ${sdk_output}/package.json
     deactivate
   )
+  rm -rf typescript-sdk-private.env
   clean_tmp ${sdk_output}
 }
 
