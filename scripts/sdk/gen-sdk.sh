@@ -10,7 +10,7 @@ GIT_REPO_ID=freechat
 GROUP_ID=$(sed -n "s#^ *<groupId>\([a-zA-Z0-9.-]\{1,\}\)</groupId> *\$#\1#p" ${PROJECT_PATH}/pom.xml | head -1)
 ARTIFACT_ID=$(sed -n "s#^ *<artifactId>\([a-zA-Z0-9.-]\{1,\}\)</artifactId> *\$#\1#p" ${PROJECT_PATH}/pom.xml | head -1)-sdk
 PACKAGE=${GROUP_ID}
-ARTIFACT_URL=https://freechat.fun/public/docs/api
+ARTIFACT_URL=https://freechat.fun
 SCM_CONNECTION=scm:git:git@${GIT_HOST}:${GIT_USER_ID}/${GIT_REPO_ID}.git
 SCM_URL=https://${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}
 LICENSE_NAME=Apache-2.0
@@ -123,7 +123,7 @@ function java_sdk {
     --http-user-agent ${ARTIFACT_ID}/${VERSION}/java \
     --additional-properties \
 apiPackage=${PACKAGE}.client.api,\
-artifactDescription=${ARTIFACT_ID},\
+artifactDescription=${SCM_URL},\
 artifactId=${ARTIFACT_ID},\
 artifactUrl=${ARTIFACT_URL},\
 artifactVersion=${VERSION},\
