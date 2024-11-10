@@ -7,7 +7,7 @@
 
 它也能作为一个 prompt engineering 平台。
 
-建议在本地运行 [Ollama](https://ollama.com/) + FreeChat 来测试你的模型。请参阅以下有关[本地运行](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md#%E8%BF%90%E8%A1%8C%E5%9C%A8%E6%9C%AC%E5%9C%B0)的说明
+建议在本地运行 [Ollama](https://ollama.com/) + FreeChat 来测试你的模型。请参阅以下有关[本地运行](#%E8%BF%90%E8%A1%8C%E5%9C%A8%E6%9C%AC%E5%9C%B0)的说明
 
 ## 特性
 - 主要使用 Java 并强调**安全性、健壮性、扩展性、可追踪、可维护**。
