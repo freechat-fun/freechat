@@ -236,7 +236,7 @@ npm install freechat-sdk --save
 
 ## 合作
 ### 应用接入
-FreeChat 系统是完全 Open API 导向的。站点 [freechat.fun](https://freechat.fun) 使用其 TypeScript SDK 进行开发，几乎不依赖私有接口。你可以使用这些在线接口，开发自己的端侧应用或者站点，使其符合你喜欢的样子。目前，FreeChat 是完全免费的，也暂时没有收费计划（毕竟，用户使用自己的 API Key 来调用 LLM 服务）。
+FreeChat 系统是完全 Open API 导向的。站点 [freechat.fun](https://freechat.fun) 使用其 TypeScript SDK 进行开发，几乎不依赖私有接口。你可以使用这些在线接口，开发自己的端侧应用或者站点，使其符合你喜欢的样子。目前，在线的 FreeChat 服务是完全免费的，也暂时没有收费计划。
 
 ### 模型接入
 FreeChat 旨在探索具有拟人化特征的 AI 虚拟角色技术。如果你在这方面有所研究，并且希望 FreeChat 支持你的模型，请和我们取得联系。我们期待 AI 技术在未来能帮助人们塑造出自己的“灵魂伴侣”。
