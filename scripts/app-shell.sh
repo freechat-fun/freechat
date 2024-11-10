@@ -2,6 +2,8 @@
 
 source $(dirname ${BASH_SOURCE[0]})/setenv.sh
 
+check_kubectl
+
 # find deploying one
 pod=$(kubectl get pods --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} \
   | grep "${PROJECT_NAME}-main" | grep "1/2" | awk -F' ' '{print $1}' | head -1)
