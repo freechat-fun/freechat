@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
-public class OpenAiChatIT extends AbstractIntegrationTest{
+public class OpenAiChatIT extends AbstractIntegrationTest {
     private static final String CHARACTER_NICKNAME = "Jack";
     private static final String CHARACTER_GENDER = GenderType.MALE.text();
     private static final String CHARACTER_PROFILE = """

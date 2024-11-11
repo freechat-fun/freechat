@@ -19,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class AiApiKeyIT extends AbstractIntegrationTest{
+public class AiApiKeyIT extends AbstractIntegrationTest {
     @Value("${auth.aiApiKey.limits:#{null}}")
     private Integer maxCount;
     private String userId;
