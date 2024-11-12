@@ -4,6 +4,7 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.testcontainers.containers.Container;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.ollama.OllamaContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -17,6 +18,7 @@ public class TestOllamaContainer  extends OllamaContainer {
 
     public TestOllamaContainer(DockerImageName dockerImageName) {
         super(dockerImageName);
+        super.waitingFor(Wait.forHttp("/"));
     }
 
     public TestOllamaContainer withModels(String... models) {

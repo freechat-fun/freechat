@@ -18,6 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -44,7 +45,8 @@ public class AbstractIntegrationTest {
     static {
         redis = new GenericContainer<>(redisImageName())
                 .withExposedPorts(6379)
-                .withEnv("REDIS_PASSWORD", "hello1234");
+                .withEnv("REDIS_PASSWORD", "hello1234")
+                .waitingFor(Wait.forSuccessfulCommand("redis-cli -a hello1234 ping || exit 1"));
 
         mysql = (MySQLContainer<?>) new MySQLContainer(mysqlImageName())
                 .withInitScript("sql/schema.sql")
@@ -54,7 +56,8 @@ public class AbstractIntegrationTest {
                 .withUrlParam("useUnicode", "true")
                 .withUrlParam("characterEncoding", "utf-8")
                 .withExposedPorts(3306)
-                .withEnv("MYSQL_ROOT_PASSWORD", "hello1234");
+                .withEnv("MYSQL_ROOT_PASSWORD", "hello1234")
+                .waitingFor(Wait.forHealthcheck());
 
         milvus =  new MilvusContainer(milvusImageName());
 //                .withCommand( "run", "standalone");
