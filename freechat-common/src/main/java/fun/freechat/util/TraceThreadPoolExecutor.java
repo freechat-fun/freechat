@@ -45,7 +45,7 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
         super.execute(() -> {
             TraceUtils.startTrace(traceId);
             if (MapUtils.isNotEmpty(traceAttributes)) {
-                traceAttributes.forEach(TraceUtils::putTraceAttribute);
+                TraceUtils.setTraceAttributes(traceAttributes);
             }
             try {
                 runnable.run();

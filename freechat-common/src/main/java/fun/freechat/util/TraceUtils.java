@@ -67,6 +67,10 @@ public class TraceUtils {
         return MDC.getCopyOfContextMap();
     }
 
+    public static void setTraceAttributes(Map<String, String> attributes) {
+        MDC.setContextMap(attributes);
+    }
+
     public static Logger getPerfLogger() {
         return PerfLogger.logger;
     }

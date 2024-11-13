@@ -100,7 +100,7 @@ public class AsyncConfig {
             super.execute(() -> {
                 TraceUtils.startTrace(traceId);
                 if (MapUtils.isNotEmpty(traceAttributes)) {
-                    traceAttributes.forEach(TraceUtils::putTraceAttribute);
+                    TraceUtils.setTraceAttributes(traceAttributes);
                 }
                 try {
                     task.run();
