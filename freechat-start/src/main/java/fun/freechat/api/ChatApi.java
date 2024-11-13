@@ -52,6 +52,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 @SuppressWarnings("unused")
 public class ChatApi {
+    private static final long SSE_TIMEOUT = 600 * 1000L;
+
     @Autowired
     private CharacterService characterService;
     @Autowired
@@ -299,7 +301,7 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         checkQuota(chatId);
-        SseEmitter sseEmitter = new SseEmitter();
+        SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
         // avoid instruction reordering
         AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
         TokenStream tokenStream = chatService.streamSend(
@@ -584,7 +586,7 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @Parameter(description = "Assistant uid") @PathVariable("assistantUid") @NotBlank String assistantUid) {
         checkQuota(chatId);
-        SseEmitter sseEmitter = new SseEmitter();
+        SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
         // avoid instruction reordering
         AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
         TokenStream tokenStream = chatService.streamSendAssistant(chatId, assistantUid);
