@@ -22,6 +22,7 @@ import fun.freechat.util.TraceUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -299,7 +300,8 @@ public class ChatApi {
     @PreAuthorize("hasPermission(#p0, 'chatDefaultOp')")
     public SseEmitter streamSend(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage,
+            HttpServletResponse servletResponse) {
         checkQuota(chatId);
         SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
         // avoid instruction reordering
@@ -428,6 +430,7 @@ public class ChatApi {
             TraceUtils.getPerfLogger().trace(traceInfo);
         }).start();
 
+        servletResponse.addHeader("X-Accel-Buffering", "no");
         return sseEmitter;
     }
 
@@ -585,7 +588,8 @@ public class ChatApi {
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'chatAssistantDefaultOp')")
     public SseEmitter streamSendAssistant(
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
-            @Parameter(description = "Assistant uid") @PathVariable("assistantUid") @NotBlank String assistantUid) {
+            @Parameter(description = "Assistant uid") @PathVariable("assistantUid") @NotBlank String assistantUid,
+            HttpServletResponse servletResponse) {
         checkQuota(chatId);
         SseEmitter sseEmitter = new SseEmitter(SSE_TIMEOUT);
         // avoid instruction reordering
@@ -687,6 +691,7 @@ public class ChatApi {
             TraceUtils.getPerfLogger().trace(traceInfo);
         }).start();
 
+        servletResponse.addHeader("X-Accel-Buffering", "no");
         return sseEmitter;
     }
 }

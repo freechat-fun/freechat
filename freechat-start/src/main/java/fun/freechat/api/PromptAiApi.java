@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -127,7 +128,8 @@ public class PromptAiApi {
             )
             @RequestBody
             @NotNull
-            PromptAiParamDTO aiRequest) {
+            PromptAiParamDTO aiRequest,
+            HttpServletResponse servletResponse) {
         PromptAiParam promptAiParam = toPromptAiParam(aiRequest);
 
         String prompt = promptAiParam.getPrompt();
@@ -140,6 +142,8 @@ public class PromptAiApi {
         SseEmitter sseEmitter = new SseEmitter();
         promptAiService.streamSend(prompt, promptType, user, apiKeyInfo, modelInfo, parameters,
                 CommonUtils.streamingResponseHandlerOf(sseEmitter));
+
+        servletResponse.addHeader("X-Accel-Buffering", "no");
         return sseEmitter;
     }
 
