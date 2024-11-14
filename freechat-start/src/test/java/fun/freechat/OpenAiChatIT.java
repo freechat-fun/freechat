@@ -21,8 +21,7 @@ import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
 import static fun.freechat.util.TestCharacterUtils.idToUid;
 import static fun.freechat.util.TestCharacterUtils.uidToId;
-import static fun.freechat.util.TestCommonUtils.defaultModelFor;
-import static fun.freechat.util.TestCommonUtils.parametersFor;
+import static fun.freechat.util.TestCommonUtils.*;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,7 +100,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     public void setUp() {
         createDeveloper();
         createUser();
-        TestCommonUtils.waitAWhile();
+        waitAWhile();
     }
 
     @AfterEach
@@ -109,7 +108,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         TestChatUtils.deleteChats(userId);
         TestCharacterUtils.deleteCharacters(developerId);
         TestPromptUtils.deletePrompts(developerId);
-        TestCommonUtils.waitAWhile();
+        waitAWhile();
         deleteUser();
         deleteDevelop();
     }
@@ -127,7 +126,8 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         userId = userAndToken.getLeft();
         userApiKey = userAndToken.getRight();
     }
-    private void testCreatePrompt() {
+
+    private void should_create_prompt() {
         ChatPromptContentDTO prompt = new ChatPromptContentDTO();
         prompt.setSystem(SYSTEM_PROMPT);
 
@@ -151,7 +151,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
 
     }
 
-    private void testCreatePromptTask() {
+    private void should_create_prompt_task() {
         PromptRefDTO promptRef = new PromptRefDTO();
         promptRef.setPromptId(promptId);
 
@@ -174,7 +174,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(promptTaskId);
     }
 
-    private void testCreateCharacter() {
+    private void should_create_character() {
         CharacterCreateDTO dto = new CharacterCreateDTO();
         dto.setName(CHARACTER_NICKNAME + "-bot");
         dto.setGender(CHARACTER_GENDER);
@@ -194,12 +194,12 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .getResponseBody();
 
         assertNotNull(characterId);
-        TestCommonUtils.waitAWhile();
+        waitAWhile();
         characterUid = idToUid(characterId);
         assertNotNull(characterUid);
     }
 
-    private void testPublishCharacter() {
+    private void should_publish_character() {
         Long characterId = testClient.post().uri("/api/v2/character/publish/" + uidToId(characterUid))
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
@@ -209,12 +209,12 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .getResponseBody();
 
         assertNotNull(characterId);
-        TestCommonUtils.waitAWhile();
+        waitAWhile();
         characterUid = idToUid(characterId);
         assertNotNull(characterUid);
     }
 
-    private void testCreateBackend() {
+    private void should_create_character_backend() {
         CharacterBackendDTO dto = new CharacterBackendDTO();
         dto.setChatPromptTaskId(promptTaskId);
         dto.setIsDefault(true);
@@ -236,7 +236,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(backendId);
     }
 
-    private void testUpdateBackend() {
+    private void should_update_character_backend() {
         CharacterBackendDTO dto = new CharacterBackendDTO();
         dto.setLongTermMemoryWindowSize(2);
 
@@ -249,7 +249,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .isEqualTo(true);
     }
 
-    private void testCreateChatFailed() {
+    private void should_failed_to_create_chat() {
         ChatCreateDTO dto = new ChatCreateDTO();
         dto.setBackendId(backendId);
         dto.setCharacterNickname(CHARACTER_NICKNAME);
@@ -265,7 +265,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .expectStatus().isForbidden();
     }
 
-    private void testCreateChat() {
+    private void should_create_chat() {
         ChatCreateDTO dto = new ChatCreateDTO();
         dto.setBackendId(backendId);
         dto.setCharacterNickname(CHARACTER_NICKNAME);
@@ -286,7 +286,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(chatId);
     }
 
-    private void testSendMessage() {
+    private void should_send_message() {
         ChatContentDTO content = ChatContentDTO.fromText("My wife's name is Lily! Did you married? If you had a wife, what's her name?");
 
         ChatMessageDTO dto = new ChatMessageDTO();
@@ -328,7 +328,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 " (" + result.getTokenUsage() + ")");
     }
 
-    private void testMemoryUsage() {
+    private void should_get_message_usage() {
         MemoryUsageDTO usage = testClient.get().uri("/api/v2/chat/memory/usage/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
@@ -343,7 +343,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertThat(usage.getMessageUsage()).isEqualTo(2L);
     }
 
-    private void testSendMessageFailedByQuota() {
+    private void should_failed_to_send_message_by_quota() {
         ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
 
         ChatMessageDTO dto = new ChatMessageDTO();
@@ -365,7 +365,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .expectStatus().isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
     }
 
-    private void testResendMessageWithSpecializedApiKey() {
+    private void should_resend_message_with_specialized_api_key() {
         ChatUpdateDTO updateDto = new ChatUpdateDTO();
         updateDto.setApiKeyValue(apiKey());
 
@@ -401,7 +401,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 " (" + result.getTokenUsage() + ")");
     }
 
-    private void testSendMessageWithoutLongTermMemory() {
+    private void should_send_message_without_long_term_memory() {
         ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
 
         ChatMessageDTO dto = new ChatMessageDTO();
@@ -428,7 +428,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertFalse(result.getMessage().getContents().getFirst().getContent().contains("Lily"));
     }
 
-    private void testStreamSendMessageWithoutLongTermMemory() throws ExecutionException, InterruptedException, TimeoutException {
+    private void should_send_message_without_long_term_memory_in_streaming_mode() throws ExecutionException, InterruptedException, TimeoutException {
         ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
 
         ChatMessageDTO dto = new ChatMessageDTO();
@@ -465,7 +465,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertFalse(answer.contains("Lily"));
     }
 
-    private void testStreamSendMessageWithLongTermMemory() throws Exception {
+    private void should_send_message_with_long_term_memory_in_streaming_mode() throws Exception {
 
         ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
 
@@ -503,7 +503,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertTrue(answer.contains("Lily"));
     }
 
-    private void testListMessagesFailed() {
+    private void should_failed_to_list_messages() {
         testClient.get().uri("/api/v2/chat/messages/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -511,7 +511,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .expectStatus().isForbidden();
     }
 
-    private void testListMessages() {
+    private void should_list_messages() {
         List<ChatMessageRecordDTO> messages = testClient.get().uri("/api/v2/chat/messages/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
@@ -532,7 +532,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .forEach(System.out::println);
     }
 
-    private void testRollbackMessages() {
+    private void should_rollback_messages() {
         testClient.post().uri("/api/v2/chat/messages/rollback/" + chatId + "/2")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
@@ -542,7 +542,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .hasSize(2);
     }
 
-    private void testSendAssistantFailed() {
+    private void should_failed_to_send_assistant() {
         testClient.get().uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
@@ -551,9 +551,9 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .isForbidden();
     }
 
-    private void testSendAssistant() {
+    private void should_send_assistant() {
         TestCharacterUtils.prioritizeCharacter(characterUid);
-        TestCommonUtils.waitAWhile();
+        waitAWhile();
 
         LlmResultDTO result = testClient.get().uri("/api/v2/chat/send/assistant/" + chatId + "/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
@@ -570,7 +570,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 " (" + result.getTokenUsage() + ")");
     }
 
-    private void testStreamSendAssistant() throws ExecutionException, InterruptedException, TimeoutException {
+    private void should_send_assistant_in_streaming_mode() throws ExecutionException, InterruptedException, TimeoutException {
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
 
@@ -598,7 +598,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         System.out.println(CHARACTER_NICKNAME + " (Assistant): " + answer);
     }
 
-    private void testDeleteChatFailed() {
+    private void should_failed_to_delete_chat() {
         testClient.delete().uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -606,7 +606,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .expectStatus().isForbidden();
     }
 
-    private void testDeleteChat() {
+    private void should_delete_chat() {
         Boolean succeed = testClient.delete().uri("/api/v2/chat/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
@@ -621,7 +621,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
 
-    private void testDeleteBackend() {
+    private void should_delete_character_backend() {
         Boolean succeed = testClient.delete().uri("/api/v2/character/backend/" + backendId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -635,7 +635,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertTrue(succeed);
     }
 
-    private void testDeleteCharacter() {
+    private void should_delete_character() {
         List<Long> ids = testClient.delete().uri("/api/v2/character/uid/" + characterUid)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -648,7 +648,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertThat(ids).hasSize(2);
     }
 
-    private void testDeletePromptTask() {
+    private void should_delete_prompt_task() {
         Boolean succeed = testClient.delete().uri("/api/v2/prompt/task/" + promptTaskId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -662,7 +662,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertTrue(succeed);
     }
 
-    private void testDeletePrompt() {
+    private void should_delete_prompt() {
         Boolean succeed = testClient.delete().uri("/api/v2/prompt/" + promptId)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -686,89 +686,89 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAll() throws Exception {
-        testCreatePrompt();
-        TestCommonUtils.waitAWhile();
+    public void should_pass_all_tests() throws Exception {
+        should_create_prompt();
+        waitAWhile();
 
-        testCreatePromptTask();
-        TestCommonUtils.waitAWhile();
+        should_create_prompt_task();
+        waitAWhile();
 
-        testCreateCharacter();
-        TestCommonUtils.waitAWhile();
+        should_create_character();
+        waitAWhile();
 
-        testCreateBackend();
-        TestCommonUtils.waitAWhile();
+        should_create_character_backend();
+        waitAWhile();
 
-        testCreateChatFailed();
-        TestCommonUtils.waitAWhile();
+        should_failed_to_create_chat();
+        waitAWhile();
 
-        testPublishCharacter();
-        TestCommonUtils.waitAWhile();
+        should_publish_character();
+        waitAWhile();
 
-        testCreateChat();
-        TestCommonUtils.waitAWhile();
+        should_create_chat();
+        waitAWhile();
 
-        testSendMessage();
-        TestCommonUtils.waitAWhile();
+        should_send_message();
+        waitAWhile();
 
-        testMemoryUsage();
-        TestCommonUtils.waitAWhile();
+        should_get_message_usage();
+        waitAWhile();
 
-        testSendMessageFailedByQuota();
-        TestCommonUtils.waitAWhile();
+        should_failed_to_send_message_by_quota();
+        waitAWhile();
 
-        testResendMessageWithSpecializedApiKey();
-        TestCommonUtils.waitAWhile();
+        should_resend_message_with_specialized_api_key();
+        waitAWhile();
 
-        testSendMessageWithoutLongTermMemory();
-        TestCommonUtils.waitAWhile();
+        should_send_message_without_long_term_memory();
+        waitAWhile();
 
-        testRollbackMessages();
-        TestCommonUtils.waitAWhile();
+        should_rollback_messages();
+        waitAWhile();
 
-        testStreamSendMessageWithoutLongTermMemory();
-        TestCommonUtils.waitAWhile();
+        should_send_message_without_long_term_memory_in_streaming_mode();
+        waitAWhile();
 
-        testRollbackMessages();
-        TestCommonUtils.waitAWhile();
+        should_rollback_messages();
+        waitAWhile();
 
-        testUpdateBackend();
-        TestCommonUtils.waitAWhile();
+        should_update_character_backend();
+        waitAWhile();
 
-        testStreamSendMessageWithLongTermMemory();
-        TestCommonUtils.waitAWhile();
+        should_send_message_with_long_term_memory_in_streaming_mode();
+        waitAWhile();
 
-        testListMessagesFailed();
-        TestCommonUtils.waitAWhile();
+        should_failed_to_list_messages();
+        waitAWhile();
 
-        testListMessages();
-        TestCommonUtils.waitAWhile();
+        should_list_messages();
+        waitAWhile();
 
-        testSendAssistantFailed();
-        TestCommonUtils.waitAWhile();
+        should_failed_to_send_assistant();
+        waitAWhile();
 
-        testSendAssistant();
-        TestCommonUtils.waitAWhile();
+        should_send_assistant();
+        waitAWhile();
 
-        testStreamSendAssistant();
-        TestCommonUtils.waitAWhile();
+        should_send_assistant_in_streaming_mode();
+        waitAWhile();
 
-        testDeleteChatFailed();
-        TestCommonUtils.waitAWhile();
+        should_failed_to_delete_chat();
+        waitAWhile();
 
-        testDeleteChat();
-        TestCommonUtils.waitAWhile();
+        should_delete_chat();
+        waitAWhile();
 
-        testDeleteBackend();
-        TestCommonUtils.waitAWhile();
+        should_delete_character_backend();
+        waitAWhile();
 
-        testDeleteCharacter();
-        TestCommonUtils.waitAWhile();
+        should_delete_character();
+        waitAWhile();
 
-        testDeletePromptTask();
-        TestCommonUtils.waitAWhile();
+        should_delete_prompt_task();
+        waitAWhile();
 
-        testDeletePrompt();
-        TestCommonUtils.waitAWhile();
+        should_delete_prompt();
+        waitAWhile();
     }
 }

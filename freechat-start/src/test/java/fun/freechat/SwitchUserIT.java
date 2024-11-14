@@ -49,7 +49,7 @@ public class SwitchUserIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testSwitchUserSuccessfully() {
+    public void should_switch_user() {
         testClient.get().uri("/api/v2/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + adminApiToken)
@@ -62,7 +62,7 @@ public class SwitchUserIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testSwitchUserAutoRegisterSuccessfully() {
+    public void should_auto_register_and_switch_user() {
         testClient.get().uri("/api/v2/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + adminApiToken)
@@ -75,7 +75,7 @@ public class SwitchUserIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testSwitchUserFailure() {
+    public void should_failed_to_switch_user() {
         testClient.get().uri("/api/v2/account/details")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + orgApiToken)

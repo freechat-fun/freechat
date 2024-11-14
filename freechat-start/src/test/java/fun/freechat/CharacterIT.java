@@ -52,7 +52,7 @@ public class CharacterIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testCharacterPictures() {
+    public void should_upload_and_delete_pictures() {
         String url1 = testClient.post().uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -137,7 +137,7 @@ public class CharacterIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testCharacterDocuments() {
+    public void should_upload_and_delete_documents() {
         String url1 = testClient.post().uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)

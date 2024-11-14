@@ -108,7 +108,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testPromptWithApiKey() {
+    public void should_send_prompt_with_api_key() {
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPrompt(PROMPT);
@@ -126,7 +126,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testPromptWithApiKeyName() {
+    public void should_send_prompt_with_api_key_name() {
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKeyName", apiKeyName());
         aiRequest.setPrompt(PROMPT);
@@ -145,7 +145,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testPromptTemplate(String template, String format, Map<String, Object> variables) {
+    public void should_send_prompt_template(String template, String format, Map<String, Object> variables) {
         PromptTemplateDTO promptTemplate = new PromptTemplateDTO();
         promptTemplate.setTemplate(template);
         promptTemplate.setFormat(format);
@@ -167,7 +167,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
                         assertThat(text.toString()).containsIgnoringCase("goodbye"));
     }
 
-    static Stream<Arguments> testPromptTemplate() {
+    static Stream<Arguments> should_send_prompt_template() {
         Map<String, Object> variables = new HashMap<>(1);
         variables.put("greeting", "goodbye");
         return Stream.of(
@@ -177,7 +177,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testPromptRef() {
+    public void should_send_prompt_reference() {
         PromptRefDTO promptRef = new PromptRefDTO();
         promptRef.setPromptId(promptId);
         promptRef.setDraft(false);
@@ -212,7 +212,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testEmbedding() {
+    public void should_send_prompt_and_get_embeddings() {
         PromptAiParamDTO aiRequest = createRequest(embeddingModelId());
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPrompt(PROMPT);
@@ -236,7 +236,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testPromptOpForbidden() {
+    public void should_failed_to_send_prompt() {
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKeyName", "No Key");
         aiRequest.setPrompt(PROMPT);
@@ -263,7 +263,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testChatPrompt() {
+    public void should_send_chat_prompt() {
         String system = "Your name is {name}. You are {age} years old.";
 
         List<ChatMessageDTO> messages = new LinkedList<>();

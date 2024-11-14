@@ -31,7 +31,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testGetSolidSubordinates() {
+    public void should_get_solid_subordinates() {
         testClient.get().uri("/api/v2/org/subordinates")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -43,7 +43,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testGetAllSubordinates() {
+    public void should_get_all_subordinates() {
         testClient.get().uri("/api/v2/org/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -55,7 +55,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testGetSubordinateAllSubordinates() {
+    public void should_get_subordinate_all_subordinates() {
         testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -67,7 +67,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testUpdateSubordinateSubordinates() {
+    public void should_update_subordinate_subordinates() {
         testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)

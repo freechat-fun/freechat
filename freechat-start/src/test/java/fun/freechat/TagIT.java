@@ -42,7 +42,7 @@ public class TagIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testHotTags() {
+    public void should_list_hot_tags() {
         testClient.get().uri("/api/v2/public/tags/hot/prompt/10")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)

@@ -75,7 +75,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         characterUid = TestCharacterUtils.idToUid(characterId);
     }
 
-    private void testUploadDocument(String doc) {
+    private void should_upload_document(String doc) {
         if (HttpUtils.isSafeUrl(doc)) {
             url = doc;
             isFile = false;
@@ -97,7 +97,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         isFile = true;
     }
 
-    private void testDeleteDocument() {
+    private void should_delete_document() {
         if (!isFile) {
             return;
         }
@@ -114,7 +114,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertTrue(BooleanUtils.isTrue(success));
     }
 
-    private void testCreateTask() {
+    private void should_create_rag_task() {
         RagTaskDTO fileRequest = new RagTaskDTO();
         if (isFile) {
             fileRequest.setSource(getKeyFromUrl(url));
@@ -137,7 +137,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertThat(taskId).isPositive();
     }
 
-    private void testDeleteTask() {
+    private void should_delete_rag_task() {
         Boolean result;
         result = testClient.delete().uri("/api/v2/rag/task/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
@@ -151,7 +151,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertTrue(BooleanUtils.isTrue(result));
     }
 
-    private void testQueryTask() {
+    private void should_get_rag_task() {
         RagTaskDetailsDTO task1 = testClient.get().uri("/api/v2/rag/task/" + taskId)
                 .header(AUTHORIZATION, "Bearer " + userToken)
                 .accept(MediaType.APPLICATION_JSON)
@@ -177,7 +177,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertThat(tasks).hasSize(1);
     }
 
-    private void testRunTask() throws InterruptedException {
+    private void should_run_rag_task() throws InterruptedException {
         Boolean result;
         TaskStatus latestStatus = TaskStatus.PENDING;
 
@@ -213,7 +213,7 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
         assertSame(TaskStatus.SUCCEEDED, latestStatus);
     }
 
-    private void testChat(String modelId, String question, List<String> expected) throws JsonProcessingException {
+    private void should_chat_with_document(String modelId, String question, List<String> expected) throws JsonProcessingException {
         String promptTaskId = TestPromptUtils.createChatPromptTask(promptId, modelId, apiKeyFor(modelId));
         String backend1 = TestCharacterUtils.createCharacterBackend(characterUid, promptTaskId);
         String chatId1 = TestChatUtils.createChat(userId, backend1);
@@ -244,21 +244,21 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testAll(String modelId, String doc, String question, String lang, List<String> expected) throws InterruptedException, JsonProcessingException {
+    public void should_pass_all_tests(String modelId, String doc, String question, String lang, List<String> expected) throws InterruptedException, JsonProcessingException {
         setUpCharacterForLang(lang);
 
-        testUploadDocument(doc);
-        testCreateTask();
-        testQueryTask();
-        testRunTask();
+        should_upload_document(doc);
+        should_create_rag_task();
+        should_get_rag_task();
+        should_run_rag_task();
 
-        testChat(modelId, question, expected);
+        should_chat_with_document(modelId, question, expected);
 
-        testDeleteTask();
-        testDeleteDocument();
+        should_delete_rag_task();
+        should_delete_document();
     }
 
-    public static Stream<Arguments> testAll() {
+    public static Stream<Arguments> should_pass_all_tests() {
         return Stream.of(
                 Arguments.of(modelId(),
                         "miles-of-smiles-terms-of-use.txt",

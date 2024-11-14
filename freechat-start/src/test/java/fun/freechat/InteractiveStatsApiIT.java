@@ -34,7 +34,7 @@ public class InteractiveStatsApiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAll() {
+    public void should_pass_all_tests() {
         testClient.post().uri("/api/v2/stats/prompt/"+ promptUid + "/score/5")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)

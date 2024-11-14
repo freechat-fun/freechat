@@ -14,7 +14,7 @@ public class OrganizationServiceIT extends AbstractIntegrationTest {
     private OrgService orgService;
 
     @Test
-    public void testOwners() {
+    public void should_get_owners() {
         String userId = "31";
         TestOrgUtils.addOwners(userId);
         TestCommonUtils.waitAWhile();
@@ -35,7 +35,7 @@ public class OrganizationServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testSubordinates() {
+    public void should_get_subordinates() {
         String userId = "31";
         TestOrgUtils.addSubordinates(userId);
         TestCommonUtils.waitAWhile();

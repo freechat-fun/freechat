@@ -50,7 +50,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAll() {
+    public void should_pass_all_tests() {
         List<Long> ids = new ArrayList<>(maxCount);
         for (int i = 0; i < apiKeys.size() - 1; ++i) {
             testClient.post().uri("/api/v2/ai/apikey")

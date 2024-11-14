@@ -31,7 +31,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testGetSolidOwners() {
+    public void should_get_solid_owners() {
         testClient.get().uri("/api/v2/org/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -43,7 +43,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testGetAllOwners() {
+    public void should_get_all_owners() {
         testClient.get().uri("/api/v2/org/manage/41/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -55,7 +55,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testGetSubordinateSolidOwners() {
+    public void should_get_subordinate_solid_owners() {
         testClient.get().uri("/api/v2/org/manage/41/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -67,7 +67,7 @@ public class OrganizationApiOwnersIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testUpdateSubordinateOwners() {
+    public void should_update_subordinate_owners() {
         testClient.get().uri("/api/v2/org/manage/40/owners")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)

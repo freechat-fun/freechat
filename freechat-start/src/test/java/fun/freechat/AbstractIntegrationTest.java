@@ -23,6 +23,7 @@ import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
+import java.util.Objects;
 
 import static fun.freechat.service.enums.ModelProvider.OLLAMA;
 import static fun.freechat.util.TestCommonUtils.defaultEmbeddingModelFor;
@@ -64,8 +65,8 @@ public class AbstractIntegrationTest {
 
         ollama = new TestOllamaContainer(ollamaImageName())
                 .withModels(
-                        ollamaModelName(defaultEmbeddingModelFor(OLLAMA)),
-                        ollamaModelName(defaultModelFor(OLLAMA)));
+                        ollamaModelName(Objects.requireNonNull(defaultEmbeddingModelFor(OLLAMA))),
+                        ollamaModelName(Objects.requireNonNull(defaultModelFor(OLLAMA))));
     }
 
     @Autowired
