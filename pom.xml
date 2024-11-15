@@ -9,7 +9,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <revision>2.1.0</revision>
+        <revision>2.2.0</revision>
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -29,7 +29,7 @@
         <redisson.version>3.38.1</redisson.version>
         <objenesis.version>3.3</objenesis.version>
         <swagger-parser.version>2.1.20</swagger-parser.version>
-        <langchain4j.version>0.35.0</langchain4j.version>
+        <langchain4j.version>0.36.0</langchain4j.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>

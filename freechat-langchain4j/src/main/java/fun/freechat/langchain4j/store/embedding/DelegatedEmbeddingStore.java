@@ -2,7 +2,6 @@ package fun.freechat.langchain4j.store.embedding;
 
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -112,27 +111,5 @@ public class DelegatedEmbeddingStore implements EmbeddingStore<TextSegment> {
     @Override
     public EmbeddingSearchResult<TextSegment> search(EmbeddingSearchRequest request) {
         return embeddingStore.search(request);
-    }
-
-    @Override
-    public List<EmbeddingMatch<TextSegment>> findRelevant(Embedding referenceEmbedding, int maxResults) {
-        return embeddingStore.findRelevant(referenceEmbedding, maxResults);
-    }
-
-    @Override
-    public List<EmbeddingMatch<TextSegment>> findRelevant(Embedding referenceEmbedding, int maxResults, double minScore) {
-        return embeddingStore.findRelevant(referenceEmbedding, maxResults, minScore);
-    }
-
-    @Override
-    public List<EmbeddingMatch<TextSegment>> findRelevant(
-            Object memoryId, Embedding referenceEmbedding, int maxResults) {
-        return embeddingStore.findRelevant(memoryId, referenceEmbedding, maxResults);
-    }
-
-    @Override
-    public List<EmbeddingMatch<TextSegment>> findRelevant(
-            Object memoryId, Embedding referenceEmbedding, int maxResults, double minScore) {
-        return embeddingStore.findRelevant(memoryId, referenceEmbedding, maxResults, minScore);
     }
 }

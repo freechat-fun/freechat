@@ -23,7 +23,7 @@ public class MustachePromptTemplateFactory implements PromptTemplateFactory {
 
     static class MustacheTemplate implements Template {
         private final Supplier<com.samskivert.mustache.Template> templateProvider;
-        private com.samskivert.mustache.Template template;
+        private volatile com.samskivert.mustache.Template template;
 
         MustacheTemplate(Supplier<com.samskivert.mustache.Template> templateProvider) {
             this.templateProvider = templateProvider;
