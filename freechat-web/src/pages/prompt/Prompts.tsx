@@ -1,40 +1,90 @@
-import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
-import { ChatMessageDTO, ChatPromptContentDTO, PromptCreateDTO, PromptQueryDTO, PromptQueryWhere, PromptSummaryDTO } from "freechat-sdk";
-import { Box, Button, Card, Chip, FormControl, FormHelperText, IconButton, Input, Radio, RadioGroup, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { AddCircleRounded, DeleteForeverRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded } from "@mui/icons-material";
+import {
+  createRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  ConfirmModal,
+  InfoCardCover,
+  InfoSearchbar,
+  LinePlaceholder,
+  SummaryTypography,
+} from '../../components';
+import {
+  ChatMessageDTO,
+  ChatPromptContentDTO,
+  PromptCreateDTO,
+  PromptQueryDTO,
+  PromptQueryWhere,
+  PromptSummaryDTO,
+} from 'freechat-sdk';
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  Input,
+  Radio,
+  RadioGroup,
+  Typography,
+} from '@mui/joy';
+import { SxProps } from '@mui/joy/styles/types';
+import {
+  AddCircleRounded,
+  DeleteForeverRounded,
+  InfoOutlined,
+  KeyboardArrowLeftRounded,
+  KeyboardArrowRightRounded,
+  SaveAltRounded,
+} from '@mui/icons-material';
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
-import { i18nConfig } from "../../configs/i18n-config";
-import { setMessageText } from "../../libs/template_utils";
+import {
+  defaultTransitionInterval,
+  defaultTransitionSetting,
+  initTransitionSequence,
+  transitionStyles,
+} from '../../libs/ui_utils';
+import { i18nConfig } from '../../configs/i18n-config';
+import { setMessageText } from '../../libs/template_utils';
 
 type RecordCardProps = {
-  record: PromptSummaryDTO,
-  onView: () => void,
-  onEdit: () => void,
-  onDelete: () => void,
-  sx?: SxProps,
-}
+  record: PromptSummaryDTO;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  sx?: SxProps;
+};
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { record, onView, onEdit, onDelete, sx } = props;
   const { t, i18n } = useTranslation();
 
   return (
-    <Card ref={ref} sx={{
-      ...sx,
-      transition: 'transform 0.4s, box-shadow 0.4s',
-      boxShadow: 'sm',
-      '&:hover': {
-        boxShadow: 'lg',
-        transform: 'translateY(-1px)',
-      },
-    }}>
+    <Card
+      ref={ref}
+      sx={{
+        ...sx,
+        transition: 'transform 0.4s, box-shadow 0.4s',
+        boxShadow: 'sm',
+        '&:hover': {
+          boxShadow: 'lg',
+          transform: 'translateY(-1px)',
+        },
+      }}
+    >
       <Typography
         level="title-lg"
         sx={{
@@ -47,32 +97,46 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       >
         {record.name}
       </Typography>
-      <Box sx={{
-        ...sx,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
+      <Box
+        sx={{
+          ...sx,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Typography level="body-sm" textColor="gray">
           {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
-        <Typography level="body-sm" textColor={record.visibility === 'public' ? 'success.500' : 'warning.500'}>
+        <Typography
+          level="body-sm"
+          textColor={
+            record.visibility === 'public' ? 'success.500' : 'warning.500'
+          }
+        >
           {record.visibility === 'public' ? t('public') : t('private')}
         </Typography>
       </Box>
-      <Box sx={{
-        ...sx,
-        display: 'flex',
-        justifyContent: 'start',
-        alignItems: 'center',
-        gap: 2,
-      }}>
-        <Chip color="success" variant="soft">v{record.version}</Chip>
-        <Chip color={record.type === 'string' ? 'warning' : 'success'} variant="outlined">{record.type}</Chip>
+      <Box
+        sx={{
+          ...sx,
+          display: 'flex',
+          justifyContent: 'start',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        <Chip color="success" variant="soft">
+          v{record.version}
+        </Chip>
+        <Chip
+          color={record.type === 'string' ? 'warning' : 'success'}
+          variant="outlined"
+        >
+          {record.type}
+        </Chip>
       </Box>
-      <SummaryTypography sx={{...sx}}>
-        {record.description}
-      </SummaryTypography>
+      <SummaryTypography sx={{ ...sx }}>{record.description}</SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
         onView={() => onView()}
@@ -80,7 +144,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         onDelete={() => onDelete()}
       />
     </Card>
-  )
+  );
 });
 
 export default function Prompts() {
@@ -107,18 +171,16 @@ export default function Prompts() {
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   const doSearch = useCallback(() => {
-    promptApi?.searchPromptSummary(query)
-    .then(resp => {
-      setRecords(resp);
-      if (page === 0) {
-        promptApi?.countPrompts(query)
-          .then(setTotal)
-          .catch(handleError);
-      }
-    })
-    .catch(handleError);
+    promptApi
+      ?.searchPromptSummary(query)
+      .then((resp) => {
+        setRecords(resp);
+        if (page === 0) {
+          promptApi?.countPrompts(query).then(setTotal).catch(handleError);
+        }
+      })
+      .catch(handleError);
   }, [handleError, page, promptApi, query]);
-
 
   useEffect(() => {
     doSearch();
@@ -135,7 +197,10 @@ export default function Prompts() {
     return newQuery;
   }
 
-  function handleSearch(text: string | undefined, modelIds: string[] | undefined): void {
+  function handleSearch(
+    text: string | undefined,
+    modelIds: string[] | undefined
+  ): void {
     const where = new PromptQueryWhere();
     where.text = text;
     where.aiModels = modelIds;
@@ -162,9 +227,11 @@ export default function Prompts() {
   }
 
   function handleDelete(record: PromptSummaryDTO | undefined): void {
-    record?.name && promptApi?.deletePromptByName(record.name)
-      .then(() =>doSearch())
-      .catch(handleError);
+    record?.name &&
+      promptApi
+        ?.deletePromptByName(record.name)
+        .then(() => doSearch())
+        .catch(handleError);
 
     setRecordDeleted(undefined);
   }
@@ -174,20 +241,21 @@ export default function Prompts() {
   }
 
   function handleView(record: PromptSummaryDTO): void {
-    navigate(`/w/prompt/${record.promptId}`)
+    navigate(`/w/prompt/${record.promptId}`);
   }
 
   function handleEdit(record: PromptSummaryDTO): void {
-    navigate(`/w/prompt/edit/${record.promptId}`)
+    navigate(`/w/prompt/edit/${record.promptId}`);
   }
 
   function handleNameChange(): void {
     if (editRecordNameError || !editRecordName) {
       return;
     }
-      
-    promptApi?.existsPromptName(editRecordName)
-      .then(resp => {
+
+    promptApi
+      ?.existsPromptName(editRecordName)
+      .then((resp) => {
         if (!resp) {
           const request = new PromptCreateDTO();
           if (editRecordType === 'chat') {
@@ -196,7 +264,7 @@ export default function Prompts() {
             request.chatTemplate.messageToSend = new ChatMessageDTO();
             request.chatTemplate.messageToSend.role = 'user';
             setMessageText(request.chatTemplate.messageToSend, '{{{input}}}');
-            request.inputs = JSON.stringify({'input': ''});
+            request.inputs = JSON.stringify({ input: '' });
           } else if (editRecordType === 'string') {
             request.template = '';
           }
@@ -205,8 +273,9 @@ export default function Prompts() {
           request.name = editRecordName;
           request.visibility = 'public';
 
-          promptApi?.createPrompt(request)
-            .then(resp => {
+          promptApi
+            ?.createPrompt(request)
+            .then((resp) => {
               if (resp) {
                 navigate(`/w/prompt/edit/${resp}`);
               }
@@ -223,22 +292,26 @@ export default function Prompts() {
 
   function getLabelDisplayedRowsTo(): number {
     const currentCount = (page + 1) * pageSize;
-    return total === 0 && records.length > 0 ? currentCount : Math.min(total, currentCount);
+    return total === 0 && records.length > 0
+      ? currentCount
+      : Math.min(total, currentCount);
   }
 
   function labelDisplayedRows(from: number, to: number, count: number): string {
     return `${from}-${to} of ${to <= count ? count : `more than ${to}`}`;
   }
 
-  return(
+  return (
     <>
       <LinePlaceholder />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', lg: 'row' },
-        justifyContent: 'space-between',
-        alignItems: { xs: 'start', lg: 'center' },
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', lg: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'start', lg: 'center' },
+        }}
+      >
         <InfoSearchbar onSearch={handleSearch} />
         <Button
           startDecorator={<AddCircleRounded />}
@@ -279,22 +352,23 @@ export default function Prompts() {
               />
             )}
           </Transition>
-          
         ))}
       </Box>
-      <Box sx={{
-        opacity: showCardsFinish ? 1 : 0,
-        display: 'flex',
-        justifyContent: 'end',
-        alignItems: 'center',
-        gap: 1,
-        mt: 2,
-      }}>
+      <Box
+        sx={{
+          opacity: showCardsFinish ? 1 : 0,
+          display: 'flex',
+          justifyContent: 'end',
+          alignItems: 'center',
+          gap: 1,
+          mt: 2,
+        }}
+      >
         <Chip variant="outlined" sx={{ mr: 1.5 }}>
           {labelDisplayedRows(
             records.length === 0 ? 0 : page * pageSize + 1,
             getLabelDisplayedRowsTo(),
-            total,
+            total
           )}
         </Chip>
         <IconButton
@@ -312,9 +386,7 @@ export default function Prompts() {
           color="neutral"
           variant="outlined"
           disabled={
-            records.length !== -1
-              ? (1 + page) * pageSize >= total
-              : false
+            records.length !== -1 ? (1 + page) * pageSize >= total : false
           }
           onClick={() => handleChangePage(page + 1)}
           sx={{ bgcolor: 'background.surface' }}
@@ -334,7 +406,7 @@ export default function Prompts() {
         button={{
           color: 'danger',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />
+          startDecorator: <DeleteForeverRounded />,
         }}
         onConfirm={handleDelete}
       >
@@ -352,17 +424,19 @@ export default function Prompts() {
         }}
         button={{
           text: t('button:Create'),
-          startDecorator: <SaveAltRounded />
+          startDecorator: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-          gap: 0.5,
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            gap: 0.5,
+          }}
+        >
           <FormControl error={editRecordNameError}>
             <Input
               name="RecordName"
@@ -370,7 +444,7 @@ export default function Prompts() {
               onChange={(event) => {
                 setEditRecordName(event.target.value);
                 setEditRecordNameError(false);
-            }}
+              }}
             />
             {editRecordNameError && (
               <FormHelperText>
@@ -379,13 +453,17 @@ export default function Prompts() {
               </FormHelperText>
             )}
           </FormControl>
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            gap: 1,
-          }}>
-            <Chip variant="outlined" size="md">{t('Type')}</Chip>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Chip variant="outlined" size="md">
+              {t('Type')}
+            </Chip>
             <RadioGroup
               orientation="horizontal"
               name="format"
@@ -404,7 +482,11 @@ export default function Prompts() {
                   color="neutral"
                   size="sm"
                   value={type}
-                  label={(<Typography noWrap level="body-sm">{type}</Typography>)}
+                  label={
+                    <Typography noWrap level="body-sm">
+                      {type}
+                    </Typography>
+                  }
                   variant="outlined"
                   sx={{
                     p: 0.5,
@@ -416,5 +498,6 @@ export default function Prompts() {
           </Box>
         </Box>
       </ConfirmModal>
-  </>);
+    </>
+  );
 }

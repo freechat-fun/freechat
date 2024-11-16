@@ -1,4 +1,4 @@
-import { Card, styled } from "@mui/joy";
+import { Card, styled } from '@mui/joy';
 
 const OptionCard = styled(Card)(({ theme }) => ({
   borderColor: 'transparent',

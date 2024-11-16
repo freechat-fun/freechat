@@ -8,7 +8,7 @@ const AliyunIcon = createSvgIcon(
       fill="var(--joy-palette-text-primary)"
     />
   </SvgIcon>,
-  'Aliyun',
+  'Aliyun'
 );
 
 export default AliyunIcon;

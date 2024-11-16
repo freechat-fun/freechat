@@ -1,11 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Sheet, SheetProps } from "@mui/joy";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO } from "freechat-sdk";
-import { CharacterRecommendationList, CharacterRecommendationPoster } from ".";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Sheet, SheetProps } from '@mui/joy';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  CharacterQueryDTO,
+  CharacterQueryWhere,
+  CharacterSummaryDTO,
+} from 'freechat-sdk';
+import { CharacterRecommendationList, CharacterRecommendationPoster } from '.';
 
 type CharacterRecommendationPaneProps = SheetProps & {
-  lang?: string,
+  lang?: string;
 };
 
 export default function CharacterRecommendationPane({
@@ -13,7 +20,6 @@ export default function CharacterRecommendationPane({
   sx,
   ...others
 }: CharacterRecommendationPaneProps) {
-
   const { characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -35,26 +41,26 @@ export default function CharacterRecommendationPane({
     return newQuery;
   }, [lang]);
 
-
   const selectedRecord = useMemo(() => {
     // console.log(JSON.stringify(records.find(record => record.characterId === selectedId)));
-    return records.find(record => record.characterId === selectedId);
+    return records.find((record) => record.characterId === selectedId);
   }, [records, selectedId]);
 
   useEffect(() => {
-    setSelectedId(prevId => {
+    setSelectedId((prevId) => {
       if (records.length === 0) {
         return 0;
       }
-      if (records.find(r => r.characterId === prevId)) {
+      if (records.find((r) => r.characterId === prevId)) {
         return prevId;
       }
       return records[0].characterId;
-    })
+    });
   }, [records]);
 
   useEffect(() => {
-    characterApi?.searchPublicCharacterSummary(recommendationQuery())
+    characterApi
+      ?.searchPublicCharacterSummary(recommendationQuery())
       .then(setRecords)
       .catch(handleError);
   }, [characterApi, handleError, recommendationQuery]);
@@ -91,5 +97,5 @@ export default function CharacterRecommendationPane({
         }}
       />
     </Sheet>
-  )
+  );
 }

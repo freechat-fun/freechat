@@ -1,10 +1,26 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
-import { Box, List, ListItem, ListItemButton, ListItemContent, Sheet, Typography, listItemButtonClasses } from "@mui/joy";
-import { AccountTreeRounded, AndroidRounded, ArticleRounded, ExtensionRounded, KeyboardArrowDownRounded, SettingsRounded } from "@mui/icons-material";
-import { RouterLink } from ".";
-import { closeSidebar } from "../libs/sidebar_utils";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemContent,
+  Sheet,
+  Typography,
+  listItemButtonClasses,
+} from '@mui/joy';
+import {
+  AccountTreeRounded,
+  AndroidRounded,
+  ArticleRounded,
+  ExtensionRounded,
+  KeyboardArrowDownRounded,
+  SettingsRounded,
+} from '@mui/icons-material';
+import { RouterLink } from '.';
+import { closeSidebar } from '../libs/sidebar_utils';
 
 type NestedListToggleProps = {
   defaultExpanded?: boolean;
@@ -13,7 +29,7 @@ type NestedListToggleProps = {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   }) => React.ReactNode;
-}
+};
 
 function NestedListToggle({
   defaultExpanded = false,
@@ -43,8 +59,8 @@ function NestedListToggle({
 export default function Sidebar() {
   const { t } = useTranslation('sidebar');
   const { pathname } = useLocation();
-  
-  const normalizePathname = pathname.replace(/\/+$/, "");
+
+  const normalizePathname = pathname.replace(/\/+$/, '');
   const relativePathname = normalizePathname.slice('/w/'.length);
 
   const isSelected = (path: string): boolean => {
@@ -124,7 +140,7 @@ export default function Sidebar() {
               underline="none"
               selected={isSelected('characters')}
               sx={{
-                pl: 1.5
+                pl: 1.5,
               }}
             >
               <AndroidRounded />
@@ -178,7 +194,7 @@ export default function Sidebar() {
 
           <ListItem nested>
             <NestedListToggle
-              defaultExpanded = {shouldExpand(['profile', 'credentials'])}
+              defaultExpanded={shouldExpand(['profile', 'credentials'])}
               renderToggle={({ open, setOpen }) => (
                 <ListItemButton onClick={() => setOpen(!open)}>
                   <SettingsRounded />

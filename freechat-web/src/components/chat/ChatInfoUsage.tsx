@@ -1,17 +1,17 @@
-import { Fragment, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { IconButton, Input, Stack, Tooltip, Typography } from "@mui/joy";
-import { CheckRounded, KeyRounded, TuneRounded } from "@mui/icons-material";
-import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
-import { CommonBox, CommonGridBox, ConfirmModal } from "..";
-import { providers as modelProviders } from "../../configs/model-providers-config";
+import { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IconButton, Input, Stack, Tooltip, Typography } from '@mui/joy';
+import { CheckRounded, KeyRounded, TuneRounded } from '@mui/icons-material';
+import { ChatSessionDTO, MemoryUsageDTO } from 'freechat-sdk';
+import { CommonBox, CommonGridBox, ConfirmModal } from '..';
+import { providers as modelProviders } from '../../configs/model-providers-config';
 
 type ChatInfoUsageProps = {
   session?: ChatSessionDTO;
   memoryUsage?: MemoryUsageDTO;
   apiKeyValue?: string;
   setApiKeyValue?: (key: string) => void;
-}
+};
 
 export default function ChatInfoUsage({
   session,
@@ -29,7 +29,8 @@ export default function ChatInfoUsage({
   }, [apiKeyValue]);
 
   function getUsageLabel(): string {
-    if (session?.context?.apiKeyName ||
+    if (
+      session?.context?.apiKeyName ||
       session?.context?.apiKeyValue ||
       session?.context?.quotaType === 'none' ||
       !session?.context?.quota
@@ -37,7 +38,10 @@ export default function ChatInfoUsage({
       return '-';
     }
 
-    const usage = (session?.context?.quotaType == 'messages' ? memoryUsage?.messageUsage : memoryUsage?.tokenUsage) ?? 0;
+    const usage =
+      (session?.context?.quotaType == 'messages'
+        ? memoryUsage?.messageUsage
+        : memoryUsage?.tokenUsage) ?? 0;
     return `${usage}/${session?.context?.quota}`;
   }
 
@@ -46,8 +50,10 @@ export default function ChatInfoUsage({
       return '';
     }
 
-    const providerLabel = modelProviders.filter(provider => provider.provider === session.provider)
-      .map(provider => provider.label) ?? session.provider;
+    const providerLabel =
+      modelProviders
+        .filter((provider) => provider.provider === session.provider)
+        .map((provider) => provider.label) ?? session.provider;
 
     return ` - ${providerLabel}`;
   }
@@ -62,12 +68,17 @@ export default function ChatInfoUsage({
           <Tooltip
             size="sm"
             sx={{ maxWidth: '20rem' }}
-            title={session?.isCustomizedApiKeyEnabled ?
-              t('Customize API key for the chat') :
-              t('The character does not support custom API key') }
+            title={
+              session?.isCustomizedApiKeyEnabled
+                ? t('Customize API key for the chat')
+                : t('The character does not support custom API key')
+            }
           >
             <div>
-              <IconButton disabled={!session?.isCustomizedApiKeyEnabled} onClick={() => setApiKeySettingOpen(true)}>
+              <IconButton
+                disabled={!session?.isCustomizedApiKeyEnabled}
+                onClick={() => setApiKeySettingOpen(true)}
+              >
                 <TuneRounded />
               </IconButton>
             </div>
@@ -84,13 +95,15 @@ export default function ChatInfoUsage({
 
       <ConfirmModal
         open={apiKeySettingOpen}
-        onClose={(reason) => reason !== 'backdropClick' && setApiKeySettingOpen(false)}
+        onClose={(reason) =>
+          reason !== 'backdropClick' && setApiKeySettingOpen(false)
+        }
         dialog={{
           title: `${t('Set API Key', { ns: 'prompt' })}${getProviderLabel()}`,
         }}
         button={{
           text: t('button:Confirm'),
-          startDecorator: <CheckRounded />
+          startDecorator: <CheckRounded />,
         }}
         onConfirm={() => {
           setApiKeyValue?.(editApiKey ?? '');
@@ -99,7 +112,9 @@ export default function ChatInfoUsage({
       >
         <Stack spacing={2}>
           <Typography level="body-sm">
-            {t('Your API key is only used for this chat and will not be obtained by anyone else.')}
+            {t(
+              'Your API key is only used for this chat and will not be obtained by anyone else.'
+            )}
           </Typography>
           <Input
             type="password"
@@ -114,5 +129,5 @@ export default function ChatInfoUsage({
         </Stack>
       </ConfirmModal>
     </Fragment>
-  )
+  );
 }

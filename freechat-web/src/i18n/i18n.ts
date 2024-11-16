@@ -1,17 +1,25 @@
 import i18n from 'i18next';
-import { initReactI18next } from "react-i18next/initReactI18next";
+import { initReactI18next } from 'react-i18next/initReactI18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
-import LanguageDetector from "i18next-browser-languagedetector";
+import LanguageDetector from 'i18next-browser-languagedetector';
 import { i18nConfig } from '../configs/i18n-config';
 
 i18n.use(initReactI18next);
 
-const location = document.querySelector('meta[name="_location"]')?.getAttribute('content');
+const location = document
+  .querySelector('meta[name="_location"]')
+  ?.getAttribute('content');
 if (location !== 'CN') {
   i18n.use(LanguageDetector);
 }
 
-i18n.use(resourcesToBackend((language: string, namespace: string) => import(`./locales/${language}/${namespace}.json`)))
+i18n
+  .use(
+    resourcesToBackend(
+      (language: string, namespace: string) =>
+        import(`./locales/${language}/${namespace}.json`)
+    )
+  )
   .init({
     fallbackLng: i18nConfig.defaultLocale,
     supportedLngs: i18nConfig.locales,

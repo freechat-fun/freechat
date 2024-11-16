@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/joy";
+import { Box, styled } from '@mui/joy';
 
 const CommonBox = styled(Box)(({ theme }) => ({
   display: 'flex',

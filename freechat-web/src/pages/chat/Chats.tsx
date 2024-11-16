@@ -1,12 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Sheet, Typography } from "@mui/joy";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ChatSessionDTO, ChatUpdateDTO, LlmResultDTO, MemoryUsageDTO, TokenUsageDTO } from "freechat-sdk";
-import { ChatInfoPane, ChatsPane, MessagesPane } from "../../components/chat";
-import { ConfirmModal } from "../../components";
-import { useTranslation } from "react-i18next";
-import { DeleteForeverRounded } from "@mui/icons-material";
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Sheet, Typography } from '@mui/joy';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  ChatSessionDTO,
+  ChatUpdateDTO,
+  LlmResultDTO,
+  MemoryUsageDTO,
+  TokenUsageDTO,
+} from 'freechat-sdk';
+import { ChatInfoPane, ChatsPane, MessagesPane } from '../../components/chat';
+import { ConfirmModal } from '../../components';
+import { useTranslation } from 'react-i18next';
+import { DeleteForeverRounded } from '@mui/icons-material';
 
 export default function Chats() {
   const { id, mode } = useParams();
@@ -19,7 +28,9 @@ export default function Chats() {
   const { handleError } = useErrorMessageBusContext();
 
   const [sessions, setSessions] = useState<ChatSessionDTO[]>([]);
-  const [selectedChatId, setSelectedChatId] = useState<string | undefined>(defaultChatId);
+  const [selectedChatId, setSelectedChatId] = useState<string | undefined>(
+    defaultChatId
+  );
   const [chatIdDeleted, setChatIdDeleted] = useState<string | null>();
   const [selectedSession, setSelectedSession] = useState<ChatSessionDTO>();
   const [apiKeyValue, setApiKeyValue] = useState('');
@@ -28,17 +39,17 @@ export default function Chats() {
   const openChatsPane = useRef(!id);
 
   useEffect(() => {
-    const newSelectedSession = sessions.find(session => session.context?.chatId === selectedChatId);
+    const newSelectedSession = sessions.find(
+      (session) => session.context?.chatId === selectedChatId
+    );
     setApiKeyValue(newSelectedSession?.context?.apiKeyValue ?? '');
     setSelectedSession(newSelectedSession);
-    selectedChatId && chatApi?.getMemoryUsage(selectedChatId)
-      .then(setMemoryUsage);
+    selectedChatId &&
+      chatApi?.getMemoryUsage(selectedChatId).then(setMemoryUsage);
   }, [chatApi, selectedChatId, sessions]);
 
   useEffect(() => {
-    chatApi?.listChats()
-      .then(setSessions)
-      .catch(handleError);
+    chatApi?.listChats().then(setSessions).catch(handleError);
   }, [chatApi, handleError]);
 
   useEffect(() => {
@@ -46,7 +57,9 @@ export default function Chats() {
       return;
     }
 
-    const defaultSession = sessions.find(session => session.context?.chatId === defaultChatId);
+    const defaultSession = sessions.find(
+      (session) => session.context?.chatId === defaultChatId
+    );
     if (defaultSession) {
       setSelectedChatId(defaultChatId);
     } else {
@@ -62,16 +75,15 @@ export default function Chats() {
     const request = new ChatUpdateDTO();
     request.apiKeyValue = key;
 
-    chatApi?.updateChat(selectedChatId, request)
-      .then(resp => {
-        if (!resp || !selectedSession?.context) {
-          return;
-        }
+    chatApi?.updateChat(selectedChatId, request).then((resp) => {
+      if (!resp || !selectedSession?.context) {
+        return;
+      }
 
-        const context = {...selectedSession.context, apiKeyValue: key};
-        const newSelectedSession = {...selectedSession, context};
-        setSelectedSession(newSelectedSession);
-      });
+      const context = { ...selectedSession.context, apiKeyValue: key };
+      const newSelectedSession = { ...selectedSession, context };
+      setSelectedSession(newSelectedSession);
+    });
   }
 
   function handleChatUpdate(
@@ -79,7 +91,7 @@ export default function Chats() {
     userProfile: string,
     characterNickname: string,
     about: string,
-    onSaved: () => void,
+    onSaved: () => void
   ): void {
     if (!selectedChatId) {
       return;
@@ -91,17 +103,22 @@ export default function Chats() {
     request.characterNickname = characterNickname;
     request.about = about;
 
-    chatApi?.updateChat(selectedChatId, request)
-      .then(resp => {
-        if (!resp || !selectedSession?.context) {
-          return;
-        }
+    chatApi?.updateChat(selectedChatId, request).then((resp) => {
+      if (!resp || !selectedSession?.context) {
+        return;
+      }
 
-        const context = {...selectedSession.context, userNickname, userProfile, characterNickname, about};
-        const newSelectedSession = {...selectedSession, context};
-        setSelectedSession(newSelectedSession);
-        onSaved();
-      });
+      const context = {
+        ...selectedSession.context,
+        userNickname,
+        userProfile,
+        characterNickname,
+        about,
+      };
+      const newSelectedSession = { ...selectedSession, context };
+      setSelectedSession(newSelectedSession);
+      onSaved();
+    });
   }
 
   function handleMessagesPaneOpen(): void {
@@ -112,14 +129,13 @@ export default function Chats() {
     const request = new ChatUpdateDTO();
     request.gmtRead = new Date();
 
-    chatApi?.updateChat(selectedChatId, request)
-      .then(resp => {
-        if (!resp || !selectedSession?.context) {
-          return;
-        }
+    chatApi?.updateChat(selectedChatId, request).then((resp) => {
+      if (!resp || !selectedSession?.context) {
+        return;
+      }
 
-        selectedSession.context.gmtRead = request.gmtRead;
-      });
+      selectedSession.context.gmtRead = request.gmtRead;
+    });
   }
 
   function handleReceivedMessage(result: LlmResultDTO): void {
@@ -131,8 +147,10 @@ export default function Chats() {
     const deltaMessage = 1;
     const deltaInputTokens = result.tokenUsage?.inputTokenCount ?? 0;
     const deltaOutputTokens = result.tokenUsage?.outputTokenCount ?? 0;
-    const deltaTotalTokens = result.tokenUsage?.totalTokenCount ?? (deltaInputTokens + deltaOutputTokens);
-    
+    const deltaTotalTokens =
+      result.tokenUsage?.totalTokenCount ??
+      deltaInputTokens + deltaOutputTokens;
+
     const newTokenUsage = new TokenUsageDTO();
     newTokenUsage.inputTokenCount = preInputTokens + deltaInputTokens;
     newTokenUsage.outputTokenCount = preOutputTokens + deltaOutputTokens;
@@ -146,12 +164,12 @@ export default function Chats() {
   }
 
   function handleChatDelete(chatId?: string): void {
-    chatId && chatApi?.deleteChat(chatId)
-      .then(() => chatApi?.listChats()
-        .then(setSessions)
-        .catch(handleError))
+    chatId &&
+      chatApi
+        ?.deleteChat(chatId)
+        .then(() => chatApi?.listChats().then(setSessions).catch(handleError))
         .finally(() => setChatIdDeleted(null))
-      .catch(handleError);
+        .catch(handleError);
   }
 
   function getCharacterNickname(chatId?: string | null): string {
@@ -159,9 +177,14 @@ export default function Chats() {
       return '';
     }
 
-    const session = sessions.find(s => s.context?.chatId === chatId);
-    
-    return session?.context?.characterNickname ?? session?.character?.nickname ?? session?.character?.name ?? '';
+    const session = sessions.find((s) => s.context?.chatId === chatId);
+
+    return (
+      session?.context?.characterNickname ??
+      session?.character?.nickname ??
+      session?.character?.name ??
+      ''
+    );
   }
 
   function getCharacterName(chatId?: string | null): string {
@@ -169,8 +192,8 @@ export default function Chats() {
       return '';
     }
 
-    const session = sessions.find(s => s.context?.chatId === chatId);
-    
+    const session = sessions.find((s) => s.context?.chatId === chatId);
+
     return session?.character?.name ?? '';
   }
 
@@ -203,10 +226,9 @@ export default function Chats() {
           sessions={sessions}
           selectedChatId={selectedChatId}
           open={openChatsPane.current}
-          onSelectChat={chatId => {
+          onSelectChat={(chatId) => {
             openChatsPane.current = false;
             setSelectedChatId(chatId);
-            
           }}
           onRemoveChat={setChatIdDeleted}
         />
@@ -252,15 +274,16 @@ export default function Chats() {
         button={{
           color: 'danger',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />
+          startDecorator: <DeleteForeverRounded />,
         }}
         onConfirm={handleChatDelete}
       >
         <Typography>
-          { getCharacterNickname(chatIdDeleted) }
-          { getCharacterNickname(chatIdDeleted) !== getCharacterName(chatIdDeleted) && 
+          {getCharacterNickname(chatIdDeleted)}
+          {getCharacterNickname(chatIdDeleted) !==
+            getCharacterName(chatIdDeleted) && (
             <Typography level="body-sm">{`@${getCharacterName(chatIdDeleted)}`}</Typography>
-          }
+          )}
         </Typography>
       </ConfirmModal>
     </Sheet>

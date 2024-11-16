@@ -1,19 +1,88 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
-import { Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, List, ListDivider, ListItem, ListItemDecorator, Option, Radio, RadioGroup, Select, Stack, Switch, Table, Textarea, Theme, Tooltip, Typography, listItemDecoratorClasses, optionClasses, switchClasses } from "@mui/joy";
-import { AddCircleRounded, ArrowBackRounded, CancelOutlined, CheckCircleOutlineRounded, CheckRounded, EditRounded, InfoOutlined, IosShareRounded, PlayCircleOutlineRounded, RemoveCircleOutlineRounded, SaveAltRounded } from "@mui/icons-material";
-import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, ContentTextarea, LinePlaceholder, RouterBlocker, TinyInput } from "../../components";
-import { AiModelInfoDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, PromptUpdateDTO } from "freechat-sdk";
-import { formatDate, getDateLabel } from "../../libs/date_utils";
-import { PromptRunner } from "../../components/prompt";
-import { locales } from "../../configs/i18n-config";
-import { extractVariables, generateExample, getMessageText, setMessageText } from "../../libs/template_utils";
-import { providers } from "../../configs/model-providers-config";
-import { HelpIcon } from "../../components/icon";
-import { objectsEqual } from "../../libs/js_utils";
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+  useMetaInfoContext,
+} from '../../contexts';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  Chip,
+  ChipDelete,
+  Divider,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  Input,
+  List,
+  ListDivider,
+  ListItem,
+  ListItemDecorator,
+  Option,
+  Radio,
+  RadioGroup,
+  Select,
+  Stack,
+  Switch,
+  Table,
+  Textarea,
+  Theme,
+  Tooltip,
+  Typography,
+  listItemDecoratorClasses,
+  optionClasses,
+  switchClasses,
+} from '@mui/joy';
+import {
+  AddCircleRounded,
+  ArrowBackRounded,
+  CancelOutlined,
+  CheckCircleOutlineRounded,
+  CheckRounded,
+  EditRounded,
+  InfoOutlined,
+  IosShareRounded,
+  PlayCircleOutlineRounded,
+  RemoveCircleOutlineRounded,
+  SaveAltRounded,
+} from '@mui/icons-material';
+import {
+  CommonBox,
+  CommonContainer,
+  CommonGridBox,
+  ConfirmModal,
+  ContentTextarea,
+  LinePlaceholder,
+  RouterBlocker,
+  TinyInput,
+} from '../../components';
+import {
+  AiModelInfoDTO,
+  ChatMessageDTO,
+  ChatPromptContentDTO,
+  LlmResultDTO,
+  PromptAiParamDTO,
+  PromptDetailsDTO,
+  PromptTemplateDTO,
+  PromptUpdateDTO,
+} from 'freechat-sdk';
+import { formatDate, getDateLabel } from '../../libs/date_utils';
+import { PromptRunner } from '../../components/prompt';
+import { locales } from '../../configs/i18n-config';
+import {
+  extractVariables,
+  generateExample,
+  getMessageText,
+  setMessageText,
+} from '../../libs/template_utils';
+import { providers } from '../../configs/model-providers-config';
+import { HelpIcon } from '../../components/icon';
+import { objectsEqual } from '../../libs/js_utils';
 
 type MessageRound = {
   user: ChatMessageDTO;
@@ -38,8 +107,12 @@ export default function PromptEditor({
   const { username } = useMetaInfoContext();
 
   const [play, setPlay] = useState(false);
-  const [defaultParameters, setDefaultParameters] = useState(parameters ? {...parameters} : undefined)
-  const [defaultVariables, setDefaultVariables] = useState(variables ? {...variables} : undefined)
+  const [defaultParameters, setDefaultParameters] = useState(
+    parameters ? { ...parameters } : undefined
+  );
+  const [defaultVariables, setDefaultVariables] = useState(
+    variables ? { ...variables } : undefined
+  );
   const [defaultOutputText, setDefaultOutputText] = useState<string>();
   const [origRecord, setOrigRecord] = useState(new PromptDetailsDTO());
   const [editRecordName, setEditRecordName] = useState<string | null>(null);
@@ -67,7 +140,9 @@ export default function PromptEditor({
   const [rounds, setRounds] = useState<MessageRound[]>([]);
   const [editRound, setEditRound] = useState(false);
   const [editUserName, setEditUserName] = useState<string | undefined>('user');
-  const [editAssistantName, setEditAssistantName] = useState<string | undefined>('assistant')
+  const [editAssistantName, setEditAssistantName] = useState<
+    string | undefined
+  >('assistant');
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
 
@@ -79,11 +154,12 @@ export default function PromptEditor({
     {
       label: 'Mustache',
       value: 'mustache',
-    },{
+    },
+    {
       label: 'F-String',
       value: 'f_string',
-    }
-  ]
+    },
+  ];
 
   const contentStyle = {
     whiteSpace: 'pre-wrap',
@@ -101,52 +177,73 @@ export default function PromptEditor({
     borderRadius: '12px',
   });
 
-const getEditRecord = useCallback((inputsJson: string | undefined) => {
-    const newRecord = new PromptDetailsDTO();
-    newRecord.promptId = id;
-    newRecord.name = recordName;
-    newRecord.description = description;
-    newRecord.type = origRecord.type;
-    newRecord.chatTemplate = new ChatPromptContentDTO();
-    newRecord.chatTemplate.system = system;
-    newRecord.chatTemplate.messages = [...messages];
-    newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
-    newRecord.chatTemplate.messageToSend.role = 'user';
-    setMessageText(newRecord.chatTemplate.messageToSend, userMessage);
-    newRecord.template = stringTemplate;
-    newRecord.example = example;
-    newRecord.inputs = inputsJson;
-    newRecord.visibility = visibility;
-    newRecord.format = format;
-    newRecord.lang = lang;
-    newRecord.tags = [...tags];
-    newRecord.aiModels = [...models];
-    newRecord.promptUid = origRecord.promptUid;
+  const getEditRecord = useCallback(
+    (inputsJson: string | undefined) => {
+      const newRecord = new PromptDetailsDTO();
+      newRecord.promptId = id;
+      newRecord.name = recordName;
+      newRecord.description = description;
+      newRecord.type = origRecord.type;
+      newRecord.chatTemplate = new ChatPromptContentDTO();
+      newRecord.chatTemplate.system = system;
+      newRecord.chatTemplate.messages = [...messages];
+      newRecord.chatTemplate.messageToSend = new ChatMessageDTO();
+      newRecord.chatTemplate.messageToSend.role = 'user';
+      setMessageText(newRecord.chatTemplate.messageToSend, userMessage);
+      newRecord.template = stringTemplate;
+      newRecord.example = example;
+      newRecord.inputs = inputsJson;
+      newRecord.visibility = visibility;
+      newRecord.format = format;
+      newRecord.lang = lang;
+      newRecord.tags = [...tags];
+      newRecord.aiModels = [...models];
+      newRecord.promptUid = origRecord.promptUid;
 
-    return newRecord;
-  }, [description, example, format, id, lang, messages, models, origRecord.promptUid, origRecord.type, recordName, stringTemplate, system, tags, userMessage, visibility]);
+      return newRecord;
+    },
+    [
+      description,
+      example,
+      format,
+      id,
+      lang,
+      messages,
+      models,
+      origRecord.promptUid,
+      origRecord.type,
+      recordName,
+      stringTemplate,
+      system,
+      tags,
+      userMessage,
+      visibility,
+    ]
+  );
 
   useEffect(() => {
     if (id) {
-      promptApi?.getPromptDetails(id)
-        .then(setOrigRecord)
-        .catch(handleError);
+      promptApi?.getPromptDetails(id).then(setOrigRecord).catch(handleError);
     }
 
-    aiServiceApi?.listAiModelInfo()
-      .then(setModelInfos)
-      .catch(handleError);
+    aiServiceApi?.listAiModelInfo().then(setModelInfos).catch(handleError);
   }, [handleError, id, promptApi, aiServiceApi]);
 
   useEffect(() => {
     const { hash } = window.location;
     const delay = 200;
     let handler: number | undefined;
-    
+
     if (hash === '#system' && systemRef.current) {
-      handler = setTimeout(() => systemRef.current?.scrollIntoView({ behavior: 'smooth' }), delay);
+      handler = setTimeout(
+        () => systemRef.current?.scrollIntoView({ behavior: 'smooth' }),
+        delay
+      );
     } else if (hash === '#messages' && messageRef.current) {
-      handler = setTimeout(() => messageRef.current?.scrollIntoView({ behavior: 'smooth' }), delay);
+      handler = setTimeout(
+        () => messageRef.current?.scrollIntoView({ behavior: 'smooth' }),
+        delay
+      );
     }
 
     return () => {
@@ -157,13 +254,12 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
   }, [origRecord]);
 
   useEffect(() => {
-    setDefaultParameters(parameters ? {...parameters} : undefined);
+    setDefaultParameters(parameters ? { ...parameters } : undefined);
   }, [parameters]);
 
   useEffect(() => {
-    setDefaultVariables(variables ? {...variables} : undefined);
+    setDefaultVariables(variables ? { ...variables } : undefined);
   }, [variables]);
-
 
   useEffect(() => {
     if (origRecord) {
@@ -179,15 +275,17 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
         }
       }
 
-      const draftRecord = {...origRecord, ...draft};
+      const draftRecord = { ...origRecord, ...draft };
 
       setRecordName(draftRecord.name);
       setDescription(draftRecord.description);
       setStringTemplate(draftRecord.template);
       setSystem(draftRecord.chatTemplate?.system);
       setUserName(draftRecord.chatTemplate?.messageToSend?.name ?? 'user');
-      setUserMessage(draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
-        (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}'));
+      setUserMessage(
+        draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
+          (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}')
+      );
       setMessages(draftRecord.chatTemplate?.messages ?? []);
       setExample(draftRecord.example);
 
@@ -198,7 +296,9 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
       setModels(draftRecord.aiModels ?? []);
       if (draftRecord.ext) {
         try {
-          const persistentParameters = JSON.parse(draftRecord.ext) as { [key: string]: any };
+          const persistentParameters = JSON.parse(draftRecord.ext) as {
+            [key: string]: any;
+          };
           setDefaultParameters(persistentParameters);
         } catch (error) {
           // ignore
@@ -212,34 +312,38 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
 
   useEffect(() => {
     if (originName.current) {
-      setInputs((prevInputs => extractVariables(getEditRecord(JSON.stringify(prevInputs)))));
+      setInputs((prevInputs) =>
+        extractVariables(getEditRecord(JSON.stringify(prevInputs)))
+      );
     }
   }, [getEditRecord, userMessage, stringTemplate]);
 
   useEffect(() => {
     if (originName.current) {
       setRounds(messagesToRounds(messages));
-      setInputs((prevInputs => extractVariables(getEditRecord(JSON.stringify(prevInputs)))));
+      setInputs((prevInputs) =>
+        extractVariables(getEditRecord(JSON.stringify(prevInputs)))
+      );
     }
   }, [getEditRecord, messages]);
 
   useEffect(() => {
     if (originName.current) {
-      setDefaultVariables(prevVariables => {
-        const filteredInputs: { [key: string]: any; } = {};
-        Object.keys(prevVariables ?? {}).forEach(k => {
+      setDefaultVariables((prevVariables) => {
+        const filteredInputs: { [key: string]: any } = {};
+        Object.keys(prevVariables ?? {}).forEach((k) => {
           if (k in (inputs ?? {}) && prevVariables?.k) {
             filteredInputs[k] = prevVariables.k;
           }
         });
-        return {...inputs, ...filteredInputs};
+        return { ...inputs, ...filteredInputs };
       });
     }
   }, [inputs]);
 
   useEffect(() => {
     if (originName.current) {
-      setUserMessage(prevUserMessage => {
+      setUserMessage((prevUserMessage) => {
         if (format === 'mustache' && prevUserMessage === '{input}') {
           return '{{{input}}}';
         } else if (format === 'f_string' && prevUserMessage === '{{{input}}}') {
@@ -251,13 +355,23 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
     }
   }, [format]);
 
-  function handlePlaySuccess(request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined): void {
-    request?.params && Object.keys(request?.params).length > 0 ?
-      setDefaultParameters(request?.params) : setDefaultParameters(undefined);
+  function handlePlaySuccess(
+    request: PromptAiParamDTO | undefined,
+    response: LlmResultDTO | undefined
+  ): void {
+    request?.params && Object.keys(request?.params).length > 0
+      ? setDefaultParameters(request?.params)
+      : setDefaultParameters(undefined);
 
-    if (request?.promptRef?.variables && Object.keys(request?.promptRef?.variables).length > 0) {
-      setDefaultVariables(request?.promptRef?.variables); 
-    } else if (request?.promptTemplate?.variables && Object.keys(request?.promptTemplate?.variables).length > 0) {
+    if (
+      request?.promptRef?.variables &&
+      Object.keys(request?.promptRef?.variables).length > 0
+    ) {
+      setDefaultVariables(request?.promptRef?.variables);
+    } else if (
+      request?.promptTemplate?.variables &&
+      Object.keys(request?.promptTemplate?.variables).length > 0
+    ) {
       setDefaultVariables(request?.promptTemplate?.variables);
     } else {
       setDefaultVariables(undefined);
@@ -266,13 +380,23 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
     setDefaultOutputText(getMessageText(response?.message) ?? response?.text);
   }
 
-  function handlePlayFailure(request: PromptAiParamDTO | undefined, error: any): void {
-    request?.params && Object.keys(request?.params).length > 0 ?
-      setDefaultParameters(request?.params) : setDefaultParameters(undefined);
+  function handlePlayFailure(
+    request: PromptAiParamDTO | undefined,
+    error: any
+  ): void {
+    request?.params && Object.keys(request?.params).length > 0
+      ? setDefaultParameters(request?.params)
+      : setDefaultParameters(undefined);
 
-    if (request?.promptRef?.variables && Object.keys(request?.promptRef?.variables).length > 0) {
-      setDefaultVariables(request?.promptRef?.variables); 
-    } else if (request?.promptTemplate?.variables && Object.keys(request?.promptTemplate?.variables).length > 0) {
+    if (
+      request?.promptRef?.variables &&
+      Object.keys(request?.promptRef?.variables).length > 0
+    ) {
+      setDefaultVariables(request?.promptRef?.variables);
+    } else if (
+      request?.promptTemplate?.variables &&
+      Object.keys(request?.promptTemplate?.variables).length > 0
+    ) {
       setDefaultVariables(request?.promptTemplate?.variables);
     } else {
       setDefaultVariables(undefined);
@@ -291,8 +415,9 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
         setRecordName(editRecordName);
         setEditRecordName(null);
       } else {
-        promptApi?.existsPromptName(editRecordName)
-          .then(resp => {
+        promptApi
+          ?.existsPromptName(editRecordName)
+          .then((resp) => {
             if (!resp) {
               setRecordName(editRecordName);
               setEditRecordName(null);
@@ -309,28 +434,38 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
   }
 
   function handleRoundRemoved(round: MessageRound) {
-    const newMessages = messages.filter(message => (message !== round.assistant) && (message !== round.user));
+    const newMessages = messages.filter(
+      (message) => message !== round.assistant && message !== round.user
+    );
     setMessages(newMessages);
   }
 
   function handleRoundEdit(): void {
     if (rounds.length > 0) {
       const round = rounds[rounds.length - 1];
-      setEditUserName((round.user.name || round.user.role || 'user').toUpperCase());
-      setEditAssistantName((round.assistant.name || round.assistant.role || 'assistant').toUpperCase());
+      setEditUserName(
+        (round.user.name || round.user.role || 'user').toUpperCase()
+      );
+      setEditAssistantName(
+        (
+          round.assistant.name ||
+          round.assistant.role ||
+          'assistant'
+        ).toUpperCase()
+      );
     }
     setEditRound(true);
   }
 
   function handleRoundCommit(): void {
     const currentUserMessage = new ChatMessageDTO();
-    currentUserMessage.role = 'user',
-    currentUserMessage.name = editUserName;
+    (currentUserMessage.role = 'user'),
+      (currentUserMessage.name = editUserName);
     setMessageText(currentUserMessage, editUserContent);
 
     const currentAssistantMessage = new ChatMessageDTO();
-    currentAssistantMessage.role = 'assistant',
-    currentAssistantMessage.name = editAssistantName;
+    (currentAssistantMessage.role = 'assistant'),
+      (currentAssistantMessage.name = editAssistantName);
     setMessageText(currentAssistantMessage, editAssistantContent);
 
     setMessages([...messages, currentUserMessage, currentAssistantMessage]);
@@ -338,17 +473,18 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
   }
 
   function handleInputsChange(k: string, v: string): void {
-    const currentInputs = {...inputs ?? {}};
+    const currentInputs = { ...(inputs ?? {}) };
     currentInputs[k] = v;
     setInputs(currentInputs);
   }
 
   function handleTagDelete(tagDeleted: string): void {
-    tags && setTags(tags.filter(tag => tagDeleted !== tag));
+    tags && setTags(tags.filter((tag) => tagDeleted !== tag));
   }
 
   function handleModelDelete(modelIdDeleted: string): void {
-    models && setModels(models.filter(model => modelIdDeleted !== model.modelId));
+    models &&
+      setModels(models.filter((model) => modelIdDeleted !== model.modelId));
   }
 
   function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
@@ -358,43 +494,55 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
   }
 
   function handleModelSubmit(): void {
-    const modelInfo = modelInfos.find(modelInfo => modelInfo.modelId === modelId);
-    modelInfo && models && !models.find(model => modelId === model.modelId) && setModels([...models, modelInfo]);
+    const modelInfo = modelInfos.find(
+      (modelInfo) => modelInfo.modelId === modelId
+    );
+    modelInfo &&
+      models &&
+      !models.find((model) => modelId === model.modelId) &&
+      setModels([...models, modelInfo]);
     setModelId(undefined);
   }
 
-  function handleExampleGenerate(request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined): void {
+  function handleExampleGenerate(
+    request: PromptAiParamDTO | undefined,
+    response: LlmResultDTO | undefined
+  ): void {
     if (!request || !response) {
       return;
     }
-    const req = {...request};
-    const onRendered = ((renderedRequest: PromptAiParamDTO) => {
+    const req = { ...request };
+    const onRendered = (renderedRequest: PromptAiParamDTO) => {
       const newExample = generateExample(renderedRequest, response);
       if (newExample) {
         setExample(newExample);
       }
-    });
-    
+    };
+
     if (req.prompt) {
       onRendered(req);
     } else if (req.promptTemplate) {
-      promptApi?.applyPromptTemplate(req.promptTemplate)
-        .then(resp => {
+      promptApi
+        ?.applyPromptTemplate(req.promptTemplate)
+        .then((resp) => {
           if (!resp) {
             return;
           }
           if (req.promptTemplate?.template) {
             req.promptTemplate.template = resp;
           } else if (req.promptTemplate?.chatTemplate) {
-            req.promptTemplate.chatTemplate = JSON.parse(resp) as ChatPromptContentDTO;
+            req.promptTemplate.chatTemplate = JSON.parse(
+              resp
+            ) as ChatPromptContentDTO;
           }
 
           onRendered(req);
         })
         .catch(handleError);
     } else if (req.promptRef) {
-      promptApi?.applyPromptRef(req.promptRef)
-        .then(resp => {
+      promptApi
+        ?.applyPromptRef(req.promptRef)
+        .then((resp) => {
           if (!resp) {
             return;
           }
@@ -405,8 +553,10 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
             promptTemplate.format = 'mustache';
           }
           try {
-            promptTemplate.chatTemplate = JSON.parse(resp) as ChatPromptContentDTO;
-          } catch(error) {
+            promptTemplate.chatTemplate = JSON.parse(
+              resp
+            ) as ChatPromptContentDTO;
+          } catch (error) {
             promptTemplate.template = resp;
           }
           promptTemplate.variables = req.promptRef?.variables;
@@ -431,14 +581,13 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
     const request = new PromptUpdateDTO();
     request.draft = JSON.stringify(draftRecord);
 
-    promptApi?.updatePrompt(id, request)
-      .then(resp => {
+    promptApi
+      ?.updatePrompt(id, request)
+      .then((resp) => {
         if (!resp) {
           return;
         }
-        promptApi?.getPromptDetails(id)
-          .then(setOrigRecord)
-          .catch(handleError);
+        promptApi?.getPromptDetails(id).then(setOrigRecord).catch(handleError);
       })
       .catch(handleError);
   }
@@ -448,8 +597,9 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
       return;
     }
     const onUpdated = (currentId: number, visibility: string) => {
-      promptApi?.publishPrompt(currentId, visibility)
-        .then(resp => {
+      promptApi
+        ?.publishPrompt(currentId, visibility)
+        .then((resp) => {
           if (!resp) {
             return;
           }
@@ -461,49 +611,57 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
     const editRecord = getEditRecord(JSON.stringify(inputs));
 
     const request = recordToUpdateRequest(editRecord);
-    promptApi?.updatePrompt(id, request)
-      .then(resp => {
+    promptApi
+      ?.updatePrompt(id, request)
+      .then((resp) => {
         if (resp) {
-          promptApi?.getPromptDetails(id)
-            .then(newRecord => {
+          promptApi
+            ?.getPromptDetails(id)
+            .then((newRecord) => {
               setOrigRecord(newRecord);
-              onUpdated(id, editRecord.visibility === 'private' ? 'private' : 'public');
+              onUpdated(
+                id,
+                editRecord.visibility === 'private' ? 'private' : 'public'
+              );
             })
             .catch(handleError);
         }
       })
       .catch(handleError);
-
   }
 
-  function filterModels(provider?: string): (AiModelInfoDTO)[] {
-    return modelInfos ? modelInfos.filter(modelInfo => {
-      if (!modelInfo || (provider && modelInfo.provider !== provider)) {
-        return false;
-      }
-      switch(origRecord.type) {
-        case 'chat': {
-          return modelInfo.type === 'text2chat';
-        }
-        case 'string': {
-          return modelInfo.type === 'text2text';
-        }
-        default: {
-          return false;
-        }
-      }
-    }) : [];
+  function filterModels(provider?: string): AiModelInfoDTO[] {
+    return modelInfos
+      ? modelInfos.filter((modelInfo) => {
+          if (!modelInfo || (provider && modelInfo.provider !== provider)) {
+            return false;
+          }
+          switch (origRecord.type) {
+            case 'chat': {
+              return modelInfo.type === 'text2chat';
+            }
+            case 'string': {
+              return modelInfo.type === 'text2text';
+            }
+            default: {
+              return false;
+            }
+          }
+        })
+      : [];
   }
 
-  function messagesToRounds(messages: ChatMessageDTO[] | undefined): MessageRound[] {
+  function messagesToRounds(
+    messages: ChatMessageDTO[] | undefined
+  ): MessageRound[] {
     const rounds: MessageRound[] = [];
-  
+
     if (!messages) {
       return rounds;
     }
-  
+
     for (let i = 0; i < messages.length; i = i + 2) {
-      if ((i + 1) < messages.length) {
+      if (i + 1 < messages.length) {
         let assistant: ChatMessageDTO;
         let user: ChatMessageDTO;
         if (messages[i].role === 'user') {
@@ -513,23 +671,25 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
           assistant = messages[i];
           user = messages[i + 1];
         }
-  
+
         const round: MessageRound = {
           assistant: assistant,
           user: user,
-        }
-  
+        };
+
         rounds.push(round);
       }
     }
-  
+
     return rounds;
   }
 
   function recordToUpdateRequest(record: PromptDetailsDTO): PromptUpdateDTO {
     const request = new PromptUpdateDTO();
-    request.aiModels = record.aiModels?.map(modelInfo => modelInfo.modelId as string);
-    request.chatTemplate = {...record.chatTemplate};
+    request.aiModels = record.aiModels?.map(
+      (modelInfo) => modelInfo.modelId as string
+    );
+    request.chatTemplate = { ...record.chatTemplate };
     request.description = record.description;
     request.example = record.example;
     request.ext = record.ext;
@@ -559,38 +719,53 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
       }
     }
 
-    const draftRecord = {...origRecord, ...draft};
+    const draftRecord = { ...origRecord, ...draft };
 
-    return objectsEqual(draftRecord.name, recordName) &&
+    return (
+      objectsEqual(draftRecord.name, recordName) &&
       objectsEqual(draftRecord.description, description) &&
       objectsEqual(draftRecord.template, stringTemplate) &&
       objectsEqual(draftRecord.chatTemplate?.system, system) &&
-      objectsEqual((draftRecord.chatTemplate?.messageToSend?.name ?? 'user'), userName) &&
-      objectsEqual((draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
-        (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}')), userMessage) &&
-      objectsEqual((draftRecord.chatTemplate?.messages ?? []), messages) &&
+      objectsEqual(
+        draftRecord.chatTemplate?.messageToSend?.name ?? 'user',
+        userName
+      ) &&
+      objectsEqual(
+        draftRecord.chatTemplate?.messageToSend?.contents?.[0]?.content ||
+          (draftRecord.format === 'f_string' ? '{input}' : '{{{input}}}'),
+        userMessage
+      ) &&
+      objectsEqual(draftRecord.chatTemplate?.messages ?? [], messages) &&
       objectsEqual(draftRecord.example, example) &&
-      objectsEqual((draftRecord.visibility ?? 'private'), visibility) &&
-      objectsEqual((draftRecord.format ?? 'mustache'), format) &&
-      objectsEqual((draftRecord.lang ? draftRecord.lang.split('_')[0] : 'en'), lang) &&
-      objectsEqual((draftRecord.tags ?? []), tags) &&
-      objectsEqual((draftRecord.aiModels ?? []), models);
+      objectsEqual(draftRecord.visibility ?? 'private', visibility) &&
+      objectsEqual(draftRecord.format ?? 'mustache', format) &&
+      objectsEqual(
+        draftRecord.lang ? draftRecord.lang.split('_')[0] : 'en',
+        lang
+      ) &&
+      objectsEqual(draftRecord.tags ?? [], tags) &&
+      objectsEqual(draftRecord.aiModels ?? [], models)
+    );
   }
 
   return (
     <>
       <LinePlaceholder />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
-        alignItems: { xs: 'flex-start', sm: 'flex-end' },
-        gap: { xs: 1, sm: 2 },
-        justifyContent: 'flex-end',
-      }}>
-        <CommonContainer sx={{
-          alignItems: 'center',
-          flex: 1,
-        }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'flex-start', sm: 'flex-end' },
+          gap: { xs: 1, sm: 2 },
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CommonContainer
+          sx={{
+            alignItems: 'center',
+            flex: 1,
+          }}
+        >
           <Typography level="h3">{recordName}</Typography>
           <IconButton
             disabled={!!editRecordName}
@@ -601,7 +776,12 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
           </IconButton>
         </CommonContainer>
         <Typography level="body-sm">
-          {t('Updated on')} {getDateLabel(origRecord?.gmtModified || new Date(0), i18n.language, true)}
+          {t('Updated on')}{' '}
+          {getDateLabel(
+            origRecord?.gmtModified || new Date(0),
+            i18n.language,
+            true
+          )}
         </Typography>
 
         <ButtonGroup
@@ -610,9 +790,10 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
           color="primary"
           sx={{
             borderRadius: '16px',
-        }}>
+          }}
+        >
           <Button
-            disabled={isSaved() || visibility==='hidden'}
+            disabled={isSaved() || visibility === 'hidden'}
             startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
           >
@@ -626,11 +807,11 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
           </Button>
           {play ? (
             <Button
-            startDecorator={<ArrowBackRounded />}
-            onClick={() => setPlay(false)}
-          >
-            {t('button:Back')}
-          </Button>
+              startDecorator={<ArrowBackRounded />}
+              onClick={() => setPlay(false)}
+            >
+              {t('button:Back')}
+            </Button>
           ) : (
             <Button
               startDecorator={<PlayCircleOutlineRounded />}
@@ -646,19 +827,30 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
 
       <CommonContainer sx={{ alignItems: 'flex-start' }}>
         <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
-          <Stack spacing={3} sx={{
-            minWidth: { sm: '16rem' },
-            mt: 2,
-            flex: 1,
-          }}>
-            <Stack spacing={1} sx={{
-              minWidth: { sm: '12rem' },
-            }}>
+          <Stack
+            spacing={3}
+            sx={{
+              minWidth: { sm: '16rem' },
+              mt: 2,
+              flex: 1,
+            }}
+          >
+            <Stack
+              spacing={1}
+              sx={{
+                minWidth: { sm: '12rem' },
+              }}
+            >
               <CommonBox>
                 <Typography level="title-lg" color="primary">
                   {t('Description')}
                 </Typography>
-                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports markdown format')}>
+                <Tooltip
+                  sx={{ maxWidth: '20rem' }}
+                  size="sm"
+                  placement="right"
+                  title={t('Supports markdown format')}
+                >
                   <HelpIcon />
                 </Tooltip>
               </CommonBox>
@@ -673,10 +865,15 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
 
             {origRecord?.type === 'chat' && origRecord?.chatTemplate ? (
               <Fragment>
-                <Stack spacing={1} sx={{
-                  minWidth: { sm: '12rem' },
-                }}>
-                  <Chip ref={systemRef} variant="soft" color="primary">SYSTEM</Chip>
+                <Stack
+                  spacing={1}
+                  sx={{
+                    minWidth: { sm: '12rem' },
+                  }}
+                >
+                  <Chip ref={systemRef} variant="soft" color="primary">
+                    SYSTEM
+                  </Chip>
                   <ContentTextarea
                     name="system"
                     minRows={3}
@@ -684,12 +881,24 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                     onChange={(event) => setSystem(event.target.value)}
                   />
                 </Stack>
-                <Stack spacing={1} sx={{
-                  minWidth: { sm: '12rem' },
-                }}>
+                <Stack
+                  spacing={1}
+                  sx={{
+                    minWidth: { sm: '12rem' },
+                  }}
+                >
                   <CommonBox ref={messageRef}>
-                    <Chip variant="soft" color="primary">MESSAGES</Chip>
-                    <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('These messages will always be used as the starting message in the chat history')}>
+                    <Chip variant="soft" color="primary">
+                      MESSAGES
+                    </Chip>
+                    <Tooltip
+                      sx={{ maxWidth: '20rem' }}
+                      size="sm"
+                      placement="right"
+                      title={t(
+                        'These messages will always be used as the starting message in the chat history'
+                      )}
+                    >
                       <HelpIcon />
                     </Tooltip>
                     <IconButton
@@ -706,18 +915,36 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                       {rounds?.map((round, index) => {
                         return (
                           <CommonBox key={`round-${index}`} sx={roundItemStyle}>
-                            <CommonGridBox sx={{
-                              flex: 1,
-                              gap: 1,
-                            }}>
-                              <Chip variant="soft" color="success" sx={{ "--Chip-radius": "2px"}}>
-                                {(round.user.name || round.user.role || 'user').toUpperCase()}
+                            <CommonGridBox
+                              sx={{
+                                flex: 1,
+                                gap: 1,
+                              }}
+                            >
+                              <Chip
+                                variant="soft"
+                                color="success"
+                                sx={{ '--Chip-radius': '2px' }}
+                              >
+                                {(
+                                  round.user.name ||
+                                  round.user.role ||
+                                  'user'
+                                ).toUpperCase()}
                               </Chip>
                               <Typography level="body-md" sx={contentStyle}>
                                 {getMessageText(round.user)}
                               </Typography>
-                              <Chip variant="soft" color="warning" sx={{ "--Chip-radius": "2px"}}>
-                                {(round.assistant.name || round.assistant.role || 'assistant').toUpperCase()}
+                              <Chip
+                                variant="soft"
+                                color="warning"
+                                sx={{ '--Chip-radius': '2px' }}
+                              >
+                                {(
+                                  round.assistant.name ||
+                                  round.assistant.role ||
+                                  'assistant'
+                                ).toUpperCase()}
                               </Chip>
                               <Typography level="body-md" sx={contentStyle}>
                                 {getMessageText(round.assistant)}
@@ -732,45 +959,67 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                               <RemoveCircleOutlineRounded />
                             </IconButton>
                           </CommonBox>
-                        )
+                        );
                       })}
                     </Fragment>
                   )}
                   {editRound && (
                     <CommonBox sx={roundItemStyle}>
-                      <Box sx={{
-                        flex: 1,
-                        display: 'grid',
-                        gridTemplateColumns: 'auto 1fr',
-                        gap: 1,
-                      }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          display: 'grid',
+                          gridTemplateColumns: 'auto 1fr',
+                          gap: 1,
+                        }}
+                      >
                         {rounds.length > 0 ? (
-                          <Chip variant="soft" color="success" sx={{ "--Chip-radius": "2px"}}>{editUserName}</Chip>
+                          <Chip
+                            variant="soft"
+                            color="success"
+                            sx={{ '--Chip-radius': '2px' }}
+                          >
+                            {editUserName}
+                          </Chip>
                         ) : (
                           <TinyInput
                             name="editUserName"
                             value={editUserName}
-                            onChange={(event) => setEditUserName(event.target.value)}
+                            onChange={(event) =>
+                              setEditUserName(event.target.value)
+                            }
                           />
                         )}
                         <ContentTextarea
                           name="editUserMessage"
                           value={editUserContent}
-                          onChange={(event) => setEditUserContent(event.target.value)}
+                          onChange={(event) =>
+                            setEditUserContent(event.target.value)
+                          }
                         />
                         {rounds.length > 0 ? (
-                          <Chip variant="soft" color="warning" sx={{ "--Chip-radius": "2px"}}>{editAssistantName}</Chip>
+                          <Chip
+                            variant="soft"
+                            color="warning"
+                            sx={{ '--Chip-radius': '2px' }}
+                          >
+                            {editAssistantName}
+                          </Chip>
                         ) : (
                           <TinyInput
                             name="editAssistantName"
                             value={editAssistantName}
-                            onChange={(event) => setEditAssistantName(event.target.value)}
+                            onChange={(event) =>
+                              setEditAssistantName(event.target.value)
+                            }
                           />
                         )}
                         <ContentTextarea
                           name="editAssistantMessage"
                           value={editAssistantContent}
-                          onChange={(event) => setEditAssistantContent(event.target.value)}
+                          onChange={(event) =>
+                            setEditAssistantContent(event.target.value)
+                          }
                         />
                       </Box>
                       <IconButton
@@ -791,24 +1040,30 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                       </IconButton>
                     </CommonBox>
                   )}
-
                 </Stack>
-                <Stack spacing={1} sx={{
-                  minWidth: { sm: '12rem' },
-                }}>
-                  <Chip variant="soft" color="success">{userName?.toUpperCase() ?? 'USER'}</Chip>
+                <Stack
+                  spacing={1}
+                  sx={{
+                    minWidth: { sm: '12rem' },
+                  }}
+                >
+                  <Chip variant="soft" color="success">
+                    {userName?.toUpperCase() ?? 'USER'}
+                  </Chip>
                   <ContentTextarea
                     name="user"
                     value={userMessage}
                     onChange={(event) => setUserMessage(event.target.value)}
                   />
                 </Stack>
-
               </Fragment>
             ) : (
-              <Stack spacing={1} sx={{
-                minWidth: { sm: '12rem' },
-              }}>
+              <Stack
+                spacing={1}
+                sx={{
+                  minWidth: { sm: '12rem' },
+                }}
+              >
                 <Typography level="title-lg" color="primary">
                   {t('Template')}
                 </Typography>
@@ -826,7 +1081,14 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
               <Typography level="title-lg" color="primary">
                 {t('Inputs')}
               </Typography>
-              <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('If an input\'s value is not specified at runtime, the default value set here will be used')}>
+              <Tooltip
+                sx={{ maxWidth: '20rem' }}
+                size="sm"
+                placement="right"
+                title={t(
+                  "If an input's value is not specified at runtime, the default value set here will be used"
+                )}
+              >
                 <HelpIcon />
               </Tooltip>
             </CommonBox>
@@ -834,7 +1096,15 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
               <Table sx={{ my: 1 }}>
                 <thead>
                   <tr>
-                    <th style={{ width: '30%', maxWidth: '50%', overflowWrap: 'break-word' }}>{t('Placeholder')}</th>
+                    <th
+                      style={{
+                        width: '30%',
+                        maxWidth: '50%',
+                        overflowWrap: 'break-word',
+                      }}
+                    >
+                      {t('Placeholder')}
+                    </th>
                     <th>{t('Default value')}</th>
                   </tr>
                 </thead>
@@ -843,12 +1113,14 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                     <tr key={`input-${k}`}>
                       <td>{k}</td>
                       <td>
-                      <Textarea
-                        disabled={k === 'input'}
-                        name={`input-value-${k}`}
-                        value={v}
-                        onChange={(event) => handleInputsChange(k, event.target.value)}
-                      />
+                        <Textarea
+                          disabled={k === 'input'}
+                          name={`input-value-${k}`}
+                          value={v}
+                          onChange={(event) =>
+                            handleInputsChange(k, event.target.value)
+                          }
+                        />
                       </td>
                     </tr>
                   ))}
@@ -856,14 +1128,22 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
               </Table>
             )}
 
-            <Stack spacing={1} sx={{
-              minWidth: { sm: '12rem' },
-            }}>
+            <Stack
+              spacing={1}
+              sx={{
+                minWidth: { sm: '12rem' },
+              }}
+            >
               <CommonBox>
                 <Typography level="title-lg" color="primary">
                   {t('Example')}
                 </Typography>
-                <Tooltip sx= {{ maxWidth: '20rem' }} size="sm" placement="right" title={t('Supports markdown format')}>
+                <Tooltip
+                  sx={{ maxWidth: '20rem' }}
+                  size="sm"
+                  placement="right"
+                  title={t('Supports markdown format')}
+                >
                   <HelpIcon />
                 </Tooltip>
               </CommonBox>
@@ -878,19 +1158,21 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
 
           {/* Meta Settings */}
           {!play && (
-            <Card sx={{
-              width: { xs: '100%', sm: '16rem' },
-              my: 2,
-              mx: { xs: 0, sm: 2 },
-              p: 2,
-              boxShadow: 'sm',
-            }}>
+            <Card
+              sx={{
+                width: { xs: '100%', sm: '16rem' },
+                my: 2,
+                mx: { xs: 0, sm: 2 },
+                p: 2,
+                boxShadow: 'sm',
+              }}
+            >
               <CommonGridBox>
                 <Typography level="title-sm" textColor="neutral">
                   {t('Public')}
                 </Typography>
                 <Switch
-                  checked={visibility==='public' || visibility==='hidden'}
+                  checked={visibility === 'public' || visibility === 'hidden'}
                   sx={{
                     [`&.${switchClasses.checked}`]: {
                       '--Switch-trackBackground': '#4CA176',
@@ -899,7 +1181,11 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                       },
                     },
                   }}
-                  onChange={(event) => event.target.checked ? setVisibility('public') : setVisibility('private')}
+                  onChange={(event) =>
+                    event.target.checked
+                      ? setVisibility('public')
+                      : setVisibility('private')
+                  }
                 />
 
                 <Typography level="title-sm" textColor="neutral">
@@ -926,7 +1212,11 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                       size="sm"
                       value={item.value}
                       disableIcon
-                      label={(<Typography noWrap level="body-xs">{item.label}</Typography>)}
+                      label={
+                        <Typography noWrap level="body-xs">
+                          {item.label}
+                        </Typography>
+                      }
                       variant="plain"
                       sx={{
                         p: 0.5,
@@ -936,7 +1226,8 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                         action: ({ checked }) => ({
                           sx: (theme) => ({
                             ...(checked && {
-                              backgroundColor: theme.palette.primary.softHoverBg,
+                              backgroundColor:
+                                theme.palette.primary.softHoverBg,
                               boxShadow: 'sm',
                               '&:hover': {
                                 bgcolor: theme.palette.primary.softActiveBg,
@@ -970,7 +1261,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                 <Typography level="title-sm" textColor="neutral">
                   {t('Tags')}
                 </Typography>
-                {(!tags || tags.length < 5) && (tag === undefined) && (
+                {(!tags || tags.length < 5) && tag === undefined && (
                   <IconButton
                     size="sm"
                     color="primary"
@@ -979,27 +1270,30 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                     <AddCircleRounded />
                   </IconButton>
                 )}
-                {(tag !== undefined) && (
+                {tag !== undefined && (
                   <form onSubmit={handleTagSubmit}>
                     <TinyInput
                       type="text"
                       value={tag}
-                      onChange={(event => setTag(event.target.value))}
+                      onChange={(event) => setTag(event.target.value)}
                     />
                   </form>
                 )}
               </CommonBox>
               <CommonBox>
-                {tags.length > 0 && tags.map((tag, index) => (
-                  <Chip
-                    variant="outlined"
-                    color="success"
-                    key={`tag-${tag}-${index}`}
-                    endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
-                  >
-                    {tag}
-                  </Chip>
-                ))}
+                {tags.length > 0 &&
+                  tags.map((tag, index) => (
+                    <Chip
+                      variant="outlined"
+                      color="success"
+                      key={`tag-${tag}-${index}`}
+                      endDecorator={
+                        <ChipDelete onDelete={() => handleTagDelete(tag)} />
+                      }
+                    >
+                      {tag}
+                    </Chip>
+                  ))}
               </CommonBox>
               <LinePlaceholder spacing={2} />
 
@@ -1024,18 +1318,28 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                       variant="outlined"
                       color="warning"
                       key={`model-${model.modelId}-${index}`}
-                      endDecorator={<ChipDelete onDelete={() => model.modelId && handleModelDelete(model.modelId)} />}
+                      endDecorator={
+                        <ChipDelete
+                          onDelete={() =>
+                            model.modelId && handleModelDelete(model.modelId)
+                          }
+                        />
+                      }
                     >
                       {model.name}
                     </Chip>
                   ))}
                 </CommonBox>
               )}
-              {(modelId !== undefined) && (
+              {modelId !== undefined && (
                 <Fragment>
                   <CommonBox>
                     <Select
-                      placeholder={<Typography textColor="gray">{t('Choose a model')}</Typography>}
+                      placeholder={
+                        <Typography textColor="gray">
+                          {t('Choose a model')}
+                        </Typography>
+                      }
                       size="sm"
                       variant="outlined"
                       value={modelId}
@@ -1061,66 +1365,65 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
                             aria-labelledby={`select-group-${provider.provider}`}
                             sx={{ '--ListItemDecorator-size': '28px' }}
                           >
-                            <ListItem id={`select-group-${provider.provider}`} sticky>
+                            <ListItem
+                              id={`select-group-${provider.provider}`}
+                              sticky
+                            >
                               <Typography level="body-xs">
                                 {provider.label}
                               </Typography>
                             </ListItem>
-                            {filterModels(provider.provider).map((modelInfo) => (
-                              <Option
-                                key={`option-${modelInfo.modelId}`}
-                                value={modelInfo.modelId}
-                                label={
-                                  <Fragment>
-                                    <Chip
-                                      color="warning"
-                                      size="sm"
-                                      sx={{ borderRadius: 'xs', mr: 1 }}
-                                    >
-                                      {provider.label}
-                                    </Chip>{' '}
-                                    {modelInfo.name}
-                                  </Fragment>
-                                }
-                                sx={{
-                                  [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
-                                    {
-                                      opacity: 1,
-                                    },
-                                }}
-                              >
-                                <ListItemDecorator sx={{ opacity: 0 }}>
-                                  <CheckRounded />
-                                </ListItemDecorator>
-                                {modelInfo.name}
-                              </Option>
-                            ))}
+                            {filterModels(provider.provider).map(
+                              (modelInfo) => (
+                                <Option
+                                  key={`option-${modelInfo.modelId}`}
+                                  value={modelInfo.modelId}
+                                  label={
+                                    <Fragment>
+                                      <Chip
+                                        color="warning"
+                                        size="sm"
+                                        sx={{ borderRadius: 'xs', mr: 1 }}
+                                      >
+                                        {provider.label}
+                                      </Chip>{' '}
+                                      {modelInfo.name}
+                                    </Fragment>
+                                  }
+                                  sx={{
+                                    [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
+                                      {
+                                        opacity: 1,
+                                      },
+                                  }}
+                                >
+                                  <ListItemDecorator sx={{ opacity: 0 }}>
+                                    <CheckRounded />
+                                  </ListItemDecorator>
+                                  {modelInfo.name}
+                                </Option>
+                              )
+                            )}
                           </List>
                         </Fragment>
                       ))}
                     </Select>
                   </CommonBox>
                   <CommonBox sx={{ justifyContent: 'flex-end' }}>
-                    <IconButton
-                        size="sm"
-                        onClick={handleModelSubmit}
-                      >
-                        <CheckCircleOutlineRounded fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="sm"
-                        onClick={() => setModelId(undefined)}
-                      >
-                        <CancelOutlined fontSize="small" />
-                      </IconButton>
+                    <IconButton size="sm" onClick={handleModelSubmit}>
+                      <CheckCircleOutlineRounded fontSize="small" />
+                    </IconButton>
+                    <IconButton size="sm" onClick={() => setModelId(undefined)}>
+                      <CancelOutlined fontSize="small" />
+                    </IconButton>
                   </CommonBox>
                 </Fragment>
               )}
             </Card>
           )}
         </CommonContainer>
-        
-        {play && 
+
+        {play && (
           <PromptRunner
             minWidth="16rem"
             maxWidth="50%"
@@ -1133,7 +1436,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
             onPlayFailure={handlePlayFailure}
             onExampleSave={handleExampleGenerate}
           />
-        }
+        )}
       </CommonContainer>
       <ConfirmModal
         open={editRecordName !== null}
@@ -1143,7 +1446,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
         }}
         button={{
           text: t('button:Save'),
-          startDecorator: <SaveAltRounded />
+          startDecorator: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >
@@ -1154,7 +1457,7 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
             onChange={(event) => {
               setEditRecordName(event.target.value);
               setEditRecordNameError(false);
-          }}
+            }}
           />
           {editRecordNameError && (
             <FormHelperText>
@@ -1167,7 +1470,9 @@ const getEditRecord = useCallback((inputsJson: string | undefined) => {
 
       <RouterBlocker
         when={!isSaved()}
-        message={t('You may have unsaved changes. Are you sure you want to leave?')}
+        message={t(
+          'You may have unsaved changes. Are you sure you want to leave?'
+        )}
       />
     </>
   );

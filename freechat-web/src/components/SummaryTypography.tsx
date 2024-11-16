@@ -1,7 +1,11 @@
-import { styled } from "@mui/joy";
-import HighlightedTypography, { HighlightedTypographyProps } from "./HighlightedTypography";
+import { styled } from '@mui/joy';
+import HighlightedTypography, {
+  HighlightedTypographyProps,
+} from './HighlightedTypography';
 
-const SummaryTypography = styled(HighlightedTypography)<HighlightedTypographyProps>(() => ({
+const SummaryTypography = styled(
+  HighlightedTypography
+)<HighlightedTypographyProps>(() => ({
   display: '-webkit-box',
   overflow: 'hidden',
   textOverflow: 'ellipsis',

@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
-import { Option, Select } from "@mui/joy";
-import { LanguageRounded } from "@mui/icons-material";
-import { locales, i18nConfig } from "../configs/i18n-config.ts";
+import { useTranslation } from 'react-i18next';
+import { Option, Select } from '@mui/joy';
+import { LanguageRounded } from '@mui/icons-material';
+import { locales, i18nConfig } from '../configs/i18n-config.ts';
 
 export default function LanguageSelect() {
   const { i18n } = useTranslation();

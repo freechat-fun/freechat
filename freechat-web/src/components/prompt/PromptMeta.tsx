@@ -1,13 +1,18 @@
-import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
-import { Card, Chip, Typography } from "@mui/joy";
-import { CommonBox, HistoryTypography, LinePlaceholder, RouterLink } from "../../components";
-import { PromptDetailsDTO, AiModelInfoDTO } from "freechat-sdk";
-import { getLocaleLabel } from "../../configs/i18n-config";
+import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Card, Chip, Typography } from '@mui/joy';
+import {
+  CommonBox,
+  HistoryTypography,
+  LinePlaceholder,
+  RouterLink,
+} from '../../components';
+import { PromptDetailsDTO, AiModelInfoDTO } from 'freechat-sdk';
+import { getLocaleLabel } from '../../configs/i18n-config';
 
 export default function PromptMeta(props: {
-  record: PromptDetailsDTO | undefined,
-  history: [string, number][],
+  record: PromptDetailsDTO | undefined;
+  history: [string, number][];
 }) {
   const { record, history } = props;
   const { t } = useTranslation(['prompt']);
@@ -18,20 +23,23 @@ export default function PromptMeta(props: {
   const models: AiModelInfoDTO[] = record?.aiModels ?? [];
 
   return (
-    <Card sx={{
-      width: { xs: '100%', sm: '16rem' },
-      my: 2,
-      mx: { xs: 0, sm: 2 },
-      p: 2,
-      boxShadow: 'sm',
-    }}>
+    <Card
+      sx={{
+        width: { xs: '100%', sm: '16rem' },
+        my: 2,
+        mx: { xs: 0, sm: 2 },
+        p: 2,
+        boxShadow: 'sm',
+      }}
+    >
       {format && (
         <Fragment>
           <Typography level="title-sm" textColor="neutral">
             {t('Format')}
           </Typography>
           <Typography level="body-sm">
-            {format === 'f_string' ? 'F-String: ' : 'Mustache: '}&nbsp;<b>{format === 'f_string' ? '{placeholder}' : '{{placeholder}}'}</b>
+            {format === 'f_string' ? 'F-String: ' : 'Mustache: '}&nbsp;
+            <b>{format === 'f_string' ? '{placeholder}' : '{{placeholder}}'}</b>
           </Typography>
           <LinePlaceholder spacing={2} />
         </Fragment>
@@ -56,7 +64,13 @@ export default function PromptMeta(props: {
           </Typography>
           <CommonBox>
             {tags.map((tag, index) => (
-              <Chip variant="outlined" color="success" key={`tag-${tag}-${index}`}>{tag}</Chip>
+              <Chip
+                variant="outlined"
+                color="success"
+                key={`tag-${tag}-${index}`}
+              >
+                {tag}
+              </Chip>
             ))}
           </CommonBox>
           <LinePlaceholder spacing={2} />
@@ -70,7 +84,13 @@ export default function PromptMeta(props: {
           </Typography>
           <CommonBox>
             {models.map((model, index) => (
-              <Chip variant="outlined" color="warning" key={`model-${model.modelId}-${index}`}>{model.name}</Chip>
+              <Chip
+                variant="outlined"
+                color="warning"
+                key={`model-${model.modelId}-${index}`}
+              >
+                {model.name}
+              </Chip>
             ))}
           </CommonBox>
           <LinePlaceholder spacing={2} />
@@ -82,21 +102,23 @@ export default function PromptMeta(props: {
           <Typography level="title-sm" textColor="neutral">
             {t('History')}
           </Typography>
-          {history.map(item => {
+          {history.map((item) => {
             const label = item[0];
             const id = item[1];
             if (id === record?.promptId) {
               return (
-                <HistoryTypography textColor="gray" level="body-sm" key={`history-${id}`}>
+                <HistoryTypography
+                  textColor="gray"
+                  level="body-sm"
+                  key={`history-${id}`}
+                >
                   {label}
                 </HistoryTypography>
               );
             } else {
               return (
                 <RouterLink href={`/w/prompt/${id}`} key={`history-${id}`}>
-                  <HistoryTypography level="body-sm">
-                    {label}
-                  </HistoryTypography>
+                  <HistoryTypography level="body-sm">{label}</HistoryTypography>
                 </RouterLink>
               );
             }

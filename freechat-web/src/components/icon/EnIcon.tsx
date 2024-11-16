@@ -12,7 +12,7 @@ const EnIcon = createSvgIcon(
       fill="var(--joy-palette-text-primary)"
     />
   </SvgIcon>,
-  'En',
+  'En'
 );
 
 export default EnIcon;

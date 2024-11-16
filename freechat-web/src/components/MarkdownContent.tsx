@@ -56,7 +56,7 @@ const MarkdownContainer = styled('div')(({ theme }) => ({
 
 type ImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   alt: string;
-}
+};
 
 const ImageContainer: React.FC<ImageProps> = ({ alt, ...props }) => {
   let width;
@@ -91,9 +91,13 @@ type MarkdownContentProps = {
   loading?: boolean;
   sx?: SxProps;
   children: React.ReactNode | undefined;
-}
+};
 
-export default function MarkdownContent({ loading, sx, children = '' }: MarkdownContentProps) {
+export default function MarkdownContent({
+  loading,
+  sx,
+  children = '',
+}: MarkdownContentProps) {
   const loadingFallback = <Skeleton variant="text" width={'100%'} />;
 
   return (
@@ -123,7 +127,7 @@ export default function MarkdownContent({ loading, sx, children = '' }: Markdown
                 },
                 blockquote: {
                   component: BlockquoteContent,
-                }
+                },
               },
               slugify: () => '',
             }}

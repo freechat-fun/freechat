@@ -1,28 +1,77 @@
-import { createRef, forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CommonBox, ConfirmModal, InfoCardCover, InfoSearchbar, LinePlaceholder, SummaryTypography } from "../../components";
-import { CharacterCreateDTO, CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO, ChatCreateDTO } from "freechat-sdk";
-import { Avatar, Box, Button, ButtonGroup, Card, Chip, FormControl, FormHelperText, IconButton, Input, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { AddCircleRounded, DeleteForeverRounded, ImportExportRounded, InfoOutlined, KeyboardArrowLeftRounded, KeyboardArrowRightRounded, SaveAltRounded, SmsRounded } from "@mui/icons-material";
+import {
+  createRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  CommonBox,
+  ConfirmModal,
+  InfoCardCover,
+  InfoSearchbar,
+  LinePlaceholder,
+  SummaryTypography,
+} from '../../components';
+import {
+  CharacterCreateDTO,
+  CharacterQueryDTO,
+  CharacterQueryWhere,
+  CharacterSummaryDTO,
+  ChatCreateDTO,
+} from 'freechat-sdk';
+import {
+  Avatar,
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  Chip,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  Input,
+  Typography,
+} from '@mui/joy';
+import { SxProps } from '@mui/joy/styles/types';
+import {
+  AddCircleRounded,
+  DeleteForeverRounded,
+  ImportExportRounded,
+  InfoOutlined,
+  KeyboardArrowLeftRounded,
+  KeyboardArrowRightRounded,
+  SaveAltRounded,
+  SmsRounded,
+} from '@mui/icons-material';
 import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
-import { i18nConfig } from "../../configs/i18n-config";
-import { exportCharacter } from "../../libs/character_utils";
+import {
+  defaultTransitionInterval,
+  defaultTransitionSetting,
+  initTransitionSequence,
+  transitionStyles,
+} from '../../libs/ui_utils';
+import { i18nConfig } from '../../configs/i18n-config';
+import { exportCharacter } from '../../libs/character_utils';
 
 let idCounter = 0;
 
 type RecordCardProps = {
-  record: CharacterSummaryDTO,
-  onView: () => void,
-  onEdit: () => void,
-  onDownload: () => void,
-  onDelete: () => void,
-  sx?: SxProps,
-}
+  record: CharacterSummaryDTO;
+  onView: () => void;
+  onEdit: () => void;
+  onDownload: () => void;
+  onDelete: () => void;
+  sx?: SxProps;
+};
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { record, onView, onEdit, onDownload, onDelete, sx } = props;
@@ -31,17 +80,22 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const characterName = record.nickname ?? record.name;
 
   return (
-    <Card ref={ref} sx={{
-      ...sx,
-      transition: 'transform 0.4s, box-shadow 0.4s',
-      boxShadow: 'sm',
-      '&:hover': {
-        boxShadow: 'lg',
-        transform: 'translateY(-1px)',
-      },
-    }}>
+    <Card
+      ref={ref}
+      sx={{
+        ...sx,
+        transition: 'transform 0.4s, box-shadow 0.4s',
+        boxShadow: 'sm',
+        '&:hover': {
+          boxShadow: 'lg',
+          transform: 'translateY(-1px)',
+        },
+      }}
+    >
       <CommonBox>
-        <Avatar alt={characterName} src={record.avatar}>{characterName}</Avatar>
+        <Avatar alt={characterName} src={record.avatar}>
+          {characterName}
+        </Avatar>
         <Typography
           level="title-lg"
           sx={{
@@ -55,41 +109,50 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           {record.name}
         </Typography>
       </CommonBox>
-      <Box sx={{
-        ...sx,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
+      <Box
+        sx={{
+          ...sx,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Typography level="body-sm" textColor="gray">
           {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
-        <Typography level="body-sm" textColor={record.visibility === 'public' ? 'success.500' : 'warning.500'}>
+        <Typography
+          level="body-sm"
+          textColor={
+            record.visibility === 'public' ? 'success.500' : 'warning.500'
+          }
+        >
           {record.visibility === 'public' ? t('public') : t('private')}
         </Typography>
       </Box>
-      <Box sx={{
-        ...sx,
-        display: 'flex',
-        justifyContent: 'start',
-        alignItems: 'center',
-        gap: 2,
-      }}>
-        <Chip color="success" variant="soft">v{record.version}</Chip>
+      <Box
+        sx={{
+          ...sx,
+          display: 'flex',
+          justifyContent: 'start',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        <Chip color="success" variant="soft">
+          v{record.version}
+        </Chip>
       </Box>
-      <SummaryTypography sx={{...sx}}>
-        {record.description}
-      </SummaryTypography>
+      <SummaryTypography sx={{ ...sx }}>{record.description}</SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
-        icons={{view: SmsRounded}}
+        icons={{ view: SmsRounded }}
         onView={() => onView()}
         onEdit={() => onEdit()}
         onDownload={() => onDownload()}
         onDelete={() => onDelete()}
       />
     </Card>
-  )
+  );
 });
 
 export default function Characters() {
@@ -114,17 +177,21 @@ export default function Characters() {
 
   const [characterUploading, setCharacterUploading] = useState(false);
 
-  const fileInputId = useRef(`character-configuration-input-${idCounter}`).current;
+  const fileInputId = useRef(
+    `character-configuration-input-${idCounter}`
+  ).current;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   const doSearch = useCallback(() => {
-    characterApi?.searchCharacterSummary(query)
-      .then(resp => {
+    characterApi
+      ?.searchCharacterSummary(query)
+      .then((resp) => {
         setRecords(resp);
         if (page === 0) {
-          characterApi?.countCharacters(query)
+          characterApi
+            ?.countCharacters(query)
             .then(setTotal)
             .catch(handleError);
         }
@@ -174,9 +241,11 @@ export default function Characters() {
   }
 
   function handleDelete(record: CharacterSummaryDTO | undefined): void {
-    record?.name && characterApi?.deleteCharacterByName(record.name)
-      .then(() =>doSearch())
-      .catch(handleError);
+    record?.name &&
+      characterApi
+        ?.deleteCharacterByName(record.name)
+        .then(() => doSearch())
+        .catch(handleError);
 
     setRecordDeleted(undefined);
   }
@@ -186,28 +255,33 @@ export default function Characters() {
   }
 
   function handleView(record: CharacterSummaryDTO): void {
-    record.characterId && chatApi?.getDefaultChatId(record.characterId)
-      .then(resp => {
-        navigate(`/w/chat/${resp}/debug`);
-      })
-      .catch(() => {
-        accountApi?.getUserDetails()
-          .then(userDetails => {
-            const request = new ChatCreateDTO();
-            request.userNickname = userDetails.nickname ?? userDetails.username;
-            request.userProfile = userDetails.profile;
-            request.characterNickname = record.nickname ?? record.name;
-            request.characterUid = record.characterUid as string;
-            request.about = record.defaultScene;
+    record.characterId &&
+      chatApi
+        ?.getDefaultChatId(record.characterId)
+        .then((resp) => {
+          navigate(`/w/chat/${resp}/debug`);
+        })
+        .catch(() => {
+          accountApi
+            ?.getUserDetails()
+            .then((userDetails) => {
+              const request = new ChatCreateDTO();
+              request.userNickname =
+                userDetails.nickname ?? userDetails.username;
+              request.userProfile = userDetails.profile;
+              request.characterNickname = record.nickname ?? record.name;
+              request.characterUid = record.characterUid as string;
+              request.about = record.defaultScene;
 
-            chatApi.startChat(request)
-              .then(chatId => {
-                navigate(`/w/chat/${chatId}/debug`);
-              })
-              .catch(handleError);
-          })
-          .catch(handleError);
-      });
+              chatApi
+                .startChat(request)
+                .then((chatId) => {
+                  navigate(`/w/chat/${chatId}/debug`);
+                })
+                .catch(handleError);
+            })
+            .catch(handleError);
+        });
   }
 
   function handleEdit(record: CharacterSummaryDTO): void {
@@ -215,8 +289,8 @@ export default function Characters() {
   }
 
   function handleDownload(record: CharacterSummaryDTO): void {
-    record.characterId && exportCharacter(record.characterId)
-      .catch(handleError)
+    record.characterId &&
+      exportCharacter(record.characterId).catch(handleError);
   }
 
   function handleNameChange(): void {
@@ -224,16 +298,18 @@ export default function Characters() {
       return;
     }
 
-    characterApi?.existsCharacterName(editRecordName)
-      .then(resp => {
+    characterApi
+      ?.existsCharacterName(editRecordName)
+      .then((resp) => {
         if (!resp) {
           const request = new CharacterCreateDTO();
           request.lang = i18nConfig.defaultLocale;
           request.name = editRecordName;
           request.visibility = 'public';
 
-          characterApi?.createCharacter(request)
-            .then(resp => {
+          characterApi
+            ?.createCharacter(request)
+            .then((resp) => {
               if (resp) {
                 navigate(`/w/character/edit/${resp}`);
               }
@@ -248,11 +324,14 @@ export default function Characters() {
       .catch(handleError);
   }
 
-  function handleConfFileChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleConfFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void {
     const file = event.target.files && event.target.files[0];
     if (file) {
       setCharacterUploading(true);
-      characterApi?.importCharacter(file)
+      characterApi
+        ?.importCharacter(file)
         .then(() => doSearch())
         .catch(handleError)
         .finally(() => setCharacterUploading(false));
@@ -267,7 +346,9 @@ export default function Characters() {
 
   function getLabelDisplayedRowsTo(): number {
     const currentCount = (page + 1) * pageSize;
-    return total === 0 && records.length > 0 ? currentCount : Math.min(total, currentCount);
+    return total === 0 && records.length > 0
+      ? currentCount
+      : Math.min(total, currentCount);
   }
 
   function labelDisplayedRows(from: number, to: number, count: number): string {
@@ -277,12 +358,14 @@ export default function Characters() {
   return (
     <>
       <LinePlaceholder />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', lg: 'row' },
-        justifyContent: 'space-between',
-        alignItems: { xs: 'start', lg: 'center' },
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', lg: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'start', lg: 'center' },
+        }}
+      >
         <InfoSearchbar enableModelSelect={false} onSearch={handleSearch} />
         <Input
           disabled={characterUploading}
@@ -290,10 +373,12 @@ export default function Characters() {
           id={fileInputId}
           onChange={handleConfFileChange}
           sx={{ display: 'none' }}
-          slotProps={{ input: {
-            ref: fileInputRef,
-            accept: "*/tar.gz",
-          }}}
+          slotProps={{
+            input: {
+              ref: fileInputRef,
+              accept: '*/tar.gz',
+            },
+          }}
         />
         <ButtonGroup
           variant="solid"
@@ -350,22 +435,23 @@ export default function Characters() {
               />
             )}
           </Transition>
-          
         ))}
       </Box>
-      <Box sx={{
-        opacity: showCardsFinish ? 1 : 0,
-        display: 'flex',
-        justifyContent: 'end',
-        alignItems: 'center',
-        gap: 1,
-        mt: 2,
-      }}>
+      <Box
+        sx={{
+          opacity: showCardsFinish ? 1 : 0,
+          display: 'flex',
+          justifyContent: 'end',
+          alignItems: 'center',
+          gap: 1,
+          mt: 2,
+        }}
+      >
         <Chip variant="outlined" sx={{ mr: 1.5 }}>
           {labelDisplayedRows(
             records.length === 0 ? 0 : page * pageSize + 1,
             getLabelDisplayedRowsTo(),
-            total,
+            total
           )}
         </Chip>
         <IconButton
@@ -383,9 +469,7 @@ export default function Characters() {
           color="neutral"
           variant="outlined"
           disabled={
-            records.length !== -1
-              ? (1 + page) * pageSize >= total
-              : false
+            records.length !== -1 ? (1 + page) * pageSize >= total : false
           }
           onClick={() => handleChangePage(page + 1)}
           sx={{ bgcolor: 'background.surface' }}
@@ -405,7 +489,7 @@ export default function Characters() {
         button={{
           color: 'danger',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />
+          startDecorator: <DeleteForeverRounded />,
         }}
         onConfirm={handleDelete}
       >
@@ -423,17 +507,19 @@ export default function Characters() {
         }}
         button={{
           text: t('button:Create'),
-          startDecorator: <SaveAltRounded />
+          startDecorator: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-          gap: 0.5,
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            gap: 0.5,
+          }}
+        >
           <FormControl error={editRecordNameError}>
             <Input
               name="RecordName"
@@ -441,7 +527,7 @@ export default function Characters() {
               onChange={(event) => {
                 setEditRecordName(event.target.value);
                 setEditRecordNameError(false);
-            }}
+              }}
             />
             {editRecordNameError && (
               <FormHelperText>
@@ -453,5 +539,5 @@ export default function Characters() {
         </Box>
       </ConfirmModal>
     </>
-  )
+  );
 }

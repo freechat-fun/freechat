@@ -1,8 +1,21 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMetaInfoContext } from '../contexts';
-import { Dropdown, MenuButton, Menu, MenuItem, IconButton, ListItemDecorator, Button } from '@mui/joy';
-import { LoginRounded, LogoutRounded, ManageAccountsRounded, PermIdentityRounded } from '@mui/icons-material';
+import {
+  Dropdown,
+  MenuButton,
+  Menu,
+  MenuItem,
+  IconButton,
+  ListItemDecorator,
+  Button,
+} from '@mui/joy';
+import {
+  LoginRounded,
+  LogoutRounded,
+  ManageAccountsRounded,
+  PermIdentityRounded,
+} from '@mui/icons-material';
 
 export default function AccountMenu() {
   const { t } = useTranslation('account');
@@ -11,7 +24,7 @@ export default function AccountMenu() {
   const submitRef = useRef<HTMLButtonElement>(null);
 
   const menuButton = (
-    <MenuButton 
+    <MenuButton
       slots={{ root: IconButton }}
       slotProps={{ root: { variant: 'plain', color: 'neutral' } }}
     >
@@ -33,11 +46,7 @@ export default function AccountMenu() {
             </MenuItem>
             <form method="post" action="/logout">
               <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
-              <Button
-                ref={submitRef}
-                type="submit"
-                sx={{ display: 'none' }}
-              />
+              <Button ref={submitRef} type="submit" sx={{ display: 'none' }} />
               <MenuItem onClick={() => submitRef.current?.click()}>
                 <ListItemDecorator>
                   <LogoutRounded />
@@ -51,7 +60,7 @@ export default function AccountMenu() {
         <>
           {menuButton}
           <Menu>
-            <MenuItem onClick={() => window.location.href = '/w/login'}>
+            <MenuItem onClick={() => (window.location.href = '/w/login')}>
               <ListItemDecorator>
                 <LoginRounded />
               </ListItemDecorator>

@@ -1,7 +1,13 @@
 import Mustache from 'mustache';
-import { CharacterSummaryDTO, ChatMessageDTO, ChatPromptContentDTO, ChatSessionDTO, PromptCreateDTO } from 'freechat-sdk';
-import { i18nConfig } from "../configs/i18n-config";
-import { objectToMarkdownTable, setMessageText } from "./template_utils";
+import {
+  CharacterSummaryDTO,
+  ChatMessageDTO,
+  ChatPromptContentDTO,
+  ChatSessionDTO,
+  PromptCreateDTO,
+} from 'freechat-sdk';
+import { i18nConfig } from '../configs/i18n-config';
+import { objectToMarkdownTable, setMessageText } from './template_utils';
 
 export function openChatsPane(): void {
   if (typeof window !== 'undefined') {
@@ -57,23 +63,33 @@ export function toggleChatInfoPane(): void {
   }
 }
 
-export function getSenderStatus(session?: ChatSessionDTO): 'online' | 'invisible' | 'offline' {
+export function getSenderStatus(
+  session?: ChatSessionDTO
+): 'online' | 'invisible' | 'offline' {
   if (!session) {
     return 'offline';
   }
-  
-  switch(session.senderStatus) {
-    case 'online': return 'online';
-    case 'invisible': return 'invisible';
-    default: return 'offline';
+
+  switch (session.senderStatus) {
+    case 'online':
+      return 'online';
+    case 'invisible':
+      return 'invisible';
+    default:
+      return 'offline';
   }
 }
 
-export function getSenderStatusColor(status: 'online' | 'offline' | 'invisible'): 'success' | 'warning' | 'neutral' {
-  switch(status) {
-    case 'online': return 'success';
-    case 'invisible': return 'warning';
-    default: return 'neutral';
+export function getSenderStatusColor(
+  status: 'online' | 'offline' | 'invisible'
+): 'success' | 'warning' | 'neutral' {
+  switch (status) {
+    case 'online':
+      return 'success';
+    case 'invisible':
+      return 'warning';
+    default:
+      return 'neutral';
   }
 }
 
@@ -91,7 +107,7 @@ export function getSenderReply(message: string, debugMode: boolean): string {
 
   const lines = message.split(/\r?\n/);
   const processedLines = lines.map((line) => handleLine(line));
-  let reply =  processedLines.join('\n').trim();
+  let reply = processedLines.join('\n').trim();
   if (reply.startsWith('"') && reply.endsWith('"')) {
     reply = reply.substring(1, reply.length - 1);
   }
@@ -128,8 +144,9 @@ const CHARACTER_PROMPT_DESCRIPTION_ZH = `
 > 此默认提示词仅在 OpenAI GPT-4 下做过测试。
 `;
 
-export const PROACTIVE_CHAT_PROMPT_EN = "> [Thought] What should we talk about?";
-export const PROACTIVE_CHAT_PROMPT_ZH = "> [想法] 聊点什么呢？";
+export const PROACTIVE_CHAT_PROMPT_EN =
+  '> [Thought] What should we talk about?';
+export const PROACTIVE_CHAT_PROMPT_ZH = '> [想法] 聊点什么呢？';
 
 const CHARACTER_PROMPT_TEMPLATE_EN = `{{#RELEVANT_INFORMATION}}
 [[[Relevant fragments retrieved that may be relevant to the query]]]
@@ -275,7 +292,10 @@ ${PROACTIVE_CHAT_PROMPT_ZH}
 {{/CHARACTER_CHAT_EXAMPLE}}
 `;
 
-export function createPromptForCharacter(characterName: string | undefined, lang: string | undefined): PromptCreateDTO {
+export function createPromptForCharacter(
+  characterName: string | undefined,
+  lang: string | undefined
+): PromptCreateDTO {
   const request = new PromptCreateDTO();
   request.chatTemplate = new ChatPromptContentDTO();
   request.chatTemplate.messageToSend = new ChatMessageDTO();
@@ -303,8 +323,10 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['CHARACTER_CHAT_STYLE'] = '*（预设的角色聊天风格）*';
     variables['CHARACTER_CHAT_EXAMPLE'] = '*（预设的角色聊天示例）*';
     variables['CHARACTER_GREETING'] = '*（预设的角色问候语）*';
-    variables['USER_NICKNAME'] = '*（预设的用户昵称，可在创建聊天时变更此设置）*';
-    variables['USER_PROFILE'] = '*（预设的用户档案，可在创建聊天时变更此设置）*';
+    variables['USER_NICKNAME'] =
+      '*（预设的用户昵称，可在创建聊天时变更此设置）*';
+    variables['USER_PROFILE'] =
+      '*（预设的用户档案，可在创建聊天时变更此设置）*';
     variables['RELEVANT_INFORMATION'] = '*（每轮对话搜索出来的相关性信息）*';
     variables['CHAT_CONTEXT'] = '*（聊天相关信息，可在创建聊天时设置）*';
     variables['MESSAGE_CONTEXT'] = '*（注入的当前轮次对话的相关信息）*';
@@ -322,11 +344,16 @@ export function createPromptForCharacter(characterName: string | undefined, lang
     variables['CHARACTER_CHAT_STYLE'] = '*(Preset character chat style)*';
     variables['CHARACTER_CHAT_EXAMPLE'] = '*(Preset character chat example)*';
     variables['CHARACTER_GREETING'] = '*(Preset character greeting)*';
-    variables['USER_NICKNAME'] = '*(Preset user nickname, can be changed when creating a chat)*';
-    variables['USER_PROFILE'] = '*(Preset user profile, can be changed when creating a chat)*';
-    variables['RELEVANT_INFORMATION'] = '*(Relevant information for each round of conversation)*';
-    variables['CHAT_CONTEXT'] = '*(Chat context information, can be set when creating a chat)*';
-    variables['MESSAGE_CONTEXT'] = '*(Injected relevant information for the current round of conversation)*';
+    variables['USER_NICKNAME'] =
+      '*(Preset user nickname, can be changed when creating a chat)*';
+    variables['USER_PROFILE'] =
+      '*(Preset user profile, can be changed when creating a chat)*';
+    variables['RELEVANT_INFORMATION'] =
+      '*(Relevant information for each round of conversation)*';
+    variables['CHAT_CONTEXT'] =
+      '*(Chat context information, can be set when creating a chat)*';
+    variables['MESSAGE_CONTEXT'] =
+      '*(Injected relevant information for the current round of conversation)*';
     variables['CURRENT_TIME'] = '*(Current time, format: yyyy-MM-dd HH:mm:ss)*';
     variables['input'] = '*(User input)*';
 
@@ -336,14 +363,17 @@ export function createPromptForCharacter(characterName: string | undefined, lang
 
   const descriptionContext = {
     characterName: characterName,
-    variables: objectToMarkdownTable(variables, request.lang === 'zh' ? '占位符' : 'Placeholder'),
+    variables: objectToMarkdownTable(
+      variables,
+      request.lang === 'zh' ? '占位符' : 'Placeholder'
+    ),
   };
 
   request.description = Mustache.render(promptDescription, descriptionContext);
   request.chatTemplate.system = promptTemplate;
 
-  const inputs: { [key: string]: string; } = {};
-  Object.keys(variables).forEach(k => inputs[k] = '');
+  const inputs: { [key: string]: string } = {};
+  Object.keys(variables).forEach((k) => (inputs[k] = ''));
 
   request.inputs = JSON.stringify(inputs);
 

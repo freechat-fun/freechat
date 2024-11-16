@@ -1,12 +1,31 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Box, Chip, IconButton, Input, List, Sheet, Stack, Typography } from "@mui/joy";
-import { ChatSessionDTO } from "freechat-sdk";
-import { ChatListItem } from ".";
-import { closeChatsPane, getSenderName, openChatsPane, toggleChatsPane } from "../../libs/chat_utils";
-import { CloseRounded, EditNoteRounded, PlaylistAddCheckRounded, SearchRounded } from "@mui/icons-material";
-import { useDebounce } from "../../libs/ui_utils";
-import { escapeRegExp } from "../../libs/js_utils";
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Box,
+  Chip,
+  IconButton,
+  Input,
+  List,
+  Sheet,
+  Stack,
+  Typography,
+} from '@mui/joy';
+import { ChatSessionDTO } from 'freechat-sdk';
+import { ChatListItem } from '.';
+import {
+  closeChatsPane,
+  getSenderName,
+  openChatsPane,
+  toggleChatsPane,
+} from '../../libs/chat_utils';
+import {
+  CloseRounded,
+  EditNoteRounded,
+  PlaylistAddCheckRounded,
+  SearchRounded,
+} from '@mui/icons-material';
+import { useDebounce } from '../../libs/ui_utils';
+import { escapeRegExp } from '../../libs/js_utils';
 
 type ChatsPaneProps = {
   sessions: ChatSessionDTO[];
@@ -18,8 +37,14 @@ type ChatsPaneProps = {
 
 export default function ChatsPane(props: ChatsPaneProps) {
   const { t } = useTranslation('chat');
-  
-  const { sessions, selectedChatId, open = true, onSelectChat, onRemoveChat } = props;
+
+  const {
+    sessions,
+    selectedChatId,
+    open = true,
+    onSelectChat,
+    onRemoveChat,
+  } = props;
 
   const [chats, setChats] = useState([...sessions]);
   const [keyWord, setKeyWord] = useState('');
@@ -32,7 +57,9 @@ export default function ChatsPane(props: ChatsPaneProps) {
     if (debouncedSearchTerm) {
       const escapedKeyWord = escapeRegExp(debouncedSearchTerm);
       const pattern = new RegExp(escapedKeyWord, 'i');
-      const filteredChats = sessions.filter(session => pattern.test(getSenderName(session.character)));
+      const filteredChats = sessions.filter((session) =>
+        pattern.test(getSenderName(session.character))
+      );
       setChats(filteredChats);
     } else {
       setChats([...sessions]);
@@ -44,7 +71,6 @@ export default function ChatsPane(props: ChatsPaneProps) {
       setKeyWord(event.target.value);
     }
   }
-
 
   return (
     <Sheet
@@ -91,7 +117,7 @@ export default function ChatsPane(props: ChatsPaneProps) {
             sx={{ display: 'unset' }}
             onClick={() => setEditMode(!editMode)}
           >
-            { editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded /> }
+            {editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded />}
           </IconButton>
           <IconButton
             variant="plain"

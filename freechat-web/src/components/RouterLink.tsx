@@ -4,18 +4,22 @@ import { Link, LinkProps } from '@mui/joy';
 
 const RouterLink = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   const navigate = useNavigate();
-  
+
   if (props && (!props.href || props.onClick)) {
-    return (<Link {...props} />);
+    return <Link {...props} />;
   }
-  
+
   return (
-    <Link ref={ref} onClick={(event) => {
-      event.preventDefault();
-      if (props.href) {
-        navigate(props.href);
-      }
-    }} {...props} />
+    <Link
+      ref={ref}
+      onClick={(event) => {
+        event.preventDefault();
+        if (props.href) {
+          navigate(props.href);
+        }
+      }}
+      {...props}
+    />
   );
 });
 

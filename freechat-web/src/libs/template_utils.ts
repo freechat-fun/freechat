@@ -1,9 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Mustache from 'mustache';
-import { ChatContentDTO, ChatMessageDTO, ChatPromptContentDTO, LlmResultDTO, PromptAiParamDTO, PromptDetailsDTO } from 'freechat-sdk';
+import {
+  ChatContentDTO,
+  ChatMessageDTO,
+  ChatPromptContentDTO,
+  LlmResultDTO,
+  PromptAiParamDTO,
+  PromptDetailsDTO,
+} from 'freechat-sdk';
 import { providers } from '../configs/model-providers-config';
 
-export function extractMustacheTemplateVariableNames(templateContents: string[]): string[] {
+export function extractMustacheTemplateVariableNames(
+  templateContents: string[]
+): string[] {
   const variables: string[] = [];
 
   // const contextHandler = {
@@ -13,33 +22,39 @@ export function extractMustacheTemplateVariableNames(templateContents: string[])
   //   }
   // };
 
-  // templateContents.forEach(templateContent => 
+  // templateContents.forEach(templateContent =>
   //   Mustache.render(templateContent, new Proxy({}, contextHandler)));
 
-  templateContents.forEach(templateContent => variables.push(
-    ...Mustache.parse(templateContent)
-      .filter((v) => v[0] === 'name' || v[0] === '#' || v[0] === '&')
-      .map((v) => v[1])
-    ));
+  templateContents.forEach((templateContent) =>
+    variables.push(
+      ...Mustache.parse(templateContent)
+        .filter((v) => v[0] === 'name' || v[0] === '#' || v[0] === '&')
+        .map((v) => v[1])
+    )
+  );
 
   return [...new Set(variables)];
 }
 
-export function extractFStringTemplateVariableNames(templateContents: string[]): string[] {
+export function extractFStringTemplateVariableNames(
+  templateContents: string[]
+): string[] {
   const VAR_PATTERN: RegExp = /{(.*?)}(?!})/g;
   const variables: string[] = [];
   let match: RegExpExecArray | null;
 
-  templateContents.forEach(templateContent => {
+  templateContents.forEach((templateContent) => {
     while ((match = VAR_PATTERN.exec(templateContent)) !== null) {
       variables.push(match[1].trim());
     }
   });
-  
+
   return [...new Set(variables)];
 }
 
-export function extractVariables(record: PromptDetailsDTO | undefined): { [key: string]: any } | undefined {
+export function extractVariables(
+  record: PromptDetailsDTO | undefined
+): { [key: string]: any } | undefined {
   const templateContent = getTemplateContent(record);
   if (!templateContent) {
     return undefined;
@@ -48,9 +63,10 @@ export function extractVariables(record: PromptDetailsDTO | undefined): { [key: 
   const defaultInputs = record?.inputs ? extractJson(record.inputs) : undefined;
 
   try {
-    const variableNames = record?.format === 'f_string' ?
-      extractFStringTemplateVariableNames(templateContent) :
-      extractMustacheTemplateVariableNames(templateContent);
+    const variableNames =
+      record?.format === 'f_string'
+        ? extractFStringTemplateVariableNames(templateContent)
+        : extractMustacheTemplateVariableNames(templateContent);
 
     return initVariables(variableNames, defaultInputs);
   } catch (error) {
@@ -58,7 +74,9 @@ export function extractVariables(record: PromptDetailsDTO | undefined): { [key: 
   }
 }
 
-export function getTemplateContent(record: PromptDetailsDTO | undefined): string[] {
+export function getTemplateContent(
+  record: PromptDetailsDTO | undefined
+): string[] {
   const templates: string[] = [];
 
   if (record?.type === 'chat' && record?.chatTemplate) {
@@ -66,10 +84,11 @@ export function getTemplateContent(record: PromptDetailsDTO | undefined): string
     templates.push(chatTemplate.system ?? '');
 
     const messages = chatTemplate.messages ?? [];
-    messages.forEach(message => 
-      templates.push(`${getMessageText(message)}`));
-    
-    templates.push(`${getMessageText(chatTemplate.messageToSend) ?? (record?.format === 'f_string' ? '{input}' : '{{{input}}}')}`);
+    messages.forEach((message) => templates.push(`${getMessageText(message)}`));
+
+    templates.push(
+      `${getMessageText(chatTemplate.messageToSend) ?? (record?.format === 'f_string' ? '{input}' : '{{{input}}}')}`
+    );
   } else {
     templates.push(record?.template || '');
   }
@@ -77,13 +96,18 @@ export function getTemplateContent(record: PromptDetailsDTO | undefined): string
   return templates;
 }
 
-export function initVariables(names: string[], defaultInputs: { [key: string]: any } | undefined): { [key: string]: any } {
+export function initVariables(
+  names: string[],
+  defaultInputs: { [key: string]: any } | undefined
+): { [key: string]: any } {
   const result: { [key: string]: any } = {};
-  names.forEach(name => result[name] = defaultInputs?.[name] || '');
+  names.forEach((name) => (result[name] = defaultInputs?.[name] || ''));
   return result;
 }
 
-export function extractJson(jsonString: string | undefined): { [key: string]: any } | undefined {
+export function extractJson(
+  jsonString: string | undefined
+): { [key: string]: any } | undefined {
   if (!jsonString) {
     return undefined;
   }
@@ -103,7 +127,9 @@ export function extractJson(jsonString: string | undefined): { [key: string]: an
   return result;
 }
 
-export function extractModelProvider(modelId: string | undefined): string | undefined {
+export function extractModelProvider(
+  modelId: string | undefined
+): string | undefined {
   if (!modelId) {
     return undefined;
   }
@@ -123,12 +149,20 @@ export function extractModelName(modelId: string): string | undefined {
   return match?.[1];
 }
 
-export function toModelInfo(provider: string, name: string, type?: string): string {
-  return type ? `[${provider}]${name}|${type}` : `[${provider}]${name}`
+export function toModelInfo(
+  provider: string,
+  name: string,
+  type?: string
+): string {
+  return type ? `[${provider}]${name}|${type}` : `[${provider}]${name}`;
 }
 
 export function enabledApiKey(provider: string): boolean {
-  return !!provider && (providers.find(item => item.provider === provider)?.enableApiKey ?? false);
+  return (
+    !!provider &&
+    (providers.find((item) => item.provider === provider)?.enableApiKey ??
+      false)
+  );
 }
 
 const EXAMPLE_TEMPLATE = `### Variable Settings
@@ -151,38 +185,45 @@ const EXAMPLE_TEMPLATE = `### Variable Settings
 {{{output}}}
 `;
 
-export function objectToMarkdownTable(obj: { [key: string]: any } | undefined, keyColumn: string, valueColumn: string = 'Value'): string {
+export function objectToMarkdownTable(
+  obj: { [key: string]: any } | undefined,
+  keyColumn: string,
+  valueColumn: string = 'Value'
+): string {
   if (!obj) {
     return '';
   }
 
   try {
-      let markdownTable = `| **${keyColumn}** | **${valueColumn}** |\n|----|----|\n`;
+    let markdownTable = `| **${keyColumn}** | **${valueColumn}** |\n|----|----|\n`;
 
-      for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          const v = obj[key];
-          let literal: string;
-          if (v === undefined || v === null) {
-            continue;
-          } else if (typeof v === 'string') {
-            literal = v;
-          } else {
-            literal = JSON.stringify(v);
-          }
-
-          markdownTable += `| ${key} | ${literal} |\n`;
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const v = obj[key];
+        let literal: string;
+        if (v === undefined || v === null) {
+          continue;
+        } else if (typeof v === 'string') {
+          literal = v;
+        } else {
+          literal = JSON.stringify(v);
         }
-      }
 
-      return markdownTable;
+        markdownTable += `| ${key} | ${literal} |\n`;
+      }
+    }
+
+    return markdownTable;
   } catch (error) {
-      console.error('Invalid parameters:', error);
-      return '';
+    console.error('Invalid parameters:', error);
+    return '';
   }
 }
 
-function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | undefined, format: string | undefined): string {
+function chatTemplateToMarkdownContent(
+  chatTemplate: ChatPromptContentDTO | undefined,
+  format: string | undefined
+): string {
   if (!chatTemplate) {
     return '';
   }
@@ -193,7 +234,7 @@ function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | unde
 
   if (chatTemplate.messages && chatTemplate.messages.length > 0) {
     markdownContent += '**[MESSAGES]**<br>';
-    chatTemplate.messages.forEach(message => {
+    chatTemplate.messages.forEach((message) => {
       markdownContent += `**${message.role?.toUpperCase()}: **${getMessageText(message)}<br>`;
     });
     markdownContent += '<br>';
@@ -205,7 +246,10 @@ function chatTemplateToMarkdownContent(chatTemplate: ChatPromptContentDTO | unde
   return markdownContent;
 }
 
-export function generateExample(request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined): string | undefined {
+export function generateExample(
+  request: PromptAiParamDTO | undefined,
+  response: LlmResultDTO | undefined
+): string | undefined {
   if (!request || !response) {
     return undefined;
   }
@@ -213,10 +257,18 @@ export function generateExample(request: PromptAiParamDTO | undefined, response:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { modelId, apiKeyName, apiKey, ...modelParameters } = request.params;
 
-  const variables = objectToMarkdownTable(request.promptTemplate?.variables ?? request.promptRef?.variables, 'Placeholder');
-  const prompt = request.prompt ?? chatTemplateToMarkdownContent(request.promptTemplate?.chatTemplate, request.promptTemplate?.format);
+  const variables = objectToMarkdownTable(
+    request.promptTemplate?.variables ?? request.promptRef?.variables,
+    'Placeholder'
+  );
+  const prompt =
+    request.prompt ??
+    chatTemplateToMarkdownContent(
+      request.promptTemplate?.chatTemplate,
+      request.promptTemplate?.format
+    );
   const model = modelId as string;
-  const parameters =  objectToMarkdownTable(modelParameters, 'Parameters');
+  const parameters = objectToMarkdownTable(modelParameters, 'Parameters');
   const output = getMessageText(response.message) ?? response.text;
 
   const markdownContext = {
@@ -230,13 +282,19 @@ export function generateExample(request: PromptAiParamDTO | undefined, response:
   return Mustache.render(EXAMPLE_TEMPLATE, markdownContext);
 }
 
-export function getMessageText(message: ChatMessageDTO | undefined): string | undefined {
-  return message?.contents?.filter(content => content.type === 'text')
-    .map(content => content.content)
+export function getMessageText(
+  message: ChatMessageDTO | undefined
+): string | undefined {
+  return message?.contents
+    ?.filter((content) => content.type === 'text')
+    .map((content) => content.content)
     .join('\n');
 }
 
-export function setMessageText(message: ChatMessageDTO | undefined, text: string | undefined): void {
+export function setMessageText(
+  message: ChatMessageDTO | undefined,
+  text: string | undefined
+): void {
   if (!message) {
     return;
   }

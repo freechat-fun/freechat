@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Divider, FormControl, FormLabel, Input, Stack, Typography } from "@mui/joy";
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Typography,
+} from '@mui/joy';
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon } from '../../components/icon';
 import { useErrorMessageBusContext, useMetaInfoContext } from '../../contexts';
@@ -30,13 +39,20 @@ export default function SignIn() {
     const guestUsername = localStorage.getItem(GUEST_USERNAME_KEY) ?? '';
     const guestPassword = localStorage.getItem(GUEST_PASSWORD_KEY) ?? '';
 
-    setGuestFormState(prevState => ({ ...prevState, guestUsername, guestPassword }));
+    setGuestFormState((prevState) => ({
+      ...prevState,
+      guestUsername,
+      guestPassword,
+    }));
   }, []);
 
   useEffect(() => {
     if (guestFormState.isFormReadyToSubmit) {
       guestFormRef.current?.submit();
-      setGuestFormState(prevState => ({...prevState, isFormReadyToSubmit: false}));
+      setGuestFormState((prevState) => ({
+        ...prevState,
+        isFormReadyToSubmit: false,
+      }));
     }
   }, [guestFormState]);
 
@@ -54,33 +70,39 @@ export default function SignIn() {
         method: 'POST',
         credentials: host === 'localhost' ? 'include' : 'same-origin',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           [csrfHeaderName]: csrfToken ?? '',
         },
-      }).then(resp => {
-        if (!resp.ok) {
-          handleError({ code: resp.status, message: resp.statusText });
-          return null;
-        }
-        return resp.json();
-      }).then((userInfo: UserFullDetailsDTO | null) => {
-        if (userInfo?.username && userInfo.password) {
-          localStorage.setItem(GUEST_USERNAME_KEY, userInfo.username);
-          localStorage.setItem(GUEST_PASSWORD_KEY, userInfo.password);
-          setGuestFormState({
-            guestUsername: userInfo.username,
-            guestPassword: userInfo.password,
-            isFormReadyToSubmit: true,
-          });
-        }
-      }).catch(handleError);
+      })
+        .then((resp) => {
+          if (!resp.ok) {
+            handleError({ code: resp.status, message: resp.statusText });
+            return null;
+          }
+          return resp.json();
+        })
+        .then((userInfo: UserFullDetailsDTO | null) => {
+          if (userInfo?.username && userInfo.password) {
+            localStorage.setItem(GUEST_USERNAME_KEY, userInfo.username);
+            localStorage.setItem(GUEST_PASSWORD_KEY, userInfo.password);
+            setGuestFormState({
+              guestUsername: userInfo.username,
+              guestPassword: userInfo.password,
+              isFormReadyToSubmit: true,
+            });
+          }
+        })
+        .catch(handleError);
     } else {
-      setGuestFormState(prevState => ({...prevState, isFormReadyToSubmit: true}));
+      setGuestFormState((prevState) => ({
+        ...prevState,
+        isFormReadyToSubmit: true,
+      }));
     }
   }
 
   return (
-    <Stack direction='row'>
+    <Stack direction="row">
       <Box
         sx={(theme) => ({
           transition: 'width var(--Transition-duration)',
@@ -101,7 +123,10 @@ export default function SignIn() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
+            minHeight: {
+              xs: 'calc(100dvh - var(--Footer-height))',
+              sm: '100dvh',
+            },
             maxWidth: '100%',
             px: 2,
           }}
@@ -143,7 +168,9 @@ export default function SignIn() {
                   color="neutral"
                   fullWidth
                   startDecorator={<GitHub />}
-                  onClick={() => handleOAuth2Click('/oauth2/authorization/github')}
+                  onClick={() =>
+                    handleOAuth2Click('/oauth2/authorization/github')
+                  }
                 >
                   {t('Continue with GitHub')}
                 </Button>
@@ -155,7 +182,9 @@ export default function SignIn() {
                   color="neutral"
                   fullWidth
                   startDecorator={<Google />}
-                  onClick={() => handleOAuth2Click('/oauth2/authorization/google')}
+                  onClick={() =>
+                    handleOAuth2Click('/oauth2/authorization/google')
+                  }
                 >
                   {t('Continue with Google')}
                 </Button>
@@ -167,16 +196,16 @@ export default function SignIn() {
                   color="neutral"
                   fullWidth
                   startDecorator={<AliyunIcon />}
-                  onClick={() => handleOAuth2Click('/oauth2/authorization/aliyun')}
+                  onClick={() =>
+                    handleOAuth2Click('/oauth2/authorization/aliyun')
+                  }
                 >
                   {t('Continue with Aliyun')}
                 </Button>
               )}
 
-              {registrations.length > 0 && (
-                <Divider>{t('or')}</Divider>
-              )}
-              
+              {registrations.length > 0 && <Divider>{t('or')}</Divider>}
+
               <form method="post" action="/login">
                 <FormControl required>
                   <FormLabel>{t('Username')}</FormLabel>
@@ -187,14 +216,26 @@ export default function SignIn() {
                   <Input type="password" name="password" />
                 </FormControl>
                 <Stack gap={4} sx={{ mt: 2 }}>
-                  <Button type="submit" fullWidth>{t('Sign in')}</Button>
+                  <Button type="submit" fullWidth>
+                    {t('Sign in')}
+                  </Button>
                 </Stack>
                 <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
               </form>
 
               <form method="post" action="/login" ref={guestFormRef}>
-                <input type="hidden" value={guestFormState.guestUsername} id="username" name="username" />
-                <input type="hidden" value={guestFormState.guestPassword} id="password" name="password" />
+                <input
+                  type="hidden"
+                  value={guestFormState.guestUsername}
+                  id="username"
+                  name="username"
+                />
+                <input
+                  type="hidden"
+                  value={guestFormState.guestPassword}
+                  id="password"
+                  name="password"
+                />
                 <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
                 <Button
                   variant="plain"
@@ -204,9 +245,10 @@ export default function SignIn() {
                     textDecoration: 'underline',
                     p: 0,
                     '&:hover': {
-                      backgroundColor: 'transparent'
-                    }
-                }}>
+                      backgroundColor: 'transparent',
+                    },
+                  }}
+                >
                   {t("I'm a guest")}
                 </Button>
               </form>

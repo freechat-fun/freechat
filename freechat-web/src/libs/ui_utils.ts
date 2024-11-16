@@ -1,5 +1,5 @@
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
-import { TransitionStatus } from "react-transition-group";
+import { TransitionStatus } from 'react-transition-group';
 
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -19,11 +19,13 @@ export function useDebounce<T>(value: T, delay: number): T {
 
 export const defaultTransitionSetting = `opacity 200ms ease-in-out`;
 export const defaultTransitionInterval = 100;
-export const transitionStyles: { [key in TransitionStatus]?: React.CSSProperties } = {
+export const transitionStyles: {
+  [key in TransitionStatus]?: React.CSSProperties;
+} = {
   entering: { opacity: 0 },
-  entered:  { opacity: 1 },
-  exiting:  { opacity: 0 },
-  exited:   { opacity: 0 },
+  entered: { opacity: 1 },
+  exiting: { opacity: 0 },
+  exited: { opacity: 0 },
 };
 
 export function initTransitionSequence(
@@ -31,22 +33,29 @@ export function initTransitionSequence(
   setShowItemsFinish?: Dispatch<SetStateAction<boolean>>,
   itemCount: number = 1,
   delay: number = 200,
-  interval: number = defaultTransitionInterval)
-: () => void {
+  interval: number = defaultTransitionInterval
+): () => void {
   if (typeof window === 'undefined') {
     return () => {};
   }
 
   const timeouts: number[] = [];
 
-  timeouts.push(window.setTimeout(() => {
-    setShowItems(true);
-  }, delay));
+  timeouts.push(
+    window.setTimeout(() => {
+      setShowItems(true);
+    }, delay)
+  );
 
   if (setShowItemsFinish) {
-    timeouts.push(window.setTimeout(() => {
-      setShowItemsFinish(true);
-    }, delay + itemCount * interval));
+    timeouts.push(
+      window.setTimeout(
+        () => {
+          setShowItemsFinish(true);
+        },
+        delay + itemCount * interval
+      )
+    );
   }
 
   return () => timeouts.forEach(window.clearTimeout);
@@ -56,7 +65,7 @@ export const DEFAULT_TEXT_MAX_WIDTH = 720;
 export const DEFAULT_IMAGE_MAX_WIDTH = 512;
 export const DEFAULT_IMAGE_MAX_SIZE = 20 * 1024;
 
-export type ImageInfo = { dataUrl: string, blob: Blob };
+export type ImageInfo = { dataUrl: string; blob: Blob };
 
 export function getCompressedImage(
   file: Blob,
@@ -74,7 +83,7 @@ export function getCompressedImage(
           const canvas = document.createElement('canvas');
           if (img.width > maxWidth) {
             canvas.width = maxWidth;
-            canvas.height = img.height * maxWidth / img.width;
+            canvas.height = (img.height * maxWidth) / img.width;
           } else {
             canvas.width = img.width;
             canvas.height = img.height;
@@ -82,13 +91,17 @@ export function getCompressedImage(
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           const dataUrl = canvas.toDataURL('image/jpeg', quality);
-          canvas.toBlob(blob => {
-            if (blob) {
-              resolve({ dataUrl, blob });
-            } else {
-              reject(new Error('Compression failed'));
-            }
-          }, 'image/jpeg', quality);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve({ dataUrl, blob });
+              } else {
+                reject(new Error('Compression failed'));
+              }
+            },
+            'image/jpeg',
+            quality
+          );
         };
         img.onerror = reject;
         img.src = e.target!.result as string;
@@ -98,15 +111,20 @@ export function getCompressedImage(
     });
   };
 
-  const checkSizeAndCompress = ({dataUrl, blob}: ImageInfo): Promise<ImageInfo> => {
+  const checkSizeAndCompress = ({
+    dataUrl,
+    blob,
+  }: ImageInfo): Promise<ImageInfo> => {
     if (dataUrl.length < maxSize) {
-      return Promise.resolve({dataUrl, blob});
+      return Promise.resolve({ dataUrl, blob });
     } else {
       if (currentQuality > 0.01) {
         currentQuality *= 0.8;
         return compressImage(file, currentQuality).then(checkSizeAndCompress);
       } else {
-        return Promise.reject(new Error(`Unable to compress the image to less than ${maxSize}`));
+        return Promise.reject(
+          new Error(`Unable to compress the image to less than ${maxSize}`)
+        );
       }
     }
   };
@@ -114,8 +132,11 @@ export function getCompressedImage(
   return compressImage(file, currentQuality).then(checkSizeAndCompress);
 }
 
-
-export function processBackground(imageUrl: string | undefined, mode: string = 'dark', opacity: number = 0.3): Promise<string> {
+export function processBackground(
+  imageUrl: string | undefined,
+  mode: string = 'dark',
+  opacity: number = 0.3
+): Promise<string> {
   return new Promise((resolve, reject) => {
     if (!imageUrl) {
       resolve('');
@@ -152,7 +173,8 @@ export function processBackground(imageUrl: string | undefined, mode: string = '
     image.src = imageUrl;
 
     if (image.complete || image.complete === undefined) {
-      image.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+      image.src =
+        'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
       image.src = imageUrl;
     }
   });

@@ -1,19 +1,27 @@
-import { createRef, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Transition } from "react-transition-group";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box } from "@mui/joy";
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
-import { CharacterAlbumPicture, CharacterAlbumPictureUploader } from ".";
-import { ConfirmModal, ImagePreview, ImagePreviewWindow } from "..";
-import { DeleteForeverRounded } from "@mui/icons-material";
-import { extractFilenameFromUrl } from "../../libs/url_utils";
+import { createRef, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Transition } from 'react-transition-group';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import { Box } from '@mui/joy';
+import {
+  defaultTransitionInterval,
+  defaultTransitionSetting,
+  initTransitionSequence,
+  transitionStyles,
+} from '../../libs/ui_utils';
+import { CharacterAlbumPicture, CharacterAlbumPictureUploader } from '.';
+import { ConfirmModal, ImagePreview, ImagePreviewWindow } from '..';
+import { DeleteForeverRounded } from '@mui/icons-material';
+import { extractFilenameFromUrl } from '../../libs/url_utils';
 
 type CharacterAlbumPaneProps = {
   characterUid?: string;
   picture?: string | undefined;
   setPicture?: (url: string | undefined) => void;
-}
+};
 
 export default function CharacterAlbumPane({
   characterUid,
@@ -27,21 +35,25 @@ export default function CharacterAlbumPane({
   const pageSize = 10;
   const pictureWidth = '140px';
 
-  const [picturePreviewUrl, setPicturePreviewUrl] = useState<string | null>(null);
+  const [picturePreviewUrl, setPicturePreviewUrl] = useState<string | null>(
+    null
+  );
   const [pictureDeleteUrl, setPictureDeleteUrl] = useState<string | null>(null);
   const [showPictures, setShowPictures] = useState(false);
   const [pictures, setPictures] = useState<string[]>([]);
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   useEffect(() => {
-    characterUid && characterApi?.listCharacterPictures(characterUid)
-      .then(setPictures)
-      .catch(handleError);
-      return initTransitionSequence(setShowPictures, undefined, pageSize);
+    characterUid &&
+      characterApi
+        ?.listCharacterPictures(characterUid)
+        .then(setPictures)
+        .catch(handleError);
+    return initTransitionSequence(setShowPictures, undefined, pageSize);
   }, [characterApi, characterUid, handleError]);
 
   function handlePictureUploaded(url: string): void {
-    setPictures(prevPictures => [...prevPictures, url]);
+    setPictures((prevPictures) => [...prevPictures, url]);
   }
 
   function handlePictureDelete(url: string): void {
@@ -50,8 +62,9 @@ export default function CharacterAlbumPane({
     }
 
     const key = extractFilenameFromUrl(url);
-    characterApi?.deleteCharacterPicture(key)
-      .then(() => setPictures(pictures.filter(item => item !== url)))
+    characterApi
+      ?.deleteCharacterPicture(key)
+      .then(() => setPictures(pictures.filter((item) => item !== url)))
       .catch(handleError)
       .finally(() => setPictureDeleteUrl(null));
   }
@@ -132,15 +145,12 @@ export default function CharacterAlbumPane({
         button={{
           color: 'danger',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />
+          startDecorator: <DeleteForeverRounded />,
         }}
         onConfirm={handlePictureDelete}
       >
-        <ImagePreview
-          src={pictureDeleteUrl ?? ''}
-          maxWidth={240}
-        />
+        <ImagePreview src={pictureDeleteUrl ?? ''} maxWidth={240} />
       </ConfirmModal>
     </Box>
-  )
+  );
 }

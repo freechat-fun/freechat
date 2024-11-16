@@ -1,4 +1,4 @@
-import { Input, styled } from "@mui/joy";
+import { Input, styled } from '@mui/joy';
 
 const TinyInput = styled(Input)(({ theme }) => ({
   minWidth: theme.spacing(8.5),

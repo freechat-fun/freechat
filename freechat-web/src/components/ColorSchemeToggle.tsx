@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
-import { IconButton, IconButtonProps, useColorScheme as useJoyColorScheme } from "@mui/joy";
-import { DarkModeRounded, LightModeRounded } from "@mui/icons-material";
+import { useState, useEffect } from 'react';
+import {
+  IconButton,
+  IconButtonProps,
+  useColorScheme as useJoyColorScheme,
+} from '@mui/joy';
+import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
 
 import { useColorScheme as useMaterialColorScheme } from '@mui/material';
 

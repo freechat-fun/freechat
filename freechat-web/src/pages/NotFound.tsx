@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { Box, Card, Typography } from "@mui/joy";
-import { RouterLink } from "../components";
+import { useTranslation } from 'react-i18next';
+import { Box, Card, Typography } from '@mui/joy';
+import { RouterLink } from '../components';
 
 export default function NotFound() {
   const { t } = useTranslation();
@@ -20,27 +20,28 @@ export default function NotFound() {
         overflow: 'auto',
       }}
     >
-      <Card variant="plain" sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-      }}>
-          <Typography level="title-lg" gutterBottom>
-            {t('Page not found')}
-          </Typography>
-          <Typography level="body-md">
-            {t('Sorry, the page you are looking for does not exist.')}
-          </Typography>
-          <Typography level="body-md">
-            {t('You can always go back to the')}{' '}
-            <RouterLink
-              href = "/w"
-              sx={{ cursor: 'pointer' }}
-            >
-              {t('homepage')}
-            </RouterLink>{t('.')}
-          </Typography>
+      <Card
+        variant="plain"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+        }}
+      >
+        <Typography level="title-lg" gutterBottom>
+          {t('Page not found')}
+        </Typography>
+        <Typography level="body-md">
+          {t('Sorry, the page you are looking for does not exist.')}
+        </Typography>
+        <Typography level="body-md">
+          {t('You can always go back to the')}{' '}
+          <RouterLink href="/w" sx={{ cursor: 'pointer' }}>
+            {t('homepage')}
+          </RouterLink>
+          {t('.')}
+        </Typography>
       </Card>
     </Box>
   );

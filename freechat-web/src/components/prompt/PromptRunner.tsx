@@ -1,42 +1,124 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, Card, FormLabel, Select, Option, Textarea, Typography, Button, IconButton, Tooltip, Chip, ChipDelete } from "@mui/joy";
-import { AttachmentRounded, IosShareRounded, KeyRounded, PlayCircleFilledRounded, ReplayCircleFilledRounded, TuneRounded } from "@mui/icons-material";
-import { CommonContainer, LinePlaceholder, TextareaTypography, ChatContent, ImagePicker, CommonBox } from "../../components"
-import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OllamaSettings, OpenAiSettings } from ".";
-import { defaultBaseURLs, defaultModels, providers as modelProviders } from "../../configs/model-providers-config";
-import { PromptAiParamDTO, PromptDetailsDTO, PromptTemplateDTO, AiModelInfoDTO, LlmResultDTO } from "freechat-sdk";
-import { enabledApiKey, extractModelProvider, extractVariables } from "../../libs/template_utils";
-import { HelpIcon } from "../icon";
-import { getCompressedImage } from "../../libs/ui_utils";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  Box,
+  Card,
+  FormLabel,
+  Select,
+  Option,
+  Textarea,
+  Typography,
+  Button,
+  IconButton,
+  Tooltip,
+  Chip,
+  ChipDelete,
+} from '@mui/joy';
+import {
+  AttachmentRounded,
+  IosShareRounded,
+  KeyRounded,
+  PlayCircleFilledRounded,
+  ReplayCircleFilledRounded,
+  TuneRounded,
+} from '@mui/icons-material';
+import {
+  CommonContainer,
+  LinePlaceholder,
+  TextareaTypography,
+  ChatContent,
+  ImagePicker,
+  CommonBox,
+} from '../../components';
+import {
+  AiApiKeySettings,
+  AzureOpenAiSettings,
+  DashScopeSettings,
+  OllamaSettings,
+  OpenAiSettings,
+} from '.';
+import {
+  defaultBaseURLs,
+  defaultModels,
+  providers as modelProviders,
+} from '../../configs/model-providers-config';
+import {
+  PromptAiParamDTO,
+  PromptDetailsDTO,
+  PromptTemplateDTO,
+  AiModelInfoDTO,
+  LlmResultDTO,
+} from 'freechat-sdk';
+import {
+  enabledApiKey,
+  extractModelProvider,
+  extractVariables,
+} from '../../libs/template_utils';
+import { HelpIcon } from '../icon';
+import { getCompressedImage } from '../../libs/ui_utils';
 
 type PromptRunnerProps = {
-  apiPath: string,
-  record: PromptDetailsDTO | undefined,
-  defaultVariables?: { [key: string]: any },
-  defaultParameters?: { [key: string]: any },
-  defaultOutputText?: string,
-  minWidth?: string,
-  maxWidth?: string,
-  onPlayFailure?: (request: PromptAiParamDTO | undefined, error: any) => void,
-  onPlaySuccess?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
-  onExampleSave?: (request: PromptAiParamDTO | undefined, response: LlmResultDTO | undefined) => void,
+  apiPath: string;
+  record: PromptDetailsDTO | undefined;
+  defaultVariables?: { [key: string]: any };
+  defaultParameters?: { [key: string]: any };
+  defaultOutputText?: string;
+  minWidth?: string;
+  maxWidth?: string;
+  onPlayFailure?: (request: PromptAiParamDTO | undefined, error: any) => void;
+  onPlaySuccess?: (
+    request: PromptAiParamDTO | undefined,
+    response: LlmResultDTO | undefined
+  ) => void;
+  onExampleSave?: (
+    request: PromptAiParamDTO | undefined,
+    response: LlmResultDTO | undefined
+  ) => void;
 };
 
 export default function PromptRunner(props: PromptRunnerProps) {
-  const { apiPath, record, defaultVariables, defaultParameters, defaultOutputText, minWidth, maxWidth, onPlayFailure, onPlaySuccess, onExampleSave } = props;
+  const {
+    apiPath,
+    record,
+    defaultVariables,
+    defaultParameters,
+    defaultOutputText,
+    minWidth,
+    maxWidth,
+    onPlayFailure,
+    onPlaySuccess,
+    onExampleSave,
+  } = props;
   const { t } = useTranslation();
   const { aiServiceApi, serverUrl } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [provider, setProvider] = useState<string>(extractModelProvider(defaultParameters?.modelId) ?? 'open_ai');
-  const [inputs, setInputs] = useState(defaultVariables ?? extractVariables(record));
+  const [provider, setProvider] = useState<string>(
+    extractModelProvider(defaultParameters?.modelId) ?? 'open_ai'
+  );
+  const [inputs, setInputs] = useState(
+    defaultVariables ?? extractVariables(record)
+  );
   const [attachment, setAttachment] = useState<string>();
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
-  const [apiKeyName, setApiKeyName] = useState<string | undefined>(defaultParameters?.apiKeyName);
-  const [apiKeyValue, setApiKeyValue] = useState<string | undefined>(defaultParameters?.apiKey);
+  const [apiKeyName, setApiKeyName] = useState<string | undefined>(
+    defaultParameters?.apiKeyName
+  );
+  const [apiKeyValue, setApiKeyValue] = useState<string | undefined>(
+    defaultParameters?.apiKey
+  );
   const [apiKeyNames, setApiKeyNames] = useState<(string | undefined)[]>([]);
   const [modelSetting, setModelSetting] = useState(false);
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
@@ -49,56 +131,75 @@ export default function PromptRunner(props: PromptRunnerProps) {
   const [width, setWidth] = useState(minWidth || '30%');
 
   const matchingModels = useMemo(() => {
-    return record && provider && models ? models.filter(model => {
-      if (!model || model.provider !== provider) {
-        return false;
-      }
-      switch(record.type) {
-        case 'chat': {
-          return model.type === 'text2chat';
-        }
-        case 'string': {
-          return model.type === 'text2text';
-        }
-        default: {
-          return false;
-        }
-      }
-    }) : [];
+    return record && provider && models
+      ? models.filter((model) => {
+          if (!model || model.provider !== provider) {
+            return false;
+          }
+          switch (record.type) {
+            case 'chat': {
+              return model.type === 'text2chat';
+            }
+            case 'string': {
+              return model.type === 'text2text';
+            }
+            default: {
+              return false;
+            }
+          }
+        })
+      : [];
   }, [models, provider, record]);
 
-  const initParameters = useCallback((
-    initialParameters: { [key: string]: any } | undefined,
-    initialProvider: string,
-    initialModels: (AiModelInfoDTO | undefined)[]
-  ): { [key: string]: any } | undefined => {
-    if (extractModelProvider(initialParameters?.modelId) === initialProvider) {
-      return {...initialParameters};
-    } else {
-      const defaultModelId = defaultModels?.[(initialProvider ?? 'open_ai') as keyof typeof defaultModels] ?? defaultModels.open_ai;
-      const defaultModel = initialModels?.find(modelInfo => modelInfo?.modelId === defaultModelId);
-      if (defaultModel) {
-        const initialParameters: { [key: string]: any } = {};
-        initialParameters['modelId'] = defaultModel.modelId;
-        initialParameters['baseUrl'] = defaultBaseURLs?.[(initialProvider ?? 'open_ai') as keyof typeof defaultBaseURLs] ?? defaultBaseURLs.open_ai;
-        return initialParameters;
+  const initParameters = useCallback(
+    (
+      initialParameters: { [key: string]: any } | undefined,
+      initialProvider: string,
+      initialModels: (AiModelInfoDTO | undefined)[]
+    ): { [key: string]: any } | undefined => {
+      if (
+        extractModelProvider(initialParameters?.modelId) === initialProvider
+      ) {
+        return { ...initialParameters };
+      } else {
+        const defaultModelId =
+          defaultModels?.[
+            (initialProvider ?? 'open_ai') as keyof typeof defaultModels
+          ] ?? defaultModels.open_ai;
+        const defaultModel = initialModels?.find(
+          (modelInfo) => modelInfo?.modelId === defaultModelId
+        );
+        if (defaultModel) {
+          const initialParameters: { [key: string]: any } = {};
+          initialParameters['modelId'] = defaultModel.modelId;
+          initialParameters['baseUrl'] =
+            defaultBaseURLs?.[
+              (initialProvider ?? 'open_ai') as keyof typeof defaultBaseURLs
+            ] ?? defaultBaseURLs.open_ai;
+          return initialParameters;
+        }
       }
-    }
-    return undefined;
-  }, []);
+      return undefined;
+    },
+    []
+  );
 
   useEffect(() => {
-    aiServiceApi?.listAiModelInfo()
-      .then(setModels)
-      .catch(handleError);
+    aiServiceApi?.listAiModelInfo().then(setModels).catch(handleError);
   }, [aiServiceApi, handleError]);
 
   useEffect(() => {
-    provider && aiServiceApi?.listAiApiKeys(provider)
-      .then(resp => setApiKeyNames(resp
-        .filter(key => !!key.name && key.enabled)
-        .map(key => key.name)))
-      .catch(handleError);
+    provider &&
+      aiServiceApi
+        ?.listAiApiKeys(provider)
+        .then((resp) =>
+          setApiKeyNames(
+            resp
+              .filter((key) => !!key.name && key.enabled)
+              .map((key) => key.name)
+          )
+        )
+        .catch(handleError);
   }, [aiServiceApi, handleError, provider]);
 
   useEffect(() => {
@@ -106,9 +207,14 @@ export default function PromptRunner(props: PromptRunnerProps) {
     setApiKeyName(defaultParameters?.apiKeyName);
     setApiKeyValue(defaultParameters?.apiKey);
 
-    const initialProvider = extractModelProvider(defaultParameters?.modelId) ?? 'open_ai';
-    
-    const initialParameters = initParameters(defaultParameters, initialProvider, models);
+    const initialProvider =
+      extractModelProvider(defaultParameters?.modelId) ?? 'open_ai';
+
+    const initialParameters = initParameters(
+      defaultParameters,
+      initialProvider,
+      models
+    );
 
     if (initialParameters) {
       setParameters(initialParameters);
@@ -116,7 +222,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
   }, [defaultParameters, initParameters, models]);
 
   useEffect(() => {
-    setInputs({...defaultVariables});
+    setInputs({ ...defaultVariables });
   }, [defaultVariables]);
 
   useEffect(() => {
@@ -126,14 +232,18 @@ export default function PromptRunner(props: PromptRunnerProps) {
   function handleInputChange(key: string, value: string | undefined): void {
     if (inputs && value !== inputs[key]) {
       const newInputs: { [key: string]: any } = {};
-      Object.entries(inputs).filter(([k]) => k !== key).forEach(([k, v]) => newInputs[k] = v);
+      Object.entries(inputs)
+        .filter(([k]) => k !== key)
+        .forEach(([k, v]) => (newInputs[k] = v));
       newInputs[key] = value;
       setInputs(newInputs);
     }
   }
 
-
-  function handleSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
+  function handleSelectChange(
+    _event: React.SyntheticEvent | null,
+    newValue: string | null
+  ): void {
     if (newValue && newValue !== provider) {
       setProvider(newValue);
     }
@@ -146,7 +256,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
 
   function handleImageSelect(file: Blob, name: string) {
     getCompressedImage(file)
-      .then(imageInfo => {
+      .then((imageInfo) => {
         handleInputChange('attachment', imageInfo.dataUrl);
         setAttachment(name);
       })
@@ -185,10 +295,10 @@ export default function PromptRunner(props: PromptRunnerProps) {
   }
 
   function isPlayable(): boolean {
-    return !!parameters && (
-      !inputs ||
-      !Object.keys(inputs).includes('input') ||
-      !!inputs.input);
+    return (
+      !!parameters &&
+      (!inputs || !Object.keys(inputs).includes('input') || !!inputs.input)
+    );
   }
 
   function getServiceUrl(): string {
@@ -197,25 +307,29 @@ export default function PromptRunner(props: PromptRunnerProps) {
 
   return (
     <Fragment>
-      <Card sx={{
-        width: { xs: '100%', sm: width },
-        mt: 2,
-        p: 2,
-        boxShadow: 'sm',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        transition: 'width 0.3s',
-      }}>
+      <Card
+        sx={{
+          width: { xs: '100%', sm: width },
+          mt: 2,
+          p: 2,
+          boxShadow: 'sm',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          transition: 'width 0.3s',
+        }}
+      >
         <Typography level="title-sm" textColor="neutral">
           {t('Inputs')}
         </Typography>
         {inputs && Object.keys(inputs).length > 0 && (
-          <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr',
-            gap: 1,
-          }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'auto 1fr',
+              gap: 1,
+            }}
+          >
             {Object.entries(inputs)
               .filter(([k]) => k !== 'attachment')
               .sort(([a], [b]) => a.localeCompare(b))
@@ -226,17 +340,23 @@ export default function PromptRunner(props: PromptRunnerProps) {
                     name={`input-${k}`}
                     value={v}
                     required={k === 'input'}
-                    color={(k === 'input' && !v) ? 'danger' : "neutral"}
-                    onChange={(event) => handleInputChange(k, event.target.value)}
+                    color={k === 'input' && !v ? 'danger' : 'neutral'}
+                    onChange={(event) =>
+                      handleInputChange(k, event.target.value)
+                    }
                   />
                 </Fragment>
-            ))}
+              ))}
             <FormLabel>
-              <Typography endDecorator={(
-                <Tooltip title={t('Only image attachment is supported for now.')}>
-                  <HelpIcon />
-                </Tooltip>
-              )}>
+              <Typography
+                endDecorator={
+                  <Tooltip
+                    title={t('Only image attachment is supported for now.')}
+                  >
+                    <HelpIcon />
+                  </Tooltip>
+                }
+              >
                 {t('attachment')}
               </Typography>
             </FormLabel>
@@ -264,22 +384,32 @@ export default function PromptRunner(props: PromptRunnerProps) {
         <Typography level="title-sm" textColor="neutral">
           {t('Select model providers')}
         </Typography>
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-end',
-          alignItems:  { xs: 'flex-start', sm: 'center' },
-          gap: 2,
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: 2,
+          }}
+        >
           <Select
-            placeholder={<Typography textColor="gray">{t('Select model providers')}</Typography>}
+            placeholder={
+              <Typography textColor="gray">
+                {t('Select model providers')}
+              </Typography>
+            }
             value={provider}
             onChange={handleSelectChange}
             sx={{
               flex: 1,
             }}
           >
-            {modelProviders.map(p => <Option value={p.provider} key={`options-${p.provider}`}>{p.label}</Option>)}
+            {modelProviders.map((p) => (
+              <Option value={p.provider} key={`options-${p.provider}`}>
+                {p.label}
+              </Option>
+            ))}
           </Select>
           <Button
             variant="soft"
@@ -313,10 +443,11 @@ export default function PromptRunner(props: PromptRunnerProps) {
               color="primary"
               onClick={handlePlay}
             >
-              {output.current || defaultOutputText ? 
-                <ReplayCircleFilledRounded fontSize="large" /> : 
+              {output.current || defaultOutputText ? (
+                <ReplayCircleFilledRounded fontSize="large" />
+              ) : (
                 <PlayCircleFilledRounded fontSize="large" />
-              }
+              )}
             </IconButton>
           )}
         </Box>
@@ -326,7 +457,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
             url={getServiceUrl()}
             body={JSON.stringify(aiRequest)}
             initialData={defaultOutputText}
-            onFinish={result => {
+            onFinish={(result) => {
               output.current = result;
               onPlaySuccess?.(aiRequest, result);
               setPlaying(false);
@@ -338,9 +469,11 @@ export default function PromptRunner(props: PromptRunnerProps) {
             }}
           />
         </TextareaTypography>
-        <CommonContainer sx={{
-          justifyContent: 'flex-end',
-        }}>
+        <CommonContainer
+          sx={{
+            justifyContent: 'flex-end',
+          }}
+        >
           {onExampleSave && output.current && aiRequest && (
             <Button
               size="sm"
@@ -349,7 +482,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
               startDecorator={<IosShareRounded />}
               onClick={() => onExampleSave(aiRequest, output.current)}
             >
-              {t('Save as Example', {ns: 'button'})}
+              {t('Save as Example', { ns: 'button' })}
             </Button>
           )}
         </CommonContainer>
@@ -387,8 +520,8 @@ export default function PromptRunner(props: PromptRunnerProps) {
       <OllamaSettings
         open={modelSetting && provider === 'ollama'}
         onClose={handleModelSettings}
-        defaultParameters={parameters} />
+        defaultParameters={parameters}
+      />
     </Fragment>
-    
   );
 }

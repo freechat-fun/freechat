@@ -1,55 +1,78 @@
-import { Fragment, MouseEventHandler, forwardRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Box, Chip, Divider, IconButton, Sheet, SheetProps, Stack, Typography } from "@mui/joy";
-import { ChatContent, CommonBox, ImagePreview, LinePlaceholder, MarkdownContent, TextPreviewWindow } from "..";
-import { ChatMessageRecordDTO, ChatSessionDTO, LlmResultDTO } from "freechat-sdk";
-import { getDateLabel } from "../../libs/date_utils";
-import { getSenderName, getSenderReply } from "../../libs/chat_utils";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { ArticleRounded, ContentCopyRounded, ReplayRounded } from "@mui/icons-material";
-
+import { Fragment, MouseEventHandler, forwardRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Box,
+  Chip,
+  Divider,
+  IconButton,
+  Sheet,
+  SheetProps,
+  Stack,
+  Typography,
+} from '@mui/joy';
+import {
+  ChatContent,
+  CommonBox,
+  ImagePreview,
+  LinePlaceholder,
+  MarkdownContent,
+  TextPreviewWindow,
+} from '..';
+import {
+  ChatMessageRecordDTO,
+  ChatSessionDTO,
+  LlmResultDTO,
+} from 'freechat-sdk';
+import { getDateLabel } from '../../libs/date_utils';
+import { getSenderName, getSenderReply } from '../../libs/chat_utils';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  ArticleRounded,
+  ContentCopyRounded,
+  ReplayRounded,
+} from '@mui/icons-material';
 
 type BubbleContainerProps = SheetProps & {
   isSent: boolean;
   onMouseEnter?: MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: MouseEventHandler<HTMLDivElement>;
-}
+};
 
-const BubbleContainer = forwardRef<HTMLDivElement, BubbleContainerProps>((props, ref) => {
-  const { children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
-  
-  return (
-    <Box
-      sx={{ position: 'relative' }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      <Sheet
-        ref={ref}
-        color={isSent ? 'primary' : 'neutral'}
-        variant={isSent ? 'solid' : 'soft'}
-        sx={(theme) => ({
-          p: 1.25,
-          borderRadius: 'lg',
-          borderTopRightRadius: isSent ? 0 : 'lg',
-          borderTopLeftRadius: isSent ? 'lg' : 0,
-          backgroundColor: isSent
-            ? '#0B6BCBC0'
-            : '#FFFFFFC0',
-          [theme.getColorSchemeSelector('dark')]: {
-            backgroundColor: isSent
-              ? '#0B6BCBC0'
-              : '#000000C0',
-          }
-        })}
-        {...others}
+const BubbleContainer = forwardRef<HTMLDivElement, BubbleContainerProps>(
+  (props, ref) => {
+    const { children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
+
+    return (
+      <Box
+        sx={{ position: 'relative' }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
-        {children}
-      </Sheet>
-    </Box>
-  )
-});
-
+        <Sheet
+          ref={ref}
+          color={isSent ? 'primary' : 'neutral'}
+          variant={isSent ? 'solid' : 'soft'}
+          sx={(theme) => ({
+            p: 1.25,
+            borderRadius: 'lg',
+            borderTopRightRadius: isSent ? 0 : 'lg',
+            borderTopLeftRadius: isSent ? 'lg' : 0,
+            backgroundColor: isSent ? '#0B6BCBC0' : '#FFFFFFC0',
+            [theme.getColorSchemeSelector('dark')]: {
+              backgroundColor: isSent ? '#0B6BCBC0' : '#000000C0',
+            },
+          })}
+          {...others}
+        >
+          {children}
+        </Sheet>
+      </Box>
+    );
+  }
+);
 
 type ChatBubbleProps = {
   session?: ChatSessionDTO;
@@ -68,7 +91,16 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const { handleError } = useErrorMessageBusContext();
   const { i18n, t } = useTranslation('chat');
 
-  const { session, record,  variant, debugMode = false, apiPath, onFinish, onError = handleError, onReplay } = props;
+  const {
+    session,
+    record,
+    variant,
+    debugMode = false,
+    apiPath,
+    onFinish,
+    onError = handleError,
+    onReplay,
+  } = props;
 
   const [copied, setCopied] = useState(false);
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
@@ -78,7 +110,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const sender = session?.character;
   const isSent = variant === 'sent';
 
-  const nickname = (isSent ? context?.userNickname : context?.characterNickname) ?? getSenderName(sender);
+  const nickname =
+    (isSent ? context?.userNickname : context?.characterNickname) ??
+    getSenderName(sender);
   const message = record.message;
   const ext = record.ext;
 
@@ -105,7 +139,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   }
 
   return (
-    <Box 
+    <Box
       sx={{
         maxWidth: '60%',
         minWidth: 'auto',
@@ -122,8 +156,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
         spacing={2}
         sx={{ mb: 0.25 }}
       >
-        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>{nickname}</Typography>
-        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>{getDateLabel(record.gmtCreate || new Date(), i18n.language, true)}</Typography>
+        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>
+          {nickname}
+        </Typography>
+        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>
+          {getDateLabel(record.gmtCreate || new Date(), i18n.language, true)}
+        </Typography>
       </Stack>
 
       <LinePlaceholder />
@@ -146,19 +184,18 @@ export default function ChatBubble(props: ChatBubbleProps) {
       ) : (
         <Fragment>
           {message?.contents?.map((content, index) => (
-            <BubbleContainer
-              key={`message-${index}`}
-              isSent={isSent}
-            >
+            <BubbleContainer key={`message-${index}`} isSent={isSent}>
               {content.type === 'image' ? (
                 <ImagePreview src={content.content} />
               ) : (
-                <MarkdownContent sx={(theme) => ({
-                  whiteSpace: 'pre-wrap',
-                  color: isSent
-                    ? theme.palette.common.white
-                    : theme.palette.text.primary,
-                })}>
+                <MarkdownContent
+                  sx={(theme) => ({
+                    whiteSpace: 'pre-wrap',
+                    color: isSent
+                      ? theme.palette.common.white
+                      : theme.palette.text.primary,
+                  })}
+                >
                   {getSenderReply(content.content, debugMode)}
                 </MarkdownContent>
               )}
@@ -167,27 +204,39 @@ export default function ChatBubble(props: ChatBubbleProps) {
                   {tokenUsage && (
                     <Fragment>
                       <LinePlaceholder spacing={2} />
-                      <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        alignItems: 'center',
-                      }}>
-                        {(content.type === 'text' && copied) ? (<Chip variant='outlined'>{t('Copied!')}</Chip>) : (
-                          <IconButton onClick={() => {
-                            content.content && navigator?.clipboard?.writeText(content.content)
-                              .then(() => setCopied(true))
-                              .catch(handleError);
-                          }}>
-                            <ContentCopyRounded fontSize='small'/>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {content.type === 'text' && copied ? (
+                          <Chip variant="outlined">{t('Copied!')}</Chip>
+                        ) : (
+                          <IconButton
+                            onClick={() => {
+                              content.content &&
+                                navigator?.clipboard
+                                  ?.writeText(content.content)
+                                  .then(() => setCopied(true))
+                                  .catch(handleError);
+                            }}
+                          >
+                            <ContentCopyRounded fontSize="small" />
                           </IconButton>
                         )}
                       </Box>
-                      <Divider sx={{ mt: 1, mb: 1 }}>{t('Token Usage')}</Divider>
-                      <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
+                      <Divider sx={{ mt: 1, mb: 1 }}>
+                        {t('Token Usage')}
+                      </Divider>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
                         <Typography level="body-sm">{`${t('Input')}: ${tokenUsage[0]}`}</Typography>
                         <Typography level="body-sm">{`${t('Output')}: ${tokenUsage[1]}`}</Typography>
                         <Typography level="body-sm">{`${t('Total')}: ${tokenUsage[2]}`}</Typography>
@@ -203,7 +252,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
                         </Typography>
                         <IconButton
                           aria-label="expand"
-                          onClick={() => {setShowSystemPrompt(true)}}
+                          onClick={() => {
+                            setShowSystemPrompt(true);
+                          }}
                           size="sm"
                           variant="solid"
                           color="neutral"
@@ -225,17 +276,17 @@ export default function ChatBubble(props: ChatBubbleProps) {
               )}
             </BubbleContainer>
           ))}
-      </Fragment>
-    )}
-    {!isSent && !apiPath && (
-      <IconButton
-        size="sm"
-        onClick={() => onReplay?.()}
-        sx={{ visibility: isHovered ? 'visible' : 'hidden' }}
-      >
-        <ReplayRounded fontSize="small" />
-      </IconButton>
-          )}
+        </Fragment>
+      )}
+      {!isSent && !apiPath && (
+        <IconButton
+          size="sm"
+          onClick={() => onReplay?.()}
+          sx={{ visibility: isHovered ? 'visible' : 'hidden' }}
+        >
+          <ReplayRounded fontSize="small" />
+        </IconButton>
+      )}
     </Box>
   );
 }

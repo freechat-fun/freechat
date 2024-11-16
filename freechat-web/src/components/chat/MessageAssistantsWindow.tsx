@@ -1,23 +1,40 @@
-import { PropsWithChildren, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { MessageAssistantsPane } from ".";
-import { DialogActions, DialogContent, DialogTitle, IconButton, Modal, ModalDialog, Stack, TypographyProps } from "@mui/joy";
-import { DoneRounded } from "@mui/icons-material";
-import { CharacterSummaryDTO } from "freechat-sdk";
+import { PropsWithChildren, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MessageAssistantsPane } from '.';
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Modal,
+  ModalDialog,
+  Stack,
+  TypographyProps,
+} from '@mui/joy';
+import { DoneRounded } from '@mui/icons-material';
+import { CharacterSummaryDTO } from 'freechat-sdk';
 
 type MessageAssistantsWindowProps = TypographyProps<'div'> & {
   assistantUid?: string;
   setAssistant?: (assistant?: CharacterSummaryDTO | null) => void;
   open?: boolean;
   setOpen?: (open: boolean) => void;
-}
+};
 
-const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindowProps>> = ((props) => {
+const MessageAssistantsWindow: React.FC<
+  PropsWithChildren<MessageAssistantsWindowProps>
+> = (props) => {
   const { t } = useTranslation('chat');
 
-  const { assistantUid, setAssistant, open = false, setOpen = () => {} } = props;
+  const {
+    assistantUid,
+    setAssistant,
+    open = false,
+    setOpen = () => {},
+  } = props;
 
-  const [selectedAssistant, setSelectedAssistant] = useState<CharacterSummaryDTO | null>();
+  const [selectedAssistant, setSelectedAssistant] =
+    useState<CharacterSummaryDTO | null>();
 
   const title = t('Select an assistant');
 
@@ -54,11 +71,14 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
         <ModalDialog>
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>
-            <Stack spacing={2} sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
+            <Stack
+              spacing={2}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
               <MessageAssistantsPane
                 assistantUid={getAssistantUid()}
                 setAssistant={setSelectedAssistant}
@@ -66,12 +86,14 @@ const MessageAssistantsWindow: React.FC<PropsWithChildren<MessageAssistantsWindo
             </Stack>
           </DialogContent>
           <DialogActions>
-            <IconButton onClick={handleConfirm}><DoneRounded /></IconButton>
+            <IconButton onClick={handleConfirm}>
+              <DoneRounded />
+            </IconButton>
           </DialogActions>
         </ModalDialog>
       </Modal>
     </>
   );
-});
+};
 
 export default MessageAssistantsWindow;

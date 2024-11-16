@@ -1,20 +1,37 @@
-import { Fragment, ReactNode, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { IconButton, Link, Stack, Table, Typography } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
-import { AddCircleRounded, ArticleRounded, CheckCircleOutlined, DeleteForeverRounded, DeleteRounded, ErrorOutlineRounded, HelpOutlineRounded, LinkRounded, PendingOutlined, RefreshRounded, ReplayRounded, RunCircleOutlined, StopCircleOutlined } from "@mui/icons-material";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { RagTaskDetailsDTO } from "freechat-sdk";
-import { formatDateTime } from "../../libs/date_utils";
-import { base64PathDecode, extractFilenameFromUrl } from "../../libs/url_utils";
-import { CommonBox, ConfirmModal } from "..";
-import { CharacterDocumentUploader } from ".";
+import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IconButton, Link, Stack, Table, Typography } from '@mui/joy';
+import { SxProps } from '@mui/joy/styles/types';
+import {
+  AddCircleRounded,
+  ArticleRounded,
+  CheckCircleOutlined,
+  DeleteForeverRounded,
+  DeleteRounded,
+  ErrorOutlineRounded,
+  HelpOutlineRounded,
+  LinkRounded,
+  PendingOutlined,
+  RefreshRounded,
+  ReplayRounded,
+  RunCircleOutlined,
+  StopCircleOutlined,
+} from '@mui/icons-material';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import { RagTaskDetailsDTO } from 'freechat-sdk';
+import { formatDateTime } from '../../libs/date_utils';
+import { base64PathDecode, extractFilenameFromUrl } from '../../libs/url_utils';
+import { CommonBox, ConfirmModal } from '..';
+import { CharacterDocumentUploader } from '.';
 
 type CharacterDocumentsPaneProps = {
   characterUid?: string;
   editMode?: boolean;
   sx?: SxProps;
-}
+};
 
 export default function CharacterDocumentsPane({
   characterUid,
@@ -30,9 +47,8 @@ export default function CharacterDocumentsPane({
   const [newTask, setNewTask] = useState<boolean>(false);
 
   const getBackends = useCallback(() => {
-    characterUid && ragApi?.listRagTasks(characterUid)
-      .then(setRagTasks)
-      .catch(handleError);
+    characterUid &&
+      ragApi?.listRagTasks(characterUid).then(setRagTasks).catch(handleError);
   }, [characterUid, ragApi, handleError]);
 
   useEffect(() => {
@@ -40,26 +56,26 @@ export default function CharacterDocumentsPane({
   }, [getBackends]);
 
   function handleRefreshTasks(): void {
-    characterUid && ragApi?.listRagTasks(characterUid)
-      .then(setRagTasks)
-      .catch(handleError);
+    characterUid &&
+      ragApi?.listRagTasks(characterUid).then(setRagTasks).catch(handleError);
   }
 
   function handleRerunTask(task: RagTaskDetailsDTO): void {
-    task.id && ragApi?.startRagTask(task.id)
-      .finally(() => handleRefreshTasks())
+    task.id &&
+      ragApi?.startRagTask(task.id).finally(() => handleRefreshTasks());
   }
 
   function handleCancelTask(task: RagTaskDetailsDTO): void {
-    task.id && ragApi?.cancelRagTask(task.id)
-      .finally(() => handleRefreshTasks());
+    task.id &&
+      ragApi?.cancelRagTask(task.id).finally(() => handleRefreshTasks());
   }
 
   function handleDeleteTask(task: RagTaskDetailsDTO | undefined): void {
     if (!task?.id) {
       return;
     }
-    ragApi?.deleteRagTask(task.id)
+    ragApi
+      ?.deleteRagTask(task.id)
       .then(() => handleRefreshTasks())
       .catch(handleError);
 
@@ -87,7 +103,7 @@ export default function CharacterDocumentsPane({
         wrapped = wrapped.substring(0, 5) + '...';
       }
       return wrapped;
-    }
+    };
 
     if (task?.sourceType === 'url') {
       return handleFilename(extractFilenameFromUrl(task.source));
@@ -120,22 +136,29 @@ export default function CharacterDocumentsPane({
       return '';
     }
 
-    switch(task.status) {
-      case 'pending': return <PendingOutlined />;
-      case 'running': return <RunCircleOutlined />;
-      case 'succeeded': return <CheckCircleOutlined />;
-      case 'failed': return <ErrorOutlineRounded />;
-      default: return <HelpOutlineRounded />;
+    switch (task.status) {
+      case 'pending':
+        return <PendingOutlined />;
+      case 'running':
+        return <RunCircleOutlined />;
+      case 'succeeded':
+        return <CheckCircleOutlined />;
+      case 'failed':
+        return <ErrorOutlineRounded />;
+      default:
+        return <HelpOutlineRounded />;
     }
   }
 
   return (
-    <Stack spacing={3} sx={{...sx}}>
+    <Stack spacing={3} sx={{ ...sx }}>
       <CommonBox>
         <Typography level="title-md">
-          {t('Character documents: (A maximum of 10 documents are allowed, each document is less than 3M)')}
+          {t(
+            'Character documents: (A maximum of 10 documents are allowed, each document is less than 3M)'
+          )}
         </Typography>
-        <IconButton onClick={() =>handleRefreshTasks()}>
+        <IconButton onClick={() => handleRefreshTasks()}>
           <RefreshRounded />
         </IconButton>
 
@@ -163,18 +186,21 @@ export default function CharacterDocumentsPane({
           </tr>
         </thead>
         <tbody>
-          {ragTasks.map(task => (
-            <tr
-              tabIndex={-1}
-              key={`rag-task-${task.id}`}
-            >
+          {ragTasks.map((task) => (
+            <tr tabIndex={-1} key={`rag-task-${task.id}`}>
               <td>{task.id}</td>
               <td>{formatDateTime(task.gmtCreate)}</td>
               <td>{formatDateTime(task.gmtStart)}</td>
               <td>{formatDateTime(task.gmtEnd)}</td>
               <td>
                 <Link
-                  startDecorator={task?.sourceType === 'url' ? <LinkRounded /> : <ArticleRounded />}
+                  startDecorator={
+                    task?.sourceType === 'url' ? (
+                      <LinkRounded />
+                    ) : (
+                      <ArticleRounded />
+                    )
+                  }
                   target="_blank"
                   href={getTaskLink(task)}
                 >
@@ -187,23 +213,25 @@ export default function CharacterDocumentsPane({
                 </Typography>
               </td>
               <td>
-              {editMode && (
-                <Fragment>
-                  {task.status === 'running' ? (
-                    <IconButton onClick={() => handleCancelTask(task)}>
-                      <StopCircleOutlined fontSize="small" />
+                {editMode && (
+                  <Fragment>
+                    {task.status === 'running' ? (
+                      <IconButton onClick={() => handleCancelTask(task)}>
+                        <StopCircleOutlined fontSize="small" />
+                      </IconButton>
+                    ) : (
+                      <IconButton onClick={() => handleRerunTask(task)}>
+                        <ReplayRounded fontSize="small" />
+                      </IconButton>
+                    )}
+
+                    <IconButton
+                      onClick={() => task.id && setTaskToConfirm(task)}
+                    >
+                      <DeleteRounded fontSize="small" />
                     </IconButton>
-                  ) : (
-                    <IconButton onClick={() => handleRerunTask(task)}>
-                      <ReplayRounded fontSize="small" />
-                    </IconButton>
-                  )}
-                  
-                  <IconButton onClick={() => task.id && setTaskToConfirm(task)}>
-                    <DeleteRounded fontSize="small" />
-                  </IconButton>
-                </Fragment>
-              )}
+                  </Fragment>
+                )}
               </td>
             </tr>
           ))}
@@ -220,7 +248,7 @@ export default function CharacterDocumentsPane({
         button={{
           color: 'danger',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />
+          startDecorator: <DeleteForeverRounded />,
         }}
         onConfirm={() => handleDeleteTask(taskToConfirm)}
       >

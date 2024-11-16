@@ -1,6 +1,6 @@
-import { MenuRounded } from "@mui/icons-material";
-import { IconButton } from "@mui/joy";
-import { toggleSidebar } from "../libs/sidebar_utils";
+import { MenuRounded } from '@mui/icons-material';
+import { IconButton } from '@mui/joy';
+import { toggleSidebar } from '../libs/sidebar_utils';
 
 export default function SidebarToggle() {
   return (
@@ -10,7 +10,7 @@ export default function SidebarToggle() {
       color="neutral"
       size="sm"
       sx={{
-        display: { md: 'none' }
+        display: { md: 'none' },
       }}
     >
       <MenuRounded />

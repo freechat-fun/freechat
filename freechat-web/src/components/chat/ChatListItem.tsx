@@ -1,13 +1,27 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
-import { Box, IconButton, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Stack, Typography } from "@mui/joy";
-import { ChatSessionDTO } from "freechat-sdk";
-import { getSenderName, getSenderReply, getSenderStatus, toggleChatsPane } from "../../libs/chat_utils";
-import { AvatarWithStatus } from ".";
-import { CommonGridBox, HighlightedTypography } from "..";
-import { CircleRounded, RemoveCircleRounded } from "@mui/icons-material";
-import { getDateLabel } from "../../libs/date_utils";
-import { useTranslation } from "react-i18next";
-import { getMessageText } from "../../libs/template_utils";
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import {
+  Box,
+  IconButton,
+  ListDivider,
+  ListItem,
+  ListItemButton,
+  ListItemButtonProps,
+  Stack,
+  Typography,
+} from '@mui/joy';
+import { ChatSessionDTO } from 'freechat-sdk';
+import {
+  getSenderName,
+  getSenderReply,
+  getSenderStatus,
+  toggleChatsPane,
+} from '../../libs/chat_utils';
+import { AvatarWithStatus } from '.';
+import { CommonGridBox, HighlightedTypography } from '..';
+import { CircleRounded, RemoveCircleRounded } from '@mui/icons-material';
+import { getDateLabel } from '../../libs/date_utils';
+import { useTranslation } from 'react-i18next';
+import { getMessageText } from '../../libs/template_utils';
 
 type ChatListItemProps = ListItemButtonProps & {
   session: ChatSessionDTO;
@@ -19,14 +33,25 @@ type ChatListItemProps = ListItemButtonProps & {
 };
 
 export default function ChatListItem(props: ChatListItemProps) {
-  const { session, selectedChatId, highlight, editMode = false, onSelectChat, onRemoveChat } = props;
+  const {
+    session,
+    selectedChatId,
+    highlight,
+    editMode = false,
+    onSelectChat,
+    onRemoveChat,
+  } = props;
 
   const { i18n } = useTranslation();
 
-  const [selected, setSelected] = useState(selectedChatId === session.context?.chatId);
+  const [selected, setSelected] = useState(
+    selectedChatId === session.context?.chatId
+  );
   const [context, setContext] = useState(session.context);
   const [sender, setSender] = useState(session.character);
-  const [nickname, setNickname] = useState(session.context?.characterNickname ?? getSenderName(sender));
+  const [nickname, setNickname] = useState(
+    session.context?.characterNickname ?? getSenderName(sender)
+  );
   const [record, setRecord] = useState(session.latestMessageRecord);
 
   const unread = useMemo(() => {
@@ -40,9 +65,16 @@ export default function ChatListItem(props: ChatListItemProps) {
     setSelected(selectedChatId === session.context?.chatId);
     setContext(session.context);
     setSender(session.character);
-    setNickname(session.context?.characterNickname ?? getSenderName(session.character));
+    setNickname(
+      session.context?.characterNickname ?? getSenderName(session.character)
+    );
     setRecord(session.latestMessageRecord);
-  }, [selectedChatId, session.character, session.context, session.latestMessageRecord]);
+  }, [
+    selectedChatId,
+    session.character,
+    session.context,
+    session.latestMessageRecord,
+  ]);
 
   return (
     <Fragment>
@@ -61,10 +93,12 @@ export default function ChatListItem(props: ChatListItemProps) {
             mx: 0,
           }}
         >
-          <CommonGridBox sx={{
-            alignItems: 'center',
-            gridTemplateColumns: editMode ? '80% 20%' : 'auto 1fr',
-          }}>
+          <CommonGridBox
+            sx={{
+              alignItems: 'center',
+              gridTemplateColumns: editMode ? '80% 20%' : 'auto 1fr',
+            }}
+          >
             <Stack>
               <Stack direction="row" spacing={1.5}>
                 <AvatarWithStatus
@@ -98,7 +132,6 @@ export default function ChatListItem(props: ChatListItemProps) {
                       {getDateLabel(record.gmtCreate, i18n.language)}
                     </Typography>
                   )}
-                  
                 </Box>
               </Stack>
               <Typography
@@ -114,11 +147,15 @@ export default function ChatListItem(props: ChatListItemProps) {
                 {getSenderReply(getMessageText(record?.message) ?? '', false)}
               </Typography>
             </Stack>
-          {editMode && (
-            <IconButton size="sm" sx={{px: 1}} onClick={() => onRemoveChat?.()}>
-              <RemoveCircleRounded fontSize="small" />
-            </IconButton>
-          )}
+            {editMode && (
+              <IconButton
+                size="sm"
+                sx={{ px: 1 }}
+                onClick={() => onRemoveChat?.()}
+              >
+                <RemoveCircleRounded fontSize="small" />
+              </IconButton>
+            )}
           </CommonGridBox>
         </ListItemButton>
       </ListItem>

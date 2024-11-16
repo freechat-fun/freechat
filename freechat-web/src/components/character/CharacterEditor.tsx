@@ -1,30 +1,89 @@
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useErrorMessageBusContext, useFreeChatApiContext, useMetaInfoContext } from "../../contexts";
-import { CharacterBackendDTO, CharacterBackendDetailsDTO, CharacterDetailsDTO, CharacterUpdateDTO, ChatCreateDTO, PromptRefDTO, PromptTaskDTO } from "freechat-sdk";
-import { formatDate, getDateLabel } from "../../libs/date_utils";
-import { locales } from "../../configs/i18n-config";
-import { CommonBox, CommonContainer, ConfirmModal, ContentTextarea, ImagePicker, LabelTypography, LinePlaceholder, OptionTooltip, RouterBlocker, TinyInput } from "../../components";
-import { AspectRatio, Avatar, Box, Button, ButtonGroup, Card, Chip, ChipDelete, Divider, FormControl, FormHelperText, IconButton, Input, Option, Radio, RadioGroup, Select, Stack, Switch, Typography, switchClasses } from "@mui/joy";
-import { AddCircleRounded, CheckRounded, EditRounded, ImportExportRounded, InfoOutlined, IosShareRounded, SaveAltRounded, TransitEnterexitRounded } from "@mui/icons-material";
-import { CharacterAlbumPane, CharacterBackendSettings, CharacterBackendsPane, CharacterDocumentsPane, CharacterGuide } from "../../components/character";
-import { HelpIcon } from "../../components/icon";
-import { createPromptForCharacter } from "../../libs/chat_utils";
-import { getCompressedImage } from "../../libs/ui_utils";
-import { objectsEqual } from "../../libs/js_utils";
-import { exportCharacter } from "../../libs/character_utils";
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+  useMetaInfoContext,
+} from '../../contexts';
+import {
+  CharacterBackendDTO,
+  CharacterBackendDetailsDTO,
+  CharacterDetailsDTO,
+  CharacterUpdateDTO,
+  ChatCreateDTO,
+  PromptRefDTO,
+  PromptTaskDTO,
+} from 'freechat-sdk';
+import { formatDate, getDateLabel } from '../../libs/date_utils';
+import { locales } from '../../configs/i18n-config';
+import {
+  CommonBox,
+  CommonContainer,
+  ConfirmModal,
+  ContentTextarea,
+  ImagePicker,
+  LabelTypography,
+  LinePlaceholder,
+  OptionTooltip,
+  RouterBlocker,
+  TinyInput,
+} from '../../components';
+import {
+  AspectRatio,
+  Avatar,
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  Chip,
+  ChipDelete,
+  Divider,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  Input,
+  Option,
+  Radio,
+  RadioGroup,
+  Select,
+  Stack,
+  Switch,
+  Typography,
+  switchClasses,
+} from '@mui/joy';
+import {
+  AddCircleRounded,
+  CheckRounded,
+  EditRounded,
+  ImportExportRounded,
+  InfoOutlined,
+  IosShareRounded,
+  SaveAltRounded,
+  TransitEnterexitRounded,
+} from '@mui/icons-material';
+import {
+  CharacterAlbumPane,
+  CharacterBackendSettings,
+  CharacterBackendsPane,
+  CharacterDocumentsPane,
+  CharacterGuide,
+} from '../../components/character';
+import { HelpIcon } from '../../components/icon';
+import { createPromptForCharacter } from '../../libs/chat_utils';
+import { getCompressedImage } from '../../libs/ui_utils';
+import { objectsEqual } from '../../libs/js_utils';
+import { exportCharacter } from '../../libs/character_utils';
 
 type CharacterEditorProps = {
   id: number;
-}
+};
 
-export default function CharacterEditor ({
-  id,
-}: CharacterEditorProps) {
+export default function CharacterEditor({ id }: CharacterEditorProps) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation(['character', 'account', 'button']);
-  const { accountApi, promptApi, promptTaskApi, characterApi, chatApi } = useFreeChatApiContext();
+  const { accountApi, promptApi, promptTaskApi, characterApi, chatApi } =
+    useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
   const { username } = useMetaInfoContext();
 
@@ -51,16 +110,19 @@ export default function CharacterEditor ({
   const [tag, setTag] = useState<string>();
 
   const [editBackend, setEditBackend] = useState<CharacterBackendDetailsDTO>();
-  const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>([]);
+  const [backends, setBackends] = useState<Array<CharacterBackendDetailsDTO>>(
+    []
+  );
 
   const [editEnabled, setEditEnabled] = useState(false);
 
   const originName = useRef('');
   const backendRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     if (id) {
-      characterApi?.getCharacterDetails(id)
+      characterApi
+        ?.getCharacterDetails(id)
         .then(setOrigRecord)
         .catch(handleError);
     }
@@ -80,8 +142,8 @@ export default function CharacterEditor ({
         }
       }
 
-      const draftRecord = {...origRecord, ...draft};
-      
+      const draftRecord = { ...origRecord, ...draft };
+
       originName.current = draftRecord.name ?? '';
 
       setRecordUid(draftRecord.characterUid);
@@ -119,8 +181,9 @@ export default function CharacterEditor ({
         setRecordName(editRecordName);
         setEditRecordName(null);
       } else {
-        characterApi?.existsCharacterName(editRecordName)
-          .then(resp => {
+        characterApi
+          ?.existsCharacterName(editRecordName)
+          .then((resp) => {
             if (!resp) {
               setRecordName(editRecordName);
               setEditRecordName(null);
@@ -137,7 +200,7 @@ export default function CharacterEditor ({
   }
 
   function handleTagDelete(tagDeleted: string): void {
-    tags && setTags(tags.filter(tag => tagDeleted !== tag));
+    tags && setTags(tags.filter((tag) => tagDeleted !== tag));
   }
 
   function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
@@ -151,15 +214,16 @@ export default function CharacterEditor ({
       return;
     }
     getCompressedImage(file, 100 * 1024)
-      .then(imageInfo => {
+      .then((imageInfo) => {
         const request = new File([imageInfo.blob], name);
-        recordUid && characterApi?.uploadCharacterAvatar(recordUid, request)
-          .then(url => setAvatar(url))
-          .catch(handleError);
+        recordUid &&
+          characterApi
+            ?.uploadCharacterAvatar(recordUid, request)
+            .then((url) => setAvatar(url))
+            .catch(handleError);
       })
       .catch(handleError);
   }
-    
 
   function handleRecordSave(): void {
     if (!id) {
@@ -172,12 +236,14 @@ export default function CharacterEditor ({
     const request = new CharacterUpdateDTO();
     request.draft = JSON.stringify(draftRecord);
 
-    characterApi?.updateCharacter(id, request)
-      .then(resp => {
+    characterApi
+      ?.updateCharacter(id, request)
+      .then((resp) => {
         if (!resp) {
           return;
         }
-        characterApi?.getCharacterDetails(id)
+        characterApi
+          ?.getCharacterDetails(id)
           .then(setOrigRecord)
           .catch(handleError);
       })
@@ -188,25 +254,35 @@ export default function CharacterEditor ({
     if (!id) {
       return;
     }
-    const onUpdated = (currentId: number, visibility: string, nickname: string, about: string | undefined) => {
-      characterApi?.publishCharacter(currentId, visibility)
-        .then(characterId => {
-          chatApi?.getDefaultChatId(characterId)
-            .then(resp => {
+    const onUpdated = (
+      currentId: number,
+      visibility: string,
+      nickname: string,
+      about: string | undefined
+    ) => {
+      characterApi
+        ?.publishCharacter(currentId, visibility)
+        .then((characterId) => {
+          chatApi
+            ?.getDefaultChatId(characterId)
+            .then((resp) => {
               navigate(`/w/chat/${resp}/debug`);
             })
             .catch(() => {
-              accountApi?.getUserDetails()
-                .then(userDetails => {
+              accountApi
+                ?.getUserDetails()
+                .then((userDetails) => {
                   const request = new ChatCreateDTO();
-                  request.userNickname = userDetails.nickname ?? userDetails.username;
+                  request.userNickname =
+                    userDetails.nickname ?? userDetails.username;
                   request.userProfile = userDetails.profile;
                   request.characterNickname = nickname;
                   request.characterUid = recordUid as string;
                   request.about = about;
 
-                  chatApi.startChat(request)
-                    .then(chatId => {
+                  chatApi
+                    .startChat(request)
+                    .then((chatId) => {
                       navigate(`/w/chat/${chatId}/debug`);
                     })
                     .catch(handleError);
@@ -219,17 +295,19 @@ export default function CharacterEditor ({
 
     const editRecord = getEditRecord();
     const request = recordToUpdateRequest(editRecord);
-    characterApi?.updateCharacter(id, request)
-      .then(resp => {
+    characterApi
+      ?.updateCharacter(id, request)
+      .then((resp) => {
         if (resp) {
-          characterApi?.getCharacterDetails(id)
-            .then(newRecord => {
+          characterApi
+            ?.getCharacterDetails(id)
+            .then((newRecord) => {
               setOrigRecord(newRecord);
               onUpdated(
                 editRecord.characterId as number,
                 editRecord.visibility === 'private' ? 'private' : 'public',
                 editRecord.nickname ?? editRecord.name ?? '',
-                editRecord.defaultScene,
+                editRecord.defaultScene
               );
             })
             .catch(handleError);
@@ -245,10 +323,12 @@ export default function CharacterEditor ({
     setEditEnabled(false);
     exportCharacter(id)
       .catch(handleError)
-      .finally(() => setEditEnabled(true))
+      .finally(() => setEditEnabled(true));
   }
 
-  function recordToUpdateRequest(record: CharacterDetailsDTO): CharacterUpdateDTO {
+  function recordToUpdateRequest(
+    record: CharacterDetailsDTO
+  ): CharacterUpdateDTO {
     const request = new CharacterUpdateDTO();
     request.nickname = record.nickname;
     request.description = record.description;
@@ -269,7 +349,10 @@ export default function CharacterEditor ({
     return request;
   }
 
-  function handleBackendEdit(backend: CharacterBackendDetailsDTO, backends: CharacterBackendDetailsDTO[]) {
+  function handleBackendEdit(
+    backend: CharacterBackendDetailsDTO,
+    backends: CharacterBackendDetailsDTO[]
+  ) {
     if (backends.length === 0) {
       backend.isDefault = true;
     }
@@ -281,7 +364,7 @@ export default function CharacterEditor ({
     backend: CharacterBackendDetailsDTO,
     promptTask?: PromptTaskDTO,
     redirectToChatPrompt?: boolean,
-    redirectHash?: string,
+    redirectHash?: string
   ) {
     const request = new CharacterBackendDTO();
     request.chatPromptTaskId = backend.chatPromptTaskId;
@@ -296,39 +379,59 @@ export default function CharacterEditor ({
     request.quotaType = backend.quotaType;
     request.initQuota = backend.initQuota;
 
-    const updateBackend = (backendId: string | undefined, req: CharacterBackendDTO) => {
+    const updateBackend = (
+      backendId: string | undefined,
+      req: CharacterBackendDTO
+    ) => {
       if (backendId) {
-        characterApi?.updateCharacterBackend(backendId, req)
+        characterApi
+          ?.updateCharacterBackend(backendId, req)
           .then(() => {
             if (redirectToChatPrompt && req.chatPromptTaskId) {
               saveAndNavigate(req.chatPromptTaskId, redirectHash);
             } else {
               setBackends((prevBackends) => {
-                const others = prevBackends.filter(prevBackend => prevBackend.backendId !== backendId);
-                return [...others, {...backend, backendId: backendId, chatPromptTaskId: req.chatPromptTaskId}];
+                const others = prevBackends.filter(
+                  (prevBackend) => prevBackend.backendId !== backendId
+                );
+                return [
+                  ...others,
+                  {
+                    ...backend,
+                    backendId: backendId,
+                    chatPromptTaskId: req.chatPromptTaskId,
+                  },
+                ];
               });
               setEditBackend(undefined);
             }
           })
           .catch(handleError);
-        } else if (recordUid) {
-          characterApi?.addCharacterBackend(recordUid, req)
-            .then((bId) => {
-              if (redirectToChatPrompt && req.chatPromptTaskId) {
-                saveAndNavigate(req.chatPromptTaskId, redirectHash);
-              } else {
-                setBackends((prevBackends) => {
-                  return [...prevBackends, {...backend, backendId: bId, chatPromptTaskId: req.chatPromptTaskId}];
-                });
-                setEditBackend(undefined);
-              }
-            })
-        }
+      } else if (recordUid) {
+        characterApi?.addCharacterBackend(recordUid, req).then((bId) => {
+          if (redirectToChatPrompt && req.chatPromptTaskId) {
+            saveAndNavigate(req.chatPromptTaskId, redirectHash);
+          } else {
+            setBackends((prevBackends) => {
+              return [
+                ...prevBackends,
+                {
+                  ...backend,
+                  backendId: bId,
+                  chatPromptTaskId: req.chatPromptTaskId,
+                },
+              ];
+            });
+            setEditBackend(undefined);
+          }
+        });
       }
+    };
 
     if (backend.chatPromptTaskId) {
       if (promptTask) {
-        promptTaskApi?.updatePromptTask(backend.chatPromptTaskId, promptTask)
+        promptTaskApi
+          ?.updatePromptTask(backend.chatPromptTaskId, promptTask)
           .then(() => updateBackend(backend.backendId, request))
           .catch(handleError);
       } else {
@@ -336,19 +439,22 @@ export default function CharacterEditor ({
       }
     } else {
       const promptReq = createPromptForCharacter(recordName, lang);
-      promptApi?.newPromptName(recordName ?? 'untitled')
-        .then(name => {
+      promptApi
+        ?.newPromptName(recordName ?? 'untitled')
+        .then((name) => {
           promptReq.name = name;
-          promptApi?.createPrompt(promptReq)
-            .then(promptId => {
+          promptApi
+            ?.createPrompt(promptReq)
+            .then((promptId) => {
               const promptRef = new PromptRefDTO();
               promptRef.promptId = promptId;
 
               const promptTaskReq = promptTask ?? new PromptTaskDTO();
               promptTaskReq.promptRef = promptRef;
 
-              promptTaskApi?.createPromptTask(promptTaskReq)
-                .then(promptTaskId => {
+              promptTaskApi
+                ?.createPromptTask(promptTaskReq)
+                .then((promptTaskId) => {
                   request.chatPromptTaskId = promptTaskId;
                   updateBackend(backend.backendId, request);
                 })
@@ -396,9 +502,10 @@ export default function CharacterEditor ({
       }
     }
 
-    const draftRecord = {...origRecord, ...draft};
+    const draftRecord = { ...origRecord, ...draft };
 
-    return objectsEqual(draftRecord.name ?? '', recordName) &&
+    return (
+      objectsEqual(draftRecord.name ?? '', recordName) &&
       objectsEqual(draftRecord.nickname, nickname) &&
       objectsEqual(draftRecord.description, description) &&
       objectsEqual(draftRecord.avatar, avatar) &&
@@ -411,7 +518,8 @@ export default function CharacterEditor ({
       objectsEqual(draftRecord.chatExample, chatExample) &&
       objectsEqual(draftRecord.defaultScene, defaultScene) &&
       objectsEqual(draftRecord.visibility ?? 'private', visibility) &&
-      objectsEqual(draftRecord.tags ?? [], tags);
+      objectsEqual(draftRecord.tags ?? [], tags)
+    );
   }
 
   function saveAndNavigate(promptTaskId: string, hash?: string): void {
@@ -422,24 +530,31 @@ export default function CharacterEditor ({
     const request = new CharacterUpdateDTO();
     request.draft = JSON.stringify(draftRecord);
 
-    characterApi?.updateCharacter(id, request)
-      .finally(() => navigate(`/w/prompt/task/edit/${promptTaskId}${hash ?? ''}`))
+    characterApi
+      ?.updateCharacter(id, request)
+      .finally(() =>
+        navigate(`/w/prompt/task/edit/${promptTaskId}${hash ?? ''}`)
+      );
   }
 
   return (
     <>
       <LinePlaceholder />
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
-        alignItems: { xs: 'flex-start', sm: 'flex-end' },
-        gap: { xs: 1, sm: 2 },
-        justifyContent: 'flex-end',
-      }}>
-        <CommonContainer sx={{
-          alignItems: 'center',
-          flex: 1,
-        }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'flex-start', sm: 'flex-end' },
+          gap: { xs: 1, sm: 2 },
+          justifyContent: 'flex-end',
+        }}
+      >
+        <CommonContainer
+          sx={{
+            alignItems: 'center',
+            flex: 1,
+          }}
+        >
           <Typography level="h3">{recordName}</Typography>
           <IconButton
             disabled={!!editRecordName}
@@ -450,18 +565,24 @@ export default function CharacterEditor ({
           </IconButton>
         </CommonContainer>
         <Typography level="body-sm">
-          {t('Updated on')} {getDateLabel(origRecord?.gmtModified || new Date(0), i18n.language, true)}
+          {t('Updated on')}{' '}
+          {getDateLabel(
+            origRecord?.gmtModified || new Date(0),
+            i18n.language,
+            true
+          )}
         </Typography>
-        
+
         <ButtonGroup
           size="sm"
           variant="soft"
           color="primary"
           sx={{
             borderRadius: '16px',
-        }}>
+          }}
+        >
           <Button
-            disabled={isSaved() || visibility==='hidden' || !editEnabled}
+            disabled={isSaved() || visibility === 'hidden' || !editEnabled}
             startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
           >
@@ -487,17 +608,20 @@ export default function CharacterEditor ({
       <Divider />
 
       <CommonContainer sx={{ alignItems: 'flex-start' }}>
-        <Stack spacing={3} sx={{
-          minWidth: { sm: '16rem' },
-          my: 2,
-          flex: 1,
-        }}>
-          <CommonBox sx={{gap: 2}}>
+        <Stack
+          spacing={3}
+          sx={{
+            minWidth: { sm: '16rem' },
+            my: 2,
+            flex: 1,
+          }}
+        >
+          <CommonBox sx={{ gap: 2 }}>
             <Typography level="title-lg" color="primary">
               {t('Public')}
             </Typography>
             <Switch
-              checked={visibility==='public' || visibility==='hidden'}
+              checked={visibility === 'public' || visibility === 'hidden'}
               sx={{
                 [`&.${switchClasses.checked}`]: {
                   '--Switch-trackBackground': '#4CA176',
@@ -506,17 +630,27 @@ export default function CharacterEditor ({
                   },
                 },
               }}
-              onChange={(event) => event.target.checked ? setVisibility('public') : setVisibility('private')}
+              onChange={(event) =>
+                event.target.checked
+                  ? setVisibility('public')
+                  : setVisibility('private')
+              }
             />
           </CommonBox>
-          <Stack spacing={1} sx={{
-            minWidth: { sm: '12rem' },
-          }}>
+          <Stack
+            spacing={1}
+            sx={{
+              minWidth: { sm: '12rem' },
+            }}
+          >
             <CommonBox>
               <Typography level="title-lg" color="primary">
                 {t('Description')}
               </Typography>
-              <OptionTooltip placement="right" title={t('Supports markdown format')}>
+              <OptionTooltip
+                placement="right"
+                title={t('Supports markdown format')}
+              >
                 <HelpIcon />
               </OptionTooltip>
             </CommonBox>
@@ -534,73 +668,75 @@ export default function CharacterEditor ({
             <Typography level="title-lg" color="primary">
               {t('Tags')}
             </Typography>
-            {(!tags || tags.length < 5) && (tag === undefined) && (
-              <IconButton
-                size="sm"
-                color="primary"
-                onClick={() => setTag('')}
-              >
+            {(!tags || tags.length < 5) && tag === undefined && (
+              <IconButton size="sm" color="primary" onClick={() => setTag('')}>
                 <AddCircleRounded />
               </IconButton>
             )}
-            {(tag !== undefined) && (
+            {tag !== undefined && (
               <form onSubmit={handleTagSubmit}>
                 <TinyInput
                   autoFocus
                   type="text"
                   value={tag}
-                  onChange={(event => setTag(event.target.value))}
+                  onChange={(event) => setTag(event.target.value)}
                   endDecorator={<TransitEnterexitRounded fontSize="small" />}
                 />
               </form>
             )}
           </CommonBox>
           <CommonBox>
-            {tags.length > 0 && tags.map((tag, index) => (
-              <Chip
-                variant="outlined"
-                color="success"
-                key={`tag-${tag}-${index}`}
-                endDecorator={<ChipDelete onDelete={() => handleTagDelete(tag)} />}
-              >
-                {tag}
-              </Chip>
-            ))}
+            {tags.length > 0 &&
+              tags.map((tag, index) => (
+                <Chip
+                  variant="outlined"
+                  color="success"
+                  key={`tag-${tag}-${index}`}
+                  endDecorator={
+                    <ChipDelete onDelete={() => handleTagDelete(tag)} />
+                  }
+                >
+                  {tag}
+                </Chip>
+              ))}
           </CommonBox>
 
-          <Divider>{t('Character\'s information, significantly influences chat feedback')}</Divider>
+          <Divider>
+            {t(
+              "Character's information, significantly influences chat feedback"
+            )}
+          </Divider>
 
-          <Card sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            mx: 'auto',
-            gap: 2,
-          }}>
-            <Stack
-              direction="row"
-              spacing={3}
-              sx={{ display: 'flex', my: 1 }}
-            >
-              <Box alignItems="center" sx={{
-                flex: 1,
-                display: 'grid',
-                gridTemplateColumns: 'auto 1fr',
-                gap: 1,
-              }}>
-                <LabelTypography>
-                  {t('account:Nickname')}
-                </LabelTypography>
+          <Card
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              mx: 'auto',
+              gap: 2,
+            }}
+          >
+            <Stack direction="row" spacing={3} sx={{ display: 'flex', my: 1 }}>
+              <Box
+                alignItems="center"
+                sx={{
+                  flex: 1,
+                  display: 'grid',
+                  gridTemplateColumns: 'auto 1fr',
+                  gap: 1,
+                }}
+              >
+                <LabelTypography>{t('account:Nickname')}</LabelTypography>
                 <Input
                   disabled={!editEnabled}
                   name="nickname"
                   value={nickname || ''}
-                  onChange={(event) => setNickname(event.target.value || undefined)}
+                  onChange={(event) =>
+                    setNickname(event.target.value || undefined)
+                  }
                 />
-                <LabelTypography>
-                  {t('account:Gender')}
-                </LabelTypography>
+                <LabelTypography>{t('account:Gender')}</LabelTypography>
                 <RadioGroup
                   name="genderGroup"
                   orientation="horizontal"
@@ -608,20 +744,30 @@ export default function CharacterEditor ({
                   onChange={(event) => setGender(event.target.value)}
                   sx={{ my: 1 }}
                 >
-                  <Radio value="male" label={t('account:Male')} disabled={!editEnabled} />
-                  <Radio value="female" label={t('account:Female')} disabled={!editEnabled} />
-                  <Radio value="other" label={t('account:Other')} disabled={!editEnabled} />
+                  <Radio
+                    value="male"
+                    label={t('account:Male')}
+                    disabled={!editEnabled}
+                  />
+                  <Radio
+                    value="female"
+                    label={t('account:Female')}
+                    disabled={!editEnabled}
+                  />
+                  <Radio
+                    value="other"
+                    label={t('account:Other')}
+                    disabled={!editEnabled}
+                  />
                 </RadioGroup>
 
-                <LabelTypography>
-                  {t('Language')}
-                </LabelTypography>
+                <LabelTypography>{t('Language')}</LabelTypography>
                 <Select
                   size="sm"
                   variant="outlined"
                   value={lang}
                   onChange={(_event, value) => value && setLang(value)}
-                  sx={{mr: 'auto'}}
+                  sx={{ mr: 'auto' }}
                 >
                   {Object.keys(locales).map((locale) => (
                     <Option key={`locale-${locale}`} value={locale}>
@@ -630,7 +776,7 @@ export default function CharacterEditor ({
                   ))}
                 </Select>
               </Box>
-                
+
               <Stack direction="column" spacing={1} sx={{ minWidth: 120 }}>
                 <AspectRatio
                   ratio="1"
@@ -664,9 +810,7 @@ export default function CharacterEditor ({
               </Stack>
             </Stack>
 
-            <LabelTypography>
-              {t('Profile')}
-            </LabelTypography>
+            <LabelTypography>{t('Profile')}</LabelTypography>
             <ContentTextarea
               name="info-profile"
               minRows={3}
@@ -674,31 +818,34 @@ export default function CharacterEditor ({
               onChange={(event) => setProfile(event.target.value)}
             />
 
-            <LabelTypography>
-              {t('Chat Style')}
-            </LabelTypography>
+            <LabelTypography>{t('Chat Style')}</LabelTypography>
             <ContentTextarea
               name="info-chat-style"
               minRows={1}
               value={chatStyle || ''}
-              onChange={(event) => setChatStyle(event.target.value || undefined)}
+              onChange={(event) =>
+                setChatStyle(event.target.value || undefined)
+              }
             />
 
-            <LabelTypography>
-              {t('Chat Example')}
-            </LabelTypography>
+            <LabelTypography>{t('Chat Example')}</LabelTypography>
             <ContentTextarea
               name="info-chat-example"
               minRows={3}
               value={chatExample || ''}
-              onChange={(event) => setChatExample(event.target.value || undefined)}
+              onChange={(event) =>
+                setChatExample(event.target.value || undefined)
+              }
             />
 
             <CommonBox>
-              <LabelTypography>
-                {t('Default Scene')}
-              </LabelTypography>
-              <OptionTooltip placement="right" title={t('The default scene will be set as the default conversation background information when creating a new chat.')}>
+              <LabelTypography>{t('Default Scene')}</LabelTypography>
+              <OptionTooltip
+                placement="right"
+                title={t(
+                  'The default scene will be set as the default conversation background information when creating a new chat.'
+                )}
+              >
                 <HelpIcon />
               </OptionTooltip>
             </CommonBox>
@@ -706,12 +853,12 @@ export default function CharacterEditor ({
               name="info-default-scene"
               minRows={1}
               value={defaultScene || ''}
-              onChange={(event) => setDefaultScene(event.target.value || undefined)}
+              onChange={(event) =>
+                setDefaultScene(event.target.value || undefined)
+              }
             />
 
-            <LabelTypography>
-              {t('Greeting')}
-            </LabelTypography>
+            <LabelTypography>{t('Greeting')}</LabelTypography>
             <ContentTextarea
               name="info-greeting"
               minRows={1}
@@ -722,10 +869,7 @@ export default function CharacterEditor ({
           <LinePlaceholder />
 
           <Card>
-            <CharacterDocumentsPane
-              characterUid={recordUid}
-              editMode={true}
-            />
+            <CharacterDocumentsPane characterUid={recordUid} editMode={true} />
           </Card>
           <LinePlaceholder />
 
@@ -740,10 +884,13 @@ export default function CharacterEditor ({
           <LinePlaceholder />
 
           <CommonBox>
-            <LabelTypography sx={{ mr: 0 }}>
-              {t('Album')}
-            </LabelTypography>
-            <OptionTooltip placement="right" title={t('Maximum of 10 pictures are allowed, one of which can be selected as the chat background')}>
+            <LabelTypography sx={{ mr: 0 }}>{t('Album')}</LabelTypography>
+            <OptionTooltip
+              placement="right"
+              title={t(
+                'Maximum of 10 pictures are allowed, one of which can be selected as the chat background'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
           </CommonBox>
@@ -758,19 +905,21 @@ export default function CharacterEditor ({
         {editBackend ? (
           <CharacterBackendSettings
             ref={backendRef}
-            backend={{...editBackend}}
+            backend={{ ...editBackend }}
             onSave={handleBackendUpdated}
             onCancel={() => setEditBackend(undefined)}
             sx={{
-              width: { xs: '100%', sm: '24rem' }
-          }}/>
+              width: { xs: '100%', sm: '24rem' },
+            }}
+          />
         ) : (
-          <CharacterGuide sx={{
-            display: { xs: 'none', md: 'inherit' },
-            width: '24rem',
-          }}/>
+          <CharacterGuide
+            sx={{
+              display: { xs: 'none', md: 'inherit' },
+              width: '24rem',
+            }}
+          />
         )}
-
       </CommonContainer>
 
       <ConfirmModal
@@ -781,7 +930,7 @@ export default function CharacterEditor ({
         }}
         button={{
           text: t('button:Save'),
-          startDecorator: <SaveAltRounded />
+          startDecorator: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >
@@ -792,7 +941,7 @@ export default function CharacterEditor ({
             onChange={(event) => {
               setEditRecordName(event.target.value);
               setEditRecordNameError(false);
-          }}
+            }}
           />
           {editRecordNameError && (
             <FormHelperText>
@@ -805,7 +954,9 @@ export default function CharacterEditor ({
 
       <RouterBlocker
         when={!isSaved()}
-        message={t('You may have unsaved changes. Are you sure you want to leave?')}
+        message={t(
+          'You may have unsaved changes. Are you sure you want to leave?'
+        )}
       />
     </>
   );

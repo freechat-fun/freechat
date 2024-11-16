@@ -2,8 +2,8 @@ export function formatDateTime(date: Date | undefined): string {
   if (!date) {
     return '';
   }
-  
-  const pad = (n: number) => n < 10 ? '0' + n : n;
+
+  const pad = (n: number) => (n < 10 ? '0' + n : n);
 
   const year = date?.getFullYear() || 9999;
   const month = pad((date?.getMonth() || 11) + 1);
@@ -19,8 +19,8 @@ export function formatDate(date: Date | undefined): string {
   if (!date) {
     return '';
   }
-  
-  const pad = (n: number) => n < 10 ? '0' + n : n;
+
+  const pad = (n: number) => (n < 10 ? '0' + n : n);
 
   const year = date?.getFullYear() || 9999;
   const month = pad((date?.getMonth() || 11) + 1);
@@ -29,7 +29,11 @@ export function formatDate(date: Date | undefined): string {
   return `${year}${month}${day}`;
 }
 
-export function getDateLabel(date: Date, locale: string, showTime: boolean = false): string {
+export function getDateLabel(
+  date: Date,
+  locale: string,
+  showTime: boolean = false
+): string {
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',
@@ -44,7 +48,10 @@ export function getDateLabel(date: Date, locale: string, showTime: boolean = fal
   return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-export function getSecondsBetweenDates(earlier: Date | undefined | null, later: Date | undefined | null) {
+export function getSecondsBetweenDates(
+  earlier: Date | undefined | null,
+  later: Date | undefined | null
+) {
   const timestamp1 = earlier?.getTime() || 0;
   const timestamp2 = later?.getTime() || 0;
   const millisecondsDifference = timestamp2 - timestamp1;

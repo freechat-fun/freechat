@@ -1,10 +1,10 @@
-import { ChevronRightRounded, HomeRounded } from "@mui/icons-material";
-import { Box, Breadcrumbs, Typography } from "@mui/joy";
-import { RouterLink } from ".";
+import { ChevronRightRounded, HomeRounded } from '@mui/icons-material';
+import { Box, Breadcrumbs, Typography } from '@mui/joy';
+import { RouterLink } from '.';
 
 type BreadcrumbsbarProps = {
-  breadcrumbs: { [name: string]: string | undefined; };
-}
+  breadcrumbs: { [name: string]: string | undefined };
+};
 
 export default function Breadcrumbsbar({ breadcrumbs }: BreadcrumbsbarProps) {
   return (
@@ -31,11 +31,7 @@ export default function Breadcrumbsbar({ breadcrumbs }: BreadcrumbsbarProps) {
             );
           } else {
             return (
-              <Typography
-                key={name}
-                color="neutral"
-                fontWeight={500}
-              >
+              <Typography key={name} color="neutral" fontWeight={500}>
                 {name}
               </Typography>
             );

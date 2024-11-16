@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { Tooltip, TooltipProps } from "@mui/joy";
+import { forwardRef } from 'react';
+import { Tooltip, TooltipProps } from '@mui/joy';
 
 const OptionTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   const { sx, children, ...others } = props;
@@ -9,7 +9,7 @@ const OptionTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       size="sm"
       sx={{
         maxWidth: '20rem',
-        ...sx
+        ...sx,
       }}
       {...others}
     >

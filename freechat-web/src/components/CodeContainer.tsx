@@ -18,16 +18,18 @@ import 'prismjs/components/prism-cpp';
 import 'prismjs/components/prism-csharp';
 import 'prismjs/components/prism-python';
 
-
-
 const CodeContent: React.FC<PropsWithChildren> = ({ children }) => {
   const codeRef = useRef<HTMLPreElement>(null);
 
-  const className = typeof children === 'object' && children !== null &&('props' in children) ?
-    (children.props.className ?? '') : '';
+  const className =
+    typeof children === 'object' && children !== null && 'props' in children
+      ? (children.props.className ?? '')
+      : '';
 
-  const codeText = typeof children === 'object' && children !== null &&('props' in children) ?
-    (children.props.children ?? '') : '';
+  const codeText =
+    typeof children === 'object' && children !== null && 'props' in children
+      ? (children.props.children ?? '')
+      : '';
 
   useEffect(() => {
     const highlightCode = async () => {
@@ -37,7 +39,9 @@ const CodeContent: React.FC<PropsWithChildren> = ({ children }) => {
         if (languageMatch) {
           language = languageMatch[1];
           try {
-            await import(`/* @vite-ignore */prismjs/components/prism-${language}.js`);
+            await import(
+              `/* @vite-ignore */prismjs/components/prism-${language}.js`
+            );
           } catch (error) {
             console.error('PrismJS load language failed:', language);
             language = 'none';

@@ -1,11 +1,33 @@
-import { forwardRef, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Box, IconButton, List, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Tooltip, TooltipProps, useTheme } from "@mui/joy";
-import { AccountTreeRounded, AndroidRounded, ArticleRounded, GitHub, HelpRounded, HomeRounded, KeyRounded, LoginRounded, LogoutRounded, ManageAccountsRounded, SmsRounded } from "@mui/icons-material";
-import { ColorSchemeToggle, LanguageToggle } from ".";
-import { useMetaInfoContext } from "../contexts";
-
+import { forwardRef, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import {
+  Box,
+  IconButton,
+  List,
+  ListDivider,
+  ListItem,
+  ListItemButton,
+  ListItemButtonProps,
+  Tooltip,
+  TooltipProps,
+  useTheme,
+} from '@mui/joy';
+import {
+  AccountTreeRounded,
+  AndroidRounded,
+  ArticleRounded,
+  GitHub,
+  HelpRounded,
+  HomeRounded,
+  KeyRounded,
+  LoginRounded,
+  LogoutRounded,
+  ManageAccountsRounded,
+  SmsRounded,
+} from '@mui/icons-material';
+import { ColorSchemeToggle, LanguageToggle } from '.';
+import { useMetaInfoContext } from '../contexts';
 
 const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   const { sx, children, ...others } = props;
@@ -16,7 +38,7 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
       size="sm"
       sx={{
         zIndex: 9999,
-        ...sx
+        ...sx,
       }}
       {...others}
     >
@@ -24,7 +46,8 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
         component="span"
         sx={{
           display: 'inline-block',
-      }}>
+        }}
+      >
         {children}
       </Box>
     </Tooltip>
@@ -32,8 +55,8 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
 });
 
 type ItemButtonProps = ListItemButtonProps & {
-  href: string,
-  anonymous?: boolean
+  href: string;
+  anonymous?: boolean;
 };
 
 const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
@@ -42,9 +65,15 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   const { pathname } = useLocation();
   const { isAuthorized } = useMetaInfoContext();
 
-  const isSelected = useCallback((targetPathname: string, currentPathname: string) => {
-    return targetPathname.replace(/\/+$/, "") === currentPathname.replace(/\/+$/, "");
-  }, []);
+  const isSelected = useCallback(
+    (targetPathname: string, currentPathname: string) => {
+      return (
+        targetPathname.replace(/\/+$/, '') ===
+        currentPathname.replace(/\/+$/, '')
+      );
+    },
+    []
+  );
 
   return (
     <ListItemButton
@@ -66,7 +95,7 @@ export default function ThinSidebar() {
   const theme = useTheme();
   const { t } = useTranslation('sidebar');
   const { csrfToken, isAuthorized } = useMetaInfoContext();
-  
+
   return (
     <Box
       className="Sidebar"
@@ -101,7 +130,6 @@ export default function ThinSidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
-
           <ListItem>
             <ItemTooltip title={t('Home')}>
               <ItemButton href="/" anonymous>
@@ -118,10 +146,12 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider sx={{
-            my: 2,
-            '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-          }}/>
+          <ListDivider
+            sx={{
+              my: 2,
+              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
+            }}
+          />
 
           <ListItem>
             <ItemTooltip title={t('Characters')}>
@@ -155,10 +185,12 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider sx={{
-            my: 2,
-            '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-          }}/>
+          <ListDivider
+            sx={{
+              my: 2,
+              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
+            }}
+          />
 
           <ListItem>
             <ItemTooltip title={t('Profile')}>
@@ -176,17 +208,19 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider sx={{
-            my: 2,
-            '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-          }}/>
+          <ListDivider
+            sx={{
+              my: 2,
+              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
+            }}
+          />
 
           <ItemTooltip title={t('Switch Theme')}>
-            <ColorSchemeToggle sx={{width: '100%', mr: 1}} />
+            <ColorSchemeToggle sx={{ width: '100%', mr: 1 }} />
           </ItemTooltip>
-          
+
           <ItemTooltip title={t('Switch Language')}>
-            <LanguageToggle sx={{width: '100%'}} />
+            <LanguageToggle sx={{ width: '100%' }} />
           </ItemTooltip>
 
           <ItemTooltip title={t('Code Repository')}>
@@ -194,41 +228,42 @@ export default function ThinSidebar() {
               component="a"
               href="https://github.com/freechat-fun/freechat"
               target="_blank"
-              sx={{width: '100%'}}
+              sx={{ width: '100%' }}
             >
               <GitHub />
             </IconButton>
           </ItemTooltip>
 
-          <ListDivider sx={{
-            my: 2,
-            '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-          }}/>
-          
+          <ListDivider
+            sx={{
+              my: 2,
+              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
+            }}
+          />
+
           {isAuthorized() ? (
             <form method="post" action="/logout">
               <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
-                <Tooltip
-                  title={t('Sign Out', {ns: 'account'})}
-                  size="sm"
-                  placement="right"
-                  sx={{zIndex: 9999}}
-                >
-                  <IconButton type="submit" sx={{width: '100%'}}>
-                    <LogoutRounded />
-                  </IconButton>
-                </Tooltip>
+              <Tooltip
+                title={t('Sign Out', { ns: 'account' })}
+                size="sm"
+                placement="right"
+                sx={{ zIndex: 9999 }}
+              >
+                <IconButton type="submit" sx={{ width: '100%' }}>
+                  <LogoutRounded />
+                </IconButton>
+              </Tooltip>
             </form>
           ) : (
             <ListItem>
-              <ItemTooltip title={t('Sign In', {ns: 'account'})}>
+              <ItemTooltip title={t('Sign In', { ns: 'account' })}>
                 <ItemButton href="/w/login" disabled={false}>
                   <LoginRounded />
                 </ItemButton>
               </ItemTooltip>
             </ListItem>
           )}
-
         </List>
       </div>
     </Box>

@@ -1,5 +1,11 @@
-import { Box, Sheet } from "@mui/joy";
-import { AccountMenu, FreeChatLogo, LanguageSelect, ColorSchemeToggle, SidebarToggle } from ".";
+import { Box, Sheet } from '@mui/joy';
+import {
+  AccountMenu,
+  FreeChatLogo,
+  LanguageSelect,
+  ColorSchemeToggle,
+  SidebarToggle,
+} from '.';
 
 export default function Header() {
   return (
@@ -19,18 +25,22 @@ export default function Header() {
         boxShadow: 'sx',
       }}
     >
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'flex-start',
-        flexWrap: 'nowrap',
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          flexWrap: 'nowrap',
+        }}
+      >
         <SidebarToggle />
         <FreeChatLogo />
       </Box>
-      <Box sx={{
-        justifyContent: 'flex-end',
-        display: 'flex'
-      }}>
+      <Box
+        sx={{
+          justifyContent: 'flex-end',
+          display: 'flex',
+        }}
+      >
         <LanguageSelect />
         <ColorSchemeToggle />
         <AccountMenu />

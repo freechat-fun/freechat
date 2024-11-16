@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useErrorMessageBusContext } from "../contexts";
-import { IconButton, Link, Snackbar, Stack, Typography } from "@mui/joy";
-import { ClearRounded, ErrorOutlineRounded } from "@mui/icons-material";
+import { useErrorMessageBusContext } from '../contexts';
+import { IconButton, Link, Snackbar, Stack, Typography } from '@mui/joy';
+import { ClearRounded, ErrorOutlineRounded } from '@mui/icons-material';
 
 export default function ErrorMessageSnackbar() {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ export default function ErrorMessageSnackbar() {
 
   return (
     <>
-      {messages &&
+      {messages && (
         <Snackbar
           open={!!message}
           onClose={() => message && removeMessage(message)}
@@ -39,28 +39,31 @@ export default function ErrorMessageSnackbar() {
                 '&:hover': {
                   textDecoration: 'none',
                   bgcolor: 'transparent',
-                }
+                },
               }}
               onClick={(event) => {
                 event.preventDefault();
                 setShowDetails(true);
-            }}>
+              }}
+            >
               {t('Error!')}
             </Link>
-          ) : message && (
-            <Stack>
-              <Typography level="title-md">
-                {`${t('Exception')}: ${message.code}`}
-              </Typography>
-              <Typography sx={{
-                whiteSpace: 'pre-wrap',
-              }}>
-                {message.message}
-              </Typography>
-            </Stack>
+          ) : (
+            message && (
+              <Stack>
+                <Typography level="title-md">{`${t('Exception')}: ${message.code}`}</Typography>
+                <Typography
+                  sx={{
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
+                  {message.message}
+                </Typography>
+              </Stack>
+            )
           )}
         </Snackbar>
-      }
+      )}
     </>
   );
 }

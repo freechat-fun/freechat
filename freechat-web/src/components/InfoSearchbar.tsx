@@ -1,13 +1,13 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../contexts";
-import { SearchRounded } from "@mui/icons-material";
-import { Box, Input, Select, Option, Chip, Typography, Button } from "@mui/joy";
-import { providers as modelProviders } from "../configs/model-providers-config";
-import { AiModelInfoDTO } from "freechat-sdk";
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useErrorMessageBusContext, useFreeChatApiContext } from '../contexts';
+import { SearchRounded } from '@mui/icons-material';
+import { Box, Input, Select, Option, Chip, Typography, Button } from '@mui/joy';
+import { providers as modelProviders } from '../configs/model-providers-config';
+import { AiModelInfoDTO } from 'freechat-sdk';
 
 export default function InfoSearchbar(props: {
-  onSearch: (text: string | undefined, modelIds: string[] | undefined) => void,
+  onSearch: (text: string | undefined, modelIds: string[] | undefined) => void;
   enableModelSelect?: boolean;
 }) {
   const { onSearch, enableModelSelect = true } = props;
@@ -20,9 +20,7 @@ export default function InfoSearchbar(props: {
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
 
   const getModels = useCallback(() => {
-    aiServiceApi?.listAiModelInfo()
-      .then(setModels)
-      .catch(handleError);
+    aiServiceApi?.listAiModelInfo().then(setModels).catch(handleError);
   }, [aiServiceApi, handleError]);
 
   useEffect(() => {
@@ -32,8 +30,9 @@ export default function InfoSearchbar(props: {
   }, [enableModelSelect, getModels]);
 
   function getModelIdsByProvider(provider: string): string[] {
-    return models?.filter(model => model.modelId && model.provider === provider)
-      .map(model => model.modelId || '');
+    return models
+      ?.filter((model) => model.modelId && model.provider === provider)
+      .map((model) => model.modelId || '');
   }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
@@ -42,7 +41,10 @@ export default function InfoSearchbar(props: {
     }
   }
 
-  function handleSelectChange(_event: React.SyntheticEvent | null, newValue: Array<string> | null): void {
+  function handleSelectChange(
+    _event: React.SyntheticEvent | null,
+    newValue: Array<string> | null
+  ): void {
     if (newValue !== providers) {
       setProviders(newValue || []);
     }
@@ -52,7 +54,9 @@ export default function InfoSearchbar(props: {
     event.preventDefault();
     const modelIds: string[] = [];
     if (enableModelSelect) {
-      providers?.forEach(provider => modelIds.push(...getModelIdsByProvider(provider)));
+      providers?.forEach((provider) =>
+        modelIds.push(...getModelIdsByProvider(provider))
+      );
     }
     onSearch(text, modelIds);
   }
@@ -83,14 +87,22 @@ export default function InfoSearchbar(props: {
         {enableModelSelect && (
           <Fragment>
             <Select
-              placeholder={<Typography textColor="gray">{t('Select model providers')}</Typography>}
+              placeholder={
+                <Typography textColor="gray">
+                  {t('Select model providers')}
+                </Typography>
+              }
               value={providers}
               multiple
               onChange={handleSelectChange}
               renderValue={(selected) => (
                 <Box sx={{ display: 'flex', gap: '0.25rem' }}>
                   {selected.map((selectedOption) => (
-                    <Chip variant="soft" color="primary" key={`${selectedOption.id}-${selectedOption.value}`}>
+                    <Chip
+                      variant="soft"
+                      color="primary"
+                      key={`${selectedOption.id}-${selectedOption.value}`}
+                    >
                       {selectedOption.label}
                     </Chip>
                   ))}
@@ -100,7 +112,11 @@ export default function InfoSearchbar(props: {
                 minWidth: '14rem',
               }}
             >
-              {modelProviders.map(p => <Option value={p.provider} key={`options-${p.provider}`}>{p.label}</Option>)}
+              {modelProviders.map((p) => (
+                <Option value={p.provider} key={`options-${p.provider}`}>
+                  {p.label}
+                </Option>
+              ))}
             </Select>
           </Fragment>
         )}

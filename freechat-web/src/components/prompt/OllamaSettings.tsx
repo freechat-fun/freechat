@@ -1,53 +1,104 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createRef, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Chip, ChipDelete, DialogContent, DialogTitle, Divider, IconButton, Input, Slider, Switch, Typography } from "@mui/joy";
-import { AddCircleRounded } from "@mui/icons-material";
-import { CommonContainer, OptionCard, OptionTooltip, Sidedrawer, TinyInput } from "..";
-import { HelpIcon } from "../icon";
-import { defaultBaseURLs, defaultModels } from "../../configs/model-providers-config";
-import { toModelInfo, extractModelName } from "../../libs/template_utils";
+import { createRef, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Chip,
+  ChipDelete,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  Input,
+  Slider,
+  Switch,
+  Typography,
+} from '@mui/joy';
+import { AddCircleRounded } from '@mui/icons-material';
+import {
+  CommonContainer,
+  OptionCard,
+  OptionTooltip,
+  Sidedrawer,
+  TinyInput,
+} from '..';
+import { HelpIcon } from '../icon';
+import {
+  defaultBaseURLs,
+  defaultModels,
+} from '../../configs/model-providers-config';
+import { toModelInfo, extractModelName } from '../../libs/template_utils';
 
-function containsKey(parameters: { [key: string]: any } | undefined, key: string): boolean {
+function containsKey(
+  parameters: { [key: string]: any } | undefined,
+  key: string
+): boolean {
   return parameters !== undefined && Object.keys(parameters).includes(key);
 }
 
 export default function OllamaSettings(props: {
-  open: boolean,
-  onClose: (parameters: { [key: string]: any }) => void,
-  defaultParameters?: { [key: string]: any },
+  open: boolean;
+  onClose: (parameters: { [key: string]: any }) => void;
+  defaultParameters?: { [key: string]: any };
 }) {
   const { open, onClose, defaultParameters } = props;
 
   const { t } = useTranslation(['prompt']);
-  
-  const [baseUrl, setBaseUrl] = useState(defaultParameters?.baseUrl ?? defaultBaseURLs.ollama);
 
-  const [model, setModel] = useState<string>(defaultParameters?.modelId ?? defaultModels.ollama);
+  const [baseUrl, setBaseUrl] = useState(
+    defaultParameters?.baseUrl ?? defaultBaseURLs.ollama
+  );
 
-  const [temperature, setTemperature] = useState<number>(defaultParameters?.temperature ?? 0.8);
-  const [enableTemperature, setEnableTemperature] = useState(containsKey(defaultParameters, 'temperature'));
+  const [model, setModel] = useState<string>(
+    defaultParameters?.modelId ?? defaultModels.ollama
+  );
+
+  const [temperature, setTemperature] = useState<number>(
+    defaultParameters?.temperature ?? 0.8
+  );
+  const [enableTemperature, setEnableTemperature] = useState(
+    containsKey(defaultParameters, 'temperature')
+  );
 
   const [topK, setTopK] = useState<number>(defaultParameters?.topK ?? 40);
-  const [enableTopK, setEnableTopK] = useState(containsKey(defaultParameters, 'topK'));
+  const [enableTopK, setEnableTopK] = useState(
+    containsKey(defaultParameters, 'topK')
+  );
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.9);
-  const [enableTopP, setEnableTopP] = useState(containsKey(defaultParameters, 'topP'));
+  const [enableTopP, setEnableTopP] = useState(
+    containsKey(defaultParameters, 'topP')
+  );
 
-  const [repeatPenalty, setRepeatPenalty] = useState<number>(defaultParameters?.repeatPenalty ?? 1.1);
-  const [enableRepeatPenalty, setEnableRepeatPenalty] = useState(containsKey(defaultParameters, 'repeatPenalty'));
+  const [repeatPenalty, setRepeatPenalty] = useState<number>(
+    defaultParameters?.repeatPenalty ?? 1.1
+  );
+  const [enableRepeatPenalty, setEnableRepeatPenalty] = useState(
+    containsKey(defaultParameters, 'repeatPenalty')
+  );
 
   const [seed, setSeed] = useState<number>(defaultParameters?.seed ?? 0);
-  const [enableSeed, setEnableSeed] = useState(containsKey(defaultParameters, 'seed'));
+  const [enableSeed, setEnableSeed] = useState(
+    containsKey(defaultParameters, 'seed')
+  );
 
-  const [numPredict, setNumPredict] = useState<number>(defaultParameters?.numPredict ?? 128);
-  const [enableNumPredict, setEnableNumPredict] = useState(containsKey(defaultParameters, 'numPredict'));
+  const [numPredict, setNumPredict] = useState<number>(
+    defaultParameters?.numPredict ?? 128
+  );
+  const [enableNumPredict, setEnableNumPredict] = useState(
+    containsKey(defaultParameters, 'numPredict')
+  );
 
-  const [numCtx, setNumCtx] = useState<number>(defaultParameters?.numCtx ?? 2048);
-  const [enableNumCtx, setEnableNumCtx] = useState(containsKey(defaultParameters, 'numCtx'));
+  const [numCtx, setNumCtx] = useState<number>(
+    defaultParameters?.numCtx ?? 2048
+  );
+  const [enableNumCtx, setEnableNumCtx] = useState(
+    containsKey(defaultParameters, 'numCtx')
+  );
 
   const [stop, setStop] = useState<string[]>(defaultParameters?.stop ?? []);
-  const [enableStop, setEnableStop] = useState(containsKey(defaultParameters, 'stop'));
+  const [enableStop, setEnableStop] = useState(
+    containsKey(defaultParameters, 'stop')
+  );
   const [stopWord, setStopWord] = useState<string>();
 
   const inputRefs = useRef(Array(7).fill(createRef<HTMLInputElement | null>()));
@@ -88,7 +139,7 @@ export default function OllamaSettings(props: {
   }
 
   function handleStopWordDelete(word: string): void {
-    setStop(stop.filter(stopWord => stopWord !== word));
+    setStop(stop.filter((stopWord) => stopWord !== word));
   }
 
   function handleClose(): void {
@@ -154,7 +205,7 @@ export default function OllamaSettings(props: {
                 ml: 0.5,
                 flex: 1,
               }}
-              onChange={event => setBaseUrl(event.target.value)}
+              onChange={(event) => setBaseUrl(event.target.value)}
             />
           </CommonContainer>
         </OptionCard>
@@ -170,7 +221,9 @@ export default function OllamaSettings(props: {
                 ml: 0.5,
                 flex: 1,
               }}
-              onChange={event => setModel(toModelInfo('ollama', event.target.value, 'text2chat'))}
+              onChange={(event) =>
+                setModel(toModelInfo('ollama', event.target.value, 'text2chat'))
+              }
             />
           </CommonContainer>
         </OptionCard>
@@ -179,7 +232,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>temperature</Typography>
-            <OptionTooltip title={t('The temperature of the model. Increasing the temperature will make the model answer more creatively. (Default: 0.8)')}>
+            <OptionTooltip
+              title={t(
+                'The temperature of the model. Increasing the temperature will make the model answer more creatively. (Default: 0.8)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -195,9 +252,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={temperature}
-                onChange={(event => setTemperature(+event.target.value))}
+                onChange={(event) => setTemperature(+event.target.value)}
               />
-              <Switch checked={enableTemperature} onChange={() => setEnableTemperature(!enableTemperature)} />
+              <Switch
+                checked={enableTemperature}
+                onChange={() => setEnableTemperature(!enableTemperature)}
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -215,7 +275,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>topK</Typography>
-            <OptionTooltip title={t('Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a lower value (e.g. 10) will be more conservative. (Default: 40)')}>
+            <OptionTooltip
+              title={t(
+                'Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a lower value (e.g. 10) will be more conservative. (Default: 40)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -231,9 +295,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={topK}
-                onChange={(event => setTopK(+event.target.value))}
+                onChange={(event) => setTopK(+event.target.value)}
               />
-              <Switch checked={enableTopK} onChange={() => setEnableTopK(!enableTopK)} />
+              <Switch
+                checked={enableTopK}
+                onChange={() => setEnableTopK(!enableTopK)}
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -251,7 +318,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>topP</Typography>
-            <OptionTooltip title={t('Works together with topK. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. (Default: 0.9)')}>
+            <OptionTooltip
+              title={t(
+                'Works together with topK. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. (Default: 0.9)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -267,9 +338,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={topP}
-                onChange={(event => setTopP(+event.target.value))}
+                onChange={(event) => setTopP(+event.target.value)}
               />
-              <Switch checked={enableTopP} onChange={() => setEnableTopP(!enableTopP)} />
+              <Switch
+                checked={enableTopP}
+                onChange={() => setEnableTopP(!enableTopP)}
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -287,7 +361,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>repeatPenalty</Typography>
-            <OptionTooltip title={t('Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. (Default: 1.1)')}>
+            <OptionTooltip
+              title={t(
+                'Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. (Default: 1.1)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -303,9 +381,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={repeatPenalty}
-                onChange={(event => setRepeatPenalty(+event.target.value))}
+                onChange={(event) => setRepeatPenalty(+event.target.value)}
               />
-              <Switch checked={enableRepeatPenalty} onChange={() => setEnableRepeatPenalty(!enableRepeatPenalty)} />
+              <Switch
+                checked={enableRepeatPenalty}
+                onChange={() => setEnableRepeatPenalty(!enableRepeatPenalty)}
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -315,7 +396,9 @@ export default function OllamaSettings(props: {
             min={0}
             max={2}
             valueLabelDisplay="auto"
-            onChange={(_event, newValue) => setRepeatPenalty(newValue as number)}
+            onChange={(_event, newValue) =>
+              setRepeatPenalty(newValue as number)
+            }
           />
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -323,7 +406,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>seed</Typography>
-            <OptionTooltip title={t('Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt. (Default: 0)')}>
+            <OptionTooltip
+              title={t(
+                'Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt. (Default: 0)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -338,9 +425,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={seed}
-                onChange={(event => setSeed(+event.target.value))}
+                onChange={(event) => setSeed(+event.target.value)}
               />
-              <Switch checked={enableSeed} onChange={() => setEnableSeed(!enableSeed)} />
+              <Switch
+                checked={enableSeed}
+                onChange={() => setEnableSeed(!enableSeed)}
+              />
             </CommonContainer>
           </CommonContainer>
         </OptionCard>
@@ -349,7 +439,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>numPredict</Typography>
-            <OptionTooltip title={t('Maximum number of tokens to predict when generating text. (Default: 128, -1 = infinite generation, -2 = fill context)')}>
+            <OptionTooltip
+              title={t(
+                'Maximum number of tokens to predict when generating text. (Default: 128, -1 = infinite generation, -2 = fill context)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -364,9 +458,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={numPredict}
-                onChange={(event => setNumPredict(+event.target.value))}
+                onChange={(event) => setNumPredict(+event.target.value)}
               />
-              <Switch checked={enableNumPredict} onChange={() => setEnableNumPredict(!enableNumPredict)} />
+              <Switch
+                checked={enableNumPredict}
+                onChange={() => setEnableNumPredict(!enableNumPredict)}
+              />
             </CommonContainer>
           </CommonContainer>
         </OptionCard>
@@ -375,7 +472,11 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>numCtx</Typography>
-            <OptionTooltip title={t('Sets the size of the context window used to generate the next token. (Default: 2048)')}>
+            <OptionTooltip
+              title={t(
+                'Sets the size of the context window used to generate the next token. (Default: 2048)'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -390,9 +491,12 @@ export default function OllamaSettings(props: {
                   },
                 }}
                 value={numCtx}
-                onChange={(event => setNumCtx(+event.target.value))}
+                onChange={(event) => setNumCtx(+event.target.value)}
               />
-              <Switch checked={enableNumCtx} onChange={() => setEnableNumCtx(!enableNumCtx)} />
+              <Switch
+                checked={enableNumCtx}
+                onChange={() => setEnableNumCtx(!enableNumCtx)}
+              />
             </CommonContainer>
           </CommonContainer>
         </OptionCard>
@@ -401,25 +505,41 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>stop</Typography>
-            <OptionTooltip title={t('Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return. Multiple stop patterns may be set by specifying multiple separate stop parameters in a modelfile.')}>
+            <OptionTooltip
+              title={t(
+                'Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return. Multiple stop patterns may be set by specifying multiple separate stop parameters in a modelfile.'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
-              <Switch checked={enableStop} onChange={() => setEnableStop(!enableStop)} />
+              <Switch
+                checked={enableStop}
+                onChange={() => setEnableStop(!enableStop)}
+              />
             </CommonContainer>
           </CommonContainer>
           <CommonContainer sx={{ pt: 1 }}>
-            {stop && stop.length > 0 && stop.map((word, index) => word && (
-              <Chip
-                disabled={!enableStop}
-                variant="outlined"
-                key={`${word}-${index}`}
-                endDecorator={<ChipDelete onDelete={() => handleStopWordDelete(word)} />}
-              >
-                {word}
-              </Chip>
-            ))}
-            {(!stop || stop.length < 4) && (stopWord === undefined) && (
+            {stop &&
+              stop.length > 0 &&
+              stop.map(
+                (word, index) =>
+                  word && (
+                    <Chip
+                      disabled={!enableStop}
+                      variant="outlined"
+                      key={`${word}-${index}`}
+                      endDecorator={
+                        <ChipDelete
+                          onDelete={() => handleStopWordDelete(word)}
+                        />
+                      }
+                    >
+                      {word}
+                    </Chip>
+                  )
+              )}
+            {(!stop || stop.length < 4) && stopWord === undefined && (
               <IconButton
                 disabled={!enableStop}
                 color="primary"
@@ -428,13 +548,13 @@ export default function OllamaSettings(props: {
                 <AddCircleRounded />
               </IconButton>
             )}
-            {(stopWord !== undefined) && (
+            {stopWord !== undefined && (
               <form onSubmit={handleStopWordSubmit}>
                 <TinyInput
                   disabled={!enableStop}
                   type="text"
                   value={stopWord}
-                  onChange={(event => setStopWord(event.target.value))}
+                  onChange={(event) => setStopWord(event.target.value)}
                 />
               </form>
             )}

@@ -8,7 +8,7 @@ const WeChatIcon = createSvgIcon(
       fill="var(--joy-palette-text-primary)"
     />
   </SvgIcon>,
-  'WeChat',
+  'WeChat'
 );
 
 export default WeChatIcon;

@@ -92,7 +92,7 @@ const routes = [
     path: '/*',
     element: <SidebarFrame />,
     children: sidebarRoutes,
-  }
+  },
 ];
 
 const router = createBrowserRouter(routes);

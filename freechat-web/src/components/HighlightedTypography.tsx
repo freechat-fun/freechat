@@ -1,19 +1,22 @@
-import { forwardRef, useMemo } from "react";
-import { Typography, TypographyProps } from "@mui/joy";
-import { escapeRegExp } from "../libs/js_utils";
+import { forwardRef, useMemo } from 'react';
+import { Typography, TypographyProps } from '@mui/joy';
+import { escapeRegExp } from '../libs/js_utils';
 
 export type HighlightedTypographyProps = TypographyProps & {
   highlight?: string;
-}
+};
 
-const HighlightedTypography = forwardRef<HTMLDivElement, HighlightedTypographyProps>((props, ref) => {
+const HighlightedTypography = forwardRef<
+  HTMLDivElement,
+  HighlightedTypographyProps
+>((props, ref) => {
   const { highlight, children, ...others } = props;
 
   const parts = useMemo<string[]>(() => {
     if (!highlight?.trim() || typeof children !== 'string') {
       return [];
     }
-    
+
     const escapedHighlight = escapeRegExp(highlight);
     const regex = new RegExp(`(${escapedHighlight})`, 'gi');
     return children.split(regex);
@@ -29,13 +32,20 @@ const HighlightedTypography = forwardRef<HTMLDivElement, HighlightedTypographyPr
 
   return (
     <Typography ref={ref} {...others}>
-      {parts.map((part, index) => (
+      {parts.map((part, index) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
-          <span key={`${part}-${index}`} style={{ backgroundColor: 'var(--joy-palette-warning-softActiveBg)' }}>{part}</span>
+          <span
+            key={`${part}-${index}`}
+            style={{
+              backgroundColor: 'var(--joy-palette-warning-softActiveBg)',
+            }}
+          >
+            {part}
+          </span>
         ) : (
           <span key={`${part}-${index}`}>{part}</span>
         )
-      ))}
+      )}
     </Typography>
   );
 });

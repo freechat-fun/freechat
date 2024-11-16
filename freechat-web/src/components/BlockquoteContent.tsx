@@ -1,5 +1,5 @@
-import { Box } from "@mui/joy";
-import { PropsWithChildren } from "react";
+import { Box } from '@mui/joy';
+import { PropsWithChildren } from 'react';
 
 const BlockquoteContent: React.FC<PropsWithChildren> = ({ children }) => {
   return (

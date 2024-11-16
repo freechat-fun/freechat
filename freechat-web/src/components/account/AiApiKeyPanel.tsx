@@ -1,15 +1,29 @@
-import { useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Box, FormLabel, IconButton, Input, Stack, Table, Typography } from "@mui/joy";
-import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from "freechat-sdk";
-import { AddCircleRounded, BookmarkAddRounded, DeleteForeverRounded, RemoveCircleRounded } from "@mui/icons-material";
-import { formatDateTime } from "../../libs/date_utils";
-import { ConfirmModal } from "..";
+import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  Box,
+  FormLabel,
+  IconButton,
+  Input,
+  Stack,
+  Table,
+  Typography,
+} from '@mui/joy';
+import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from 'freechat-sdk';
+import {
+  AddCircleRounded,
+  BookmarkAddRounded,
+  DeleteForeverRounded,
+  RemoveCircleRounded,
+} from '@mui/icons-material';
+import { formatDateTime } from '../../libs/date_utils';
+import { ConfirmModal } from '..';
 
-export default function AiApiKeyPanel(props: {
-  provider: string,
-}) {
+export default function AiApiKeyPanel(props: { provider: string }) {
   const { provider } = props;
   const { t } = useTranslation(['account', 'button']);
   const { aiServiceApi } = useFreeChatApiContext();
@@ -22,8 +36,9 @@ export default function AiApiKeyPanel(props: {
   const [addingKey, setAddingKey] = useState(false);
 
   const getKeys = useCallback(() => {
-    aiServiceApi?.listAiApiKeys(provider)
-      .then(resp => setKeys(resp.filter(key => !!key.id && key.enabled)))
+    aiServiceApi
+      ?.listAiApiKeys(provider)
+      .then((resp) => setKeys(resp.filter((key) => !!key.id && key.enabled)))
       .catch(handleError);
   }, [aiServiceApi, handleError, provider]);
 
@@ -31,13 +46,17 @@ export default function AiApiKeyPanel(props: {
     getKeys();
   }, [getKeys]);
 
-  function handleKeyNameChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleKeyNameChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void {
     if (event.target.value !== keyNameToAdd) {
       setKeyNameToAdd(event.target.value);
     }
   }
 
-  function handleKeyTextChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleKeyTextChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void {
     if (event.target.value !== keyTextToAdd) {
       setKeyTextToAdd(event.target.value);
     }
@@ -54,18 +73,21 @@ export default function AiApiKeyPanel(props: {
     request.provider = provider;
     request.enabled = true;
 
-    aiServiceApi?.addAiApiKey(request)
-      .then(resp => resp && getKeys())
+    aiServiceApi
+      ?.addAiApiKey(request)
+      .then((resp) => resp && getKeys())
       .catch(handleError);
-    
+
     setAddingKey(false);
   }
 
   function handleRemove(id: string | number | undefined): void {
-    id && aiServiceApi?.disableAiApiKey(id as number)
-      .then(resp => resp && setKeys(keys.filter(key => key.id !== id)))
-      .catch(handleError);
-    
+    id &&
+      aiServiceApi
+        ?.disableAiApiKey(id as number)
+        .then((resp) => resp && setKeys(keys.filter((key) => key.id !== id)))
+        .catch(handleError);
+
     setKeyIdToConfirm(undefined);
   }
 
@@ -75,13 +97,17 @@ export default function AiApiKeyPanel(props: {
 
   return (
     <Stack spacing={3}>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'start',
-        alignItems: 'center',
-        gap: 3,
-      }}>
-        <Typography level="title-md">{t('API keys: (maximum of 3 keys allowed)')}</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'start',
+          alignItems: 'center',
+          gap: 3,
+        }}
+      >
+        <Typography level="title-md">
+          {t('API keys: (maximum of 3 keys allowed)')}
+        </Typography>
         <IconButton
           disabled={keys.length >= 3}
           color="primary"
@@ -102,23 +128,20 @@ export default function AiApiKeyPanel(props: {
         </thead>
         <tbody>
           {keys.map((key, index) => {
-              return (
-                <tr
-                  tabIndex={-1}
-                  key={key.token || `unknown-key-${index}`}
-                >
-                  <td>{key.name}</td>
-                  <td>{key.token}</td>
-                  <td>{formatDateTime(key.gmtCreate)}</td>
-                  <td>{formatDateTime(key.gmtUsed)}</td>
-                  <td>
-                    <IconButton onClick={() => handleTryRemove(key.id)}>
-                      <RemoveCircleRounded />
-                    </IconButton>
-                  </td>
-                </tr>
-              );
-            })}
+            return (
+              <tr tabIndex={-1} key={key.token || `unknown-key-${index}`}>
+                <td>{key.name}</td>
+                <td>{key.token}</td>
+                <td>{formatDateTime(key.gmtCreate)}</td>
+                <td>{formatDateTime(key.gmtUsed)}</td>
+                <td>
+                  <IconButton onClick={() => handleTryRemove(key.id)}>
+                    <RemoveCircleRounded />
+                  </IconButton>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
       <ConfirmModal
@@ -132,14 +155,16 @@ export default function AiApiKeyPanel(props: {
         button={{
           color: 'danger',
           text: t('button:Remove'),
-          startDecorator: <DeleteForeverRounded />
+          startDecorator: <DeleteForeverRounded />,
         }}
         onConfirm={handleRemove}
       >
         <Typography>
-          {keys
-            .filter(key => key.id === keyIdToConfirm)
-            .map(key => key.token)[0]}
+          {
+            keys
+              .filter((key) => key.id === keyIdToConfirm)
+              .map((key) => key.token)[0]
+          }
         </Typography>
       </ConfirmModal>
       <ConfirmModal
@@ -150,16 +175,18 @@ export default function AiApiKeyPanel(props: {
         }}
         button={{
           text: t('button:Add'),
-          startDecorator: <BookmarkAddRounded />
+          startDecorator: <BookmarkAddRounded />,
         }}
         onConfirm={handleAdd}
       >
-        <Box sx={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: 'auto 1fr',
-          gap: 2,
-        }}>
+        <Box
+          sx={{
+            flex: 1,
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            gap: 2,
+          }}
+        >
           <FormLabel>{t('Name')}</FormLabel>
           <Input
             name="apiKeyName"

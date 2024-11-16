@@ -1,19 +1,25 @@
-import { createRef, useEffect, useRef, useState } from "react";
-import { List, ListProps } from "@mui/joy";
-import { CharacterSummaryDTO } from "freechat-sdk";
-import { CharacterRecommendationListItem } from ".";
-import { defaultTransitionInterval, defaultTransitionSetting, initTransitionSequence, transitionStyles } from "../../libs/ui_utils";
-import { Transition } from "react-transition-group";
-
+import { createRef, useEffect, useRef, useState } from 'react';
+import { List, ListProps } from '@mui/joy';
+import { CharacterSummaryDTO } from 'freechat-sdk';
+import { CharacterRecommendationListItem } from '.';
+import {
+  defaultTransitionInterval,
+  defaultTransitionSetting,
+  initTransitionSequence,
+  transitionStyles,
+} from '../../libs/ui_utils';
+import { Transition } from 'react-transition-group';
 
 type CharacterRecommendationListProps = ListProps & {
-  records: CharacterSummaryDTO[],
+  records: CharacterSummaryDTO[];
   selectedId: number;
   setSelectedId: (id?: number) => void;
   onShow?: () => void;
-}
+};
 
-export default function CharacterRecommendationList(props: CharacterRecommendationListProps) {
+export default function CharacterRecommendationList(
+  props: CharacterRecommendationListProps
+) {
   const { records, selectedId, setSelectedId, onShow, sx } = props;
 
   const [showCards, setShowCards] = useState(false);
@@ -24,39 +30,39 @@ export default function CharacterRecommendationList(props: CharacterRecommendati
   }, [onShow, records.length]);
 
   return (
-      <List
-        sx={{
-          py: 0,
-          my: 0,
-          '--ListItem-paddingY': '0.75rem',
-          '--ListItem-paddingX': '1rem',
-          ...sx,
-        }}
-      >
-        {records.map((record, index) => (
-          <Transition
-            in={showCards}
-            timeout={index * defaultTransitionInterval}
-            unmountOnExit
-            key={`transition-${record.characterId || index}`}
-            nodeRef={itemRefs.current[index]}
-          >
-            {(state) => (
-              <CharacterRecommendationListItem
-                key={`record-${record.characterId || index}`}
-                ref={itemRefs.current[index]}
-                record={record}
-                selectedId={selectedId}
-                setSelectedId={setSelectedId}
-                sx={{
-                  minHeight: '80px',
-                  transition: defaultTransitionSetting,
-                  ...transitionStyles[state],
-                }}
-              />
-            )}
-          </Transition>
-        ))}
-      </List>
+    <List
+      sx={{
+        py: 0,
+        my: 0,
+        '--ListItem-paddingY': '0.75rem',
+        '--ListItem-paddingX': '1rem',
+        ...sx,
+      }}
+    >
+      {records.map((record, index) => (
+        <Transition
+          in={showCards}
+          timeout={index * defaultTransitionInterval}
+          unmountOnExit
+          key={`transition-${record.characterId || index}`}
+          nodeRef={itemRefs.current[index]}
+        >
+          {(state) => (
+            <CharacterRecommendationListItem
+              key={`record-${record.characterId || index}`}
+              ref={itemRefs.current[index]}
+              record={record}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+              sx={{
+                minHeight: '80px',
+                transition: defaultTransitionSetting,
+                ...transitionStyles[state],
+              }}
+            />
+          )}
+        </Transition>
+      ))}
+    </List>
   );
 }

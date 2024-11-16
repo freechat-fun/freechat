@@ -1,10 +1,17 @@
-import { Fragment, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CharacterQueryDTO, CharacterQueryWhere, CharacterSummaryDTO } from "freechat-sdk";
-import { Box, Divider, Stack, styled } from "@mui/joy";
-import { MessageAssistant } from ".";
-import LinePlaceholder from "../LinePlaceholder";
+import { Fragment, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  CharacterQueryDTO,
+  CharacterQueryWhere,
+  CharacterSummaryDTO,
+} from 'freechat-sdk';
+import { Box, Divider, Stack, styled } from '@mui/joy';
+import { MessageAssistant } from '.';
+import LinePlaceholder from '../LinePlaceholder';
 
 const AssistantsBox = styled(Box)(({ theme }) => ({
   display: 'grid',
@@ -22,7 +29,7 @@ const AssistantsBox = styled(Box)(({ theme }) => ({
 type MessageAssistantsPaneProps = {
   assistantUid?: string;
   setAssistant?: (assistant?: CharacterSummaryDTO | null) => void;
-}
+};
 
 export default function MessageAssistantsPane({
   assistantUid,
@@ -32,8 +39,12 @@ export default function MessageAssistantsPane({
   const { characterApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
-  const [officialRecords, setOfficialRecords] = useState<CharacterSummaryDTO[]>([]);
-  const [personalRecords, setPersonalRecords] = useState<CharacterSummaryDTO[]>([]);
+  const [officialRecords, setOfficialRecords] = useState<CharacterSummaryDTO[]>(
+    []
+  );
+  const [personalRecords, setPersonalRecords] = useState<CharacterSummaryDTO[]>(
+    []
+  );
 
   const maxAssistantCount = 100;
 
@@ -60,11 +71,13 @@ export default function MessageAssistantsPane({
   }
 
   useEffect(() => {
-    characterApi?.searchPublicCharacterSummary(officialQuery())
+    characterApi
+      ?.searchPublicCharacterSummary(officialQuery())
       .then(setOfficialRecords)
       .catch(handleError);
 
-      characterApi?.searchCharacterSummary(personalQuery())
+    characterApi
+      ?.searchCharacterSummary(personalQuery())
       .then(setPersonalRecords)
       .catch(handleError);
   }, [characterApi, handleError]);
@@ -92,8 +105,8 @@ export default function MessageAssistantsPane({
                 key={`message-assistant-official-${summary.characterUid ?? index}`}
                 url={summary.avatar}
                 checked={assistantUid === summary.characterUid}
-                onSelect={() => handleSelect(summary)}>
-              </MessageAssistant>
+                onSelect={() => handleSelect(summary)}
+              ></MessageAssistant>
             ))}
           </AssistantsBox>
         </Fragment>
@@ -108,8 +121,8 @@ export default function MessageAssistantsPane({
                 key={`message-assistant-personal-${summary.characterUid ?? index}`}
                 url={summary.avatar}
                 checked={assistantUid === summary.characterUid}
-                onSelect={() => handleSelect(summary)}>
-              </MessageAssistant>
+                onSelect={() => handleSelect(summary)}
+              ></MessageAssistant>
             ))}
           </AssistantsBox>
         </Fragment>

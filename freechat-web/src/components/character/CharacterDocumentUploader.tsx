@@ -1,13 +1,40 @@
-import { createRef, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { CommonBox, CommonContainer, CommonGridBox, ConfirmModal, OptionCard, OptionTooltip, TinyInput } from "..";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { Chip, CircularProgress, Divider, FormControl, FormHelperText, IconButton, Input, Slider, Stack, Tab, TabList, TabPanel, Tabs, Typography, tabClasses } from "@mui/joy";
-import { FileUploadRounded } from "@mui/icons-material";
-import { extractFilenameFromUrl } from "../../libs/url_utils";
-import { RagTaskDTO } from "freechat-sdk";
-import { SxProps } from "@mui/joy/styles/types";
-import { HelpIcon } from "../icon";
+import { createRef, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  CommonBox,
+  CommonContainer,
+  CommonGridBox,
+  ConfirmModal,
+  OptionCard,
+  OptionTooltip,
+  TinyInput,
+} from '..';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  Chip,
+  CircularProgress,
+  Divider,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  Input,
+  Slider,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Typography,
+  tabClasses,
+} from '@mui/joy';
+import { FileUploadRounded } from '@mui/icons-material';
+import { extractFilenameFromUrl } from '../../libs/url_utils';
+import { RagTaskDTO } from 'freechat-sdk';
+import { SxProps } from '@mui/joy/styles/types';
+import { HelpIcon } from '../icon';
 
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
 let idCounter = 0;
@@ -17,7 +44,7 @@ type CharacterDocumentUploaderProps = {
   open?: boolean;
   onClose?: (succeeded: boolean) => void;
   sx?: SxProps;
-}
+};
 
 export default function CharacterDocumentUploader({
   characterUid,
@@ -40,7 +67,9 @@ export default function CharacterDocumentUploader({
 
   const fileInputId = useRef(`file-upload-input-${idCounter}`).current;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const splitterInputRefs = useRef(Array(2).fill(createRef<HTMLInputElement | null>()));
+  const splitterInputRefs = useRef(
+    Array(2).fill(createRef<HTMLInputElement | null>())
+  );
 
   useEffect(() => {
     idCounter++;
@@ -56,7 +85,9 @@ export default function CharacterDocumentUploader({
     onClose(succeeded);
   }
 
-  function handleDocumentFileChange(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleDocumentFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void {
     const file = event.target.files && event.target.files[0];
     if (file) {
       if (file.size > MAX_FILE_SIZE) {
@@ -96,10 +127,12 @@ export default function CharacterDocumentUploader({
       request.source = source;
       request.sourceType = sourceType;
       request.maxSegmentSize = documentMaxSegmentSize;
-      request.maxOverlapSize = documentMaxOverlapSize
-      ragApi?.createRagTask(characterUid, request)
-        .then(taskId => {
-          ragApi.startRagTask(taskId)
+      request.maxOverlapSize = documentMaxOverlapSize;
+      ragApi
+        ?.createRagTask(characterUid, request)
+        .then((taskId) => {
+          ragApi
+            .startRagTask(taskId)
             .then(() => close(true))
             .catch(handleError);
         })
@@ -108,8 +141,9 @@ export default function CharacterDocumentUploader({
 
     if (documentType === 'file' && documentFile) {
       setDocumentUploading(true);
-      characterApi?.uploadCharacterDocument(characterUid, documentFile)
-        .then(url => {
+      characterApi
+        ?.uploadCharacterDocument(characterUid, documentFile)
+        .then((url) => {
           const key = extractFilenameFromUrl(url);
           startNewTask(key, documentType);
         })
@@ -132,7 +166,9 @@ export default function CharacterDocumentUploader({
       <Stack spacing={2}>
         <Tabs
           defaultValue={0}
-          onChange={(_event, newValue) => setDocumentType(newValue === 0 ? 'file' : 'url')}
+          onChange={(_event, newValue) =>
+            setDocumentType(newValue === 0 ? 'file' : 'url')
+          }
           sx={{
             bgcolor: 'transparent',
             minWidth: '760px',
@@ -169,10 +205,14 @@ export default function CharacterDocumentUploader({
           <TabPanel value={0}>
             <Stack spacing={2}>
               <Typography level="body-sm">
-                {t('Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 3MB.')}
+                {t(
+                  'Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 3MB.'
+                )}
               </Typography>
               <CommonBox>
-                <Chip sx={{ display: documentFile?.name ? 'unset' : 'none'}}>{documentFile?.name}</Chip>
+                <Chip sx={{ display: documentFile?.name ? 'unset' : 'none' }}>
+                  {documentFile?.name}
+                </Chip>
                 {documentUploading ? (
                   <CircularProgress />
                 ) : (
@@ -183,17 +223,24 @@ export default function CharacterDocumentUploader({
                       id={fileInputId}
                       onChange={handleDocumentFileChange}
                       sx={{ display: 'none' }}
-                      slotProps={{ input: {
-                        ref: fileInputRef,
-                        accept: "*/*",
-                      }}}
+                      slotProps={{
+                        input: {
+                          ref: fileInputRef,
+                          accept: '*/*',
+                        },
+                      }}
                     />
                     <label htmlFor={fileInputId}>
-                      <IconButton onClick={handleDocumentFileModify} disabled={documentUploading}>
+                      <IconButton
+                        onClick={handleDocumentFileModify}
+                        disabled={documentUploading}
+                      >
                         <FileUploadRounded />
                       </IconButton>
                     </label>
-                    <FormHelperText sx={{ display: documentFileInvalid ? 'unset' : 'none' }}>
+                    <FormHelperText
+                      sx={{ display: documentFileInvalid ? 'unset' : 'none' }}
+                    >
                       {t('File too large!')}
                     </FormHelperText>
                   </FormControl>
@@ -213,16 +260,20 @@ export default function CharacterDocumentUploader({
                   autoFocus
                   type="text"
                   value={documentUrl}
-                  onChange={(event => handleDocumentUrlModify(event.target.value))}
+                  onChange={(event) =>
+                    handleDocumentUrlModify(event.target.value)
+                  }
                 />
-                <FormHelperText sx={{ display: documentUrlInvalid ? 'unset' : 'none' }}>
+                <FormHelperText
+                  sx={{ display: documentUrlInvalid ? 'unset' : 'none' }}
+                >
                   {t('Invalid URL')}
                 </FormHelperText>
               </FormControl>
             </Stack>
           </TabPanel>
         </Tabs>
-        
+
         <Divider sx={{ mt: 'auto', mx: 2 }}>{t('Splitter Settings')}</Divider>
 
         <CommonGridBox sx={{ gridTemplateColumns: '1fr 1fr' }}>
@@ -231,7 +282,9 @@ export default function CharacterDocumentUploader({
               <Typography level="title-sm" textColor="neutral">
                 {t('Max Segment Size')}
               </Typography>
-              <OptionTooltip title={t('The maximum size of a segment in tokens.')}>
+              <OptionTooltip
+                title={t('The maximum size of a segment in tokens.')}
+              >
                 <HelpIcon />
               </OptionTooltip>
               <CommonContainer sx={{ ml: 'auto' }}>
@@ -247,7 +300,10 @@ export default function CharacterDocumentUploader({
                     },
                   }}
                   value={documentMaxSegmentSize}
-                  onChange={(event => setDocumentMaxSegmentSize(+event.target.value))} />
+                  onChange={(event) =>
+                    setDocumentMaxSegmentSize(+event.target.value)
+                  }
+                />
               </CommonContainer>
             </CommonContainer>
             <Slider
@@ -257,7 +313,10 @@ export default function CharacterDocumentUploader({
               min={0}
               max={1000}
               valueLabelDisplay="auto"
-              onChange={(_event, newValue) => setDocumentMaxSegmentSize(newValue as number)} />
+              onChange={(_event, newValue) =>
+                setDocumentMaxSegmentSize(newValue as number)
+              }
+            />
           </OptionCard>
 
           <OptionCard>
@@ -265,7 +324,11 @@ export default function CharacterDocumentUploader({
               <Typography level="title-sm" textColor="neutral">
                 {t('Max Overlap Size')}
               </Typography>
-              <OptionTooltip title={t('The maximum size of the overlap between segments in tokens.')}>
+              <OptionTooltip
+                title={t(
+                  'The maximum size of the overlap between segments in tokens.'
+                )}
+              >
                 <HelpIcon />
               </OptionTooltip>
               <CommonContainer sx={{ ml: 'auto' }}>
@@ -281,7 +344,10 @@ export default function CharacterDocumentUploader({
                     },
                   }}
                   value={documentMaxOverlapSize}
-                  onChange={(event => setDocumentMaxOverlapSize(+event.target.value))} />
+                  onChange={(event) =>
+                    setDocumentMaxOverlapSize(+event.target.value)
+                  }
+                />
               </CommonContainer>
             </CommonContainer>
             <Slider
@@ -291,7 +357,10 @@ export default function CharacterDocumentUploader({
               min={0}
               max={100}
               valueLabelDisplay="auto"
-              onChange={(_event, newValue) => setDocumentMaxOverlapSize(newValue as number)} />
+              onChange={(_event, newValue) =>
+                setDocumentMaxOverlapSize(newValue as number)
+              }
+            />
           </OptionCard>
         </CommonGridBox>
       </Stack>

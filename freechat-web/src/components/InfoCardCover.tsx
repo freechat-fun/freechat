@@ -1,13 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ElementType } from "react";
-import { Box, CardCover, IconButton } from "@mui/joy";
-import { VisibilityRounded, EditRounded, DeleteRounded, FileDownloadRounded } from "@mui/icons-material";
-import { SxProps } from "@mui/joy/styles/types";
+import { ElementType } from 'react';
+import { Box, CardCover, IconButton } from '@mui/joy';
+import {
+  VisibilityRounded,
+  EditRounded,
+  DeleteRounded,
+  FileDownloadRounded,
+} from '@mui/icons-material';
+import { SxProps } from '@mui/joy/styles/types';
 
-function CardIconButton({ Icon, onClick, sx }: {
-  Icon: React.ElementType,
-  onClick: () => void,
-  sx?: SxProps,
+function CardIconButton({
+  Icon,
+  onClick,
+  sx,
+}: {
+  Icon: React.ElementType;
+  onClick: () => void;
+  sx?: SxProps;
 }) {
   return (
     <IconButton
@@ -20,7 +29,8 @@ function CardIconButton({ Icon, onClick, sx }: {
           bgcolor: 'transparent',
           transform: 'translateY(-2px)',
         },
-        ...sx }}
+        ...sx,
+      }}
       onClick={(event) => {
         event.stopPropagation();
         onClick();
@@ -33,19 +43,25 @@ function CardIconButton({ Icon, onClick, sx }: {
 
 export default function InfoCardCover(props: {
   icons?: {
-    view?: ElementType<any>,
-    edit?: ElementType<any>,
-    download?: ElementType<any>,
-    delete?: ElementType<any>,
-  }
-  onView?: () => void,
-  onEdit?: () => void,
-  onDownload?: () => void,
-  onDelete?: () => void,
+    view?: ElementType<any>;
+    edit?: ElementType<any>;
+    download?: ElementType<any>;
+    delete?: ElementType<any>;
+  };
+  onView?: () => void;
+  onEdit?: () => void;
+  onDownload?: () => void;
+  onDelete?: () => void;
 }) {
   const { icons, onView, onEdit, onDownload, onDelete } = props;
 
-  const iconSet = { view: VisibilityRounded, edit: EditRounded, download: FileDownloadRounded, delete: DeleteRounded, ...icons };
+  const iconSet = {
+    view: VisibilityRounded,
+    edit: EditRounded,
+    download: FileDownloadRounded,
+    delete: DeleteRounded,
+    ...icons,
+  };
 
   return (
     <CardCover
@@ -61,18 +77,24 @@ export default function InfoCardCover(props: {
       }}
     >
       <div>
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end',
-          alignSelf: 'flex-end',
-          gap: 1,
-          width: '100%',
-        }}>
-          { onView && <CardIconButton Icon={iconSet.view} onClick={onView} /> } 
-          { onEdit && <CardIconButton Icon={iconSet.edit} onClick={onEdit} /> }
-          { onDownload && <CardIconButton Icon={iconSet.download} onClick={onDownload} /> }
-          { onDelete && <CardIconButton Icon={iconSet.delete} onClick={onDelete} /> }
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+            alignSelf: 'flex-end',
+            gap: 1,
+            width: '100%',
+          }}
+        >
+          {onView && <CardIconButton Icon={iconSet.view} onClick={onView} />}
+          {onEdit && <CardIconButton Icon={iconSet.edit} onClick={onEdit} />}
+          {onDownload && (
+            <CardIconButton Icon={iconSet.download} onClick={onDownload} />
+          )}
+          {onDelete && (
+            <CardIconButton Icon={iconSet.delete} onClick={onDelete} />
+          )}
         </Box>
       </div>
     </CardCover>

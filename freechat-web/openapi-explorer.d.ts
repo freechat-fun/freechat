@@ -9,7 +9,11 @@ interface OpenApiExplorerProps {
 declare global {
   namespace React.JSX {
     interface IntrinsicElements {
-      'openapi-explorer': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & OpenApiExplorerProps;
+      'openapi-explorer': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > &
+        OpenApiExplorerProps;
     }
   }
 }

@@ -24,7 +24,7 @@ import {
 
 type FreeChatApiProps = {
   server?: string;
-}
+};
 
 type FreeChatApiContextValue = {
   serverUrl: string | undefined;
@@ -44,7 +44,7 @@ type FreeChatApiContextValue = {
   promptApi: PromptApi | undefined;
   promptTaskApi: PromptTaskApi | undefined;
   ragApi: RagApi | undefined;
-}
+};
 
 const undefinedContext: FreeChatApiContextValue = {
   serverUrl: undefined,
@@ -64,25 +64,32 @@ const undefinedContext: FreeChatApiContextValue = {
   promptApi: undefined,
   promptTaskApi: undefined,
   ragApi: undefined,
-}
+};
 
-const FreeChatApiContext = createContext<FreeChatApiContextValue>(undefinedContext);
+const FreeChatApiContext =
+  createContext<FreeChatApiContextValue>(undefinedContext);
 
-const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> = ({server, children }) => {
+const FreeChatApiProvider: React.FC<
+  React.PropsWithChildren<FreeChatApiProps>
+> = ({ server, children }) => {
   const parameters = {
-    baseServer: server ? new ServerConfiguration(server, {}) : servers[0]
-  }
+    baseServer: server ? new ServerConfiguration(server, {}) : servers[0],
+  };
 
   const configuration = createConfiguration(parameters);
 
   const aiServiceApi = new AIServiceApi(configuration);
   const accountApi = new AccountApi(configuration);
-  const accountManagerForAdminApi = new AccountManagerForAdminApi(configuration);
+  const accountManagerForAdminApi = new AccountManagerForAdminApi(
+    configuration
+  );
   const appConfigForAdminApi = new AppConfigForAdminApi(configuration);
   const appMetaForAdminApi = new AppMetaForAdminApi(configuration);
   const characterApi = new CharacterApi(configuration);
   const chatApi = new ChatApi(configuration);
-  const encryptionManagerForAdminApi = new EncryptionManagerForAdminApi(configuration);
+  const encryptionManagerForAdminApi = new EncryptionManagerForAdminApi(
+    configuration
+  );
   const agentApi = new AgentApi(configuration);
   const interactiveStatisticsApi = new InteractiveStatisticsApi(configuration);
   const organizationApi = new OrganizationApi(configuration);
@@ -92,25 +99,27 @@ const FreeChatApiProvider: React.FC<React.PropsWithChildren<FreeChatApiProps>> =
   const ragApi = new RagApi(configuration);
 
   return (
-    <FreeChatApiContext.Provider value={{
-      serverUrl: server,
-      configuration,
-      aiServiceApi,
-      accountApi,
-      accountManagerForAdminApi,
-      appConfigForAdminApi,
-      appMetaForAdminApi,
-      characterApi,
-      chatApi,
-      encryptionManagerForAdminApi,
-      agentApi,
-      interactiveStatisticsApi,
-      organizationApi,
-      pluginApi,
-      promptApi,
-      promptTaskApi,
-      ragApi,
-    }}>
+    <FreeChatApiContext.Provider
+      value={{
+        serverUrl: server,
+        configuration,
+        aiServiceApi,
+        accountApi,
+        accountManagerForAdminApi,
+        appConfigForAdminApi,
+        appMetaForAdminApi,
+        characterApi,
+        chatApi,
+        encryptionManagerForAdminApi,
+        agentApi,
+        interactiveStatisticsApi,
+        organizationApi,
+        pluginApi,
+        promptApi,
+        promptTaskApi,
+        ragApi,
+      }}
+    >
       {children}
     </FreeChatApiContext.Provider>
   );

@@ -1,6 +1,6 @@
 export { default as AvatarWithStatus } from './AvatarWithStatus';
 export { default as MessageAssistant } from './MessageAssistant';
-export { default as MessageAssistantsPane} from './MessageAssistantsPane';
+export { default as MessageAssistantsPane } from './MessageAssistantsPane';
 export { default as MessageAssistantsWindow } from './MessageAssistantsWindow';
 export { default as MessageInput } from './MessageInput';
 export { default as MessagesPane } from './MessagesPane';

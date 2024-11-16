@@ -12,7 +12,7 @@ const ZhIcon = createSvgIcon(
       fill="var(--joy-palette-text-primary)"
     />
   </SvgIcon>,
-  'Zh',
+  'Zh'
 );
 
 export default ZhIcon;

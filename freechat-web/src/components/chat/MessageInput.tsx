@@ -1,12 +1,15 @@
-import { useRef, KeyboardEvent, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Avatar, Button, IconButton, Input, Stack, Textarea } from "@mui/joy";
-import { AndroidRounded, SendRounded } from "@mui/icons-material";
-import { CharacterSummaryDTO, LlmResultDTO } from "freechat-sdk";
-import { MessageAssistantsWindow } from ".";
+import { useRef, KeyboardEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Avatar, Button, IconButton, Input, Stack, Textarea } from '@mui/joy';
+import { AndroidRounded, SendRounded } from '@mui/icons-material';
+import { CharacterSummaryDTO, LlmResultDTO } from 'freechat-sdk';
+import { MessageAssistantsWindow } from '.';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { getMessageText } from "../../libs/template_utils";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
+import { getMessageText } from '../../libs/template_utils';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
 
 export type MessageInputProps = {
   chatId?: string;
@@ -17,7 +20,13 @@ export type MessageInputProps = {
 };
 
 export default function MessageInput(props: MessageInputProps) {
-  const { chatId, textAreaValue, setTextAreaValue, onSubmit, disabled = false } = props;
+  const {
+    chatId,
+    textAreaValue,
+    setTextAreaValue,
+    onSubmit,
+    disabled = false,
+  } = props;
   const { t } = useTranslation('chat');
   const { handleError } = useErrorMessageBusContext();
   const { serverUrl } = useFreeChatApiContext();
@@ -25,10 +34,11 @@ export default function MessageInput(props: MessageInputProps) {
   const [assistantAvatar, setAssistantAvatar] = useState<string>();
   const [assistantName, setAssistantName] = useState<string>();
   const [assistantUid, setAssistantUid] = useState<string>();
-  const [assistantWindowOpen, setAssistantWindowOpen] = useState<boolean>(false);
+  const [assistantWindowOpen, setAssistantWindowOpen] =
+    useState<boolean>(false);
   const [assistantHelp, setAssistantHelp] = useState(false);
   const [assistantMessage, setAssistantMessaage] = useState('');
-  
+
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const ASSISTANT_UID_KEY_PREFIX = 'MessageInput.assistantUid.';
@@ -37,11 +47,17 @@ export default function MessageInput(props: MessageInputProps) {
   const apiPath = '/api/v2/chat/send/stream/assistant';
 
   useEffect(() => {
-    const storedAssistantUid = localStorage.getItem(ASSISTANT_UID_KEY_PREFIX + chatId);
+    const storedAssistantUid = localStorage.getItem(
+      ASSISTANT_UID_KEY_PREFIX + chatId
+    );
     if (storedAssistantUid) {
       setAssistantUid(storedAssistantUid);
-      setAssistantName(localStorage.getItem(ASSISTANT_NAME_KEY_PREFIX + chatId) ?? undefined)
-      setAssistantAvatar(localStorage.getItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId) ?? undefined);
+      setAssistantName(
+        localStorage.getItem(ASSISTANT_NAME_KEY_PREFIX + chatId) ?? undefined
+      );
+      setAssistantAvatar(
+        localStorage.getItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId) ?? undefined
+      );
     }
   }, [chatId]);
 
@@ -87,7 +103,7 @@ export default function MessageInput(props: MessageInputProps) {
               setAssistantMessaage('');
               setAssistantHelp(false);
             } else if (result.text) {
-              setAssistantMessaage(prevMessage => prevMessage + result.text);
+              setAssistantMessaage((prevMessage) => prevMessage + result.text);
             }
           },
           onerror(error) {
@@ -95,9 +111,9 @@ export default function MessageInput(props: MessageInputProps) {
           },
           onclose() {
             if (shouldReconnect) {
-              console.error("The connection has been closed...");
+              console.error('The connection has been closed...');
             }
-          }
+          },
         });
       } catch (error) {
         handleError(error);
@@ -110,8 +126,15 @@ export default function MessageInput(props: MessageInputProps) {
       controller.abort();
       setAssistantHelp(false);
     };
-    
-  }, [assistantHelp, assistantUid, chatId, handleError, serverUrl, setTextAreaValue, t]);
+  }, [
+    assistantHelp,
+    assistantUid,
+    chatId,
+    handleError,
+    serverUrl,
+    setTextAreaValue,
+    t,
+  ]);
 
   function handleClick() {
     if (textAreaValue.trim() !== '') {
@@ -145,9 +168,18 @@ export default function MessageInput(props: MessageInputProps) {
     setAssistantName(assistant?.name);
     setAssistantAvatar(assistant?.avatar);
 
-    localStorage.setItem(ASSISTANT_UID_KEY_PREFIX + chatId, assistant?.characterUid ?? '');
-    localStorage.setItem(ASSISTANT_NAME_KEY_PREFIX + chatId, assistant?.name ?? '');
-    localStorage.setItem(ASSISTANT_AVATAR_KEY_PREFIX + chatId, assistant?.avatar ?? '');
+    localStorage.setItem(
+      ASSISTANT_UID_KEY_PREFIX + chatId,
+      assistant?.characterUid ?? ''
+    );
+    localStorage.setItem(
+      ASSISTANT_NAME_KEY_PREFIX + chatId,
+      assistant?.name ?? ''
+    );
+    localStorage.setItem(
+      ASSISTANT_AVATAR_KEY_PREFIX + chatId,
+      assistant?.avatar ?? ''
+    );
   }
 
   function handleAssistantSend() {
@@ -179,12 +211,14 @@ export default function MessageInput(props: MessageInputProps) {
   // }
 
   return (
-    <Stack sx={{
-      px: 2,
-      pb: { xs: 1, sm: 3 },
-      flexDirection: "row",
-    }}>
-        {/* <Textarea
+    <Stack
+      sx={{
+        px: 2,
+        pb: { xs: 1, sm: 3 },
+        flexDirection: 'row',
+      }}
+    >
+      {/* <Textarea
           disabled={disabled}
           placeholder="Type something here…"
           aria-label="Message"
@@ -245,14 +279,14 @@ export default function MessageInput(props: MessageInputProps) {
                 '--Textarea-focusedInset': 'inset',
                 '--Textarea-focusedThickness': 0,
                 p: 1.2,
-                flex: 1
+                flex: 1,
               },
             },
             endDecorator: {
               sx: {
                 alignSelf: 'flex-end',
-              }
-            }
+              },
+            },
           }}
           endDecorator={
             <Stack
@@ -276,14 +310,24 @@ export default function MessageInput(props: MessageInputProps) {
                 }}
                 onClick={handleAssistantSend}
               >
-                <Avatar variant="plain" size="sm" alt={assistantName} src={assistantAvatar}>{assistantName}</Avatar>
+                <Avatar
+                  variant="plain"
+                  size="sm"
+                  alt={assistantName}
+                  src={assistantAvatar}
+                >
+                  {assistantName}
+                </Avatar>
               </IconButton>
               <Button
                 disabled={disabled || assistantHelp || !textAreaValue}
                 size="sm"
                 color="primary"
                 sx={{
-                  display: { xs: 'none', lg: assistantUid && !textAreaValue ? 'none' : 'inherit' },
+                  display: {
+                    xs: 'none',
+                    lg: assistantUid && !textAreaValue ? 'none' : 'inherit',
+                  },
                   alignSelf: 'center',
                 }}
                 endDecorator={<SendRounded />}
@@ -297,7 +341,10 @@ export default function MessageInput(props: MessageInputProps) {
                 color="primary"
                 variant="solid"
                 sx={{
-                  display: { xs: assistantUid && !textAreaValue ? 'none' : 'inherit', lg: 'none' },
+                  display: {
+                    xs: assistantUid && !textAreaValue ? 'none' : 'inherit',
+                    lg: 'none',
+                  },
                   alignSelf: 'center',
                 }}
                 onClick={handleClick}
@@ -309,7 +356,7 @@ export default function MessageInput(props: MessageInputProps) {
           onKeyDown={handleSend}
         />
         <IconButton
-          disabled={disabled || assistantHelp }
+          disabled={disabled || assistantHelp}
           size="sm"
           variant="outlined"
           sx={{

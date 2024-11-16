@@ -1,22 +1,40 @@
-import { PropsWithChildren } from "react";
-import { useTranslation } from "react-i18next";
-import { ScrollableTypography } from ".";
-import { DialogActions, DialogContent, DialogTitle, IconButton, Modal, ModalDialog, Stack, TypographyProps } from "@mui/joy";
-import { DoneRounded } from "@mui/icons-material";
+import { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollableTypography } from '.';
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Modal,
+  ModalDialog,
+  Stack,
+  TypographyProps,
+} from '@mui/joy';
+import { DoneRounded } from '@mui/icons-material';
 
 type TextPreviewWindowProps = TypographyProps<'div'> & {
-  title?: string,
+  title?: string;
   open?: boolean;
   setOpen?: (open: boolean) => void;
-}
+};
 
-
-const TextPreviewWindow: React.FC<PropsWithChildren<TextPreviewWindowProps>> = (({ children, ...props }) => {
+const TextPreviewWindow: React.FC<
+  PropsWithChildren<TextPreviewWindowProps>
+> = ({ children, ...props }) => {
   const { t } = useTranslation();
 
-  const { title = t('Text preview'), open = false, setOpen = () => {}, ...others } = props;
+  const {
+    title = t('Text preview'),
+    open = false,
+    setOpen = () => {},
+    ...others
+  } = props;
 
-  function handleClose(_event: React.MouseEvent<HTMLButtonElement>, reason: string): void {
+  function handleClose(
+    _event: React.MouseEvent<HTMLButtonElement>,
+    reason: string
+  ): void {
     if (reason !== 'backdropClick') {
       setOpen(false);
     }
@@ -24,30 +42,32 @@ const TextPreviewWindow: React.FC<PropsWithChildren<TextPreviewWindowProps>> = (
 
   return (
     <>
-      <Modal
-        open={open}
-        onClose={handleClose}
-      >
+      <Modal open={open} onClose={handleClose}>
         <ModalDialog>
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>
-            <Stack spacing={2} sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
+            <Stack
+              spacing={2}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
               <ScrollableTypography {...others}>
                 {children}
               </ScrollableTypography>
             </Stack>
           </DialogContent>
           <DialogActions>
-            <IconButton onClick={() => setOpen(false)}><DoneRounded /></IconButton>
+            <IconButton onClick={() => setOpen(false)}>
+              <DoneRounded />
+            </IconButton>
           </DialogActions>
         </ModalDialog>
       </Modal>
     </>
   );
-});
+};
 
 export default TextPreviewWindow;

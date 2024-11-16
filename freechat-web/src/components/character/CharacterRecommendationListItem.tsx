@@ -1,17 +1,28 @@
-import { Fragment, forwardRef, useEffect, useState } from "react";
-import { Card, CardCover, ListDivider, ListItem, ListItemButton, ListItemButtonProps, Typography } from "@mui/joy";
-import { CharacterSummaryDTO } from "freechat-sdk";
-import { getSenderName } from "../../libs/chat_utils";
-import { SxProps } from "@mui/joy/styles/types";
+import { Fragment, forwardRef, useEffect, useState } from 'react';
+import {
+  Card,
+  CardCover,
+  ListDivider,
+  ListItem,
+  ListItemButton,
+  ListItemButtonProps,
+  Typography,
+} from '@mui/joy';
+import { CharacterSummaryDTO } from 'freechat-sdk';
+import { getSenderName } from '../../libs/chat_utils';
+import { SxProps } from '@mui/joy/styles/types';
 
 type CharacterRecommendationListItemProps = ListItemButtonProps & {
-  record: CharacterSummaryDTO,
+  record: CharacterSummaryDTO;
   selectedId: number;
   setSelectedId: (id?: number) => void;
-  sx?: SxProps,
-}
+  sx?: SxProps;
+};
 
-const CharacterRecommendationListItem = forwardRef<HTMLLIElement, CharacterRecommendationListItemProps>((props, ref) => {
+const CharacterRecommendationListItem = forwardRef<
+  HTMLLIElement,
+  CharacterRecommendationListItemProps
+>((props, ref) => {
   const { record, selectedId, setSelectedId, sx } = props;
 
   const [selected, setSelected] = useState(selectedId === record.characterId);
@@ -31,8 +42,10 @@ const CharacterRecommendationListItem = forwardRef<HTMLLIElement, CharacterRecom
           sx={{
             borderRadius: 6,
             p: 0,
-        }}>
-            <Card sx={{
+          }}
+        >
+          <Card
+            sx={{
               ...sx,
               width: '100%',
               transition: 'transform 0.4s, box-shadow 0.4s',
@@ -48,25 +61,34 @@ const CharacterRecommendationListItem = forwardRef<HTMLLIElement, CharacterRecom
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
-            }}>
-              <CardCover
+            }}
+          >
+            <CardCover
+              sx={{
+                '&:hover, &:focus-within': {
+                  opacity: 1,
+                },
+                opacity: selectedId === record.characterId ? 1 : 0,
+                transition: '0.3s ease-in',
+                background:
+                  selectedId === record.characterId
+                    ? 'rgba(0 0 0 / 0.5)'
+                    : undefined,
+                backdropFilter:
+                  selectedId === record.characterId ? undefined : 'blur(3px)',
+              }}
+            >
+              <Typography
+                level="title-lg"
                 sx={{
-                  '&:hover, &:focus-within': {
-                    opacity: 1,
-                  },
-                  opacity: selectedId === record.characterId ? 1 : 0,
-                  transition: '0.3s ease-in',
-                  background: selectedId === record.characterId ? 'rgba(0 0 0 / 0.5)' : undefined,
-                  backdropFilter: selectedId === record.characterId ? undefined : 'blur(3px)',
-                }}>
-                  <Typography level="title-lg" sx={{
-                    color: 'white',
-                    transition: 'transform 0.4s, box-shadow 0.4s',
-                  }}>
-                    {nickname}
-                  </Typography>
-              </CardCover>
-            </Card>
+                  color: 'white',
+                  transition: 'transform 0.4s, box-shadow 0.4s',
+                }}
+              >
+                {nickname}
+              </Typography>
+            </CardCover>
+          </Card>
         </ListItemButton>
       </ListItem>
       <ListDivider sx={{ margin: 0 }} />

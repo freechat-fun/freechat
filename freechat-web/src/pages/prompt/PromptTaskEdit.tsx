@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { PromptTaskDetailsDTO } from "freechat-sdk";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { PromptEditor } from "../../components/prompt";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { PromptTaskDetailsDTO } from 'freechat-sdk';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import { PromptEditor } from '../../components/prompt';
 
 export default function PromptTaskEdit() {
   const { id } = useParams();
@@ -11,14 +14,19 @@ export default function PromptTaskEdit() {
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
   const [promptId, setPromptId] = useState(promptTask?.promptRef?.promptId);
-  const [parameters, setParameters] = useState({...promptTask?.params, modelId: promptTask?.modelId, apiKeyName: promptTask?.apiKeyName, apiKey: promptTask?.apiKeyValue});
-  const [variables, setVariables] = useState({...promptTask?.promptRef?.variables});
-  
+  const [parameters, setParameters] = useState({
+    ...promptTask?.params,
+    modelId: promptTask?.modelId,
+    apiKeyName: promptTask?.apiKeyName,
+    apiKey: promptTask?.apiKeyValue,
+  });
+  const [variables, setVariables] = useState({
+    ...promptTask?.promptRef?.variables,
+  });
+
   useEffect(() => {
     if (id) {
-      promptTaskApi?.getPromptTask(id)
-        .then(setPromptTask)
-        .catch(handleError);
+      promptTaskApi?.getPromptTask(id).then(setPromptTask).catch(handleError);
     }
   }, [promptTaskApi, handleError, id]);
 
@@ -28,16 +36,12 @@ export default function PromptTaskEdit() {
       ...promptTask?.params,
       modelId: promptTask?.modelId,
       apiKeyName: promptTask?.apiKeyName,
-      apiKey: promptTask?.apiKeyValue
+      apiKey: promptTask?.apiKeyValue,
     });
-    setVariables({...promptTask?.promptRef?.variables});
+    setVariables({ ...promptTask?.promptRef?.variables });
   }, [promptTask]);
 
   return (
-    <PromptEditor 
-      id={promptId}
-      parameters={parameters}
-      variables={variables}
-    />
+    <PromptEditor id={promptId} parameters={parameters} variables={variables} />
   );
 }

@@ -1,4 +1,4 @@
-import { Typography, TypographyProps, styled } from "@mui/joy";
+import { Typography, TypographyProps, styled } from '@mui/joy';
 
 const TextareaTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   border: `1px solid ${theme.palette.primary.outlinedBorder}`,

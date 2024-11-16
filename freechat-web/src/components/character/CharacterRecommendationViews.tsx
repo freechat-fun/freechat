@@ -1,9 +1,17 @@
-import { useEffect, useRef, useState } from "react";
-import { Box, Stack, StackProps, Step, StepButton, StepIndicator, Stepper } from "@mui/joy";
-import CharacterRecommendationPane from "./CharacterRecommendationPane";
+import { useEffect, useRef, useState } from 'react';
+import {
+  Box,
+  Stack,
+  StackProps,
+  Step,
+  StepButton,
+  StepIndicator,
+  Stepper,
+} from '@mui/joy';
+import CharacterRecommendationPane from './CharacterRecommendationPane';
 
 type CharacterRecommendationViewsProps = StackProps & {
-  interval?: number
+  interval?: number;
 };
 
 export default function CharacterRecommendationViews({
@@ -17,7 +25,10 @@ export default function CharacterRecommendationViews({
   const languages = ['en', 'zh'];
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => setActiveIndex(prevIndex => (prevIndex + 1) % languages.length), interval);
+    intervalRef.current = setInterval(
+      () => setActiveIndex((prevIndex) => (prevIndex + 1) % languages.length),
+      interval
+    );
 
     // Clear the interval when the component unmounts
     return () => {
@@ -32,17 +43,21 @@ export default function CharacterRecommendationViews({
   }
 
   function handleMouseLeave(): void {
-    intervalRef.current = setInterval(() => setActiveIndex(prevIndex => (prevIndex + 1) % languages.length), interval);
+    intervalRef.current = setInterval(
+      () => setActiveIndex((prevIndex) => (prevIndex + 1) % languages.length),
+      interval
+    );
   }
 
   return (
-    <Stack sx={{
-      mx: 'auto',
-      borderRadius: 'md',
-      p: 0,
-      display: 'flex',
-      alignItems: 'stretch',
-      ...sx
+    <Stack
+      sx={{
+        mx: 'auto',
+        borderRadius: 'md',
+        p: 0,
+        display: 'flex',
+        alignItems: 'stretch',
+        ...sx,
       }}
       {...others}
       onMouseEnter={handleMouseEnter}
@@ -50,17 +65,14 @@ export default function CharacterRecommendationViews({
     >
       <Box sx={{ width: '100%', overflow: 'hidden' }}>
         <Box
-            sx={{
-                display: 'flex',
-                transition: 'transform 0.5s ease-out',
-                transform: `translateX(-${activeIndex * 100}%)`,
-            }}
+          sx={{
+            display: 'flex',
+            transition: 'transform 0.5s ease-out',
+            transform: `translateX(-${activeIndex * 100}%)`,
+          }}
         >
           {languages.map((lang) => (
-            <Box
-              key={lang}
-              sx={{ width: '100%', flexShrink: 0 }}
-            >
+            <Box key={lang} sx={{ width: '100%', flexShrink: 0 }}>
               <CharacterRecommendationPane lang={lang} />
             </Box>
           ))}
@@ -73,7 +85,7 @@ export default function CharacterRecommendationViews({
             key={lang}
             indicator={
               <StepIndicator
-                variant={ activeIndex === index ? 'solid' : 'soft' }
+                variant={activeIndex === index ? 'solid' : 'soft'}
                 color="primary"
               />
             }

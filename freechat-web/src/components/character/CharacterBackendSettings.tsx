@@ -1,14 +1,62 @@
-import { Fragment, createRef, forwardRef, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Button, Card, CardProps, IconButton, Option, Radio, RadioGroup, Select, Slider, Switch, Typography } from "@mui/joy";
-import { ArrowOutwardRounded, DoneRounded, KeyRounded, TuneRounded, UndoRounded } from "@mui/icons-material";
-import { AiModelInfoDTO, CharacterBackendDetailsDTO, PromptTaskDTO, PromptTaskDetailsDTO } from "freechat-sdk";
-import { useErrorMessageBusContext, useFreeChatApiContext } from "../../contexts";
-import { CommonBox, CommonContainer, CommonGridBox, LinePlaceholder, OptionCard, OptionTooltip, TinyInput } from "..";
-import { HelpIcon } from "../icon";
-import { enabledApiKey, extractModelProvider } from "../../libs/template_utils";
-import { providers as modelProviders } from "../../configs/model-providers-config";
-import { AiApiKeySettings, AzureOpenAiSettings, DashScopeSettings, OllamaSettings, OpenAiSettings } from "../prompt";
+import {
+  Fragment,
+  createRef,
+  forwardRef,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Button,
+  Card,
+  CardProps,
+  IconButton,
+  Option,
+  Radio,
+  RadioGroup,
+  Select,
+  Slider,
+  Switch,
+  Typography,
+} from '@mui/joy';
+import {
+  ArrowOutwardRounded,
+  DoneRounded,
+  KeyRounded,
+  TuneRounded,
+  UndoRounded,
+} from '@mui/icons-material';
+import {
+  AiModelInfoDTO,
+  CharacterBackendDetailsDTO,
+  PromptTaskDTO,
+  PromptTaskDetailsDTO,
+} from 'freechat-sdk';
+import {
+  useErrorMessageBusContext,
+  useFreeChatApiContext,
+} from '../../contexts';
+import {
+  CommonBox,
+  CommonContainer,
+  CommonGridBox,
+  LinePlaceholder,
+  OptionCard,
+  OptionTooltip,
+  TinyInput,
+} from '..';
+import { HelpIcon } from '../icon';
+import { enabledApiKey, extractModelProvider } from '../../libs/template_utils';
+import { providers as modelProviders } from '../../configs/model-providers-config';
+import {
+  AiApiKeySettings,
+  AzureOpenAiSettings,
+  DashScopeSettings,
+  OllamaSettings,
+  OpenAiSettings,
+} from '../prompt';
 
 type CharacterBackendSettingsProps = CardProps & {
   backend?: CharacterBackendDetailsDTO;
@@ -16,33 +64,46 @@ type CharacterBackendSettingsProps = CardProps & {
     backend: CharacterBackendDetailsDTO,
     promptTask?: PromptTaskDTO,
     redirectToChatPrompt?: boolean,
-    redirectHash?: string,
+    redirectHash?: string
   ) => void;
   onCancel?: () => void;
-}
+};
 
-const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSettingsProps>((props, ref) => {
+const CharacterBackendSettings = forwardRef<
+  HTMLDivElement,
+  CharacterBackendSettingsProps
+>((props, ref) => {
   const { t } = useTranslation('character');
   const { aiServiceApi, promptTaskApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const { backend, onSave, onCancel, sx, ...others } = props;
 
-  const [messageWindowSize, setMessageWindowSize] = useState(backend?.messageWindowSize ?? 50);
-  const [longTermMemoryWindowSize, setLongTermMemoryWindowSize] = useState(backend?.longTermMemoryWindowSize ?? 5);
-  const [proactiveChatWaitingTime, setProactiveChatWaitingTime] = useState(backend?.proactiveChatWaitingTime ?? 2);
+  const [messageWindowSize, setMessageWindowSize] = useState(
+    backend?.messageWindowSize ?? 50
+  );
+  const [longTermMemoryWindowSize, setLongTermMemoryWindowSize] = useState(
+    backend?.longTermMemoryWindowSize ?? 5
+  );
+  const [proactiveChatWaitingTime, setProactiveChatWaitingTime] = useState(
+    backend?.proactiveChatWaitingTime ?? 2
+  );
   const [initQuota, setInitQuota] = useState(backend?.initQuota ?? 0);
-  const [quotaType, setQuotaType] = useState(backend?.quotaType ==='tokens' ? backend?.quotaType : 'messages');
-  const [enableQuota, setEnableQuota] = useState(backend?.quotaType === 'messages' || backend?.quotaType === 'tokens');
+  const [quotaType, setQuotaType] = useState(
+    backend?.quotaType === 'tokens' ? backend?.quotaType : 'messages'
+  );
+  const [enableQuota, setEnableQuota] = useState(
+    backend?.quotaType === 'messages' || backend?.quotaType === 'tokens'
+  );
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
   const [provider, setProvider] = useState('open_ai');
   const [apiKeyName, setApiKeyName] = useState('');
   const [apiKeyValue, setApiKeyValue] = useState('');
-  const [apiKeyNames, setApiKeyNames] = useState<(string)[]>([]);
+  const [apiKeyNames, setApiKeyNames] = useState<string[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [parameters, setParameters] = useState<{ [key: string]: any; }>({});
+  const [parameters, setParameters] = useState<{ [key: string]: any }>({});
 
   const [modelSetting, setModelSetting] = useState(false);
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
@@ -50,8 +111,11 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
   const inputRefs = useRef(Array(4).fill(createRef<HTMLInputElement | null>()));
 
   const matchingModels = useMemo(() => {
-    return provider && models ? models.filter(
-      model => model && model.provider === provider && model.type === 'text2chat')
+    return provider && models
+      ? models.filter(
+          (model) =>
+            model && model.provider === provider && model.type === 'text2chat'
+        )
       : [];
   }, [models, provider]);
 
@@ -59,34 +123,51 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
     {
       label: 'Messages',
       value: 'messages',
-    }, {
+    },
+    {
       label: 'Tokens',
       value: 'tokens',
-    }
+    },
   ];
 
   useEffect(() => {
-    aiServiceApi?.listAiModelInfo()
-      .then(setModels)
-      .catch(handleError);
+    aiServiceApi?.listAiModelInfo().then(setModels).catch(handleError);
   }, [aiServiceApi, handleError]);
 
   useEffect(() => {
-    backend?.chatPromptTaskId && promptTaskApi?.getPromptTask(backend?.chatPromptTaskId)
-      .then(setPromptTask)
-      .catch(handleError);
+    backend?.chatPromptTaskId &&
+      promptTaskApi
+        ?.getPromptTask(backend?.chatPromptTaskId)
+        .then(setPromptTask)
+        .catch(handleError);
 
     setInitQuota(backend?.initQuota ?? 0);
-    setQuotaType(backend?.quotaType ==='tokens' ? backend?.quotaType : 'messages');
-    setEnableQuota(backend?.quotaType === 'messages' || backend?.quotaType === 'tokens');
-  }, [backend?.chatPromptTaskId, backend?.initQuota, backend?.quotaType, handleError, promptTaskApi]);
+    setQuotaType(
+      backend?.quotaType === 'tokens' ? backend?.quotaType : 'messages'
+    );
+    setEnableQuota(
+      backend?.quotaType === 'messages' || backend?.quotaType === 'tokens'
+    );
+  }, [
+    backend?.chatPromptTaskId,
+    backend?.initQuota,
+    backend?.quotaType,
+    handleError,
+    promptTaskApi,
+  ]);
 
   useEffect(() => {
-    provider && aiServiceApi?.listAiApiKeys(provider)
-      .then(resp => setApiKeyNames(resp
-        .filter(key => !!key.name && key.enabled)
-        .map(key => key.name as string)))
-      .catch(handleError);
+    provider &&
+      aiServiceApi
+        ?.listAiApiKeys(provider)
+        .then((resp) =>
+          setApiKeyNames(
+            resp
+              .filter((key) => !!key.name && key.enabled)
+              .map((key) => key.name as string)
+          )
+        )
+        .catch(handleError);
   }, [aiServiceApi, handleError, provider]);
 
   useEffect(() => {
@@ -96,22 +177,33 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
     setParameters({ ...promptTask?.params, modelId: promptTask?.modelId });
   }, [promptTask]);
 
-  function handleModelProviderSelectChange(_event: React.SyntheticEvent | null, newValue: string | null): void {
+  function handleModelProviderSelectChange(
+    _event: React.SyntheticEvent | null,
+    newValue: string | null
+  ): void {
     if (newValue && newValue !== provider) {
       setProvider(newValue);
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleModelSettings(parameters: { [key: string]: any; }) {
+  function handleModelSettings(parameters: { [key: string]: any }) {
     setParameters(parameters);
     setModelSetting(false);
   }
 
-  function handleSave(redirectToChatPrompt: boolean = false, redirectHash?: string) {
+  function handleSave(
+    redirectToChatPrompt: boolean = false,
+    redirectHash?: string
+  ) {
     let editBackend;
     if (backend) {
-      editBackend = { ...backend, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime };
+      editBackend = {
+        ...backend,
+        messageWindowSize,
+        longTermMemoryWindowSize,
+        proactiveChatWaitingTime,
+      };
     } else {
       editBackend = new CharacterBackendDetailsDTO();
       editBackend.messageWindowSize = messageWindowSize;
@@ -137,13 +229,15 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
 
   return (
     <Fragment>
-      <Card ref={ref} sx={{
-        my: 2,
-        mx: { xs: 0, sm: 2 },
-        p: 2,
-        boxShadow: 'sm',
-        ...sx,
-      }}
+      <Card
+        ref={ref}
+        sx={{
+          my: 2,
+          mx: { xs: 0, sm: 2 },
+          p: 2,
+          boxShadow: 'sm',
+          ...sx,
+        }}
         {...others}
       >
         <OptionCard>
@@ -151,7 +245,11 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             <Typography level="title-sm" textColor="neutral">
               {t('Message Window')}
             </Typography>
-            <OptionTooltip title={t('Set the maximum number of historical messages sent to the model.')}>
+            <OptionTooltip
+              title={t(
+                'Set the maximum number of historical messages sent to the model.'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -166,7 +264,8 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                   },
                 }}
                 value={messageWindowSize}
-                onChange={(event => setMessageWindowSize(+event.target.value))} />
+                onChange={(event) => setMessageWindowSize(+event.target.value)}
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -175,7 +274,10 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             max={500}
             step={10}
             valueLabelDisplay="auto"
-            onChange={(_event, newValue) => setMessageWindowSize(newValue as number)} />
+            onChange={(_event, newValue) =>
+              setMessageWindowSize(newValue as number)
+            }
+          />
         </OptionCard>
 
         <OptionCard>
@@ -183,7 +285,11 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             <Typography level="title-sm" textColor="neutral">
               {t('Long Term Memory Window')}
             </Typography>
-            <OptionTooltip title={t('Set the maximum number of long term memory rounds (a round includes a user message and a character reply) sent to the model, 0 to disable. Recalled long-term memory messages will be placed at the top of the historical message window.')}>
+            <OptionTooltip
+              title={t(
+                'Set the maximum number of long term memory rounds (a round includes a user message and a character reply) sent to the model, 0 to disable. Recalled long-term memory messages will be placed at the top of the historical message window.'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -198,7 +304,10 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                   },
                 }}
                 value={longTermMemoryWindowSize}
-                onChange={(event => setLongTermMemoryWindowSize(+event.target.value))} />
+                onChange={(event) =>
+                  setLongTermMemoryWindowSize(+event.target.value)
+                }
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -207,7 +316,10 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             min={0}
             max={30}
             valueLabelDisplay="auto"
-            onChange={(_event, newValue) => setLongTermMemoryWindowSize(newValue as number)} />
+            onChange={(_event, newValue) =>
+              setLongTermMemoryWindowSize(newValue as number)
+            }
+          />
         </OptionCard>
 
         <OptionCard>
@@ -215,7 +327,11 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             <Typography level="title-sm" textColor="neutral">
               {t('Proactive Chat Waiting Time')}
             </Typography>
-            <OptionTooltip title={t('Set the number of minutes to wait before evoking a proactive message, 0 to disable.')}>
+            <OptionTooltip
+              title={t(
+                'Set the number of minutes to wait before evoking a proactive message, 0 to disable.'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
             <CommonContainer sx={{ ml: 'auto' }}>
@@ -230,7 +346,10 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                   },
                 }}
                 value={proactiveChatWaitingTime}
-                onChange={(event => setProactiveChatWaitingTime(+event.target.value))} />
+                onChange={(event) =>
+                  setProactiveChatWaitingTime(+event.target.value)
+                }
+              />
             </CommonContainer>
           </CommonContainer>
           <Slider
@@ -239,7 +358,10 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             min={0}
             max={60}
             valueLabelDisplay="auto"
-            onChange={(_event, newValue) => setProactiveChatWaitingTime(newValue as number)} />
+            onChange={(_event, newValue) =>
+              setProactiveChatWaitingTime(newValue as number)
+            }
+          />
         </OptionCard>
 
         <OptionCard>
@@ -247,10 +369,18 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
             <Typography level="title-sm" textColor="neutral">
               {t('Quota Limit')}
             </Typography>
-            <OptionTooltip title={t('After reaching the quota limit, users need to use their own API-Key to continue chatting.')}>
+            <OptionTooltip
+              title={t(
+                'After reaching the quota limit, users need to use their own API-Key to continue chatting.'
+              )}
+            >
               <HelpIcon />
             </OptionTooltip>
-            <Switch checked={enableQuota} sx={{ ml: 'auto' }} onChange={() => setEnableQuota(!enableQuota)} />
+            <Switch
+              checked={enableQuota}
+              sx={{ ml: 'auto' }}
+              onChange={() => setEnableQuota(!enableQuota)}
+            />
           </CommonContainer>
 
           <CommonContainer>
@@ -277,7 +407,11 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                   size="sm"
                   value={item.value}
                   disableIcon
-                  label={(<Typography noWrap level="body-xs">{item.label}</Typography>)}
+                  label={
+                    <Typography noWrap level="body-xs">
+                      {item.label}
+                    </Typography>
+                  }
                   variant="plain"
                   sx={{
                     p: 0.5,
@@ -295,11 +429,14 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                         }),
                       }),
                     }),
-                  }} />
+                  }}
+                />
               ))}
             </RadioGroup>
 
-            <CommonContainer sx={{ ml: 'auto', justifyContent: 'space-between' }}>
+            <CommonContainer
+              sx={{ ml: 'auto', justifyContent: 'space-between' }}
+            >
               <TinyInput
                 disabled={!enableQuota}
                 type="number"
@@ -312,11 +449,13 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
                   },
                 }}
                 value={initQuota}
-                onChange={(event => setInitQuota(+event.target.value))}
+                onChange={(event) => setInitQuota(+event.target.value)}
               />
-              <Typography sx={{
-                display: quotaType === 'tokens' ? 'block' : 'none'
-              }}>
+              <Typography
+                sx={{
+                  display: quotaType === 'tokens' ? 'block' : 'none',
+                }}
+              >
                 K
               </Typography>
             </CommonContainer>
@@ -329,23 +468,33 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
               {t('Model')}
             </Typography>
             <Select
-              placeholder={<Typography textColor="gray">{t('Select model providers')}</Typography>}
+              placeholder={
+                <Typography textColor="gray">
+                  {t('Select model providers')}
+                </Typography>
+              }
               value={provider}
               onChange={handleModelProviderSelectChange}
               sx={{
                 flex: 1,
               }}
             >
-              {modelProviders.map(p => <Option value={p.provider} key={`options-${p.provider}`}>{p.label}</Option>)}
+              {modelProviders.map((p) => (
+                <Option value={p.provider} key={`options-${p.provider}`}>
+                  {p.label}
+                </Option>
+              ))}
             </Select>
 
             <Typography level="title-sm" textColor="neutral">
               {' '}
             </Typography>
-            <CommonContainer sx={{
-              mt: 2,
-              justifyContent: 'space-between',
-            }}>
+            <CommonContainer
+              sx={{
+                mt: 2,
+                justifyContent: 'space-between',
+              }}
+            >
               <Button
                 size="sm"
                 variant="soft"
@@ -410,8 +559,12 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
         <LinePlaceholder />
 
         <CommonBox sx={{ justifyContent: 'flex-end ' }}>
-          <IconButton onClick={() => onCancel?.()}><UndoRounded /></IconButton>
-          <IconButton onClick={() => handleSave(false)}><DoneRounded /></IconButton>
+          <IconButton onClick={() => onCancel?.()}>
+            <UndoRounded />
+          </IconButton>
+          <IconButton onClick={() => handleSave(false)}>
+            <DoneRounded />
+          </IconButton>
         </CommonBox>
       </Card>
 
@@ -425,26 +578,31 @@ const CharacterBackendSettings = forwardRef<HTMLDivElement, CharacterBackendSett
           setApiKeyName(keyName ?? '');
           setApiKeyValue(keyValue ?? '');
           setOpenApiKeySetting(false);
-        }} />
+        }}
+      />
       <OpenAiSettings
         open={modelSetting && provider === 'open_ai'}
         models={matchingModels}
         onClose={handleModelSettings}
-        defaultParameters={parameters} />
+        defaultParameters={parameters}
+      />
       <AzureOpenAiSettings
         open={modelSetting && provider === 'azure_open_ai'}
         models={matchingModels}
         onClose={handleModelSettings}
-        defaultParameters={parameters} />
+        defaultParameters={parameters}
+      />
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
         models={matchingModels}
         onClose={handleModelSettings}
-        defaultParameters={parameters} />
+        defaultParameters={parameters}
+      />
       <OllamaSettings
         open={modelSetting && provider === 'ollama'}
         onClose={handleModelSettings}
-        defaultParameters={parameters} />
+        defaultParameters={parameters}
+      />
     </Fragment>
   );
 });

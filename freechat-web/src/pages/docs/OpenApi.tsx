@@ -33,11 +33,18 @@ export default function OpenApi() {
         --bg2: ${theme.palette.background.surface};
         --bg3: ${theme.palette.background.surface};
       }
-      `
+      `;
       apiExplorer?.shadowRoot?.appendChild(style);
       setLoading(false);
     }
-  }, [specLoaded, theme.palette.background.body, theme.palette.background.surface, theme.palette.neutral.softHoverBg, theme.palette.neutral.softHoverColor, theme.palette.primary]);
+  }, [
+    specLoaded,
+    theme.palette.background.body,
+    theme.palette.background.surface,
+    theme.palette.neutral.softHoverBg,
+    theme.palette.neutral.softHoverColor,
+    theme.palette.primary,
+  ]);
 
   return (
     <main>
@@ -85,6 +92,6 @@ export default function OpenApi() {
       />
       <DocumentSkeleton lines={3} loading={loading} sx={{ width: '100%' }} />
       <LinePlaceholder spacing={1} />
-  </main>
+    </main>
   );
 }

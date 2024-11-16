@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { i18nConfig, locales } from "../configs/i18n-config";
-import { IconButton, IconButtonProps } from "@mui/joy";
-import { EnIcon, ZhIcon } from "./icon";
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { i18nConfig, locales } from '../configs/i18n-config';
+import { IconButton, IconButtonProps } from '@mui/joy';
+import { EnIcon, ZhIcon } from './icon';
 
 export default function LanguageToggle(props: IconButtonProps) {
   const [mounted, setMounted] = useState(false);
@@ -37,7 +37,7 @@ export default function LanguageToggle(props: IconButtonProps) {
       {...props}
       onClick={() => {
         const languages = Object.keys(locales);
-        const index = languages.findIndex(l => l === language);
+        const index = languages.findIndex((l) => l === language);
         const nextIndex = (index + 1) % languages.length;
         i18n.changeLanguage(languages[nextIndex]);
       }}

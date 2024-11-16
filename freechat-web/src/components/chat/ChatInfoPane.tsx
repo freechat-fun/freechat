@@ -1,12 +1,33 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Box, Button, Card, Chip, Divider, FormControl, IconButton, Input, Stack, Typography } from "@mui/joy";
-import { ChatSessionDTO, MemoryUsageDTO } from "freechat-sdk";
-import { CommonBox, CommonGridBox, ContentTextarea, LinePlaceholder, TextareaTypography } from "..";
-import { CheckRounded, CloseRounded, SaveAltRounded } from "@mui/icons-material";
-import { getLocaleLabel } from "../../configs/i18n-config";
-import { ChatInfoUsage } from ".";
-import { toggleChatInfoPane } from "../../libs/chat_utils";
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  Divider,
+  FormControl,
+  IconButton,
+  Input,
+  Stack,
+  Typography,
+} from '@mui/joy';
+import { ChatSessionDTO, MemoryUsageDTO } from 'freechat-sdk';
+import {
+  CommonBox,
+  CommonGridBox,
+  ContentTextarea,
+  LinePlaceholder,
+  TextareaTypography,
+} from '..';
+import {
+  CheckRounded,
+  CloseRounded,
+  SaveAltRounded,
+} from '@mui/icons-material';
+import { getLocaleLabel } from '../../configs/i18n-config';
+import { ChatInfoUsage } from '.';
+import { toggleChatInfoPane } from '../../libs/chat_utils';
 
 type ChatInfoPaneProps = {
   session?: ChatSessionDTO;
@@ -18,22 +39,31 @@ type ChatInfoPaneProps = {
     userProfile: string,
     characterNickname: string,
     about: string,
-    onSaved: () => void,
+    onSaved: () => void
   ) => void;
-}
+};
 
 export default function ChatInfoPane(props: ChatInfoPaneProps) {
   const { t } = useTranslation(['chat', 'character']);
 
   const { session, memoryUsage, apiKeyValue, onApiKeyChanged, onSave } = props;
 
-  const [userNickname, setUserNickname] = useState(session?.context?.userNickname ?? '');
-  const [userProfile, setUserProfile] = useState(session?.context?.userProfile ?? '');
-  const [characterNickname, setCharacterNickname] = useState(session?.context?.characterNickname ?? '');
+  const [userNickname, setUserNickname] = useState(
+    session?.context?.userNickname ?? ''
+  );
+  const [userProfile, setUserProfile] = useState(
+    session?.context?.userProfile ?? ''
+  );
+  const [characterNickname, setCharacterNickname] = useState(
+    session?.context?.characterNickname ?? ''
+  );
   const [about, setAbout] = useState(session?.context?.about ?? '');
   const [saved, setSaved] = useState(false);
 
-  const lang = session?.character?.lang?.split('_')?.[0] ?? session?.character?.lang ?? 'en';
+  const lang =
+    session?.character?.lang?.split('_')?.[0] ??
+    session?.character?.lang ??
+    'en';
   const tags = session?.character?.tags ?? [];
 
   useEffect(() => {
@@ -48,25 +78,33 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
   }, [userNickname, userProfile, characterNickname, about]);
 
   function getGenderLabel(gender: string | undefined): string {
-    switch(gender) {
-      case 'male': return t('account:Male');
-      case 'female': return t('account:Female');
-      default:  return t('account:Other');
+    switch (gender) {
+      case 'male':
+        return t('account:Male');
+      case 'female':
+        return t('account:Female');
+      default:
+        return t('account:Other');
     }
   }
 
   return (
-    <Card sx={{
-      p: 2,
-      borderRadius: 0,
-      borderColor: 'divider',
-      height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
-      overflowY: 'auto',
-    }}>
-      <Stack direction="row" sx={{
-        display: { xs: 'inherit', sm: 'none' },
-        gap: 1,
-      }}>
+    <Card
+      sx={{
+        p: 2,
+        borderRadius: 0,
+        borderColor: 'divider',
+        height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
+        overflowY: 'auto',
+      }}
+    >
+      <Stack
+        direction="row"
+        sx={{
+          display: { xs: 'inherit', sm: 'none' },
+          gap: 1,
+        }}
+      >
         <IconButton
           variant="plain"
           aria-label="edit"
@@ -88,15 +126,15 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         setApiKeyValue={onApiKeyChanged}
       />
 
-      <Divider sx={{ my: 2 }}>{t('Character information', { ns: 'character' })}</Divider>
+      <Divider sx={{ my: 2 }}>
+        {t('Character information', { ns: 'character' })}
+      </Divider>
 
       <CommonGridBox>
         <Typography level="title-sm" textColor="neutral">
           {t('Name')}
         </Typography>
-        <Typography level="body-sm">
-          {session?.character?.name}
-        </Typography>
+        <Typography level="body-sm">{session?.character?.name}</Typography>
 
         <Typography level="title-sm" textColor="neutral">
           {t('account:Gender')}
@@ -107,9 +145,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         <Typography level="title-sm" textColor="neutral">
           {t('Language')}
         </Typography>
-        <Typography level="body-sm">
-          {getLocaleLabel(lang)}
-        </Typography>
+        <Typography level="body-sm">{getLocaleLabel(lang)}</Typography>
       </CommonGridBox>
 
       <LinePlaceholder spacing={1} />
@@ -124,14 +160,22 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       {tags.length > 0 && (
         <CommonBox>
           {tags.map((tag, index) => (
-            <Chip variant="outlined" color="success" key={`tag-${tag}-${index}`}>{tag}</Chip>
+            <Chip
+              variant="outlined"
+              color="success"
+              key={`tag-${tag}-${index}`}
+            >
+              {tag}
+            </Chip>
           ))}
         </CommonBox>
       )}
 
       <LinePlaceholder spacing={1} />
 
-      <Divider sx={{ my: 2 }}>{t('Settings that affect chat feedback')}</Divider>
+      <Divider sx={{ my: 2 }}>
+        {t('Settings that affect chat feedback')}
+      </Divider>
 
       <CommonGridBox>
         <Typography level="title-sm" textColor="neutral">
@@ -187,19 +231,27 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         />
       </FormControl>
 
-      <Divider sx={{ my: 2 }}>{t('The settings only apply to this chat')}</Divider>
+      <Divider sx={{ my: 2 }}>
+        {t('The settings only apply to this chat')}
+      </Divider>
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
         <Button
           disabled={saved || !session?.context?.chatId}
           size="sm"
           variant="outlined"
           color="success"
           startDecorator={saved ? <CheckRounded /> : <SaveAltRounded />}
-          onClick={() => onSave?.(userNickname, userProfile, characterNickname, about, () => setSaved(true))}
+          onClick={() =>
+            onSave?.(userNickname, userProfile, characterNickname, about, () =>
+              setSaved(true)
+            )
+          }
         >
           {t('button:Save')}
         </Button>

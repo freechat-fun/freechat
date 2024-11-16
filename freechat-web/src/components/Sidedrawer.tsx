@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { Drawer, DrawerProps, Sheet } from "@mui/joy";
+import { forwardRef } from 'react';
+import { Drawer, DrawerProps, Sheet } from '@mui/joy';
 
 const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
   const { children, ...others } = props;
@@ -20,20 +20,20 @@ const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
         },
       }}
       {...others}
+    >
+      <Sheet
+        sx={{
+          borderRadius: 'md',
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          height: '100%',
+          overflow: 'auto',
+        }}
       >
-        <Sheet
-          sx={{
-            borderRadius: 'md',
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            height: '100%',
-            overflow: 'auto',
-          }}
-        >
-          {children}
-        </Sheet>
+        {children}
+      </Sheet>
     </Drawer>
   );
 });

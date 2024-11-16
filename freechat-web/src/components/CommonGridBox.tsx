@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/joy";
+import { Box, styled } from '@mui/joy';
 
 const CommonGridBox = styled(Box)(({ theme }) => ({
   width: '100%',

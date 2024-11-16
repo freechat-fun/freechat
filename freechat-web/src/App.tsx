@@ -1,6 +1,11 @@
 import { RouterProvider } from 'react-router-dom';
 import { ContextsProvider } from './contexts';
-import { CssVarsProvider as JoyCssVarsProvider, GlobalStyles, CssBaseline, extendTheme as joyExtendTheme } from '@mui/joy';
+import {
+  CssVarsProvider as JoyCssVarsProvider,
+  GlobalStyles,
+  CssBaseline,
+  extendTheme as joyExtendTheme,
+} from '@mui/joy';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { UnauthorizedDialog, ErrorMessageSnackbar } from './components';
@@ -27,7 +32,10 @@ const materialTheme = materialExtendTheme();
 function App() {
   return (
     <ContextsProvider>
-      <MaterialCssVarsProvider defaultMode="dark" theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
+      <MaterialCssVarsProvider
+        defaultMode="dark"
+        theme={{ [MATERIAL_THEME_ID]: materialTheme }}
+      >
         <JoyCssVarsProvider defaultMode="dark" theme={joyTheme}>
           <CssBaseline enableColorScheme />
           <GlobalStyles
@@ -52,7 +60,7 @@ function App() {
         </JoyCssVarsProvider>
       </MaterialCssVarsProvider>
     </ContextsProvider>
-  )
+  );
 }
 
-export default App
+export default App;

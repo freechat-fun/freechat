@@ -1,12 +1,15 @@
-import { forwardRef } from "react";
-import { IconButton, Typography, TypographyProps } from "@mui/joy";
-import { UnfoldMoreRounded } from "@mui/icons-material";
+import { forwardRef } from 'react';
+import { IconButton, Typography, TypographyProps } from '@mui/joy';
+import { UnfoldMoreRounded } from '@mui/icons-material';
 
 type TruncatedTypographyProps = TypographyProps & {
   onExpand: () => void;
-}
+};
 
-const TruncatedTypography = forwardRef<HTMLDivElement, TruncatedTypographyProps>((props, ref) => {
+const TruncatedTypography = forwardRef<
+  HTMLDivElement,
+  TruncatedTypographyProps
+>((props, ref) => {
   const { sx, children, onExpand, ...others } = props;
 
   return (
@@ -19,7 +22,7 @@ const TruncatedTypography = forwardRef<HTMLDivElement, TruncatedTypographyProps>
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         width: '100%',
-        ...sx
+        ...sx,
       }}
       {...others}
     >
