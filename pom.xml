@@ -26,7 +26,7 @@
         <commons-compress.version>1.26.2</commons-compress.version>
         <commons-io.version>2.15.1</commons-io.version>
         <commons-lang3.version>3.14.0</commons-lang3.version>
-        <redisson.version>3.38.1</redisson.version>
+        <redisson.version>3.39.0</redisson.version>
         <objenesis.version>3.3</objenesis.version>
         <swagger-parser.version>2.1.20</swagger-parser.version>
         <langchain4j.version>0.36.0</langchain4j.version>
