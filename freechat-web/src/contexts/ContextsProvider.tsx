@@ -4,6 +4,7 @@ import {
   ErrorMessageBusProvider,
   FreeChatApiProvider,
 } from '.';
+import FrameScrollProvider from './FrameScrollProvider';
 
 const ContextsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   let apiServer = import.meta.env.VITE_API_SERVER;
@@ -19,7 +20,9 @@ const ContextsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <FreeChatApiProvider server={apiServer}>
       <MetaInfoProvider>
-        <ErrorMessageBusProvider>{children}</ErrorMessageBusProvider>
+        <ErrorMessageBusProvider>
+          <FrameScrollProvider>{children}</FrameScrollProvider>
+        </ErrorMessageBusProvider>
       </MetaInfoProvider>
     </FreeChatApiProvider>
   );

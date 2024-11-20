@@ -1,5 +1,4 @@
 import {
-  createRef,
   forwardRef,
   useCallback,
   useEffect,
@@ -10,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   useErrorMessageBusContext,
+  useFrameScrollContext,
   useFreeChatApiContext,
   useMetaInfoContext,
 } from '../../contexts';
@@ -34,8 +34,8 @@ import {
   Box,
   Card,
   Chip,
+  CircularProgress,
   Divider,
-  IconButton,
   Link,
   Stack,
   Typography,
@@ -43,19 +43,13 @@ import {
 } from '@mui/joy';
 import { SxProps } from '@mui/joy/styles/types';
 import {
-  KeyboardArrowLeftRounded,
-  KeyboardArrowRightRounded,
   ShareRounded,
   VisibilityRounded,
 } from '@mui/icons-material';
-import { Transition } from 'react-transition-group';
 import { getDateLabel } from '../../libs/date_utils';
 import {
   processBackground,
-  defaultTransitionInterval,
-  defaultTransitionSetting,
-  initTransitionSequence,
-  transitionStyles,
+  useDebounce,
 } from '../../libs/ui_utils';
 
 type RecordCardProps = {
@@ -214,6 +208,7 @@ export default function CharacterGallery({
   all = false,
 }: CharacterGalleryProps) {
   const navigate = useNavigate();
+  const { setFrameScrollHandler } = useFrameScrollContext();
   const { isAuthorized } = useMetaInfoContext();
   const { accountApi, characterApi, chatApi, interactiveStatisticsApi } =
     useFreeChatApiContext();
@@ -224,13 +219,12 @@ export default function CharacterGallery({
   const [records, setRecords] = useState<CharacterSummaryStatsDTO[]>([]);
   const [query, setQuery] = useState<CharacterQueryDTO>();
   const [page, setPage] = useState(0);
-  const [total, setTotal] = useState(0);
-
-  const [showCards, setShowCards] = useState(false);
-  const [showCardsFinish, setShowCardsFinish] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [finish, setFinish] = useState(false);
+  const [scrollRemainingHeight, setScrollRemainingHeight] = useState(200);
+  const debouncedScrollRemainingHeight = useDebounce<number>(scrollRemainingHeight, 200);
 
   const keyWord = useRef<string>();
-  const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   const defaultQuery = useCallback(() => {
     const newQuery = new CharacterQueryDTO();
@@ -247,15 +241,42 @@ export default function CharacterGallery({
   }, [all]);
 
   useEffect(() => {
-    return initTransitionSequence(setShowCards, setShowCardsFinish, pageSize);
+    const handleScroll = (frameRef: HTMLDivElement) => {
+      const { scrollTop, scrollHeight, clientHeight } = frameRef;
+      setScrollRemainingHeight(scrollHeight - scrollTop - clientHeight);
+    };
+
+    setFrameScrollHandler?.(() => handleScroll);
+
+    return () => {
+      setFrameScrollHandler?.(undefined);
+    };
   }, []);
 
   useEffect(() => {
+    const threshold = 200;
+    if (!loading && !finish && debouncedScrollRemainingHeight < threshold && debouncedScrollRemainingHeight >= 0) {
+      handleChangePage(page + 1);
+    }
+  }, [loading, finish, debouncedScrollRemainingHeight])
+
+  useEffect(() => {
+    if (finish) {
+      return;
+    }
     const currentQuery = query || defaultQuery();
+    setLoading(true);
     characterApi
-      ?.searchPublicCharacterSummary(query || defaultQuery())
+      ?.searchPublicCharacterSummary(currentQuery)
       .then((resp) => {
-        setRecords(resp);
+        if (resp.length == 0) {
+          setFinish(true);
+          return;
+        }
+        setRecords((prevRecords) => {
+          const delta = resp.filter((r0) => !prevRecords.map((pr) => pr.characterId).includes(r0.characterId));
+          return prevRecords.concat(delta);
+        });
         resp.forEach((r) => {
           r.characterUid &&
             interactiveStatisticsApi
@@ -272,14 +293,9 @@ export default function CharacterGallery({
               })
               .catch(handleError);
         });
-        if (currentQuery.pageNum === 0) {
-          characterApi
-            .countPublicCharacters(currentQuery)
-            .then(setTotal)
-            .catch(handleError);
-        }
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(() => setLoading(false));
   }, [
     characterApi,
     defaultQuery,
@@ -344,6 +360,9 @@ export default function CharacterGallery({
   }
 
   function handleChangePage(newPage: number): void {
+    if (finish) {
+      return;
+    }
     setPage(newPage);
     setQuery((prevQuery) => {
       if (!prevQuery) {
@@ -404,17 +423,6 @@ export default function CharacterGallery({
       });
   }
 
-  function getLabelDisplayedRowsTo(): number {
-    const currentCount = (page + 1) * pageSize;
-    return total === 0 && records.length > 0
-      ? currentCount
-      : Math.min(total, currentCount);
-  }
-
-  function labelDisplayedRows(from: number, to: number, count: number): string {
-    return `${from}-${to} of ${to <= count ? count : `more than ${to}`}`;
-  }
-
   function comparator(
     a: CharacterSummaryStatsDTO,
     b: CharacterSummaryStatsDTO
@@ -461,69 +469,19 @@ export default function CharacterGallery({
             }}
           >
             {records.sort(comparator).map((record, index) => (
-              <Transition
-                in={showCards}
-                timeout={index * defaultTransitionInterval}
-                unmountOnExit
-                key={`transition-${record.characterId || index}`}
-                nodeRef={cardRefs.current[index]}
-              >
-                {(state) => (
-                  <RecordCard
-                    key={`record-card-${record.characterId || index}`}
-                    keyWord={keyWord.current}
-                    ref={cardRefs.current[index]}
-                    record={record}
-                    onClick={() => handleView(record)}
-                    sx={{
-                      transition: defaultTransitionSetting,
-                      ...transitionStyles[state],
-                    }}
-                  />
-                )}
-              </Transition>
+              <RecordCard
+                key={`record-card-${record.characterId || index}`}
+                keyWord={keyWord.current}
+                record={record}
+                onClick={() => handleView(record)}
+              />
             ))}
-          </Box>
-          <Box
-            sx={{
-              opacity: showCardsFinish ? 1 : 0,
-              display: 'flex',
-              justifyContent: 'end',
-              alignItems: 'center',
-              gap: 1,
-              mt: 2,
-              mr: 2,
-            }}
-          >
-            <Chip variant="outlined" sx={{ mr: 1.5 }}>
-              {labelDisplayedRows(
-                records.length === 0 ? 0 : page * pageSize + 1,
-                getLabelDisplayedRowsTo(),
-                total
-              )}
-            </Chip>
-            <IconButton
-              size="sm"
-              color="neutral"
-              variant="outlined"
-              disabled={page === 0}
-              onClick={() => handleChangePage(page - 1)}
-              sx={{ bgcolor: 'background.surface' }}
-            >
-              <KeyboardArrowLeftRounded />
-            </IconButton>
-            <IconButton
-              size="sm"
-              color="neutral"
-              variant="outlined"
-              disabled={
-                records.length !== -1 ? (1 + page) * pageSize >= total : false
-              }
-              onClick={() => handleChangePage(page + 1)}
-              sx={{ bgcolor: 'background.surface' }}
-            >
-              <KeyboardArrowRightRounded />
-            </IconButton>
+
+            {loading && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                <CircularProgress />
+              </Box>
+            )}
           </Box>
         </Stack>
         <Divider

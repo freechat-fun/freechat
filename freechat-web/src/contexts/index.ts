@@ -5,3 +5,5 @@ export { default as MetaInfoProvider } from './MetaInfoProvider';
 export * from './MetaInfoProvider';
 export { default as ErrorMessageBusProvider } from './ErrorMessageBusProvider';
 export * from './ErrorMessageBusProvider';
+export { default as FrameScrollProvider } from './FrameScrollProvider';
+export * from './FrameScrollProvider';
