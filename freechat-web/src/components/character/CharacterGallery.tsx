@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -42,15 +36,9 @@ import {
   useColorScheme,
 } from '@mui/joy';
 import { SxProps } from '@mui/joy/styles/types';
-import {
-  ShareRounded,
-  VisibilityRounded,
-} from '@mui/icons-material';
+import { ShareRounded, VisibilityRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
-import {
-  processBackground,
-  useDebounce,
-} from '../../libs/ui_utils';
+import { processBackground, useDebounce } from '../../libs/ui_utils';
 
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO;
@@ -218,11 +206,14 @@ export default function CharacterGallery({
 
   const [records, setRecords] = useState<CharacterSummaryStatsDTO[]>([]);
   const [query, setQuery] = useState<CharacterQueryDTO>();
-  const [page, setPage] = useState(0);
+  const [, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finish, setFinish] = useState(false);
   const [scrollRemainingHeight, setScrollRemainingHeight] = useState(200);
-  const debouncedScrollRemainingHeight = useDebounce<number>(scrollRemainingHeight, 200);
+  const debouncedScrollRemainingHeight = useDebounce<number>(
+    scrollRemainingHeight,
+    200
+  );
 
   const keyWord = useRef<string>();
 
@@ -251,14 +242,43 @@ export default function CharacterGallery({
     return () => {
       setFrameScrollHandler?.(undefined);
     };
-  }, []);
+  }, [setFrameScrollHandler]);
 
   useEffect(() => {
     const threshold = 200;
-    if (!loading && !finish && debouncedScrollRemainingHeight < threshold && debouncedScrollRemainingHeight >= 0) {
-      handleChangePage(page + 1);
+    if (
+      !loading &&
+      !finish &&
+      debouncedScrollRemainingHeight < threshold &&
+      debouncedScrollRemainingHeight >= 0
+    ) {
+      if (finish) {
+        return;
+      }
+      setPage((prevPage) => {
+        const newPage = prevPage + 1;
+        setQuery((prevQuery) => {
+          if (!prevQuery) {
+            prevQuery = defaultQuery();
+          }
+          const newQuery = new CharacterQueryDTO();
+          newQuery.where = prevQuery.where;
+          if (!newQuery.where) {
+            newQuery.where = new CharacterQueryWhere();
+            newQuery.where.visibility = 'public';
+            if (!all) {
+              newQuery.where.highPriority = false;
+            }
+          }
+          newQuery.pageSize = prevQuery.pageSize || pageSize;
+          newQuery.orderBy = prevQuery.orderBy;
+          newQuery.pageNum = newPage;
+          return newQuery;
+        });
+        return newPage;
+      });
     }
-  }, [loading, finish, debouncedScrollRemainingHeight])
+  }, [loading, finish, debouncedScrollRemainingHeight, defaultQuery, all]);
 
   useEffect(() => {
     if (finish) {
@@ -274,7 +294,10 @@ export default function CharacterGallery({
           return;
         }
         setRecords((prevRecords) => {
-          const delta = resp.filter((r0) => !prevRecords.map((pr) => pr.characterId).includes(r0.characterId));
+          const delta = resp.filter(
+            (r0) =>
+              !prevRecords.map((pr) => pr.characterId).includes(r0.characterId)
+          );
           return prevRecords.concat(delta);
         });
         resp.forEach((r) => {
@@ -299,6 +322,7 @@ export default function CharacterGallery({
   }, [
     characterApi,
     defaultQuery,
+    finish,
     handleError,
     interactiveStatisticsApi,
     query,
@@ -357,31 +381,6 @@ export default function CharacterGallery({
 
     setPage(0);
     setQuery(newQuery);
-  }
-
-  function handleChangePage(newPage: number): void {
-    if (finish) {
-      return;
-    }
-    setPage(newPage);
-    setQuery((prevQuery) => {
-      if (!prevQuery) {
-        prevQuery = defaultQuery();
-      }
-      const newQuery = new CharacterQueryDTO();
-      newQuery.where = prevQuery.where;
-      if (!newQuery.where) {
-        newQuery.where = new CharacterQueryWhere();
-        newQuery.where.visibility = 'public';
-        if (!all) {
-          newQuery.where.highPriority = false;
-        }
-      }
-      newQuery.pageSize = prevQuery.pageSize || pageSize;
-      newQuery.orderBy = prevQuery.orderBy;
-      newQuery.pageNum = newPage;
-      return newQuery;
-    });
   }
 
   function handleView(record: CharacterSummaryStatsDTO): void {
@@ -477,11 +476,19 @@ export default function CharacterGallery({
               />
             ))}
 
-            {loading && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                <CircularProgress />
-              </Box>
-            )}
+            <Box
+              sx={{
+                display: loading ? 'flex' : 'none',
+                justifyContent: 'center',
+                mt: 2,
+                mb: {
+                  xs: 'calc(10px + var(--Footer-height))',
+                  sm: 2,
+                },
+              }}
+            >
+              <CircularProgress />
+            </Box>
           </Box>
         </Stack>
         <Divider

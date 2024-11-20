@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -42,10 +36,7 @@ import {
   Typography,
 } from '@mui/joy';
 import { SxProps } from '@mui/joy/styles/types';
-import {
-  ShareRounded,
-  VisibilityRounded,
-} from '@mui/icons-material';
+import { ShareRounded, VisibilityRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
 import { useDebounce } from '../../libs/ui_utils';
 
@@ -196,12 +187,14 @@ export default function PromptGallery() {
 
   const [records, setRecords] = useState<PromptSummaryStatsDTO[]>([]);
   const [query, setQuery] = useState<PromptQueryDTO>();
-  const [page, setPage] = useState(0);
+  const [, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finish, setFinish] = useState(false);
   const [scrollRemainingHeight, setScrollRemainingHeight] = useState(200);
-  const debouncedScrollRemainingHeight = useDebounce<number>(scrollRemainingHeight, 200);
-
+  const debouncedScrollRemainingHeight = useDebounce<number>(
+    scrollRemainingHeight,
+    200
+  );
 
   const keyWord = useRef<string>();
 
@@ -227,14 +220,40 @@ export default function PromptGallery() {
     return () => {
       setFrameScrollHandler?.(undefined);
     };
-  }, []);
+  }, [setFrameScrollHandler]);
 
   useEffect(() => {
     const threshold = 200;
-    if (!loading && !finish && debouncedScrollRemainingHeight < threshold && debouncedScrollRemainingHeight >= 0) {
-      handleChangePage(page + 1);
+    if (
+      !loading &&
+      !finish &&
+      debouncedScrollRemainingHeight < threshold &&
+      debouncedScrollRemainingHeight >= 0
+    ) {
+      if (finish) {
+        return;
+      }
+      setPage((prevPage) => {
+        const newPage = prevPage + 1;
+        setQuery((prevQuery) => {
+          if (!prevQuery) {
+            prevQuery = defaultQuery();
+          }
+          const newQuery = new PromptQueryDTO();
+          newQuery.where = prevQuery.where;
+          if (!newQuery.where) {
+            newQuery.where = new PromptQueryWhere();
+            newQuery.where.visibility = 'public';
+          }
+          newQuery.pageSize = prevQuery.pageSize || pageSize;
+          newQuery.orderBy = prevQuery.orderBy;
+          newQuery.pageNum = newPage;
+          return newQuery;
+        });
+        return newPage;
+      });
     }
-  }, [loading, finish, debouncedScrollRemainingHeight])
+  }, [loading, finish, debouncedScrollRemainingHeight, defaultQuery]);
 
   useEffect(() => {
     setLoading(true);
@@ -247,7 +266,9 @@ export default function PromptGallery() {
           return;
         }
         setRecords((prevRecords) => {
-          const delta = resp.filter((r0) => !prevRecords.map((pr) => pr.promptId).includes(r0.promptId));
+          const delta = resp.filter(
+            (r0) => !prevRecords.map((pr) => pr.promptId).includes(r0.promptId)
+          );
           return prevRecords.concat(delta);
         });
         resp.forEach((r) => {
@@ -324,21 +345,6 @@ export default function PromptGallery() {
     setQuery(newQuery);
   }
 
-  function handleChangePage(newPage: number): void {
-    if (finish) {
-      return;
-    }
-    setPage(newPage);
-    if (query) {
-      const newQuery = new PromptQueryDTO();
-      newQuery.where = query.where;
-      newQuery.pageSize = query.pageSize || pageSize;
-      newQuery.orderBy = query.orderBy;
-      newQuery.pageNum = newPage;
-      setQuery(newQuery);
-    }
-  }
-
   function handleView(record: PromptSummaryStatsDTO): void {
     if (!isAuthorized()) {
       navigate('/w/login');
@@ -400,11 +406,19 @@ export default function PromptGallery() {
               />
             ))}
 
-            {loading && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                <CircularProgress />
-              </Box>
-            )}
+            <Box
+              sx={{
+                display: loading ? 'flex' : 'none',
+                justifyContent: 'center',
+                mt: 2,
+                mb: {
+                  xs: 'calc(10px + var(--Footer-height))',
+                  sm: 2,
+                },
+              }}
+            >
+              <CircularProgress />
+            </Box>
           </Box>
         </Stack>
         <Divider

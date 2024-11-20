@@ -26,14 +26,13 @@ export default function SidebarFrame() {
     return () => {
       container?.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [frameScrollHandler]);
 
   const scrollToTop = () => {
     if (containerRef.current) {
       containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
-
 
   return (
     <>
@@ -55,25 +54,24 @@ export default function SidebarFrame() {
       >
         <Outlet />
       </Box>
-      {showScrollToTop && (
-        <IconButton
-          variant="solid"
-          size="lg"
-          sx={{
-            position: 'fixed',
-            bottom: {
-              xs: 'calc(10px + var(--Footer-height))',
-              sm: '40px',
-            },
-            right: '40px',
-            borderRadius: '50%',
-            zIndex: 1000,
-          }}
-          onClick={scrollToTop}
-        >
-          <KeyboardDoubleArrowUpRounded />
-        </IconButton>
-      )}
+      <IconButton
+        variant="solid"
+        size="lg"
+        sx={{
+          display: showScrollToTop ? 'block' : 'none',
+          position: 'fixed',
+          bottom: {
+            xs: 'calc(10px + var(--Footer-height))',
+            sm: '40px',
+          },
+          right: '40px',
+          borderRadius: '50%',
+          zIndex: 1000,
+        }}
+        onClick={scrollToTop}
+      >
+        <KeyboardDoubleArrowUpRounded />
+      </IconButton>
       <FooterSidebar />
     </>
   );

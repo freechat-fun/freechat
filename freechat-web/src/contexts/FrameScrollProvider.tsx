@@ -1,8 +1,18 @@
-import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
 
 type FrameScrollContextValue = {
   frameScrollHandler: ((frameRef: HTMLDivElement) => void) | undefined;
-  setFrameScrollHandler: Dispatch<SetStateAction<((frameRef: HTMLDivElement) => void) | undefined>>;
+  setFrameScrollHandler: Dispatch<
+    SetStateAction<((frameRef: HTMLDivElement) => void) | undefined>
+  >;
 };
 
 const doNothing: FrameScrollContextValue = {
@@ -13,7 +23,8 @@ const doNothing: FrameScrollContextValue = {
 const FrameScrollContext = createContext<FrameScrollContextValue>(doNothing);
 
 const FrameScrollProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [frameScrollHandler, setFrameScrollHandler] = useState<(frameRef: HTMLDivElement) => void>();
+  const [frameScrollHandler, setFrameScrollHandler] =
+    useState<(frameRef: HTMLDivElement) => void>();
 
   return (
     <FrameScrollContext.Provider
