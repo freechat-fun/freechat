@@ -1,16 +1,39 @@
-import { Box } from '@mui/joy';
+import { Box, IconButton } from '@mui/joy';
 import { Outlet } from 'react-router-dom';
 import { ThinSidebar, FooterSidebar } from '../components';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFrameScrollContext } from '../contexts';
+import { KeyboardDoubleArrowUpRounded } from '@mui/icons-material';
 
 export default function SidebarFrame() {
   const { frameScrollHandler } = useFrameScrollContext();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
-  function handleScroll(): void {
-    containerRef.current && frameScrollHandler?.(containerRef.current);
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        frameScrollHandler?.(containerRef.current);
+        const threshold = 800;
+        const scrollTop = containerRef.current.scrollTop;
+        setShowScrollToTop(scrollTop > threshold);
+      }
+    };
+
+    const container = containerRef.current;
+    container?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      container?.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
 
   return (
     <>
@@ -29,10 +52,28 @@ export default function SidebarFrame() {
             sm: '100dvh',
           },
         }}
-        onScroll={handleScroll}
       >
         <Outlet />
       </Box>
+      {showScrollToTop && (
+        <IconButton
+          variant="solid"
+          size="lg"
+          sx={{
+            position: 'fixed',
+            bottom: {
+              xs: 'calc(10px + var(--Footer-height))',
+              sm: '40px',
+            },
+            right: '40px',
+            borderRadius: '50%',
+            zIndex: 1000,
+          }}
+          onClick={scrollToTop}
+        >
+          <KeyboardDoubleArrowUpRounded />
+        </IconButton>
+      )}
       <FooterSidebar />
     </>
   );
