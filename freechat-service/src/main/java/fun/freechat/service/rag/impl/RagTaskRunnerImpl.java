@@ -12,6 +12,7 @@ import dev.langchain4j.model.Tokenizer;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
+import fun.freechat.annotation.Trace;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.RagTask;
 import fun.freechat.service.character.CharacterService;
@@ -65,6 +66,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
 
     @Override
     @Async("ragExecutor")
+    @Trace(ignoreReturn = true)
     public CompletableFuture<Void> start(RagTask task) {
         String memoryId = task.getCharacterUid();
         RLock lock = redisson.getLock(LOCK_PREFIX + memoryId);
