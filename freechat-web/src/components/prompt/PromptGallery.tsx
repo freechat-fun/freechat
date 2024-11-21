@@ -38,7 +38,6 @@ import {
 import { SxProps } from '@mui/joy/styles/types';
 import { ShareRounded, VisibilityRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
-import { useDebounce } from '../../libs/ui_utils';
 
 type RecordCardProps = {
   record: PromptSummaryStatsDTO;
@@ -191,10 +190,6 @@ export default function PromptGallery() {
   const [loading, setLoading] = useState(false);
   const [finish, setFinish] = useState(false);
   const [scrollRemainingHeight, setScrollRemainingHeight] = useState(200);
-  const debouncedScrollRemainingHeight = useDebounce<number>(
-    scrollRemainingHeight,
-    200
-  );
 
   const keyWord = useRef<string>();
 
@@ -227,8 +222,8 @@ export default function PromptGallery() {
     if (
       !loading &&
       !finish &&
-      debouncedScrollRemainingHeight < threshold &&
-      debouncedScrollRemainingHeight >= 0
+      scrollRemainingHeight < threshold &&
+      scrollRemainingHeight >= 0
     ) {
       if (finish) {
         return;
@@ -253,7 +248,7 @@ export default function PromptGallery() {
         return newPage;
       });
     }
-  }, [loading, finish, debouncedScrollRemainingHeight, defaultQuery]);
+  }, [loading, finish, scrollRemainingHeight, defaultQuery]);
 
   useEffect(() => {
     setLoading(true);

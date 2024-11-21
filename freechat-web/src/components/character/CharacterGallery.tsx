@@ -38,7 +38,7 @@ import {
 import { SxProps } from '@mui/joy/styles/types';
 import { ShareRounded, VisibilityRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
-import { processBackground, useDebounce } from '../../libs/ui_utils';
+import { processBackground } from '../../libs/ui_utils';
 
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO;
@@ -210,10 +210,6 @@ export default function CharacterGallery({
   const [loading, setLoading] = useState(false);
   const [finish, setFinish] = useState(false);
   const [scrollRemainingHeight, setScrollRemainingHeight] = useState(200);
-  const debouncedScrollRemainingHeight = useDebounce<number>(
-    scrollRemainingHeight,
-    200
-  );
 
   const keyWord = useRef<string>();
 
@@ -249,8 +245,8 @@ export default function CharacterGallery({
     if (
       !loading &&
       !finish &&
-      debouncedScrollRemainingHeight < threshold &&
-      debouncedScrollRemainingHeight >= 0
+      scrollRemainingHeight < threshold &&
+      scrollRemainingHeight >= 0
     ) {
       if (finish) {
         return;
@@ -278,7 +274,7 @@ export default function CharacterGallery({
         return newPage;
       });
     }
-  }, [loading, finish, debouncedScrollRemainingHeight, defaultQuery, all]);
+  }, [loading, finish, scrollRemainingHeight, defaultQuery, all]);
 
   useEffect(() => {
     if (finish) {
