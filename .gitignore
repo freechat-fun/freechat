@@ -27,7 +27,7 @@ nbdist/
 
 # Charts
 configs/helm/**/*.tgz
-configs/helm/**/*.lock
+configs/helm/**/requirements.lock
 
 # Logs
 logs
