@@ -33,7 +33,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.2.2"
+      "version": "11.3.0-pre"
     },
     {
       "type": "datasource",
@@ -143,7 +143,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -230,7 +230,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -297,7 +297,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -360,7 +360,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -408,6 +408,12 @@
       "id": 32,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -425,7 +431,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -489,6 +495,12 @@
       "id": 48,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -506,7 +518,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -633,6 +645,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -728,6 +741,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -808,7 +822,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -938,6 +952,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1033,6 +1048,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1153,6 +1169,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1160,7 +1177,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api.*\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [$__interval]\n) by () or vector(0)",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api.*\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [$__interval]\n) by ()",
           "legendFormat": "avg(ms)",
           "queryType": "range",
           "refId": "A"
@@ -1171,7 +1188,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api.*\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [$__interval]\n) by () or vector(0)",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api.*\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [$__interval]\n) by ()",
           "hide": false,
           "legendFormat": "max(ms)",
           "queryType": "range",
@@ -1196,8 +1213,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "super-light-green"
               }
             ]
           }
@@ -1245,7 +1261,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1347,8 +1363,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "super-light-green"
               },
               {
                 "color": "red",
@@ -1358,7 +1373,23 @@
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Success Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1379,6 +1410,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1443,17 +1475,28 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "super-light-green"
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qpm"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1461,7 +1504,7 @@
         "x": 12,
         "y": 21
       },
-      "id": 41,
+      "id": 51,
       "options": {
         "legend": {
           "calcs": [],
@@ -1474,6 +1517,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1481,13 +1525,13 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\"} [1m]\n        )\n    ) by () or vector(0)\n) * 60",
+          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\"} [1m]\n        )\n    ) by () or vector(0)\n) * 60",
           "legendFormat": "qpm",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Chat Requests Per Minute",
+      "title": "Build Knowledge Requests Per Minute",
       "type": "timeseries"
     },
     {
@@ -1538,8 +1582,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "super-light-green"
               },
               {
                 "color": "red",
@@ -1572,6 +1615,36 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -1594,6 +1667,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1670,8 +1744,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "super-light-green"
               },
               {
                 "color": "red",
@@ -1680,7 +1753,38 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
@@ -1701,6 +1805,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1744,8 +1849,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
-                "value": null
+                "color": "blue"
               }
             ]
           }
@@ -1775,6 +1879,476 @@
         "x": 0,
         "y": 29
       },
+      "id": 49,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0-pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\"}  [$__range]\n    )\n) by () or vector(0)",
+          "legendFormat": "Requests",
+          "queryType": "instant",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum (\n    count_over_time (\n        {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\", status!=\"F\"} [$__range]\n    )\n) by () or vector(0)",
+          "hide": true,
+          "legendFormat": "Succeed",
+          "queryType": "instant",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "$B / $A * 100",
+          "hide": true,
+          "refId": "C",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "C",
+          "hide": false,
+          "reducer": "last",
+          "refId": "D",
+          "settings": {
+            "mode": "replaceNN",
+            "replaceWithValue": 100
+          },
+          "type": "reduce"
+        }
+      ],
+      "title": "Build Knowledge Requests",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue"
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Success Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 29
+      },
+      "id": 50,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.0-pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\", status!=\"F\"} [1m]\n        )\n    ) by () or vector(0)\n) * 100 / \n(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\"} [1m]\n        )\n    ) by () or vector(0)\n)",
+          "legendFormat": "Success Rate",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Build Knowledge Request Success Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qpm"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 29
+      },
+      "id": 41,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.0-pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "(\n    sum (\n        rate (\n            {app=\"freechat-main\", level=\"ACCESS\", path=~\"/api/v2/chat/send/stream.*\", method=\"POST\"} [1m]\n        )\n    ) by () or vector(0)\n) * 60",
+          "legendFormat": "qpm",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Chat Requests Per Minute",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rt(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 29
+      },
+      "id": 52,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.0-pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "legendFormat": "avg(ms)",
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", class=\"f.f.s.r.i.RagTaskRunnerImpl\", method=\"start\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "hide": false,
+          "legendFormat": "max(ms)",
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "Build Knowledge Latency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-blue"
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "displayName",
+                "value": "Availability"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 37
+      },
       "id": 42,
       "options": {
         "colorMode": "value",
@@ -1793,7 +2367,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1895,20 +2469,35 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
-                "value": null
+                "color": "super-light-blue"
               }
             ]
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Success Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 29
+        "y": 37
       },
       "id": 43,
       "options": {
@@ -1923,6 +2512,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -1987,19 +2577,34 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
-                "value": null
+                "color": "super-light-blue"
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qpm"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 29
+        "y": 37
       },
       "id": 44,
       "options": {
@@ -2014,6 +2619,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2078,19 +2684,34 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
-                "value": null
+                "color": "super-light-blue"
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rt(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 29
+        "y": 37
       },
       "id": 14,
       "options": {
@@ -2105,6 +2726,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2113,9 +2735,21 @@
           },
           "editorMode": "code",
           "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveKnowledge\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
-          "legendFormat": "rt(ms)",
+          "legendFormat": "avg(ms)",
           "queryType": "range",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveKnowledge\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "hide": false,
+          "legendFormat": "max(ms)",
+          "queryType": "range",
+          "refId": "B"
         }
       ],
       "title": "Retrieve Knowledge Latency",
@@ -2136,8 +2770,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "light-purple",
-                "value": null
+                "color": "super-light-purple"
               }
             ]
           }
@@ -2165,7 +2798,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 37
+        "y": 45
       },
       "id": 45,
       "options": {
@@ -2185,7 +2818,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2287,20 +2920,35 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "purple",
-                "value": null
+                "color": "super-light-purple"
               }
             ]
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Success Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 37
+        "y": 45
       },
       "id": 46,
       "options": {
@@ -2315,6 +2963,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2379,19 +3028,34 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "purple",
-                "value": null
+                "color": "super-light-purple"
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "qpm"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 37
+        "y": 45
       },
       "id": 47,
       "options": {
@@ -2406,6 +3070,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2470,19 +3135,49 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "purple",
-                "value": null
+                "color": "super-light-purple"
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rt(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max(ms)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 37
+        "y": 45
       },
       "id": 17,
       "options": {
@@ -2497,6 +3192,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2505,9 +3201,21 @@
           },
           "editorMode": "code",
           "expr": "avg_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveLongTermMemory\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
-          "legendFormat": "rt(ms)",
+          "legendFormat": "avg(ms)",
           "queryType": "range",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time (\n    {app=\"freechat-main\", level=\"PERF\", method=\"retrieveLongTermMemory\"}\n    | pattern \"<_>|<_>::<_>|<_>|<rt>|<_>\"\n    | unwrap rt [1m]\n) by ()",
+          "hide": false,
+          "legendFormat": "max(ms)",
+          "queryType": "range",
+          "refId": "B"
         }
       ],
       "title": "Retrieve Memory Latency",
@@ -2528,8 +3236,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "yellow",
-                "value": null
+                "color": "yellow"
               }
             ]
           }
@@ -2540,11 +3247,17 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 53
       },
       "id": 33,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -2561,7 +3274,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2607,8 +3320,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "orange",
-                "value": null
+                "color": "orange"
               },
               {
                 "color": "red",
@@ -2623,11 +3335,17 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 53
       },
       "id": 34,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -2645,7 +3363,7 @@
         "text": {},
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.2",
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2682,7 +3400,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 60
       },
       "id": 19,
       "panels": [],
@@ -2737,8 +3455,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2753,7 +3470,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 53
+        "y": 61
       },
       "id": 24,
       "options": {
@@ -2768,6 +3485,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2832,8 +3550,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2848,7 +3565,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 61
       },
       "id": 25,
       "options": {
@@ -2863,6 +3580,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -2927,8 +3645,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2943,7 +3660,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 61
+        "y": 69
       },
       "id": 26,
       "options": {
@@ -2958,6 +3675,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -3022,8 +3740,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3038,7 +3755,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 61
+        "y": 69
       },
       "id": 27,
       "options": {
@@ -3053,6 +3770,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -3117,8 +3835,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3133,7 +3850,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 69
+        "y": 77
       },
       "id": 28,
       "options": {
@@ -3148,6 +3865,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -3212,8 +3930,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3228,7 +3945,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 69
+        "y": 77
       },
       "id": 29,
       "options": {
@@ -3243,6 +3960,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -3307,8 +4025,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3323,7 +4040,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 77
+        "y": 85
       },
       "id": 30,
       "options": {
@@ -3338,6 +4055,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -3402,8 +4120,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3418,7 +4135,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 77
+        "y": 85
       },
       "id": 31,
       "options": {
@@ -3433,6 +4150,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0-pre",
       "targets": [
         {
           "datasource": {
@@ -3451,7 +4169,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": []
@@ -3464,6 +4182,6 @@
   "timezone": "browser",
   "title": "Freechat",
   "uid": "cdu6mgjmttds0c",
-  "version": 5,
+  "version": 9,
   "weekStart": ""
 }
