@@ -1,6 +1,14 @@
 import { useRef, KeyboardEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, IconButton, Input, Stack, Textarea } from '@mui/joy';
+import {
+  Avatar,
+  Button,
+  IconButton,
+  Input,
+  Stack,
+  Textarea,
+  useTheme,
+} from '@mui/joy';
 import { AndroidRounded, SendRounded } from '@mui/icons-material';
 import { CharacterSummaryDTO, LlmResultDTO } from 'freechat-sdk';
 import { MessageAssistantsWindow } from '.';
@@ -10,6 +18,7 @@ import {
   useErrorMessageBusContext,
   useFreeChatApiContext,
 } from '../../contexts';
+import { isChatsPaneOpened } from '../../libs/chat_utils';
 
 export type MessageInputProps = {
   chatId?: string;
@@ -27,6 +36,7 @@ export default function MessageInput(props: MessageInputProps) {
     onSubmit,
     disabled = false,
   } = props;
+  const theme = useTheme();
   const { t } = useTranslation('chat');
   const { handleError } = useErrorMessageBusContext();
   const { serverUrl } = useFreeChatApiContext();
@@ -62,10 +72,10 @@ export default function MessageInput(props: MessageInputProps) {
   }, [chatId]);
 
   useEffect(() => {
-    if (!disabled) {
+    if (!disabled && !(theme.breakpoints.down('sm') && isChatsPaneOpened())) {
       textAreaRef.current?.focus();
     }
-  }, [disabled]);
+  }, [disabled, theme.breakpoints]);
 
   useEffect(() => {
     if (!assistantHelp || !chatId || !assistantUid) {

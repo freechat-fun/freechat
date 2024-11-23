@@ -36,6 +36,16 @@ export function toggleChatsPane(): void {
   }
 }
 
+export function isChatsPaneOpened(): boolean {
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    const slideIn = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue('--ChatsPane-slideIn');
+    return !!slideIn;
+  }
+  return false;
+}
+
 export function openChatInfoPane(): void {
   if (typeof window !== 'undefined') {
     document.body.style.overflow = 'hidden';
