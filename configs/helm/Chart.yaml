@@ -7,66 +7,66 @@ dependencies:
   - condition: mysql.enabled
     name: mysql
     repository: https://charts.bitnami.com/bitnami
+    version: 11.x.x
     tags:
       - backend
       - mysql
       - sql
       - database
-    version: 11.x.x
   - condition: redis.enabled
     name: redis
     repository: https://charts.bitnami.com/bitnami
+    version: 19.x.x
     tags:
       - backend
       - redis
       - keyvalue
       - database
-    version: 19.x.x
   - condition: milvus.enabled
     name: milvus
     repository: https://charts.bitnami.com/bitnami
+    version: 8.x.x
     tags:
       - backend
       - milvus
       - embedding
       - database
-    version: 8.x.x
   - condition: prometheus.enabled
     name: prometheus
     repository: https://charts.bitnami.com/bitnami
+    version: 1.x.x
     tags:
       - backend
       - prometheus
       - metrics
       - alert
-    version: 1.x.x
   - condition: grafana.enabled
     name: grafana
     repository: https://charts.bitnami.com/bitnami
+    version: 11.x.x
     tags:
       - backend
       - grafana
       - metrics
       - dashboard
-    version: 11.x.x
   - condition: grafana-loki.enabled
     name: grafana-loki
     repository: https://charts.bitnami.com/bitnami
+    version: 4.x.x
     tags:
       - backend
       - grafana-loki
       - metrics
       - log
       - alert
-    version: 4.x.x
   - condition: kube-state-metrics.enabled
     name: kube-state-metrics
     repository: https://charts.bitnami.com/bitnami
+    version: 4.x.x
     tags:
       - backend
       - kube-state-metrics
       - metrics
-    version: 4.x.x
 description: A Helm chart for freechat
 maintainers:
   - email: dev.freechat.fun@gmail.com
