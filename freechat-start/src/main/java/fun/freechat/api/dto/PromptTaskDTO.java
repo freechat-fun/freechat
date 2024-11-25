@@ -8,7 +8,10 @@ import fun.freechat.api.util.PromptUtils;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -19,8 +22,11 @@ import java.util.Map;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Prompt task information")
-@Slf4j
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Slf4j
 public class PromptTaskDTO {
     @Schema(description = "Prompt reference information", requiredMode = REQUIRED)
     private PromptRefDTO promptRef;

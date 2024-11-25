@@ -1,12 +1,18 @@
 package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 @Schema(description = "Prompt template content")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PromptTemplateDTO {
     @Schema(description = "Prompt text template content, choose one between this and chatTemplate field, priority: template > chatTemplate")
     private String template;

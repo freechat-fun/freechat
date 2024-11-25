@@ -6,7 +6,10 @@ import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import fun.freechat.service.util.PromptUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,6 +22,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Chat content")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatContentDTO {
     @Schema(description = "Chat type: text (default) | image")
     private String type;
@@ -42,19 +48,18 @@ public class ChatContentDTO {
 
     public static ChatContentDTO fromText(String text) {
         ensureNotNull(text, "content");
-        ChatContentDTO dto = new ChatContentDTO();
-        dto.setType(contentTypeText(TEXT));
-        dto.setContent(text);
-
-        return dto;
+        return ChatContentDTO.builder()
+                .type(contentTypeText(TEXT))
+                .content(text)
+                .build();
     }
 
     public static ChatContentDTO fromImage(String imageInfo) {
         ensureNotNull(imageInfo, "content");
-        ChatContentDTO content = new ChatContentDTO();
-        content.setType(contentTypeText(IMAGE));
-        content.setContent(imageInfo);
-        return content;
+        return ChatContentDTO.builder()
+                .type(contentTypeText(IMAGE))
+                .content(imageInfo)
+                .build();
     }
 
     public Content toContent() {

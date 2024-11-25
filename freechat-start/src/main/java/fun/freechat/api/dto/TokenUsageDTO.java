@@ -2,10 +2,16 @@ package fun.freechat.api.dto;
 
 import dev.langchain4j.model.output.TokenUsage;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Schema(description = "Token usage information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TokenUsageDTO {
     @Schema(description = "Input token count")
     private Integer inputTokenCount;
@@ -18,10 +24,11 @@ public class TokenUsageDTO {
         if (tokenUsage == null) {
             return null;
         }
-        TokenUsageDTO dto = new TokenUsageDTO();
-        dto.setInputTokenCount(tokenUsage.inputTokenCount());
-        dto.setOutputTokenCount(tokenUsage.outputTokenCount());
-        dto.setTotalTokenCount(tokenUsage.totalTokenCount());
-        return dto;
+
+        return TokenUsageDTO.builder()
+                .inputTokenCount(tokenUsage.inputTokenCount())
+                .outputTokenCount(tokenUsage.outputTokenCount())
+                .totalTokenCount(tokenUsage.totalTokenCount())
+                .build();
     }
 }

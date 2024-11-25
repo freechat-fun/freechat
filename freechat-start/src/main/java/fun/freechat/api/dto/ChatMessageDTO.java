@@ -1,26 +1,29 @@
 package fun.freechat.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.internal.ValidationUtils;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.api.util.ChatUtils.contentTypeOf;
 import static fun.freechat.service.enums.PromptRole.*;
 
 @Schema(description = "Chat message")
 @Data
-@JsonInclude(NON_NULL)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatMessageDTO {
     @Schema(description = "Chat role: system | assistant | user | tool_call | tool_result")
     private String role;
@@ -41,26 +44,22 @@ public class ChatMessageDTO {
                 .collect(Collectors.joining("\n"));
     }
 
-    private void setContentText(String text) {
-        setContents(List.of(ChatContentDTO.fromText(text)));
-    }
-
     public static ChatMessageDTO from(ChatMessage message) {
-        ChatMessageDTO dto = new ChatMessageDTO();
+        var builder = ChatMessageDTO.builder();
         switch (message.type()) {
             case SYSTEM -> {
-                dto.setRole(SYSTEM.text());
-                dto.setContentText(((SystemMessage) message).text());
+                builder.role(SYSTEM.text());
+                builder.contents(List.of(ChatContentDTO.fromText(((SystemMessage) message).text())));
             }
             case AI -> {
                 AiMessage aiMessage = (AiMessage) message;
-                dto.setContentText(aiMessage.text());
+                builder.contents(List.of(ChatContentDTO.fromText(aiMessage.text())));
                 List<ToolExecutionRequest> requests = aiMessage.toolExecutionRequests();
                 if (requests == null) {
-                    dto.setRole(ASSISTANT.text());
+                    builder.role(ASSISTANT.text());
                 } else {
-                    dto.setRole(FUNCTION_CALL.text());
-                    dto.setToolCalls(requests.stream()
+                    builder.role(FUNCTION_CALL.text());
+                    builder.toolCalls(requests.stream()
                             .map(ChatToolCallDTO::from)
                             .toList()
                     );
@@ -68,24 +67,25 @@ public class ChatMessageDTO {
             }
             case USER -> {
                 UserMessage userMessage = (UserMessage) message;
-                dto.setRole(USER.text());
-                dto.setName(userMessage.name());
-                dto.setContents(userMessage.contents().stream()
+                builder.role(USER.text());
+                builder.name(userMessage.name());
+                builder.contents(userMessage.contents().stream()
                         .map(ChatContentDTO::from)
                         .toList());
             }
             case TOOL_EXECUTION_RESULT -> {
                 ToolExecutionResultMessage resultMessage = (ToolExecutionResultMessage) message;
-                ChatToolCallDTO toolCall = new ChatToolCallDTO();
-                toolCall.setId(resultMessage.id());
-                toolCall.setName(resultMessage.toolName());
-                dto.setRole(FUNCTION_RESULT.text());
-                dto.setName((resultMessage).toolName());
-                dto.setContentText(resultMessage.text());
-                dto.setToolCalls(List.of(toolCall));
+                ChatToolCallDTO toolCall = ChatToolCallDTO.builder()
+                        .id(resultMessage.id())
+                        .name(resultMessage.toolName())
+                        .build();
+                builder.role(FUNCTION_RESULT.text());
+                builder.name((resultMessage).toolName());
+                builder.contents(List.of(ChatContentDTO.fromText(resultMessage.text())));
+                builder.toolCalls(List.of(toolCall));
             }
         }
-        return dto;
+        return builder.build();
     }
 
     public ChatMessage toChatMessage() {

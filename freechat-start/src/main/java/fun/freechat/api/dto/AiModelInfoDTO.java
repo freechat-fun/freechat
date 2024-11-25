@@ -3,8 +3,7 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
@@ -12,6 +11,9 @@ import java.util.regex.Pattern;
 
 @Schema(description = "Model information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(callSuper = true)
 public class AiModelInfoDTO extends TraceableDTO {
     @Schema(description = "Model identifier: [provider]name")
@@ -36,20 +38,22 @@ public class AiModelInfoDTO extends TraceableDTO {
     }
 
     public static AiModelInfoDTO from(String modelId) {
-        AiModelInfoDTO dto =  new AiModelInfoDTO();
-        dto.setModelId(modelId);
-        dto.setDescription("Unknown model.");
         Matcher m = MODEL_ID_PATTERN.matcher(modelId);
-        if (m.matches()) {
-            dto.setProvider(m.group(1));
-            dto.setName(m.group(2));
-            dto.setType(StringUtils.isBlank(m.group(4)) ? "text2chat" : m.group(4));
-        } else {
-            dto.setProvider("unknown");
-            dto.setName("unknown");
-            dto.setType("unknown");
-        }
-        return dto;
+        return m.matches() ?
+                AiModelInfoDTO.builder()
+                        .modelId(modelId)
+                        .description("Unknown model.")
+                        .provider(m.group(1))
+                        .name(m.group(2))
+                        .type(StringUtils.isBlank(m.group(4)) ? "text2chat" : m.group(4))
+                        .build() :
+                AiModelInfoDTO.builder()
+                        .modelId(modelId)
+                        .description("Unknown model.")
+                        .provider("unknown")
+                        .name("unknown")
+                        .type("unknown")
+                        .build();
     }
 
     public AiModelInfo toAiModelInfo() {

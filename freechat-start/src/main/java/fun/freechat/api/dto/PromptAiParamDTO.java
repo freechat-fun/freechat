@@ -1,7 +1,10 @@
 package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -9,6 +12,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Prompt AI service information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PromptAiParamDTO {
     @Schema(description = "Complete input content, priority: prompt > promptTemplate > promptRef")
     private String prompt;

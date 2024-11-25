@@ -6,13 +6,19 @@ import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.RagTask;
 import fun.freechat.service.enums.SourceType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Schema(description = "RAG task information")
 @Slf4j
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RagTaskDTO {
     @Schema(description = "Source type: file (default) | url")
     private String sourceType;

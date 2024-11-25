@@ -33,11 +33,12 @@ public class AiApiKeyIT extends AbstractIntegrationTest {
         apiToken = userAndToken.getRight();
         apiKeys = new LinkedList<>();
         for (int i = 0; i < maxCount * 2; ++i) {
-            AiApiKeyCreateDTO apiKey = new AiApiKeyCreateDTO();
-            apiKey.setName("test_api_key_" + i);
-            apiKey.setProvider(ModelProvider.DASH_SCOPE.text());
-            apiKey.setToken("FakeToken" + i);
-            apiKey.setEnabled(i % 2 == 0);
+            AiApiKeyCreateDTO apiKey = AiApiKeyCreateDTO.builder()
+                    .name("test_api_key_" + i)
+                    .provider(ModelProvider.DASH_SCOPE.text())
+                    .token("FakeToken" + i)
+                    .enabled(i % 2 == 0)
+                    .build();
             apiKeys.add(apiKey);
         }
         TestCommonUtils.waitAWhile();

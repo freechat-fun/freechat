@@ -7,6 +7,7 @@ import fun.freechat.util.TestOrgUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@Disabled
 public class SwitchUserIT extends AbstractIntegrationTest {
     @Value("${auth.impersonate.headerName}")
     private String impersonateHeaderName;

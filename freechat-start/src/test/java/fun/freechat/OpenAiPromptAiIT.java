@@ -86,25 +86,24 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     private PromptAiParamDTO createRequest(String modelId) {
-        PromptAiParamDTO aiForPrompt = new PromptAiParamDTO();
-        Map<String, Object> param = parametersFor(modelId);
-        aiForPrompt.setParams(param);
-        return aiForPrompt;
+        return PromptAiParamDTO.builder()
+                .params(parametersFor(modelId))
+                .build();
     }
 
     private ChatMessageDTO userMessage(String content) {
-        ChatMessageDTO message = new ChatMessageDTO();
-        message.setRole("user");
-        message.setName("Rose");
-        message.setContents(List.of(ChatContentDTO.fromText(content)));
-        return message;
+        return ChatMessageDTO.builder()
+                .role("user")
+                .name("Rose")
+                .contents(List.of(ChatContentDTO.fromText(content)))
+                .build();
     }
 
     private ChatMessageDTO aiMessage(String content) {
-        ChatMessageDTO message = new ChatMessageDTO();
-        message.setRole("assistant");
-        message.setContents(List.of(ChatContentDTO.fromText(content)));
-        return message;
+        return ChatMessageDTO.builder()
+                .role("assistant")
+                .contents(List.of(ChatContentDTO.fromText(content)))
+                .build();
     }
 
     @Test
@@ -146,10 +145,11 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     @ParameterizedTest
     @MethodSource
     public void should_send_prompt_template(String template, String format, Map<String, Object> variables) {
-        PromptTemplateDTO promptTemplate = new PromptTemplateDTO();
-        promptTemplate.setTemplate(template);
-        promptTemplate.setFormat(format);
-        promptTemplate.setVariables(variables);
+        PromptTemplateDTO promptTemplate = PromptTemplateDTO.builder()
+                .template(template)
+                .format(format)
+                .variables(variables)
+                .build();
 
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKey", apiKey());
@@ -178,9 +178,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
 
     @Test
     public void should_send_prompt_reference() {
-        PromptRefDTO promptRef = new PromptRefDTO();
-        promptRef.setPromptId(promptId);
-        promptRef.setDraft(false);
+        PromptRefDTO promptRef = PromptRefDTO.builder().promptId(promptId).draft(false).build();
 
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKey", apiKey());
@@ -248,8 +246,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
                 .exchange()
                 .expectStatus().isForbidden();
 
-        PromptRefDTO promptRef = new PromptRefDTO();
-        promptRef.setPromptId(1000L);
+        PromptRefDTO promptRef = PromptRefDTO.builder().promptId(1000L).build();
         aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPromptRef(promptRef);
@@ -272,19 +269,21 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
 
         ChatMessageDTO messageToBeSent = userMessage("Nice to meet you {name}! How old are you?");
 
-        ChatPromptContentDTO promptContent = new ChatPromptContentDTO();
-        promptContent.setSystem(system);
-        promptContent.setMessageToSend(messageToBeSent);
-        promptContent.setMessages(messages);
+        ChatPromptContentDTO promptContent = ChatPromptContentDTO.builder()
+                .system(system)
+                .messageToSend(messageToBeSent)
+                .messages(messages)
+                .build();
 
         Map<String, Object> variables = new HashMap<>(2);
         variables.put("name", "Jack");
         variables.put("age", "18");
 
-        PromptTemplateDTO promptTemplate = new PromptTemplateDTO();
-        promptTemplate.setFormat(PromptFormat.F_STRING.text());
-        promptTemplate.setVariables(variables);
-        promptTemplate.setChatTemplate(promptContent);
+        PromptTemplateDTO promptTemplate = PromptTemplateDTO.builder()
+                .format(PromptFormat.F_STRING.text())
+                .variables(variables)
+                .chatTemplate(promptContent)
+                .build();
 
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKey", apiKey());

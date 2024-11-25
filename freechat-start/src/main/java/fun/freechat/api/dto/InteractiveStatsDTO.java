@@ -3,13 +3,14 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.InteractiveStats;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.Date;
 
 @Schema(description = "Interactive statistics information")
 @Data
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(callSuper = true)
 public class InteractiveStatsDTO extends TraceableDTO {
     @Schema(description = "Creation time")
@@ -41,7 +42,7 @@ public class InteractiveStatsDTO extends TraceableDTO {
 
     public static InteractiveStatsDTO from(InteractiveStats stats) {
         if (stats == null) {
-            return new InteractiveStatsDTO();
+            return InteractiveStatsDTO.builder().build();
         }
         return CommonUtils.convert(stats, InteractiveStatsDTO.class);
     }

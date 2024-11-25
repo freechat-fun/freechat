@@ -5,7 +5,7 @@ import lombok.Data;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
-@Schema(description = "模型调用参数")
+@Schema(description = "Model parameters")
 @Data
 public class AiModelParamDTO {
     @Schema(description = "API-KEY, higher priority than apiKeyName. Either apiKey or apiKeyName must be specified.")

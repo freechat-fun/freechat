@@ -1,20 +1,22 @@
 package fun.freechat.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.langchain4j.data.message.UserMessage;
 import fun.freechat.service.prompt.ChatPromptContent;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
 @Schema(description = "Prompt chat template content")
 @Data
-@JsonInclude(NON_NULL)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatPromptContentDTO {
     @Schema(description = "Prompt system template")
     private String system;
@@ -28,15 +30,15 @@ public class ChatPromptContentDTO {
             return null;
         }
 
-        ChatPromptContentDTO dto = new ChatPromptContentDTO();
-        dto.setSystem(chatPrompt.getSystem());
-        dto.setMessageToSend(ChatMessageDTO.from(chatPrompt.getMessageToSend()));
+        var builder = ChatPromptContentDTO.builder();
+        builder.system(chatPrompt.getSystem());
+        builder.messageToSend(ChatMessageDTO.from(chatPrompt.getMessageToSend()));
         if (CollectionUtils.isNotEmpty(chatPrompt.getMessages())) {
-            dto.setMessages(chatPrompt.getMessages().stream()
+            builder.messages(chatPrompt.getMessages().stream()
                     .map(ChatMessageDTO::from)
                     .toList());
         }
-        return dto;
+        return builder.build();
     }
 
     public ChatPromptContent toChatPromptContent() {

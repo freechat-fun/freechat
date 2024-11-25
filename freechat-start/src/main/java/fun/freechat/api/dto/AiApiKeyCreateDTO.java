@@ -1,12 +1,18 @@
 package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Request data for adding new model credential information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AiApiKeyCreateDTO {
     @Schema(description = "Credential name", requiredMode = REQUIRED)
     private String name;

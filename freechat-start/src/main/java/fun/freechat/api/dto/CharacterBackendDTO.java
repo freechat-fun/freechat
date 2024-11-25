@@ -3,11 +3,17 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterBackend;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 @Schema(description = "Character backend information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CharacterBackendDTO {
     @Schema(description = "Whether it is the default backend")
     private Boolean isDefault;

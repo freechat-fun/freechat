@@ -1,7 +1,10 @@
 package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -9,6 +12,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Prompt reference information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PromptRefDTO {
     @Schema(description = "Prompt identifier", requiredMode = REQUIRED)
     private Long promptId;
@@ -18,10 +24,10 @@ public class PromptRefDTO {
     private Boolean draft;
 
     public static PromptRefDTO from(Long promptId, Map<String, Object> variables, Boolean draft) {
-        PromptRefDTO dto = new PromptRefDTO();
-        dto.setPromptId(promptId);
-        dto.setVariables(variables);
-        dto.setDraft(draft);
-        return dto;
+        return PromptRefDTO.builder()
+                .promptId(promptId)
+                .variables(variables)
+                .draft(draft)
+                .build();
     }
 }

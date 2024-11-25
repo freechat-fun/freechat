@@ -115,14 +115,15 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
     }
 
     private void should_create_rag_task() {
-        RagTaskDTO fileRequest = new RagTaskDTO();
-        if (isFile) {
-            fileRequest.setSource(getKeyFromUrl(url));
-            fileRequest.setSourceType(SourceType.FILE.text());
-        } else {
-            fileRequest.setSource(url);
-            fileRequest.setSourceType(SourceType.URL.text());
-        }
+        RagTaskDTO fileRequest = isFile ?
+                RagTaskDTO.builder()
+                        .source(getKeyFromUrl(url))
+                        .sourceType(SourceType.FILE.text())
+                        .build() :
+                RagTaskDTO.builder()
+                        .source(url)
+                        .sourceType(SourceType.URL.text())
+                        .build();
 
         taskId = testClient.post().uri("/api/v2/rag/task/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + userToken)
@@ -220,9 +221,10 @@ public class OpenAiRagIT extends AbstractIntegrationTest {
 
         ChatContentDTO content = ChatContentDTO.fromText(question);
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId1)
                 .accept(MediaType.APPLICATION_JSON)

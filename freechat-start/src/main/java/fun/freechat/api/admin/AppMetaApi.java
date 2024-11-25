@@ -29,24 +29,16 @@ public class AppMetaApi {
     )
     @GetMapping("/meta")
     public AppMetaDTO meta() {
-        String name = AppMetaUtils.getName();
-        String version = AppMetaUtils.getVersion();
-        String buildTimestamp = AppMetaUtils.getBuildTimestamp();
         String buildNumber = AppMetaUtils.getBuildNumber().substring(0, BUILD_NUM_LEN);
-        String commitUrl = AppMetaUtils.getScmUrl() + "/commit/" + buildNumber;
-        String releaseNoteUrl = AppMetaUtils.getUrl();
-        String runningEnv = AppMetaUtils.getRunningEnv();
-
-        AppMetaDTO info = new AppMetaDTO();
-        info.setName(name);
-        info.setVersion(version);
-        info.setBuildTimestamp(buildTimestamp);
-        info.setBuildNumber(buildNumber);
-        info.setCommitUrl(commitUrl);
-        info.setReleaseNoteUrl(releaseNoteUrl);
-        info.setRunningEnv(runningEnv);
-
-        return info;
+        return AppMetaDTO.builder()
+                .name(AppMetaUtils.getName())
+                .version(AppMetaUtils.getVersion())
+                .buildTimestamp(AppMetaUtils.getBuildTimestamp())
+                .buildNumber(buildNumber)
+                .commitUrl(AppMetaUtils.getScmUrl() + "/commit/" + buildNumber)
+                .releaseNoteUrl(AppMetaUtils.getUrl())
+                .runningEnv(AppMetaUtils.getRunningEnv())
+                .build();
     }
 
     @Operation(

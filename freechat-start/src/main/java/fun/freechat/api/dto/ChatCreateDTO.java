@@ -1,12 +1,18 @@
 package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Request data for starting a chat session")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class ChatCreateDTO {
     @Schema(description = "User nickname for this session")
     private String userNickname;

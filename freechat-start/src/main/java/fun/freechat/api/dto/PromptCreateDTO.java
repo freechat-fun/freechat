@@ -10,7 +10,10 @@ import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Request data for creating new prompt information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PromptCreateDTO {
     @Schema(description = "Referenced prompt")
     private String parentUid;

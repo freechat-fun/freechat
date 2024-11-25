@@ -6,7 +6,10 @@ import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.enums.Visibility;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +21,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "Request data for creating new character information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CharacterCreateDTO {
     @Schema(description = "Referenced character")
     private String parentUid;

@@ -2,11 +2,13 @@ package fun.freechat.api.dto;
 
 import fun.freechat.service.chat.MemoryUsage;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @Schema(description = "Memory usage information")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(callSuper = true)
 public class MemoryUsageDTO extends TraceableDTO {
     @Schema(description = "Messages usage information")
@@ -15,15 +17,11 @@ public class MemoryUsageDTO extends TraceableDTO {
     private TokenUsageDTO tokenUsage;
 
     public static MemoryUsageDTO from(MemoryUsage memoryUsage) {
-        MemoryUsageDTO dto = new MemoryUsageDTO();
-
-        if (memoryUsage == null) {
-            return dto;
-        }
-
-        dto.setMessageUsage(memoryUsage.messageUsage());
-        dto.setTokenUsage(TokenUsageDTO.from(memoryUsage.tokenUsage()));
-
-        return dto;
+        var builder = MemoryUsageDTO.builder();
+        return memoryUsage == null ?
+                builder.build() :
+                builder.messageUsage(memoryUsage.messageUsage())
+                        .tokenUsage(TokenUsageDTO.from(memoryUsage.tokenUsage()))
+                        .build();
     }
 }

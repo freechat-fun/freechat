@@ -1,16 +1,18 @@
 package fun.freechat.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import fun.freechat.model.InteractiveStats;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Triple;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Schema(description = "Character identifier and version information")
 @Data
-@JsonInclude(NON_NULL)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CharacterItemForNameDTO {
     @Schema(description = "characterId")
     private Long characterId;
@@ -20,17 +22,17 @@ public class CharacterItemForNameDTO {
     InteractiveStatsDTO stats;
 
     public static CharacterItemForNameDTO from(Triple<Long, Integer, InteractiveStats> infoItem) {
-        CharacterItemForNameDTO dto = new CharacterItemForNameDTO();
-        dto.setCharacterId(infoItem.getLeft());
-        dto.setVersion(infoItem.getMiddle());
         InteractiveStatsDTO stats = InteractiveStatsDTO.from(infoItem.getRight());
         stats.setRequestId(null);
         stats.setGmtCreate(null);
         stats.setGmtModified(null);
         stats.setReferType(null);
         stats.setReferId(null);
-        dto.setStats(stats);
 
-        return dto;
+        return CharacterItemForNameDTO.builder()
+                .characterId(infoItem.getLeft())
+                .version(infoItem.getMiddle())
+                .stats(stats)
+                .build();
     }
 }

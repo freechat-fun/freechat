@@ -128,15 +128,15 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_create_prompt() {
-        ChatPromptContentDTO prompt = new ChatPromptContentDTO();
-        prompt.setSystem(SYSTEM_PROMPT);
+        ChatPromptContentDTO prompt = ChatPromptContentDTO.builder().system(SYSTEM_PROMPT).build();
 
-        PromptCreateDTO dto = new PromptCreateDTO();
-        dto.setName("test_character_prompt");
-        dto.setFormat(PromptFormat.MUSTACHE.text());
-        dto.setLang("en");
-        dto.setVisibility(Visibility.PUBLIC.text());
-        dto.setChatTemplate(prompt);
+        PromptCreateDTO dto = PromptCreateDTO.builder()
+                .name("test_character_prompt")
+                .format(PromptFormat.MUSTACHE.text())
+                .lang("en")
+                .visibility(Visibility.PUBLIC.text())
+                .chatTemplate(prompt)
+                .build();
 
         promptId = testClient.post().uri("/api/v2/prompt")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -152,14 +152,13 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_create_prompt_task() {
-        PromptRefDTO promptRef = new PromptRefDTO();
-        promptRef.setPromptId(promptId);
-
-        PromptTaskDTO dto = new PromptTaskDTO();
-        dto.setApiKeyName(apiKeyName());
-        dto.setModelId(modelId());
-        dto.setParams(parametersFor(modelId()));
-        dto.setPromptRef(promptRef);
+        PromptRefDTO promptRef = PromptRefDTO.builder().promptId(promptId).build();
+        PromptTaskDTO dto = PromptTaskDTO.builder()
+                .apiKeyName(apiKeyName())
+                .modelId(modelId())
+                .params(parametersFor(modelId()))
+                .promptRef(promptRef)
+                .build();
 
         promptTaskId = testClient.post().uri("/api/v2/prompt/task")
                 .accept(MediaType.TEXT_PLAIN)
@@ -175,14 +174,15 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_create_character() {
-        CharacterCreateDTO dto = new CharacterCreateDTO();
-        dto.setName(CHARACTER_NICKNAME + "-bot");
-        dto.setGender(CHARACTER_GENDER);
-        dto.setProfile(CHARACTER_PROFILE);
-        dto.setChatStyle(CHARACTER_CHAT_STYLE);
-        dto.setChatExample(CHARACTER_CHAT_EXAMPLE);
-        dto.setGreeting(CHARACTER_GREETING);
-        dto.setVisibility(Visibility.PRIVATE.text());
+        CharacterCreateDTO dto = CharacterCreateDTO.builder()
+                .name(CHARACTER_NICKNAME + "-bot")
+                .gender(CHARACTER_GENDER)
+                .profile(CHARACTER_PROFILE)
+                .chatStyle(CHARACTER_CHAT_STYLE)
+                .chatExample(CHARACTER_CHAT_EXAMPLE)
+                .greeting(CHARACTER_GREETING)
+                .visibility(Visibility.PRIVATE.text())
+                .build();
 
         Long characterId = testClient.post().uri("/api/v2/character")
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -215,13 +215,14 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_create_character_backend() {
-        CharacterBackendDTO dto = new CharacterBackendDTO();
-        dto.setChatPromptTaskId(promptTaskId);
-        dto.setIsDefault(true);
-        dto.setMessageWindowSize(5);
-        dto.setLongTermMemoryWindowSize(0);
-        dto.setInitQuota(2L);
-        dto.setQuotaType(QuotaType.MESSAGES.text());
+        CharacterBackendDTO dto = CharacterBackendDTO.builder()
+                .chatPromptTaskId(promptTaskId)
+                .isDefault(true)
+                .messageWindowSize(5)
+                .longTermMemoryWindowSize(0)
+                .initQuota(2L)
+                .quotaType(QuotaType.MESSAGES.text())
+                .build();
 
         backendId = testClient.post().uri("/api/v2/character/backend/" + characterUid)
                 .accept(MediaType.TEXT_PLAIN)
@@ -237,8 +238,9 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_update_character_backend() {
-        CharacterBackendDTO dto = new CharacterBackendDTO();
-        dto.setLongTermMemoryWindowSize(2);
+        CharacterBackendDTO dto = CharacterBackendDTO.builder()
+                .longTermMemoryWindowSize(2)
+                .build();
 
         testClient.put().uri("/api/v2/character/backend/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
@@ -250,12 +252,13 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_failed_to_create_chat() {
-        ChatCreateDTO dto = new ChatCreateDTO();
-        dto.setBackendId(backendId);
-        dto.setCharacterNickname(CHARACTER_NICKNAME);
-        dto.setUserNickname(USER_NICKNAME);
-        dto.setUserProfile(USER_PROFILE);
-        dto.setCharacterUid(characterUid);
+        ChatCreateDTO dto = ChatCreateDTO.builder()
+                .backendId(backendId)
+                .characterNickname(CHARACTER_NICKNAME)
+                .userNickname(USER_NICKNAME)
+                .userProfile(USER_PROFILE)
+                .characterUid(characterUid)
+                .build();
 
         testClient.post().uri("/api/v2/chat")
                 .accept(MediaType.TEXT_PLAIN)
@@ -266,12 +269,13 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_create_chat() {
-        ChatCreateDTO dto = new ChatCreateDTO();
-        dto.setBackendId(backendId);
-        dto.setCharacterNickname(CHARACTER_NICKNAME);
-        dto.setUserNickname(USER_NICKNAME);
-        dto.setUserProfile(USER_PROFILE);
-        dto.setCharacterUid(characterUid);
+        ChatCreateDTO dto = ChatCreateDTO.builder()
+                .backendId(backendId)
+                .characterNickname(CHARACTER_NICKNAME)
+                .userNickname(USER_NICKNAME)
+                .userProfile(USER_PROFILE)
+                .characterUid(characterUid)
+                .build();
 
         chatId = testClient.post().uri("/api/v2/chat")
                 .accept(MediaType.TEXT_PLAIN)
@@ -289,9 +293,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     private void should_send_message() {
         ChatContentDTO content = ChatContentDTO.fromText("My wife's name is Lily! Did you married? If you had a wife, what's her name?");
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -346,9 +351,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     private void should_failed_to_send_message_by_quota() {
         ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -366,7 +372,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_resend_message_with_specialized_api_key() {
-        ChatUpdateDTO updateDto = new ChatUpdateDTO();
+        ChatUpdateDTO updateDto = ChatUpdateDTO.builder().build();
         updateDto.setApiKeyValue(apiKey());
 
         testClient.put().uri("/api/v2/chat/" + chatId)
@@ -380,9 +386,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
 
         ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -404,9 +411,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     private void should_send_message_without_long_term_memory() {
         ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         LlmResultDTO result = testClient.post().uri("/api/v2/chat/send/" + chatId)
                 .accept(MediaType.APPLICATION_JSON)
@@ -431,9 +439,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     private void should_send_message_without_long_term_memory_in_streaming_mode() throws ExecutionException, InterruptedException, TimeoutException {
         ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();
@@ -469,9 +478,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
 
         ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
 
-        ChatMessageDTO dto = new ChatMessageDTO();
-        dto.setContents(List.of(content));
-        dto.setRole("user");
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
 
         StringBuilder answerBuilder = new StringBuilder();
         CompletableFuture<String> futureAnswer = new CompletableFuture<>();

@@ -256,22 +256,30 @@ public class ApiSwitchUserFilter extends SwitchUserFilter {
         String platform = userInfo.getRight();
 
         User user = sysUserService.loadByUsernameAndPlatform(username, platform);
-        if (user == null && enableAutoRegister) {
-            user = new User()
-                    .withUsername(username)
-                    .withPassword(IdUtils.newId())
-                    .withPlatform(platform);
-            if (!sysUserService.create(user)) {
+        if (user == null) {
+            if (enableAutoRegister) {
+                user = new User()
+                        .withUsername(username)
+                        .withPassword(IdUtils.newId())
+                        .withPlatform(platform);
+                if (!sysUserService.create(user)) {
+                    return null;
+                }
+            } else {
                 return null;
             }
         }
         User owner = sysUserService.loadByUsernameAndPlatform(ownerUsername, platform);
-        if (owner == null && enableAutoRegister) {
-            owner = new User()
-                    .withUsername(ownerUsername)
-                    .withPassword(IdUtils.newId())
-                    .withPlatform(platform);
-            if (!sysUserService.create(owner)) {
+        if (owner == null) {
+            if (enableAutoRegister) {
+                owner = new User()
+                        .withUsername(ownerUsername)
+                        .withPassword(IdUtils.newId())
+                        .withPlatform(platform);
+                if (!sysUserService.create(owner)) {
+                    return null;
+                }
+            } else {
                 return null;
             }
         }
