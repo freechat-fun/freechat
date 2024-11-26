@@ -20,13 +20,13 @@ import dev.langchain4j.rag.content.injector.DefaultContentInjector;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.rag.query.Query;
-import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer;
 import dev.langchain4j.rag.query.transformer.QueryTransformer;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.langchain4j.rag.query.transformer.DelegatedQueryTransformer;
+import fun.freechat.langchain4j.rag.query.transformer.NamedCompressingQueryTransformer;
 import fun.freechat.model.*;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
@@ -85,19 +85,6 @@ import static java.util.stream.Collectors.toList;
 public class ChatSessionServiceImpl implements ChatSessionService {
     final static String CACHE_KEY_PREFIX = "ChatSessionService_";
     final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
-    final static PromptTemplate DEFAULT_PROMPT_TEMPLATE_ZH = PromptTemplate.from(
-            """
-                    阅读并理解用户与AI之间的对话。\
-                    然后，分析用户的新查询。从对话和新查询中识别所有相关的细节、术语和上下文。\
-                    将这个查询重新表述为一个清晰、简洁、自包含的格式，适合信息检索。
-
-                    对话：
-                    {{chatMemory}}
-
-                    用户查询：{{query}}
-
-                    非常重要的是，你只提供重新表述过的查询，不要添加其他任何内容！查询前不要加任何东西！"""
-    );
 
     @Value("${chat.rag.maxResults}")
     private Integer maxResults;
@@ -322,11 +309,12 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             EmbeddingStore<TextSegment> embeddingStore =
                     embeddingStoreService.of(characterUid, documentTypeForLang(lang));
 
-            QueryTransformer origQueryTransformer = CompressingQueryTransformer.builder()
+            QueryTransformer origQueryTransformer = NamedCompressingQueryTransformer.extraBuilder()
+                    .aiName(characterNickname)
                     .chatLanguageModel(chatModel)
                     .promptTemplate("zh".equalsIgnoreCase(lang) ?
-                            DEFAULT_PROMPT_TEMPLATE_ZH :
-                            CompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE)
+                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH :
+                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
                     .build();
 
             QueryTransformer delegatedQueryTransformer = DelegatedQueryTransformer.builder()
@@ -569,11 +557,12 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             EmbeddingStore<TextSegment> embeddingStore =
                     embeddingStoreService.of(characterUid, documentTypeForLang(lang));
 
-            QueryTransformer origQueryTransformer = CompressingQueryTransformer.builder()
+            QueryTransformer origQueryTransformer = NamedCompressingQueryTransformer.extraBuilder()
+                    .aiName(characterNickname)
                     .chatLanguageModel(chatModel)
                     .promptTemplate("zh".equalsIgnoreCase(lang) ?
-                            DEFAULT_PROMPT_TEMPLATE_ZH :
-                            CompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE)
+                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH :
+                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
                     .build();
 
             QueryTransformer delegatedQueryTransformer = DelegatedQueryTransformer.builder()
