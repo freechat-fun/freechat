@@ -23,8 +23,8 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 @Slf4j
 @SuppressWarnings("unused")
 public class InMemoryEmbeddingStoreServiceImpl<TextSegment> implements EmbeddingStoreService<TextSegment> {
-    private final static String CACHE_KEY_PREFIX = "InMemoryEmbeddingStoreService_";
-    private final static String BASE_PATH = "embedding";
+    private static final String CACHE_KEY_PREFIX = "InMemoryEmbeddingStoreService_";
+    private static final String BASE_PATH = "embedding";
 
     @Autowired
     @Qualifier(IN_PROCESS_LONG_CACHE_MANAGER)

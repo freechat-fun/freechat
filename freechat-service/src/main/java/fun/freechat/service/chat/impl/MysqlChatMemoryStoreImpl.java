@@ -40,9 +40,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Slf4j
 @SuppressWarnings("unused")
 public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
-    private final static String CACHE_KEY_PREFIX = "MysqlChatMemoryStoreImpl_";
-    final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
-    private final static String SYSTEM_MESSAGE_HOME = "private/messages/";
+    private static final String CACHE_KEY_PREFIX = "MysqlChatMemoryStoreImpl_";
+    private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
+    private static final String SYSTEM_MESSAGE_HOME = "private/messages/";
 
     @Value("${chat.memory.maxMessageSize:1000}")
     private Integer maxSize;

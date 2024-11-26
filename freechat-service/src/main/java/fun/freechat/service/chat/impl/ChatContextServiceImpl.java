@@ -32,9 +32,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.select;
 @Slf4j
 @SuppressWarnings("unused")
 public class ChatContextServiceImpl implements ChatContextService {
-    private final static String CACHE_KEY_PREFIX = "ChatContextService_";
-    private final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
-    private final static String SESSION_CACHE_KEY_PREFIX = "ChatSessionService_";
+    private static final String CACHE_KEY_PREFIX = "ChatContextService_";
+    private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
+    private static final String SESSION_CACHE_KEY_PREFIX = "ChatSessionService_";
 
     @Autowired
     private ChatContextMapper chatContextMapper;

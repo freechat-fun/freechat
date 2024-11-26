@@ -83,8 +83,8 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @SuppressWarnings("unused")
 public class ChatSessionServiceImpl implements ChatSessionService {
-    final static String CACHE_KEY_PREFIX = "ChatSessionService_";
-    final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
+    static final String CACHE_KEY_PREFIX = "ChatSessionService_";
+    static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Value("${chat.rag.maxResults}")
     private Integer maxResults;

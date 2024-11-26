@@ -49,12 +49,12 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Slf4j
 @SuppressWarnings({"unused", "rawtypes"})
 public class CharacterServiceImpl implements CharacterService {
-    final static String CACHE_KEY_PREFIX = "CharacterService_";
-    final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_character_' + ";
-    final static String BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_backend_' + ";
-    final static String DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_default_backend_' + ";
-    final static String BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX = CACHE_KEY_PREFIX + "_backend_character_id_";
-    final static String BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX = "'" + BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + "' + ";
+    private static final String CACHE_KEY_PREFIX = "CharacterService_";
+    private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_character_' + ";
+    private static final String BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_backend_' + ";
+    private static final String DEFAULT_BACKEND_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "_default_backend_' + ";
+    private static final String BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX = CACHE_KEY_PREFIX + "_backend_character_id_";
+    private static final String BACKEND_CHARACTER_ID_CACHE_KEY_SPEL_PREFIX = "'" + BACKEND_CHARACTER_ID_CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;

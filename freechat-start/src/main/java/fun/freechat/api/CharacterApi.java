@@ -1304,7 +1304,7 @@ public class CharacterApi {
 
     @Data
     static public class ManifestInfo {
-        static final String API_VERSION = "v1";
+        private static final String API_VERSION = "v1";
 
         private String apiVersion;
         private String appVersion;

@@ -32,7 +32,7 @@ public class DaGraphTest {
         C50,
     }
 
-    private final static String EXPECTED_DOT = """
+    private static final String EXPECTED_DOT = """
             digraph{
             C01 -> C02;
             C00 -> C10;

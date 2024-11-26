@@ -14,8 +14,8 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 @Service
 @SuppressWarnings("unused")
 public class PluginFetchServiceImpl implements PluginFetchService {
-    final static String MANIFEST_CACHE_KEY = "'PluginFetchServiceImpl_manifest_' + #p0.pluginId";
-    final static String API_DOCS_CACHE_KEY = "'PluginFetchServiceImpl_apiDocs_' + #p0.pluginId";
+    private static final String MANIFEST_CACHE_KEY = "'PluginFetchServiceImpl_manifest_' + #p0.pluginId";
+    private static final String API_DOCS_CACHE_KEY = "'PluginFetchServiceImpl_apiDocs_' + #p0.pluginId";
 
     private String fetch(String url) {
         String info = HttpUtils.get(url);

@@ -41,8 +41,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Slf4j
 @SuppressWarnings({"unused", "rawtypes"})
 public class PluginServiceImpl implements PluginService {
-    private final static String CACHE_KEY_PREFIX = "PluginService_";
-    private final static String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
+    private static final String CACHE_KEY_PREFIX = "PluginService_";
+    private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;

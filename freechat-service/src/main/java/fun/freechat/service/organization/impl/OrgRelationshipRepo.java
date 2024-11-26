@@ -25,9 +25,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 @Slf4j
 @SuppressWarnings("unused")
 public class OrgRelationshipRepo {
-    private final static String CACHE_KEY_PREFIX = "OrgRelationshipRepo_";
-    private final static String OWNERS_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "owners_' + ";
-    private final static String SUBORDINATES_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "subordinates_' + ";
+    private static final String CACHE_KEY_PREFIX = "OrgRelationshipRepo_";
+    private static final String OWNERS_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "owners_' + ";
+    private static final String SUBORDINATES_CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "subordinates_' + ";
 
     @Autowired
     private OrgRelationshipMapper orgRelationshipMapper;

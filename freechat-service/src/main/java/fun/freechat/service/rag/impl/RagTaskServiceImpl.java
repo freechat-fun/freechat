@@ -32,7 +32,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.select;
 @Slf4j
 @SuppressWarnings("unused")
 public class RagTaskServiceImpl implements RagTaskService {
-    final static String CACHE_KEY_PREFIX = "RagTaskService_";
+    private static final String CACHE_KEY_PREFIX = "RagTaskService_";
 
     @Autowired
     private RagTaskMapper ragTaskMapper;
