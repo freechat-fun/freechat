@@ -48,7 +48,7 @@ cid=$(docker run --name ${MYSQL_NAME} -d -p 3309:3306 \
   -v ${MYSQL_DATA}/conf.d:/etc/mysql/conf.d \
   -e MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD} \
   --health-cmd='mysqladmin ping --silent' \
-  bitnami/mysql:${MYSQL_TAG} || exit -1)
+  mysql:${MYSQL_TAG} || exit -1)
 
 if [[ -z "${cid}" ]]; then
     echo "Create MySQL failed!"
