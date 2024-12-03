@@ -3,6 +3,7 @@ package fun.freechat;
 import fun.freechat.api.dto.*;
 import fun.freechat.service.enums.*;
 import fun.freechat.util.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
@@ -655,8 +656,12 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         System.out.println("Messages history:");
         messages.stream()
                 .map(ChatMessageRecordDTO::getMessage)
-                .map(message ->
-                    "[" + message.getRole().toUpperCase() + "]: " + message.getContents().getFirst().getContent())
+                .map(message -> {
+                    String role = message.getRole().toUpperCase();
+                    String content = CollectionUtils.isNotEmpty(message.getContents()) ?
+                            message.getContents().getFirst().getContent() : "<no content>";
+                    return "[" + message.getRole().toUpperCase() + "]: " + content;
+                })
                 .forEach(System.out::println);
     }
 

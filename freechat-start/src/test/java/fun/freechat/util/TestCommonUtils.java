@@ -39,7 +39,7 @@ public class TestCommonUtils {
         Map<String, Object> param = new HashMap<>();
         param.put("topP", 0.8d);
         param.put("seed", new Random().nextInt(0, Integer.MAX_VALUE));
-        param.put("maxTokens", 100);
+        param.put("maxTokens", 1000);
         param.put("temperature", 0.7d);
         param.put("modelId", modelId);
         param.put("baseUrl", baseUrlFor(modelId));

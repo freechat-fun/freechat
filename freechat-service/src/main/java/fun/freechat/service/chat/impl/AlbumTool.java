@@ -67,7 +67,7 @@ public class AlbumTool {
                     .toList();
 
             if (pictures.isEmpty()) {
-                return StringUtils.isNotBlank(characterAvatar) ? characterAvatar : characterPicture;
+                return defaultPicture(characterAvatar, characterPicture);
             }
 
             String pictureUrl = null;
@@ -89,7 +89,7 @@ public class AlbumTool {
             }
 
             if (StringUtils.isBlank(pictureUrl)) {
-                return StringUtils.isNotBlank(characterAvatar) ? characterAvatar : characterPicture;
+                return defaultPicture(characterAvatar, characterPicture);
             }
 
             if (StringUtils.isNotBlank(picturePath)) {
@@ -105,7 +105,13 @@ public class AlbumTool {
             log.warn("Failed to list album of character: {} ({})",
                     characterInfo.getName(),
                     characterInfo.getCharacterUid());
-            return StringUtils.isNotBlank(characterAvatar) ? characterAvatar : characterPicture;
+            return defaultPicture(characterAvatar, characterPicture);
         }
+    }
+
+    private static String defaultPicture(String avatar, String picture) {
+        return StringUtils.isNotBlank(avatar) ?
+                avatar :
+                StringUtils.isNotBlank(picture) ? picture : DEFAULT_PICTURE;
     }
 }

@@ -53,7 +53,9 @@ public class ChatMessageDTO {
             }
             case AI -> {
                 AiMessage aiMessage = (AiMessage) message;
-                builder.contents(List.of(ChatContentDTO.fromText(aiMessage.text())));
+                if (StringUtils.isNotBlank(aiMessage.text())) {
+                    builder.contents(List.of(ChatContentDTO.fromText(aiMessage.text())));
+                }
                 List<ToolExecutionRequest> requests = aiMessage.toolExecutionRequests();
                 if (requests == null) {
                     builder.role(ASSISTANT.text());
