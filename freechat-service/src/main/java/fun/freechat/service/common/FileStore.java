@@ -51,6 +51,7 @@ public interface FileStore extends Closeable {
         delete(sourcePath);
     }
     long getLastModifiedTime(String path) throws IOException;
+    void setLastModifiedTime(String path, long lastModifiedTime) throws IOException;
     default String getShareUrl(String path, int expireTimeInSecond) {
         return null;
     }

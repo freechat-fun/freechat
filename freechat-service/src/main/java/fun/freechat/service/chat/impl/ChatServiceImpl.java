@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
+import static fun.freechat.service.chat.ChatService.asMemoryId;
 import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
@@ -156,8 +157,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String getDefaultChatId(User user, Long characterId) {
-        String characterUid = characterService.getUid(characterId);
+    public String getDefaultChatId(User user, String characterUid) {
         CharacterBackend defaultBackend = characterService.getDefaultBackend(characterUid);
         return defaultBackend != null ?
                 chatContextService.getIdByBackend(user.getUserId(), defaultBackend.getBackendId()) : null;

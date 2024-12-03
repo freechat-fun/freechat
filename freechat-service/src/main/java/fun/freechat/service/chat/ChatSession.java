@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ public class ChatSession {
                        Map<String, Object> variables,
                        RetrievalAugmentor retriever,
                        RetrievalAugmentor longTermMemoryRetriever,
-                       MemoryUsage memoryUsage) {
+                       MemoryUsage memoryUsage,
+                       List<Object> objectsWithTools) {
         aiServiceContext = new AiServiceContext(null);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
@@ -66,10 +68,14 @@ public class ChatSession {
         this.variables = variables;
         this.longTermMemoryRetriever = longTermMemoryRetriever;
         this.memoryUsage = memoryUsage;
+
+        if (CollectionUtils.isNotEmpty(objectsWithTools)) {
+            this.tools(objectsWithTools);
+        }
     }
 
     @SuppressWarnings("unused")
-    public ChatSession tools(List<Object> objectsWithTools) {
+    public void tools(List<Object> objectsWithTools) {
         if (aiServiceContext.toolSpecifications == null) {
             aiServiceContext.toolSpecifications = new ArrayList<>();
         }
@@ -90,8 +96,6 @@ public class ChatSession {
                 }
             }
         }
-
-        return this;
     }
 
     public ChatLanguageModel getChatModel() {

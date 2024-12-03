@@ -229,6 +229,7 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `proactive_chat_waiting_time` int NOT NULL DEFAULT 0 COMMENT 'minutes, 0 for disabled',
   `init_quota` bigint unsigned DEFAULT 0,
   `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
+  `enable_album_tool` tinyint NOT NULL DEFAULT 0,
   PRIMARY KEY (`backend_id`),
   INDEX `idx_character` (`character_uid`),
   INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`)

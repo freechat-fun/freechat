@@ -435,12 +435,6 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 return acc;
             }
 
-            if (type == AI && isInputMessageType(lastType) && ((AiMessage) record.getMessage()).text().isBlank()) {
-                // Invalid ai message. Ignore the ai message and the corresponding user message.
-                acc.removeLast();
-                return acc;
-            }
-
             if (isInputMessageType(type) == isInputMessageType(lastType)) {
                 // The list must be user/tool_execution_result and ai alternating messages.
                 // Use the newest one when duplicated.

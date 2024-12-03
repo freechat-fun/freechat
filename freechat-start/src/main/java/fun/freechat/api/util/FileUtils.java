@@ -16,11 +16,11 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.List;
 
+import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+
 @Slf4j
 public class FileUtils {
-    public static final String PUBLIC_DIR = "public/";
-    public static final String PRIVATE_DIR = "private/";
-
     private static String filenameFor(MultipartFile file) {
         String filteredOriginFilename = SecurityUtils.filterPath(file.getOriginalFilename());
         return StringUtils.isBlank(filteredOriginFilename) ?

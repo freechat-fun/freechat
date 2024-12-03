@@ -1,7 +1,6 @@
 package fun.freechat.model;
 
 import jakarta.annotation.Generated;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -50,6 +49,9 @@ public class CharacterBackend implements Serializable {
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String quotaType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private Byte enableAlbumTool;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String moderationParams;
@@ -298,6 +300,22 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public Byte getEnableAlbumTool() {
+        return enableAlbumTool;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withEnableAlbumTool(Byte enableAlbumTool) {
+        this.setEnableAlbumTool(enableAlbumTool);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setEnableAlbumTool(Byte enableAlbumTool) {
+        this.enableAlbumTool = enableAlbumTool;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModerationParams() {
         return moderationParams;
     }
@@ -341,6 +359,7 @@ public class CharacterBackend implements Serializable {
             && (this.getProactiveChatWaitingTime() == null ? other.getProactiveChatWaitingTime() == null : this.getProactiveChatWaitingTime().equals(other.getProactiveChatWaitingTime()))
             && (this.getInitQuota() == null ? other.getInitQuota() == null : this.getInitQuota().equals(other.getInitQuota()))
             && (this.getQuotaType() == null ? other.getQuotaType() == null : this.getQuotaType().equals(other.getQuotaType()))
+            && (this.getEnableAlbumTool() == null ? other.getEnableAlbumTool() == null : this.getEnableAlbumTool().equals(other.getEnableAlbumTool()))
             && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
     }
 
@@ -364,6 +383,7 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getProactiveChatWaitingTime() == null) ? 0 : getProactiveChatWaitingTime().hashCode());
         result = prime * result + ((getInitQuota() == null) ? 0 : getInitQuota().hashCode());
         result = prime * result + ((getQuotaType() == null) ? 0 : getQuotaType().hashCode());
+        result = prime * result + ((getEnableAlbumTool() == null) ? 0 : getEnableAlbumTool().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
         return result;
     }
@@ -390,6 +410,7 @@ public class CharacterBackend implements Serializable {
         sb.append(", proactiveChatWaitingTime=").append(proactiveChatWaitingTime);
         sb.append(", initQuota=").append(initQuota);
         sb.append(", quotaType=").append(quotaType);
+        sb.append(", enableAlbumTool=").append(enableAlbumTool);
         sb.append(", moderationParams=").append(moderationParams);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

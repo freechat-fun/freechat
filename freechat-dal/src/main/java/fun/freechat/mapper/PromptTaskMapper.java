@@ -1,8 +1,18 @@
 package fun.freechat.mapper;
 
+import static fun.freechat.mapper.PromptTaskDynamicSqlSupport.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.model.PromptTask;
 import jakarta.annotation.Generated;
-import org.apache.ibatis.annotations.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
@@ -13,14 +23,11 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import static fun.freechat.mapper.PromptTaskDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface PromptTaskMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PromptTask>, CommonUpdateMapper {

@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import static fun.freechat.util.ByteUtils.isTrue;
+
 @Schema(description = "Character backend information")
 @Data
 @NoArgsConstructor
@@ -37,6 +39,8 @@ public class CharacterBackendDTO {
     private Long initQuota;
     @Schema(description = "Quota type: messages | tokens | none (not limited)")
     private String quotaType;
+    @Schema(description = "Enable character album image retrieval tool")
+    private Boolean enableAlbumTool;
 
     public CharacterBackend toCharacterBackend(String characterUid) {
         if (StringUtils.isBlank(characterUid)) {
@@ -48,6 +52,13 @@ public class CharacterBackendDTO {
         } else if (getIsDefault() == Boolean.FALSE) {
             backend.setIsDefault((byte) 0);
         }
+
+        if (getEnableAlbumTool() == Boolean.TRUE) {
+            backend.setEnableAlbumTool((byte) 1);
+        } else if (getEnableAlbumTool() == Boolean.FALSE) {
+            backend.setEnableAlbumTool((byte) 0);
+        }
+
         return backend;
     }
 
@@ -56,7 +67,7 @@ public class CharacterBackendDTO {
             return null;
         }
         CharacterBackendDTO dto = CommonUtils.convert(backend, CharacterBackendDTO.class);
-        dto.setIsDefault(backend.getIsDefault() == (byte) 1);
+        dto.setIsDefault(isTrue(backend.getIsDefault()));
         return dto;
     }
 }

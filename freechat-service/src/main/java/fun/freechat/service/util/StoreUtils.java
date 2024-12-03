@@ -15,6 +15,8 @@ import java.util.Base64;
 @Component
 @Slf4j
 public class StoreUtils implements ApplicationContextAware {
+    public static final String PUBLIC_DIR = "public/";
+    public static final String PRIVATE_DIR = "private/";
     private static final String DEFAULT_FILE_STORE_NAME = "localFileStore";
 
     private static FileStore localFileStore;

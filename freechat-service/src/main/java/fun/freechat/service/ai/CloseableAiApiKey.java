@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
+import static fun.freechat.util.ByteUtils.isTrue;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 public class CloseableAiApiKey implements Closeable {
@@ -28,7 +29,7 @@ public class CloseableAiApiKey implements Closeable {
         this.aiApiKeyMapper = aiApiKeyMapper;
         this.id = id;
         this.token = aiApiKeyMapper.selectByPrimaryKey(id)
-                .filter(apiKey -> apiKey.getEnabled() == (byte)1)
+                .filter(apiKey -> isTrue(apiKey.getEnabled()))
                 .map(AiApiKey::getToken)
                 .map(encryptionService::decrypt)
                 .orElse("");
@@ -46,7 +47,7 @@ public class CloseableAiApiKey implements Closeable {
                         c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(userId))
                                 .and(AiApiKeyDynamicSqlSupport.name, isEqualTo(name)))
                 .stream()
-                .filter(apiKey -> apiKey.getEnabled() == (byte)1)
+                .filter(apiKey -> isTrue(apiKey.getEnabled()))
                 .findAny()
                 .orElse(null);
         this.aiApiKeyMapper = aiApiKeyMapper;

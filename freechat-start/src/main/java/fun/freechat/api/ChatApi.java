@@ -235,10 +235,10 @@ public class ChatApi {
             summary = "Get Default Chat",
             description = "Get default chat id of current user and the character."
     )
-    @GetMapping(value = "/{characterId}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/{characterUid}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getDefault(
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive Long characterId) {
-        return chatService.getDefaultChatId(AccountUtils.currentUser(), characterId);
+            @Parameter(description = "Character uid") @PathVariable("characterUid") @NotBlank String characterUid) {
+        return chatService.getDefaultChatId(AccountUtils.currentUser(), characterUid);
     }
 
     @Operation(

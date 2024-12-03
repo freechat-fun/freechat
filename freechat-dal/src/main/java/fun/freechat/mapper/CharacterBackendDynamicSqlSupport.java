@@ -1,11 +1,10 @@
 package fun.freechat.mapper;
 
 import jakarta.annotation.Generated;
-import org.mybatis.dynamic.sql.AliasableSqlTable;
-import org.mybatis.dynamic.sql.SqlColumn;
-
 import java.sql.JDBCType;
 import java.util.Date;
+import org.mybatis.dynamic.sql.AliasableSqlTable;
+import org.mybatis.dynamic.sql.SqlColumn;
 
 public final class CharacterBackendDynamicSqlSupport {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -57,6 +56,9 @@ public final class CharacterBackendDynamicSqlSupport {
     public static final SqlColumn<String> quotaType = characterBackend.quotaType;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Byte> enableAlbumTool = characterBackend.enableAlbumTool;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> moderationParams = characterBackend.moderationParams;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -90,6 +92,8 @@ public final class CharacterBackendDynamicSqlSupport {
         public final SqlColumn<Long> initQuota = column("init_quota", JDBCType.BIGINT);
 
         public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR);
+
+        public final SqlColumn<Byte> enableAlbumTool = column("enable_album_tool", JDBCType.TINYINT);
 
         public final SqlColumn<String> moderationParams = column("moderation_params", JDBCType.LONGVARCHAR);
 

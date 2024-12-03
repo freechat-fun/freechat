@@ -77,6 +77,7 @@ import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
 import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+import static fun.freechat.util.ByteUtils.isTrue;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -86,6 +87,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     static final String CACHE_KEY_PREFIX = "ChatSessionService_";
     static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
 
+    @Value("${app.homeUrl}")
+    private String homeUrl;
     @Value("${chat.rag.maxResults}")
     private Integer maxResults;
     @Value("${chat.rag.minScore}")
@@ -222,7 +225,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
             PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
-            String promptTemplate = promptTask.getDraft() == (byte) 1 && StringUtils.isNotBlank(promptInfo.getDraft()) ?
+            String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft()) ?
                     PromptUtils.getDraftTemplate(promptInfo.getDraft()) :
                     promptInfo.getTemplate();
             ChatPromptContent prompt = InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
@@ -369,6 +372,23 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             MemoryUsage memoryUsage = chatMemoryService.usage(chatId);
 
+            // tools
+            List<Object> tools = new LinkedList<>();
+            if (isTrue(backend.getEnableAlbumTool())) {
+                tools.add("zh".equalsIgnoreCase(lang) ?
+                        ZhAlbumTool.builder()
+                                .homeUrl(homeUrl)
+                                .characterService(characterService)
+                                .chatContextService(chatContextService)
+                                .build() :
+                        EnAlbumTool.builder()
+                                .homeUrl(homeUrl)
+                                .characterService(characterService)
+                                .chatContextService(chatContextService)
+                                .build()
+                );
+            }
+
             return ChatSession.builder()
                     .chatModel(chatModel)
                     .streamingChatModel(streamingChatModel)
@@ -380,6 +400,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     .retriever(retrievalAugmentor)
                     .longTermMemoryRetriever(longTermMemoryRetrievalAugmentor)
                     .memoryUsage(memoryUsage)
+                    .objectsWithTools(tools)
                     .build();
         } catch (NotImplementedException | NoSuchElementException | NullPointerException | IOException e) {
             log.warn("Failed to build chat session of {}", chatId, e);
@@ -487,7 +508,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
             PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
-            String promptTemplate = promptTask.getDraft() == (byte) 1 && StringUtils.isNotBlank(promptInfo.getDraft()) ?
+            String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft()) ?
                     PromptUtils.getDraftTemplate(promptInfo.getDraft()) :
                     promptInfo.getTemplate();
             ChatPromptContent prompt = InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);

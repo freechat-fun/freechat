@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import static fun.freechat.api.util.ConfigUtils.*;
-import static fun.freechat.api.util.FileUtils.PUBLIC_DIR;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 
 @Controller
 @Tag(name = "Account")

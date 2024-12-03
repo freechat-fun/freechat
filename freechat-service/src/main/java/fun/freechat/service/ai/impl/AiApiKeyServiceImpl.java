@@ -10,6 +10,7 @@ import fun.freechat.service.ai.MaskedAiApiKey;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.enums.ModelProvider;
+import fun.freechat.util.ByteUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,7 @@ public class AiApiKeyServiceImpl implements AiApiKeyService {
                         c.where(AiApiKeyDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
                                 .and(AiApiKeyDynamicSqlSupport.provider, isEqualTo(provider.text())))
                 .stream()
-                .filter(aiApiKey -> aiApiKey.getEnabled() == (byte)1)
+                .filter(aiApiKey -> ByteUtils.isTrue(aiApiKey.getEnabled()))
                 .map(aiApiKey -> MaskedAiApiKey.of(aiApiKey, encryptionService))
                 .toList();
     }

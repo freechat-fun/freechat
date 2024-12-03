@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
+import static fun.freechat.util.ByteUtils.isTrue;
+
 @Schema(description = "Character backend detailed information")
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -42,13 +44,16 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private Long initQuota;
     @Schema(description = "Quota type: messages | tokens | none (not limited)")
     private String quotaType;
+    @Schema(description = "Enable character album image retrieval tool")
+    private Boolean enableAlbumTool;
 
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (backend == null) {
             return null;
         }
         CharacterBackendDetailsDTO dto = CommonUtils.convert(backend, CharacterBackendDetailsDTO.class);
-        dto.setIsDefault(backend.getIsDefault() == (byte) 1);
+        dto.setIsDefault(isTrue(backend.getIsDefault()));
+        dto.setEnableAlbumTool(isTrue(backend.getEnableAlbumTool()));
         return dto;
     }
 }

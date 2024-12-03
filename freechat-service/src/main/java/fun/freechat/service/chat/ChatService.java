@@ -25,14 +25,17 @@ public interface ChatService {
                  String ext);
     boolean delete(String chatId);
     List<Triple<ChatContext, CharacterInfo, ChatMessageRecord>> list(User user);
-    String getDefaultChatId(User user, Long characterId);
+    String getDefaultChatId(User user, String characterUid);
     default Response<AiMessage> send(String chatId, String text) {
         return send(chatId, UserMessage.from(text), null);
     }
     Response<AiMessage> send(String chatId, ChatMessage message, String context) throws ModerationException;
     TokenStream streamSend(String chatId, ChatMessage message, String context);
-    default Object asMemoryId(String chatId) {
+    static Object asMemoryId(String chatId) {
         return chatId;
+    }
+    static String asChatId(Object memoryId) {
+        return (String) memoryId;
     }
     void clearMemory(String chatId);
     Response<AiMessage> sendAssistant(String chatId, String assistantUid);

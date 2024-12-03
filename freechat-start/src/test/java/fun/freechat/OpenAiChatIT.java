@@ -3,6 +3,7 @@ package fun.freechat;
 import fun.freechat.api.dto.*;
 import fun.freechat.service.enums.*;
 import fun.freechat.util.*;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +17,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
 import static fun.freechat.util.TestCharacterUtils.idToUid;
 import static fun.freechat.util.TestCharacterUtils.uidToId;
 import static fun.freechat.util.TestCommonUtils.*;
+import static fun.freechat.util.TestResourceUtils.bodyFrom;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,6 +81,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
     private String characterUid;
     private String backendId;
     private String chatId;
+    private String pictureKey;
 
     protected ModelProvider modelProvider() {
         return OPEN_AI;
@@ -222,6 +226,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
                 .longTermMemoryWindowSize(0)
                 .initQuota(2L)
                 .quotaType(QuotaType.MESSAGES.text())
+                .enableAlbumTool(true)
                 .build();
 
         backendId = testClient.post().uri("/api/v2/character/backend/" + characterUid)
@@ -290,7 +295,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(chatId);
     }
 
-    private void should_send_message() {
+    private void should_send_message() throws ExecutionException, InterruptedException, TimeoutException {
         ChatContentDTO content = ChatContentDTO.fromText("My wife's name is Lily! Did you married? If you had a wife, what's her name?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
@@ -316,21 +321,33 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
 
         content.setContent("How about the weather today?");
 
-        result = testClient.post().uri("/api/v2/chat/send/" + chatId)
-                .accept(MediaType.APPLICATION_JSON)
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(LlmResultDTO.class)
-                .returnResult()
-                .getResponseBody();
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (text == null) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
 
-        assertNotNull(result);
-        assertNotNull(result.getMessage());
-        System.out.println(USER_NICKNAME + ": " + content.getContent());
-        System.out.println(CHARACTER_NICKNAME + ": " + result.getMessage().getContents().getFirst().getContent() +
-                " (" + result.getTokenUsage() + ")");
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + ": " + answer);
     }
 
     private void should_get_message_usage() {
@@ -511,6 +528,107 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         String answer = futureAnswer.get(1, MINUTES);
         System.out.println(CHARACTER_NICKNAME + ": " + answer);
         assertTrue(answer.contains("Lily"));
+    }
+
+    private void should_send_message_and_get_an_image() throws ExecutionException, InterruptedException, TimeoutException {
+        String url = testClient.post().uri("/api/v2/character/picture/" + characterUid)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(bodyFrom("/freechat_light.png"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(url);
+        pictureKey = getKeyFromUrl(url);
+
+        ChatContentDTO content = ChatContentDTO.fromText("Please show me your picture.");
+
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
+
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (text == null) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
+
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + ": " + answer);
+        assertThat(answer).contains(pictureKey);
+    }
+
+    private void should_send_message_and_failed_to_get_an_image() throws ExecutionException, InterruptedException, TimeoutException {
+        Boolean success = testClient.delete().uri("/api/v2/character/picture/" + pictureKey)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertTrue(BooleanUtils.isTrue(success));
+
+        ChatContentDTO content = ChatContentDTO.fromText("Please show me your picture again.");
+
+        ChatMessageDTO dto = ChatMessageDTO.builder()
+                .role("user")
+                .contents(List.of(content))
+                .build();
+
+        StringBuilder answerBuilder = new StringBuilder();
+        CompletableFuture<String> futureAnswer = new CompletableFuture<>();
+
+        System.out.println(USER_NICKNAME + ": " + content.getContent());
+        testClient.post().uri("/api/v2/chat/send/stream/" + chatId)
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LlmResultDTO.class)
+                .getResponseBody()
+                .doOnComplete(() -> futureAnswer.complete(answerBuilder.toString()))
+                .subscribe(event -> {
+                    String text = event.getText();
+                    if (text == null) {
+                        // last event
+                        answerBuilder.append(" (")
+                                .append(event.getTokenUsage().toString())
+                                .append(")");
+                    } else {
+                        answerBuilder.append(text);
+                    }
+                });
+
+        String answer = futureAnswer.get(1, MINUTES);
+        System.out.println(CHARACTER_NICKNAME + ": " + answer);
+        assertThat(answer).doesNotContain(pictureKey);
     }
 
     private void should_failed_to_list_messages() {
@@ -746,6 +864,12 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
         waitAWhile();
 
         should_send_message_with_long_term_memory_in_streaming_mode();
+        waitAWhile();
+
+        should_send_message_and_get_an_image();
+        waitAWhile();
+
+        should_send_message_and_failed_to_get_an_image();
         waitAWhile();
 
         should_failed_to_list_messages();

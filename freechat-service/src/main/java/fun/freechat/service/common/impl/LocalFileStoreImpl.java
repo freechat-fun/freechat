@@ -130,4 +130,10 @@ public class LocalFileStoreImpl implements FileStore {
         FileTime lastModifiedTime = Files.getLastModifiedTime(filePath, LinkOption.NOFOLLOW_LINKS);
         return lastModifiedTime.toMillis();
     }
+
+    @Override
+    public void setLastModifiedTime(String path, long lastModifiedTime) throws IOException {
+        Path filePath = toPath(path);
+        Files.setLastModifiedTime(filePath, FileTime.fromMillis(lastModifiedTime));
+    }
 }

@@ -1,7 +1,6 @@
 package fun.freechat.model;
 
 import jakarta.annotation.Generated;
-
 import java.io.Serializable;
 import java.util.Date;
 

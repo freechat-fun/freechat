@@ -1,8 +1,18 @@
 package fun.freechat.mapper;
 
+import static fun.freechat.mapper.CharacterBackendDynamicSqlSupport.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.model.CharacterBackend;
 import jakarta.annotation.Generated;
-import org.apache.ibatis.annotations.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
@@ -13,19 +23,16 @@ import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import static fun.freechat.mapper.CharacterBackendDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -45,6 +52,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="proactive_chat_waiting_time", property="proactiveChatWaitingTime", jdbcType=JdbcType.INTEGER),
         @Result(column="init_quota", property="initQuota", jdbcType=JdbcType.BIGINT),
         @Result(column="quota_type", property="quotaType", jdbcType=JdbcType.VARCHAR),
+        @Result(column="enable_album_tool", property="enableAlbumTool", jdbcType=JdbcType.TINYINT),
         @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<CharacterBackend> selectMany(SelectStatementProvider selectStatement);
@@ -89,6 +97,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(proactiveChatWaitingTime).toProperty("proactiveChatWaitingTime")
             .map(initQuota).toProperty("initQuota")
             .map(quotaType).toProperty("quotaType")
+            .map(enableAlbumTool).toProperty("enableAlbumTool")
             .map(moderationParams).toProperty("moderationParams")
         );
     }
@@ -111,6 +120,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(proactiveChatWaitingTime).toProperty("proactiveChatWaitingTime")
             .map(initQuota).toProperty("initQuota")
             .map(quotaType).toProperty("quotaType")
+            .map(enableAlbumTool).toProperty("enableAlbumTool")
             .map(moderationParams).toProperty("moderationParams")
         );
     }
@@ -133,6 +143,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(proactiveChatWaitingTime).toPropertyWhenPresent("proactiveChatWaitingTime", row::getProactiveChatWaitingTime)
             .map(initQuota).toPropertyWhenPresent("initQuota", row::getInitQuota)
             .map(quotaType).toPropertyWhenPresent("quotaType", row::getQuotaType)
+            .map(enableAlbumTool).toPropertyWhenPresent("enableAlbumTool", row::getEnableAlbumTool)
             .map(moderationParams).toPropertyWhenPresent("moderationParams", row::getModerationParams)
         );
     }
@@ -181,6 +192,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(proactiveChatWaitingTime).equalTo(row::getProactiveChatWaitingTime)
                 .set(initQuota).equalTo(row::getInitQuota)
                 .set(quotaType).equalTo(row::getQuotaType)
+                .set(enableAlbumTool).equalTo(row::getEnableAlbumTool)
                 .set(moderationParams).equalTo(row::getModerationParams);
     }
 
@@ -201,6 +213,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(proactiveChatWaitingTime).equalToWhenPresent(row::getProactiveChatWaitingTime)
                 .set(initQuota).equalToWhenPresent(row::getInitQuota)
                 .set(quotaType).equalToWhenPresent(row::getQuotaType)
+                .set(enableAlbumTool).equalToWhenPresent(row::getEnableAlbumTool)
                 .set(moderationParams).equalToWhenPresent(row::getModerationParams);
     }
 
@@ -221,6 +234,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(proactiveChatWaitingTime).equalTo(row::getProactiveChatWaitingTime)
             .set(initQuota).equalTo(row::getInitQuota)
             .set(quotaType).equalTo(row::getQuotaType)
+            .set(enableAlbumTool).equalTo(row::getEnableAlbumTool)
             .set(moderationParams).equalTo(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
@@ -243,6 +257,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(proactiveChatWaitingTime).equalToWhenPresent(row::getProactiveChatWaitingTime)
             .set(initQuota).equalToWhenPresent(row::getInitQuota)
             .set(quotaType).equalToWhenPresent(row::getQuotaType)
+            .set(enableAlbumTool).equalToWhenPresent(row::getEnableAlbumTool)
             .set(moderationParams).equalToWhenPresent(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );

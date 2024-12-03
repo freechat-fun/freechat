@@ -61,6 +61,8 @@ import java.util.stream.Stream;
 
 import static fun.freechat.api.util.ConfigUtils.*;
 import static fun.freechat.api.util.FileUtils.*;
+import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 import static org.yaml.snakeyaml.nodes.Tag.MAP;
 
 @Controller
