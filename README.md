@@ -48,21 +48,17 @@ flowchart TD
     E --> G(Message Window)
     E --> H(Long Term Memory Settings)
     E --> I(Quota Limit)
-    E --> J(Chat Prompt Task)
-    E --> K(Greeting Prompt Task)
+    E --> J(Chat/Greeting Prompt Task)
+    E --> P(Album/TTS Tool)
     E --> L(Moderation Settings)
     J --> M(Model & Parameters)
     J --> N(API Keys)
     J --> O(Prompt Reference)
-    J --> P(Album Tool)
-    J --> Q(TTS Tool)
     O --> R(Template)
     O --> S(Variables)
     O --> T(Version)
     O --> U(...)
-    style K stroke-dasharray: 5, 5
     style L stroke-dasharray: 5, 5
-    style Q stroke-dasharray: 5, 5
 ```
 
 After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.

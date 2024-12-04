@@ -48,21 +48,17 @@ flowchart TD
     E --> G(Message Window)
     E --> H(Long Term Memory Settings)
     E --> I(Quota Limit)
-    E --> J(Chat Prompt Task)
-    E --> K(Greeting Prompt Task)
+    E --> J(Chat/Greeting Prompt Task)
+    E --> P(Album/TTS Tool)
     E --> L(Moderation Settings)
     J --> M(Model & Parameters)
     J --> N(API Keys)
     J --> O(Prompt Reference)
-    J --> P(Album Tool)
-    J --> Q(TTS Tool)
     O --> R(Template)
     O --> S(Variables)
     O --> T(Version)
     O --> U(...)
-    style K stroke-dasharray: 5, 5
     style L stroke-dasharray: 5, 5
-    style Q stroke-dasharray: 5, 5
 ```
 
 为一个角色设置了统一的人设和知识后，可以配置不同的后端。例如基于成本考虑为不同用户采用不同模型。
