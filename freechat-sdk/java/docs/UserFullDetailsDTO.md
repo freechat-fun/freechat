@@ -2,7 +2,7 @@
 
 # UserFullDetailsDTO
 
-Account detailed information (including password)
+Account detailed information (with password)
 
 ## Properties
 

@@ -1,6 +1,6 @@
 # .PromptApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -128,7 +128,6 @@ const request: PromptApiApplyPromptTemplateRequest = {
           },
         ],
         context: "context_example",
-        contentText: "contentText_example",
       },
       messages: [
         {
@@ -148,7 +147,6 @@ const request: PromptApiApplyPromptTemplateRequest = {
             },
           ],
           context: "context_example",
-          contentText: "contentText_example",
         },
       ],
     },
@@ -646,7 +644,6 @@ const request: PromptApiCreatePromptRequest = {
           },
         ],
         context: "context_example",
-        contentText: "contentText_example",
       },
       messages: [
         {
@@ -666,7 +663,6 @@ const request: PromptApiCreatePromptRequest = {
             },
           ],
           context: "context_example",
-          contentText: "contentText_example",
         },
       ],
     },
@@ -761,7 +757,6 @@ const request: PromptApiCreatePromptsRequest = {
             },
           ],
           context: "context_example",
-          contentText: "contentText_example",
         },
         messages: [
           {
@@ -781,7 +776,6 @@ const request: PromptApiCreatePromptsRequest = {
               },
             ],
             context: "context_example",
-            contentText: "contentText_example",
           },
         ],
       },
@@ -1581,7 +1575,6 @@ const request: PromptApiSendPromptRequest = {
             },
           ],
           context: "context_example",
-          contentText: "contentText_example",
         },
         messages: [
           {
@@ -1601,7 +1594,6 @@ const request: PromptApiSendPromptRequest = {
               },
             ],
             context: "context_example",
-            contentText: "contentText_example",
           },
         ],
       },
@@ -1696,7 +1688,6 @@ const request: PromptApiStreamSendPromptRequest = {
             },
           ],
           context: "context_example",
-          contentText: "contentText_example",
         },
         messages: [
           {
@@ -1716,7 +1707,6 @@ const request: PromptApiStreamSendPromptRequest = {
               },
             ],
             context: "context_example",
-            contentText: "contentText_example",
           },
         ],
       },
@@ -1815,7 +1805,6 @@ const request: PromptApiUpdatePromptRequest = {
           },
         ],
         context: "context_example",
-        contentText: "contentText_example",
       },
       messages: [
         {
@@ -1835,7 +1824,6 @@ const request: PromptApiUpdatePromptRequest = {
             },
           ],
           context: "context_example",
-          contentText: "contentText_example",
         },
       ],
     },

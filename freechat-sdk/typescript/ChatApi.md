@@ -1,12 +1,12 @@
 # .ChatApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**clearMemory**](ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
 [**deleteChat**](ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
-[**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterId} | Get Default Chat
+[**getDefaultChatId**](ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterUid} | Get Default Chat
 [**getMemoryUsage**](ChatApi.md#getMemoryUsage) | **GET** /api/v2/chat/memory/usage/{chatId} | Get Memory Usage
 [**listChats**](ChatApi.md#listChats) | **GET** /api/v2/chat | List Chats
 [**listDebugMessages**](ChatApi.md#listDebugMessages) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages
@@ -146,8 +146,8 @@ const configuration = createConfiguration();
 const apiInstance = new ChatApi(configuration);
 
 const request: ChatApiGetDefaultChatIdRequest = {
-    // Character identifier
-  characterId: 1,
+    // Character uid
+  characterUid: "characterUid_example",
 };
 
 const data = await apiInstance.getDefaultChatId(request);
@@ -159,7 +159,7 @@ console.log('API called successfully. Returned data:', data);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **characterId** | [**number**] | Character identifier | defaults to undefined
+ **characterUid** | [**string**] | Character uid | defaults to undefined
 
 
 ### Return type
@@ -766,7 +766,6 @@ const request: ChatApiSendMessageRequest = {
       },
     ],
     context: "context_example",
-    contentText: "contentText_example",
   },
 };
 
@@ -959,7 +958,6 @@ const request: ChatApiStreamSendMessageRequest = {
       },
     ],
     context: "context_example",
-    contentText: "contentText_example",
   },
 };
 

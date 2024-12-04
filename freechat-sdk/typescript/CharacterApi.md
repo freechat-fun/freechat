@@ -1,6 +1,6 @@
 # .CharacterApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -74,6 +74,7 @@ const request: CharacterApiAddCharacterBackendRequest = {
     proactiveChatWaitingTime: 1,
     initQuota: 1,
     quotaType: "quotaType_example",
+    enableAlbumTool: true,
   },
 };
 
@@ -2014,6 +2015,7 @@ const request: CharacterApiUpdateCharacterBackendRequest = {
     proactiveChatWaitingTime: 1,
     initQuota: 1,
     quotaType: "quotaType_example",
+    enableAlbumTool: true,
   },
 };
 

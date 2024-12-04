@@ -18,6 +18,7 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
 - Supports characters evoking **proactive chat**.
+- Supports characters replies with **mixed text and image information**.
 - Supports setting **quota limits** for characters.
 - Supports characters **importing and exporting**.
 - Supports **character-to-character chats**.
@@ -52,15 +53,16 @@ flowchart TD
     E --> L(Moderation Settings)
     J --> M(Model & Parameters)
     J --> N(API Keys)
-    J --> O(Prompt Refence)
-    J --> P(Tool Specifications)
-    O --> Q(Template)
-    O --> R(Variables)
-    O --> S(Version)
-    O --> T(...)
+    J --> O(Prompt Reference)
+    J --> P(Album Tool)
+    J --> Q(TTS Tool)
+    O --> R(Template)
+    O --> S(Variables)
+    O --> T(Version)
+    O --> U(...)
     style K stroke-dasharray: 5, 5
     style L stroke-dasharray: 5, 5
-    style P stroke-dasharray: 5, 5
+    style Q stroke-dasharray: 5, 5
 ```
 
 After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.

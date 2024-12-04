@@ -451,7 +451,14 @@ public class ChatApi {
         int messagesLimit = limit.orElse(Integer.MAX_VALUE);
         int messagesOffset = Math.max(0, offset.orElse(0));
 
-        var messages = chatMemoryService.listAllChatMessages(chatId);
+        var messages = chatMemoryService.listAllChatMessages(chatId).stream()
+                .filter(message -> {
+                    ChatMessageType type = message.getMessage().type();
+                    return type == ChatMessageType.SYSTEM ||
+                            type == ChatMessageType.USER ||
+                            (type == ChatMessageType.AI && !((AiMessage) message.getMessage()).hasToolExecutionRequests());
+                })
+                .toList();
         if (CollectionUtils.isEmpty(messages) || messages.size() <= messagesOffset) {
             return Collections.emptyList();
         }
@@ -501,7 +508,14 @@ public class ChatApi {
         int messagesLimit = limit.orElse(Integer.MAX_VALUE);
         int messagesOffset = Math.max(0, offset.orElse(0));
 
-        var messages = chatMemoryService.listAllChatMessages(chatId);
+        var messages = chatMemoryService.listAllChatMessages(chatId).stream()
+                .filter(message -> {
+                    ChatMessageType type = message.getMessage().type();
+                    return type == ChatMessageType.SYSTEM ||
+                            type == ChatMessageType.USER ||
+                            (type == ChatMessageType.AI && !((AiMessage) message.getMessage()).hasToolExecutionRequests());
+                })
+                .toList();
         if (CollectionUtils.isEmpty(messages) || messages.size() <= messagesOffset) {
             return Collections.emptyList();
         }

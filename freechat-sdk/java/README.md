@@ -1,8 +1,8 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.1.0
-  - Generator version: 7.9.0
+- API version: 2.2.0
+  - Generator version: 7.10.0
 
 # FreeChat: Create Friends for Yourself with AI
 
@@ -12,6 +12,8 @@ English | [中文版](https://github.com/freechat-fun/freechat/blob/main/README.
 Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable enterprise-level AI virtual character platform.
 
 It also serves as a prompt engineering platform.
+
+It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to test your models. See the instructions below for [running locally](#running-locally)
 
 ## Features
 - Primarily uses Java and emphasizes **security, robustness, scalability, traceability, and maintainability**.
@@ -240,7 +242,7 @@ Refer to [FreeChatApiContext.tsx](https://github.com/freechat-fun/freechat/blob/
 
 ## Collaboration
 ### Application Integration
-The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, FreeChat is completely free with no paid plans (after all, users use their own API Key to call LLM services).
+The FreeChat system is entirely oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is developed using its TypeScript SDK and hardly depends on private interfaces. You can use these online interfaces to develop your own applications or sites, making them fit your preferences. Currently, the online FreeChat service is completely free and there are no current plans for charging.
 
 ### Model Integration
 FreeChat aims to explore AI virtual character technology with anthropomorphic characteristics. If you are researching this area and hope FreeChat supports your model, please contact us. We look forward to AI technology helping people create their own \"soul mates\" in the future.
@@ -280,7 +282,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -296,7 +298,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.1.0"
+     implementation "fun.freechat:freechat-sdk:2.2.0"
   }
 ```
 
@@ -310,7 +312,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.1.0.jar`
+* `target/freechat-sdk-2.2.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -330,7 +332,7 @@ import fun.freechat.client.api.AccountApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://localhost");
+    defaultClient.setBasePath("http://127.0.0.1:8080");
     
     // Configure HTTP bearer authorization: bearerAuth
     HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
@@ -355,7 +357,7 @@ public class Example {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://127.0.0.1:8080*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
@@ -454,7 +456,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
-*ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterId} | Get Default Chat
+*ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterUid} | Get Default Chat
 *ChatApi* | [**getMemoryUsage**](docs/ChatApi.md#getMemoryUsage) | **GET** /api/v2/chat/memory/usage/{chatId} | Get Memory Usage
 *ChatApi* | [**listChats**](docs/ChatApi.md#listChats) | **GET** /api/v2/chat | List Chats
 *ChatApi* | [**listDebugMessages**](docs/ChatApi.md#listDebugMessages) | **GET** /api/v2/chat/messages/debug/{chatId}/{limit} | List Chat Debug Messages

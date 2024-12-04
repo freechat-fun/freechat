@@ -4,10 +4,12 @@ info:
     ](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)\n\n## Introduction\n\
     Welcome! FreeChat aims to build a cloud-native, robust, and quickly commercializable\
     \ enterprise-level AI virtual character platform.\n\nIt also serves as a prompt\
-    \ engineering platform.\n\n## Features\n- Primarily uses Java and emphasizes **security,\
-    \ robustness, scalability, traceability, and maintainability**.\n- Boasts **account\
-    \ systems and permission management**, supporting OAuth2 authentication. Introduces\
-    \ the \"organization\" concept and related permission constraint functions.\n\
+    \ engineering platform.\n\nIt is recommended to run [Ollama](https://ollama.com/)\
+    \ + FreeChat locally to test your models. See the instructions below for [running\
+    \ locally](#running-locally)\n\n## Features\n- Primarily uses Java and emphasizes\
+    \ **security, robustness, scalability, traceability, and maintainability**.\n\
+    - Boasts **account systems and permission management**, supporting OAuth2 authentication.\
+    \ Introduces the \"organization\" concept and related permission constraint functions.\n\
     - Extensively employs distributed technologies and caching to support **high concurrency**\
     \ access.\n- Provides flexible character customization options, supports direct\
     \ intervention in prompts, and supports **configuring multiple backends for each\
@@ -135,16 +137,16 @@ info:
     \ oriented towards Open APIs. The site [freechat.fun](https://freechat.fun) is\
     \ developed using its TypeScript SDK and hardly depends on private interfaces.\
     \ You can use these online interfaces to develop your own applications or sites,\
-    \ making them fit your preferences. Currently, FreeChat is completely free with\
-    \ no paid plans (after all, users use their own API Key to call LLM services).\n\
-    \n### Model Integration\nFreeChat aims to explore AI virtual character technology\
-    \ with anthropomorphic characteristics. If you are researching this area and hope\
-    \ FreeChat supports your model, please contact us. We look forward to AI technology\
-    \ helping people create their own \"soul mates\" in the future.\n"
+    \ making them fit your preferences. Currently, the online FreeChat service is\
+    \ completely free and there are no current plans for charging.\n\n### Model Integration\n\
+    FreeChat aims to explore AI virtual character technology with anthropomorphic\
+    \ characteristics. If you are researching this area and hope FreeChat supports\
+    \ your model, please contact us. We look forward to AI technology helping people\
+    \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.1.0
+  version: 2.2.0
 servers:
-- url: http://localhost/
+- url: http://127.0.0.1:8080/
 security:
 - bearerAuth: []
 tags:
@@ -5196,19 +5198,18 @@ paths:
       - Organization
       x-accepts:
       - application/json
-  /api/v2/chat/{characterId}:
+  /api/v2/chat/{characterUid}:
     get:
       description: Get default chat id of current user and the character.
       operationId: getDefaultChatId
       parameters:
-      - description: Character identifier
+      - description: Character uid
         explode: false
         in: path
-        name: characterId
+        name: characterUid
         required: true
         schema:
-          format: int64
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -6503,7 +6504,6 @@ components:
           content: content
         name: name
         context: context
-        contentText: contentText
         toolCalls:
         - name: name
           arguments: arguments
@@ -6534,9 +6534,6 @@ components:
           description: Contextual information in this round of conversation (the external
             RAG result can be passed in through this parameter)
           type: string
-        contentText:
-          type: string
-          writeOnly: true
       type: object
     ChatPromptContentDTO:
       description: Prompt chat template content
@@ -6551,7 +6548,6 @@ components:
             content: content
           name: name
           context: context
-          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -6567,7 +6563,6 @@ components:
             content: content
           name: name
           context: context
-          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -6584,7 +6579,6 @@ components:
             content: content
           name: name
           context: context
-          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -6649,7 +6643,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6665,7 +6658,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -6682,7 +6674,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -7013,6 +7004,7 @@ components:
         messageWindowSize: 0
         proactiveChatWaitingTime: 1
         longTermMemoryWindowSize: 6
+        enableAlbumTool: true
       properties:
         isDefault:
           description: Whether it is the default backend
@@ -7052,6 +7044,9 @@ components:
         quotaType:
           description: "Quota type: messages | tokens | none (not limited)"
           type: string
+        enableAlbumTool:
+          description: Enable character album image retrieval tool
+          type: boolean
       type: object
     AgentUpdateDTO:
       description: Request data for updating agent information
@@ -7119,7 +7114,7 @@ components:
       - name
       type: object
     UserFullDetailsDTO:
-      description: Account detailed information (including password)
+      description: Account detailed information (with password)
       example:
         website: website
         zoneinfo: zoneinfo
@@ -7737,7 +7732,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -7753,7 +7747,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -7770,7 +7763,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -7939,7 +7931,6 @@ components:
                 content: content
               name: name
               context: context
-              contentText: contentText
               toolCalls:
               - name: name
                 arguments: arguments
@@ -7955,7 +7946,6 @@ components:
                 content: content
               name: name
               context: context
-              contentText: contentText
               toolCalls:
               - name: name
                 arguments: arguments
@@ -7972,7 +7962,6 @@ components:
                 content: content
               name: name
               context: context
-              contentText: contentText
               toolCalls:
               - name: name
                 arguments: arguments
@@ -8020,7 +8009,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -8036,7 +8024,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -8053,7 +8040,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -8098,7 +8084,6 @@ components:
             content: content
           name: name
           context: context
-          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -8193,7 +8178,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -8209,7 +8193,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -8226,7 +8209,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments
@@ -8832,6 +8814,7 @@ components:
         moderationModelId: moderationModelId
         backendId: backendId
         gmtCreate: 2000-01-23T04:56:07.000+00:00
+        enableAlbumTool: true
         quotaType: quotaType
         isDefault: true
         requestId: requestId
@@ -8897,6 +8880,9 @@ components:
         quotaType:
           description: "Quota type: messages | tokens | none (not limited)"
           type: string
+        enableAlbumTool:
+          description: Enable character album image retrieval tool
+          type: boolean
       type: object
     CharacterDetailsDTO:
       description: Character detailed content
@@ -8930,6 +8916,7 @@ components:
           moderationModelId: moderationModelId
           backendId: backendId
           gmtCreate: 2000-01-23T04:56:07.000+00:00
+          enableAlbumTool: true
           quotaType: quotaType
           isDefault: true
           requestId: requestId
@@ -8946,6 +8933,7 @@ components:
           moderationModelId: moderationModelId
           backendId: backendId
           gmtCreate: 2000-01-23T04:56:07.000+00:00
+          enableAlbumTool: true
           quotaType: quotaType
           isDefault: true
           requestId: requestId
@@ -10159,7 +10147,6 @@ components:
             content: content
           name: name
           context: context
-          contentText: contentText
           toolCalls:
           - name: name
             arguments: arguments
@@ -10242,7 +10229,6 @@ components:
               content: content
             name: name
             context: context
-            contentText: contentText
             toolCalls:
             - name: name
               arguments: arguments

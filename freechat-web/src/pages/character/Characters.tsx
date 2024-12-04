@@ -255,9 +255,9 @@ export default function Characters() {
   }
 
   function handleView(record: CharacterSummaryDTO): void {
-    record.characterId &&
+    record.characterUid &&
       chatApi
-        ?.getDefaultChatId(record.characterId)
+        ?.getDefaultChatId(record.characterUid)
         .then((resp) => {
           navigate(`/w/chat/${resp}/debug`);
         })

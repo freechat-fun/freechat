@@ -3361,10 +3361,10 @@ export class ObservableChatApi {
     /**
      * Get default chat id of current user and the character.
      * Get Default Chat
-     * @param characterId Character identifier
+     * @param characterUid Character uid
      */
-    public getDefaultChatIdWithHttpInfo(characterId: number, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.getDefaultChatId(characterId, _options);
+    public getDefaultChatIdWithHttpInfo(characterUid: string, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.getDefaultChatId(characterUid, _options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -3385,10 +3385,10 @@ export class ObservableChatApi {
     /**
      * Get default chat id of current user and the character.
      * Get Default Chat
-     * @param characterId Character identifier
+     * @param characterUid Character uid
      */
-    public getDefaultChatId(characterId: number, _options?: Configuration): Observable<string> {
-        return this.getDefaultChatIdWithHttpInfo(characterId, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    public getDefaultChatId(characterUid: string, _options?: Configuration): Observable<string> {
+        return this.getDefaultChatIdWithHttpInfo(characterUid, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**

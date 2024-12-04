@@ -262,9 +262,9 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     ) => {
       characterApi
         ?.publishCharacter(currentId, visibility)
-        .then((characterId) => {
+        .then((_) => {
           chatApi
-            ?.getDefaultChatId(characterId)
+            ?.getDefaultChatId(recordUid as string)
             .then((resp) => {
               navigate(`/w/chat/${resp}/debug`);
             })
@@ -378,6 +378,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     request.moderationParams = backend.moderationParams;
     request.quotaType = backend.quotaType;
     request.initQuota = backend.initQuota;
+    request.enableAlbumTool = backend.enableAlbumTool;
 
     const updateBackend = (
       backendId: string | undefined,

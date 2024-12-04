@@ -101,6 +101,9 @@ export default function CharacterGuide(props: CardProps) {
           <Typography level="body-sm">{t('Model parameters')}</Typography>
         </Step>
         <Step>
+          <Typography level="body-sm">{t('Select tools')}</Typography>
+        </Step>
+        <Step>
           <Typography level="body-sm">{t('Moderation model')}</Typography>
         </Step>
         <Step>

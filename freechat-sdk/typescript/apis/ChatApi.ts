@@ -101,20 +101,20 @@ export class ChatApiRequestFactory extends BaseAPIRequestFactory {
     /**
      * Get default chat id of current user and the character.
      * Get Default Chat
-     * @param characterId Character identifier
+     * @param characterUid Character uid
      */
-    public async getDefaultChatId(characterId: number, _options?: Configuration): Promise<RequestContext> {
+    public async getDefaultChatId(characterUid: string, _options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
-        // verify required parameter 'characterId' is not null or undefined
-        if (characterId === null || characterId === undefined) {
-            throw new RequiredError("ChatApi", "getDefaultChatId", "characterId");
+        // verify required parameter 'characterUid' is not null or undefined
+        if (characterUid === null || characterUid === undefined) {
+            throw new RequiredError("ChatApi", "getDefaultChatId", "characterUid");
         }
 
 
         // Path Params
-        const localVarPath = '/api/v2/chat/{characterId}'
-            .replace('{' + 'characterId' + '}', encodeURIComponent(String(characterId)));
+        const localVarPath = '/api/v2/chat/{characterUid}'
+            .replace('{' + 'characterUid' + '}', encodeURIComponent(String(characterUid)));
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);

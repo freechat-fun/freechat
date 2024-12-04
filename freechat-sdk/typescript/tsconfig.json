@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "es5",
+    "target": "es2021",
     "moduleResolution": "node",
     "declaration": true,
 
@@ -14,7 +14,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "noLib": false,
-    "lib": [ "es6", "dom" ],
+    "lib": [ "es2021", "dom" ],
 
     "module": "ESNext"
   },

@@ -19,6 +19,7 @@ Character backend information
 |**proactiveChatWaitingTime** | **Integer** | Minutes to wait for a proactive chat |  [optional] |
 |**initQuota** | **Long** | Initial quota when opening a chat |  [optional] |
 |**quotaType** | **String** | Quota type: messages | tokens | none (not limited) |  [optional] |
+|**enableAlbumTool** | **Boolean** | Enable character album image retrieval tool |  [optional] |
 
 
 

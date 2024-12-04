@@ -2798,12 +2798,12 @@ export interface ChatApiDeleteChatRequest {
 
 export interface ChatApiGetDefaultChatIdRequest {
     /**
-     * Character identifier
+     * Character uid
      * Defaults to: undefined
-     * @type number
+     * @type string
      * @memberof ChatApigetDefaultChatId
      */
-    characterId: number
+    characterUid: string
 }
 
 export interface ChatApiGetMemoryUsageRequest {
@@ -3078,7 +3078,7 @@ export class ObjectChatApi {
      * @param param the request object
      */
     public getDefaultChatIdWithHttpInfo(param: ChatApiGetDefaultChatIdRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.getDefaultChatIdWithHttpInfo(param.characterId,  options).toPromise();
+        return this.api.getDefaultChatIdWithHttpInfo(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -3087,7 +3087,7 @@ export class ObjectChatApi {
      * @param param the request object
      */
     public getDefaultChatId(param: ChatApiGetDefaultChatIdRequest, options?: Configuration): Promise<string> {
-        return this.api.getDefaultChatId(param.characterId,  options).toPromise();
+        return this.api.getDefaultChatId(param.characterUid,  options).toPromise();
     }
 
     /**

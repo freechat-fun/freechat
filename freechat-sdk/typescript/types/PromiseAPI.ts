@@ -2129,20 +2129,20 @@ export class PromiseChatApi {
     /**
      * Get default chat id of current user and the character.
      * Get Default Chat
-     * @param characterId Character identifier
+     * @param characterUid Character uid
      */
-    public getDefaultChatIdWithHttpInfo(characterId: number, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.getDefaultChatIdWithHttpInfo(characterId, _options);
+    public getDefaultChatIdWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.getDefaultChatIdWithHttpInfo(characterUid, _options);
         return result.toPromise();
     }
 
     /**
      * Get default chat id of current user and the character.
      * Get Default Chat
-     * @param characterId Character identifier
+     * @param characterUid Character uid
      */
-    public getDefaultChatId(characterId: number, _options?: Configuration): Promise<string> {
-        const result = this.api.getDefaultChatId(characterId, _options);
+    public getDefaultChatId(characterUid: string, _options?: Configuration): Promise<string> {
+        const result = this.api.getDefaultChatId(characterUid, _options);
         return result.toPromise();
     }
 

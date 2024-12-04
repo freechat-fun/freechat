@@ -435,10 +435,21 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 return acc;
             }
 
-            if (isInputMessageType(type) == isInputMessageType(lastType)) {
-                // The list must be user/tool_execution_result and ai alternating messages.
-                // Use the newest one when duplicated.
-                acc.removeLast();
+            if (type == USER) {
+                // User message should follow a normal system/AI message.
+                while (acc.getLast().getMessage().type() != SYSTEM && !isNormalAiType(acc.getLast().getMessage())) {
+                    acc.removeLast();
+                }
+            } else if (type == TOOL_EXECUTION_RESULT) {
+                // Tool execution result should follow tool execution request message.
+                while (!isToolExecutionRequestsAiType(acc.getLast().getMessage())) {
+                    acc.removeLast();
+                }
+            } else if (type == AI) {
+                // AI message should follow an user/tool_execution_result message.
+                while (!isInputMessageType(acc.getLast().getMessage())) {
+                    acc.removeLast();
+                }
             }
 
             acc.add(record);
@@ -446,8 +457,17 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         };
     }
 
-    private static boolean isInputMessageType(ChatMessageType messageType) {
-        return messageType == USER || messageType == TOOL_EXECUTION_RESULT;
+    private static boolean isInputMessageType(ChatMessage message) {
+        ChatMessageType type = message.type();
+        return type == USER || type == TOOL_EXECUTION_RESULT;
+    }
+
+    private static boolean isNormalAiType(ChatMessage message) {
+        return message.type() == AI && !((AiMessage) message).hasToolExecutionRequests();
+    }
+
+    private static boolean isToolExecutionRequestsAiType(ChatMessage message) {
+        return message.type() == AI && ((AiMessage) message).hasToolExecutionRequests();
     }
 
     private static BinaryOperator<LinkedList<ChatMessageRecord>> messageRecordCombiner() {

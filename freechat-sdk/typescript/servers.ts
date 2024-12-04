@@ -30,9 +30,8 @@ export class ServerConfiguration<T extends { [key: string]: string }> implements
 
     private getUrl() {
         let replacedUrl = this.url;
-        for (const key in this.variableConfiguration) {
-            var re = new RegExp("{" + key + "}","g");
-            replacedUrl = replacedUrl.replace(re, this.variableConfiguration[key]);
+        for (const [key, value] of Object.entries(this.variableConfiguration)) {
+            replacedUrl = replacedUrl.replaceAll(`{${key}}`, value);
         }
         return replacedUrl
     }
@@ -50,6 +49,6 @@ export class ServerConfiguration<T extends { [key: string]: string }> implements
     }
 }
 
-export const server1 = new ServerConfiguration<{  }>("http://localhost", {  })
+export const server1 = new ServerConfiguration<{  }>("http://127.0.0.1:8080", {  })
 
 export const servers = [server1];

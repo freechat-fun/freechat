@@ -390,7 +390,7 @@ export default function CharacterGallery({
       ?.increaseStatistic('character', record.characterUid, 'view_count')
       .finally(() => {
         chatApi
-          ?.getDefaultChatId(record.characterId as number)
+          ?.getDefaultChatId(record.characterUid as string)
           .then((resp) => {
             navigate(`/w/chat/${resp}`);
           })

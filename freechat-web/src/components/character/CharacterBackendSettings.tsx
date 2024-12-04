@@ -95,6 +95,9 @@ const CharacterBackendSettings = forwardRef<
   const [enableQuota, setEnableQuota] = useState(
     backend?.quotaType === 'messages' || backend?.quotaType === 'tokens'
   );
+  const [enableAlbumTool, setEnableAlbumTool] = useState(
+    backend?.enableAlbumTool ?? false
+  );
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
@@ -203,12 +206,14 @@ const CharacterBackendSettings = forwardRef<
         messageWindowSize,
         longTermMemoryWindowSize,
         proactiveChatWaitingTime,
+        enableAlbumTool,
       };
     } else {
       editBackend = new CharacterBackendDetailsDTO();
       editBackend.messageWindowSize = messageWindowSize;
       editBackend.longTermMemoryWindowSize = longTermMemoryWindowSize;
       editBackend.proactiveChatWaitingTime = proactiveChatWaitingTime;
+      editBackend.enableAlbumTool = enableAlbumTool;
     }
 
     if (enableQuota) {
@@ -517,6 +522,26 @@ const CharacterBackendSettings = forwardRef<
               </Button>
             </CommonContainer>
           </CommonGridBox>
+        </OptionCard>
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
+              {t('Enable Album Tool')}
+            </Typography>
+            <OptionTooltip
+              title={t(
+                'If the user wants to see photos during a chat, select one from the album to display.'
+              )}
+            >
+              <HelpIcon />
+            </OptionTooltip>
+            <Switch
+              checked={enableAlbumTool}
+              sx={{ ml: 'auto' }}
+              onChange={() => setEnableAlbumTool(!enableAlbumTool)}
+            />
+          </CommonContainer>
         </OptionCard>
 
         <OptionCard>

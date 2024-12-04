@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **proactive_chat_waiting_time** | **int** | Minutes to wait for a proactive chat | [optional] 
 **init_quota** | **int** | Initial quota when opening a chat | [optional] 
 **quota_type** | **str** | Quota type: messages | tokens | none (not limited) | [optional] 
+**enable_album_tool** | **bool** | Enable character album image retrieval tool | [optional] 
 
 ## Example
 

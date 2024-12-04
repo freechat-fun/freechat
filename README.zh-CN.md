@@ -18,6 +18,7 @@
 - 支持为角色设置 **RAG** (Retrieval Augmented Generation)。
 - 支持角色的**长期记忆，预设记忆**。
 - 支持角色唤起**主动聊天**。
+- 支持角色回复**图文混合信息**。
 - 支持为角色设置**配额限制**。
 - 支持角色的**导入和导出**。
 - 支持**角色与角色聊天**。
@@ -52,15 +53,16 @@ flowchart TD
     E --> L(Moderation Settings)
     J --> M(Model & Parameters)
     J --> N(API Keys)
-    J --> O(Prompt Refence)
-    J --> P(Tool Specifications)
-    O --> Q(Template)
-    O --> R(Variables)
-    O --> S(Version)
-    O --> T(...)
+    J --> O(Prompt Reference)
+    J --> P(Album Tool)
+    J --> Q(TTS Tool)
+    O --> R(Template)
+    O --> S(Variables)
+    O --> T(Version)
+    O --> U(...)
     style K stroke-dasharray: 5, 5
     style L stroke-dasharray: 5, 5
-    style P stroke-dasharray: 5, 5
+    style Q stroke-dasharray: 5, 5
 ```
 
 为一个角色设置了统一的人设和知识后，可以配置不同的后端。例如基于成本考虑为不同用户采用不同模型。
