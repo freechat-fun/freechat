@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static fun.freechat.service.enums.TaskStatus.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
@@ -210,6 +211,9 @@ public class RagTaskServiceImpl implements RagTaskService {
             if (throwable == null) {
                 setStatus(task, SUCCEEDED, null);
             } else {
+                if (throwable instanceof CompletionException) {
+                    throwable = throwable.getCause();
+                }
                 TaskStatus status = throwable instanceof CancellationException ? CANCELED : FAILED;
                 if (status == FAILED) {
                     log.error("RagTask {} failed with error.", taskId, throwable);

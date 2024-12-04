@@ -107,7 +107,11 @@ export function getSenderName(sender?: CharacterSummaryDTO): string {
   return sender?.nickname ?? sender?.name ?? 'You';
 }
 
-export function getSenderReply(message: string, debugMode: boolean): string {
+export function getSenderReply(
+  message: string,
+  debugMode: boolean,
+  noLinks: boolean = false
+): string {
   const handleLine = (line: string) => {
     if (debugMode) {
       return line;
@@ -118,7 +122,9 @@ export function getSenderReply(message: string, debugMode: boolean): string {
       return text;
     }
     // exclude incomplete markdown tags such as: [abc](de or ![abc](de
-    const markdownRe = /(.*?)!?\[[^[\]]*?\]\([^()]*?$/;
+    const markdownRe = noLinks
+      ? /(.*?)!?\[[^[\]]*?\]\([^(]*?$/
+      : /(.*?)!?\[[^[\]]*?\]\([^()]*?$/;
     const matches = text.match(markdownRe);
 
     return matches?.[1] ?? text;

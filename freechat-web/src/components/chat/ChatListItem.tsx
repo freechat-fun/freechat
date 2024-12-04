@@ -142,9 +142,14 @@ export default function ChatListItem(props: ChatListItemProps) {
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
+                  maxWidth: { xs: '100%', sm: '15vw' },
                 }}
               >
-                {getSenderReply(getMessageText(record?.message) ?? '', false)}
+                {getSenderReply(
+                  getMessageText(record?.message) ?? '',
+                  false,
+                  true
+                )}
               </Typography>
             </Stack>
             {editMode && (
