@@ -431,7 +431,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
 
             ChatMessageType lastType = acc.getLast().getMessage().type();
             if (lastType == SYSTEM && type != USER) {
-                // The first non-system message must be a user message.
+                // First non-system message must be a user message.
                 return acc;
             }
 
@@ -441,12 +441,12 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                     acc.removeLast();
                 }
             } else if (type == TOOL_EXECUTION_RESULT) {
-                // Tool execution result should follow tool execution request message.
+                // Tool execution result should follow a tool execution request message.
                 while (!isToolExecutionRequestsAiType(acc.getLast().getMessage())) {
                     acc.removeLast();
                 }
             } else if (type == AI) {
-                // AI message should follow an user/tool_execution_result message.
+                // AI message should follow a user/tool_execution_result message.
                 while (!isInputMessageType(acc.getLast().getMessage())) {
                     acc.removeLast();
                 }

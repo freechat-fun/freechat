@@ -34,6 +34,7 @@ import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.ai.CloseableAiApiKey;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
+import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.PromptFormat;
@@ -113,6 +114,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
     @Autowired
     private EmbeddingModelService embeddingModelService;
+    @Autowired
+    private ShortLinkService shortLinkService;
     @Autowired
     @Qualifier("defaultExecutor")
     private ThreadPoolTaskExecutor executor;
@@ -380,11 +383,13 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                                 .homeUrl(homeUrl)
                                 .characterService(characterService)
                                 .chatContextService(chatContextService)
+                                .shortLinkService(shortLinkService)
                                 .build() :
                         EnAlbumTool.builder()
                                 .homeUrl(homeUrl)
                                 .characterService(characterService)
                                 .chatContextService(chatContextService)
+                                .shortLinkService(shortLinkService)
                                 .build()
                 );
             }

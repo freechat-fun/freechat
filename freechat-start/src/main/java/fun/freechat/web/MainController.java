@@ -3,19 +3,20 @@ package fun.freechat.web;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.common.ConfigService;
+import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.util.AppMetaUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
@@ -33,6 +34,8 @@ public class MainController {
     private ConfigService configService;
     @Autowired
     private InMemoryClientRegistrationRepository clientRegistrationRepository;
+    @Autowired
+    private ShortLinkService shortLinkService;
     private String registrations;
 
 
@@ -98,6 +101,15 @@ public class MainController {
         }
 
         return "index";
+    }
+
+    @GetMapping("/s/{token}")
+    public String shortPage(@PathVariable("token") @NotBlank String token) {
+        String origPath = shortLinkService.getFullPath(token);
+        if (StringUtils.isBlank(origPath)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return "redirect:" + origPath;
     }
 
     @GetMapping({"/public/check/live"})

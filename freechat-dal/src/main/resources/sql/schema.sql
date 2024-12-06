@@ -400,3 +400,16 @@ CREATE TABLE IF NOT EXISTS `ai_api_key` (
   INDEX `idx_user_provider` (`user_id`, `provider`)
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='AI provider API-KEY info'
 ;
+
+CREATE TABLE IF NOT EXISTS `short_link` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `gmt_create` datetime NOT NULL,
+  `gmt_modified` datetime NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `path` varchar(256) NOT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_token` (`token`),
+  INDEX `idx_path` (`path`)
+) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='short link info'
+;

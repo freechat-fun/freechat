@@ -5,6 +5,7 @@ import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.common.FileStore;
+import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.util.StoreUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,13 +27,16 @@ public class AlbumTool {
     private final String homeUrl;
     private final CharacterService characterService;
     private final ChatContextService chatContextService;
+    private final ShortLinkService shortLinkService;
 
     public AlbumTool(String homeUrl,
                      CharacterService characterService,
-                     ChatContextService chatContextService) {
+                     ChatContextService chatContextService,
+                     ShortLinkService shortLinkService) {
         this.homeUrl = ensureNotNull(homeUrl, "homeUrl");
         this.characterService = ensureNotNull(characterService, "characterService");
         this.chatContextService = ensureNotNull(chatContextService, "chatContextService");
+        this.shortLinkService = ensureNotNull(shortLinkService, "shortLinkService");
     }
 
     public String findAnImage(Object memoryId, String description) {
@@ -97,6 +101,9 @@ public class AlbumTool {
                 fileStore.setLastModifiedTime(picturePath, System.currentTimeMillis());
             }
 
+            // shorten url to reduce token usage
+            pictureUrl = shortenPictureUrl(pictureUrl);
+
             log.info("Found a picture for character {}, description: {}, path: {}, url: {}",
                     characterInfo.getName(), description, picturePath, pictureUrl);
 
@@ -109,9 +116,18 @@ public class AlbumTool {
         }
     }
 
-    private static String defaultPicture(String avatar, String picture) {
+    private String defaultPicture(String avatar, String picture) {
         return StringUtils.isNotBlank(avatar) ?
-                avatar :
-                StringUtils.isNotBlank(picture) ? picture : DEFAULT_PICTURE;
+                shortenPictureUrl(avatar) :
+                StringUtils.isNotBlank(picture) ? shortenPictureUrl(picture) : DEFAULT_PICTURE;
+    }
+
+    private String shortenPictureUrl(String pictureUrl) {
+        if (!pictureUrl.startsWith(homeUrl)) {
+            return pictureUrl;
+        }
+        String urlPath = pictureUrl.substring(homeUrl.length());
+        String shortPath = shortLinkService.shorten(urlPath);
+        return "%s/s/%s".formatted(homeUrl, shortPath);
     }
 }

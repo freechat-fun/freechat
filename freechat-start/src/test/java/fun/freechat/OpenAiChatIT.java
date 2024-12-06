@@ -1,6 +1,7 @@
 package fun.freechat;
 
 import fun.freechat.api.dto.*;
+import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.*;
 import fun.freechat.util.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -73,6 +76,10 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
             {{{USER_PROFILE}}}
             """;
 
+    @Value("${app.homeUrl}")
+    private String homeUrl;
+    @Autowired
+    private ShortLinkService shortLinkService;
     private String developerId;
     private String developerApiKey;
     private String userId;
@@ -580,7 +587,8 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
 
         String answer = futureAnswer.get(1, MINUTES);
         System.out.println(CHARACTER_NICKNAME + ": " + answer);
-        assertThat(answer).contains(pictureKey);
+        String shortToken = shortLinkService.shorten("/public/image/" + pictureKey);
+        assertThat(answer).contains("![img](" + homeUrl + "/s/" + shortToken);
     }
 
     private void should_send_message_and_failed_to_get_an_image() throws ExecutionException, InterruptedException, TimeoutException {
@@ -629,7 +637,7 @@ public class OpenAiChatIT extends AbstractIntegrationTest {
 
         String answer = futureAnswer.get(1, MINUTES);
         System.out.println(CHARACTER_NICKNAME + ": " + answer);
-        assertThat(answer).doesNotContain(pictureKey);
+        assertThat(answer).doesNotContain("![img]");
     }
 
     private void should_failed_to_list_messages() {

@@ -1,5 +1,5 @@
 app:
-  homeUrl: http://127.0.0.1:8080
+  homeUrl: http://localhost
 auth:
   aes:
     key: 6034a30c93dd4342a3e2d1973bc13ee5

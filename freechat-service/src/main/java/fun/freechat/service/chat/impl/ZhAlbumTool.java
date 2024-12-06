@@ -5,14 +5,16 @@ import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.common.ShortLinkService;
 import lombok.Builder;
 
 public class ZhAlbumTool extends AlbumTool {
     @Builder
     public ZhAlbumTool(String homeUrl,
                        CharacterService characterService,
-                       ChatContextService chatContextService) {
-        super(homeUrl, characterService, chatContextService);
+                       ChatContextService chatContextService,
+                       ShortLinkService shortLinkService) {
+        super(homeUrl, characterService, chatContextService, shortLinkService);
     }
 
     @Tool("""
