@@ -1,8 +1,6 @@
 package fun.freechat.api.admin;
 
 import fun.freechat.api.dto.AppMetaDTO;
-import fun.freechat.api.dto.OpenAiParamDTO;
-import fun.freechat.api.dto.QwenParamDTO;
 import fun.freechat.util.AppMetaUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -39,17 +36,5 @@ public class AppMetaApi {
                 .releaseNoteUrl(AppMetaUtils.getUrl())
                 .runningEnv(AppMetaUtils.getRunningEnv())
                 .build();
-    }
-
-    @Operation(
-            operationId = "expose",
-            summary = "Expose DTO definitions",
-            description = "This method does nothing."
-    )
-    @GetMapping("/expose")
-    public String expose(
-            @RequestParam OpenAiParamDTO openAiParam,
-            @RequestParam QwenParamDTO qwenParam) {
-        return "Oops...";
     }
 }
