@@ -74,35 +74,20 @@ public class AlbumTool {
                 return defaultPicture(characterAvatar, characterPicture);
             }
 
-            String pictureUrl = null;
-            String picturePath = null;
-            for (String path : pictures) {
-                picturePath = path;
-                pictureUrl = fileStore.getShareUrl(picturePath, Integer.MAX_VALUE);
-                if (StringUtils.isBlank(pictureUrl)) {
-                    String subPath = path.substring(PUBLIC_DIR.length());
-                    String key =  Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
-                    pictureUrl = "%s/public/image/%s".formatted(homeUrl, key);
-                }
-
-                if (pictureUrl.equals(characterAvatar) || pictureUrl.equals(characterPicture)) {
-                    // character avatar & picture are already showed on UI
-                    picturePath = null;
-                    pictureUrl = null;
-                }
-            }
-
+            String picturePath = pictures.getFirst();
+            String pictureUrl = fileStore.getShareUrl(picturePath, Integer.MAX_VALUE);
             if (StringUtils.isBlank(pictureUrl)) {
-                return defaultPicture(characterAvatar, characterPicture);
+                String subPath = picturePath.substring(PUBLIC_DIR.length());
+                String key =  Base64.getUrlEncoder().encodeToString(subPath.getBytes(StandardCharsets.UTF_8));
+                // use short link to reduce token usage
+                String shortPath = shortLinkService.shorten("/public/image/" + key);
+                pictureUrl = "%s/s/%s".formatted(homeUrl, shortPath);
             }
 
             if (StringUtils.isNotBlank(picturePath)) {
                 // touch file so that it is at the end of list next time
                 fileStore.setLastModifiedTime(picturePath, System.currentTimeMillis());
             }
-
-            // shorten url to reduce token usage
-            pictureUrl = shortenPictureUrl(pictureUrl);
 
             log.info("Found a picture for character {}, description: {}, path: {}, url: {}",
                     characterInfo.getName(), description, picturePath, pictureUrl);

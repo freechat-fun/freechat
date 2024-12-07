@@ -797,7 +797,7 @@ public class CharacterApi {
             description = "Upload an avatar of the character."
     )
     @PostMapping(value = "/avatar/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
+    @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadAvatar(
             HttpServletRequest request,
             @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
