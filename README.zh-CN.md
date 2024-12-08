@@ -14,7 +14,7 @@
 - 拥有**账号体系与权限管理**，支持 OAuth2 认证方式。引入了“组织”概念以及相关权限约束功能。
 - 广泛采用分布式技术与缓存，以支持**高并发**访问。
 - 提供灵活的角色定制选项，支持直接干预 prompt，支持**为每个角色配置多个后端**。
-- **提供全方位的 Open APIs**，拥有超过 180 个接口并提供 java/python/typescript sdk。借助这些接口，可轻松构建面向终端用户的系统。
+- **提供全方位的 Open APIs**，拥有[超过 180 个接口](https://freechat.fun/w/docs)并提供 java/python/typescript sdk。借助这些接口，可轻松构建面向终端用户的系统。
 - 支持为角色设置 **RAG** (Retrieval Augmented Generation)。
 - 支持角色的**长期记忆，预设记忆**。
 - 支持角色唤起**主动聊天**。
