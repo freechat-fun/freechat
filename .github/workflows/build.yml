@@ -1,4 +1,4 @@
-name: Java CI
+name: Project CI
 
 on:
   push:
@@ -71,6 +71,7 @@ jobs:
         with:
           report_paths: '**/target/*-reports/TEST-*.xml'
           annotate_only: true
+
   typescript_build:
     strategy:
       matrix:
@@ -92,6 +93,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
+          cache: 'npm'
       - name: Install Node.js sdk dependencies
         run: |
           cd freechat-sdk/typescript
