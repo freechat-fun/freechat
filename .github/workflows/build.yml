@@ -30,7 +30,7 @@ jobs:
         include:
           - java_version: '21'
             mvn_opts: ''
-            experimental: false
+            experimental: true
           - java_version: '23'
             mvn_opts: ''
             experimental: true
@@ -54,7 +54,7 @@ jobs:
           cache: 'maven'
       - name: Compile and test with JDK ${{ matrix.java_version }}
         run: |
-          mvn -B -U test ${{ matrix.mvn_opts }}
+          mvn -B -U -T8C test ${{ matrix.mvn_opts }}
 
       - name: Integration test with JDK ${{ matrix.java_version }}
         ## The step or job will only run if the `experimental` variable
