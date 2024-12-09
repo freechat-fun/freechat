@@ -33,7 +33,7 @@
         <langchain4j.version>0.36.2</langchain4j.version>
 
         <!--plugin versions-->
-        <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
+        <buildnumber-maven-plugin.version>3.2.1</buildnumber-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
