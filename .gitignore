@@ -62,7 +62,6 @@ package-lock.json
 local-data/
 
 .openapi-generator
-.github
 */*/.gitignore
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
