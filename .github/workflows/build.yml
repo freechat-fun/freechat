@@ -58,8 +58,7 @@ jobs:
           cache: 'maven'
       - name: Compile and test with JDK ${{ matrix.java_version }}
         run: |
-          mvn -B -U test javadoc:aggregate \
-            ${{ matrix.mvn_opts }}
+          mvn -B -U test ${{ matrix.mvn_opts }}
 
       - name: Integration test with JDK ${{ matrix.java_version }}
         ## The step or job will only run if the `experimental` variable
