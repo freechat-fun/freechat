@@ -25,7 +25,6 @@ jobs:
     strategy:
       matrix:
         java_version:
-          - 17
           - 21
           - 23
         include:
