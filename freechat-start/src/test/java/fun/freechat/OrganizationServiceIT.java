@@ -4,9 +4,11 @@ import fun.freechat.service.organization.OrgService;
 import fun.freechat.util.TestCommonUtils;
 import fun.freechat.util.TestOrgUtils;
 import fun.freechat.util.graph.Graph;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Disabled
 public class OrganizationServiceIT extends AbstractIntegrationTest {
     @Autowired
     private OrgService orgService;

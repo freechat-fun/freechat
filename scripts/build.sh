@@ -36,7 +36,7 @@ cp -R -f ${PROJECT_PATH}/img/* ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resour
 
 cd ${SCRIPTS_PATH}
 
-mvn clean package -Dmaven.test.skip=true -f ${PROJECT_PATH}/pom.xml;ret=$?
+mvn -B clean package -Dmaven.test.skip=true -f ${PROJECT_PATH}/pom.xml;ret=$?
 test ${ret} -eq 0 || die "ERROR: Failed to build ${PROJECT_NAME}!"
 
 cp -f ${PROJECT_PATH}/${STARTER_MODULE}/target/${STARTER_MODULE}-${VERSION}.jar ${DOCKER_CONFIG_HOME}/${PROJECT_NAME}.jar
