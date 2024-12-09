@@ -47,7 +47,6 @@ node_modules/
 dist-ssr/
 .vscode/
 !.vscode/extensions.json
-package-lock.json
 *.suo
 *.ntvs*
 *.njsproj
