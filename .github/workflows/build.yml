@@ -28,9 +28,6 @@ jobs:
           - 21
           - 23
         include:
-          - java_version: '17'
-            mvn_opts: ''
-            experimental: false
           - java_version: '21'
             mvn_opts: ''
             experimental: false
