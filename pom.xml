@@ -19,6 +19,7 @@
         <!--dependency versions-->
         <spring-boot.version>3.3.6</spring-boot.version>
         <springdoc.version>2.6.0</springdoc.version>
+        <lombok.version>1.18.36</lombok.version>
         <mybatis.version>3.5.15</mybatis.version>
         <mybatis-dynamic-sql.version>1.5.0</mybatis-dynamic-sql.version>
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
@@ -34,6 +35,7 @@
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.2.0</buildnumber-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <mybatis-generator-maven-plugin.version>1.4.2</mybatis-generator-maven-plugin.version>
@@ -201,15 +203,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <compilerArgs>
-                            <arg>-parameters</arg>
-                        </compilerArgs>
-                    </configuration>
-                </plugin>
-
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>${maven-antrun-plugin.version}</version>
@@ -236,6 +229,24 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration combine.children="append">
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
