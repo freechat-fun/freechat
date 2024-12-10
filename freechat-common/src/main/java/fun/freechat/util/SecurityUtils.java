@@ -1,12 +1,17 @@
 package fun.freechat.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 
 public class SecurityUtils {
-    public static String filterPath(String path) {
+    private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
+
+    public static String filterPath(String path) throws AccessDeniedException {
         if (StringUtils.isEmpty(path)) {
             return path;
         }
@@ -16,12 +21,14 @@ public class SecurityUtils {
             try {
                 temp = URLDecoder.decode(temp, StandardCharsets.UTF_8);
             } catch (Exception e) {
-                return null;
+                log.warn("Invalid path: {}", path, e);
+                throw new IllegalArgumentException("Invalid path: " + path);
             }
         }
 
         if (temp.contains("..") || temp.charAt(0) == '/') {
-            return null;
+            log.warn("Invalid path: {}", path);
+            throw new AccessDeniedException("Invalid path: " + path);
         }
 
         return path;

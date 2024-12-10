@@ -54,13 +54,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
 import static fun.freechat.api.util.ConfigUtils.*;
-import static fun.freechat.api.util.FileUtils.*;
+import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
 import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 import static org.yaml.snakeyaml.nodes.Tag.MAP;
@@ -753,6 +754,10 @@ public class CharacterApi {
             }
             fileStore.delete(path);
             return true;
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (IOException e) {
             return false;
         }
@@ -887,6 +892,10 @@ public class CharacterApi {
             }
             fileStore.delete(path);
             return true;
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (IOException e) {
             return false;
         }
@@ -1065,17 +1074,23 @@ public class CharacterApi {
         }
 
         FileStore fileStore = StoreUtils.defaultFileStore();
-        String key = getKeyFromUrl(avatarUrl);
-        String path = FileUtils.getDefaultPublicPath(key);
-        String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterUid;
-        if (path.startsWith(dir) && fileStore.exists(path)) {
-            try {
-                String filePath = "avatar" + path.substring(dir.length());
-                Long fileSize = fileStore.size(path);
-                InputStream fileStream = fileStore.read(path);
-                return Optional.of(Triple.of(filePath, fileStream, fileSize));
-            } catch (IOException ignored) {
+        try {
+            String key = getKeyFromUrl(avatarUrl);
+            String path = FileUtils.getDefaultPublicPath(key);
+            String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterUid;
+            if (path.startsWith(dir) && fileStore.exists(path)) {
+                try {
+                    String filePath = "avatar" + path.substring(dir.length());
+                    Long fileSize = fileStore.size(path);
+                    InputStream fileStream = fileStore.read(path);
+                    return Optional.of(Triple.of(filePath, fileStream, fileSize));
+                } catch (IOException ignored) {
+                }
             }
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         return Optional.empty();
     }

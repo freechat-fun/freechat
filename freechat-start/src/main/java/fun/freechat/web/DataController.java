@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +60,10 @@ public class DataController {
             HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag, IMAGE_JPEG, AVAILABLE_IMAGE_TYPES);
             Resource resource = new PathResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -84,6 +89,10 @@ public class DataController {
             HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag, APPLICATION_OCTET_STREAM, null);
             Resource resource = new PathResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

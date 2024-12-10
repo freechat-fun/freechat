@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.List;
@@ -22,7 +23,13 @@ import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 @Slf4j
 public class FileUtils {
     private static String filenameFor(MultipartFile file) {
-        String filteredOriginFilename = SecurityUtils.filterPath(file.getOriginalFilename());
+        String filteredOriginFilename = null;
+        try {
+            filteredOriginFilename = SecurityUtils.filterPath(file.getOriginalFilename());
+        } catch (IOException | IllegalArgumentException e) {
+            // ignore
+        }
+
         return StringUtils.isBlank(filteredOriginFilename) ?
                 IdUtils.newId() :
                 IdUtils.newId() + "-" + filteredOriginFilename.replaceAll("/", "-");
@@ -76,9 +83,9 @@ public class FileUtils {
         return getDefaultPublicUrl(request, path, "document");
     }
 
-    public static String getDefaultPublicPath(String key) {
+    public static String getDefaultPublicPath(String key) throws AccessDeniedException {
         String subPath = new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8);
-        return PUBLIC_DIR + subPath;
+        return PUBLIC_DIR + SecurityUtils.filterPath(subPath);
     }
 
     private static String getDefaultPrivateUrl(HttpServletRequest request, String path, String userId, String dataType) {
@@ -101,9 +108,9 @@ public class FileUtils {
         return getDefaultPrivateUrl(request, path, userId, "document");
     }
 
-    public static String getDefaultPrivatePath(String key, String userId) {
+    public static String getDefaultPrivatePath(String key, String userId) throws AccessDeniedException {
         String subPath = new String(Base64.getUrlDecoder().decode(key), StandardCharsets.UTF_8);
-        return PRIVATE_DIR + userId + "/" + subPath;
+        return PRIVATE_DIR + userId + "/" + SecurityUtils.filterPath(subPath);
     }
 
     public static String getKeyFromUrl(String url) {

@@ -54,7 +54,7 @@ public class TraceInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-                                @Nullable Object handler, Exception ex) {
+                                @Nullable Object handler, @Nullable Exception ex) {
         if (!TraceUtils.isTracing()) {
             return;
         }

@@ -12,6 +12,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.nio.file.AccessDeniedException;
 
 @Schema(description = "RAG task information")
 @Slf4j
@@ -37,8 +41,14 @@ public class RagTaskDTO {
         RagTask task = CommonUtils.convert(this, RagTask.class);
         task.setCharacterUid(characterUid);
         if (SourceType.of(getSourceType()) == SourceType.FILE) {
-            task.setSource(FileUtils.getDefaultPrivatePath(
-                    getSource(), AccountUtils.currentUser().getUserId()));
+            try {
+                task.setSource(FileUtils.getDefaultPrivatePath(
+                        getSource(), AccountUtils.currentUser().getUserId()));
+            } catch (AccessDeniedException e) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
         }
 
         return task;
