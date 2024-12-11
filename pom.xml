@@ -291,13 +291,6 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>${spotless-maven-plugin.version}</version>
                 <configuration>
-                    <ratchetFrom>origin/main</ratchetFrom>
-                    <java>
-                        <palantirJavaFormat>
-                            <style>PALANTIR</style>
-                            <!-- or AOSP/GOOGLE (optional) -->
-                        </palantirJavaFormat>
-                    </java>
                     <pom>
                         <sortPom>
                             <nrOfIndentSpace>4</nrOfIndentSpace>
