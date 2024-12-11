@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>freechat</artifactId>
         <groupId>fun.freechat</groupId>
+        <artifactId>freechat</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>freechat-langchain4j</artifactId>
     <scm>
@@ -25,8 +25,8 @@
             <artifactId>langchain4j</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>commons-logging</artifactId>
                     <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -70,7 +70,6 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-embeddings-bge-small-zh-v15-q</artifactId>
-            <version>0.36.2</version>
         </dependency>
 
         <dependency>
@@ -94,12 +93,12 @@
             <artifactId>langchain4j-milvus</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>commons-logging</artifactId>
                     <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>slf4j-reload4j</artifactId>
                     <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-reload4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
