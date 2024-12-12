@@ -4,21 +4,21 @@ dependencies:
   version: 11.1.20
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 19.6.4
+  version: 20.5.0
 - name: milvus
   repository: https://charts.bitnami.com/bitnami
   version: 8.3.8
 - name: prometheus
   repository: https://charts.bitnami.com/bitnami
-  version: 1.3.27
+  version: 1.4.0
 - name: grafana
   repository: https://charts.bitnami.com/bitnami
-  version: 11.3.26
+  version: 11.4.0
 - name: grafana-loki
   repository: https://charts.bitnami.com/bitnami
-  version: 4.6.22
+  version: 4.7.0
 - name: kube-state-metrics
   repository: https://charts.bitnami.com/bitnami
-  version: 4.2.16
-digest: sha256:c4f59ead0a32fc9f96f97b71292a413a1478a497dd1aa2d53fb56545a8863f16
-generated: "2024-11-09T12:46:42.745586+08:00"
+  version: 4.3.1
+digest: sha256:b523a555ca8d7002180a8e77dac38a83247b68ce6d1af592ab6175d37bdf8df5
+generated: "2024-12-12T01:19:47.455168212Z"
