@@ -14,7 +14,7 @@ lazy val root = (project in file(".")).
       "com.squareup.okhttp3" % "logging-interceptor" % "4.12.0",
       "com.google.code.gson" % "gson" % "2.11.0",
       "org.apache.commons" % "commons-lang3" % "3.17.0",
-      "jakarta.ws.rs" % "jakarta.ws.rs-api" % "2.1.6",
+      "jakarta.ws.rs" % "jakarta.ws.rs-api" % "4.0.0",
       "org.openapitools" % "jackson-databind-nullable" % "0.2.6",
       "io.gsonfire" % "gson-fire" % "1.9.0" % "compile",
       "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0" % "compile",
