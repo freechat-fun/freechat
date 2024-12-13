@@ -7,7 +7,7 @@ dependencies:
   version: 20.5.0
 - name: milvus
   repository: https://charts.bitnami.com/bitnami
-  version: 8.3.8
+  version: 10.1.0
 - name: prometheus
   repository: https://charts.bitnami.com/bitnami
   version: 1.4.0
@@ -20,5 +20,5 @@ dependencies:
 - name: kube-state-metrics
   repository: https://charts.bitnami.com/bitnami
   version: 4.3.1
-digest: sha256:0984f68536b45f073231e367179fdbb27dd50d1a618dbef9b27d3cd2ecc8e01e
-generated: "2024-12-13T13:55:42.366939039Z"
+digest: sha256:ca5d496f6ee431b740eadbdef8397a6e7b8d477709377f6d16ef72f7f0851874
+generated: "2024-12-13T15:29:49.784975802Z"
