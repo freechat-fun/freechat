@@ -12,7 +12,7 @@ import { UnauthorizedDialog, ErrorMessageSnackbar } from './components';
 import router from './router';
 
 import {
-  experimental_extendTheme as materialExtendTheme,
+  extendTheme as materialExtendTheme,
   Experimental_CssVarsProvider as MaterialCssVarsProvider,
   THEME_ID as MATERIAL_THEME_ID,
 } from '@mui/material';
