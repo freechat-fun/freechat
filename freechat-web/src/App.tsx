@@ -37,7 +37,7 @@ function App() {
         theme={{ [MATERIAL_THEME_ID]: materialTheme }}
       >
         <JoyCssVarsProvider defaultMode="dark" theme={joyTheme}>
-          <CssBaseline enableColorScheme />
+          <CssBaseline />
           <GlobalStyles
             styles={() => ({
               ':root': {

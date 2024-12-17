@@ -146,7 +146,7 @@ export default function PromptEditor({
   const [editUserContent, setEditUserContent] = useState<string>();
   const [editAssistantContent, setEditAssistantContent] = useState<string>();
 
-  const originName = useRef<string>();
+  const originName = useRef<string>(undefined);
   const systemRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLDivElement>(null);
 

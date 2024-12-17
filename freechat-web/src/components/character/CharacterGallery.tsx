@@ -211,7 +211,7 @@ export default function CharacterGallery({
   const [finish, setFinish] = useState(false);
   const [scrollRemainingHeight, setScrollRemainingHeight] = useState(200);
 
-  const keyWord = useRef<string>();
+  const keyWord = useRef<string>(undefined);
 
   const defaultQuery = useCallback(() => {
     const newQuery = new CharacterQueryDTO();

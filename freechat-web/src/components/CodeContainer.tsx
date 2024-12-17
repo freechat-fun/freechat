@@ -22,12 +22,24 @@ const CodeContent: React.FC<PropsWithChildren> = ({ children }) => {
   const codeRef = useRef<HTMLPreElement>(null);
 
   const className =
-    typeof children === 'object' && children !== null && 'props' in children
+    typeof children === 'object' &&
+    children !== null &&
+    'props' in children &&
+    typeof children.props === 'object' &&
+    children.props !== null &&
+    'className' in children.props &&
+    typeof children.props.className === 'string'
       ? (children.props.className ?? '')
       : '';
 
   const codeText =
-    typeof children === 'object' && children !== null && 'props' in children
+    typeof children === 'object' &&
+    children !== null &&
+    'props' in children &&
+    typeof children.props === 'object' &&
+    children.props !== null &&
+    'children' in children.props &&
+    typeof children.props.children === 'string'
       ? (children.props.children ?? '')
       : '';
 

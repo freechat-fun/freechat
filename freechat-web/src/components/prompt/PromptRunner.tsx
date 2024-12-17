@@ -126,7 +126,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
   const [playing, setPlaying] = useState(false);
   const [parameters, setParameters] = useState(defaultParameters);
 
-  const output = useRef<LlmResultDTO>();
+  const output = useRef<LlmResultDTO>(undefined);
 
   const [width, setWidth] = useState(minWidth || '30%');
 

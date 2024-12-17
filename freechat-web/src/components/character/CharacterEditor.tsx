@@ -262,7 +262,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     ) => {
       characterApi
         ?.publishCharacter(currentId, visibility)
-        .then((_) => {
+        .then(() => {
           chatApi
             ?.getDefaultChatId(recordUid as string)
             .then((resp) => {
