@@ -390,7 +390,7 @@ export default function Characters() {
             startDecorator={<AddCircleRounded />}
             onClick={() => setEditRecordName('untitled')}
           >
-            {t('Create')}
+            {t('button:Create')}
           </Button>
           <label htmlFor={fileInputId}>
             <Button
@@ -398,7 +398,7 @@ export default function Characters() {
               startDecorator={<ImportExportRounded />}
               onClick={handleConfFileModify}
             >
-              {t('Import')}
+              {t('button:Import')}
             </Button>
           </label>
         </ButtonGroup>
