@@ -59,6 +59,15 @@ public final class CharacterBackendDynamicSqlSupport {
     public static final SqlColumn<Byte> enableAlbumTool = characterBackend.enableAlbumTool;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<Byte> enableTts = characterBackend.enableTts;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> ttsSpeakerIdx = characterBackend.ttsSpeakerIdx;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> ttsSpeakerWav = characterBackend.ttsSpeakerWav;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> moderationParams = characterBackend.moderationParams;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -94,6 +103,12 @@ public final class CharacterBackendDynamicSqlSupport {
         public final SqlColumn<String> quotaType = column("quota_type", JDBCType.VARCHAR);
 
         public final SqlColumn<Byte> enableAlbumTool = column("enable_album_tool", JDBCType.TINYINT);
+
+        public final SqlColumn<Byte> enableTts = column("enable_tts", JDBCType.TINYINT);
+
+        public final SqlColumn<String> ttsSpeakerIdx = column("tts_speaker_idx", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> ttsSpeakerWav = column("tts_speaker_wav", JDBCType.VARCHAR);
 
         public final SqlColumn<String> moderationParams = column("moderation_params", JDBCType.LONGVARCHAR);
 

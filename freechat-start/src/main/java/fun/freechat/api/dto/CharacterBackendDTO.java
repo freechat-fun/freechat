@@ -41,6 +41,12 @@ public class CharacterBackendDTO {
     private String quotaType;
     @Schema(description = "Enable character album image retrieval tool")
     private Boolean enableAlbumTool;
+    @Schema(description = "Enable character tts feature")
+    private Boolean enableTts;
+    @Schema(description = "Character's speaker idx for tts")
+    private String ttsSpeakerIdx;
+    @Schema(description = "Character's speaker sample for tts")
+    private String ttsSpeakerWav;
 
     public CharacterBackend toCharacterBackend(String characterUid) {
         if (StringUtils.isBlank(characterUid)) {
@@ -59,6 +65,12 @@ public class CharacterBackendDTO {
             backend.setEnableAlbumTool((byte) 0);
         }
 
+        if (getEnableTts() == Boolean.TRUE) {
+            backend.setEnableTts((byte) 1);
+        } else if (getEnableTts() == Boolean.FALSE) {
+            backend.setEnableTts((byte) 0);
+        }
+
         return backend;
     }
 
@@ -68,6 +80,8 @@ public class CharacterBackendDTO {
         }
         CharacterBackendDTO dto = CommonUtils.convert(backend, CharacterBackendDTO.class);
         dto.setIsDefault(isTrue(backend.getIsDefault()));
+        dto.setEnableAlbumTool(isTrue(backend.getEnableAlbumTool()));
+        dto.setEnableTts(isTrue(backend.getEnableTts()));
         return dto;
     }
 }

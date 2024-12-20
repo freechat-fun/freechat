@@ -230,6 +230,9 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `init_quota` bigint unsigned DEFAULT 0,
   `quota_type` varchar(16) DEFAULT 'none' COMMENT 'messages | tokens | none',
   `enable_album_tool` tinyint NOT NULL DEFAULT 0,
+  `enable_tts` tinyint NOT NULL DEFAULT 0,
+  `tts_speaker_idx` varchar(32) DEFAULT NULL,
+  `tts_speaker_wav` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`backend_id`),
   INDEX `idx_character` (`character_uid`),
   INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`)

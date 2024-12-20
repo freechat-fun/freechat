@@ -46,6 +46,12 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private String quotaType;
     @Schema(description = "Enable character album image retrieval tool")
     private Boolean enableAlbumTool;
+    @Schema(description = "Enable character tts feature")
+    private Boolean enableTts;
+    @Schema(description = "Character's speaker idx for tts")
+    private String ttsSpeakerIdx;
+    @Schema(description = "Character's speaker sample for tts")
+    private String ttsSpeakerWav;
 
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (backend == null) {
@@ -54,6 +60,7 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
         CharacterBackendDetailsDTO dto = CommonUtils.convert(backend, CharacterBackendDetailsDTO.class);
         dto.setIsDefault(isTrue(backend.getIsDefault()));
         dto.setEnableAlbumTool(isTrue(backend.getEnableAlbumTool()));
+        dto.setEnableTts(isTrue(backend.getEnableTts()));
         return dto;
     }
 }
