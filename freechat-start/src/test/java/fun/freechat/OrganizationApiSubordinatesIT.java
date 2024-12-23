@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Disabled
-public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
+class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     private String userId;
     private String apiToken;
 
@@ -33,7 +33,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_get_solid_subordinates() {
+    void should_get_solid_subordinates() {
         testClient.get().uri("/api/v2/org/subordinates")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -45,7 +45,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_get_all_subordinates() {
+    void should_get_all_subordinates() {
         testClient.get().uri("/api/v2/org/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -57,7 +57,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_get_subordinate_all_subordinates() {
+    void should_get_subordinate_all_subordinates() {
         testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
@@ -69,7 +69,7 @@ public class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_update_subordinate_subordinates() {
+    void should_update_subordinate_subordinates() {
         testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)

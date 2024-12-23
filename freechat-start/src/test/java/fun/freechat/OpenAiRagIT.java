@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
-public class OpenAiRagIT extends AbstractIntegrationTest {
+class OpenAiRagIT extends AbstractIntegrationTest {
     private String userId;
     private String userToken;
     private String characterUid;

@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Disabled
-public class OrganizationServiceIT extends AbstractIntegrationTest {
+class OrganizationServiceIT extends AbstractIntegrationTest {
     @Autowired
     private OrgService orgService;
 
     @Test
-    public void should_get_owners() {
+    void should_get_owners() {
         String userId = "31";
         TestOrgUtils.addOwners(userId);
         TestCommonUtils.waitAWhile();
@@ -35,7 +35,7 @@ public class OrganizationServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_get_subordinates() {
+    void should_get_subordinates() {
         String userId = "31";
         TestOrgUtils.addSubordinates(userId);
         TestCommonUtils.waitAWhile();

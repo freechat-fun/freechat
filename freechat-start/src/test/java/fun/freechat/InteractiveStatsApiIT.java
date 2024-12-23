@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class InteractiveStatsApiIT extends AbstractIntegrationTest {
+class InteractiveStatsApiIT extends AbstractIntegrationTest {
     private String userId;
     private String apiToken;
     private Long promptId;

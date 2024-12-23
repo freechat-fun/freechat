@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @EnabledIfEnvironmentVariable(named = "OPENAI_API_KEY", matches = ".+")
-public class OpenAiPromptAiIT extends AbstractIntegrationTest {
+class OpenAiPromptAiIT extends AbstractIntegrationTest {
     private static final String PROMPT = "say 'hello'";
     private static final String PROMPT_DRAFT = "{\"template\":\"say 'goodbye'\",\"type\":\"string\"}";
     private static final String PROMPT_TEMPLATE_FSTRING = "say '{greeting}'";
@@ -107,7 +107,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_send_prompt_with_api_key() {
+    void should_send_prompt_with_api_key() {
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPrompt(PROMPT);
@@ -125,7 +125,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_send_prompt_with_api_key_name() {
+    void should_send_prompt_with_api_key_name() {
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKeyName", apiKeyName());
         aiRequest.setPrompt(PROMPT);
@@ -144,7 +144,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
 
     @ParameterizedTest
     @MethodSource
-    public void should_send_prompt_template(String template, String format, Map<String, Object> variables) {
+    void should_send_prompt_template(String template, String format, Map<String, Object> variables) {
         PromptTemplateDTO promptTemplate = PromptTemplateDTO.builder()
                 .template(template)
                 .format(format)
@@ -177,7 +177,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_send_prompt_reference() {
+    void should_send_prompt_reference() {
         PromptRefDTO promptRef = PromptRefDTO.builder().promptId(promptId).draft(false).build();
 
         PromptAiParamDTO aiRequest = createRequest(modelId());
@@ -210,7 +210,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_send_prompt_and_get_embeddings() {
+    void should_send_prompt_and_get_embeddings() {
         PromptAiParamDTO aiRequest = createRequest(embeddingModelId());
         aiRequest.getParams().put("apiKey", apiKey());
         aiRequest.setPrompt(PROMPT);
@@ -234,7 +234,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_failed_to_send_prompt() {
+    void should_failed_to_send_prompt() {
         PromptAiParamDTO aiRequest = createRequest(modelId());
         aiRequest.getParams().put("apiKeyName", "No Key");
         aiRequest.setPrompt(PROMPT);
@@ -260,7 +260,7 @@ public class OpenAiPromptAiIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_send_chat_prompt() {
+    void should_send_chat_prompt() {
         String system = "Your name is {name}. You are {age} years old.";
 
         List<ChatMessageDTO> messages = new LinkedList<>();

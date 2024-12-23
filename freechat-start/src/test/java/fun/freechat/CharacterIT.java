@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class CharacterIT extends AbstractIntegrationTest {
+class CharacterIT extends AbstractIntegrationTest {
     private String ownerId;
     private String otherId;
     private String ownerToken;
@@ -52,7 +52,7 @@ public class CharacterIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_upload_and_delete_pictures() {
+    void should_upload_and_delete_pictures() {
         String url1 = testClient.post().uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -137,7 +137,7 @@ public class CharacterIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_upload_and_delete_documents() {
+    void should_upload_and_delete_documents() {
         String url1 = testClient.post().uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)

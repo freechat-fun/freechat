@@ -8,9 +8,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TtsIT extends AbstractIntegrationTest {
+class TtsIT extends AbstractIntegrationTest {
     @Test
-    public void should_list_predefined_speakers() {
+    void should_list_predefined_speakers() {
         testClient.get().uri("/api/v2/public/tts/speakers")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

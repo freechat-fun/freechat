@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class TagIT extends AbstractIntegrationTest {
+class TagIT extends AbstractIntegrationTest {
     private String userId;
     private String apiToken;
     private Long promptId1;
@@ -42,7 +42,7 @@ public class TagIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_list_hot_tags() {
+    void should_list_hot_tags() {
         testClient.get().uri("/api/v2/public/tags/hot/prompt/10")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)

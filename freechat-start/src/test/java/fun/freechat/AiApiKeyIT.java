@@ -19,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-public class AiApiKeyIT extends AbstractIntegrationTest {
+class AiApiKeyIT extends AbstractIntegrationTest {
     @Value("${auth.aiApiKey.limits:#{null}}")
     private Integer maxCount;
     private String userId;
@@ -51,7 +51,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void should_pass_all_tests() {
+    void should_pass_all_tests() {
         List<Long> ids = new ArrayList<>(maxCount);
         for (int i = 0; i < apiKeys.size() - 1; ++i) {
             testClient.post().uri("/api/v2/ai/apikey")
@@ -62,7 +62,7 @@ public class AiApiKeyIT extends AbstractIntegrationTest {
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
                     .expectBody(Long.class).value(id -> {
-                        assertThat(id).isGreaterThan(0L);
+                        assertThat(id).isPositive();
                         ids.add(id);
                     });
         }
