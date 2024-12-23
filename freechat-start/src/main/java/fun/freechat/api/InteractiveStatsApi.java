@@ -20,7 +20,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @Tag(name = "Interactive Statistics")
 @RequestMapping("/api/v2")
-@ResponseBody
 @Validated
 @SuppressWarnings("unused")
 public class InteractiveStatsApi {

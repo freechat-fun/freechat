@@ -11,14 +11,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Service
+@RestController
 @Tag(name = "AI Manager (for biz, admin)", description = "Manage model information, callable only by super administrators and business administrators.")
 @RequestMapping("/api/v2/biz/admin/ai/model")
-@ResponseBody
 @Validated
 @SuppressWarnings("unused")
 public class AiModelInfoManagerApi {

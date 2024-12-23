@@ -75,7 +75,7 @@ public class TestController {
 
     @GetMapping("/trace")
     public String trace(Model model) {
-        Map<String, Double> info = new HashMap<>(2);
+        Map<String, Double> info = HashMap.newHashMap(2);
         info.put("a", 1.0);
         info.put("b", 2.0);
         testComponent.shouldBeTracedMethod(null, true, 1, 1.0, "a b",
@@ -92,7 +92,7 @@ public class TestController {
             ArrayList<String> latestLines = new ArrayList<>(2);
             int index = lines.size() - 2;
             String line = index >= 0 ? lines.get(index) : "?";
-            latestLines.add(0, line);
+            latestLines.addFirst(line);
             ++index;
             line = index >= 0 ? lines.get(index) : "?";
             latestLines.add(1, line);
@@ -250,13 +250,13 @@ public class TestController {
                              Model model) {
         Object sessionValue = session.getAttribute(key);
         TestPojo pojo;
-        if (sessionValue == null || !(sessionValue instanceof TestPojo)) {
+        if (sessionValue instanceof TestPojo testPojo) {
+            pojo = testPojo;
+        } else {
             pojo = new TestPojo();
             pojo.a = key;
             pojo.b = value;
             session.setAttribute(key, pojo);
-        } else {
-            pojo = (TestPojo) sessionValue;
         }
         model.addAttribute(RESULT, pojo);
         return TEST_PAGE;
@@ -269,7 +269,7 @@ public class TestController {
     private UserDetailsManager userDetailsManager;
 
     @GetMapping("/accounts/user")
-    public String user(Model model) {
+    public String user(Model model) throws InterruptedException {
         Date now = new Date();
 
         User testUser = new User().withUsername(UUID.randomUUID().toString())
@@ -296,7 +296,7 @@ public class TestController {
             userDetails = userDetailsManager.loadUserByUsername(testUser.getUsername());
             result.append("Updated User:\n").append(objectMapper.writeValueAsString(userDetails)).append("\n");
             model.addAttribute(RESULT, result.toString());
-        } catch (JsonProcessingException | InterruptedException e) {
+        } catch (JsonProcessingException e) {
             model.addAttribute(RESULT, e.getMessage());
         } finally {
             userDetailsManager.deleteUser(testUser.getUsername());
@@ -307,7 +307,7 @@ public class TestController {
     @GetMapping("/info/user")
     public String userInfo(HttpServletRequest request, Model model) {
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
-        Map<String, Object> userInfo = new HashMap<>(3);
+        Map<String, Object> userInfo = HashMap.newHashMap(3);
         try {
             if (authenticated != null) {
                 userInfo.put("authentication", authenticated);

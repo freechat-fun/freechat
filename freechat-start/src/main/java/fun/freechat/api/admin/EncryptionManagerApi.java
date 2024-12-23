@@ -7,17 +7,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @Tag(name = "Encryption Manager (for admin)", description = "System encryption service, callable only by super administrators.")
 @RequestMapping("/api/v2/admin/encryption")
-@ResponseBody
 @Validated
 @SuppressWarnings("unused")
 public class EncryptionManagerApi {

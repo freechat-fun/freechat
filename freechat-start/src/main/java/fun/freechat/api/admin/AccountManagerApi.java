@@ -18,7 +18,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +26,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Controller
+@RestController
 @Tag(name = "Account Manager (for admin)", description = "Manage users, callable only by super administrators.")
 @RequestMapping("/api/v2/admin")
-@ResponseBody
 @Validated
 @SuppressWarnings("unused")
 public class AccountManagerApi {

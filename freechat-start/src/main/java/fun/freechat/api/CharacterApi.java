@@ -40,7 +40,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,10 +65,9 @@ import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
 import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 import static org.yaml.snakeyaml.nodes.Tag.MAP;
 
-@Controller
+@RestController
 @Tag(name = "Character")
 @RequestMapping("/api/v2/character")
-@ResponseBody
 @Validated
 @Slf4j
 @SuppressWarnings("unused")

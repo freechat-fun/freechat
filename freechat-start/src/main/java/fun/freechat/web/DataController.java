@@ -14,11 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -28,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.springframework.http.MediaType.*;
 
-@Controller
+@RestController
 @Slf4j
 @SuppressWarnings("unused")
 public class DataController {
@@ -41,7 +37,6 @@ public class DataController {
 
     @GetMapping(value = "/public/image/{key}", produces = {IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE})
     @CrossOrigin(originPatterns = "*")
-    @ResponseBody
     public ResponseEntity<Resource> getPublicImage(
             HttpServletRequest request,
             @PathVariable("key") @NotBlank String key) {
@@ -70,7 +65,6 @@ public class DataController {
     }
 
     @GetMapping(value = "/my/document/{key}", produces = ALL_VALUE)
-    @ResponseBody
     public ResponseEntity<Resource> getPrivateDocument(
             HttpServletRequest request,
             @PathVariable("key") @NotBlank String key) {

@@ -8,14 +8,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Service
+@RestController
 @Tag(name = "Tag Manager (for biz, admin)", description = "Manage tags, callable only by super administrators and business administrators.")
 @RequestMapping("/api/v2/biz/admin/tag")
-@ResponseBody
 @Validated
 @SuppressWarnings("unused")
 public class TagManagerApi {
