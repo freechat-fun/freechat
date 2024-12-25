@@ -1,4 +1,4 @@
-{{- define "application-private.yml" -}}
+{{- define "application-online.yml" -}}
 {{- if .Values.app.icpCode }}
 app:
   icpCode: {{ .Values.app.icpCode | quote }}
