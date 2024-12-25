@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class TestOllamaContainer  extends OllamaContainer {
+public class TestOllamaContainer extends OllamaContainer {
     private List<String> models;
 
     public TestOllamaContainer(DockerImageName dockerImageName) {

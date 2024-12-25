@@ -14,6 +14,8 @@ import java.util.Map;
 public class LanguageModelFactory {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60L);
 
+    private LanguageModelFactory() {}
+
     public static OpenAiLanguageModel createOpenAiLanguageModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
         return OpenAiLanguageModel.builder()
@@ -335,46 +337,38 @@ public class LanguageModelFactory {
 
     private static Float getFloat(Map<String, Object> parameters, String key) {
         Object value = parameters.get(key);
-        if (value instanceof Float floatValue) {
-            return floatValue;
-        } else if (value instanceof Number number) {
-            return number.floatValue();
-        } else {
-            return null;
-        }
+        return switch (value) {
+            case Float floatValue -> floatValue;
+            case Number number -> number.floatValue();
+            default -> null;
+        };
     }
 
     private static Double getDouble(Map<String, Object> parameters, String key) {
         Object value = parameters.get(key);
-        if (value instanceof Double doubleValue) {
-            return doubleValue;
-        } else if (value instanceof Number number) {
-            return number.doubleValue();
-        } else {
-            return null;
-        }
+        return switch (value) {
+            case Double doubleValue -> doubleValue;
+            case Number number -> number.doubleValue();
+            default -> null;
+        };
     }
 
     private static Long getLong(Map<String, Object> parameters, String key) {
         Object value = parameters.get(key);
-        if (value instanceof Long longValue) {
-            return longValue;
-        } else if (value instanceof Number number) {
-            return number.longValue();
-        } else {
-            return null;
-        }
+        return switch (value) {
+            case Long longValue -> longValue;
+            case Number number -> number.longValue();
+            default -> null;
+        };
     }
 
     private static Integer getInteger(Map<String, Object> parameters, String key) {
         Object value = parameters.get(key);
-        if (value instanceof Integer intValue) {
-            return intValue;
-        } else if (value instanceof Number number) {
-            return number.intValue();
-        } else {
-            return null;
-        }
+        return switch (value) {
+            case Integer intValue -> intValue;
+            case Number number -> number.intValue();
+            default -> null;
+        };
     }
 
     private static String getString(Map<String, Object> parameters, String key) {

@@ -133,7 +133,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             if (locked) {
                 try {
                     lock.unlock();
-                } catch (Throwable unlockEx) {
+                } catch (Exception unlockEx) {
                     log.warn("Unlock failed!", unlockEx);
                 }
             }

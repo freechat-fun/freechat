@@ -132,7 +132,7 @@ Once ready, enter the `scripts/` directory and run `local-run.sh`, which will do
 ### Running in an IDE
 To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options:
 ```shell
--Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \
+-Dspring.config.location=classpath:/application.yml \
 -DAPP_HOME=local-data/freechat \
 -Dspring.profiles.active=local
 ```

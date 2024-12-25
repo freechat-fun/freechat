@@ -9,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 
 public class SecurityUtils {
-    private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(SecurityUtils.class);
+
+    private SecurityUtils() {}
 
     public static String filterPath(String path) throws AccessDeniedException {
         if (StringUtils.isEmpty(path)) {

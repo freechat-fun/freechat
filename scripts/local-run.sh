@@ -113,7 +113,7 @@ export HOST_PORT
 export TAG
 export APP_NAME
 export SERVICE_OPTS="\
-  -Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \
+  -Dspring.config.location=classpath:/application.yml \
   -Dspring.profiles.active=local \
   -Dembedding.milvus.url=\"http://milvus:${MILVUS_PORT}\" \
   -Dspring.datasource.url=\"jdbc:mysql://mysql:${MYSQL_PORT}/${PROJECT_NAME}?useUnicode=true&characterEncoding=utf-8\" \

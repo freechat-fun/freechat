@@ -132,7 +132,7 @@ grafana:
 ### 运行在 IDE
 要在 IDE 中运行 FreeChat，你需要先启动所有依赖服务，但不必运行 FreeChat 应用本身的容器。你可以执行 `scripts/local-deps.sh` 脚本来本地启动 `MySQL`、`Redis`、`Milvus` 等服务。完成后，在你的 IDE 中打开并调试 `freechat-start/src/main/java/fun/freechat/Application.java`。请确保你设置了以下的 VM 启动参数：
 ```shell
--Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \
+-Dspring.config.location=classpath:/application.yml \
 -DAPP_HOME=local-data/freechat \
 -Dspring.profiles.active=local
 ```

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,6 +18,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
@@ -60,20 +62,27 @@ public class HttpUtils {
     }
 
     public static String post(String url, String data) {
-        return post(url, data, null);
+        return post(url, null, data);
     }
 
-    public static String post(String url, String data, Map<String, String> headers) {
+    public static String post(String url, Map<String, String> headers, String data) {
         HttpRequest.Builder builder = builderFor(url, headers);
         builder.POST(HttpRequest.BodyPublishers.ofString(data != null ? data : ""));
         return getResponseAsString(builder.build());
     }
 
-    public static String put(String url, String data) {
-        return put(url, data, null);
+    public static CompletableFuture<HttpResponse<InputStream>> asyncPost(
+            String url, Map<String, String> headers, String data) {
+        HttpRequest.Builder builder = builderFor(url, headers);
+        HttpRequest request = builder.POST(HttpRequest.BodyPublishers.ofString(data != null ? data : "")).build();
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream());
     }
 
-    public static String put(String url, String data, Map<String, String> headers) {
+    public static String put(String url, String data) {
+        return put(url, null, data);
+    }
+
+    public static String put(String url, Map<String, String> headers, String data) {
         HttpRequest.Builder builder = builderFor(url, headers);
         builder.PUT(HttpRequest.BodyPublishers.ofString(data != null ? data : ""));
         return getResponseAsString(builder.build());

@@ -1,8 +1,11 @@
 app:
+  homeUrl: http://localhost
   logging:
     home: ${APP_HOME}/logs
     level: info
 auth:
+  aes:
+    key: 6034a30c93dd4342a3e2d1973bc13ee5
   login:
     uri: /w/login
     processingUri: /login
@@ -50,6 +53,9 @@ chat:
 embedding:
   milvus:
     retrieveEmbeddingsOnSearch: false
+    url: http://localhost:19530
+tts:
+  baseUri: http://localhost:5002
 configmap:
   workdir: ${APP_HOME}/config.run
 disk:
@@ -57,10 +63,15 @@ disk:
 redis:
   mode: single
   datasource:
+    url: redis://localhost:6379
+    password: hello1234
     timeout: 10000
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/freechat?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: hello1234
   security:
     oauth2:
       client:
@@ -72,6 +83,10 @@ spring:
             tokenUri: https://oauth.aliyun.com/v1/token
             userInfoUri: https://oauth.aliyun.com/v1/userinfo
             userNameAttribute: sub
+        registration:
+          github:
+            clientId: 'fakeId'
+            clientSecret: 'fakeSecret'
   servlet:
     multipart:
       max-file-size: 10MB

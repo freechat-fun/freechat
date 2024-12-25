@@ -86,7 +86,7 @@ do
 done
 
 if [[ ! -f "${CLI}" ]]; then
-  curl -L -o ${CLI} ${CLI_URL}
+  curl -L -sSLo ${CLI} ${CLI_URL}
 fi
 
 function clean_tmp {
