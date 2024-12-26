@@ -42,15 +42,15 @@ public class TtsApi {
     private TtsService ttsService;
 
     @Operation(
-            operationId = "listTtsPredefinedSpeakers",
-            summary = "List Predefined Speakers",
-            description = "Return predefined TTS speakers."
+            operationId = "listTtsBuiltinSpeakers",
+            summary = "List Builtin Speakers",
+            description = "Return builtin TTS speakers."
     )
     @Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME,
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key ="'f.f.a.TtsApi::list'",
             unless="#result == null")
-    @GetMapping("/public/tts/speakers")
+    @GetMapping("/public/tts/builtin/speakers")
     public List<String> list() {
         try (InputStream inputStream =
                      this.getClass().getResourceAsStream("/xtts_v2_speaker_idxs.json")) {
@@ -61,13 +61,13 @@ public class TtsApi {
     }
 
     @Operation(
-            operationId = "playTtsPredefinedSpeakerSample",
+            operationId = "playTtsBuiltinSpeakerSample",
             summary = "Play Sample Audio",
-            description = "Play TTS sample audio of predefined speaker."
+            description = "Play TTS sample audio of builtin speaker."
     )
     @GetMapping(value = "/public/tts/play/sample/{speaker}", produces = "audio/wav")
     public ResponseEntity<StreamingResponseBody> playSample(
-            @Parameter(description = "The predefined speaker") @PathVariable("speaker") @NotBlank String speaker) {
+            @Parameter(description = "The builtin speaker") @PathVariable("speaker") @NotBlank String speaker) {
         String sampleText = SAMPLE_TEXT.formatted(speaker);
 
         StreamingResponseBody streamingResponseBody =

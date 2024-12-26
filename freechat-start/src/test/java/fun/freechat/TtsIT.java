@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class TtsIT extends AbstractIntegrationTest {
     @Test
-    void should_list_predefined_speakers() {
-        testClient.get().uri("/api/v2/public/tts/speakers")
+    void should_list_builtin_speakers() {
+        testClient.get().uri("/api/v2/public/tts/builtin/speakers")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -25,7 +25,7 @@ class TtsIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_play_predefined_speaker_sample() throws IOException {
+    void should_play_builtin_speaker_sample() throws IOException {
         byte[] audioData = testClient.get().uri("/api/v2/public/tts/play/sample/Claribel Dervla")
                 .accept(MediaType.valueOf("audio/wav"))
                 .exchange()
