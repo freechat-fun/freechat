@@ -8,10 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static fun.freechat.util.ByteUtils.isNotFalse;
 import static fun.freechat.util.ByteUtils.isNotTrue;
@@ -52,6 +49,19 @@ public class SysUserDetails extends User implements UserDetails {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SysUserDetails that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(getAuthorities(), that.getAuthorities());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getAuthorities());
     }
 
     public static class Builder {

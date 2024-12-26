@@ -41,12 +41,14 @@ public class AbstractIntegrationTest {
     static GenericContainer<?> redis;
     static MySQLContainer<?> mysql;
     static MilvusContainer milvus;
+    static GenericContainer<?> tts;
     static TestOllamaContainer ollama;
 
     static {
         redis = new GenericContainer<>(redisImageName())
                 .withExposedPorts(6379)
                 .withEnv("REDIS_PASSWORD", "hello1234")
+                .withCommand("redis-server", "--appendonly", "yes", "--requirepass", "hello1234")
                 .waitingFor(Wait.forSuccessfulCommand("redis-cli -a hello1234 ping || exit 1"));
 
         mysql = (MySQLContainer<?>) new MySQLContainer(mysqlImageName())
@@ -61,7 +63,10 @@ public class AbstractIntegrationTest {
                 .waitingFor(Wait.forHealthcheck());
 
         milvus =  new MilvusContainer(milvusImageName());
-//                .withCommand( "run", "standalone");
+
+        tts = new GenericContainer<>(ttsImageName())
+                .withExposedPorts(5002)
+                .waitingFor(Wait.forListeningPort());
 
         ollama = new TestOllamaContainer(ollamaImageName())
                 .withModels(
@@ -84,10 +89,13 @@ public class AbstractIntegrationTest {
         redis.start();
         mysql.start();
         milvus.start();
+        tts.start();
         registry.add("redis.datasource.url",
                 () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);
         registry.add("embedding.milvus.url", milvus::getEndpoint);
+        registry.add("tts.baseUri",
+                () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
     }
 
     public static TestOllamaContainer ollama() {
@@ -98,21 +106,20 @@ public class AbstractIntegrationTest {
         return ollama;
     }
 
-    // In order to unify with the k8s environment, use the bitnami images for testing.
     private static DockerImageName redisImageName() {
-        return DockerImageName.parse("bitnami/redis:latest")
-                .asCompatibleSubstituteFor("redis");
+        return DockerImageName.parse("redis:latest");
     }
 
     private static DockerImageName mysqlImageName() {
-        return DockerImageName.parse("bitnami/mysql:latest")
-                .asCompatibleSubstituteFor("mysql");
+        return DockerImageName.parse("mysql:latest");
     }
 
     private static DockerImageName milvusImageName() {
-//        return DockerImageName.parse("bitnami/milvus:latest")
-//                .asCompatibleSubstituteFor("milvusdb/milvus");
         return DockerImageName.parse("milvusdb/milvus:latest");
+    }
+
+    private static DockerImageName ttsImageName() {
+        return DockerImageName.parse("freechatfun/freechat-tts:cpu-latest");
     }
 
     private static DockerImageName ollamaImageName() {
