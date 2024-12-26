@@ -33,6 +33,7 @@ import fun.freechat.util.TraceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -165,7 +166,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
-    public Response<AiMessage> send(String chatId, ChatMessage message, String context) {
+    public Pair<Response<AiMessage>, Long> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (session == null || message == null || !session.acquire()) {
             return null;
@@ -188,10 +189,11 @@ public class ChatServiceImpl implements ChatService {
             TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
             chatSessionService.verifyModerationIfNeeded(moderationFuture);
+            Long messageId = null;
 
             for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
                 if (chatMemory instanceof SystemAlwaysOnTopMessageWindowChatMemory myMemory) {
-                    myMemory.addAiMessage(response.content(), response.tokenUsage());
+                    messageId = myMemory.addAiMessage(response.content(), response.tokenUsage());
                 } else {
                     chatMemory.add(response.content());
                 }
@@ -215,7 +217,9 @@ public class ChatServiceImpl implements ChatService {
                 tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
             }
 
-            return Response.from(response.content(), tokenUsageAccumulator, response.finishReason());
+            return Pair.of(
+                    Response.from(response.content(), tokenUsageAccumulator, response.finishReason()),
+                    messageId);
         } finally {
             session.release();
         }
@@ -238,7 +242,7 @@ public class ChatServiceImpl implements ChatService {
                     null,
                     session.getAiServiceContext(),
                     memoryId);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             session.release();
             throw e;
         }
@@ -408,7 +412,7 @@ public class ChatServiceImpl implements ChatService {
                             .map(Content::textSegment)
                             .map(TextSegment::text)
                             .collect(Collectors.joining("\n\n"));
-                } catch (Throwable ex) {
+                } catch (Exception ex) {
                     log.warn("Failed to retrieve knowledge from {}!", memoryId, ex);
                     throwable = ex;
                 } finally {
@@ -435,7 +439,7 @@ public class ChatServiceImpl implements ChatService {
                 try {
                     longTermMemoryMessages = longTermChatMemoryStore.getMessages(
                             memoryId, userMessage, messages, longTermMemoryRetriever);
-                } catch (Throwable ex) {
+                } catch (Exception ex) {
                     log.warn("Failed to retrieve long-term memory from {}!", memoryId, ex);
                     throwable = ex;
                 } finally {
@@ -460,14 +464,12 @@ public class ChatServiceImpl implements ChatService {
 
         ChatPromptContent prompt = session.getPrompt();
         ChatMessage messageToSend = message;
-        if (message != null && message.type() == USER) {
-            if (prompt.getMessageToSend() != null) {
-                variables.put(INPUT.text().toLowerCase(), toSingleText(message));
-                messageToSend = promptService.apply(
-                        UserMessage.from(prompt.getMessageToSend().contents()),
-                        variables,
-                        session.getPromptFormat());
-            }
+        if (message != null && message.type() == USER && prompt.getMessageToSend() != null) {
+            variables.put(INPUT.text().toLowerCase(), toSingleText(message));
+            messageToSend = promptService.apply(
+                    UserMessage.from(prompt.getMessageToSend().contents()),
+                    variables,
+                    session.getPromptFormat());
         }
 
         SystemMessage systemMessage = SystemMessage.from(promptService.apply(

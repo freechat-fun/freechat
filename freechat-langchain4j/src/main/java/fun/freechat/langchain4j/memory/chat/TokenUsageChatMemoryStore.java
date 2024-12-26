@@ -5,5 +5,5 @@ import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 
 public interface TokenUsageChatMemoryStore extends ChatMemoryStore {
-    void addAiMessage(Object memoryId, AiMessage message, TokenUsage usage);
+    Long addAiMessage(Object memoryId, AiMessage message, TokenUsage usage);
 }

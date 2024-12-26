@@ -36,14 +36,14 @@ public class LlmResultDTO extends TraceableDTO {
                 .build();
     }
 
-    public static <T> LlmResultDTO from(Response<T> response) {
+    public static <T> LlmResultDTO from(Response<T> response, Long messageId) {
         if (response == null) {
             return null;
         }
 
         T content = response.content();
         String text;
-        var messageBuilder = ChatMessageDTO.builder();
+        var messageBuilder = ChatMessageDTO.builder().messageId(messageId);
 
         switch (content) {
             case String textMessage -> {

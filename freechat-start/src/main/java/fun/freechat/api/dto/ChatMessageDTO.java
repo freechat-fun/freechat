@@ -35,6 +35,8 @@ public class ChatMessageDTO {
     private List<ChatToolCallDTO> toolCalls;
     @Schema(description = "Contextual information in this round of conversation (the external RAG result can be passed in through this parameter)")
     private String context;
+    @Schema(description = "Message identifier")
+    private Long messageId;
 
     private String getContentText() {
         return ValidationUtils.ensureNotEmpty(contents, "contents")
@@ -44,8 +46,8 @@ public class ChatMessageDTO {
                 .collect(Collectors.joining("\n"));
     }
 
-    public static ChatMessageDTO from(ChatMessage message) {
-        var builder = ChatMessageDTO.builder();
+    public static ChatMessageDTO from(ChatMessage message, Long messageId) {
+        var builder = ChatMessageDTO.builder().messageId(messageId);
         switch (message.type()) {
             case SYSTEM -> {
                 builder.role(SYSTEM.text());
@@ -95,28 +97,28 @@ public class ChatMessageDTO {
             case SYSTEM -> SystemMessage.from(getContentText());
             case ASSISTANT -> AiMessage.from(getContentText());
             case USER -> {
-                List<Content> contents = getContents().stream()
+                List<Content> messageContents = getContents().stream()
                         .map(ChatContentDTO::toContent)
                         .toList();
                 yield StringUtils.isBlank(getName()) ?
-                        UserMessage.from(contents) :
-                        UserMessage.from(getName(), contents);
+                        UserMessage.from(messageContents) :
+                        UserMessage.from(getName(), messageContents);
 
             }
             case FUNCTION_CALL -> AiMessage.from(getToolCalls().stream()
                     .map(ChatToolCallDTO::toToolExecutionRequest)
                     .toList());
             case FUNCTION_RESULT -> {
-                String id = null;
-                String name =getName();
+                String toolId = null;
+                String toolName =getName();
                 String result =getContentText();
-                List<ChatToolCallDTO> toolCalls = getToolCalls();
-                if (CollectionUtils.isNotEmpty(toolCalls)) {
-                    ChatToolCallDTO toolCall = toolCalls.getFirst();
-                    id = toolCall.getId();
-                    name = toolCall.getName();
+                List<ChatToolCallDTO> messageToolCalls = getToolCalls();
+                if (CollectionUtils.isNotEmpty(messageToolCalls)) {
+                    ChatToolCallDTO toolCall = messageToolCalls.getFirst();
+                    toolId = toolCall.getId();
+                    toolName = toolCall.getName();
                 }
-                yield ToolExecutionResultMessage.from(id, name, result);
+                yield ToolExecutionResultMessage.from(toolId, toolName, result);
             }
         };
     }

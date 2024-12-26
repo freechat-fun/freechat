@@ -340,7 +340,7 @@ public class LanguageModelFactory {
         return switch (value) {
             case Float floatValue -> floatValue;
             case Number number -> number.floatValue();
-            default -> null;
+            case null, default -> null;
         };
     }
 
@@ -349,7 +349,7 @@ public class LanguageModelFactory {
         return switch (value) {
             case Double doubleValue -> doubleValue;
             case Number number -> number.doubleValue();
-            default -> null;
+            case null, default -> null;
         };
     }
 
@@ -358,7 +358,7 @@ public class LanguageModelFactory {
         return switch (value) {
             case Long longValue -> longValue;
             case Number number -> number.longValue();
-            default -> null;
+            case null, default -> null;
         };
     }
 
@@ -367,7 +367,7 @@ public class LanguageModelFactory {
         return switch (value) {
             case Integer intValue -> intValue;
             case Number number -> number.intValue();
-            default -> null;
+            case null, default -> null;
         };
     }
 

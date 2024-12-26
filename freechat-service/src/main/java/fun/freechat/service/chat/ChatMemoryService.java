@@ -7,7 +7,7 @@ import fun.freechat.langchain4j.memory.chat.TokenUsageChatMemoryStore;
 import java.util.List;
 
 public interface ChatMemoryService extends TokenUsageChatMemoryStore {
-    void updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage);
+    Long updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage);
     List<ChatMessageRecord> listAllChatMessages(Object memoryId);
     ChatMessageRecord getLatestChatMessage(Object memoryId);
     List<Long> rollback(Object memoryId, Integer count);

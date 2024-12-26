@@ -17,6 +17,7 @@ public class ZhAlbumTool extends AlbumTool {
         super(homeUrl, characterService, chatContextService, shortLinkService);
     }
 
+    @Override
     @Tool("""
             这个工具用于查找与角色相关的图片。当你判断出用户想要查看角色的照片时，\
             应该调用此工具以获取角色的图片，使用 Markdown 标签 "![img](图片的 URL)" \

@@ -41,8 +41,8 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
     @Override
     public void add(ChatMessage message) {
         List<ChatMessage> messages = messages();
-        if (message instanceof SystemMessage) {
-            latestSystemMessage = (SystemMessage) message;
+        if (message instanceof SystemMessage systemMessage) {
+            latestSystemMessage = systemMessage;
             if (!messages.isEmpty()) {
                 return;
             }
@@ -52,14 +52,15 @@ public class SystemAlwaysOnTopMessageWindowChatMemory implements ChatMemory {
         store.updateMessages(id, messages);
     }
 
-    public void addAiMessage(AiMessage message, TokenUsage usage) {
+    public Long addAiMessage(AiMessage message, TokenUsage usage) {
         if (store instanceof TokenUsageChatMemoryStore tokenUsageChatMemoryStore) {
             List<ChatMessage> messages = messages();
             messages.add(message);
             ensureCapacity(messages, maxMessages);
-            tokenUsageChatMemoryStore.addAiMessage(id, message, usage);
+            return tokenUsageChatMemoryStore.addAiMessage(id, message, usage);
         } else {
             add(message);
+            return null;
         }
     }
 

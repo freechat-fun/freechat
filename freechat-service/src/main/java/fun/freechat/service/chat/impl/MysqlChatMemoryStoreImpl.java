@@ -106,9 +106,9 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     }
 
     @Override
-    public void addAiMessage(Object memoryId, AiMessage message, TokenUsage usage) {
+    public Long addAiMessage(Object memoryId, AiMessage message, TokenUsage usage) {
         if (StringUtils.isBlank((String) memoryId) || message == null) {
-            return;
+            return null;
         }
 
         ChatHistory history = messageToHistory(memoryId, message, usage);
@@ -119,29 +119,34 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                     .id(history.getId())
                     .message(message)
                     .build());
-            cache().put(CACHE_KEY_PREFIX + memoryId, cachedList);
+           cache().put(CACHE_KEY_PREFIX + memoryId, cachedList);
+           return history.getId();
         }
+
+        return null;
     }
 
     @Override
-    public void updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage) {
+    public Long updateChatMessageTokenUsage(Object memoryId, AiMessage message, TokenUsage tokenUsage) {
         if (tokenUsage == null || message == null) {
-            return;
+            return null;
         }
 
         LinkedList<ChatMessageRecord> cachedList = getMessageRecords(memoryId);
         var it = cachedList.descendingIterator();
         while(it.hasNext()) {
-            ChatMessageRecord record = it.next();
-            if (message.equals(record.getMessage())) {
+            ChatMessageRecord messageRecord = it.next();
+            if (message.equals(messageRecord.getMessage())) {
                 ChatHistory newHistory = new ChatHistory()
-                        .withId(record.getId())
+                        .withId(messageRecord.getId())
                         .withExt(InfoUtils.serialize(tokenUsage))
                         .withGmtModified(new Date());
                 chatHistoryMapper.updateByPrimaryKeySelective(newHistory);
-                return;
+                return newHistory.getId();
             }
         }
+
+        return null;
     }
 
     @Override
@@ -416,15 +421,15 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         if (cache == null && cacheManager != null) {
             cache = cacheManager.getCache(LONG_PERIOD_CACHE_NAME);
         }
-        return cache;
+        return  Objects.requireNonNull(cache);
     }
 
     private static BiFunction<LinkedList<ChatMessageRecord>, ChatMessageRecord, LinkedList<ChatMessageRecord>> messageRecordAccumulator() {
-        return (acc, record) -> {
-            ChatMessageType type = record.getMessage().type();
+        return (acc, messageRecord) -> {
+            ChatMessageType type = messageRecord.getMessage().type();
             if (acc.isEmpty()) {
                 if (type == SYSTEM) {
-                    acc.add(record);
+                    acc.add(messageRecord);
                 }
                 return acc;
             }
@@ -452,7 +457,7 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                 }
             }
 
-            acc.add(record);
+            acc.add(messageRecord);
             return acc;
         };
     }

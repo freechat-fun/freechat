@@ -32,10 +32,10 @@ public class ChatPromptContentDTO {
 
         var builder = ChatPromptContentDTO.builder();
         builder.system(chatPrompt.getSystem());
-        builder.messageToSend(ChatMessageDTO.from(chatPrompt.getMessageToSend()));
+        builder.messageToSend(ChatMessageDTO.from(chatPrompt.getMessageToSend(), null));
         if (CollectionUtils.isNotEmpty(chatPrompt.getMessages())) {
             builder.messages(chatPrompt.getMessages().stream()
-                    .map(ChatMessageDTO::from)
+                    .map(message -> ChatMessageDTO.from(message, null))
                     .toList());
         }
         return builder.build();

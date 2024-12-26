@@ -18,6 +18,7 @@ public class EnAlbumTool extends AlbumTool {
         super(homeUrl, characterService, chatContextService, shortLinkService);
     }
 
+    @Override
     @Tool("""
             This tool is used to find an image related to character. \
             When you determine that the user wants to see the character's photo, \

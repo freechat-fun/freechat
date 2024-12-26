@@ -28,23 +28,23 @@ public class ChatMessageRecordDTO {
     @Schema(description = "Additional information")
     private String ext;
 
-    public static ChatMessageRecordDTO from(ChatMessageRecord record, boolean debugInfo) {
-        if (record == null) {
+    public static ChatMessageRecordDTO from(ChatMessageRecord messageRecord, boolean debugInfo) {
+        if (messageRecord == null) {
             return null;
         }
 
-        ChatMessageDTO message = ChatMessageDTO.from(record.getMessage());
+        ChatMessageDTO message = ChatMessageDTO.from(messageRecord.getMessage(), messageRecord.getId());
         var builder = ChatMessageRecordDTO.builder()
                 .message(message)
-                .gmtCreate(record.getGmtCreate())
-                .messageId(record.getId());
+                .gmtCreate(messageRecord.getGmtCreate())
+                .messageId(messageRecord.getId());
 
         String userId = AccountUtils.currentUser().getUserId();
 
         if (debugInfo &&
-                userId.equals(record.getCharacterOwnerId()) &&
-                userId.equals(record.getChatOwnerId())) {
-            builder.ext(ChatUtils.getChatMessageExt(record));
+                userId.equals(messageRecord.getCharacterOwnerId()) &&
+                userId.equals(messageRecord.getChatOwnerId())) {
+            builder.ext(ChatUtils.getChatMessageExt(messageRecord));
         }
 
         return builder.build();

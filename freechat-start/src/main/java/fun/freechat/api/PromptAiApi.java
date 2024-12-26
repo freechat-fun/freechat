@@ -2,11 +2,12 @@ package fun.freechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.StreamingResponseHandler;
+import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.AiModelUtils;
-import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.enums.PromptFormat;
@@ -23,23 +24,31 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @Tag(name = "Prompt")
 @RequestMapping("/api/v2/prompt")
 @Validated
+@Slf4j
 @SuppressWarnings("unused")
 public class PromptAiApi {
     @Autowired
@@ -95,7 +104,7 @@ public class PromptAiApi {
         if (response == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, prompt);
         }
-        return LlmResultDTO.from(response);
+        return LlmResultDTO.from(response, null);
     }
 
     @Operation(
@@ -136,7 +145,64 @@ public class PromptAiApi {
 
         SseEmitter sseEmitter = new SseEmitter();
         promptAiService.streamSend(prompt, promptType, user, apiKeyInfo, modelInfo, parameters,
-                CommonUtils.streamingResponseHandlerOf(sseEmitter));
+                new StreamingResponseHandler<T>() {
+                    private boolean abort = false;
+
+                    @Override
+                    public void onNext(String partialResult) {
+                        if (abort) {
+                            return;
+                        }
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(
+                                    partialResult, null, null, null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                        } catch (NullPointerException | IOException e) {
+                            log.error("Error when sending message.", e);
+                            sseEmitter.completeWithError(e);
+                            abort = true;
+                        }
+                    }
+
+                    @Override
+                    public void onComplete(Response<T> response) {
+                        if (abort) {
+                            return;
+                        }
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(response, null);
+                            Objects.requireNonNull(result).setText(null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                            sseEmitter.complete();
+                        } catch (NullPointerException | IOException e) {
+                            log.error("Error when sending message.", e);
+                            sseEmitter.completeWithError(e);
+                        }
+                        abort = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (abort) {
+                            return;
+                        }
+                        log.error("SSE exception", throwable);
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(
+                                    throwable.getMessage(), null, null, null);
+                            result.setFinishReason(FinishReason.OTHER.name().toLowerCase());
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                            sseEmitter.complete();
+                        } catch (IOException e) {
+                            log.error("Error when sending message.", e);
+                            sseEmitter.completeWithError(e);
+                        }
+                        abort = true;
+                    }
+                });
 
         servletResponse.addHeader("X-Accel-Buffering", "no");
         return sseEmitter;

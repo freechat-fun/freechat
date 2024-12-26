@@ -28,7 +28,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -88,15 +90,13 @@ public class ChatApi {
 
         ChatSession session = chatSessionService.get(chatId);
         Long limit = Utils.getOrDefault(context.getQuota(), 0L);
-        switch (QuotaType.of(context.getQuotaType())) {
-            case MESSAGES -> {
-                Long usage = Utils.getOrDefault(session.getMemoryUsage().messageUsage(), 0L);
-                checkQuotaValue(usage, limit);
-            }
-            case TOKENS -> {
-                Integer usage = Utils.getOrDefault(session.getMemoryUsage().tokenUsage().totalTokenCount(), 0);
-                checkQuotaValue(usage.longValue(), limit);
-            }
+        QuotaType quotaType = QuotaType.of(context.getQuotaType());
+        if (Objects.requireNonNull(quotaType) == QuotaType.MESSAGES) {
+            Long usage = Utils.getOrDefault(session.getMemoryUsage().messageUsage(), 0L);
+            checkQuotaValue(usage, limit);
+        } else if (quotaType == QuotaType.TOKENS) {
+            Integer usage = Utils.getOrDefault(session.getMemoryUsage().tokenUsage().totalTokenCount(), 0);
+            checkQuotaValue(usage.longValue(), limit);
         }
     }
 
@@ -202,7 +202,7 @@ public class ChatApi {
                             case PUBLIC -> "online";
                             case PUBLIC_ORG -> orgService.hasRelationship(
                                     AccountUtils.currentUser().getUserId(), characterOwner) ? "online" : "offline";
-                            case PRIVATE -> isDebugEnabled ? "invisible" : "offline";
+                            case PRIVATE -> BooleanUtils.isTrue(isDebugEnabled) ? "invisible" : "offline";
                             case null, default -> "offline";
                         };
                     }
@@ -279,14 +279,14 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         checkQuota(chatId);
-        Response<AiMessage> response = chatService.send(
+        Pair<Response<AiMessage>, Long> response = chatService.send(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
         if (response == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Failed to chat by " + chatId);
         }
 
-        return LlmResultDTO.from(response);
+        return LlmResultDTO.from(response.getLeft(), response.getRight());
     }
 
     @Operation(
@@ -370,11 +370,11 @@ public class ChatApi {
             long lastPackageReceivedTime = System.currentTimeMillis();
             try {
                 session.addMemoryUsage(1L, response.tokenUsage());
-                chatMemoryService.updateChatMessageTokenUsage(chatId, response.content(), response.tokenUsage());
+                Long messageId = chatMemoryService.updateChatMessageTokenUsage(chatId, response.content(), response.tokenUsage());
                 if (response.finishReason() == null) {
                     response = Response.from(response.content(), response.tokenUsage(), FinishReason.STOP);
                 }
-                LlmResultDTO result = LlmResultDTO.from(response);
+                LlmResultDTO result = LlmResultDTO.from(response, messageId);
                 Objects.requireNonNull(result).setText(null);
                 result.setRequestId(null);
                 sseEmitter.send(result);
@@ -588,7 +588,7 @@ public class ChatApi {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantUid);
         }
 
-        return LlmResultDTO.from(response);
+        return LlmResultDTO.from(response, null);
     }
 
     @Operation(
@@ -659,7 +659,7 @@ public class ChatApi {
         }).onComplete(response -> {
             long lastPackageReceivedTime = System.currentTimeMillis();
             try {
-                LlmResultDTO result = LlmResultDTO.from(response);
+                LlmResultDTO result = LlmResultDTO.from(response, null);
                 Objects.requireNonNull(result).setText(null);
                 result.setRequestId(null);
                 sseEmitter.send(result);
