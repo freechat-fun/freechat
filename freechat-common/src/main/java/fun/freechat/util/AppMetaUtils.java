@@ -27,66 +27,44 @@ public class AppMetaUtils {
     private static String appScmUrl;
     private static String appUrl;
 
-    public static String getName() {
+    public static synchronized String getName() {
         if (appName == null) {
-            synchronized (AppMetaUtils.class) {
-                if (appName == null) {
-                    appName = getProperty(NAME_KEY);
-                }
-            }
+            appName = getProperty(NAME_KEY);
         }
         return appName;
     }
 
-    public static String getVersion() {
+    public static synchronized String getVersion() {
         if (appVersion == null) {
-            synchronized (AppMetaUtils.class) {
-                if (appVersion == null) {
-                    appVersion = getProperty(VERSION_KEY);
-                }
-            }
+            appVersion = getProperty(VERSION_KEY);
         }
         return appVersion;
     }
 
-    public static String getBuildTimestamp() {
+    public static synchronized String getBuildTimestamp() {
         if (appBuildTimestamp == null) {
-            synchronized (AppMetaUtils.class) {
-                if (appBuildTimestamp == null) {
-                    appBuildTimestamp = getProperty(BUILD_TIMESTAMP_KEY);
-                }
-            }
+            appBuildTimestamp = getProperty(BUILD_TIMESTAMP_KEY);
         }
         return appBuildTimestamp;
     }
 
-    public static String getBuildNumber() {
+    public static synchronized String getBuildNumber() {
         if (appBuildNumber == null) {
-            synchronized (AppMetaUtils.class) {
-                if (appBuildNumber == null) {
-                    appBuildNumber = getProperty(BUILD_NUMBER_KEY);
-                }
-            }
+            appBuildNumber = getProperty(BUILD_NUMBER_KEY);
         }
         return appBuildNumber;
     }
 
-    public static String getScmUrl() {
+    public static synchronized String getScmUrl() {
         if (appScmUrl == null) {
-            synchronized (AppMetaUtils.class) {
-                if (appScmUrl == null) {
-                    appScmUrl = getProperty(SCM_URL_KEY);
-                }
-            }
+            appScmUrl = getProperty(SCM_URL_KEY);
         }
         return appScmUrl;
     }
 
-    public static String getUrl() {
+    public static synchronized String getUrl() {
         if (appUrl == null) {
-            synchronized (AppMetaUtils.class) {
-                appUrl = getProperty(URL_KEY);
-            }
+            appUrl = getProperty(URL_KEY);
         }
         return appUrl;
     }
