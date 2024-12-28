@@ -1,6 +1,7 @@
 package fun.freechat.api.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class PromptTemplateDTO {
     @Schema(description = "Variables applied to the template, can be empty")
     private Map<String, Object> variables;
     @Schema(description = "Prompt format: mustache (default) | f_string")
+    @Pattern(regexp = "mustache|f_string")
     private String format;
 }

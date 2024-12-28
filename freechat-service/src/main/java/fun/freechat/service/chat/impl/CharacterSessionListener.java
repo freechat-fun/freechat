@@ -37,7 +37,7 @@ public class CharacterSessionListener {
                 }
             }
         } else {
-            String chatId = chatContextService.getIdByBackend(backendEvent.userId(), backendEvent.backendId());
+            String chatId = chatContextService.getChatIdByBackend(backendEvent.userId(), backendEvent.backendId());
             if (StringUtils.isNotBlank(chatId)) {
                 chatSessionService.reset(chatId);
             }

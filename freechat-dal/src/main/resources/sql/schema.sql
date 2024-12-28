@@ -233,6 +233,7 @@ CREATE TABLE IF NOT EXISTS `character_backend` (
   `enable_tts` tinyint NOT NULL DEFAULT 0,
   `tts_speaker_idx` varchar(32) DEFAULT NULL,
   `tts_speaker_wav` varchar(256) DEFAULT NULL,
+  `tts_speaker_type` varchar(8) DEFAULT 'idx' COMMENT 'idx | wav',
   PRIMARY KEY (`backend_id`),
   INDEX `idx_character` (`character_uid`),
   INDEX `idx_chat_prompt_task` (`chat_prompt_task_id`)

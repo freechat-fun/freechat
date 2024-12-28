@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.langchain4j.data.message.ChatMessage;
 import fun.freechat.service.ai.message.ChatMessageJacksonDeserializer;
 import fun.freechat.service.ai.message.ChatMessageJacksonSerializer;
+import fun.freechat.service.enums.TtsSpeakerType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -24,6 +25,9 @@ public class ChatMessageRecord {
     private Long id;
     private Date gmtCreate;
     private String ext;
+    private String chatId;
     private String chatOwnerId;
     private String characterOwnerId;
+    private String speaker;
+    private TtsSpeakerType speakerType;
 }

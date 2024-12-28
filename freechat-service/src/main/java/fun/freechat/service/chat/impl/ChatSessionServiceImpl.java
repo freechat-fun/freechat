@@ -117,7 +117,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Autowired
     private ShortLinkService shortLinkService;
     @Autowired
-    @Qualifier("defaultExecutor")
+    @Qualifier("taskExecutor")
     private ThreadPoolTaskExecutor executor;
 
     private synchronized Lock getLock(Cache cache, String chatId) {
@@ -426,7 +426,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     public void reset(String chatId) {}
 
     @Override
-    @Async("defaultExecutor")
+    @Async
     public CompletableFuture<Moderation> triggerModerationIfNeeded(
             ChatSession session,
             List<dev.langchain4j.data.message.ChatMessage> messages) {

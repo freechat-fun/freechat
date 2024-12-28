@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<CharacterBackend>, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, enableTts, ttsSpeakerIdx, ttsSpeakerWav, moderationParams);
+    BasicColumn[] selectList = BasicColumn.columnList(backendId, gmtCreate, gmtModified, characterUid, isDefault, chatPromptTaskId, greetingPromptTaskId, moderationModelId, moderationApiKeyName, forwardToUser, messageWindowSize, longTermMemoryWindowSize, proactiveChatWaitingTime, initQuota, quotaType, enableAlbumTool, enableTts, ttsSpeakerIdx, ttsSpeakerWav, ttsSpeakerType, moderationParams);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
@@ -56,6 +56,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
         @Result(column="enable_tts", property="enableTts", jdbcType=JdbcType.TINYINT),
         @Result(column="tts_speaker_idx", property="ttsSpeakerIdx", jdbcType=JdbcType.VARCHAR),
         @Result(column="tts_speaker_wav", property="ttsSpeakerWav", jdbcType=JdbcType.VARCHAR),
+        @Result(column="tts_speaker_type", property="ttsSpeakerType", jdbcType=JdbcType.VARCHAR),
         @Result(column="moderation_params", property="moderationParams", jdbcType=JdbcType.LONGVARCHAR)
     })
     List<CharacterBackend> selectMany(SelectStatementProvider selectStatement);
@@ -104,6 +105,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(enableTts).toProperty("enableTts")
             .map(ttsSpeakerIdx).toProperty("ttsSpeakerIdx")
             .map(ttsSpeakerWav).toProperty("ttsSpeakerWav")
+            .map(ttsSpeakerType).toProperty("ttsSpeakerType")
             .map(moderationParams).toProperty("moderationParams")
         );
     }
@@ -130,6 +132,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(enableTts).toProperty("enableTts")
             .map(ttsSpeakerIdx).toProperty("ttsSpeakerIdx")
             .map(ttsSpeakerWav).toProperty("ttsSpeakerWav")
+            .map(ttsSpeakerType).toProperty("ttsSpeakerType")
             .map(moderationParams).toProperty("moderationParams")
         );
     }
@@ -156,6 +159,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .map(enableTts).toPropertyWhenPresent("enableTts", row::getEnableTts)
             .map(ttsSpeakerIdx).toPropertyWhenPresent("ttsSpeakerIdx", row::getTtsSpeakerIdx)
             .map(ttsSpeakerWav).toPropertyWhenPresent("ttsSpeakerWav", row::getTtsSpeakerWav)
+            .map(ttsSpeakerType).toPropertyWhenPresent("ttsSpeakerType", row::getTtsSpeakerType)
             .map(moderationParams).toPropertyWhenPresent("moderationParams", row::getModerationParams)
         );
     }
@@ -208,6 +212,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(enableTts).equalTo(row::getEnableTts)
                 .set(ttsSpeakerIdx).equalTo(row::getTtsSpeakerIdx)
                 .set(ttsSpeakerWav).equalTo(row::getTtsSpeakerWav)
+                .set(ttsSpeakerType).equalTo(row::getTtsSpeakerType)
                 .set(moderationParams).equalTo(row::getModerationParams);
     }
 
@@ -232,6 +237,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
                 .set(enableTts).equalToWhenPresent(row::getEnableTts)
                 .set(ttsSpeakerIdx).equalToWhenPresent(row::getTtsSpeakerIdx)
                 .set(ttsSpeakerWav).equalToWhenPresent(row::getTtsSpeakerWav)
+                .set(ttsSpeakerType).equalToWhenPresent(row::getTtsSpeakerType)
                 .set(moderationParams).equalToWhenPresent(row::getModerationParams);
     }
 
@@ -256,6 +262,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(enableTts).equalTo(row::getEnableTts)
             .set(ttsSpeakerIdx).equalTo(row::getTtsSpeakerIdx)
             .set(ttsSpeakerWav).equalTo(row::getTtsSpeakerWav)
+            .set(ttsSpeakerType).equalTo(row::getTtsSpeakerType)
             .set(moderationParams).equalTo(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );
@@ -282,6 +289,7 @@ public interface CharacterBackendMapper extends CommonCountMapper, CommonDeleteM
             .set(enableTts).equalToWhenPresent(row::getEnableTts)
             .set(ttsSpeakerIdx).equalToWhenPresent(row::getTtsSpeakerIdx)
             .set(ttsSpeakerWav).equalToWhenPresent(row::getTtsSpeakerWav)
+            .set(ttsSpeakerType).equalToWhenPresent(row::getTtsSpeakerType)
             .set(moderationParams).equalToWhenPresent(row::getModerationParams)
             .where(backendId, isEqualTo(row::getBackendId))
         );

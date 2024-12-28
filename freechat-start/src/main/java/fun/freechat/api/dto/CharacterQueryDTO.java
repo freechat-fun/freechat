@@ -4,6 +4,7 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.Visibility;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CharacterQueryDTO {
         @Schema(description = "Tags")
         private List<String> tags;
         @Schema(description = "Relationship between tags: and | or (default)")
+        @Pattern(regexp = "and|or")
         private String tagsOp;
         @Schema(description = "Name, left match")
         private String name;

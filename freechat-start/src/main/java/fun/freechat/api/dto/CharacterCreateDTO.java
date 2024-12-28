@@ -6,6 +6,7 @@ import fun.freechat.model.CharacterInfo;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.service.enums.Visibility;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,6 +41,7 @@ public class CharacterCreateDTO {
     @Schema(description = "Character picture url")
     private String picture;
     @Schema(description = "Character gender: male | female | other")
+    @Pattern(regexp = "male|female|other")
     private String gender;
     @Schema(description = "Character profile")
     private String profile;

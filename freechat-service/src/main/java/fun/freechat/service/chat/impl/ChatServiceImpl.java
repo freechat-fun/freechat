@@ -84,7 +84,7 @@ public class ChatServiceImpl implements ChatService {
                         String apiKeyName,
                         String apiKeyValue,
                         String ext) {
-        String chatId = chatContextService.getIdByBackend(user.getUserId(), backendId);
+        String chatId = chatContextService.getChatIdByBackend(user.getUserId(), backendId);
         if (StringUtils.isNotBlank(chatId)) {
             return chatId;
         }
@@ -161,7 +161,7 @@ public class ChatServiceImpl implements ChatService {
     public String getDefaultChatId(User user, String characterUid) {
         CharacterBackend defaultBackend = characterService.getDefaultBackend(characterUid);
         return defaultBackend != null ?
-                chatContextService.getIdByBackend(user.getUserId(), defaultBackend.getBackendId()) : null;
+                chatContextService.getChatIdByBackend(user.getUserId(), defaultBackend.getBackendId()) : null;
     }
 
     @Override

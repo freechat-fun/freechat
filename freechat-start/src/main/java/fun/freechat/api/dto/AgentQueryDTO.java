@@ -3,6 +3,7 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.service.agent.AgentService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.util.List;
@@ -22,10 +23,12 @@ public class AgentQueryDTO {
         @Schema(description = "Tags")
         private List<String> tags;
         @Schema(description = "Relationship between tags: and | or (default)")
+        @Pattern(regexp = "and|or")
         private String tagsOp;
         @Schema(description = "Model set")
         private List<String> aiModels;
         @Schema(description = "Relationship between model sets: and | or (default)")
+        @Pattern(regexp = "and|or")
         private String aiModelsOp;
         @Schema(description = "Name, left match")
         private String name;

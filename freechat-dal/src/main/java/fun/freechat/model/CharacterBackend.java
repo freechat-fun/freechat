@@ -63,6 +63,9 @@ public class CharacterBackend implements Serializable {
     private String ttsSpeakerWav;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    private String ttsSpeakerType;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     private String moderationParams;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -373,6 +376,22 @@ public class CharacterBackend implements Serializable {
     }
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public String getTtsSpeakerType() {
+        return ttsSpeakerType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public CharacterBackend withTtsSpeakerType(String ttsSpeakerType) {
+        this.setTtsSpeakerType(ttsSpeakerType);
+        return this;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public void setTtsSpeakerType(String ttsSpeakerType) {
+        this.ttsSpeakerType = ttsSpeakerType;
+    }
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public String getModerationParams() {
         return moderationParams;
     }
@@ -420,6 +439,7 @@ public class CharacterBackend implements Serializable {
             && (this.getEnableTts() == null ? other.getEnableTts() == null : this.getEnableTts().equals(other.getEnableTts()))
             && (this.getTtsSpeakerIdx() == null ? other.getTtsSpeakerIdx() == null : this.getTtsSpeakerIdx().equals(other.getTtsSpeakerIdx()))
             && (this.getTtsSpeakerWav() == null ? other.getTtsSpeakerWav() == null : this.getTtsSpeakerWav().equals(other.getTtsSpeakerWav()))
+            && (this.getTtsSpeakerType() == null ? other.getTtsSpeakerType() == null : this.getTtsSpeakerType().equals(other.getTtsSpeakerType()))
             && (this.getModerationParams() == null ? other.getModerationParams() == null : this.getModerationParams().equals(other.getModerationParams()));
     }
 
@@ -447,6 +467,7 @@ public class CharacterBackend implements Serializable {
         result = prime * result + ((getEnableTts() == null) ? 0 : getEnableTts().hashCode());
         result = prime * result + ((getTtsSpeakerIdx() == null) ? 0 : getTtsSpeakerIdx().hashCode());
         result = prime * result + ((getTtsSpeakerWav() == null) ? 0 : getTtsSpeakerWav().hashCode());
+        result = prime * result + ((getTtsSpeakerType() == null) ? 0 : getTtsSpeakerType().hashCode());
         result = prime * result + ((getModerationParams() == null) ? 0 : getModerationParams().hashCode());
         return result;
     }
@@ -477,6 +498,7 @@ public class CharacterBackend implements Serializable {
         sb.append(", enableTts=").append(enableTts);
         sb.append(", ttsSpeakerIdx=").append(ttsSpeakerIdx);
         sb.append(", ttsSpeakerWav=").append(ttsSpeakerWav);
+        sb.append(", ttsSpeakerType=").append(ttsSpeakerType);
         sb.append(", moderationParams=").append(moderationParams);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

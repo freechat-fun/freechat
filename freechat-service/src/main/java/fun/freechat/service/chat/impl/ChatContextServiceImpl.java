@@ -17,9 +17,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,28 +41,13 @@ public class ChatContextServiceImpl implements ChatContextService {
     @Autowired
     private EncryptionService encryptionService;
 
-    private List<String> getCacheKeysByBackendId(String backendId) {
-        List<ChatContext> rows = chatContextMapper.select(c ->
-                c.where(ChatContextDynamicSqlSupport.backendId, isEqualTo(backendId)));
-        if (CollectionUtils.isEmpty(rows)) {
-            return null;
-        }
-        List<String> keys = new ArrayList<>(rows.size() * 3);
-        for (ChatContext row : rows) {
-            keys.add(CACHE_KEY_PREFIX + row.getChatId());
-            keys.add(CACHE_KEY_PREFIX + row.getUserId() + "_" + row.getBackendId());
-            keys.add(SESSION_CACHE_KEY_PREFIX + row.getChatId());
-        }
-        return keys;
-    }
-
     @Override
     public ChatContext create(@NonNull ChatContext context) {
         if (StringUtils.isBlank(context.getUserId()) || StringUtils.isBlank(context.getBackendId())) {
             return null;
         }
 
-        String existedId = getIdByBackend(context.getUserId(), context.getBackendId());
+        String existedId = getChatIdByBackend(context.getUserId(), context.getBackendId());
         if (StringUtils.isNotBlank(existedId)) {
             boolean success = update(context.withChatId(existedId));
             return success ? context : null;
@@ -125,7 +108,7 @@ public class ChatContextServiceImpl implements ChatContextService {
     }
 
     @Override
-    public String getIdByBackend(String userId, String backendId) {
+    public String getChatIdByBackend(String userId, String backendId) {
         var statement = select(ChatContextDynamicSqlSupport.chatId)
                 .from(ChatContextDynamicSqlSupport.chatContext)
                 .where(ChatContextDynamicSqlSupport.userId, isEqualTo(userId))
@@ -191,6 +174,7 @@ public class ChatContextServiceImpl implements ChatContextService {
     }
 
     @Override
+    @LongPeriodCache
     public String getCharacterUid(String chatId) {
         var statement = select(ChatContextDynamicSqlSupport.backendId)
                 .from(ChatContextDynamicSqlSupport.chatContext)

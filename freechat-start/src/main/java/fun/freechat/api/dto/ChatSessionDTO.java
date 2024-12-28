@@ -6,6 +6,7 @@ import fun.freechat.model.ChatContext;
 import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.enums.InfoType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,12 +28,14 @@ public class ChatSessionDTO {
     @Schema(description = "Character summary info")
     private CharacterSummaryDTO character;
     @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown")
+    @Pattern(regexp = "hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown")
     private String provider;
     @Schema(description = "Latest message record")
     private ChatMessageRecordDTO latestMessageRecord;
     @Schema(description = "Minutes to wait for a proactive chat")
     private Integer proactiveChatWaitingTime;
     @Schema(description = "Sender status: online | offline | invisible")
+    @Pattern(regexp = "online|offline|invisible")
     private String senderStatus;
     @Schema(description = "Is it possible to debug")
     private Boolean isDebugEnabled;

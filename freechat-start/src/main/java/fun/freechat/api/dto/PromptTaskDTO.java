@@ -8,6 +8,7 @@ import fun.freechat.api.util.PromptUtils;
 import fun.freechat.model.PromptTask;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,6 +42,7 @@ public class PromptTaskDTO {
     @Schema(description = "Task scheduling configuration which compatible with Quartz cron format")
     private String cron;
     @Schema(description = "Task execution status: pending | running | succeeded | failed")
+    @Pattern(regexp = "pending|running|succeeded|failed")
     private String status;
 
     public PromptTask toPromptTask() {

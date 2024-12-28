@@ -15,4 +15,5 @@ public interface ChatMemoryService extends TokenUsageChatMemoryStore {
     String getLang(Object memoryId);
     Long roughCount(Object memoryId);
     String loadSystemMessage(Long id);
+    ChatMessageRecord get(Long id);
 }

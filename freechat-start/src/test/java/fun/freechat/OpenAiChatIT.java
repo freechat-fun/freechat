@@ -16,6 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -115,6 +120,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     private String backendId;
     private String chatId;
     private String pictureKey;
+    private Long aiMessageId;
 
     protected ModelProvider modelProvider() {
         return OPEN_AI;
@@ -260,6 +266,8 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .initQuota(2L)
                 .quotaType(QuotaType.MESSAGES.text())
                 .enableAlbumTool(true)
+                .ttsSpeakerIdx("Claribel Dervla")
+                .ttsSpeakerType(TtsSpeakerType.IDX.text())
                 .build();
 
         backendId = testClient.post().uri("/api/v2/character/backend/" + characterUid)
@@ -698,6 +706,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         assertNotNull(messages);
         assertThat(messages).isNotEmpty();
+        assertNotNull(messages.getLast().getMessage().getMessageId());
+        assertThat(messages.getLast().getMessage().getRole()).isEqualTo("assistant");
+        aiMessageId = messages.getLast().getMessage().getMessageId();
 
         System.out.println("Messages history:");
         messages.stream()
@@ -708,6 +719,54 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     return "[" + message.getRole().toUpperCase() + "]: " + content;
                 })
                 .forEach(System.out::println);
+    }
+
+    private void should_not_allow_to_speak_message() {
+        testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+                .accept(MediaType.valueOf("audio/wav"))
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError();
+    }
+
+    private void should_not_found_message_to_speak() {
+        testClient.get().uri("/api/v2/tts/speak/" + (aiMessageId - 1))
+                .accept(MediaType.valueOf("audio/wav"))
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    private void should_speak_message() throws IOException, ExecutionException, InterruptedException {
+        CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
+
+        try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
+            testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+                    .accept(MediaType.valueOf("audio/wav"))
+                    .header(AUTHORIZATION, "Bearer " + userApiKey)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .returnResult(byte[].class)
+                    .getResponseBody()
+                    .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
+                    .subscribe(event -> {
+                        try {
+                            audioDataStream.write(event);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+
+        byte[] audioData = futureAnswer.get();
+        assertThat(audioData).isNotNull();
+        try (InputStream in = new ByteArrayInputStream(audioData)) {
+            String mimeType = URLConnection.guessContentTypeFromStream(in);
+            assertThat(mimeType).isEqualTo("audio/x-wav");
+        }
     }
 
     private void should_rollback_messages() {
@@ -929,6 +988,15 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         waitAWhile();
 
         should_list_messages();
+        waitAWhile();
+
+        should_not_allow_to_speak_message();
+        waitAWhile();
+
+        should_not_found_message_to_speak();
+        waitAWhile();
+
+        should_speak_message();
         waitAWhile();
 
         should_failed_to_send_assistant();

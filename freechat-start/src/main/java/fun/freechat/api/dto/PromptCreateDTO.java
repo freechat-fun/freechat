@@ -10,6 +10,7 @@ import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class PromptCreateDTO {
     @Schema(description = "Prompt chat template content")
     private ChatPromptContentDTO chatTemplate;
     @Schema(description = "Prompt format: mustache (default) | f_string")
+    @Pattern(regexp = "mustache|f_string")
     private String format;
     @Schema(description = "Prompt language: en (default) | zh_CN | ...")
     private String lang;

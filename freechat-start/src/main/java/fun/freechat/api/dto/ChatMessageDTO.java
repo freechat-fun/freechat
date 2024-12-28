@@ -5,6 +5,7 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.internal.ValidationUtils;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,7 @@ import static fun.freechat.service.enums.PromptRole.*;
 @Builder
 public class ChatMessageDTO {
     @Schema(description = "Chat role: system | assistant | user | tool_call | tool_result")
+    @Pattern(regexp = "system|assistant|user|tool_call|tool_result")
     private String role;
     @Schema(description = "user: Name of the user role; tool_call: Name of the called tool")
     private String name;

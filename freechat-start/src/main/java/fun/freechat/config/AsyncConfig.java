@@ -16,7 +16,7 @@ import java.util.Map;
 @Configuration
 @SuppressWarnings("unused")
 public class AsyncConfig {
-    public static final String DEFAULT_EXECUTOR = "defaultExecutor";
+    public static final String DEFAULT_EXECUTOR = "taskExecutor";
     public static final String EVENT_EXECUTOR = "eventExecutor";
     public static final String RAG_EXECUTOR = "ragExecutor";
 
@@ -24,7 +24,7 @@ public class AsyncConfig {
     public static class DefaultExecutorConfiguration {
         @Bean(name = DEFAULT_EXECUTOR + "Properties")
         @Primary
-        @ConfigurationProperties(prefix = "spring.task.default-execution")
+        @ConfigurationProperties(prefix = "spring.task.task-execution")
         public TaskExecutionProperties taskExecutionProperties() {
             return new TaskExecutionProperties();
         }

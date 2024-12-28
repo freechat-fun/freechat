@@ -27,15 +27,15 @@ public class ChatUtils implements ApplicationContextAware {
     public static String contentTypeText(ContentType type) {
         return switch (type) {
             case IMAGE -> "image";
-            default -> "text";
+            case null, default -> "text";
         };
     }
 
-    public static String getChatMessageExt(ChatMessageRecord record) {
-        if (record.getMessage().type() == USER) {
-            return chatMemoryService.loadSystemMessage(record.getId());
+    public static String getChatMessageExt(ChatMessageRecord messageRecord) {
+        if (messageRecord.getMessage().type() == USER) {
+            return chatMemoryService.loadSystemMessage(messageRecord.getId());
         } else {
-            return record.getExt();
+            return messageRecord.getExt();
         }
     }
 

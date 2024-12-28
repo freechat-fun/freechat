@@ -6,6 +6,7 @@ import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import fun.freechat.service.util.PromptUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Builder
 public class ChatContentDTO {
     @Schema(description = "Chat type: text (default) | image")
+    @Pattern(regexp = "text|image")
     private String type;
     @Schema(description = "Chat content(for image, it might be a normal url or data url)", requiredMode = REQUIRED)
     private String content;

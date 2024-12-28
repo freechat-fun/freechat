@@ -3,6 +3,7 @@ package fun.freechat.api.dto;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.CharacterBackend;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class CharacterBackendDTO {
     @Schema(description = "Initial quota when opening a chat")
     private Long initQuota;
     @Schema(description = "Quota type: messages | tokens | none (not limited)")
+    @Pattern(regexp = "messages|tokens|none")
     private String quotaType;
     @Schema(description = "Enable character album image retrieval tool")
     private Boolean enableAlbumTool;
@@ -47,6 +49,9 @@ public class CharacterBackendDTO {
     private String ttsSpeakerIdx;
     @Schema(description = "Character's speaker sample for tts")
     private String ttsSpeakerWav;
+    @Schema(description = "Character's speaker type for tts: idx | wav")
+    @Pattern(regexp = "idx|wav")
+    private String ttsSpeakerType;
 
     public CharacterBackend toCharacterBackend(String characterUid) {
         if (StringUtils.isBlank(characterUid)) {

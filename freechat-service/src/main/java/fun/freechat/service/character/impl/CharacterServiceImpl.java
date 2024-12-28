@@ -170,7 +170,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .withGmtCreate(now)
                 .withGmtModified(now));
         if (rows <= 0) {
-            throw new RuntimeException("Insert character " + info.getName() + " failed!");
+            throw new IllegalStateException("Insert character " + info.getName() + " failed!");
         }
         if (CollectionUtils.isNotEmpty(infoPair.getRight())) {
             Set<String> tagSet = new HashSet<>(infoPair.getRight());
@@ -186,7 +186,7 @@ public class CharacterServiceImpl implements CharacterService {
                         .withReferType(InfoType.CHARACTER.text())
                         .withReferId(info.getCharacterUid()));
                 if (rows <= 0) {
-                    throw new RuntimeException("Insert tag " + tagText + " failed!");
+                    throw new IllegalStateException("Insert tag " + tagText + " failed!");
                 }
             }
         }
@@ -342,8 +342,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
     c.chat_style like '%{text}%' \
   ) \
   order by c.{orderBy[0]}, p.{orderBy[1]}... \
-  limit {limit} offset {offset} \
-;
+  limit {limit} offset {offset}; \
          */
         List<BasicColumn> columns = new LinkedList<>(Info.summaryColumns());
         if (CollectionUtils.isNotEmpty(query.getOrderBy())) {
@@ -412,7 +411,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                             .withReferType(InfoType.CHARACTER.text())
                             .withReferId(characterInfo.getCharacterUid()));
                     if (rows <= 0) {
-                        throw new RuntimeException("Update tag " + tagText + " failed!");
+                        throw new IllegalStateException("Update tag " + tagText + " failed!");
                     }
                 }
             }

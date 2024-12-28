@@ -10,6 +10,8 @@ import fun.freechat.service.agent.AgentService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatMemoryService;
+import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.plugin.PluginService;
@@ -40,6 +42,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
     private PluginService pluginService;
     private CharacterService characterService;
     private ChatContextService chatContextService;
+    private ChatMemoryService chatMemoryService;
     private AiApiKeyService aiApiKeyService;
     private OrgService orgService;
     private SysApiTokenService sysApiTokenService;
@@ -98,7 +101,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "characterBackendCreateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     String infoUid = targets[0];
                     ownerId = getCharacterService().getOwnerByUid(infoUid);
@@ -110,7 +113,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "characterBackendUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     ownerId = getCharacterService().getBackendOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
@@ -123,7 +126,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "promptUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     Long infoId = Long.parseLong(targets[0]);
                     ownerId = getPromptService().getOwner(infoId);
@@ -133,7 +136,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "agentUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     Long infoId = Long.parseLong(targets[0]);
                     ownerId = getAgentService().getOwner(infoId);
@@ -143,7 +146,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "pluginUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     Long infoId = Long.parseLong(targets[0]);
                     ownerId = getPluginService().getOwner(infoId);
@@ -153,7 +156,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "characterUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     Long infoId = Long.parseLong(targets[0]);
                     ownerId = getCharacterService().getOwner(infoId);
@@ -163,7 +166,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "promptTaskUpdateOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     ownerId = getPromptTaskService().getOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
@@ -234,7 +237,7 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                 case "chatAssistantDefaultOp" -> {
                     targets = ((String) targetObject).split("\\|");
                     if (targets.length != 2) {
-                        throw new RuntimeException("Wrong format of target: " + targetObject);
+                        throw new IllegalStateException("Wrong format of target: " + targetObject);
                     }
                     ownerId = getChatContextService().getChatOwner(targets[0]);
                     allow = currentUser.getUserId().equals(ownerId);
@@ -243,6 +246,14 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
                         allow = getCharacterService().isOfficialByUid(assistantUid) ||
                                 currentUser.getUserId().equals(getCharacterService().getOwnerByUid(assistantUid));
                     }
+                }
+                case "ttsSpeakDefaultOp" -> {
+                    long messageId = (Long) targetObject;
+                    ChatMessageRecord messageRecord = getChatMemoryService().get(messageId);
+                    if (messageRecord == null) {
+                        throw new IllegalArgumentException("Message not found.");
+                    }
+                    allow = currentUser.getUserId().equals(messageRecord.getChatOwnerId());
                 }
                 default -> allow = false;
             }
@@ -309,6 +320,13 @@ public class RoleBasedPermissionEvaluator implements PermissionEvaluator, Applic
             chatContextService = applicationContext.getBean(ChatContextService.class);
         }
         return chatContextService;
+    }
+
+    private ChatMemoryService getChatMemoryService() {
+        if (chatMemoryService == null) {
+            chatMemoryService = applicationContext.getBean(ChatMemoryService.class);
+        }
+        return chatMemoryService;
     }
 
     private AiApiKeyService getAiApiKeyService() {

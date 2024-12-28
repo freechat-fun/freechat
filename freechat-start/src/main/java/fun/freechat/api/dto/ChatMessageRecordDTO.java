@@ -21,8 +21,6 @@ import java.util.Date;
 public class ChatMessageRecordDTO {
     @Schema(description = "Message")
     private ChatMessageDTO message;
-    @Schema(description = "Message identifier")
-    private Long messageId;
     @Schema(description = "Creation time")
     private Date gmtCreate;
     @Schema(description = "Additional information")
@@ -36,8 +34,7 @@ public class ChatMessageRecordDTO {
         ChatMessageDTO message = ChatMessageDTO.from(messageRecord.getMessage(), messageRecord.getId());
         var builder = ChatMessageRecordDTO.builder()
                 .message(message)
-                .gmtCreate(messageRecord.getGmtCreate())
-                .messageId(messageRecord.getId());
+                .gmtCreate(messageRecord.getGmtCreate());
 
         String userId = AccountUtils.currentUser().getUserId();
 

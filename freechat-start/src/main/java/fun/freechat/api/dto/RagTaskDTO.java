@@ -6,6 +6,7 @@ import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.RagTask;
 import fun.freechat.service.enums.SourceType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ import java.nio.file.AccessDeniedException;
 @Builder
 public class RagTaskDTO {
     @Schema(description = "Source type: file (default) | url")
+    @Pattern(regexp = "file|url")
     private String sourceType;
     @Schema(description = "Source information, url, or a key for file")
     private String source;

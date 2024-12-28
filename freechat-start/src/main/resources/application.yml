@@ -55,7 +55,8 @@ embedding:
     retrieveEmbeddingsOnSearch: false
     url: http://localhost:19530
 tts:
-  baseUri: http://localhost:5002
+  baseUrl: http://localhost:5002
+  timeout: 180000
 configmap:
   workdir: ${APP_HOME}/config.run
 disk:
@@ -92,12 +93,12 @@ spring:
       max-file-size: 10MB
       max-request-size: 20MB
   task:
-    defaultExecution:
+    taskExecution:
       threadNamePrefix: default-task-
       pool:
         coreSize: 2
         maxSize: 16
-        keepAlive: 60s
+        keepAlive: 90s
         queueCapacity: 64
         allowCoreThreadTimeout: true
       shutdown:

@@ -32,7 +32,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "60000")
+@AutoConfigureWebTestClient(timeout = "180000")
 @ActiveProfiles("local")
 @TestPropertySource(properties = "APP_HOME=${TMPDIR}")
 @Sql({"classpath:/sql/data.sql"})
@@ -94,7 +94,7 @@ public class AbstractIntegrationTest {
                 () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);
         registry.add("embedding.milvus.url", milvus::getEndpoint);
-        registry.add("tts.baseUri",
+        registry.add("tts.baseUrl",
                 () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
     }
 

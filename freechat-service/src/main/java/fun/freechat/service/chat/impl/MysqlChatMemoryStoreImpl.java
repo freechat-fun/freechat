@@ -4,6 +4,7 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.output.TokenUsage;
 import fun.freechat.mapper.ChatHistoryDynamicSqlSupport;
 import fun.freechat.mapper.ChatHistoryMapper;
+import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.ChatHistory;
@@ -11,6 +12,7 @@ import fun.freechat.service.cache.MiddlePeriodCache;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.*;
 import fun.freechat.service.common.FileStore;
+import fun.freechat.service.enums.TtsSpeakerType;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.StoreUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
     private static final String CACHE_KEY_PREFIX = "MysqlChatMemoryStoreImpl_";
     private static final String CACHE_KEY_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "' + ";
+    private static final String CACHE_KEY_FOR_MESSAGE_RECORD_SPEL_PREFIX = "'" + CACHE_KEY_PREFIX + "record_' + ";
     private static final String SYSTEM_MESSAGE_HOME = "private/messages/";
 
     @Value("${chat.memory.maxMessageSize:1000}")
@@ -273,6 +276,17 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
         return null;
     }
 
+    @Override
+    @Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME,
+            cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
+            key = CACHE_KEY_FOR_MESSAGE_RECORD_SPEL_PREFIX + "#p0",
+            unless="#result == null")
+    public ChatMessageRecord get(Long id) {
+        return chatHistoryMapper.selectByPrimaryKey(id)
+                .map(this::historyToFullMessageRecord)
+                .orElse(null);
+    }
+
     private LinkedList<ChatMessageRecord> getMessageRecords(Object memoryId) {
         if (StringUtils.isBlank((String) memoryId)) {
             return new LinkedList<>();
@@ -358,15 +372,23 @@ public class MysqlChatMemoryStoreImpl implements ChatMemoryService {
                     .build();
         }
 
-        String chatOwner = chatContextService.getChatOwner(history.getMemoryId());
-        String characterOwner = chatContextService.getCharacterOwner(history.getMemoryId());
+        String chatId = history.getMemoryId();
+        String chatOwner = chatContextService.getChatOwner(chatId);
+        String characterOwner = chatContextService.getCharacterOwner(chatId);
+        String backendId = chatContextService.get(chatId).getBackendId();
+        CharacterBackend backend = characterService.getBackend(backendId);
+        TtsSpeakerType speakerType = TtsSpeakerType.of(backend.getTtsSpeakerType());
+        String speaker = speakerType == TtsSpeakerType.IDX ? backend.getTtsSpeakerIdx() : backend.getTtsSpeakerWav();
 
         return ChatMessageRecord.builder()
                 .id(history.getId())
                 .message(message)
                 .gmtCreate(history.getGmtCreate())
+                .chatId(chatId)
                 .chatOwnerId(chatOwner)
                 .characterOwnerId(characterOwner)
+                .speaker(speaker)
+                .speakerType(speakerType)
                 .ext(history.getExt())
                 .build();
     }
