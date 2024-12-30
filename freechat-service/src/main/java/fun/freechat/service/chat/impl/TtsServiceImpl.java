@@ -26,12 +26,12 @@ public class TtsServiceImpl implements TtsService {
     private String baseUri;
     @Value("${tts.timeout}")
     private Long timeout;
-    private String ttsApi;
+    private String inferenceApi;
 
     @PostConstruct
     public void init() {
         baseUri = mayRemoveTrailingSlash(baseUri);
-        ttsApi = baseUri + "/api/tts";
+        inferenceApi = baseUri + "/inference";
     }
 
     @Override
@@ -43,12 +43,12 @@ public class TtsServiceImpl implements TtsService {
         Map<String, String> headers = createHeaderMap(speaker, speakerType, toLangId(lang));
         String body = createBody(text);
 
-        return HttpUtils.asyncPost(ttsApi, headers, body)
+        return HttpUtils.asyncPost(inferenceApi, headers, body)
                 .thenApply(response -> {
                     if (response.statusCode() == 200) {
                         return response.body();
                     } else {
-                        log.error("Failed to fetch data from TTS server: {}", HttpUtils.toCurl(ttsApi, headers, body));
+                        log.error("Failed to fetch data from TTS server: {}", HttpUtils.toCurl(inferenceApi, headers, body));
                         throw new IllegalStateException("Failed to fetch data from TTS server. HTTP code: " + response.statusCode());
                     }
                 })
