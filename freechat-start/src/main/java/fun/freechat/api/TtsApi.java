@@ -87,7 +87,14 @@ public class TtsApi {
     public ResponseEntity<StreamingResponseBody> playSample(
             @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav") String speakerType,
             @Parameter(description = "The speaker") @PathVariable("speaker") @NotBlank String speaker) {
-        return doSpeak(speaker, TtsSpeakerType.of(speakerType), SAMPLE_TEXT.formatted(speaker), "en", null);
+        ChatMessageRecord messageRecord = ChatMessageRecord.builder()
+                .id(0L)
+                .message(AiMessage.from(SAMPLE_TEXT.formatted(speaker)))
+                .speakerType(TtsSpeakerType.of(speakerType))
+                .speaker(speaker)
+                .build();
+
+        return doSpeak(messageRecord, "en");
     }
 
     @Operation(
@@ -106,6 +113,10 @@ public class TtsApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
         }
 
+        return doSpeak(messageRecord, chatMemoryService.getLang(messageRecord.getChatId()));
+    }
+
+    private ResponseEntity<StreamingResponseBody> doSpeak(ChatMessageRecord messageRecord, String lang) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         boolean cacheable = true;
         if (!fileStore.exists(CACHE_HOME)) {
@@ -126,7 +137,7 @@ public class TtsApi {
                             messageRecord.getSpeaker(),
                             messageRecord.getSpeakerType(),
                             ((AiMessage) messageRecord.getMessage()).text(),
-                            chatMemoryService.getLang(messageRecord.getChatId()),
+                            lang,
                             voiceStream);
                 } catch (IOException e) {
                     log.warn("Failed to read cached wav file: {}", cachePath, e);
@@ -136,11 +147,11 @@ public class TtsApi {
 
             try {
                 OutputStream cacheFileStream = fileStore.newOutputStream(cachePath);
-                return doSpeak(
+                return doSpeakByTtsService(
                         messageRecord.getSpeaker(),
                         messageRecord.getSpeakerType(),
                         ((AiMessage) messageRecord.getMessage()).text(),
-                        chatMemoryService.getLang(messageRecord.getChatId()),
+                        lang,
                         cacheFileStream);
             } catch (IOException e) {
                 log.warn("Failed to cache wav file: {}", cachePath, e);
@@ -148,20 +159,12 @@ public class TtsApi {
         }
 
         // speak without caching
-        return doSpeak(
+        return doSpeakByTtsService(
                 messageRecord.getSpeaker(),
                 messageRecord.getSpeakerType(),
                 ((AiMessage) messageRecord.getMessage()).text(),
-                chatMemoryService.getLang(messageRecord.getChatId()),
+                lang,
                 null);
-    }
-
-    private static String getCachePath(ChatMessageRecord messageRecord) {
-        return "%s/%s-%s-%d.wav".formatted(
-                CACHE_HOME,
-                messageRecord.getSpeakerType().text(),
-                messageRecord.getSpeaker().replaceAll(" ", ""),
-                messageRecord.getId());
     }
 
     private ResponseEntity<StreamingResponseBody> doSpeakByCachedVoice(
@@ -196,7 +199,7 @@ public class TtsApi {
                 .body(streamingResponseBody);
     }
 
-    private ResponseEntity<StreamingResponseBody> doSpeak(
+    private ResponseEntity<StreamingResponseBody> doSpeakByTtsService(
             String speaker, TtsSpeakerType speakerType, String text, String lang, OutputStream cacheFileStream) {
         String traceId = TraceUtils.getTraceId();
         User currentUser = AccountUtils.currentUserOrNull();
@@ -298,5 +301,13 @@ public class TtsApi {
                 .username(username)
                 .build();
         TraceUtils.getPerfLogger().trace(traceInfo);
+    }
+
+    private static String getCachePath(ChatMessageRecord messageRecord) {
+        return "%s/%s-%s-%d.wav".formatted(
+                CACHE_HOME,
+                messageRecord.getSpeakerType().text(),
+                messageRecord.getSpeaker().replaceAll(" ", ""),
+                messageRecord.getId());
     }
 }
