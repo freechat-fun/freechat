@@ -89,7 +89,7 @@ public class PromptCreateDTO {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Prompt info should not be null.");
         }
         PromptInfo promptInfo = promptInfoTriple.getLeft();
-        PromptCreateDTO dto =CommonUtils.convert(promptInfo, PromptCreateDTO.class);
+        PromptCreateDTO dto = CommonUtils.convert(promptInfo, PromptCreateDTO.class);
         if (PromptType.CHAT == PromptType.of(promptInfo.getType())) {
             try {
                 ChatPromptContent promptTemplate = InfoUtils.defaultMapper().readValue(

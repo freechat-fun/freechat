@@ -772,10 +772,6 @@ public class CharacterApi {
             HttpServletRequest request,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        if (StringUtils.isBlank(characterUid)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
-        }
-
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture/" + characterUid;
@@ -910,10 +906,6 @@ public class CharacterApi {
             HttpServletRequest request,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        if (StringUtils.isBlank(characterUid)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
-        }
-
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         try {
@@ -921,6 +913,99 @@ public class CharacterApi {
             return fileStore.list(dstDir, null, false)
                     .stream()
                     .map(path -> FileUtils.getDefaultPrivateUrlForDocument(request, path, userId))
+                    .toList();
+        } catch (IOException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Operation(
+            operationId = "uploadCharacterVoice",
+            summary = "Upload Character Voice",
+            description = "Upload a voice of the character."
+    )
+    @PostMapping(value = "/voice/{characterBackendId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p1, 'characterBackendDefaultOp')")
+    public String uploadVoice(
+            @Parameter(description = "Character voice") @RequestParam("file") @NotNull
+            MultipartFile file,
+            @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
+            String characterBackendId) {
+        Properties properties = configService.load();
+        long maxSize = ConfigUtils.getOrDefault(properties, VOICE_MAX_SIZE_KEY, DEFAULT_VOICE_MAX_SIZE);
+        int maxCount = ConfigUtils.getOrDefault(properties, VOICE_MAX_COUNT_KEY, DEFAULT_VOICE_MAX_COUNT);
+
+
+        if (file.getSize() > maxSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
+        }
+
+        if (StringUtils.isBlank(characterBackendId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character backend");
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+        String characterUid = characterService.getBackendCharacterUid(characterBackendId);
+        try {
+            String dstDir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
+            String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            return getKeyFromUrl(dstPath);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
+
+    @Operation(
+            operationId = "deleteCharacterVoice",
+            summary = "Delete Character Voice",
+            description = "Delete a voice of the character by key."
+    )
+    @DeleteMapping("/voice/{characterBackendId}/{key}")
+    @PreAuthorize("hasPermission(#p0, 'characterBackendDefaultOp')")
+    public Boolean deleteVoice(
+            @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
+            String characterBackendId,
+            @Parameter(description = "Voice key") @PathVariable("key") @NotBlank
+            String key) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+        try {
+            String characterUid = characterService.getBackendCharacterUid(characterBackendId);
+            String ownerId = characterService.getOwnerByUid(characterUid);
+            if (!userId.equals(ownerId)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Document doesn't belong to you");
+            }
+            String dstPath = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId + "/" + key;
+            fileStore.delete(dstPath);
+            return true;
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Operation(
+            operationId = "listCharacterVoices",
+            summary = "List Character Voices",
+            description = "List voices of the character."
+    )
+    @GetMapping("/voices/{characterBackendId}")
+    @PreAuthorize("hasPermission(#p0, 'characterBackendDefaultOp')")
+    public List<String> listVoices(
+            @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
+            String characterBackendId) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        String userId = AccountUtils.currentUser().getUserId();
+        String characterUid = characterService.getBackendCharacterUid(characterBackendId);
+        try {
+            String dstDir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
+            return fileStore.list(dstDir, null, false)
+                    .stream()
+                    .map(FileUtils::getKeyFromUrl)
                     .toList();
         } catch (IOException e) {
             return Collections.emptyList();
@@ -965,10 +1050,9 @@ public class CharacterApi {
         CharacterCreateDTO characterCreateDTO = CharacterCreateDTO.from(
                 Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
 
-        List<CharacterBackend> backends = characterTriple.getRight();
-        List<CharacterBackendConfigurationDTO> characterBackendConfList = Optional.ofNullable(characterTriple.getRight())
-                .orElse(Collections.emptyList())
-                .stream()
+        List<CharacterBackend> backends = characterTriple.getRight() != null ?
+                characterTriple.getRight() : Collections.emptyList();
+        List<CharacterBackendConfigurationDTO> characterBackendConfList = backends.stream()
                 .map(backend -> {
                     CharacterBackendDTO backendDTO = CharacterBackendDTO.from(backend);
 
@@ -1032,6 +1116,11 @@ public class CharacterApi {
 
         String characterUid = characterService.getUid(characterId);
         if (StringUtils.isNotBlank(characterUid)) {
+            // voices
+            for (CharacterBackend backend : backends) {
+                entries.addAll(voices(currentUserId, characterUid, backend.getBackendId()));
+            }
+
             // documents
             entries.addAll(documents(currentUserId, characterUid));
 
@@ -1054,6 +1143,12 @@ public class CharacterApi {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
         }
+    }
+
+    private static List<Triple<String, InputStream, Long>> voices(
+            String userId, String characterUid, String characterBackendId) {
+        String dir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
+        return listFileStreams("voices", dir);
     }
 
     private static List<Triple<String, InputStream, Long>> documents(String userId, String characterUid) {
@@ -1132,10 +1227,13 @@ public class CharacterApi {
             TarUtils.extractGzip(file.getInputStream(), tempDir);
 
             handleManifestYaml(tempDir);
-            CharacterInfo characterInfo = handleCharacterJson(tempDir);
+            Pair<CharacterInfo, List<CharacterBackend>> characterConf = handleCharacterJson(tempDir);
+            CharacterInfo characterInfo = characterConf.getLeft();
+            List<CharacterBackend> backends = characterConf.getRight();
             handleAvatar(request, userId, characterInfo, tempDir);
             handlePictures(userId, characterInfo, tempDir);
-            handleDocuments(request, userId, characterInfo, tempDir);
+            handleDocuments(userId, characterInfo, tempDir);
+            handleVoices(userId, characterInfo, backends, tempDir);
 
             cleanUpTempDirectory(tempDir);
             return characterInfo.getCharacterId();
@@ -1154,7 +1252,7 @@ public class CharacterApi {
         }
     }
 
-    private CharacterInfo handleCharacterJson(Path confPath) throws IOException {
+    private Pair<CharacterInfo, List<CharacterBackend>> handleCharacterJson(Path confPath) throws IOException {
         Path characterFile = confPath.resolve("character.json");
         String characterJson = Files.readString(characterFile, StandardCharsets.UTF_8);
         CharacterConfigurationDTO characterConf = CharacterConfigurationDTO.fromJson(characterJson);
@@ -1168,9 +1266,10 @@ public class CharacterApi {
         }
 
         CharacterInfo characterInfo = characterPair.getLeft();
-        String characterUid =characterInfo.getCharacterUid();
+        String characterUid = characterInfo.getCharacterUid();
 
         // create backends
+        List<CharacterBackend> backends = new ArrayList<>(characterConf.getBackends().size());
         for (CharacterBackendConfigurationDTO backendConf : characterConf.getBackends()) {
             CharacterBackendDTO backendDTO = backendConf.getBackend();
             if (backendDTO == null) {
@@ -1189,9 +1288,10 @@ public class CharacterApi {
             CharacterBackend backend = backendDTO.toCharacterBackend(characterUid);
 
             characterService.addBackend(backend);
+            backends.add(backend);
         }
 
-        return characterInfo;
+        return Pair.of(characterInfo, backends);
     }
 
     private void handleAvatar(HttpServletRequest request,
@@ -1202,15 +1302,14 @@ public class CharacterApi {
         String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.map(avatarPath -> {
-                        if (Files.isRegularFile(avatarPath)) {
-                            try {
-                                return FileUtils.move(avatarPath, fileStore, dir);
-                            } catch (IOException e) {
-                                log.warn("Failed to move file from {} to {}", avatarPath, dir, e);
-                            }
+            stream.filter(Files::isRegularFile)
+                    .map(avatarPath -> {
+                        try {
+                            return FileUtils.move(avatarPath, fileStore, dir);
+                        } catch (IOException e) {
+                            log.warn("Failed to move file from {} to {}", avatarPath, dir, e);
+                            return null;
                         }
-                        return null;
                     })
                     .filter(StringUtils::isNotBlank)
                     .findAny()
@@ -1237,35 +1336,31 @@ public class CharacterApi {
         String dir = PUBLIC_DIR + userId + "/character/picture/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.forEach(picturePath -> {
-                if (Files.isRegularFile(picturePath)) {
-                    try {
-                        FileUtils.move(picturePath, fileStore, dir);
-                    } catch (IOException e) {
-                        log.warn("Failed to move file from {} to {}", picturePath, dir, e);
-                    }
+            stream.filter(Files::isRegularFile).forEach(picturePath -> {
+                try {
+                    FileUtils.move(picturePath, fileStore, dir);
+                } catch (IOException e) {
+                    log.warn("Failed to move file from {} to {}", picturePath, dir, e);
                 }
             });
         }
     }
 
-    private void handleDocuments(HttpServletRequest request,
-                                 String userId,
+    private void handleDocuments(String userId,
                                  CharacterInfo characterInfo,
                                  Path confPath) throws IOException {
         Path srcPath = confPath.resolve("documents");
         String dir = PRIVATE_DIR + userId + "/character/document/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
-            stream.map(documentPath -> {
-                        if (Files.isRegularFile(documentPath)) {
-                            try {
-                                return FileUtils.move(documentPath, fileStore, dir);
-                            } catch (IOException e) {
-                                log.warn("Failed to move file from {} to {}", documentPath, dir, e);
-                            }
+            stream.filter(Files::isRegularFile)
+                    .map(documentPath -> {
+                        try {
+                            return FileUtils.move(documentPath, fileStore, dir);
+                        } catch (IOException e) {
+                            log.warn("Failed to move file from {} to {}", documentPath, dir, e);
+                            return null;
                         }
-                        return null;
                     })
                     .filter(StringUtils::isNotBlank)
                     .forEach(documentFile -> {
@@ -1277,6 +1372,29 @@ public class CharacterApi {
                                 .withMaxOverlapSize(defaultMaxOverlapSize);
                         ragTaskService.create(ragTask);
                     });
+        }
+    }
+
+    private void handleVoices(String userId,
+                              CharacterInfo characterInfo,
+                              List<CharacterBackend> backends,
+                              Path confPath) throws IOException {
+        Path srcPath = confPath.resolve("voices");
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try (Stream<Path> stream = Files.list(srcPath)) {
+            stream.filter(Files::isRegularFile).forEach(voicePath -> {
+                    String voiceKey = getKeyFromUrl(voicePath.toString());
+                    backends.stream()
+                            .filter(backend -> voiceKey.equals(backend.getTtsSpeakerWav()))
+                            .forEach(backend -> {
+                                String dir = PRIVATE_DIR + userId + "/character/voices/" + characterInfo.getCharacterUid() + "/" + backend.getBackendId();
+                                try {
+                                    FileUtils.move(voicePath, fileStore, dir);
+                                } catch (IOException e) {
+                                    log.warn("Failed to move file from {} to {}", voicePath, dir, e);
+                                }
+                            });
+            });
         }
     }
 

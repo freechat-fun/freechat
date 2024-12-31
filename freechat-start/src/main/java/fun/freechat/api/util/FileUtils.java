@@ -39,7 +39,7 @@ public class FileUtils {
             throws IOException {
         if (fileStore.exists(dstDir)) {
             List<String> files = fileStore.list(dstDir, null, false);
-            int purgeCount = files.size() - maxCount;
+            int purgeCount = files.size() - maxCount + 1;
             if (purgeCount > 0) {
                 files.subList(0, purgeCount).forEach(fileStore::tryDelete);
             }

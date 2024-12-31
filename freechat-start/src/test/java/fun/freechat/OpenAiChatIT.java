@@ -4,6 +4,7 @@ import fun.freechat.api.dto.*;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.*;
 import fun.freechat.util.*;
+import io.micrometer.common.util.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -800,6 +802,107 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         }
     }
 
+    private void should_speak_message_by_custom_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        // create voice
+        String wav = testClient.post().uri("/api/v2/character/voice/" + backendId)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(bodyFrom("/sample-16k.wav"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertTrue(StringUtils.isNotBlank(wav));
+
+        testClient.post().uri("/api/v2/character/voice/" + backendId)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .accept(MediaType.TEXT_PLAIN)
+                .bodyValue(bodyFrom("/sample-16k.wav"))
+                .exchange()
+                .expectStatus().isForbidden();
+
+        List<String> wavs = testClient.get().uri("/api/v2/character/voices/" + backendId)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<List<String>>() {})
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(wavs).hasSize(1).contains(wav);
+
+        testClient.get().uri("/api/v2/character/voices/" + backendId)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isForbidden();
+
+        // test voice
+        CharacterBackendDTO dto = CharacterBackendDTO.builder()
+                .ttsSpeakerType(TtsSpeakerType.WAV.text())
+                .ttsSpeakerWav(wav)
+                .build();
+
+        testClient.put().uri("/api/v2/character/backend/" + backendId)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .isEqualTo(true);
+
+        CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
+
+        try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
+            testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+                    .accept(MediaType.valueOf("audio/wav"))
+                    .header(AUTHORIZATION, "Bearer " + userApiKey)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .returnResult(byte[].class)
+                    .getResponseBody()
+                    .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
+                    .subscribe(event -> {
+                        try {
+                            audioDataStream.write(event);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+
+        byte[] audioData = futureAnswer.get(3, MINUTES);
+        assertThat(audioData).isNotNull();
+        try (InputStream in = new ByteArrayInputStream(audioData)) {
+            String mimeType = URLConnection.guessContentTypeFromStream(in);
+            assertThat(mimeType).isEqualTo("audio/x-wav");
+        }
+
+        // delete voice
+        testClient.delete().uri("/api/v2/character/voice/" + wav)
+                .header(AUTHORIZATION, "Bearer " + userApiKey)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isForbidden();
+
+        Boolean success = testClient.delete().uri("/api/v2/character/voice/" + wav)
+                .header(AUTHORIZATION, "Bearer " + developerApiKey)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertTrue(BooleanUtils.isTrue(success));
+    }
+
     private void should_rollback_messages() {
         testClient.post().uri("/api/v2/chat/messages/rollback/" + chatId + "/2")
                 .accept(MediaType.APPLICATION_JSON)
@@ -1031,6 +1134,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         waitAWhile();
 
         should_speak_message_by_cached_voice();
+        waitAWhile();
+
+        should_speak_message_by_custom_voice();
         waitAWhile();
 
         should_failed_to_send_assistant();
