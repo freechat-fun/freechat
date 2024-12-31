@@ -21,7 +21,7 @@ import static dev.langchain4j.internal.ValidationUtils.ensureNotBlank;
 @Service
 @Slf4j
 @SuppressWarnings("unused")
-public class TtsServiceImpl implements TtsService {
+public class CoquiTtsServiceImpl implements TtsService {
     @Value("${tts.baseUrl}")
     private String baseUri;
     @Value("${tts.timeout}")
