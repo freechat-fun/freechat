@@ -3,6 +3,7 @@ package fun.freechat;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Image;
 import fun.freechat.util.TestOllamaContainer;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -22,6 +23,9 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +38,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "180000")
 @ActiveProfiles("local")
-@TestPropertySource(properties = "APP_HOME=${TMPDIR}")
+@TestPropertySource(properties = "APP_HOME=${TMPDIR}/test")
 @Sql({"classpath:/sql/data.sql"})
 @SuppressWarnings("unused")
 public class AbstractIntegrationTest {
@@ -66,7 +70,7 @@ public class AbstractIntegrationTest {
 
         tts = new GenericContainer<>(ttsImageName())
                 .withExposedPorts(5002)
-                .waitingFor(Wait.forListeningPort());
+                .waitingFor(Wait.forHttp("/ping"));
 
         ollama = new TestOllamaContainer(ollamaImageName())
                 .withModels(
@@ -86,6 +90,15 @@ public class AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
+        String appHome = System.getProperty("APP_HOME");
+        if (StringUtils.isNotBlank(appHome)) {
+            try {
+                Files.deleteIfExists(Path.of(appHome, "data"));
+            } catch (IOException ignored) {
+                // ignored
+            }
+        }
+
         redis.start();
         mysql.start();
         milvus.start();

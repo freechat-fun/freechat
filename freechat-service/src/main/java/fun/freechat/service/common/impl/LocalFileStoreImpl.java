@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
@@ -90,7 +91,13 @@ public class LocalFileStoreImpl implements FileStore {
     }
 
     @Override
-    public InputStream read(String path) throws IOException {
+    public OutputStream newOutputStream(String path) throws IOException {
+        Path filePath = toPath(path);
+        return Files.newOutputStream(filePath);
+    }
+
+    @Override
+    public InputStream newInputStream(String path) throws IOException {
         return Files.newInputStream(toPath(path));
     }
 

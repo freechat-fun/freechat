@@ -35,6 +35,7 @@ import static fun.freechat.util.TestCharacterUtils.uidToId;
 import static fun.freechat.util.TestCommonUtils.*;
 import static fun.freechat.util.TestResourceUtils.bodyFrom;
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -739,7 +740,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .isNotFound();
     }
 
-    private void should_speak_message() throws IOException, ExecutionException, InterruptedException {
+    private void should_speak_message() throws IOException, ExecutionException, InterruptedException, TimeoutException {
         CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
@@ -761,7 +762,37 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                     });
         }
 
-        byte[] audioData = futureAnswer.get();
+        byte[] audioData = futureAnswer.get(3, MINUTES);
+        assertThat(audioData).isNotNull();
+        try (InputStream in = new ByteArrayInputStream(audioData)) {
+            String mimeType = URLConnection.guessContentTypeFromStream(in);
+            assertThat(mimeType).isEqualTo("audio/x-wav");
+        }
+    }
+
+    private void should_speak_message_by_cached_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
+
+        try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
+            testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
+                    .accept(MediaType.valueOf("audio/wav"))
+                    .header(AUTHORIZATION, "Bearer " + userApiKey)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .returnResult(byte[].class)
+                    .getResponseBody()
+                    .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
+                    .subscribe(event -> {
+                        try {
+                            audioDataStream.write(event);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+
+        byte[] audioData = futureAnswer.get(3, SECONDS);
         assertThat(audioData).isNotNull();
         try (InputStream in = new ByteArrayInputStream(audioData)) {
             String mimeType = URLConnection.guessContentTypeFromStream(in);
@@ -997,6 +1028,9 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         waitAWhile();
 
         should_speak_message();
+        waitAWhile();
+
+        should_speak_message_by_cached_voice();
         waitAWhile();
 
         should_failed_to_send_assistant();

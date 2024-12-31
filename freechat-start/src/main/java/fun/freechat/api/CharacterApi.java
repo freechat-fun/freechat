@@ -1077,18 +1077,17 @@ public class CharacterApi {
             String path = FileUtils.getDefaultPublicPath(key);
             String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterUid;
             if (path.startsWith(dir) && fileStore.exists(path)) {
-                try {
-                    String filePath = "avatar" + path.substring(dir.length());
-                    Long fileSize = fileStore.size(path);
-                    InputStream fileStream = fileStore.read(path);
-                    return Optional.of(Triple.of(filePath, fileStream, fileSize));
-                } catch (IOException ignored) {
-                }
+                String filePath = "avatar" + path.substring(dir.length());
+                Long fileSize = fileStore.size(path);
+                InputStream fileStream = fileStore.newInputStream(path);
+                return Optional.of(Triple.of(filePath, fileStream, fileSize));
             }
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (IOException ignored) {
+            // ignored
         }
         return Optional.empty();
     }
@@ -1102,7 +1101,7 @@ public class CharacterApi {
                         try {
                             String filePath = prefix + path.substring(dir.length());
                             Long fileSize = fileStore.size(path);
-                            InputStream fileStream = fileStore.read(path);
+                            InputStream fileStream = fileStore.newInputStream(path);
                             return Triple.of(filePath, fileStream, fileSize);
                         } catch (IOException e) {
                             return null;
@@ -1318,7 +1317,7 @@ public class CharacterApi {
     }
 
     @Data
-    static public class ManifestInfo {
+    static class ManifestInfo {
         private static final String API_VERSION = "v1";
 
         private String apiVersion;
@@ -1349,7 +1348,7 @@ public class CharacterApi {
             representer.getPropertyUtils().setSkipMissingProperties(true);
             representer.addClassTag(ManifestInfo.class, MAP);
 
-            return new Yaml(representer);
+            return new Yaml(representer, options);
         }
     }
 }

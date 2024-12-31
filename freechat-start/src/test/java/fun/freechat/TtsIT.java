@@ -12,7 +12,9 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TtsIT extends AbstractIntegrationTest {
@@ -28,7 +30,7 @@ class TtsIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void should_play_builtin_speaker_sample() throws IOException, ExecutionException, InterruptedException {
+    void should_play_builtin_speaker_sample() throws IOException, ExecutionException, InterruptedException, TimeoutException {
         CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
@@ -49,7 +51,7 @@ class TtsIT extends AbstractIntegrationTest {
                     });
         }
 
-        byte[] audioData = futureAnswer.get();
+        byte[] audioData = futureAnswer.get(1, MINUTES);
         assertThat(audioData).isNotNull();
         try (InputStream in = new ByteArrayInputStream(audioData)) {
             String mimeType = URLConnection.guessContentTypeFromStream(in);

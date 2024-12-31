@@ -2,10 +2,7 @@ package fun.freechat.service.common;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -26,13 +23,14 @@ public interface FileStore extends Closeable {
         byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         return write(path, new ByteArrayInputStream(bytes), (long) bytes.length, Instant.now());
     }
-    InputStream read(String path) throws IOException;
+    OutputStream newOutputStream(String path) throws IOException;
+    InputStream newInputStream(String path) throws IOException;
     default byte[] readBytes(String path) throws IOException {
-        InputStream stream = read(path);
+        InputStream stream = newInputStream(path);
         return stream != null ? IOUtils.toByteArray(stream) : null;
     }
     default String readString(String path) throws IOException {
-        InputStream stream = read(path);
+        InputStream stream = newInputStream(path);
         return stream != null ? IOUtils.toString(stream, StandardCharsets.UTF_8) : null;
     }
     boolean exists(String path);
@@ -41,10 +39,11 @@ public interface FileStore extends Closeable {
         try {
             delete(path);
         } catch (IOException ignored) {
+            // ignored
         }
     }
     default void copy(String sourcePath, String destinationPath) throws IOException {
-        write(destinationPath, read(sourcePath));
+        write(destinationPath, newInputStream(sourcePath));
     }
     default void move(String sourcePath, String destinationPath) throws IOException {
         copy(sourcePath, destinationPath);
