@@ -23,7 +23,7 @@ public class ConfigUtils {
     public static final int DEFAULT_DOCUMENT_MAX_COUNT = 5;
     public static final long DEFAULT_PICTURE_MAX_SIZE = 2L * 1024L * 1024L;
     public static final int DEFAULT_PICTURE_MAX_COUNT = 10;
-    public static final long DEFAULT_VOICE_MAX_SIZE = 10L * 1024L * 1024L;
+    public static final long DEFAULT_VOICE_MAX_SIZE = 1024L * 1024L;
     public static final int DEFAULT_VOICE_MAX_COUNT = 1;
 
     public static long getOrDefault(Properties properties, String key, long defaultValue) {
