@@ -2,19 +2,23 @@ package fun.freechat.service.chat.impl;
 
 import fun.freechat.service.chat.TtsService;
 import fun.freechat.service.enums.TtsSpeakerType;
+import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.HttpUtils;
 import fun.freechat.util.TraceUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.langchain4j.internal.ValidationUtils.ensureNotBlank;
 
@@ -27,11 +31,21 @@ public class CoquiTtsServiceImpl implements TtsService {
     @Value("${tts.timeout}")
     private Long timeout;
     private String inferenceApi;
+    private String uploadVoiceApi;
+    private String deleteVoiceApi;
+    private String existsVoiceApi;
+    private String pingApi;
+    private final AtomicBoolean alive = new AtomicBoolean(false);
 
     @PostConstruct
     public void init() {
         baseUri = mayRemoveTrailingSlash(baseUri);
         inferenceApi = baseUri + "/inference";
+        uploadVoiceApi = baseUri + "/speaker/wav";
+        deleteVoiceApi = baseUri + "/speaker/wav";
+        existsVoiceApi = baseUri + "/speaker/wav/exists";
+        pingApi = baseUri + "/ping";
+        ping();
     }
 
     @Override
@@ -39,13 +53,14 @@ public class CoquiTtsServiceImpl implements TtsService {
         ensureNotBlank(speaker, "speaker");
         ensureNotBlank(text, "text");
         ensureNotBlank(lang, "lang");
+        check();
 
-        Map<String, String> headers = createHeaderMap(speaker, speakerType, toLangId(lang));
+        Map<String, String> headers = createInferenceHeaders(speaker, speakerType, toLangId(lang));
         String body = createBody(text);
 
         return HttpUtils.asyncPost(inferenceApi, headers, body)
                 .thenApply(response -> {
-                    if (response.statusCode() == 200) {
+                    if (response.statusCode() >= 200 && response.statusCode() < 300) {
                         return response.body();
                     } else {
                         log.error("Failed to fetch data from TTS server: {}", HttpUtils.toCurl(inferenceApi, headers, body));
@@ -53,6 +68,58 @@ public class CoquiTtsServiceImpl implements TtsService {
                     }
                 })
                 .orTimeout(timeout, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void uploadVoice(String path) {
+        ensureNotBlank(path, "path");
+        check();
+
+        Path filePath = StoreUtils.defaultFileStore().toPath(path);
+        HttpUtils.upload(uploadVoiceApi, filePath, null, createHeaders());
+    }
+
+    @Override
+    public void deleteVoice(String name) {
+        ensureNotBlank(name, "name");
+        check();
+
+        HttpUtils.delete(deleteVoiceApi + "/" + name, createHeaders());
+    }
+
+    @Override
+    public boolean existsVoice(String name) {
+        ensureNotBlank(name, "name");
+        check();
+
+        return StringUtils.isNotBlank(HttpUtils.get(existsVoiceApi + "/" + name, createHeaders()));
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return alive.get();
+    }
+
+    @Scheduled(fixedDelay = 5000L)
+    public void ping() {
+        boolean isOnline = StringUtils.isNotBlank(HttpUtils.get(pingApi));
+        if (!isOnline) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
+                // ignored
+            }
+            // try again
+            isOnline = StringUtils.isNotBlank(HttpUtils.get(pingApi));
+        }
+        alive.set(isOnline);
+    }
+
+    private void check() {
+        if (!alive.get()) {
+            log.warn("TTS server is offline.");
+            throw new IllegalStateException("TTS server is offline.");
+        }
     }
 
     private static String mayRemoveTrailingSlash(String url) {
@@ -63,7 +130,7 @@ public class CoquiTtsServiceImpl implements TtsService {
         }
     }
 
-    private Map<String, String> createHeaderMap(String speaker, TtsSpeakerType speakerType, String langId) {
+    private Map<String, String> createHeaders() {
         Map<String, String> headerMap = HashMap.newHashMap(9);
         headerMap.put("Request-Id", TraceUtils.getTraceId());
         headerMap.put("Accept", "audio/wav, text/plain, */*");
@@ -72,8 +139,13 @@ public class CoquiTtsServiceImpl implements TtsService {
         headerMap.put("Origin", baseUri);
         headerMap.put("Referer", baseUri);
         headerMap.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
-        headerMap.put("language-id", langId);
+        return headerMap;
+    }
 
+    private Map<String, String> createInferenceHeaders(String speaker, TtsSpeakerType speakerType, String langId) {
+        Map<String, String> headerMap = createHeaders();
+
+        headerMap.put("language-id", langId);
         if (speakerType == TtsSpeakerType.IDX) {
             headerMap.put("speaker-id", speaker);
         } else {

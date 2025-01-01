@@ -6,6 +6,7 @@ import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
 import fun.freechat.api.util.*;
 import fun.freechat.model.*;
 import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.chat.TtsService;
 import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.InfoType;
@@ -100,6 +101,8 @@ public class CharacterApi {
     private PromptTaskService promptTaskService;
     @Autowired
     private RagTaskService ragTaskService;
+    @Autowired
+    private TtsService ttsService;
 
     private void increaseReferCount(String characterUid) {
         interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
@@ -944,14 +947,19 @@ public class CharacterApi {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character backend");
         }
 
+        if (!ttsService.isEnabled()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "TTS service is unavailable");
+        }
+
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         String characterUid = characterService.getBackendCharacterUid(characterBackendId);
         try {
             String dstDir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            ttsService.uploadVoice(dstPath);
             return getKeyFromUrl(dstPath);
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         }
     }
@@ -968,6 +976,10 @@ public class CharacterApi {
             String characterBackendId,
             @Parameter(description = "Voice key") @PathVariable("key") @NotBlank
             String key) {
+        if (!ttsService.isEnabled()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "TTS service is unavailable");
+        }
+
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         try {
@@ -978,11 +990,14 @@ public class CharacterApi {
             }
             String dstPath = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId + "/" + key;
             fileStore.delete(dstPath);
+            ttsService.deleteVoice(dstPath);
             return true;
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         } catch (IOException e) {
             return false;
         }
@@ -1389,9 +1404,12 @@ public class CharacterApi {
                             .forEach(backend -> {
                                 String dir = PRIVATE_DIR + userId + "/character/voices/" + characterInfo.getCharacterUid() + "/" + backend.getBackendId();
                                 try {
-                                    FileUtils.move(voicePath, fileStore, dir);
+                                    String dstPath = FileUtils.move(voicePath, fileStore, dir);
+                                    ttsService.uploadVoice(dstPath);
                                 } catch (IOException e) {
                                     log.warn("Failed to move file from {} to {}", voicePath, dir, e);
+                                } catch (IllegalStateException e) {
+                                    log.warn("Failed to upload voice file {}", voicePath, e);
                                 }
                             });
             });

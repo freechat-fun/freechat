@@ -885,13 +885,13 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         }
 
         // delete voice
-        testClient.delete().uri("/api/v2/character/voice/" + wav)
+        testClient.delete().uri("/api/v2/character/voice/" + backendId + "/" + wav)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isForbidden();
 
-        Boolean success = testClient.delete().uri("/api/v2/character/voice/" + wav)
+        Boolean success = testClient.delete().uri("/api/v2/character/voice/" + backendId + "/" + wav)
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

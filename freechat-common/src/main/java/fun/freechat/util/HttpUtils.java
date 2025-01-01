@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -16,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class HttpUtils {
     private static String getResponseAsString(HttpRequest request) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
                 return response.body();
             }
         } catch (IOException | InterruptedException e) {
@@ -98,17 +98,17 @@ public class HttpUtils {
         return getResponseAsString(builderFor(url, headers).DELETE().build());
     }
 
-    public static String upload(String url, File file, String filename) {
+    public static String upload(String url, Path file, String filename) {
         return upload(url, file, filename, null);
     }
 
-    public static String upload(String url, File file, String filename, Map<String, String> headers) {
-        if (file == null || !file.exists()) {
+    public static String upload(String url, Path file, String filename, Map<String, String> headers) {
+        if (file == null || !Files.exists(file)) {
             return null;
         }
 
         if (filename == null) {
-            filename = file.getName();
+            filename = file.getFileName().toString();
         }
 
         String boundary = "Boundary-" + System.currentTimeMillis();
@@ -123,8 +123,9 @@ public class HttpUtils {
 
         try {
             HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArrays(List.of(headerBytes,
-                    Files.readAllBytes(file.toPath()), footerBytes));
+                    Files.readAllBytes(file), footerBytes));
             HttpRequest.Builder builder = builderFor(url, headers);
+            builder.header("Content-Type", "multipart/form-data; boundary=" + boundary);
             builder.POST(bodyPublisher);
             return getResponseAsString(builder.build());
         } catch (IOException e) {

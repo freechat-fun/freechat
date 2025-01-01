@@ -37,7 +37,9 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
@@ -79,7 +81,7 @@ public class TtsApi {
     }
 
     @Operation(
-            operationId = "playTtsSample",
+            operationId = "playSample",
             summary = "Play Sample Audio",
             description = "Play TTS sample audio of the builtin/custom speaker."
     )
@@ -145,17 +147,13 @@ public class TtsApi {
                 }
             }
 
-            try {
-                OutputStream cacheFileStream = fileStore.newOutputStream(cachePath);
-                return doSpeakByTtsService(
-                        messageRecord.getSpeaker(),
-                        messageRecord.getSpeakerType(),
-                        ((AiMessage) messageRecord.getMessage()).text(),
-                        lang,
-                        cacheFileStream);
-            } catch (IOException e) {
-                log.warn("Failed to cache wav file: {}", cachePath, e);
-            }
+            return doSpeakByTtsService(
+                    messageRecord.getSpeaker(),
+                    messageRecord.getSpeakerType(),
+                    ((AiMessage) messageRecord.getMessage()).text(),
+                    lang,
+                    cachePath,
+                    fileStore);
         }
 
         // speak without caching
@@ -164,7 +162,8 @@ public class TtsApi {
                 messageRecord.getSpeakerType(),
                 ((AiMessage) messageRecord.getMessage()).text(),
                 lang,
-                null);
+                null,
+                fileStore);
     }
 
     private ResponseEntity<StreamingResponseBody> doSpeakByCachedVoice(
@@ -200,18 +199,35 @@ public class TtsApi {
     }
 
     private ResponseEntity<StreamingResponseBody> doSpeakByTtsService(
-            String speaker, TtsSpeakerType speakerType, String text, String lang, OutputStream cacheFileStream) {
+            String speaker, TtsSpeakerType speakerType, String text, String lang,
+            String cacheFile, FileStore fileStore) {
         String traceId = TraceUtils.getTraceId();
         User currentUser = AccountUtils.currentUserOrNull();
         String username = currentUser != null ? currentUser.getUsername() : null;
         AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
+
+        if (speakerType == TtsSpeakerType.WAV && !ttsService.existsVoice(speaker)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Speaker " + speaker + " not found!");
+        }
+
+
+        OutputStream cacheFileStream = null;
+        if (cacheFile != null) {
+            try {
+                cacheFileStream = fileStore.newOutputStream(cacheFile);
+            } catch (IOException e) {
+                log.warn("Failed to write to {}", cacheFile);
+            }
+        }
+        final OutputStream extraOutputStream = cacheFileStream;
+        AtomicBoolean failed = new AtomicBoolean(false);
 
         StreamingResponseBody streamingResponseBody = outputStream -> {
             ttsService.speak(speaker, speakerType, text, lang)
                     .thenAccept(voiceStream -> pipeTransfer(
                             voiceStream,
                             outputStream,
-                            cacheFileStream,
+                            extraOutputStream,
                             speaker,
                             speakerType,
                             text,
@@ -220,16 +236,29 @@ public class TtsApi {
                             username,
                             startTime))
                     .exceptionally(ex -> {
+                        failed.set(true);
                         log.error("Failed to transfer tts data", ex);
                         return null;
                     })
                     .join();
 
-            if (cacheFileStream != null) {
+            if (extraOutputStream != null) {
                 try {
-                    cacheFileStream.close();
+                    extraOutputStream.close();
                 } catch (Exception ignored) {
                     // ignored
+                }
+            }
+
+            if (failed.get()) {
+                fileStore.tryDelete(cacheFile);
+            } else {
+                try (InputStream in = fileStore.newInputStream(cacheFile)) {
+                    String mimeType = URLConnection.guessContentTypeFromStream(in);
+                    if (!"audio/x-wav".equals(mimeType)) {
+                        // unexpected format
+                        fileStore.tryDelete(cacheFile);
+                    }
                 }
             }
         };

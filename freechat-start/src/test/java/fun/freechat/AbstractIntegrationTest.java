@@ -3,7 +3,6 @@ package fun.freechat;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Image;
 import fun.freechat.util.TestOllamaContainer;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -24,6 +23,7 @@ import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -38,7 +38,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "180000")
 @ActiveProfiles("local")
-@TestPropertySource(properties = "APP_HOME=${TMPDIR}/test")
+@TestPropertySource(properties = "APP_HOME=${TMPDIR}")
 @Sql({"classpath:/sql/data.sql"})
 @SuppressWarnings("unused")
 public class AbstractIntegrationTest {
@@ -91,12 +91,11 @@ public class AbstractIntegrationTest {
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
         String appHome = System.getProperty("APP_HOME");
-        if (StringUtils.isNotBlank(appHome)) {
-            try {
-                Files.deleteIfExists(Path.of(appHome, "data"));
-            } catch (IOException ignored) {
-                // ignored
-            }
+        Path dataPath = Path.of(Objects.requireNonNull(appHome), "data");
+        try {
+            deleteDirectory(dataPath);
+        } catch (IOException ignored) {
+            // ignored
         }
 
         redis.start();
@@ -109,6 +108,23 @@ public class AbstractIntegrationTest {
         registry.add("embedding.milvus.url", milvus::getEndpoint);
         registry.add("tts.baseUrl",
                 () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
+        registry.add("disk.workdir", dataPath::toString);
+    }
+
+    private static void deleteDirectory(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
+
+        if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+                for (Path entry : stream) {
+                    deleteDirectory(entry);
+                }
+            }
+        }
+
+        Files.delete(path);
     }
 
     public static TestOllamaContainer ollama() {
