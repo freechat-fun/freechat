@@ -112,10 +112,6 @@ public class AbstractIntegrationTest {
     }
 
     private static void deleteDirectory(Path path) throws IOException {
-        if (!Files.exists(path)) {
-            return;
-        }
-
         if (Files.isDirectory(path)) {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
                 for (Path entry : stream) {
@@ -124,7 +120,7 @@ public class AbstractIntegrationTest {
             }
         }
 
-        Files.delete(path);
+        Files.deleteIfExists(path);
     }
 
     public static TestOllamaContainer ollama() {
