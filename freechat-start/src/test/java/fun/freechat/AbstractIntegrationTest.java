@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +71,8 @@ public class AbstractIntegrationTest {
 
         tts = new GenericContainer<>(ttsImageName())
                 .withExposedPorts(5002)
-                .waitingFor(Wait.forHttp("/ping"));
+                .waitingFor(Wait.forHttp("/ping"))
+                .withStartupTimeout(Duration.ofMinutes(3));
 
         ollama = new TestOllamaContainer(ollamaImageName())
                 .withModels(
@@ -102,6 +104,7 @@ public class AbstractIntegrationTest {
         mysql.start();
         milvus.start();
         tts.start();
+
         registry.add("redis.datasource.url",
                 () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);

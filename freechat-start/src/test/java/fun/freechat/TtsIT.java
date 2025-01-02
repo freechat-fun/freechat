@@ -1,19 +1,20 @@
 package fun.freechat;
 
+import fun.freechat.service.chat.TtsService;
 import fun.freechat.util.HttpUtils;
+import org.apache.tika.Tika;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -29,7 +30,10 @@ class TtsIT extends AbstractIntegrationTest {
     private static final String SPEAKER_WAV_NAME = "sample-16k-for-ttsIT.wav";
     @Value("${tts.baseUrl}")
     private String baseUri;
+    @Autowired
+    private TtsService ttsService;
     private String customVoiceApi;
+    private final Tika tika = new Tika();
     private static Path speakerWav;
 
     @BeforeEach
@@ -73,10 +77,10 @@ class TtsIT extends AbstractIntegrationTest {
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
             testClient.get().uri("/api/v2/public/tts/play/sample/idx/Claribel Dervla")
-                    .accept(MediaType.valueOf("audio/wav"))
+                    .accept(MediaType.valueOf(ttsService.mimeType()))
                     .exchange()
                     .expectStatus().isOk()
-                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .expectHeader().contentType(MediaType.valueOf(ttsService.mimeType()))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -91,16 +95,13 @@ class TtsIT extends AbstractIntegrationTest {
 
         byte[] audioData = futureAnswer.get(1, MINUTES);
         assertThat(audioData).isNotNull();
-        try (InputStream in = new ByteArrayInputStream(audioData)) {
-            String mimeType = URLConnection.guessContentTypeFromStream(in);
-            assertThat(mimeType).isEqualTo("audio/x-wav");
-        }
+        assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
     }
 
     @Test
     void should_play_sample_by_custom_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
         testClient.get().uri("/api/v2/public/tts/play/sample/wav/" + SPEAKER_WAV_NAME)
-                .accept(MediaType.valueOf("audio/wav"))
+                .accept(MediaType.valueOf(ttsService.mimeType()))
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -110,10 +111,10 @@ class TtsIT extends AbstractIntegrationTest {
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
             testClient.get().uri("/api/v2/public/tts/play/sample/wav/" + SPEAKER_WAV_NAME)
-                    .accept(MediaType.valueOf("audio/wav"))
+                    .accept(MediaType.valueOf(ttsService.mimeType()))
                     .exchange()
                     .expectStatus().isOk()
-                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .expectHeader().contentType(MediaType.valueOf(ttsService.mimeType()))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -128,10 +129,7 @@ class TtsIT extends AbstractIntegrationTest {
 
         byte[] audioData = futureAnswer.get(1, MINUTES);
         assertThat(audioData).isNotNull();
-        try (InputStream in = new ByteArrayInputStream(audioData)) {
-            String mimeType = URLConnection.guessContentTypeFromStream(in);
-            assertThat(mimeType).isEqualTo("audio/x-wav");
-        }
+        assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
 
         HttpUtils.delete(customVoiceApi + "/sample-16k.wav");
     }

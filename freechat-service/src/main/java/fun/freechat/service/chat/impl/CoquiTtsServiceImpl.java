@@ -28,6 +28,8 @@ import static dev.langchain4j.internal.ValidationUtils.ensureNotBlank;
 public class CoquiTtsServiceImpl implements TtsService {
     @Value("${tts.baseUrl}")
     private String baseUri;
+    @Value("${tts.format}")
+    private String format;
     @Value("${tts.timeout}")
     private Long timeout;
     private String inferenceApi;
@@ -40,7 +42,7 @@ public class CoquiTtsServiceImpl implements TtsService {
     @PostConstruct
     public void init() {
         baseUri = mayRemoveTrailingSlash(baseUri);
-        inferenceApi = baseUri + "/inference";
+        inferenceApi = baseUri + "/inference/" + format;
         uploadVoiceApi = baseUri + "/speaker/wav";
         deleteVoiceApi = baseUri + "/speaker/wav";
         existsVoiceApi = baseUri + "/speaker/wav/exists";
@@ -100,6 +102,22 @@ public class CoquiTtsServiceImpl implements TtsService {
         return alive.get();
     }
 
+    @Override
+    public String mimeType() {
+        return switch (format) {
+            case "mp3" -> "audio/mpeg";
+            case "aac" -> "audio/aac";
+            case "m4a" -> "audio/mp4";
+            case "wav" -> "audio/wav";
+            case null, default -> "audio/octet-stream";
+        };
+    }
+
+    @Override
+    public String audioFormat() {
+        return format;
+    }
+
     @Scheduled(fixedDelay = 5000L)
     public void ping() {
         boolean isOnline = StringUtils.isNotBlank(HttpUtils.get(pingApi));
@@ -133,7 +151,7 @@ public class CoquiTtsServiceImpl implements TtsService {
     private Map<String, String> createHeaders() {
         Map<String, String> headerMap = HashMap.newHashMap(9);
         headerMap.put("Request-Id", TraceUtils.getTraceId());
-        headerMap.put("Accept", "audio/wav, text/plain, */*");
+        headerMap.put("Accept", "audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/octet-stream, audio/*, text/plain, */*");
         headerMap.put("Accept-Language", "en,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7,ru;q=0.6");
         headerMap.put("Content-Type", "application/x-www-form-urlencoded");
         headerMap.put("Origin", baseUri);

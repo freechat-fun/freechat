@@ -8,6 +8,7 @@ import io.micrometer.common.util.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.tika.Tika;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -124,6 +122,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     private String chatId;
     private String pictureKey;
     private Long aiMessageId;
+    private final Tika tika = new Tika();
 
     protected ModelProvider modelProvider() {
         return OPEN_AI;
@@ -766,10 +765,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         byte[] audioData = futureAnswer.get(3, MINUTES);
         assertThat(audioData).isNotNull();
-        try (InputStream in = new ByteArrayInputStream(audioData)) {
-            String mimeType = URLConnection.guessContentTypeFromStream(in);
-            assertThat(mimeType).isEqualTo("audio/x-wav");
-        }
+        assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
     }
 
     private void should_speak_message_by_cached_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -796,10 +792,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         byte[] audioData = futureAnswer.get(3, SECONDS);
         assertThat(audioData).isNotNull();
-        try (InputStream in = new ByteArrayInputStream(audioData)) {
-            String mimeType = URLConnection.guessContentTypeFromStream(in);
-            assertThat(mimeType).isEqualTo("audio/x-wav");
-        }
+        assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
     }
 
     private void should_speak_message_by_custom_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -879,10 +872,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         byte[] audioData = futureAnswer.get(3, MINUTES);
         assertThat(audioData).isNotNull();
-        try (InputStream in = new ByteArrayInputStream(audioData)) {
-            String mimeType = URLConnection.guessContentTypeFromStream(in);
-            assertThat(mimeType).isEqualTo("audio/x-wav");
-        }
+        assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
 
         // delete voice
         testClient.delete().uri("/api/v2/character/voice/" + backendId + "/" + wav)

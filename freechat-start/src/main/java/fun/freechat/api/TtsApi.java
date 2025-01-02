@@ -20,6 +20,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -52,7 +52,7 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 @Slf4j
 @SuppressWarnings("unused")
 public class TtsApi {
-    private static final String CACHE_HOME = "wav/cache";
+    private static final String CACHE_HOME = "audio/cache";
     private static final String SAMPLE_TEXT = "Hello, I am %s. Nice to meet you!";
     private static final int BUFFER_SIZE = 8192;
 
@@ -60,6 +60,8 @@ public class TtsApi {
     private ChatMemoryService chatMemoryService;
     @Autowired
     private TtsService ttsService;
+    @Autowired
+    private Tika tika;
 
     @Operation(
             operationId = "listTtsBuiltinSpeakers",
@@ -85,7 +87,8 @@ public class TtsApi {
             summary = "Play Sample Audio",
             description = "Play TTS sample audio of the builtin/custom speaker."
     )
-    @GetMapping(value = "/public/tts/play/sample/{speakerType}/{speaker}", produces = "audio/wav")
+    @GetMapping(value = "/public/tts/play/sample/{speakerType}/{speaker}",
+            produces = {"audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/octet-stream"})
     public ResponseEntity<StreamingResponseBody> playSample(
             @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav") String speakerType,
             @Parameter(description = "The speaker") @PathVariable("speaker") @NotBlank String speaker) {
@@ -104,7 +107,8 @@ public class TtsApi {
             summary = "Speak Message",
             description = "Read out the message."
     )
-    @GetMapping(value = "/tts/speak/{messageId}", produces = "audio/wav")
+    @GetMapping(value = "/tts/speak/{messageId}",
+            produces = {"audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/octet-stream"})
     @PreAuthorize("hasPermission(#p0, 'ttsSpeakDefaultOp')")
     public ResponseEntity<StreamingResponseBody> speakMessage(
             @Parameter(description = "The message id") @PathVariable("messageId") @Positive Long messageId) {
@@ -194,7 +198,7 @@ public class TtsApi {
         };
 
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("audio/wav"))
+                .contentType(MediaType.valueOf(ttsService.mimeType()))
                 .body(streamingResponseBody);
     }
 
@@ -250,21 +254,13 @@ public class TtsApi {
                 }
             }
 
-            if (failed.get()) {
+            if (failed.get() || !ttsService.mimeType().equals(tika.detect(cacheFile))) {
                 fileStore.tryDelete(cacheFile);
-            } else {
-                try (InputStream in = fileStore.newInputStream(cacheFile)) {
-                    String mimeType = URLConnection.guessContentTypeFromStream(in);
-                    if (!"audio/x-wav".equals(mimeType)) {
-                        // unexpected format
-                        fileStore.tryDelete(cacheFile);
-                    }
-                }
             }
         };
 
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("audio/wav"))
+                .contentType(MediaType.valueOf(ttsService.mimeType()))
                 .body(streamingResponseBody);
     }
 
@@ -332,11 +328,12 @@ public class TtsApi {
         TraceUtils.getPerfLogger().trace(traceInfo);
     }
 
-    private static String getCachePath(ChatMessageRecord messageRecord) {
-        return "%s/%s-%s-%d.wav".formatted(
+    private String getCachePath(ChatMessageRecord messageRecord) {
+        return "%s/%s-%s-%d.%s".formatted(
                 CACHE_HOME,
                 messageRecord.getSpeakerType().text(),
                 messageRecord.getSpeaker().replaceAll(" ", ""),
-                messageRecord.getId());
+                messageRecord.getId(),
+                ttsService.audioFormat());
     }
 }

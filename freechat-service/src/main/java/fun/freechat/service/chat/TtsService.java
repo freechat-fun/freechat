@@ -12,4 +12,6 @@ public interface TtsService {
     void deleteVoice(String name);
     boolean existsVoice(String name);
     boolean isEnabled();
+    String mimeType();
+    String audioFormat();
 }
