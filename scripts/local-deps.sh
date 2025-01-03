@@ -6,7 +6,7 @@ check_docker
 
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
-SERVICE_NAMES="mysql redis milvus"
+SERVICE_NAMES="mysql redis milvus tts"
 SERVICES_CONFIG=local-deps.yml
 
 export MYSQL_TAG=latest
@@ -32,6 +32,12 @@ export MILVUS_HOST_PORT=19530
 export MILVUS_CONTROL_PORT=9091
 export MILVUS_CONTROL_HOST_PORT=9091
 export MILVUS_VOLUME=${PROJECT_PATH}/local-data/milvus
+
+export TTS_TAG=cpu-latest
+export TTS_NAME=${PROJECT_NAME}-tts
+export TTS_PORT=5002
+export TTS_HOST_PORT=5002
+export TTS_VOLUME=${PROJECT_PATH}/local-data/tts
 
 if [[ " ${ARGS[*]} " =~ " --start " ]]; then
   # config mysql

@@ -11,9 +11,14 @@ APP_CONFIG=local-app.yml
 COMMAND=start
 HOST_PORT=80
 TAG=latest
+TTS_TAG=cpu-latest
 APP_NAME=${PROJECT_NAME}
 APP_ARGS=()
 OTHER_ARGS=()
+
+MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
+RESOURCE_PATH=${MODULE_PATH}/src/main/resources
+SERVICE_NAMES="mysql redis milvus ${PROJECT_NAME}"
 
 while [ $# -gt 0 ]
 do
@@ -49,6 +54,14 @@ do
       shift
       shift
       ;;
+    --enable-tts)
+      SERVICE_NAMES="tts ${SERVICE_NAMES}"
+      shift
+      ;;
+    --use-cuda)
+      TTS_TAG=cuda-latest
+      shift
+      ;;
     -D*)
       APP_ARGS+=("$1")
       shift
@@ -65,6 +78,8 @@ Options：
   -n, --name            Service name, default is 'freechat'.
   -p, --port            Port number the service runs on, default is 80.
   -t, --tag             Tag of the image used by freechat.fun, default is latest.
+      --enable-tts      Enable TTS service.
+      --use-cuda        Available when --enable-tts is set and specifies whether to use the TTS CUDA image. Local machine should support Nvidia CUDA.
       -D*               Override any application property.
                         E.g. '-Dapp.logging.level=debug' sets the logging level to debug.
                         Refer to the properties in freechat-start/src/main/resources/application.yml
@@ -78,10 +93,6 @@ EOF
       ;;
   esac
 done
-
-MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
-RESOURCE_PATH=${MODULE_PATH}/src/main/resources
-SERVICE_NAMES="mysql redis milvus ${PROJECT_NAME}"
 
 export MYSQL_TAG=latest
 export MYSQL_PASSWORD=hello1234
@@ -106,6 +117,12 @@ export MILVUS_HOST_PORT=19530
 export MILVUS_CONTROL_PORT=9091
 export MILVUS_CONTROL_HOST_PORT=9091
 export MILVUS_VOLUME=${PROJECT_PATH}/local-data/milvus
+
+export TTS_TAG
+export TTS_NAME=${PROJECT_NAME}-tts
+export TTS_PORT=5002
+export TTS_HOST_PORT=5002
+export TTS_VOLUME=${PROJECT_PATH}/local-data/tts
 
 export REPOSITORY=freechatfun/freechat
 export APP_VOLUME=${PROJECT_PATH}/local-data/${PROJECT_NAME}

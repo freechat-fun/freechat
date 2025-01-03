@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: bitnami/mysql:${MYSQL_TAG}
+    image: mysql:${MYSQL_TAG}
     ports: 
       - ${MYSQL_HOST_PORT}:${MYSQL_PORT}
     container_name: ${MYSQL_NAME}
@@ -17,7 +17,8 @@ services:
       retries: 3
 
   redis:
-    image: bitnami/redis:${REDIS_TAG}
+    image: redis:${REDIS_TAG}
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "hello1234"]
     ports:
       - ${REDIS_HOST_PORT}:${REDIS_PORT}
     container_name: ${REDIS_NAME}
@@ -48,7 +49,22 @@ services:
     security_opt:
       - seccomp:unconfined
 #    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:${MILVUS_CONTROL_PORT}/healthz" ]
+#      test: [ "CMD", "curl", "--silent", "--fail", "http://localhost:${MILVUS_CONTROL_PORT}/healthz" ]
 #      interval: 10s
 #      timeout: 20s
 #      retries: 3
+
+  tts:
+    image: freechatfun/freechat-tts:${TTS_TAG}
+    ports:
+      - ${TTS_HOST_PORT}:${TTS_PORT}
+    container_name: ${TTS_NAME}
+    volumes:
+      - ${TTS_VOLUME}:/root/data
+    environment:
+      - DATA_HOME=/root/data
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost:${TTS_PORT}/ping"]
+      interval: 10s
+      timeout: 20s
+      retries: 3
