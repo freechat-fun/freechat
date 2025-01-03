@@ -27,7 +27,7 @@
         <spring-boot.version>3.4.1</spring-boot.version>
         <springdoc.version>2.7.0</springdoc.version>
         <lombok.version>1.18.36</lombok.version>
-        <mybatis.version>3.5.18</mybatis.version>
+        <mybatis.version>3.5.19</mybatis.version>
         <mybatis-dynamic-sql.version>1.5.2</mybatis-dynamic-sql.version>
         <mybatis-spring-boot-starter.version>3.0.4</mybatis-spring-boot-starter.version>
         <commons-collections4.version>4.4</commons-collections4.version>
