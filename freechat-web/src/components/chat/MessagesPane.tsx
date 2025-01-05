@@ -122,7 +122,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
 
   useEffect(() => {
     if (debugMode) {
-      context?.chatId &&
+      if (context?.chatId) {
         chatApi
           ?.listDebugMessages2(context.chatId)
           .then((resp) => {
@@ -141,8 +141,9 @@ export default function MessagesPane(props: MessagesPaneProps) {
             onOpen?.();
           })
           .catch(handleError);
+      }
     } else {
-      context?.chatId &&
+      if (context?.chatId) {
         chatApi
           ?.listMessages2(context.chatId)
           .then((resp) => {
@@ -161,6 +162,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
             onOpen?.();
           })
           .catch(handleError);
+      }
     }
   }, [
     chatApi,

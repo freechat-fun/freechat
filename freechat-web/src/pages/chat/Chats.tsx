@@ -44,8 +44,9 @@ export default function Chats() {
     );
     setApiKeyValue(newSelectedSession?.context?.apiKeyValue ?? '');
     setSelectedSession(newSelectedSession);
-    selectedChatId &&
+    if (selectedChatId) {
       chatApi?.getMemoryUsage(selectedChatId).then(setMemoryUsage);
+    }
   }, [chatApi, selectedChatId, sessions]);
 
   useEffect(() => {
@@ -164,12 +165,13 @@ export default function Chats() {
   }
 
   function handleChatDelete(chatId?: string): void {
-    chatId &&
+    if (chatId) {
       chatApi
         ?.deleteChat(chatId)
         .then(() => chatApi?.listChats().then(setSessions).catch(handleError))
         .finally(() => setChatIdDeleted(null))
         .catch(handleError);
+    }
   }
 
   function getCharacterNickname(chatId?: string | null): string {

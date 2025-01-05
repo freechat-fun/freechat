@@ -65,11 +65,12 @@ export default function ApiTokenPanel() {
   }
 
   function handleView(id: number | undefined): void {
-    id &&
+    if (id) {
       accountApi
         ?.getTokenById(id)
         .then((resp) => setTokenText(resp))
         .catch(handleError);
+    }
   }
 
   function handleViewClose(): void {
@@ -78,19 +79,22 @@ export default function ApiTokenPanel() {
   }
 
   function handleDelete(id: string | number | undefined): void {
-    id &&
+    if (id) {
       accountApi
         ?.disableTokenById(id as number)
         .then(
           (resp) => resp && setTokens(tokens.filter((token) => token.id !== id))
         )
         .catch(handleError);
+    }
 
     setTokenIdToConfirm(undefined);
   }
 
   function handleTryDelete(id: number | undefined): void {
-    id && setTokenIdToConfirm(id);
+    if (id) {
+      setTokenIdToConfirm(id);
+    }
   }
 
   return (
@@ -200,11 +204,12 @@ export default function ApiTokenPanel() {
             <Typography>{tokenText}</Typography>
             <IconButton
               onClick={() => {
-                tokenText &&
+                if (tokenText) {
                   navigator?.clipboard
                     ?.writeText(tokenText)
                     .then(() => setTokenTextCopied(true))
                     .catch(handleError);
+                }
               }}
             >
               <ContentCopyRounded />

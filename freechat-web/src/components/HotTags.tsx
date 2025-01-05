@@ -24,11 +24,12 @@ const HotTags = forwardRef<HTMLDivElement, HotTagsProp>((props, ref) => {
   const debouncedSearchTerm = useDebounce<string>(keyWord, 500);
 
   useEffect(() => {
-    infoType &&
+    if (infoType) {
       interactiveStatisticsApi
         ?.listHotTags(infoType, count, debouncedSearchTerm)
         .then(setHotTags)
         .catch(handleError);
+    }
   }, [
     interactiveStatisticsApi,
     infoType,
@@ -50,7 +51,9 @@ const HotTags = forwardRef<HTMLDivElement, HotTagsProp>((props, ref) => {
           key={`tag-${tag.content}=${index}`}
           onClick={(event) => {
             event.preventDefault();
-            tag.content && onTagClick?.(tag.content);
+            if (tag.content) {
+              onTagClick?.(tag.content);
+            }
           }}
         >
           {`${tag.content} (${tag.count})`}

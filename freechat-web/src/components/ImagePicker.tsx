@@ -89,7 +89,9 @@ export default function ImagePicker(props: ImagePickerProps) {
   }
 
   function handleConfirm() {
-    file && image && onImageSelect(file, extractFilenameFromUrl(image));
+    if (file && image) {
+      onImageSelect(file, extractFilenameFromUrl(image));
+    }
     setFile(null);
     setImage(undefined);
     setOpen(false);

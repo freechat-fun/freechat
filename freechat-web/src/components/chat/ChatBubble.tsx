@@ -122,13 +122,13 @@ export default function ChatBubble(props: ChatBubbleProps) {
     if (isSent) {
       try {
         systemPrompt = JSON.parse(ext)?.text;
-      } catch (_e) {
+      } catch {
         // ignore
       }
     } else {
       try {
         tokenUsage = JSON.parse(ext);
-      } catch (_e) {
+      } catch {
         // ignore
       }
     }
@@ -154,9 +154,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
         direction="row"
         justifyContent="space-between"
         spacing={2}
-        sx={{ mb: 0.25 }}
+        sx={{ mb: 0.25, width: '100%' }}
       >
-        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>
+        <Typography
+          level="body-xs"
+          sx={{ overflowWrap: 'anywhere', minWidth: '35%' }}
+        >
           {nickname}
         </Typography>
         <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>
@@ -216,11 +219,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
                         ) : (
                           <IconButton
                             onClick={() => {
-                              content.content &&
+                              if (content.content) {
                                 navigator?.clipboard
                                   ?.writeText(content.content)
                                   .then(() => setCopied(true))
                                   .catch(handleError);
+                              }
                             }}
                           >
                             <ContentCopyRounded fontSize="small" />

@@ -82,17 +82,20 @@ export default function AiApiKeyPanel(props: { provider: string }) {
   }
 
   function handleRemove(id: string | number | undefined): void {
-    id &&
+    if (id) {
       aiServiceApi
         ?.disableAiApiKey(id as number)
         .then((resp) => resp && setKeys(keys.filter((key) => key.id !== id)))
         .catch(handleError);
+    }
 
     setKeyIdToConfirm(undefined);
   }
 
   function handleTryRemove(id: number | undefined): void {
-    id && setKeyIdToConfirm(id);
+    if (id) {
+      setKeyIdToConfirm(id);
+    }
   }
 
   return (

@@ -47,8 +47,9 @@ export default function CharacterDocumentsPane({
   const [newTask, setNewTask] = useState<boolean>(false);
 
   const getBackends = useCallback(() => {
-    characterUid &&
+    if (characterUid) {
       ragApi?.listRagTasks(characterUid).then(setRagTasks).catch(handleError);
+    }
   }, [characterUid, ragApi, handleError]);
 
   useEffect(() => {
@@ -56,18 +57,21 @@ export default function CharacterDocumentsPane({
   }, [getBackends]);
 
   function handleRefreshTasks(): void {
-    characterUid &&
+    if (characterUid) {
       ragApi?.listRagTasks(characterUid).then(setRagTasks).catch(handleError);
+    }
   }
 
   function handleRerunTask(task: RagTaskDetailsDTO): void {
-    task.id &&
+    if (task.id) {
       ragApi?.startRagTask(task.id).finally(() => handleRefreshTasks());
+    }
   }
 
   function handleCancelTask(task: RagTaskDetailsDTO): void {
-    task.id &&
+    if (task.id) {
       ragApi?.cancelRagTask(task.id).finally(() => handleRefreshTasks());
+    }
   }
 
   function handleDeleteTask(task: RagTaskDetailsDTO | undefined): void {

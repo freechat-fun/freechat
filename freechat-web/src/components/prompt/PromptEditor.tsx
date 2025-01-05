@@ -270,7 +270,7 @@ export default function PromptEditor({
       if (origRecord.draft) {
         try {
           draft = (JSON.parse(origRecord.draft) as PromptDetailsDTO) ?? {};
-        } catch (error) {
+        } catch {
           console.warn(`[WARNING] Invalid draft content: ${origRecord.draft}`);
         }
       }
@@ -300,7 +300,7 @@ export default function PromptEditor({
             [key: string]: any;
           };
           setDefaultParameters(persistentParameters);
-        } catch (error) {
+        } catch {
           // ignore
         }
       }
@@ -359,9 +359,11 @@ export default function PromptEditor({
     request: PromptAiParamDTO | undefined,
     response: LlmResultDTO | undefined
   ): void {
-    request?.params && Object.keys(request?.params).length > 0
-      ? setDefaultParameters(request?.params)
-      : setDefaultParameters(undefined);
+    if (request?.params && Object.keys(request?.params).length > 0) {
+      setDefaultParameters(request?.params);
+    } else {
+      setDefaultParameters(undefined);
+    }
 
     if (
       request?.promptRef?.variables &&
@@ -384,9 +386,11 @@ export default function PromptEditor({
     request: PromptAiParamDTO | undefined,
     error: any
   ): void {
-    request?.params && Object.keys(request?.params).length > 0
-      ? setDefaultParameters(request?.params)
-      : setDefaultParameters(undefined);
+    if (request?.params && Object.keys(request?.params).length > 0) {
+      setDefaultParameters(request?.params);
+    } else {
+      setDefaultParameters(undefined);
+    }
 
     if (
       request?.promptRef?.variables &&
@@ -459,13 +463,13 @@ export default function PromptEditor({
 
   function handleRoundCommit(): void {
     const currentUserMessage = new ChatMessageDTO();
-    (currentUserMessage.role = 'user'),
-      (currentUserMessage.name = editUserName);
+    currentUserMessage.role = 'user';
+    currentUserMessage.name = editUserName;
     setMessageText(currentUserMessage, editUserContent);
 
     const currentAssistantMessage = new ChatMessageDTO();
-    (currentAssistantMessage.role = 'assistant'),
-      (currentAssistantMessage.name = editAssistantName);
+    currentAssistantMessage.role = 'assistant';
+    currentAssistantMessage.name = editAssistantName;
     setMessageText(currentAssistantMessage, editAssistantContent);
 
     setMessages([...messages, currentUserMessage, currentAssistantMessage]);
@@ -479,17 +483,22 @@ export default function PromptEditor({
   }
 
   function handleTagDelete(tagDeleted: string): void {
-    tags && setTags(tags.filter((tag) => tagDeleted !== tag));
+    if (tags) {
+      setTags(tags.filter((tag) => tagDeleted !== tag));
+    }
   }
 
   function handleModelDelete(modelIdDeleted: string): void {
-    models &&
+    if (models) {
       setModels(models.filter((model) => modelIdDeleted !== model.modelId));
+    }
   }
 
   function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    tags && tag && !tags.includes(tag) && setTags([...tags, tag]);
+    if (tags && tag && !tags.includes(tag)) {
+      setTags([...tags, tag]);
+    }
     setTag(undefined);
   }
 
@@ -497,10 +506,13 @@ export default function PromptEditor({
     const modelInfo = modelInfos.find(
       (modelInfo) => modelInfo.modelId === modelId
     );
-    modelInfo &&
+    if (
+      modelInfo &&
       models &&
-      !models.find((model) => modelId === model.modelId) &&
+      !models.find((model) => modelId === model.modelId)
+    ) {
       setModels([...models, modelInfo]);
+    }
     setModelId(undefined);
   }
 
@@ -556,7 +568,7 @@ export default function PromptEditor({
             promptTemplate.chatTemplate = JSON.parse(
               resp
             ) as ChatPromptContentDTO;
-          } catch (error) {
+          } catch {
             promptTemplate.template = resp;
           }
           promptTemplate.variables = req.promptRef?.variables;
@@ -714,7 +726,7 @@ export default function PromptEditor({
     if (origRecord.draft) {
       try {
         draft = (JSON.parse(origRecord.draft) as PromptDetailsDTO) ?? {};
-      } catch (error) {
+      } catch {
         console.warn(`[WARNING] Invalid draft content: ${origRecord.draft}`);
       }
     }

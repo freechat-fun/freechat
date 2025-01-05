@@ -189,17 +189,14 @@ export default function PromptRunner(props: PromptRunnerProps) {
   }, [aiServiceApi, handleError]);
 
   useEffect(() => {
-    provider &&
-      aiServiceApi
-        ?.listAiApiKeys(provider)
-        .then((resp) =>
-          setApiKeyNames(
-            resp
-              .filter((key) => !!key.name && key.enabled)
-              .map((key) => key.name)
-          )
+    aiServiceApi
+      ?.listAiApiKeys(provider)
+      .then((resp) =>
+        setApiKeyNames(
+          resp.filter((key) => !!key.name && key.enabled).map((key) => key.name)
         )
-        .catch(handleError);
+      )
+      .catch(handleError);
   }, [aiServiceApi, handleError, provider]);
 
   useEffect(() => {

@@ -111,7 +111,7 @@ export default function CharacterDocumentUploader({
     try {
       new URL(url);
       setDocumentUrlInvalid(false);
-    } catch (error) {
+    } catch {
       setDocumentUrlInvalid(true);
     }
     setDocumentUrl(url);

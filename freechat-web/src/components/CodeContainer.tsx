@@ -54,7 +54,7 @@ const CodeContent: React.FC<PropsWithChildren> = ({ children }) => {
             await import(
               `/* @vite-ignore */prismjs/components/prism-${language}.js`
             );
-          } catch (error) {
+          } catch {
             console.error('PrismJS load language failed:', language);
             language = 'none';
           }

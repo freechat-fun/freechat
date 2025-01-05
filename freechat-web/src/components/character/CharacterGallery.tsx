@@ -59,8 +59,9 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   useEffect(() => {
     setTags(record?.tags ?? []);
     setNickname(record?.nickname ?? record?.name);
-    record.picture &&
+    if (record.picture) {
       processBackground(record.picture, mode, 0.4).then(setBackground);
+    }
   }, [mode, record]);
 
   return (
@@ -297,7 +298,7 @@ export default function CharacterGallery({
           return prevRecords.concat(delta);
         });
         resp.forEach((r) => {
-          r.characterUid &&
+          if (r.characterUid) {
             interactiveStatisticsApi
               ?.getStatistics('character', r.characterUid)
               .then((stats) => characterInfoWithStats(r, stats))
@@ -311,6 +312,7 @@ export default function CharacterGallery({
                 });
               })
               .catch(handleError);
+          }
         });
       })
       .catch(handleError)

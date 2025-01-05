@@ -241,12 +241,12 @@ export default function Characters() {
   }
 
   function handleDelete(record: CharacterSummaryDTO | undefined): void {
-    record?.name &&
+    if (record?.name) {
       characterApi
         ?.deleteCharacterByName(record.name)
         .then(() => doSearch())
         .catch(handleError);
-
+    }
     setRecordDeleted(undefined);
   }
 
@@ -255,7 +255,7 @@ export default function Characters() {
   }
 
   function handleView(record: CharacterSummaryDTO): void {
-    record.characterUid &&
+    if (record.characterUid) {
       chatApi
         ?.getDefaultChatId(record.characterUid)
         .then((resp) => {
@@ -282,15 +282,19 @@ export default function Characters() {
             })
             .catch(handleError);
         });
+    }
   }
 
   function handleEdit(record: CharacterSummaryDTO): void {
-    record.characterId && navigate(`/w/character/edit/${record.characterId}`);
+    if (record.characterId) {
+      navigate(`/w/character/edit/${record.characterId}`);
+    }
   }
 
   function handleDownload(record: CharacterSummaryDTO): void {
-    record.characterId &&
+    if (record.characterId) {
       exportCharacter(record.characterId).catch(handleError);
+    }
   }
 
   function handleNameChange(): void {

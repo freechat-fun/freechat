@@ -92,7 +92,11 @@ export default function ChatContent({
             }
           },
           onerror(error) {
-            onError ? onError(error) : handleError(error);
+            if (onError) {
+              onError(error);
+            } else {
+              handleError(error);
+            }
           },
           onclose() {
             console.error('The connection has been closed...');
@@ -100,7 +104,11 @@ export default function ChatContent({
           },
         });
       } catch (error) {
-        onError ? onError(error) : handleError(error);
+        if (onError) {
+          onError(error);
+        } else {
+          handleError(error);
+        }
       }
     };
 
@@ -130,11 +138,12 @@ export default function ChatContent({
             ) : (
               <IconButton
                 onClick={() => {
-                  data &&
+                  if (data) {
                     navigator?.clipboard
                       ?.writeText(data)
                       .then(() => setCopied(true))
                       .catch(handleError);
+                  }
                 }}
               >
                 <ContentCopyRounded fontSize="small" />

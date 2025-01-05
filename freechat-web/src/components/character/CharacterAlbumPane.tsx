@@ -44,11 +44,12 @@ export default function CharacterAlbumPane({
   const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   useEffect(() => {
-    characterUid &&
+    if (characterUid) {
       characterApi
         ?.listCharacterPictures(characterUid)
         .then(setPictures)
         .catch(handleError);
+    }
     return initTransitionSequence(setShowPictures, undefined, pageSize);
   }, [characterApi, characterUid, handleError]);
 

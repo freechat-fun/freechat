@@ -69,7 +69,7 @@ export function extractVariables(
         : extractMustacheTemplateVariableNames(templateContent);
 
     return initVariables(variableNames, defaultInputs);
-  } catch (error) {
+  } catch {
     return defaultInputs;
   }
 }

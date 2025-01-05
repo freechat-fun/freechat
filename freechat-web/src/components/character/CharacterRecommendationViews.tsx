@@ -32,13 +32,17 @@ export default function CharacterRecommendationViews({
 
     // Clear the interval when the component unmounts
     return () => {
-      intervalRef.current && clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
       intervalRef.current = null;
     };
   }, [interval, languages.length]);
 
   function handleMouseEnter(): void {
-    intervalRef.current && clearInterval(intervalRef.current);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
     intervalRef.current = null;
   }
 

@@ -56,11 +56,12 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const [tags, setTags] = useState(record?.tags ?? []);
 
   useEffect(() => {
-    record.username &&
+    if (record.username) {
       accountApi?.getUserBasic(record.username).then((resp) => {
         setUser(resp);
         setUserName(resp?.nickname ?? resp?.username ?? '');
       });
+    }
   }, [accountApi, record]);
 
   useEffect(() => {
@@ -267,7 +268,7 @@ export default function PromptGallery() {
           return prevRecords.concat(delta);
         });
         resp.forEach((r) => {
-          r.promptUid &&
+          if (r.promptUid) {
             interactiveStatisticsApi
               ?.getStatistics('prompt', r.promptUid)
               .then((stats) => promptInfoWithStats(r, stats))
@@ -281,6 +282,7 @@ export default function PromptGallery() {
                 });
               })
               .catch(handleError);
+          }
         });
       })
       .catch(handleError)

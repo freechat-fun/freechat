@@ -98,6 +98,10 @@ const CharacterBackendSettings = forwardRef<
   const [enableAlbumTool, setEnableAlbumTool] = useState(
     backend?.enableAlbumTool ?? false
   );
+  const [enableTts, setEnableTts] = useState(backend?.enableTts ?? false);
+  const [ttsSpeakerIdx, setTtsSpeakerIdx] = useState(backend?.ttsSpeakerIdx);
+  const [ttsSpeakerWav, setTtsSpeakerWav] = useState(backend?.ttsSpeakerWav);
+  const [ttsSpeakerType, setTtsSpeakerType] = useState(backend?.ttsSpeakerType ?? 'idx');
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
@@ -138,11 +142,12 @@ const CharacterBackendSettings = forwardRef<
   }, [aiServiceApi, handleError]);
 
   useEffect(() => {
-    backend?.chatPromptTaskId &&
+    if (backend?.chatPromptTaskId) {
       promptTaskApi
         ?.getPromptTask(backend?.chatPromptTaskId)
         .then(setPromptTask)
         .catch(handleError);
+    }
 
     setInitQuota(backend?.initQuota ?? 0);
     setQuotaType(
@@ -151,26 +156,28 @@ const CharacterBackendSettings = forwardRef<
     setEnableQuota(
       backend?.quotaType === 'messages' || backend?.quotaType === 'tokens'
     );
+    setEnableAlbumTool(backend?.enableAlbumTool ?? false);
+    setEnableTts(backend?.enableTts ?? false);
+    setTtsSpeakerIdx(backend?.ttsSpeakerIdx);
+    setTtsSpeakerWav(backend?.ttsSpeakerWav);
+    setTtsSpeakerType(backend?.ttsSpeakerType ?? 'idx');
   }, [
-    backend?.chatPromptTaskId,
-    backend?.initQuota,
-    backend?.quotaType,
+    backend,
     handleError,
     promptTaskApi,
   ]);
 
   useEffect(() => {
-    provider &&
-      aiServiceApi
-        ?.listAiApiKeys(provider)
-        .then((resp) =>
-          setApiKeyNames(
-            resp
-              .filter((key) => !!key.name && key.enabled)
-              .map((key) => key.name as string)
-          )
+    aiServiceApi
+      ?.listAiApiKeys(provider)
+      .then((resp) =>
+        setApiKeyNames(
+          resp
+            .filter((key) => !!key.name && key.enabled)
+            .map((key) => key.name as string)
         )
-        .catch(handleError);
+      )
+      .catch(handleError);
   }, [aiServiceApi, handleError, provider]);
 
   useEffect(() => {

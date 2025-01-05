@@ -65,12 +65,12 @@ export default function PromptViewer({
   const [defaultOutputText, setDefaultOutputText] = useState<string>();
 
   useEffect(() => {
-    id &&
+    if (id) {
       promptApi
         ?.getPromptDetails(id)
         .then((resp) => {
           setRecord(resp);
-          resp?.name &&
+          if (resp?.name) {
             promptApi
               ?.listPromptVersionsByName(resp?.name)
               .then((resp) =>
@@ -81,8 +81,10 @@ export default function PromptViewer({
               )
               .then((ids) => setHistory(ids))
               .catch(handleError);
+          }
         })
         .catch(handleError);
+    }
   }, [handleError, id, promptApi]);
 
   useEffect(() => {
@@ -98,7 +100,7 @@ export default function PromptViewer({
           [key: string]: any;
         };
         setDefaultParameters(persistentParameters);
-      } catch (error) {
+      } catch {
         // ignore
       }
     }
@@ -113,11 +115,13 @@ export default function PromptViewer({
   }, [variables]);
 
   function handleEdit(): void {
-    id && navigate(`/w/prompt/edit/${id}`);
+    if (id) {
+      navigate(`/w/prompt/edit/${id}`);
+    }
   }
 
   function handleCopy(): void {
-    id &&
+    if (id) {
       promptApi
         ?.clonePrompt(id)
         .then((resp) => {
@@ -126,6 +130,7 @@ export default function PromptViewer({
           }
         })
         .catch(handleError);
+    }
   }
 
   return (
@@ -228,9 +233,11 @@ export default function PromptViewer({
             defaultParameters={defaultParameters}
             defaultOutputText={defaultOutputText}
             onPlaySuccess={(request, response) => {
-              request?.params && Object.keys(request?.params).length > 0
-                ? setDefaultParameters(request?.params)
-                : setDefaultParameters(undefined);
+              if (request?.params && Object.keys(request?.params).length > 0) {
+                setDefaultParameters(request?.params);
+              } else {
+                setDefaultParameters(undefined);
+              }
 
               if (
                 request?.promptRef?.variables &&
@@ -251,9 +258,11 @@ export default function PromptViewer({
               );
             }}
             onPlayFailure={(request, error) => {
-              request?.params && Object.keys(request?.params).length > 0
-                ? setDefaultParameters(request?.params)
-                : setDefaultParameters(undefined);
+              if (request?.params && Object.keys(request?.params).length > 0) {
+                setDefaultParameters(request?.params);
+              } else {
+                setDefaultParameters(undefined);
+              }
 
               if (
                 request?.promptRef?.variables &&

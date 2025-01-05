@@ -137,7 +137,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
       if (origRecord.draft) {
         try {
           draft = (JSON.parse(origRecord.draft) as CharacterDetailsDTO) ?? {};
-        } catch (error) {
+        } catch {
           console.log(`[WARNING] Invalid draft content: ${origRecord.draft}`);
         }
       }
@@ -200,12 +200,16 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
   }
 
   function handleTagDelete(tagDeleted: string): void {
-    tags && setTags(tags.filter((tag) => tagDeleted !== tag));
+    if (tags) {
+      setTags(tags.filter((tag) => tagDeleted !== tag));
+    }
   }
 
   function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    tags && tag && !tags.includes(tag) && setTags([...tags, tag]);
+    if (tags && tag && !tags.includes(tag)) {
+      setTags([...tags, tag]);
+    }
     setTag(undefined);
   }
 
@@ -216,11 +220,12 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     getCompressedImage(file, 100 * 1024)
       .then((imageInfo) => {
         const request = new File([imageInfo.blob], name);
-        recordUid &&
+        if (recordUid) {
           characterApi
             ?.uploadCharacterAvatar(recordUid, request)
             .then((url) => setAvatar(url))
             .catch(handleError);
+        }
       })
       .catch(handleError);
   }
@@ -498,7 +503,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     if (origRecord.draft) {
       try {
         draft = (JSON.parse(origRecord.draft) as CharacterDetailsDTO) ?? {};
-      } catch (error) {
+      } catch {
         console.log(`[WARNING] Invalid draft content: ${origRecord.draft}`);
       }
     }

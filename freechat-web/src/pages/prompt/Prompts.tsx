@@ -227,11 +227,12 @@ export default function Prompts() {
   }
 
   function handleDelete(record: PromptSummaryDTO | undefined): void {
-    record?.name &&
+    if (record?.name) {
       promptApi
         ?.deletePromptByName(record.name)
         .then(() => doSearch())
         .catch(handleError);
+    }
 
     setRecordDeleted(undefined);
   }

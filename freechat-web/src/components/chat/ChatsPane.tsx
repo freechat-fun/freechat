@@ -51,7 +51,11 @@ export default function ChatsPane(props: ChatsPaneProps) {
   const [editMode, setEditMode] = useState(false);
   const debouncedSearchTerm = useDebounce<string>(keyWord, 200);
 
-  open ? openChatsPane() : closeChatsPane();
+  if (open) {
+    openChatsPane();
+  } else {
+    closeChatsPane();
+  }
 
   useEffect(() => {
     if (debouncedSearchTerm) {

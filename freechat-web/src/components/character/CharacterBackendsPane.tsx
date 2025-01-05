@@ -47,11 +47,12 @@ export default function CharacterBackendsPane({
   const [backendIdToConfirm, setBackendIdToConfirm] = useState('');
 
   const getBackends = useCallback(() => {
-    characterUid &&
+    if (characterUid) {
       characterApi
         ?.listCharacterBackends(characterUid)
         .then(setBackends)
         .catch(handleError);
+    }
   }, [characterApi, handleError, characterUid]);
 
   useEffect(() => {
@@ -63,15 +64,17 @@ export default function CharacterBackendsPane({
   }, [defaultBackends]);
 
   function handleView(backend: CharacterBackendDetailsDTO | undefined): void {
-    backend?.chatPromptTaskId &&
+    if (backend?.chatPromptTaskId) {
       navigator(`/w/prompt/task/${backend.chatPromptTaskId}`);
+    }
   }
 
   function handleDelete(id: string | undefined): void {
     if (id) {
       const backend = backends.find((b) => b.backendId === id);
-      backend?.chatPromptTaskId &&
+      if (backend?.chatPromptTaskId) {
         promptTaskApi?.deletePromptTask(backend.chatPromptTaskId);
+      }
       characterApi
         ?.removeCharacterBackend(id)
         .then(() => getBackends())
@@ -81,15 +84,18 @@ export default function CharacterBackendsPane({
   }
 
   function handleTryDelete(id: string | undefined): void {
-    id && setBackendIdToConfirm(id);
+    if (id) {
+      setBackendIdToConfirm(id);
+    }
   }
 
   function handleDefaultChange(id: string | undefined): void {
-    id &&
+    if (id) {
       characterApi
         ?.setDefaultCharacterBackend(id)
         .then(() => getBackends())
         .catch(handleError);
+    }
   }
 
   return (

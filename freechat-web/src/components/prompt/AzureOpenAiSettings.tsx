@@ -152,7 +152,9 @@ export default function AzureOpenAiSettings(props: {
 
   function handleStopWordSubmit(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    stopWord && !stop.includes(stopWord) && setStop([...stop, stopWord]);
+    if (stopWord && !stop.includes(stopWord)) {
+      setStop([...stop, stopWord]);
+    }
     setStopWord(undefined);
   }
 
