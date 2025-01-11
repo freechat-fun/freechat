@@ -7,8 +7,8 @@ import fun.freechat.api.util.*;
 import fun.freechat.model.*;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.TtsService;
-import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.FileStore;
+import fun.freechat.service.config.RuntimeConfig;
 import fun.freechat.service.enums.InfoType;
 import fun.freechat.service.enums.SourceType;
 import fun.freechat.service.enums.StatsType;
@@ -94,7 +94,7 @@ public class CharacterApi {
     @Autowired
     private InteractiveStatsService interactiveStatsService;
     @Autowired
-    private ConfigService configService;
+    private RuntimeConfig runtimeConfig;
     @Autowired
     private PromptService promptService;
     @Autowired
@@ -709,7 +709,7 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        Properties properties = configService.load();
+        Properties properties = runtimeConfig.getProperties();
         long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
 
@@ -806,7 +806,7 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        Properties properties = configService.load();
+        Properties properties = runtimeConfig.getProperties();
         long maxSize = ConfigUtils.getOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
 
@@ -845,7 +845,7 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        Properties properties = configService.load();
+        Properties properties = runtimeConfig.getProperties();
         long maxSize = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_SIZE_KEY, DEFAULT_DOCUMENT_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_COUNT_KEY, DEFAULT_DOCUMENT_MAX_COUNT);
 
@@ -934,7 +934,7 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
             String characterBackendId) {
-        Properties properties = configService.load();
+        Properties properties = runtimeConfig.getProperties();
         long maxSize = ConfigUtils.getOrDefault(properties, VOICE_MAX_SIZE_KEY, DEFAULT_VOICE_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, VOICE_MAX_COUNT_KEY, DEFAULT_VOICE_MAX_COUNT);
 
@@ -1453,8 +1453,8 @@ public class CharacterApi {
     }
 
     @Data
-    static class ManifestInfo {
-        private static final String API_VERSION = "v1";
+    public static class ManifestInfo {
+        private static final String API_VERSION = "v2";
 
         private String apiVersion;
         private String appVersion;

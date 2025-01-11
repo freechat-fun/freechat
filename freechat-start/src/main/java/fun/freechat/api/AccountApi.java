@@ -9,8 +9,8 @@ import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
 import fun.freechat.service.account.SysUserService;
-import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.FileStore;
+import fun.freechat.service.config.RuntimeConfig;
 import fun.freechat.service.util.StoreUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +50,7 @@ public class AccountApi {
     @Autowired
     private SysApiTokenService apiTokenService;
     @Autowired
-    private ConfigService configService;
+    private RuntimeConfig runtimeConfig;
 
     @Operation(
             operationId = "getUserBasic",
@@ -213,7 +213,7 @@ public class AccountApi {
             HttpServletRequest request,
             @Parameter(description = "User picture", style = ParameterStyle.FORM) @RequestParam("file") @NotNull
             MultipartFile file) {
-        Properties properties = configService.load();
+        Properties properties = runtimeConfig.getProperties();
         long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
         int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
 
