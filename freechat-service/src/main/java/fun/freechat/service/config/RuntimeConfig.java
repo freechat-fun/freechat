@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public interface RuntimeConfig {
-    String get();
+    String getContent();
     Properties getProperties();
     default Map<String, Object> getMap() {
         Properties properties = getProperties();
@@ -23,5 +23,8 @@ public interface RuntimeConfig {
     }
     default <T> T getObject() {
         throw new UnsupportedOperationException("Not implemented");
+    }
+    default String get(String key) {
+        return getProperties().getProperty(key);
     }
 }

@@ -2,8 +2,8 @@ package fun.freechat.web;
 
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.model.User;
-import fun.freechat.service.common.ConfigService;
 import fun.freechat.service.common.ShortLinkService;
+import fun.freechat.service.config.RuntimeConfig;
 import fun.freechat.service.enums.GenderType;
 import fun.freechat.util.AppMetaUtils;
 import jakarta.annotation.PostConstruct;
@@ -16,7 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
@@ -31,7 +34,7 @@ public class MainController {
     @Value("${app.icpCode:#{null}}")
     private String icpCode;
     @Autowired
-    private ConfigService configService;
+    private RuntimeConfig runtimeConfig;
     @Autowired
     private InMemoryClientRegistrationRepository clientRegistrationRepository;
     @Autowired
@@ -69,7 +72,7 @@ public class MainController {
         }
 
         String script = "/assets/index.js";
-        Properties properties = configService.load();
+        Properties properties = runtimeConfig.getProperties();
         String webVersion = properties.getProperty(WEB_VERSION_KEY);
 
         if (StringUtils.isNotBlank(webVersion)) {
