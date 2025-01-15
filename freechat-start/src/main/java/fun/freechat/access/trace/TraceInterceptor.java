@@ -2,6 +2,7 @@ package fun.freechat.access.trace;
 
 import fun.freechat.exception.BadRequestException;
 import fun.freechat.util.TraceUtils;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -17,7 +18,6 @@ import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.annotation.Nullable;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +42,9 @@ public class TraceInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request,
+                             @NonNull HttpServletResponse response,
+                             @Nullable Object handler) {
         TraceUtils.startTrace();
         TraceUtils.putTraceAttribute("traceId", TraceUtils.getTraceId());
         Optional.ofNullable(SecurityContextHolder.getContext())
@@ -53,8 +55,10 @@ public class TraceInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-                                @Nullable Object handler, @Nullable Exception ex) {
+    public void afterCompletion(@NonNull HttpServletRequest request,
+                                @NonNull HttpServletResponse response,
+                                @Nullable Object handler,
+                                @Nullable Exception ex) {
         if (!TraceUtils.isTracing()) {
             return;
         }

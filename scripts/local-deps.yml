@@ -7,7 +7,7 @@ services:
     volumes:
       - ${MYSQL_VOLUME}/conf.d:/etc/mysql/conf.d
       - ${MYSQL_VOLUME}/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ${MYSQL_VOLUME}/data:/bitnami/mysql/data
+      - ${MYSQL_VOLUME}/data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     healthcheck:
@@ -23,7 +23,7 @@ services:
       - ${REDIS_HOST_PORT}:${REDIS_PORT}
     container_name: ${REDIS_NAME}
     volumes:
-      - ${REDIS_VOLUME}:/bitnami/redis
+      - ${REDIS_VOLUME}:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     healthcheck:
@@ -48,23 +48,24 @@ services:
     entrypoint: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
-#    healthcheck:
-#      test: [ "CMD", "curl", "--silent", "--fail", "http://localhost:${MILVUS_CONTROL_PORT}/healthz" ]
-#      interval: 10s
-#      timeout: 20s
-#      retries: 3
+    healthcheck:
+      test: [ "CMD", "curl", "--silent", "--fail", "http://localhost:${MILVUS_CONTROL_PORT}/healthz" ]
+      interval: 10s
+      timeout: 20s
+      retries: 6
 
   tts:
     image: freechatfun/freechat-tts:${TTS_TAG}
+    platform: linux/amd64
     ports:
       - ${TTS_HOST_PORT}:${TTS_PORT}
     container_name: ${TTS_NAME}
     volumes:
-      - ${TTS_VOLUME}:/root/data
+      - ${TTS_VOLUME}:/var/lib/tts
     environment:
-      - DATA_HOME=/root/data
+      - DATA_HOME=/var/lib/tts
     healthcheck:
       test: ["CMD", "curl", "--silent", "--fail", "http://localhost:${TTS_PORT}/ping"]
       interval: 10s
       timeout: 20s
-      retries: 3
+      retries: 12

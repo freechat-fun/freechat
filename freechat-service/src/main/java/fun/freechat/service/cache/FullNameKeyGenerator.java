@@ -45,14 +45,14 @@ public class FullNameKeyGenerator implements KeyGenerator {
 
     private Pair<String[], String> getCachesKeyExpr(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            if (annotation instanceof ShortPeriodCache) {
-                return Pair.of(SHORT_PERIOD_CACHE_NAMES, ((ShortPeriodCache) annotation).keyBy());
-            } else if (annotation instanceof MiddlePeriodCache) {
-                return Pair.of(MIDDLE_PERIOD_CACHE_NAMES, ((MiddlePeriodCache) annotation).keyBy());
-            } else if (annotation instanceof LongPeriodCache) {
-                return Pair.of(LONG_PERIOD_CACHE_NAMES, ((LongPeriodCache) annotation).keyBy());
-            } else if (annotation instanceof Cacheable) {
-                return Pair.of(((Cacheable) annotation).cacheNames(), ((Cacheable) annotation).key());
+            if (annotation instanceof ShortPeriodCache shortCache) {
+                return Pair.of(SHORT_PERIOD_CACHE_NAMES,shortCache.keyBy());
+            } else if (annotation instanceof MiddlePeriodCache middleCache) {
+                return Pair.of(MIDDLE_PERIOD_CACHE_NAMES, middleCache.keyBy());
+            } else if (annotation instanceof LongPeriodCache longCache) {
+                return Pair.of(LONG_PERIOD_CACHE_NAMES, longCache.keyBy());
+            } else if (annotation instanceof Cacheable cache) {
+                return Pair.of(cache.cacheNames(), cache.key());
             }
         }
 

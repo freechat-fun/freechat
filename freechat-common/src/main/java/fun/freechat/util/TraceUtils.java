@@ -30,6 +30,7 @@ public class TraceUtils {
     public static void setTraceId(String traceId) {
         TRACE_ID.set(traceId);
         TRACE_TIME.set(System.currentTimeMillis());
+        MDC.put("traceId", traceId);
     }
 
     public static void startTrace(String traceId) {

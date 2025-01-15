@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
@@ -23,21 +24,17 @@ public class MustachePromptTemplateFactory implements PromptTemplateFactory {
 
     static class MustacheTemplate implements Template {
         private final Supplier<com.samskivert.mustache.Template> templateProvider;
-        private volatile com.samskivert.mustache.Template template;
+        private AtomicReference<com.samskivert.mustache.Template> template;
 
         MustacheTemplate(Supplier<com.samskivert.mustache.Template> templateProvider) {
             this.templateProvider = templateProvider;
         }
 
         private com.samskivert.mustache.Template template() {
-            if (template == null) {
-                synchronized (this) {
-                    if (template == null) {
-                        template = templateProvider.get();
-                    }
-                }
+            if (template.get() == null) {
+                template.compareAndSet(null, templateProvider.get());
             }
-            return template;
+            return template.get();
         }
 
         public String render(Map<String, Object> vars) {
