@@ -28,15 +28,25 @@ public class HttpUtils {
 
     private static final int CALL_TIMEOUT_M = 3;
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+    private static final String DEFAULT_CONTENT_TYPE = "application/json";
+    private static final String DEFAULT_ACCEPT = "*/*";
     private static final HttpClient client = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
+            .version(HttpClient.Version.HTTP_1_1)
             .connectTimeout(Duration.ofMinutes(3))
             .build();
+
+    private static HttpRequest.BodyPublisher publisherFor(String body) {
+        return StringUtils.isBlank(body) ?
+                HttpRequest.BodyPublishers.noBody() :
+                HttpRequest.BodyPublishers.ofString(body);
+    }
 
     private static HttpRequest.Builder builderFor(String url, Map<String, String> headers) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .header("User-Agent", DEFAULT_USER_AGENT);
+                .header("User-Agent", DEFAULT_USER_AGENT)
+                .header("Content-Type", DEFAULT_CONTENT_TYPE)
+                .header("Accept", DEFAULT_ACCEPT);
         if (MapUtils.isNotEmpty(headers)) {
             headers.forEach(builder::header);
         }
@@ -69,14 +79,14 @@ public class HttpUtils {
 
     public static String post(String url, Map<String, String> headers, String data) {
         HttpRequest.Builder builder = builderFor(url, headers);
-        builder.POST(HttpRequest.BodyPublishers.ofString(data != null ? data : ""));
+        builder.POST(publisherFor(data));
         return getResponseAsString(builder.build());
     }
 
     public static CompletableFuture<HttpResponse<InputStream>> asyncPost(
             String url, Map<String, String> headers, String data) {
         HttpRequest.Builder builder = builderFor(url, headers);
-        HttpRequest request = builder.POST(HttpRequest.BodyPublishers.ofString(data != null ? data : "")).build();
+        HttpRequest request = builder.POST(publisherFor(data)).build();
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream());
     }
 
@@ -86,7 +96,7 @@ public class HttpUtils {
 
     public static String put(String url, Map<String, String> headers, String data) {
         HttpRequest.Builder builder = builderFor(url, headers);
-        builder.PUT(HttpRequest.BodyPublishers.ofString(data != null ? data : ""));
+        builder.PUT(publisherFor(data));
         return getResponseAsString(builder.build());
     }
 
