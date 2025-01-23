@@ -42,7 +42,7 @@ const request: PromptTaskApiCreatePromptTaskRequest = {
       "key": {},
     },
     cron: "cron_example",
-    status: "status_example",
+    status: "succeeded",
   },
 };
 
@@ -219,7 +219,7 @@ const request: PromptTaskApiUpdatePromptTaskRequest = {
       "key": {},
     },
     cron: "cron_example",
-    status: "status_example",
+    status: "succeeded",
   },
 };
 

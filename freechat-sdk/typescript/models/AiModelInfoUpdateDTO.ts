@@ -10,22 +10,28 @@
  * Do not edit the class manually.
  */
 
-import { ChatMessageDTO } from '../models/ChatMessageDTO.js';
 import { HttpFile } from '../http/http.js';
 
 /**
-* Prompt chat template content
+* Request data for creating/updating model information
 */
-export class ChatPromptContentDTO {
+export class AiModelInfoUpdateDTO {
     /**
-    * Prompt system template
+    * Model name
     */
-    'system'?: string;
-    'messageToSend'?: ChatMessageDTO;
+    'name': string;
     /**
-    * Pre-set chat messages in the Prompt
+    * Model description
     */
-    'messages'?: Array<ChatMessageDTO>;
+    'description'?: string;
+    /**
+    * Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown
+    */
+    'provider'?: string;
+    /**
+    * Model type: text2text | text2chat | text2image | embedding | moderation
+    */
+    'type'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -33,26 +39,32 @@ export class ChatPromptContentDTO {
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "system",
-            "baseName": "system",
+            "name": "name",
+            "baseName": "name",
             "type": "string",
             "format": ""
         },
         {
-            "name": "messageToSend",
-            "baseName": "messageToSend",
-            "type": "ChatMessageDTO",
+            "name": "description",
+            "baseName": "description",
+            "type": "string",
             "format": ""
         },
         {
-            "name": "messages",
-            "baseName": "messages",
-            "type": "Array<ChatMessageDTO>",
+            "name": "provider",
+            "baseName": "provider",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "type",
+            "baseName": "type",
+            "type": "string",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return ChatPromptContentDTO.attributeTypeMap;
+        return AiModelInfoUpdateDTO.attributeTypeMap;
     }
 
     public constructor() {

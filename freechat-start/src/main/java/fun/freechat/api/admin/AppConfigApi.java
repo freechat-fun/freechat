@@ -26,6 +26,6 @@ public class AppConfigApi {
     )
     @GetMapping(value = "/configs/default", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getDefaultConfig() {
-        return runtimeConfig.get();
+        return runtimeConfig.getContent();
     }
 }

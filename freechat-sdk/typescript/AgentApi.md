@@ -48,11 +48,11 @@ const request: AgentApiBatchSearchAgentDetailsRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         aiModels: [
           "aiModels_example",
         ],
-        aiModelsOp: "aiModelsOp_example",
+        aiModelsOp: "or",
         name: "name_example",
         text: "text_example",
       },
@@ -124,11 +124,11 @@ const request: AgentApiBatchSearchAgentSummaryRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         aiModels: [
           "aiModels_example",
         ],
-        aiModelsOp: "aiModelsOp_example",
+        aiModelsOp: "or",
         name: "name_example",
         text: "text_example",
       },
@@ -307,11 +307,11 @@ const request: AgentApiCountAgentsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
       text: "text_example",
     },
@@ -846,11 +846,11 @@ const request: AgentApiSearchAgentDetailsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
       text: "text_example",
     },
@@ -920,11 +920,11 @@ const request: AgentApiSearchAgentSummaryRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
       text: "text_example",
     },

@@ -35,7 +35,7 @@ const request: AIServiceApiAddAiApiKeyRequest = {
     // Model call credential information
   aiApiKeyCreateDTO: {
     name: "name_example",
-    provider: "provider_example",
+    provider: "azure_open_ai",
     token: "token_example",
     enabled: true,
   },

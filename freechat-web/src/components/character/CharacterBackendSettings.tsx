@@ -9,22 +9,32 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Box,
   Button,
   Card,
   CardProps,
+  Chip,
+  ChipDelete,
+  CircularProgress,
+  FormHelperText,
+  FormLabel,
   IconButton,
+  Input,
   Option,
   Radio,
   RadioGroup,
   Select,
   Slider,
+  Stack,
   Switch,
   Typography,
 } from '@mui/joy';
 import {
   ArrowOutwardRounded,
+  AudioFileRounded,
   DoneRounded,
   KeyRounded,
+  PlayCircleFilledRounded,
   TuneRounded,
   UndoRounded,
 } from '@mui/icons-material';
@@ -69,12 +79,16 @@ type CharacterBackendSettingsProps = CardProps & {
   onCancel?: () => void;
 };
 
+const MAX_FILE_SIZE = 1 * 1024 * 1024;
+let idCounter = 0;
+
 const CharacterBackendSettings = forwardRef<
   HTMLDivElement,
   CharacterBackendSettingsProps
 >((props, ref) => {
   const { t } = useTranslation('character');
-  const { aiServiceApi, promptTaskApi } = useFreeChatApiContext();
+  const { aiServiceApi, characterApi, promptTaskApi, ttsServiceApi } =
+    useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const { backend, onSave, onCancel, sx, ...others } = props;
@@ -99,9 +113,21 @@ const CharacterBackendSettings = forwardRef<
     backend?.enableAlbumTool ?? false
   );
   const [enableTts, setEnableTts] = useState(backend?.enableTts ?? false);
+  const [ttsBuiltinSpeaders, setTtsBuiltinSpeakers] = useState<Array<string>>(
+    []
+  );
   const [ttsSpeakerIdx, setTtsSpeakerIdx] = useState(backend?.ttsSpeakerIdx);
   const [ttsSpeakerWav, setTtsSpeakerWav] = useState(backend?.ttsSpeakerWav);
-  const [ttsSpeakerType, setTtsSpeakerType] = useState(backend?.ttsSpeakerType ?? 'idx');
+  const [ttsSpeakerType, setTtsSpeakerType] = useState(
+    backend?.ttsSpeakerType ?? 'idx'
+  );
+  const [fileUploading, setFileUploading] = useState(false);
+  const [fileInvalid, setFileInvalid] = useState(false);
+
+  const fileInputId = useRef(`voice-file-upload-input-${idCounter}`).current;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const audioRefs = useRef(Array(2).fill(createRef<HTMLAudioElement | null>()));
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
   const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
@@ -138,8 +164,27 @@ const CharacterBackendSettings = forwardRef<
   ];
 
   useEffect(() => {
+    idCounter++;
+  }, []);
+
+  useEffect(() => {
     aiServiceApi?.listAiModelInfo().then(setModels).catch(handleError);
   }, [aiServiceApi, handleError]);
+
+  useEffect(() => {
+    ttsServiceApi
+      ?.listTtsBuiltinSpeakers()
+      .then((resp) => {
+        setTtsBuiltinSpeakers(resp);
+        setTtsSpeakerIdx((defaultSpeaker) => {
+          if (resp.length > 0 && !defaultSpeaker) {
+            return resp[0];
+          }
+          return defaultSpeaker;
+        });
+      })
+      .catch(handleError);
+  }, [ttsServiceApi, handleError]);
 
   useEffect(() => {
     if (backend?.chatPromptTaskId) {
@@ -161,11 +206,7 @@ const CharacterBackendSettings = forwardRef<
     setTtsSpeakerIdx(backend?.ttsSpeakerIdx);
     setTtsSpeakerWav(backend?.ttsSpeakerWav);
     setTtsSpeakerType(backend?.ttsSpeakerType ?? 'idx');
-  }, [
-    backend,
-    handleError,
-    promptTaskApi,
-  ]);
+  }, [backend, handleError, promptTaskApi]);
 
   useEffect(() => {
     aiServiceApi
@@ -202,6 +243,66 @@ const CharacterBackendSettings = forwardRef<
     setModelSetting(false);
   }
 
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!backend?.backendId || !characterApi) {
+      return;
+    }
+
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        setFileInvalid(true);
+      } else {
+        setFileInvalid(false);
+        setFileUploading(true);
+        characterApi
+          .uploadCharacterVoice(backend?.backendId, file)
+          .then(setTtsSpeakerWav)
+          .catch(handleError)
+          .finally(() => setFileUploading(false));
+      }
+    } else {
+      setFileInvalid(false);
+    }
+  }
+
+  function handleFileDelete() {
+    setTtsSpeakerWav((exists) => {
+      if (exists && backend?.backendId && characterApi) {
+        setFileUploading(true);
+        characterApi
+          .deleteCharacterVoice(backend.backendId, exists)
+          .finally(() => setFileUploading(false));
+      }
+      return undefined;
+    });
+  }
+
+  function handleFileModify(): void {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }
+
+  function handlePlay() {
+    if (enableTts) {
+      const speaker = ttsSpeakerType === 'idx' ? ttsSpeakerIdx : ttsSpeakerWav;
+      const player = ttsSpeakerType === 'idx' ? 0 : 1;
+      const audioUrl = `/api/v2/public/tts/play/sample/${ttsSpeakerType}/${speaker}`;
+
+      if (audioRefs.current[player].current) {
+        setPlaying(true);
+        audioRefs.current[player].current.src = audioUrl;
+        audioRefs.current[player].current.onerror = () => setPlaying(false);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        audioRefs.current[player].current.play().catch((error: any) => {
+          setPlaying(false);
+          handleError(error);
+        });
+      }
+    }
+  }
+
   function handleSave(
     redirectToChatPrompt: boolean = false,
     redirectHash?: string
@@ -214,6 +315,10 @@ const CharacterBackendSettings = forwardRef<
         longTermMemoryWindowSize,
         proactiveChatWaitingTime,
         enableAlbumTool,
+        enableTts,
+        ttsSpeakerIdx,
+        ttsSpeakerWav,
+        ttsSpeakerType,
       };
     } else {
       editBackend = new CharacterBackendDetailsDTO();
@@ -221,6 +326,10 @@ const CharacterBackendSettings = forwardRef<
       editBackend.longTermMemoryWindowSize = longTermMemoryWindowSize;
       editBackend.proactiveChatWaitingTime = proactiveChatWaitingTime;
       editBackend.enableAlbumTool = enableAlbumTool;
+      editBackend.enableTts = enableTts;
+      editBackend.ttsSpeakerIdx = ttsSpeakerIdx;
+      editBackend.ttsSpeakerWav = ttsSpeakerWav;
+      editBackend.ttsSpeakerType = ttsSpeakerType;
     }
 
     if (enableQuota) {
@@ -529,6 +638,198 @@ const CharacterBackendSettings = forwardRef<
               </Button>
             </CommonContainer>
           </CommonGridBox>
+        </OptionCard>
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography level="title-sm" textColor="neutral">
+              {t('Enable TTS')}
+            </Typography>
+            <OptionTooltip title={t('Enable characters to read replies.')}>
+              <HelpIcon />
+            </OptionTooltip>
+            <Switch
+              checked={enableTts}
+              sx={{ ml: 'auto' }}
+              onChange={() => setEnableTts(!enableTts)}
+            />
+          </CommonContainer>
+          <RadioGroup
+            name="ttsSpeakerType"
+            value={ttsSpeakerType}
+            onChange={(event) => setTtsSpeakerType(event.target.value)}
+            sx={{ mt: 2 }}
+          >
+            <Stack direction="row" sx={{ p: 2, gap: 2 }}>
+              <Radio
+                key="tts-speaker-type-idx"
+                value="idx"
+                disabled={!enableTts}
+              />
+              <Stack sx={{ flex: 1, gap: 2 }}>
+                <FormLabel>{t('Builtin Voice')}</FormLabel>
+                <CommonBox sx={{ flex: 1 }}>
+                  <Select
+                    placeholder={
+                      <Typography fontSize="small" textColor="gray">
+                        {t('Select speaker')}
+                      </Typography>
+                    }
+                    renderValue={(selected) => (
+                      <Typography fontSize="small">
+                        {selected?.value}
+                      </Typography>
+                    )}
+                    sx={{ flex: 1, maxWidth: '12rem' }}
+                    value={ttsSpeakerIdx}
+                    onChange={(_, newValue) => setTtsSpeakerIdx(newValue ?? '')}
+                    disabled={!enableTts || ttsSpeakerType !== 'idx'}
+                  >
+                    {ttsBuiltinSpeaders.map((speaker) => (
+                      <Option value={speaker} key={`tts-speaker-${speaker}`}>
+                        <Typography fontSize="small">{speaker}</Typography>
+                      </Option>
+                    ))}
+                  </Select>
+                  <IconButton
+                    disabled={
+                      fileUploading || !enableTts || ttsSpeakerType !== 'idx'
+                    }
+                    size="sm"
+                    onClick={handlePlay}
+                    sx={{
+                      display:
+                        playing && ttsSpeakerType === 'idx' ? 'none' : 'flex',
+                      ml: 'auto',
+                    }}
+                  >
+                    <PlayCircleFilledRounded />
+                  </IconButton>
+                  <Box
+                    sx={{
+                      display:
+                        playing && ttsSpeakerType === 'idx' ? 'flex' : 'none',
+                      ml: 'auto',
+                    }}
+                  >
+                    <CircularProgress size="sm" />
+                  </Box>
+                  <audio
+                    ref={audioRefs.current[1]}
+                    onEnded={() => setPlaying(false)}
+                  />
+                </CommonBox>
+              </Stack>
+            </Stack>
+            <Stack direction="row" sx={{ p: 2, gap: 2 }}>
+              <Radio
+                key="tts-speaker-type-wav"
+                value="wav"
+                disabled={!enableTts}
+                sx={{ mt: 1 }}
+              />
+              <Stack sx={{ flex: 1, gap: 2 }}>
+                <CommonBox>
+                  <FormLabel sx={{ alignSelf: 'center' }}>
+                    {t('Custom Voice')}
+                  </FormLabel>
+                  <OptionTooltip
+                    title={t('Wav format, about 5 seconds, size less than 1M.')}
+                  >
+                    <HelpIcon />
+                  </OptionTooltip>
+                  <Input
+                    disabled={
+                      fileUploading || !enableTts || ttsSpeakerType !== 'wav'
+                    }
+                    type="file"
+                    id={fileInputId}
+                    onChange={handleFileChange}
+                    sx={{ display: 'none' }}
+                    slotProps={{
+                      input: {
+                        ref: fileInputRef,
+                        accept: 'audio/wav, .wav',
+                      },
+                    }}
+                  />
+                  <label htmlFor={fileInputId}>
+                    <IconButton
+                      onClick={handleFileModify}
+                      disabled={
+                        fileUploading || !enableTts || ttsSpeakerType !== 'wav'
+                      }
+                    >
+                      <AudioFileRounded />
+                    </IconButton>
+                  </label>
+                  <FormHelperText
+                    sx={{ display: fileInvalid ? 'unset' : 'none' }}
+                  >
+                    {t('File too large!')}
+                  </FormHelperText>
+                </CommonBox>
+                <CommonBox sx={{ flex: 1, flexWrap: 'nowrap' }}>
+                  {ttsSpeakerWav && (
+                    <Fragment>
+                      <Chip
+                        disabled={!enableTts || ttsSpeakerType !== 'wav'}
+                        variant="outlined"
+                        color="success"
+                        endDecorator={
+                          <ChipDelete onDelete={handleFileDelete} />
+                        }
+                      >
+                        <Typography
+                          sx={{
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '10rem',
+                          }}
+                        >
+                          {ttsSpeakerWav}
+                        </Typography>
+                      </Chip>
+                      <IconButton
+                        disabled={
+                          fileUploading ||
+                          !enableTts ||
+                          ttsSpeakerType !== 'wav'
+                        }
+                        size="sm"
+                        onClick={handlePlay}
+                        sx={{
+                          display:
+                            playing && ttsSpeakerType === 'wav'
+                              ? 'none'
+                              : 'flex',
+                          ml: 'auto',
+                        }}
+                      >
+                        <PlayCircleFilledRounded />
+                      </IconButton>
+                      <Box
+                        sx={{
+                          display:
+                            playing && ttsSpeakerType === 'wav'
+                              ? 'flex'
+                              : 'none',
+                          ml: 'auto',
+                        }}
+                      >
+                        <CircularProgress size="sm" />
+                      </Box>
+                      <audio
+                        ref={audioRefs.current[0]}
+                        onEnded={() => setPlaying(false)}
+                      />
+                    </Fragment>
+                  )}
+                </CommonBox>
+              </Stack>
+            </Stack>
+          </RadioGroup>
         </OptionCard>
 
         <OptionCard>

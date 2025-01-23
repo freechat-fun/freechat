@@ -12,6 +12,7 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -38,7 +39,6 @@ import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
-import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
 import { PluginQueryDTO } from '../models/PluginQueryDTO.js';
@@ -59,7 +59,6 @@ import { PromptTaskDTO } from '../models/PromptTaskDTO.js';
 import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
-import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
@@ -67,6 +66,65 @@ import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
+import { ObservableAIManagerForBizAdminApi } from './ObservableAPI.js';
+
+import { AIManagerForBizAdminApiRequestFactory, AIManagerForBizAdminApiResponseProcessor} from "../apis/AIManagerForBizAdminApi.js";
+export class PromiseAIManagerForBizAdminApi {
+    private api: ObservableAIManagerForBizAdminApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: AIManagerForBizAdminApiRequestFactory,
+        responseProcessor?: AIManagerForBizAdminApiResponseProcessor
+    ) {
+        this.api = new ObservableAIManagerForBizAdminApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
+     * Create or Update Model Information
+     * @param aiModelInfoUpdateDTO Model information
+     */
+    public createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
+     * Create or Update Model Information
+     * @param aiModelInfoUpdateDTO Model information
+     */
+    public createOrUpdateAiModelInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Promise<string> {
+        const result = this.api.createOrUpdateAiModelInfo(aiModelInfoUpdateDTO, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete model information based on modelId.
+     * Delete Model Information
+     * @param modelId Model identifier
+     */
+    public deleteAiModelInfoWithHttpInfo(modelId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteAiModelInfoWithHttpInfo(modelId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete model information based on modelId.
+     * Delete Model Information
+     * @param modelId Model identifier
+     */
+    public deleteAiModelInfo(modelId: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteAiModelInfo(modelId, _options);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
 import { ObservableAIServiceApi } from './ObservableAPI.js';
 
 import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
@@ -1255,28 +1313,6 @@ export class PromiseAppMetaForAdminApi {
     }
 
     /**
-     * This method does nothing.
-     * Expose DTO definitions
-     * @param openAiParam
-     * @param qwenParam
-     */
-    public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.exposeWithHttpInfo(openAiParam, qwenParam, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * This method does nothing.
-     * Expose DTO definitions
-     * @param openAiParam
-     * @param qwenParam
-     */
-    public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.expose(openAiParam, qwenParam, _options);
-        return result.toPromise();
-    }
-
-    /**
      * Get application information to accurately locate the corresponding project version.
      * Get Application Information
      */
@@ -1556,6 +1592,28 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Delete a voice of the character by key.
+     * Delete Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param key Voice key
+     */
+    public deleteCharacterVoiceWithHttpInfo(characterBackendId: string, key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteCharacterVoiceWithHttpInfo(characterBackendId, key, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a voice of the character by key.
+     * Delete Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param key Voice key
+     */
+    public deleteCharacterVoice(characterBackendId: string, key: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteCharacterVoice(characterBackendId, key, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name
@@ -1792,6 +1850,26 @@ export class PromiseCharacterApi {
      */
     public listCharacterVersionsByName(name: string, _options?: Configuration): Promise<Array<CharacterItemForNameDTO>> {
         const result = this.api.listCharacterVersionsByName(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List voices of the character.
+     * List Character Voices
+     * @param characterBackendId The characterBackendId
+     */
+    public listCharacterVoicesWithHttpInfo(characterBackendId: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterVoicesWithHttpInfo(characterBackendId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List voices of the character.
+     * List Character Voices
+     * @param characterBackendId The characterBackendId
+     */
+    public listCharacterVoices(characterBackendId: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterVoices(characterBackendId, _options);
         return result.toPromise();
     }
 
@@ -2064,6 +2142,28 @@ export class PromiseCharacterApi {
      */
     public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
         const result = this.api.uploadCharacterPicture(characterUid, file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Upload a voice of the character.
+     * Upload Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param file Character voice
+     */
+    public uploadCharacterVoiceWithHttpInfo(characterBackendId: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterVoiceWithHttpInfo(characterBackendId, file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Upload a voice of the character.
+     * Upload Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param file Character voice
+     */
+    public uploadCharacterVoice(characterBackendId: string, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterVoice(characterBackendId, file, _options);
         return result.toPromise();
     }
 
@@ -4290,6 +4390,152 @@ export class PromiseRagApi {
      */
     public updateRagTask(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Promise<boolean> {
         const result = this.api.updateRagTask(taskId, ragTaskDTO, _options);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableTTSServiceApi } from './ObservableAPI.js';
+
+import { TTSServiceApiRequestFactory, TTSServiceApiResponseProcessor} from "../apis/TTSServiceApi.js";
+export class PromiseTTSServiceApi {
+    private api: ObservableTTSServiceApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: TTSServiceApiRequestFactory,
+        responseProcessor?: TTSServiceApiResponseProcessor
+    ) {
+        this.api = new ObservableTTSServiceApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Return builtin TTS speakers.
+     * List Builtin Speakers
+     */
+    public listTtsBuiltinSpeakersWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listTtsBuiltinSpeakersWithHttpInfo(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Return builtin TTS speakers.
+     * List Builtin Speakers
+     */
+    public listTtsBuiltinSpeakers(_options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listTtsBuiltinSpeakers(_options);
+        return result.toPromise();
+    }
+
+    /**
+     * Play TTS sample audio of the builtin/custom speaker.
+     * Play Sample Audio
+     * @param speakerType The speaker type
+     * @param speaker The speaker
+     */
+    public playSampleWithHttpInfo(speakerType: string, speaker: string, _options?: Configuration): Promise<HttpInfo<any>> {
+        const result = this.api.playSampleWithHttpInfo(speakerType, speaker, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Play TTS sample audio of the builtin/custom speaker.
+     * Play Sample Audio
+     * @param speakerType The speaker type
+     * @param speaker The speaker
+     */
+    public playSample(speakerType: string, speaker: string, _options?: Configuration): Promise<any> {
+        const result = this.api.playSample(speakerType, speaker, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Read out the message.
+     * Speak Message
+     * @param messageId The message id
+     */
+    public speakMessageWithHttpInfo(messageId: number, _options?: Configuration): Promise<HttpInfo<any>> {
+        const result = this.api.speakMessageWithHttpInfo(messageId, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Read out the message.
+     * Speak Message
+     * @param messageId The message id
+     */
+    public speakMessage(messageId: number, _options?: Configuration): Promise<any> {
+        const result = this.api.speakMessage(messageId, _options);
+        return result.toPromise();
+    }
+
+
+}
+
+
+
+import { ObservableTagManagerForBizAdminApi } from './ObservableAPI.js';
+
+import { TagManagerForBizAdminApiRequestFactory, TagManagerForBizAdminApiResponseProcessor} from "../apis/TagManagerForBizAdminApi.js";
+export class PromiseTagManagerForBizAdminApi {
+    private api: ObservableTagManagerForBizAdminApi
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: TagManagerForBizAdminApiRequestFactory,
+        responseProcessor?: TagManagerForBizAdminApiResponseProcessor
+    ) {
+        this.api = new ObservableTagManagerForBizAdminApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Create a tag, tags created by the administrator cannot be deleted by ordinary users.
+     * Create Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public createTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.createTagWithHttpInfo(referType, referId, tag, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Create a tag, tags created by the administrator cannot be deleted by ordinary users.
+     * Create Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public createTag(referType: string, referId: string, tag: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.createTag(referType, referId, tag, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a tag, any tag created by anyone can be deleted.
+     * Delete Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public deleteTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteTagWithHttpInfo(referType, referId, tag, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a tag, any tag created by anyone can be deleted.
+     * Delete Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public deleteTag(referType: string, referId: string, tag: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteTag(referType, referId, tag, _options);
         return result.toPromise();
     }
 

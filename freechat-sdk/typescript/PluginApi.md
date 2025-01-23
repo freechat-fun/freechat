@@ -46,11 +46,11 @@ const request: PluginApiBatchSearchPluginDetailsRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         aiModels: [
           "aiModels_example",
         ],
-        aiModelsOp: "aiModelsOp_example",
+        aiModelsOp: "or",
         name: "name_example",
         provider: "provider_example",
         text: "text_example",
@@ -124,11 +124,11 @@ const request: PluginApiBatchSearchPluginSummaryRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         aiModels: [
           "aiModels_example",
         ],
-        aiModelsOp: "aiModelsOp_example",
+        aiModelsOp: "or",
         name: "name_example",
         provider: "provider_example",
         text: "text_example",
@@ -201,11 +201,11 @@ const request: PluginApiCountPluginsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
       provider: "provider_example",
       text: "text_example",
@@ -682,11 +682,11 @@ const request: PluginApiSearchPluginDetailsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
       provider: "provider_example",
       text: "text_example",
@@ -758,11 +758,11 @@ const request: PluginApiSearchPluginSummaryRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
       provider: "provider_example",
       text: "text_example",

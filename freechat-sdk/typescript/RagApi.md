@@ -87,7 +87,7 @@ const request: RagApiCreateRagTaskRequest = {
   characterUid: "characterUid_example",
     // The RAG task to be added
   ragTaskDTO: {
-    sourceType: "sourceType_example",
+    sourceType: "url",
     source: "source_example",
     maxSegmentSize: 1,
     maxOverlapSize: 1,
@@ -413,7 +413,7 @@ const request: RagApiUpdateRagTaskRequest = {
   taskId: 1,
     // The prompt task info to be updated
   ragTaskDTO: {
-    sourceType: "sourceType_example",
+    sourceType: "url",
     source: "source_example",
     maxSegmentSize: 1,
     maxOverlapSize: 1,

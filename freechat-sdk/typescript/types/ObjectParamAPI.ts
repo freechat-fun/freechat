@@ -12,6 +12,7 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -38,7 +39,6 @@ import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
-import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
 import { PluginQueryDTO } from '../models/PluginQueryDTO.js';
@@ -59,7 +59,6 @@ import { PromptTaskDTO } from '../models/PromptTaskDTO.js';
 import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
-import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
@@ -67,6 +66,73 @@ import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
+
+import { ObservableAIManagerForBizAdminApi } from "./ObservableAPI.js";
+import { AIManagerForBizAdminApiRequestFactory, AIManagerForBizAdminApiResponseProcessor} from "../apis/AIManagerForBizAdminApi.js";
+
+export interface AIManagerForBizAdminApiCreateOrUpdateAiModelInfoRequest {
+    /**
+     * Model information
+     * @type AiModelInfoUpdateDTO
+     * @memberof AIManagerForBizAdminApicreateOrUpdateAiModelInfo
+     */
+    aiModelInfoUpdateDTO: AiModelInfoUpdateDTO
+}
+
+export interface AIManagerForBizAdminApiDeleteAiModelInfoRequest {
+    /**
+     * Model identifier
+     * Defaults to: undefined
+     * @type string
+     * @memberof AIManagerForBizAdminApideleteAiModelInfo
+     */
+    modelId: string
+}
+
+export class ObjectAIManagerForBizAdminApi {
+    private api: ObservableAIManagerForBizAdminApi
+
+    public constructor(configuration: Configuration, requestFactory?: AIManagerForBizAdminApiRequestFactory, responseProcessor?: AIManagerForBizAdminApiResponseProcessor) {
+        this.api = new ObservableAIManagerForBizAdminApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
+     * Create or Update Model Information
+     * @param param the request object
+     */
+    public createOrUpdateAiModelInfoWithHttpInfo(param: AIManagerForBizAdminApiCreateOrUpdateAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.createOrUpdateAiModelInfoWithHttpInfo(param.aiModelInfoUpdateDTO,  options).toPromise();
+    }
+
+    /**
+     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
+     * Create or Update Model Information
+     * @param param the request object
+     */
+    public createOrUpdateAiModelInfo(param: AIManagerForBizAdminApiCreateOrUpdateAiModelInfoRequest, options?: Configuration): Promise<string> {
+        return this.api.createOrUpdateAiModelInfo(param.aiModelInfoUpdateDTO,  options).toPromise();
+    }
+
+    /**
+     * Delete model information based on modelId.
+     * Delete Model Information
+     * @param param the request object
+     */
+    public deleteAiModelInfoWithHttpInfo(param: AIManagerForBizAdminApiDeleteAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteAiModelInfoWithHttpInfo(param.modelId,  options).toPromise();
+    }
+
+    /**
+     * Delete model information based on modelId.
+     * Delete Model Information
+     * @param param the request object
+     */
+    public deleteAiModelInfo(param: AIManagerForBizAdminApiDeleteAiModelInfoRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteAiModelInfo(param.modelId,  options).toPromise();
+    }
+
+}
 
 import { ObservableAIServiceApi } from "./ObservableAPI.js";
 import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
@@ -1622,23 +1688,6 @@ export class ObjectAppConfigForAdminApi {
 import { ObservableAppMetaForAdminApi } from "./ObservableAPI.js";
 import { AppMetaForAdminApiRequestFactory, AppMetaForAdminApiResponseProcessor} from "../apis/AppMetaForAdminApi.js";
 
-export interface AppMetaForAdminApiExposeRequest {
-    /**
-     * 
-     * Defaults to: undefined
-     * @type OpenAiParamDTO
-     * @memberof AppMetaForAdminApiexpose
-     */
-    openAiParam: OpenAiParamDTO
-    /**
-     * 
-     * Defaults to: undefined
-     * @type QwenParamDTO
-     * @memberof AppMetaForAdminApiexpose
-     */
-    qwenParam: QwenParamDTO
-}
-
 export interface AppMetaForAdminApiGetAppMetaRequest {
 }
 
@@ -1647,24 +1696,6 @@ export class ObjectAppMetaForAdminApi {
 
     public constructor(configuration: Configuration, requestFactory?: AppMetaForAdminApiRequestFactory, responseProcessor?: AppMetaForAdminApiResponseProcessor) {
         this.api = new ObservableAppMetaForAdminApi(configuration, requestFactory, responseProcessor);
-    }
-
-    /**
-     * This method does nothing.
-     * Expose DTO definitions
-     * @param param the request object
-     */
-    public exposeWithHttpInfo(param: AppMetaForAdminApiExposeRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.exposeWithHttpInfo(param.openAiParam, param.qwenParam,  options).toPromise();
-    }
-
-    /**
-     * This method does nothing.
-     * Expose DTO definitions
-     * @param param the request object
-     */
-    public expose(param: AppMetaForAdminApiExposeRequest, options?: Configuration): Promise<string> {
-        return this.api.expose(param.openAiParam, param.qwenParam,  options).toPromise();
     }
 
     /**
@@ -1811,6 +1842,23 @@ export interface CharacterApiDeleteCharacterPictureRequest {
     key: string
 }
 
+export interface CharacterApiDeleteCharacterVoiceRequest {
+    /**
+     * The characterBackendId
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApideleteCharacterVoice
+     */
+    characterBackendId: string
+    /**
+     * Voice key
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApideleteCharacterVoice
+     */
+    key: string
+}
+
 export interface CharacterApiExistsCharacterNameRequest {
     /**
      * Name
@@ -1929,6 +1977,16 @@ export interface CharacterApiListCharacterVersionsByNameRequest {
      * @memberof CharacterApilistCharacterVersionsByName
      */
     name: string
+}
+
+export interface CharacterApiListCharacterVoicesRequest {
+    /**
+     * The characterBackendId
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApilistCharacterVoices
+     */
+    characterBackendId: string
 }
 
 export interface CharacterApiNewCharacterNameRequest {
@@ -2094,6 +2152,23 @@ export interface CharacterApiUploadCharacterPictureRequest {
      * Defaults to: undefined
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterPicture
+     */
+    file: HttpFile
+}
+
+export interface CharacterApiUploadCharacterVoiceRequest {
+    /**
+     * The characterBackendId
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApiuploadCharacterVoice
+     */
+    characterBackendId: string
+    /**
+     * Character voice
+     * Defaults to: undefined
+     * @type HttpFile
+     * @memberof CharacterApiuploadCharacterVoice
      */
     file: HttpFile
 }
@@ -2322,6 +2397,24 @@ export class ObjectCharacterApi {
     }
 
     /**
+     * Delete a voice of the character by key.
+     * Delete Character Voice
+     * @param param the request object
+     */
+    public deleteCharacterVoiceWithHttpInfo(param: CharacterApiDeleteCharacterVoiceRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteCharacterVoiceWithHttpInfo(param.characterBackendId, param.key,  options).toPromise();
+    }
+
+    /**
+     * Delete a voice of the character by key.
+     * Delete Character Voice
+     * @param param the request object
+     */
+    public deleteCharacterVoice(param: CharacterApiDeleteCharacterVoiceRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteCharacterVoice(param.characterBackendId, param.key,  options).toPromise();
+    }
+
+    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param param the request object
@@ -2535,6 +2628,24 @@ export class ObjectCharacterApi {
      */
     public listCharacterVersionsByName(param: CharacterApiListCharacterVersionsByNameRequest, options?: Configuration): Promise<Array<CharacterItemForNameDTO>> {
         return this.api.listCharacterVersionsByName(param.name,  options).toPromise();
+    }
+
+    /**
+     * List voices of the character.
+     * List Character Voices
+     * @param param the request object
+     */
+    public listCharacterVoicesWithHttpInfo(param: CharacterApiListCharacterVoicesRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.listCharacterVoicesWithHttpInfo(param.characterBackendId,  options).toPromise();
+    }
+
+    /**
+     * List voices of the character.
+     * List Character Voices
+     * @param param the request object
+     */
+    public listCharacterVoices(param: CharacterApiListCharacterVoicesRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.listCharacterVoices(param.characterBackendId,  options).toPromise();
     }
 
     /**
@@ -2769,6 +2880,24 @@ export class ObjectCharacterApi {
      */
     public uploadCharacterPicture(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<string> {
         return this.api.uploadCharacterPicture(param.characterUid, param.file,  options).toPromise();
+    }
+
+    /**
+     * Upload a voice of the character.
+     * Upload Character Voice
+     * @param param the request object
+     */
+    public uploadCharacterVoiceWithHttpInfo(param: CharacterApiUploadCharacterVoiceRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.uploadCharacterVoiceWithHttpInfo(param.characterBackendId, param.file,  options).toPromise();
+    }
+
+    /**
+     * Upload a voice of the character.
+     * Upload Character Voice
+     * @param param the request object
+     */
+    public uploadCharacterVoice(param: CharacterApiUploadCharacterVoiceRequest, options?: Configuration): Promise<string> {
+        return this.api.uploadCharacterVoice(param.characterBackendId, param.file,  options).toPromise();
     }
 
 }
@@ -5972,6 +6101,198 @@ export class ObjectRagApi {
      */
     public updateRagTask(param: RagApiUpdateRagTaskRequest, options?: Configuration): Promise<boolean> {
         return this.api.updateRagTask(param.taskId, param.ragTaskDTO,  options).toPromise();
+    }
+
+}
+
+import { ObservableTTSServiceApi } from "./ObservableAPI.js";
+import { TTSServiceApiRequestFactory, TTSServiceApiResponseProcessor} from "../apis/TTSServiceApi.js";
+
+export interface TTSServiceApiListTtsBuiltinSpeakersRequest {
+}
+
+export interface TTSServiceApiPlaySampleRequest {
+    /**
+     * The speaker type
+     * Defaults to: undefined
+     * @type string
+     * @memberof TTSServiceApiplaySample
+     */
+    speakerType: string
+    /**
+     * The speaker
+     * Defaults to: undefined
+     * @type string
+     * @memberof TTSServiceApiplaySample
+     */
+    speaker: string
+}
+
+export interface TTSServiceApiSpeakMessageRequest {
+    /**
+     * The message id
+     * Defaults to: undefined
+     * @type number
+     * @memberof TTSServiceApispeakMessage
+     */
+    messageId: number
+}
+
+export class ObjectTTSServiceApi {
+    private api: ObservableTTSServiceApi
+
+    public constructor(configuration: Configuration, requestFactory?: TTSServiceApiRequestFactory, responseProcessor?: TTSServiceApiResponseProcessor) {
+        this.api = new ObservableTTSServiceApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Return builtin TTS speakers.
+     * List Builtin Speakers
+     * @param param the request object
+     */
+    public listTtsBuiltinSpeakersWithHttpInfo(param: TTSServiceApiListTtsBuiltinSpeakersRequest = {}, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.listTtsBuiltinSpeakersWithHttpInfo( options).toPromise();
+    }
+
+    /**
+     * Return builtin TTS speakers.
+     * List Builtin Speakers
+     * @param param the request object
+     */
+    public listTtsBuiltinSpeakers(param: TTSServiceApiListTtsBuiltinSpeakersRequest = {}, options?: Configuration): Promise<Array<string>> {
+        return this.api.listTtsBuiltinSpeakers( options).toPromise();
+    }
+
+    /**
+     * Play TTS sample audio of the builtin/custom speaker.
+     * Play Sample Audio
+     * @param param the request object
+     */
+    public playSampleWithHttpInfo(param: TTSServiceApiPlaySampleRequest, options?: Configuration): Promise<HttpInfo<any>> {
+        return this.api.playSampleWithHttpInfo(param.speakerType, param.speaker,  options).toPromise();
+    }
+
+    /**
+     * Play TTS sample audio of the builtin/custom speaker.
+     * Play Sample Audio
+     * @param param the request object
+     */
+    public playSample(param: TTSServiceApiPlaySampleRequest, options?: Configuration): Promise<any> {
+        return this.api.playSample(param.speakerType, param.speaker,  options).toPromise();
+    }
+
+    /**
+     * Read out the message.
+     * Speak Message
+     * @param param the request object
+     */
+    public speakMessageWithHttpInfo(param: TTSServiceApiSpeakMessageRequest, options?: Configuration): Promise<HttpInfo<any>> {
+        return this.api.speakMessageWithHttpInfo(param.messageId,  options).toPromise();
+    }
+
+    /**
+     * Read out the message.
+     * Speak Message
+     * @param param the request object
+     */
+    public speakMessage(param: TTSServiceApiSpeakMessageRequest, options?: Configuration): Promise<any> {
+        return this.api.speakMessage(param.messageId,  options).toPromise();
+    }
+
+}
+
+import { ObservableTagManagerForBizAdminApi } from "./ObservableAPI.js";
+import { TagManagerForBizAdminApiRequestFactory, TagManagerForBizAdminApiResponseProcessor} from "../apis/TagManagerForBizAdminApi.js";
+
+export interface TagManagerForBizAdminApiCreateTagRequest {
+    /**
+     * Tag type (prompt, agent, plugin...)
+     * Defaults to: undefined
+     * @type string
+     * @memberof TagManagerForBizAdminApicreateTag
+     */
+    referType: string
+    /**
+     * Resource identifier of the tag
+     * Defaults to: undefined
+     * @type string
+     * @memberof TagManagerForBizAdminApicreateTag
+     */
+    referId: string
+    /**
+     * Tag content
+     * Defaults to: undefined
+     * @type string
+     * @memberof TagManagerForBizAdminApicreateTag
+     */
+    tag: string
+}
+
+export interface TagManagerForBizAdminApiDeleteTagRequest {
+    /**
+     * Tag type (prompt, agent, plugin...)
+     * Defaults to: undefined
+     * @type string
+     * @memberof TagManagerForBizAdminApideleteTag
+     */
+    referType: string
+    /**
+     * Resource identifier of the tag
+     * Defaults to: undefined
+     * @type string
+     * @memberof TagManagerForBizAdminApideleteTag
+     */
+    referId: string
+    /**
+     * Tag content
+     * Defaults to: undefined
+     * @type string
+     * @memberof TagManagerForBizAdminApideleteTag
+     */
+    tag: string
+}
+
+export class ObjectTagManagerForBizAdminApi {
+    private api: ObservableTagManagerForBizAdminApi
+
+    public constructor(configuration: Configuration, requestFactory?: TagManagerForBizAdminApiRequestFactory, responseProcessor?: TagManagerForBizAdminApiResponseProcessor) {
+        this.api = new ObservableTagManagerForBizAdminApi(configuration, requestFactory, responseProcessor);
+    }
+
+    /**
+     * Create a tag, tags created by the administrator cannot be deleted by ordinary users.
+     * Create Tag
+     * @param param the request object
+     */
+    public createTagWithHttpInfo(param: TagManagerForBizAdminApiCreateTagRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.createTagWithHttpInfo(param.referType, param.referId, param.tag,  options).toPromise();
+    }
+
+    /**
+     * Create a tag, tags created by the administrator cannot be deleted by ordinary users.
+     * Create Tag
+     * @param param the request object
+     */
+    public createTag(param: TagManagerForBizAdminApiCreateTagRequest, options?: Configuration): Promise<boolean> {
+        return this.api.createTag(param.referType, param.referId, param.tag,  options).toPromise();
+    }
+
+    /**
+     * Delete a tag, any tag created by anyone can be deleted.
+     * Delete Tag
+     * @param param the request object
+     */
+    public deleteTagWithHttpInfo(param: TagManagerForBizAdminApiDeleteTagRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteTagWithHttpInfo(param.referType, param.referId, param.tag,  options).toPromise();
+    }
+
+    /**
+     * Delete a tag, any tag created by anyone can be deleted.
+     * Delete Tag
+     * @param param the request object
+     */
+    public deleteTag(param: TagManagerForBizAdminApiDeleteTagRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteTag(param.referType, param.referId, param.tag,  options).toPromise();
     }
 
 }

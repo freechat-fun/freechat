@@ -20,6 +20,7 @@ import {
   PromptApi,
   PromptTaskApi,
   RagApi,
+  TTSServiceApi,
 } from 'freechat-sdk';
 
 type FreeChatApiProps = {
@@ -44,6 +45,7 @@ type FreeChatApiContextValue = {
   promptApi: PromptApi | undefined;
   promptTaskApi: PromptTaskApi | undefined;
   ragApi: RagApi | undefined;
+  ttsServiceApi: TTSServiceApi | undefined;
 };
 
 const undefinedContext: FreeChatApiContextValue = {
@@ -64,6 +66,7 @@ const undefinedContext: FreeChatApiContextValue = {
   promptApi: undefined,
   promptTaskApi: undefined,
   ragApi: undefined,
+  ttsServiceApi: undefined,
 };
 
 const FreeChatApiContext =
@@ -97,6 +100,7 @@ const FreeChatApiProvider: React.FC<
   const promptApi = new PromptApi(configuration);
   const promptTaskApi = new PromptTaskApi(configuration);
   const ragApi = new RagApi(configuration);
+  const ttsServiceApi = new TTSServiceApi(configuration);
 
   return (
     <FreeChatApiContext.Provider
@@ -118,6 +122,7 @@ const FreeChatApiProvider: React.FC<
         promptApi,
         promptTaskApi,
         ragApi,
+        ttsServiceApi,
       }}
     >
       {children}

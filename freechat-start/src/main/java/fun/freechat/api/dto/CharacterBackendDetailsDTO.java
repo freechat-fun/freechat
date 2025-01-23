@@ -52,6 +52,8 @@ public class CharacterBackendDetailsDTO extends TraceableDTO {
     private String ttsSpeakerIdx;
     @Schema(description = "Character's speaker sample for tts")
     private String ttsSpeakerWav;
+    @Schema(description = "Character's speaker type for tts: idx | wav")
+    private String ttsSpeakerType;
 
     public static CharacterBackendDetailsDTO from(CharacterBackend backend) {
         if (backend == null) {

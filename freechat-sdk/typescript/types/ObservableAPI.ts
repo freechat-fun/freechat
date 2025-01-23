@@ -13,6 +13,7 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -39,7 +40,6 @@ import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
-import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
 import { PluginQueryDTO } from '../models/PluginQueryDTO.js';
@@ -60,7 +60,6 @@ import { PromptTaskDTO } from '../models/PromptTaskDTO.js';
 import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
-import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
@@ -68,6 +67,90 @@ import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
+
+import { AIManagerForBizAdminApiRequestFactory, AIManagerForBizAdminApiResponseProcessor} from "../apis/AIManagerForBizAdminApi.js";
+export class ObservableAIManagerForBizAdminApi {
+    private requestFactory: AIManagerForBizAdminApiRequestFactory;
+    private responseProcessor: AIManagerForBizAdminApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: AIManagerForBizAdminApiRequestFactory,
+        responseProcessor?: AIManagerForBizAdminApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new AIManagerForBizAdminApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new AIManagerForBizAdminApiResponseProcessor();
+    }
+
+    /**
+     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
+     * Create or Update Model Information
+     * @param aiModelInfoUpdateDTO Model information
+     */
+    public createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.createOrUpdateAiModelInfo(aiModelInfoUpdateDTO, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createOrUpdateAiModelInfoWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
+     * Create or Update Model Information
+     * @param aiModelInfoUpdateDTO Model information
+     */
+    public createOrUpdateAiModelInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Observable<string> {
+        return this.createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Delete model information based on modelId.
+     * Delete Model Information
+     * @param modelId Model identifier
+     */
+    public deleteAiModelInfoWithHttpInfo(modelId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteAiModelInfo(modelId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteAiModelInfoWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete model information based on modelId.
+     * Delete Model Information
+     * @param modelId Model identifier
+     */
+    public deleteAiModelInfo(modelId: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteAiModelInfoWithHttpInfo(modelId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+}
 
 import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
 export class ObservableAIServiceApi {
@@ -1956,41 +2039,6 @@ export class ObservableAppMetaForAdminApi {
     }
 
     /**
-     * This method does nothing.
-     * Expose DTO definitions
-     * @param openAiParam
-     * @param qwenParam
-     */
-    public exposeWithHttpInfo(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.expose(openAiParam, qwenParam, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.exposeWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * This method does nothing.
-     * Expose DTO definitions
-     * @param openAiParam
-     * @param qwenParam
-     */
-    public expose(openAiParam: OpenAiParamDTO, qwenParam: QwenParamDTO, _options?: Configuration): Observable<string> {
-        return this.exposeWithHttpInfo(openAiParam, qwenParam, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
-    }
-
-    /**
      * Get application information to accurately locate the corresponding project version.
      * Get Application Information
      */
@@ -2438,6 +2486,41 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Delete a voice of the character by key.
+     * Delete Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param key Voice key
+     */
+    public deleteCharacterVoiceWithHttpInfo(characterBackendId: string, key: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteCharacterVoice(characterBackendId, key, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteCharacterVoiceWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete a voice of the character by key.
+     * Delete Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param key Voice key
+     */
+    public deleteCharacterVoice(characterBackendId: string, key: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteCharacterVoiceWithHttpInfo(characterBackendId, key, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
      * Check if the character name already exists.
      * Check If Character Name Exists
      * @param name Name
@@ -2831,6 +2914,39 @@ export class ObservableCharacterApi {
      */
     public listCharacterVersionsByName(name: string, _options?: Configuration): Observable<Array<CharacterItemForNameDTO>> {
         return this.listCharacterVersionsByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterItemForNameDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List voices of the character.
+     * List Character Voices
+     * @param characterBackendId The characterBackendId
+     */
+    public listCharacterVoicesWithHttpInfo(characterBackendId: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.listCharacterVoices(characterBackendId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listCharacterVoicesWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List voices of the character.
+     * List Character Voices
+     * @param characterBackendId The characterBackendId
+     */
+    public listCharacterVoices(characterBackendId: string, _options?: Configuration): Observable<Array<string>> {
+        return this.listCharacterVoicesWithHttpInfo(characterBackendId, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
     /**
@@ -3272,6 +3388,41 @@ export class ObservableCharacterApi {
      */
     public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Observable<string> {
         return this.uploadCharacterPictureWithHttpInfo(characterUid, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Upload a voice of the character.
+     * Upload Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param file Character voice
+     */
+    public uploadCharacterVoiceWithHttpInfo(characterBackendId: string, file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.uploadCharacterVoice(characterBackendId, file, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.uploadCharacterVoiceWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Upload a voice of the character.
+     * Upload Character Voice
+     * @param characterBackendId The characterBackendId
+     * @param file Character voice
+     */
+    public uploadCharacterVoice(characterBackendId: string, file: HttpFile, _options?: Configuration): Observable<string> {
+        return this.uploadCharacterVoiceWithHttpInfo(characterBackendId, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
 }
@@ -6764,6 +6915,215 @@ export class ObservableRagApi {
      */
     public updateRagTask(taskId: number, ragTaskDTO: RagTaskDTO, _options?: Configuration): Observable<boolean> {
         return this.updateRagTaskWithHttpInfo(taskId, ragTaskDTO, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+}
+
+import { TTSServiceApiRequestFactory, TTSServiceApiResponseProcessor} from "../apis/TTSServiceApi.js";
+export class ObservableTTSServiceApi {
+    private requestFactory: TTSServiceApiRequestFactory;
+    private responseProcessor: TTSServiceApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: TTSServiceApiRequestFactory,
+        responseProcessor?: TTSServiceApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new TTSServiceApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new TTSServiceApiResponseProcessor();
+    }
+
+    /**
+     * Return builtin TTS speakers.
+     * List Builtin Speakers
+     */
+    public listTtsBuiltinSpeakersWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.listTtsBuiltinSpeakers(_options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listTtsBuiltinSpeakersWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Return builtin TTS speakers.
+     * List Builtin Speakers
+     */
+    public listTtsBuiltinSpeakers(_options?: Configuration): Observable<Array<string>> {
+        return this.listTtsBuiltinSpeakersWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
+    }
+
+    /**
+     * Play TTS sample audio of the builtin/custom speaker.
+     * Play Sample Audio
+     * @param speakerType The speaker type
+     * @param speaker The speaker
+     */
+    public playSampleWithHttpInfo(speakerType: string, speaker: string, _options?: Configuration): Observable<HttpInfo<any>> {
+        const requestContextPromise = this.requestFactory.playSample(speakerType, speaker, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.playSampleWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Play TTS sample audio of the builtin/custom speaker.
+     * Play Sample Audio
+     * @param speakerType The speaker type
+     * @param speaker The speaker
+     */
+    public playSample(speakerType: string, speaker: string, _options?: Configuration): Observable<any> {
+        return this.playSampleWithHttpInfo(speakerType, speaker, _options).pipe(map((apiResponse: HttpInfo<any>) => apiResponse.data));
+    }
+
+    /**
+     * Read out the message.
+     * Speak Message
+     * @param messageId The message id
+     */
+    public speakMessageWithHttpInfo(messageId: number, _options?: Configuration): Observable<HttpInfo<any>> {
+        const requestContextPromise = this.requestFactory.speakMessage(messageId, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.speakMessageWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Read out the message.
+     * Speak Message
+     * @param messageId The message id
+     */
+    public speakMessage(messageId: number, _options?: Configuration): Observable<any> {
+        return this.speakMessageWithHttpInfo(messageId, _options).pipe(map((apiResponse: HttpInfo<any>) => apiResponse.data));
+    }
+
+}
+
+import { TagManagerForBizAdminApiRequestFactory, TagManagerForBizAdminApiResponseProcessor} from "../apis/TagManagerForBizAdminApi.js";
+export class ObservableTagManagerForBizAdminApi {
+    private requestFactory: TagManagerForBizAdminApiRequestFactory;
+    private responseProcessor: TagManagerForBizAdminApiResponseProcessor;
+    private configuration: Configuration;
+
+    public constructor(
+        configuration: Configuration,
+        requestFactory?: TagManagerForBizAdminApiRequestFactory,
+        responseProcessor?: TagManagerForBizAdminApiResponseProcessor
+    ) {
+        this.configuration = configuration;
+        this.requestFactory = requestFactory || new TagManagerForBizAdminApiRequestFactory(configuration);
+        this.responseProcessor = responseProcessor || new TagManagerForBizAdminApiResponseProcessor();
+    }
+
+    /**
+     * Create a tag, tags created by the administrator cannot be deleted by ordinary users.
+     * Create Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public createTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.createTag(referType, referId, tag, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createTagWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Create a tag, tags created by the administrator cannot be deleted by ordinary users.
+     * Create Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public createTag(referType: string, referId: string, tag: string, _options?: Configuration): Observable<boolean> {
+        return this.createTagWithHttpInfo(referType, referId, tag, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
+     * Delete a tag, any tag created by anyone can be deleted.
+     * Delete Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public deleteTagWithHttpInfo(referType: string, referId: string, tag: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteTag(referType, referId, tag, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteTagWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete a tag, any tag created by anyone can be deleted.
+     * Delete Tag
+     * @param referType Tag type (prompt, agent, plugin...)
+     * @param referId Resource identifier of the tag
+     * @param tag Tag content
+     */
+    public deleteTag(referType: string, referId: string, tag: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteTagWithHttpInfo(referType, referId, tag, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
     }
 
 }

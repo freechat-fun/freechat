@@ -97,6 +97,14 @@ export default function DashScopeSettings(props: {
   );
   const [stopWord, setStopWord] = useState<string>();
 
+  const [modelId, setModelId] = useState<string>(
+    models?.find(
+      (modelInfo) =>
+        modelInfo?.modelId ===
+        (defaultParameters?.modelId ?? defaultModels.azure_open_ai)
+    )?.modelId ?? ''
+  );
+
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
@@ -132,6 +140,14 @@ export default function DashScopeSettings(props: {
 
     setStop(defaultParameters?.stop ?? []);
     setEnableStop(containsKey(defaultParameters, 'stop'));
+
+    setModelId(
+      models?.find(
+        (modelInfo) =>
+          modelInfo?.modelId ===
+          (defaultParameters?.modelId ?? defaultModels.azure_open_ai)
+      )?.modelId ?? ''
+    );
   }, [defaultParameters, models]);
 
   function handleSelectChange(
@@ -141,6 +157,7 @@ export default function DashScopeSettings(props: {
     if (newValue && newValue !== model?.modelId) {
       setModel(models?.find((modelInfo) => modelInfo?.modelId === newValue));
     }
+    setModelId(newValue ?? '');
   }
 
   function handleStopWordSubmit(event: React.FormEvent<HTMLFormElement>): void {
@@ -210,7 +227,7 @@ export default function DashScopeSettings(props: {
               placeholder={
                 <Typography textColor="gray">No model provided</Typography>
               }
-              value={model?.modelId}
+              value={modelId}
               onChange={handleSelectChange}
               sx={{
                 ml: 2,

@@ -112,11 +112,11 @@ const request: PromptApiApplyPromptTemplateRequest = {
     chatTemplate: {
       system: "system_example",
       messageToSend: {
-        role: "role_example",
+        role: "system",
         name: "name_example",
         contents: [
           {
-            type: "type_example",
+            type: "image",
             content: "content_example",
           },
         ],
@@ -128,14 +128,15 @@ const request: PromptApiApplyPromptTemplateRequest = {
           },
         ],
         context: "context_example",
+        messageId: 1,
       },
       messages: [
         {
-          role: "role_example",
+          role: "system",
           name: "name_example",
           contents: [
             {
-              type: "type_example",
+              type: "image",
               content: "content_example",
             },
           ],
@@ -147,13 +148,14 @@ const request: PromptApiApplyPromptTemplateRequest = {
             },
           ],
           context: "context_example",
+          messageId: 1,
         },
       ],
     },
     variables: {
       "key": {},
     },
-    format: "format_example",
+    format: "f_string",
   },
 };
 
@@ -215,13 +217,13 @@ const request: PromptApiBatchSearchPromptDetailsRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         aiModels: [
           "aiModels_example",
         ],
-        aiModelsOp: "aiModelsOp_example",
+        aiModelsOp: "or",
         name: "name_example",
-        type: "type_example",
+        type: "chat",
         lang: "lang_example",
         text: "text_example",
       },
@@ -292,13 +294,13 @@ const request: PromptApiBatchSearchPromptSummaryRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         aiModels: [
           "aiModels_example",
         ],
-        aiModelsOp: "aiModelsOp_example",
+        aiModelsOp: "or",
         name: "name_example",
-        type: "type_example",
+        type: "chat",
         lang: "lang_example",
         text: "text_example",
       },
@@ -476,13 +478,13 @@ const request: PromptApiCountPromptsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
-      type: "type_example",
+      type: "chat",
       lang: "lang_example",
       text: "text_example",
     },
@@ -551,13 +553,13 @@ const request: PromptApiCountPublicPromptsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
-      type: "type_example",
+      type: "chat",
       lang: "lang_example",
       text: "text_example",
     },
@@ -628,11 +630,11 @@ const request: PromptApiCreatePromptRequest = {
     chatTemplate: {
       system: "system_example",
       messageToSend: {
-        role: "role_example",
+        role: "system",
         name: "name_example",
         contents: [
           {
-            type: "type_example",
+            type: "image",
             content: "content_example",
           },
         ],
@@ -644,14 +646,15 @@ const request: PromptApiCreatePromptRequest = {
           },
         ],
         context: "context_example",
+        messageId: 1,
       },
       messages: [
         {
-          role: "role_example",
+          role: "system",
           name: "name_example",
           contents: [
             {
-              type: "type_example",
+              type: "image",
               content: "content_example",
             },
           ],
@@ -663,10 +666,11 @@ const request: PromptApiCreatePromptRequest = {
             },
           ],
           context: "context_example",
+          messageId: 1,
         },
       ],
     },
-    format: "format_example",
+    format: "f_string",
     lang: "lang_example",
     example: "example_example",
     inputs: "inputs_example",
@@ -741,11 +745,11 @@ const request: PromptApiCreatePromptsRequest = {
       chatTemplate: {
         system: "system_example",
         messageToSend: {
-          role: "role_example",
+          role: "system",
           name: "name_example",
           contents: [
             {
-              type: "type_example",
+              type: "image",
               content: "content_example",
             },
           ],
@@ -757,14 +761,15 @@ const request: PromptApiCreatePromptsRequest = {
             },
           ],
           context: "context_example",
+          messageId: 1,
         },
         messages: [
           {
-            role: "role_example",
+            role: "system",
             name: "name_example",
             contents: [
               {
-                type: "type_example",
+                type: "image",
                 content: "content_example",
               },
             ],
@@ -776,10 +781,11 @@ const request: PromptApiCreatePromptsRequest = {
               },
             ],
             context: "context_example",
+            messageId: 1,
           },
         ],
       },
-      format: "format_example",
+      format: "f_string",
       lang: "lang_example",
       example: "example_example",
       inputs: "inputs_example",
@@ -1334,13 +1340,13 @@ const request: PromptApiSearchPromptDetailsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
-      type: "type_example",
+      type: "chat",
       lang: "lang_example",
       text: "text_example",
     },
@@ -1409,13 +1415,13 @@ const request: PromptApiSearchPromptSummaryRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
-      type: "type_example",
+      type: "chat",
       lang: "lang_example",
       text: "text_example",
     },
@@ -1484,13 +1490,13 @@ const request: PromptApiSearchPublicPromptSummaryRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       aiModels: [
         "aiModels_example",
       ],
-      aiModelsOp: "aiModelsOp_example",
+      aiModelsOp: "or",
       name: "name_example",
-      type: "type_example",
+      type: "chat",
       lang: "lang_example",
       text: "text_example",
     },
@@ -1559,11 +1565,11 @@ const request: PromptApiSendPromptRequest = {
       chatTemplate: {
         system: "system_example",
         messageToSend: {
-          role: "role_example",
+          role: "system",
           name: "name_example",
           contents: [
             {
-              type: "type_example",
+              type: "image",
               content: "content_example",
             },
           ],
@@ -1575,14 +1581,15 @@ const request: PromptApiSendPromptRequest = {
             },
           ],
           context: "context_example",
+          messageId: 1,
         },
         messages: [
           {
-            role: "role_example",
+            role: "system",
             name: "name_example",
             contents: [
               {
-                type: "type_example",
+                type: "image",
                 content: "content_example",
               },
             ],
@@ -1594,13 +1601,14 @@ const request: PromptApiSendPromptRequest = {
               },
             ],
             context: "context_example",
+            messageId: 1,
           },
         ],
       },
       variables: {
         "key": {},
       },
-      format: "format_example",
+      format: "f_string",
     },
     promptRef: {
       promptId: 1,
@@ -1672,11 +1680,11 @@ const request: PromptApiStreamSendPromptRequest = {
       chatTemplate: {
         system: "system_example",
         messageToSend: {
-          role: "role_example",
+          role: "system",
           name: "name_example",
           contents: [
             {
-              type: "type_example",
+              type: "image",
               content: "content_example",
             },
           ],
@@ -1688,14 +1696,15 @@ const request: PromptApiStreamSendPromptRequest = {
             },
           ],
           context: "context_example",
+          messageId: 1,
         },
         messages: [
           {
-            role: "role_example",
+            role: "system",
             name: "name_example",
             contents: [
               {
-                type: "type_example",
+                type: "image",
                 content: "content_example",
               },
             ],
@@ -1707,13 +1716,14 @@ const request: PromptApiStreamSendPromptRequest = {
               },
             ],
             context: "context_example",
+            messageId: 1,
           },
         ],
       },
       variables: {
         "key": {},
       },
-      format: "format_example",
+      format: "f_string",
     },
     promptRef: {
       promptId: 1,
@@ -1789,11 +1799,11 @@ const request: PromptApiUpdatePromptRequest = {
     chatTemplate: {
       system: "system_example",
       messageToSend: {
-        role: "role_example",
+        role: "system",
         name: "name_example",
         contents: [
           {
-            type: "type_example",
+            type: "image",
             content: "content_example",
           },
         ],
@@ -1805,14 +1815,15 @@ const request: PromptApiUpdatePromptRequest = {
           },
         ],
         context: "context_example",
+        messageId: 1,
       },
       messages: [
         {
-          role: "role_example",
+          role: "system",
           name: "name_example",
           contents: [
             {
-              type: "type_example",
+              type: "image",
               content: "content_example",
             },
           ],
@@ -1824,10 +1835,11 @@ const request: PromptApiUpdatePromptRequest = {
             },
           ],
           context: "context_example",
+          messageId: 1,
         },
       ],
     },
-    format: "format_example",
+    format: "f_string",
     lang: "lang_example",
     example: "example_example",
     inputs: "inputs_example",

@@ -9,6 +9,7 @@ export * from '../models/AgentUpdateDTO.js';
 export * from '../models/AiApiKeyCreateDTO.js';
 export * from '../models/AiApiKeyInfoDTO.js';
 export * from '../models/AiModelInfoDTO.js';
+export * from '../models/AiModelInfoUpdateDTO.js';
 export * from '../models/ApiTokenInfoDTO.js';
 export * from '../models/AppConfigInfoDTO.js';
 export * from '../models/AppMetaDTO.js';
@@ -35,7 +36,6 @@ export * from '../models/HotTagDTO.js';
 export * from '../models/InteractiveStatsDTO.js';
 export * from '../models/LlmResultDTO.js';
 export * from '../models/MemoryUsageDTO.js';
-export * from '../models/OpenAiParamDTO.js';
 export * from '../models/PluginCreateDTO.js';
 export * from '../models/PluginDetailsDTO.js';
 export * from '../models/PluginQueryDTO.js';
@@ -56,7 +56,6 @@ export * from '../models/PromptTaskDTO.js';
 export * from '../models/PromptTaskDetailsDTO.js';
 export * from '../models/PromptTemplateDTO.js';
 export * from '../models/PromptUpdateDTO.js';
-export * from '../models/QwenParamDTO.js';
 export * from '../models/RagTaskDTO.js';
 export * from '../models/RagTaskDetailsDTO.js';
 export * from '../models/SseEmitter.js';
@@ -76,6 +75,7 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
+import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
@@ -102,7 +102,6 @@ import { HotTagDTO } from '../models/HotTagDTO.js';
 import { InteractiveStatsDTO } from '../models/InteractiveStatsDTO.js';
 import { LlmResultDTO } from '../models/LlmResultDTO.js';
 import { MemoryUsageDTO } from '../models/MemoryUsageDTO.js';
-import { OpenAiParamDTO } from '../models/OpenAiParamDTO.js';
 import { PluginCreateDTO } from '../models/PluginCreateDTO.js';
 import { PluginDetailsDTO } from '../models/PluginDetailsDTO.js';
 import { PluginQueryDTO } from '../models/PluginQueryDTO.js';
@@ -123,7 +122,6 @@ import { PromptTaskDTO } from '../models/PromptTaskDTO.js';
 import { PromptTaskDetailsDTO } from '../models/PromptTaskDetailsDTO.js';
 import { PromptTemplateDTO } from '../models/PromptTemplateDTO.js';
 import { PromptUpdateDTO } from '../models/PromptUpdateDTO.js';
-import { QwenParamDTO } from '../models/QwenParamDTO.js';
 import { RagTaskDTO } from '../models/RagTaskDTO.js';
 import { RagTaskDetailsDTO } from '../models/RagTaskDetailsDTO.js';
 import { SseEmitter } from '../models/SseEmitter.js';
@@ -159,6 +157,7 @@ let typeMap: {[index: string]: any} = {
     "AiApiKeyCreateDTO": AiApiKeyCreateDTO,
     "AiApiKeyInfoDTO": AiApiKeyInfoDTO,
     "AiModelInfoDTO": AiModelInfoDTO,
+    "AiModelInfoUpdateDTO": AiModelInfoUpdateDTO,
     "ApiTokenInfoDTO": ApiTokenInfoDTO,
     "AppConfigInfoDTO": AppConfigInfoDTO,
     "AppMetaDTO": AppMetaDTO,
@@ -185,7 +184,6 @@ let typeMap: {[index: string]: any} = {
     "InteractiveStatsDTO": InteractiveStatsDTO,
     "LlmResultDTO": LlmResultDTO,
     "MemoryUsageDTO": MemoryUsageDTO,
-    "OpenAiParamDTO": OpenAiParamDTO,
     "PluginCreateDTO": PluginCreateDTO,
     "PluginDetailsDTO": PluginDetailsDTO,
     "PluginQueryDTO": PluginQueryDTO,
@@ -206,7 +204,6 @@ let typeMap: {[index: string]: any} = {
     "PromptTaskDetailsDTO": PromptTaskDetailsDTO,
     "PromptTemplateDTO": PromptTemplateDTO,
     "PromptUpdateDTO": PromptUpdateDTO,
-    "QwenParamDTO": QwenParamDTO,
     "RagTaskDTO": RagTaskDTO,
     "RagTaskDetailsDTO": RagTaskDetailsDTO,
     "SseEmitter": SseEmitter,

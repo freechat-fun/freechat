@@ -1,6 +1,6 @@
 {
   "name": "freechat-sdk",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "OpenAPI client for freechat-sdk",
   "author": "dev.freechat.fun",
   "repository": {
@@ -37,8 +37,8 @@
     "url-parse": "^1.4.3"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/url-parse": "1.4.11",
+    "typescript": "^4.0",
+    "@types/url-parse": "1.4.4",
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-commonjs": "latest",
     "rollup-plugin-typescript2": "latest",

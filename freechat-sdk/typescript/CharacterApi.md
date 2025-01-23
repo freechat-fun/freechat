@@ -16,6 +16,7 @@ Method | HTTP request | Description
 [**deleteCharacterByUid**](CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
 [**deleteCharacterDocument**](CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
 [**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+[**deleteCharacterVoice**](CharacterApi.md#deleteCharacterVoice) | **DELETE** /api/v2/character/voice/{characterBackendId}/{key} | Delete Character Voice
 [**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
 [**exportCharacter**](CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
 [**getCharacterDetails**](CharacterApi.md#getCharacterDetails) | **GET** /api/v2/character/details/{characterId} | Get Character Details
@@ -28,6 +29,7 @@ Method | HTTP request | Description
 [**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
 [**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
 [**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+[**listCharacterVoices**](CharacterApi.md#listCharacterVoices) | **GET** /api/v2/character/voices/{characterBackendId} | List Character Voices
 [**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
 [**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
 [**publishCharacter1**](CharacterApi.md#publishCharacter1) | **POST** /api/v2/character/publish/{characterId} | Publish Character
@@ -41,6 +43,7 @@ Method | HTTP request | Description
 [**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
 [**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
 [**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
+[**uploadCharacterVoice**](CharacterApi.md#uploadCharacterVoice) | **POST** /api/v2/character/voice/{characterBackendId} | Upload Character Voice
 
 
 # **addCharacterBackend**
@@ -73,8 +76,12 @@ const request: CharacterApiAddCharacterBackendRequest = {
     longTermMemoryWindowSize: 1,
     proactiveChatWaitingTime: 1,
     initQuota: 1,
-    quotaType: "quotaType_example",
+    quotaType: "none",
     enableAlbumTool: true,
+    enableTts: true,
+    ttsSpeakerIdx: "ttsSpeakerIdx_example",
+    ttsSpeakerWav: "ttsSpeakerWav_example",
+    ttsSpeakerType: "wav",
   },
 };
 
@@ -137,7 +144,7 @@ const request: CharacterApiBatchSearchCharacterDetailsRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         name: "name_example",
         lang: "lang_example",
         text: "text_example",
@@ -210,7 +217,7 @@ const request: CharacterApiBatchSearchCharacterSummaryRequest = {
         tags: [
           "tags_example",
         ],
-        tagsOp: "tagsOp_example",
+        tagsOp: "or",
         name: "name_example",
         lang: "lang_example",
         text: "text_example",
@@ -335,7 +342,7 @@ const request: CharacterApiCountCharactersRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
@@ -406,7 +413,7 @@ const request: CharacterApiCountPublicCharactersRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
@@ -478,7 +485,7 @@ const request: CharacterApiCreateCharacterRequest = {
     nickname: "nickname_example",
     avatar: "avatar_example",
     picture: "picture_example",
-    gender: "gender_example",
+    gender: "other",
     profile: "profile_example",
     greeting: "greeting_example",
     chatStyle: "chatStyle_example",
@@ -768,6 +775,62 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **key** | [**string**] | Image key | defaults to undefined
+
+
+### Return type
+
+**boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **deleteCharacterVoice**
+> boolean deleteCharacterVoice()
+
+Delete a voice of the character by key.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterVoiceRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiDeleteCharacterVoiceRequest = {
+    // The characterBackendId
+  characterBackendId: "characterBackendId_example",
+    // Voice key
+  key: "key_example",
+};
+
+const data = await apiInstance.deleteCharacterVoice(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterBackendId** | [**string**] | The characterBackendId | defaults to undefined
+ **key** | [**string**] | Voice key | defaults to undefined
 
 
 ### Return type
@@ -1427,6 +1490,59 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
+# **listCharacterVoices**
+> Array<string> listCharacterVoices()
+
+List voices of the character.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterVoicesRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiListCharacterVoicesRequest = {
+    // The characterBackendId
+  characterBackendId: "characterBackendId_example",
+};
+
+const data = await apiInstance.listCharacterVoices(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterBackendId** | [**string**] | The characterBackendId | defaults to undefined
+
+
+### Return type
+
+**Array<string>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
 # **newCharacterName**
 > string newCharacterName()
 
@@ -1666,7 +1782,7 @@ const request: CharacterApiSearchCharacterDetailsRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
@@ -1737,7 +1853,7 @@ const request: CharacterApiSearchCharacterSummaryRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
@@ -1808,7 +1924,7 @@ const request: CharacterApiSearchPublicCharacterSummaryRequest = {
       tags: [
         "tags_example",
       ],
-      tagsOp: "tagsOp_example",
+      tagsOp: "or",
       name: "name_example",
       lang: "lang_example",
       text: "text_example",
@@ -1935,7 +2051,7 @@ const request: CharacterApiUpdateCharacterRequest = {
     nickname: "nickname_example",
     avatar: "avatar_example",
     picture: "picture_example",
-    gender: "gender_example",
+    gender: "other",
     profile: "profile_example",
     greeting: "greeting_example",
     chatStyle: "chatStyle_example",
@@ -2014,8 +2130,12 @@ const request: CharacterApiUpdateCharacterBackendRequest = {
     longTermMemoryWindowSize: 1,
     proactiveChatWaitingTime: 1,
     initQuota: 1,
-    quotaType: "quotaType_example",
+    quotaType: "none",
     enableAlbumTool: true,
+    enableTts: true,
+    ttsSpeakerIdx: "ttsSpeakerIdx_example",
+    ttsSpeakerWav: "ttsSpeakerWav_example",
+    ttsSpeakerType: "wav",
   },
 };
 
@@ -2198,6 +2318,62 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterUid** | [**string**] | Character unique identifier | defaults to undefined
  **file** | [**HttpFile**] | Character picture | defaults to undefined
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: text/plain
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **uploadCharacterVoice**
+> string uploadCharacterVoice()
+
+Upload a voice of the character.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUploadCharacterVoiceRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiUploadCharacterVoiceRequest = {
+    // The characterBackendId
+  characterBackendId: "characterBackendId_example",
+    // Character voice
+  file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
+};
+
+const data = await apiInstance.uploadCharacterVoice(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterBackendId** | [**string**] | The characterBackendId | defaults to undefined
+ **file** | [**HttpFile**] | Character voice | defaults to undefined
 
 
 ### Return type

@@ -750,11 +750,11 @@ const request: ChatApiSendMessageRequest = {
   chatId: "chatId_example",
     // Chat message
   chatMessageDTO: {
-    role: "role_example",
+    role: "system",
     name: "name_example",
     contents: [
       {
-        type: "type_example",
+        type: "image",
         content: "content_example",
       },
     ],
@@ -766,6 +766,7 @@ const request: ChatApiSendMessageRequest = {
       },
     ],
     context: "context_example",
+    messageId: 1,
   },
 };
 
@@ -942,11 +943,11 @@ const request: ChatApiStreamSendMessageRequest = {
   chatId: "chatId_example",
     // Chat message
   chatMessageDTO: {
-    role: "role_example",
+    role: "system",
     name: "name_example",
     contents: [
       {
-        type: "type_example",
+        type: "image",
         content: "content_example",
       },
     ],
@@ -958,6 +959,7 @@ const request: ChatApiStreamSendMessageRequest = {
       },
     ],
     context: "context_example",
+    messageId: 1,
   },
 };
 
