@@ -62,7 +62,7 @@ dependencies:
   - condition: kube-state-metrics.enabled
     name: kube-state-metrics
     repository: https://charts.bitnami.com/bitnami
-    version: 4.x.x
+    version: 5.x
     tags:
       - backend
       - kube-state-metrics
