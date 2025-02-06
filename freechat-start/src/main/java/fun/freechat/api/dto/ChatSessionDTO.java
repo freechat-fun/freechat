@@ -41,6 +41,8 @@ public class ChatSessionDTO {
     private Boolean isDebugEnabled;
     @Schema(description = "Is it possible to customize api-key")
     private Boolean isCustomizedApiKeyEnabled;
+    @Schema(description = "Enable character tts feature or not")
+    private Boolean isTtsEnabled;
 
     public static ChatSessionDTO from(
             Triple<ChatContext, CharacterInfo, ChatMessageRecord> chatItem,
@@ -48,7 +50,8 @@ public class ChatSessionDTO {
             Integer proactiveChatWaitingTime,
             String senderStatus,
             Boolean isDebugEnabled,
-            Boolean isCustomizedApiKeyEnabled) {
+            Boolean isCustomizedApiKeyEnabled,
+            Boolean isTtsEnabled) {
         if (chatItem == null || chatItem.getLeft() == null) {
             return null;
         }
@@ -67,6 +70,7 @@ public class ChatSessionDTO {
                 .senderStatus(senderStatus)
                 .isDebugEnabled(isDebugEnabled)
                 .isCustomizedApiKeyEnabled(isCustomizedApiKeyEnabled)
+                .isTtsEnabled(isTtsEnabled)
                 .build();
     }
 }

@@ -101,7 +101,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/octet-stream
+ - **Accept**: audio/mpeg, audio/aac, audio/mp3, audio/wav, audio/octet-stream
 
 
 ### HTTP response details
@@ -154,7 +154,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/octet-stream
+ - **Accept**: audio/mpeg, audio/aac, audio/mp3, audio/wav, audio/octet-stream
 
 
 ### HTTP response details

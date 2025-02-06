@@ -26,7 +26,7 @@
   "Adjust preset memory.": "调整预设记忆。",
   "After reaching the quota limit, users need to use their own API-Key to continue chatting.": "达到配额限制后，用户需要使用自己的 API-Key 才能继续聊天。",
   "Enable characters to read replies.": "允许角色读出回复。",
-  "Wav format, about 5 seconds, size less than 1M.": "Wav 格式，约 5 秒，尺寸小于 1M。",
+  "MP3 format, about 5 seconds, size less than 1M.": "MP3 格式，约 5 秒，尺寸小于 1M。",
   "If the user wants to see photos during a chat, select one from the album to display.": "如果在聊天时，用户想看照片，从相册中选择一张展示。",
   "As Default": "作为默认",
   "Actions": "操作",

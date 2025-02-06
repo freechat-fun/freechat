@@ -87,8 +87,13 @@ const CharacterBackendSettings = forwardRef<
   CharacterBackendSettingsProps
 >((props, ref) => {
   const { t } = useTranslation('character');
-  const { aiServiceApi, characterApi, promptTaskApi, ttsServiceApi } =
-    useFreeChatApiContext();
+  const {
+    aiServiceApi,
+    characterApi,
+    promptTaskApi,
+    ttsServiceApi,
+    serverUrl,
+  } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
   const { backend, onSave, onCancel, sx, ...others } = props;
@@ -284,6 +289,10 @@ const CharacterBackendSettings = forwardRef<
     }
   }
 
+  function getServiceUrl(apiPath: string): string {
+    return apiPath ? serverUrl + apiPath : apiPath;
+  }
+
   function handlePlay() {
     if (enableTts) {
       const speaker = ttsSpeakerType === 'idx' ? ttsSpeakerIdx : ttsSpeakerWav;
@@ -292,8 +301,9 @@ const CharacterBackendSettings = forwardRef<
 
       if (audioRefs.current[player].current) {
         setPlaying(true);
-        audioRefs.current[player].current.src = audioUrl;
+        audioRefs.current[player].current.src = getServiceUrl(audioUrl);
         audioRefs.current[player].current.onerror = () => setPlaying(false);
+        audioRefs.current[player].current.onended = () => setPlaying(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         audioRefs.current[player].current.play().catch((error: any) => {
           setPlaying(false);
@@ -714,10 +724,7 @@ const CharacterBackendSettings = forwardRef<
                   >
                     <CircularProgress size="sm" />
                   </Box>
-                  <audio
-                    ref={audioRefs.current[1]}
-                    onEnded={() => setPlaying(false)}
-                  />
+                  <audio ref={audioRefs.current[1]} />
                 </CommonBox>
               </Stack>
             </Stack>
@@ -734,7 +741,7 @@ const CharacterBackendSettings = forwardRef<
                     {t('Custom Voice')}
                   </FormLabel>
                   <OptionTooltip
-                    title={t('Wav format, about 5 seconds, size less than 1M.')}
+                    title={t('MP3 format, about 5 seconds, size less than 1M.')}
                   >
                     <HelpIcon />
                   </OptionTooltip>
@@ -749,7 +756,7 @@ const CharacterBackendSettings = forwardRef<
                     slotProps={{
                       input: {
                         ref: fileInputRef,
-                        accept: 'audio/wav, .wav',
+                        accept: 'audio/mp3, .mp3',
                       },
                     }}
                   />
@@ -820,10 +827,7 @@ const CharacterBackendSettings = forwardRef<
                       >
                         <CircularProgress size="sm" />
                       </Box>
-                      <audio
-                        ref={audioRefs.current[0]}
-                        onEnded={() => setPlaying(false)}
-                      />
+                      <audio ref={audioRefs.current[0]} />
                     </Fragment>
                   )}
                 </CommonBox>

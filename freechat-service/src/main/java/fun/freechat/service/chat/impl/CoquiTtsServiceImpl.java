@@ -43,7 +43,7 @@ public class CoquiTtsServiceImpl implements TtsService {
     public void init() {
         baseUri = mayRemoveTrailingSlash(baseUri);
         inferenceApi = baseUri + "/inference/" + format;
-        uploadVoiceApi = baseUri + "/speaker/wav";
+        uploadVoiceApi = baseUri + "/speaker/mp3";
         deleteVoiceApi = baseUri + "/speaker/wav";
         existsVoiceApi = baseUri + "/speaker/wav/exists";
         pingApi = baseUri + "/ping";
@@ -73,12 +73,17 @@ public class CoquiTtsServiceImpl implements TtsService {
     }
 
     @Override
-    public void uploadVoice(String path) {
+    public String uploadVoice(String path) {
         ensureNotBlank(path, "path");
         check();
 
         Path filePath = StoreUtils.defaultFileStore().toPath(path);
-        HttpUtils.upload(uploadVoiceApi, filePath, null, createHeaders());
+        String response = HttpUtils.upload(uploadVoiceApi, filePath, null, createHeaders());
+        if (StringUtils.isBlank(response)) {
+            throw new IllegalStateException("Failed to upload voice file.");
+        }
+
+        return response;
     }
 
     @Override
@@ -107,7 +112,7 @@ public class CoquiTtsServiceImpl implements TtsService {
         return switch (format) {
             case "mp3" -> "audio/mpeg";
             case "aac" -> "audio/aac";
-            case "m4a" -> "audio/mp4";
+            case "m4a" -> "audio/mp3";
             case "wav" -> "audio/wav";
             case null, default -> "audio/octet-stream";
         };
@@ -151,7 +156,7 @@ public class CoquiTtsServiceImpl implements TtsService {
     private Map<String, String> createHeaders() {
         Map<String, String> headerMap = HashMap.newHashMap(9);
         headerMap.put("Request-Id", TraceUtils.getTraceId());
-        headerMap.put("Accept", "audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/octet-stream, audio/*, text/plain, */*");
+        headerMap.put("Accept", "audio/mpeg, audio/aac, audio/mp3, audio/wav, audio/octet-stream, audio/*, text/plain, */*");
         headerMap.put("Accept-Language", "en,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7,ru;q=0.6");
         headerMap.put("Content-Type", "application/x-www-form-urlencoded");
         headerMap.put("Origin", baseUri);

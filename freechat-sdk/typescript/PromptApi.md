@@ -51,7 +51,7 @@ const request: PromptApiApplyPromptRefRequest = {
   promptRefDTO: {
     promptId: 1,
     variables: {
-      "key": {},
+      "key": null,
     },
     draft: true,
   },
@@ -153,7 +153,7 @@ const request: PromptApiApplyPromptTemplateRequest = {
       ],
     },
     variables: {
-      "key": {},
+      "key": null,
     },
     format: "f_string",
   },
@@ -1606,19 +1606,19 @@ const request: PromptApiSendPromptRequest = {
         ],
       },
       variables: {
-        "key": {},
+        "key": null,
       },
       format: "f_string",
     },
     promptRef: {
       promptId: 1,
       variables: {
-        "key": {},
+        "key": null,
       },
       draft: true,
     },
     params: {
-      "key": {},
+      "key": null,
     },
   },
 };
@@ -1721,19 +1721,19 @@ const request: PromptApiStreamSendPromptRequest = {
         ],
       },
       variables: {
-        "key": {},
+        "key": null,
       },
       format: "f_string",
     },
     promptRef: {
       promptId: 1,
       variables: {
-        "key": {},
+        "key": null,
       },
       draft: true,
     },
     params: {
-      "key": {},
+      "key": null,
     },
   },
 };

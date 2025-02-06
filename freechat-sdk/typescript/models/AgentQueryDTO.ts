@@ -17,6 +17,9 @@ import { HttpFile } from '../http/http.js';
 * Agent information query request
 */
 export class AgentQueryDTO {
+    /**
+    * Query condition
+    */
     'where'?: AgentQueryWhere;
     /**
     * Sorting condition, supported sorting fields are: - version - modifyTime - createTime  Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\\\"score\\\", \\\"scoreCount asc\\\"] (scoreCount in ascending order) 

@@ -14,7 +14,6 @@ import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
@@ -1655,7 +1654,7 @@ export class ObjectAgentApi {
 import { ObservableAppConfigForAdminApi } from "./ObservableAPI.js";
 import { AppConfigForAdminApiRequestFactory, AppConfigForAdminApiResponseProcessor} from "../apis/AppConfigForAdminApi.js";
 
-export interface AppConfigForAdminApiGetAppConfigsRequest {
+export interface AppConfigForAdminApiGetDefaultConfigRequest {
 }
 
 export class ObjectAppConfigForAdminApi {
@@ -1666,21 +1665,21 @@ export class ObjectAppConfigForAdminApi {
     }
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      * @param param the request object
      */
-    public getAppConfigsWithHttpInfo(param: AppConfigForAdminApiGetAppConfigsRequest = {}, options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
-        return this.api.getAppConfigsWithHttpInfo( options).toPromise();
+    public getDefaultConfigWithHttpInfo(param: AppConfigForAdminApiGetDefaultConfigRequest = {}, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.getDefaultConfigWithHttpInfo( options).toPromise();
     }
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      * @param param the request object
      */
-    public getAppConfigs(param: AppConfigForAdminApiGetAppConfigsRequest = {}, options?: Configuration): Promise<AppConfigInfoDTO> {
-        return this.api.getAppConfigs( options).toPromise();
+    public getDefaultConfig(param: AppConfigForAdminApiGetDefaultConfigRequest = {}, options?: Configuration): Promise<string> {
+        return this.api.getDefaultConfig( options).toPromise();
     }
 
 }

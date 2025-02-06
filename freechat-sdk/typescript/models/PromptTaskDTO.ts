@@ -17,6 +17,9 @@ import { HttpFile } from '../http/http.js';
 * Prompt task information
 */
 export class PromptTaskDTO {
+    /**
+    * Prompt reference information
+    */
     'promptRef': PromptRefDTO;
     /**
     * Model identifier

@@ -86,6 +86,9 @@ export class PromptDetailsDTO {
     * Prompt text template content
     */
     'template'?: string;
+    /**
+    * Prompt chat template content
+    */
     'chatTemplate'?: ChatPromptContentDTO;
     /**
     * Prompt example

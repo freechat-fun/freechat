@@ -26,11 +26,17 @@ export class LlmResultDTO {
     * Model response content, the complete content is included in non-streaming responses; only the delta content is included in streaming responses (the complete content of streaming responses is in the content of the last frame message field)
     */
     'text'?: string;
+    /**
+    * Chat response message (usually as assistant, sometimes tool_call)
+    */
     'message'?: ChatMessageDTO;
     /**
     * Model end reason: stop | length | tool_execution | content_filter
     */
     'finishReason'?: string;
+    /**
+    * Token usage information
+    */
     'tokenUsage'?: TokenUsageDTO;
 
     static readonly discriminator: string | undefined = undefined;

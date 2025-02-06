@@ -25,6 +25,9 @@ export class MemoryUsageDTO {
     * Messages usage information
     */
     'messageUsage'?: number;
+    /**
+    * Token usage information
+    */
     'tokenUsage'?: TokenUsageDTO;
 
     static readonly discriminator: string | undefined = undefined;

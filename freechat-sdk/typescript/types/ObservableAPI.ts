@@ -15,7 +15,6 @@ import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
@@ -1990,11 +1989,11 @@ export class ObservableAppConfigForAdminApi {
     }
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      */
-    public getAppConfigsWithHttpInfo(_options?: Configuration): Observable<HttpInfo<AppConfigInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getAppConfigs(_options);
+    public getDefaultConfigWithHttpInfo(_options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.getDefaultConfig(_options);
 
         // build promise chain
         let middlewarePreObservable = from<RequestContext>(requestContextPromise);
@@ -2008,16 +2007,16 @@ export class ObservableAppConfigForAdminApi {
                 for (const middleware of this.configuration.middleware) {
                     middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
                 }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAppConfigsWithHttpInfo(rsp)));
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getDefaultConfigWithHttpInfo(rsp)));
             }));
     }
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      */
-    public getAppConfigs(_options?: Configuration): Observable<AppConfigInfoDTO> {
-        return this.getAppConfigsWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<AppConfigInfoDTO>) => apiResponse.data));
+    public getDefaultConfig(_options?: Configuration): Observable<string> {
+        return this.getDefaultConfigWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
 }

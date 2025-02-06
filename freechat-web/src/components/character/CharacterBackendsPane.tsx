@@ -125,7 +125,7 @@ export default function CharacterBackendsPane({
             <th>{t('Message Window')}</th>
             <th>{t('Moderation Model')}</th>
             <th>{t('As Default')}</th>
-            <th>{t('Actions')}</th>
+            <th style={{ width: '25%' }}>{t('Actions')}</th>
           </tr>
         </thead>
         <tbody>

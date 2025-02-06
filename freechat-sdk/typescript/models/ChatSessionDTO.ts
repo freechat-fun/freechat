@@ -19,12 +19,21 @@ import { HttpFile } from '../http/http.js';
 * Chat session
 */
 export class ChatSessionDTO {
+    /**
+    * Chat context
+    */
     'context'?: ChatContextDTO;
+    /**
+    * Character summary info
+    */
     'character'?: CharacterSummaryDTO;
     /**
     * Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown
     */
     'provider'?: string;
+    /**
+    * Latest message record
+    */
     'latestMessageRecord'?: ChatMessageRecordDTO;
     /**
     * Minutes to wait for a proactive chat
@@ -42,6 +51,10 @@ export class ChatSessionDTO {
     * Is it possible to customize api-key
     */
     'isCustomizedApiKeyEnabled'?: boolean;
+    /**
+    * Enable character tts feature or not
+    */
+    'isTtsEnabled'?: boolean;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -93,6 +106,12 @@ export class ChatSessionDTO {
         {
             "name": "isCustomizedApiKeyEnabled",
             "baseName": "isCustomizedApiKeyEnabled",
+            "type": "boolean",
+            "format": ""
+        },
+        {
+            "name": "isTtsEnabled",
+            "baseName": "isTtsEnabled",
             "type": "boolean",
             "format": ""
         }    ];

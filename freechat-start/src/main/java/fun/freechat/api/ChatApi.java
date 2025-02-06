@@ -222,7 +222,10 @@ public class ChatApi {
                         chatInfo = Triple.of(chatInfo.getLeft(), chatInfo.getMiddle(), replacedMessage);
                     }
                     return ChatSessionDTO.from(chatInfo, provider, proactiveChatWaitingTime,
-                            senderStatus, isDebugEnabled, isCustomizedApiKeyEnabled);
+                            senderStatus, isDebugEnabled, isCustomizedApiKeyEnabled,
+                            backend.map(CharacterBackend::getEnableTts)
+                                    .map(b -> b == (byte) 1)
+                                    .orElse(false));
                 })
                 .filter(Objects::nonNull)
                 .toList();

@@ -957,8 +957,7 @@ public class CharacterApi {
         try {
             String dstDir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
             String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
-            ttsService.uploadVoice(dstPath);
-            return getKeyFromUrl(dstPath);
+            return ttsService.uploadVoice(dstPath);
         } catch (IOException | IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         }

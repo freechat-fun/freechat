@@ -384,6 +384,10 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     request.quotaType = backend.quotaType;
     request.initQuota = backend.initQuota;
     request.enableAlbumTool = backend.enableAlbumTool;
+    request.enableTts = backend.enableTts;
+    request.ttsSpeakerIdx = backend.ttsSpeakerIdx;
+    request.ttsSpeakerWav = backend.ttsSpeakerWav;
+    request.ttsSpeakerType = backend.ttsSpeakerType;
 
     const updateBackend = (
       backendId: string | undefined,

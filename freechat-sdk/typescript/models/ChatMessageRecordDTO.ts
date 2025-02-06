@@ -17,6 +17,9 @@ import { HttpFile } from '../http/http.js';
 * Chat message record
 */
 export class ChatMessageRecordDTO {
+    /**
+    * Message
+    */
     'message'?: ChatMessageDTO;
     /**
     * Creation time

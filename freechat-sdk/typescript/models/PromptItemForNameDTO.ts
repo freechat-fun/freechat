@@ -25,6 +25,9 @@ export class PromptItemForNameDTO {
     * version
     */
     'version'?: number;
+    /**
+    * Interactive statistics information
+    */
     'stats'?: InteractiveStatsDTO;
 
     static readonly discriminator: string | undefined = undefined;

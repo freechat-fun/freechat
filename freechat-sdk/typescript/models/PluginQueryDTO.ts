@@ -17,6 +17,9 @@ import { HttpFile } from '../http/http.js';
 * Plugin information query request
 */
 export class PluginQueryDTO {
+    /**
+    * Query condition
+    */
     'where'?: PluginQueryWhere;
     /**
     * Ordering condition, supported sorting fields are: - modifyTime - createTime  Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\\\"score\\\", \\\"scoreCount asc\\\"] (scoreCount in ascending order) 

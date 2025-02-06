@@ -21,6 +21,9 @@ export class ChatPromptContentDTO {
     * Prompt system template
     */
     'system'?: string;
+    /**
+    * Chat new message template (usually as user role)
+    */
     'messageToSend'?: ChatMessageDTO;
     /**
     * Pre-set chat messages in the Prompt

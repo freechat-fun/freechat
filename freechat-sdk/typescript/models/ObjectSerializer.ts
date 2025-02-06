@@ -11,7 +11,6 @@ export * from '../models/AiApiKeyInfoDTO.js';
 export * from '../models/AiModelInfoDTO.js';
 export * from '../models/AiModelInfoUpdateDTO.js';
 export * from '../models/ApiTokenInfoDTO.js';
-export * from '../models/AppConfigInfoDTO.js';
 export * from '../models/AppMetaDTO.js';
 export * from '../models/CharacterBackendDTO.js';
 export * from '../models/CharacterBackendDetailsDTO.js';
@@ -77,7 +76,6 @@ import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
@@ -159,7 +157,6 @@ let typeMap: {[index: string]: any} = {
     "AiModelInfoDTO": AiModelInfoDTO,
     "AiModelInfoUpdateDTO": AiModelInfoUpdateDTO,
     "ApiTokenInfoDTO": ApiTokenInfoDTO,
-    "AppConfigInfoDTO": AppConfigInfoDTO,
     "AppMetaDTO": AppMetaDTO,
     "CharacterBackendDTO": CharacterBackendDTO,
     "CharacterBackendDetailsDTO": CharacterBackendDetailsDTO,
@@ -451,7 +448,7 @@ export class ObjectSerializer {
             return "application/json";
         }
 
-        const normalMediaTypes = mediaTypes.map(this.normalizeMediaType);
+        const normalMediaTypes = mediaTypes.map(ObjectSerializer.normalizeMediaType);
 
         for (const predicate of supportedMimeTypePredicatesWithPriority) {
             for (const mediaType of normalMediaTypes) {

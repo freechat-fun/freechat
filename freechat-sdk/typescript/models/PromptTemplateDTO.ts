@@ -21,6 +21,9 @@ export class PromptTemplateDTO {
     * Prompt text template content, choose one between this and chatTemplate field, priority: template > chatTemplate
     */
     'template'?: string;
+    /**
+    * Prompt chat template content
+    */
     'chatTemplate'?: ChatPromptContentDTO;
     /**
     * Variables applied to the template, can be empty

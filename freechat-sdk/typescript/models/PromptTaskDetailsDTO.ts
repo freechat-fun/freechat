@@ -41,6 +41,9 @@ export class PromptTaskDetailsDTO {
     * Task end execution time
     */
     'gmtEnd'?: Date;
+    /**
+    * Prompt reference information
+    */
     'promptRef'?: PromptRefDTO;
     /**
     * Model identifier

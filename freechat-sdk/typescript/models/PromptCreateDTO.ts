@@ -37,6 +37,9 @@ export class PromptCreateDTO {
     * Prompt text template content, choose one from template and chatTemplate field, priority: template > chatTemplate
     */
     'template'?: string;
+    /**
+    * Prompt chat template content
+    */
     'chatTemplate'?: ChatPromptContentDTO;
     /**
     * Prompt format: mustache (default) | f_string

@@ -14,7 +14,6 @@ import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
 import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
-import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
 import { CharacterBackendDetailsDTO } from '../models/CharacterBackendDetailsDTO.js';
@@ -1276,20 +1275,20 @@ export class PromiseAppConfigForAdminApi {
     }
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      */
-    public getAppConfigsWithHttpInfo(_options?: Configuration): Promise<HttpInfo<AppConfigInfoDTO>> {
-        const result = this.api.getAppConfigsWithHttpInfo(_options);
+    public getDefaultConfigWithHttpInfo(_options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.getDefaultConfigWithHttpInfo(_options);
         return result.toPromise();
     }
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      */
-    public getAppConfigs(_options?: Configuration): Promise<AppConfigInfoDTO> {
-        const result = this.api.getAppConfigs(_options);
+    public getDefaultConfig(_options?: Configuration): Promise<string> {
+        const result = this.api.getDefaultConfig(_options);
         return result.toPromise();
     }
 

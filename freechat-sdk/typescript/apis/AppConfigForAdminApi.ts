@@ -8,7 +8,6 @@ import {canConsumeForm, isCodeInRange} from '../util.js';
 import {SecurityAuthentication} from '../auth/auth.js';
 
 
-import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 
 /**
  * no description
@@ -16,14 +15,14 @@ import { AppConfigInfoDTO } from '../models/AppConfigInfoDTO.js';
 export class AppConfigForAdminApiRequestFactory extends BaseAPIRequestFactory {
 
     /**
-     * Get all configuration information of the application.
-     * Get Configurations
+     * Get default configuration information of the application.
+     * Get Default Config
      */
-    public async getAppConfigs(_options?: Configuration): Promise<RequestContext> {
+    public async getDefaultConfig(_options?: Configuration): Promise<RequestContext> {
         let _config = _options || this.configuration;
 
         // Path Params
-        const localVarPath = '/api/v2/admin/app/configs';
+        const localVarPath = '/api/v2/admin/app/configs/default';
 
         // Make Request Context
         const requestContext = _config.baseServer.makeRequestContext(localVarPath, HttpMethod.GET);
@@ -53,25 +52,25 @@ export class AppConfigForAdminApiResponseProcessor {
      * Unwraps the actual response sent by the server from the response context and deserializes the response content
      * to the expected objects
      *
-     * @params response Response returned by the server for a request to getAppConfigs
+     * @params response Response returned by the server for a request to getDefaultConfig
      * @throws ApiException if the response code was not in [200, 299]
      */
-     public async getAppConfigsWithHttpInfo(response: ResponseContext): Promise<HttpInfo<AppConfigInfoDTO >> {
+     public async getDefaultConfigWithHttpInfo(response: ResponseContext): Promise<HttpInfo<string >> {
         const contentType = ObjectSerializer.normalizeMediaType(response.headers["content-type"]);
         if (isCodeInRange("200", response.httpStatusCode)) {
-            const body: AppConfigInfoDTO = ObjectSerializer.deserialize(
+            const body: string = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "AppConfigInfoDTO", ""
-            ) as AppConfigInfoDTO;
+                "string", ""
+            ) as string;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 
         // Work around for missing responses in specification, e.g. for petstore.yaml
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
-            const body: AppConfigInfoDTO = ObjectSerializer.deserialize(
+            const body: string = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "AppConfigInfoDTO", ""
-            ) as AppConfigInfoDTO;
+                "string", ""
+            ) as string;
             return new HttpInfo(response.httpStatusCode, response.headers, response.body, body);
         }
 

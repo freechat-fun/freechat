@@ -12,6 +12,7 @@ import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.TtsSpeakerType;
 import fun.freechat.service.util.InfoUtils;
 import fun.freechat.service.util.StoreUtils;
+import fun.freechat.util.SecurityUtils;
 import fun.freechat.util.TraceUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,9 +40,11 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
 
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
@@ -88,15 +92,25 @@ public class TtsApi {
             description = "Play TTS sample audio of the builtin/custom speaker."
     )
     @GetMapping(value = "/public/tts/play/sample/{speakerType}/{speaker}",
-            produces = {"audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/octet-stream"})
+            produces = {"audio/mpeg", "audio/aac", "audio/mp3", "audio/wav", "audio/octet-stream"})
     public ResponseEntity<StreamingResponseBody> playSample(
             @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav") String speakerType,
             @Parameter(description = "The speaker") @PathVariable("speaker") @NotBlank String speaker) {
+        String validSpeaker;
+        try {
+            validSpeaker = SecurityUtils.filterPath(speaker);
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid speaker: " + speaker);
+        }
+
+        TtsSpeakerType type = TtsSpeakerType.of(speakerType);
+        String name = type == TtsSpeakerType.IDX ? validSpeaker : "your friend";
+
         ChatMessageRecord messageRecord = ChatMessageRecord.builder()
                 .id(0L)
-                .message(AiMessage.from(SAMPLE_TEXT.formatted(speaker)))
-                .speakerType(TtsSpeakerType.of(speakerType))
-                .speaker(speaker)
+                .message(AiMessage.from(SAMPLE_TEXT.formatted(name)))
+                .speakerType(type)
+                .speaker(validSpeaker)
                 .build();
 
         return doSpeak(messageRecord, "en");
@@ -108,7 +122,7 @@ public class TtsApi {
             description = "Read out the message."
     )
     @GetMapping(value = "/tts/speak/{messageId}",
-            produces = {"audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/octet-stream"})
+            produces = {"audio/mpeg", "audio/aac", "audio/mp3", "audio/wav", "audio/octet-stream"})
     @PreAuthorize("hasPermission(#p0, 'ttsSpeakDefaultOp')")
     public ResponseEntity<StreamingResponseBody> speakMessage(
             @Parameter(description = "The message id") @PathVariable("messageId") @Positive Long messageId) {
@@ -134,6 +148,8 @@ public class TtsApi {
             }
         }
 
+        String text = getDisplayMessage(((AiMessage) messageRecord.getMessage()).text());
+
         if (cacheable) {
             String cachePath = getCachePath(messageRecord);
             if (fileStore.exists(cachePath)) {
@@ -142,7 +158,7 @@ public class TtsApi {
                     return doSpeakByCachedVoice(
                             messageRecord.getSpeaker(),
                             messageRecord.getSpeakerType(),
-                            ((AiMessage) messageRecord.getMessage()).text(),
+                            text,
                             lang,
                             voiceStream);
                 } catch (IOException e) {
@@ -154,7 +170,7 @@ public class TtsApi {
             return doSpeakByTtsService(
                     messageRecord.getSpeaker(),
                     messageRecord.getSpeakerType(),
-                    ((AiMessage) messageRecord.getMessage()).text(),
+                    text,
                     lang,
                     cachePath,
                     fileStore);
@@ -164,7 +180,7 @@ public class TtsApi {
         return doSpeakByTtsService(
                 messageRecord.getSpeaker(),
                 messageRecord.getSpeakerType(),
-                ((AiMessage) messageRecord.getMessage()).text(),
+                text,
                 lang,
                 null,
                 fileStore);
@@ -335,5 +351,39 @@ public class TtsApi {
                 messageRecord.getSpeaker().replaceAll(" ", ""),
                 messageRecord.getId(),
                 ttsService.audioFormat());
+    }
+
+    private static String getDisplayMessage(String message) {
+        String[] lines = message.split("\\r?\\n"); // 分割行
+        StringBuilder processedReply = new StringBuilder();
+
+        for (String line : lines) {
+            String processedLine = handleLine(line);
+            if (StringUtils.isNotBlank(processedLine)) {
+                processedReply.append(processedLine).append("\n");
+            }
+        }
+
+        String reply = processedReply.toString().trim();
+
+        if (reply.startsWith("\"") && reply.endsWith("\"")) {
+            reply = reply.substring(1, reply.length() - 1);
+        }
+
+        return reply;
+    }
+
+    private static String handleLine(String line) {
+        // exclude system messages
+        String text = line.startsWith("> [") ? "" : line;
+        if (text.isEmpty()) {
+            return text;
+        }
+        // exclude incomplete markdown tags such as: [abc](de or ![abc](de or ![abc](de)
+        String markdownPattern = "(.*?)!?\\[[^\\[\\]]*?\\]\\([^(]*$";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(markdownPattern);
+        Matcher matcher = pattern.matcher(text);
+
+        return matcher.find() ? matcher.group(1) : text;
     }
 }

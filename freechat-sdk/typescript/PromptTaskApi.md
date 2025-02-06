@@ -31,7 +31,7 @@ const request: PromptTaskApiCreatePromptTaskRequest = {
     promptRef: {
       promptId: 1,
       variables: {
-        "key": {},
+        "key": null,
       },
       draft: true,
     },
@@ -39,7 +39,7 @@ const request: PromptTaskApiCreatePromptTaskRequest = {
     apiKeyName: "apiKeyName_example",
     apiKeyValue: "apiKeyValue_example",
     params: {
-      "key": {},
+      "key": null,
     },
     cron: "cron_example",
     status: "succeeded",
@@ -208,7 +208,7 @@ const request: PromptTaskApiUpdatePromptTaskRequest = {
     promptRef: {
       promptId: 1,
       variables: {
-        "key": {},
+        "key": null,
       },
       draft: true,
     },
@@ -216,7 +216,7 @@ const request: PromptTaskApiUpdatePromptTaskRequest = {
     apiKeyName: "apiKeyName_example",
     apiKeyValue: "apiKeyValue_example",
     params: {
-      "key": {},
+      "key": null,
     },
     cron: "cron_example",
     status: "succeeded",

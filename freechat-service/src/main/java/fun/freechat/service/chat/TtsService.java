@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 public interface TtsService {
     CompletableFuture<InputStream> speak(
             String speaker, TtsSpeakerType speakerType, String text, String lang);
-    void uploadVoice(String path);
+    String uploadVoice(String path);
     void deleteVoice(String name);
     boolean existsVoice(String name);
     boolean isEnabled();

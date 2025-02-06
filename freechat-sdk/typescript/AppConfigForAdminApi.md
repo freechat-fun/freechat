@@ -4,13 +4,13 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getAppConfigs**](AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v2/admin/app/configs | Get Configurations
+[**getDefaultConfig**](AppConfigForAdminApi.md#getDefaultConfig) | **GET** /api/v2/admin/app/configs/default | Get Default Config
 
 
-# **getAppConfigs**
-> AppConfigInfoDTO getAppConfigs()
+# **getDefaultConfig**
+> string getDefaultConfig()
 
-Get all configuration information of the application.
+Get default configuration information of the application.
 
 ### Example
 
@@ -23,7 +23,7 @@ const apiInstance = new AppConfigForAdminApi(configuration);
 
 const request = {};
 
-const data = await apiInstance.getAppConfigs(request);
+const data = await apiInstance.getDefaultConfig(request);
 console.log('API called successfully. Returned data:', data);
 ```
 
@@ -34,7 +34,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**AppConfigInfoDTO**
+**string**
 
 ### Authorization
 
@@ -43,7 +43,7 @@ This endpoint does not need any parameter.
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 
 ### HTTP response details

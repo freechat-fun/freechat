@@ -1,8 +1,15 @@
-import { Fragment, MouseEventHandler, forwardRef, useState } from 'react';
+import {
+  Fragment,
+  MouseEventHandler,
+  forwardRef,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
   Chip,
+  CircularProgress,
   Divider,
   IconButton,
   Sheet,
@@ -33,6 +40,8 @@ import {
   ArticleRounded,
   ContentCopyRounded,
   ReplayRounded,
+  VolumeOffRounded,
+  VolumeUpRounded,
 } from '@mui/icons-material';
 
 type BubbleContainerProps = SheetProps & {
@@ -104,7 +113,10 @@ export default function ChatBubble(props: ChatBubbleProps) {
 
   const [copied, setCopied] = useState(false);
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const context = session?.context;
   const sender = session?.character;
@@ -134,8 +146,54 @@ export default function ChatBubble(props: ChatBubbleProps) {
     }
   }
 
-  function getServiceUrl(): string | undefined {
-    return apiPath ? serverUrl + apiPath : undefined;
+  function getServiceUrl(path: string): string {
+    return path ? serverUrl + path : path;
+  }
+
+  function handlePlay() {
+    if (session?.isTtsEnabled) {
+      const audioUrl = `/api/v2/tts/speak/${record.message?.messageId}`;
+
+      if (audioRef.current) {
+        // avoid icon flickering
+        const handler = setTimeout(() => setLoading(true), 200);
+
+        audioRef.current.src = getServiceUrl(audioUrl);
+        audioRef.current.oncanplay = () => {
+          clearTimeout(handler);
+          setLoading(false);
+          setSpeaking(true);
+        };
+        audioRef.current.onerror = () => {
+          clearTimeout(handler);
+          setLoading(false);
+          setSpeaking(false);
+        };
+        audioRef.current.onended = () => {
+          setLoading(false);
+          setSpeaking(false);
+        };
+        audioRef.current.onpause = () => {
+          setLoading(false);
+          setSpeaking(false);
+        };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        audioRef.current.play().catch((error: any) => {
+          clearTimeout(handler);
+          setLoading(false);
+          setSpeaking(false);
+          handleError(error);
+        });
+      }
+    }
+  }
+
+  function handleStop() {
+    if (session?.isTtsEnabled) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    }
   }
 
   return (
@@ -147,8 +205,6 @@ export default function ChatBubble(props: ChatBubbleProps) {
         gridTemplateColumns: 'auto 1fr',
         alignItems: 'center',
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <Stack
         direction="row"
@@ -173,7 +229,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
         <BubbleContainer isSent={isSent}>
           <ChatContent
             debugMode={debugMode}
-            url={getServiceUrl()}
+            url={getServiceUrl(apiPath)}
             body={JSON.stringify(record.message)}
             onFinish={onFinish}
             onError={onError}
@@ -202,35 +258,73 @@ export default function ChatBubble(props: ChatBubbleProps) {
                   {getSenderReply(content.content, debugMode)}
                 </MarkdownContent>
               )}
+              {!isSent && !apiPath && (
+                <Fragment>
+                  <Divider sx={{ mt: 1, mb: 1 }} />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {content.type === 'text' && copied ? (
+                      <Chip variant="outlined">{t('Copied!')}</Chip>
+                    ) : (
+                      <IconButton
+                        size="sm"
+                        onClick={() => {
+                          if (content.content) {
+                            navigator?.clipboard
+                              ?.writeText(
+                                getSenderReply(content.content, debugMode)
+                              )
+                              .then(() => {
+                                setCopied(true);
+                                setTimeout(() => setCopied(false), 2000);
+                              })
+                              .catch(handleError);
+                          }
+                        }}
+                      >
+                        <ContentCopyRounded fontSize="small" />
+                      </IconButton>
+                    )}
+                    {session?.isTtsEnabled && (
+                      <Fragment>
+                        {loading ? (
+                          <CircularProgress size="sm" />
+                        ) : (
+                          <IconButton
+                            size="sm"
+                            onClick={() =>
+                              speaking ? handleStop() : handlePlay()
+                            }
+                          >
+                            {speaking ? (
+                              <VolumeOffRounded fontSize="small" />
+                            ) : (
+                              <VolumeUpRounded fontSize="small" />
+                            )}
+                          </IconButton>
+                        )}
+                        <audio ref={audioRef} />
+                      </Fragment>
+                    )}
+                    <IconButton
+                      size="sm"
+                      disabled={loading}
+                      onClick={() => onReplay?.()}
+                    >
+                      <ReplayRounded fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Fragment>
+              )}
               {debugMode && ext && (
                 <Fragment>
                   {tokenUsage && (
                     <Fragment>
-                      <LinePlaceholder spacing={2} />
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'flex-end',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {content.type === 'text' && copied ? (
-                          <Chip variant="outlined">{t('Copied!')}</Chip>
-                        ) : (
-                          <IconButton
-                            onClick={() => {
-                              if (content.content) {
-                                navigator?.clipboard
-                                  ?.writeText(content.content)
-                                  .then(() => setCopied(true))
-                                  .catch(handleError);
-                              }
-                            }}
-                          >
-                            <ContentCopyRounded fontSize="small" />
-                          </IconButton>
-                        )}
-                      </Box>
                       <Divider sx={{ mt: 1, mb: 1 }}>
                         {t('Token Usage')}
                       </Divider>
@@ -281,15 +375,6 @@ export default function ChatBubble(props: ChatBubbleProps) {
             </BubbleContainer>
           ))}
         </Fragment>
-      )}
-      {!isSent && !apiPath && (
-        <IconButton
-          size="sm"
-          onClick={() => onReplay?.()}
-          sx={{ visibility: isHovered ? 'visible' : 'hidden' }}
-        >
-          <ReplayRounded fontSize="small" />
-        </IconButton>
       )}
     </Box>
   );

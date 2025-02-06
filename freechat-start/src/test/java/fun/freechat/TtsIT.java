@@ -27,34 +27,34 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TtsIT extends AbstractIntegrationTest {
-    private static final String SPEAKER_WAV_NAME = "sample-16k-for-ttsIT.wav";
+    private static final String VOICE_FILENAME = "voice-for-ttsIT.mp3";
     @Value("${tts.baseUrl}")
     private String baseUri;
     @Autowired
     private TtsService ttsService;
     private String customVoiceApi;
     private final Tika tika = new Tika();
-    private static Path speakerWav;
+    private static Path speakerFilename;
 
     @BeforeEach
     public void setUp() {
-        customVoiceApi = baseUri + "/speaker/wav";
+        customVoiceApi = baseUri + "/speaker/mp3";
     }
 
     @BeforeAll
     public static void setUpForAll() throws IOException {
         Path tempDir = Files.createTempDirectory("voice");
-        speakerWav = tempDir.resolve(SPEAKER_WAV_NAME);
+        speakerFilename = tempDir.resolve(VOICE_FILENAME);
         try (InputStream inputStream =
-                     AbstractIntegrationTest.class.getResourceAsStream("/sample-16k.wav")) {
-            Files.copy(Objects.requireNonNull(inputStream), speakerWav);
+                     AbstractIntegrationTest.class.getResourceAsStream("/voice.mp3")) {
+            Files.copy(Objects.requireNonNull(inputStream), speakerFilename);
         }
     }
 
     @AfterAll
     public static void cleanUpForAll() {
         try {
-            Files.delete(speakerWav);
+            Files.delete(speakerFilename);
         } catch (IOException ignored) {
             // ignored
         }
@@ -100,17 +100,18 @@ class TtsIT extends AbstractIntegrationTest {
 
     @Test
     void should_play_sample_by_custom_voice() throws IOException, ExecutionException, InterruptedException, TimeoutException {
-        testClient.get().uri("/api/v2/public/tts/play/sample/wav/" + SPEAKER_WAV_NAME)
+        testClient.get().uri("/api/v2/public/tts/play/sample/wav/" + VOICE_FILENAME)
                 .accept(MediaType.valueOf(ttsService.mimeType()))
                 .exchange()
                 .expectStatus().isNotFound();
 
-        assertThat(HttpUtils.upload(customVoiceApi, speakerWav, null)).isNotBlank();
+        String voiceKey = HttpUtils.upload(customVoiceApi, speakerFilename, null);
+        assertThat(voiceKey).isNotBlank();
 
         CompletableFuture<byte[]> futureAnswer = new CompletableFuture<>();
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
-            testClient.get().uri("/api/v2/public/tts/play/sample/wav/" + SPEAKER_WAV_NAME)
+            testClient.get().uri("/api/v2/public/tts/play/sample/wav/" + voiceKey)
                     .accept(MediaType.valueOf(ttsService.mimeType()))
                     .exchange()
                     .expectStatus().isOk()
@@ -131,6 +132,6 @@ class TtsIT extends AbstractIntegrationTest {
         assertThat(audioData).isNotNull();
         assertThat(tika.detect(audioData)).isEqualTo("audio/mpeg");
 
-        HttpUtils.delete(customVoiceApi + "/sample-16k.wav");
+        HttpUtils.delete(customVoiceApi + voiceKey);
     }
 }

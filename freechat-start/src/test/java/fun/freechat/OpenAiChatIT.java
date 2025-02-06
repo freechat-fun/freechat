@@ -801,7 +801,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
-                .bodyValue(bodyFrom("/sample-16k.wav"))
+                .bodyValue(bodyFrom("/voice.mp3"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
@@ -814,7 +814,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
-                .bodyValue(bodyFrom("/sample-16k.wav"))
+                .bodyValue(bodyFrom("/voice.mp3"))
                 .exchange()
                 .expectStatus().isForbidden();
 

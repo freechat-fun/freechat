@@ -22,7 +22,13 @@ export class PromptAiParamDTO {
     * Complete input content, priority: prompt > promptTemplate > promptRef
     */
     'prompt'?: string;
+    /**
+    * Prompt template content
+    */
     'promptTemplate'?: PromptTemplateDTO;
+    /**
+    * Prompt reference information
+    */
     'promptRef'?: PromptRefDTO;
     /**
     * Model call parameters, the actual supported fields are related to modelId, depending on the model provider, specific fields can refer to: OpenAiParamDTO, QwenParamDTO
