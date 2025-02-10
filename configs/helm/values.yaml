@@ -197,6 +197,10 @@ milvus:
       password: ''
       rootPassword: ''
       token: ''
+  minio:
+    persistence:
+      annotations:
+        helm.sh/resource-policy: keep
   etcd:
     pdb:
       minAvailable: ''
@@ -235,6 +239,8 @@ grafana:
     user: freechat
     password: ''
   persistence:
+    annotations:
+      helm.sh/resource-policy: keep
     size: 8Gi
   ingress:
     enabled: true
@@ -245,6 +251,10 @@ grafana:
       cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
 grafana-loki:
   enabled: false
+  compactor:
+    persistence:
+      annotations:
+        helm.sh/resource-policy: keep
   promtail:
     containerPorts:
       http: 9080
