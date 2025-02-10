@@ -78,14 +78,14 @@ Create the name of the service account to use
 
 {{- define "helpers.storageClass" -}}
 {{- $storageClass := "-" -}}
-{{- if .Values.persistence -}}
-{{- if .Values.persistence.storageClass -}}
-{{- $storageClass = .Values.persistence.storageClass -}}
+{{- if .Values.backend.persistence -}}
+{{- if .Values.backend.persistence.storageClass -}}
+{{- $storageClass = .Values.backend.persistence.storageClass -}}
 {{- end -}}
 {{- end -}}
 {{- if .Values.global -}}
-{{- if .Values.global.storageClass -}}
-{{- $storageClass = .Values.global.storageClass -}}
+{{- if .Values.global.defaultStorageClass -}}
+{{- $storageClass = .Values.global.defaultStorageClass -}}
 {{- end -}}
 {{- end -}}
 {{- if $storageClass -}}

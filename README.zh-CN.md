@@ -75,17 +75,11 @@ FreeChat 致力于云原生的设计理念。若您有 Kubernetes 集群，可�
 3. 切换到 `scripts/` 目录。
 4. 如有需要，执行 `install-in.sh` 在 Kubernetes 集群上部署 `ingress-nginx`。
 5. 如有需要，运行 `install-cm.sh` 在 Kubernetes 集群上部署 `cert-manager`，它能自动为 `ingress.hosts` 中指定的域名颁发证书。
-6. 运行 `install-pvc.sh` 安装 PersistentVolumeClaim 资源。
-
-    > 默认情况下，FreeChat 采用访问“本地文件系统”的方式操作文件。你可能想要使用云上的高可用分布式存储。作为面向云原生设计的系统，我们建议通过 Kubernetes 的 CSI 来对接，避免单独适配每个云平台的存储产品。多数云服务商为 Kubernetes 提供了云存储驱动，并预定义了一系列的 StorageClass 资源。请根据您的实际需要选择合适的配置，并配置到 Helm 的 `global.storageClass` 选项。
-    >
-    > *将来，FreeChat 可能会重构为直接使用 MinIO 的 APIs，因为它现在已经作为依赖项被安装到了 Kubernetes 集群中（服务于 Milvus）。*
-
-7. 执行 `install.sh` 脚本来安装 FreeChat 及其依赖项。
-8. FreeChat 的目标是提供 Open API 服务。如果您喜欢 [freechat.fun](https://freechat.fun) 的交互体验，请运行 `install-web.sh` 来部署前端应用。
-9. 执行 `restart.sh` 以重启服务。
-10. 若您修改了任何 Helm 配置文件，请使用 `upgrade.sh` 进行相应的 Kubernetes 资源更新。
-11. 要移除特定资源，请运行与您想要卸载的资源对应的 `uninstall*.sh` 脚本。
+6. 执行 `install.sh` 脚本来安装 FreeChat 及其依赖项。
+7. FreeChat 的目标是提供 Open API 服务。如果您喜欢 [freechat.fun](https://freechat.fun) 的交互体验，请运行 `install-web.sh` 来部署前端应用。
+8. 执行 `restart.sh` 以重启服务。
+9. 若您修改了任何 Helm 配置文件，请使用 `upgrade.sh` 进行相应的 Kubernetes 资源更新。
+10. 要移除特定资源，请运行与您想要卸载的资源对应的 `uninstall*.sh` 脚本。
 
 作为云原生应用，FreeChat 所依赖的服务均通过 helm repository 获取并部署到您的集群中。
 

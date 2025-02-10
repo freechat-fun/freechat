@@ -9,7 +9,6 @@ helm template --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} --create-name
   --set-file mysql.initdbScripts.2-data\\.sql=${PROJECT_PATH}/${DAL_MODULE}/src/main/resources/sql/data.sql \
   --set backend.enabled=true \
   --set frontend.enabled=true \
-  --set persistence.enabled=true \
   --set mysql.enabled=true \
   --set redis.enabled=true \
   --set milvus.enabled=true \

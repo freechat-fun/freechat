@@ -75,17 +75,11 @@ FreeChat is dedicated to the principles of cloud-native design. If you have a Ku
 3. Switch to the `scripts/` directory.
 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster.
 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`.
-6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.
-
-    > By default, FreeChat operates files by accessing the "local file system." You may want to use high-availability distributed storage in the cloud. As a cloud-native-designed system, we recommend interfacing through Kubernetes CSI to avoid individually adapting storage products for each cloud platform. Most cloud service providers offer cloud storage drivers for Kubernetes, with a series of predefined StorageClass resources. Please choose the appropriate configuration according to your actual needs and set it in Helm's `global.storageClass` option.
-    > 
-    > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*
-
-7. Run `install.sh` script to install FreeChat and its dependencies.
-8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application.
-9. Run `restart.sh` to restart the service.
-10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources.
-11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.
+6. Run `install.sh` script to install FreeChat and its dependencies.
+7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application.
+8. Run `restart.sh` to restart the service.
+9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources.
+10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.
 
 As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.
 

@@ -1,0 +1,21 @@
+{{- if and .Values.backend.enabled .Values.backend.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "helpers.fullname" . }}-pvc
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+  {{- if or .Values.backend.persistence.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "helpers.tplvalues.merge" ( dict "values" ( list .Values.backend.persistence.annotations .Values.commonAnnotations ) "context" . ) }}
+  annotations: {{- include "helpers.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+  {{- range .Values.backend.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.backend.persistence.size | quote }}
+  {{- include "helpers.storageClass" . | nindent 2 }}
+{{- end }}

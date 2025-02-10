@@ -9,6 +9,5 @@ helm upgrade --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} -f ${values_ya
   --set-file mysql.initdbScripts.2-data\\.sql=${PROJECT_PATH}/${DAL_MODULE}/src/main/resources/sql/data.sql \
   --set backend.enabled=true \
   --set frontend.enabled=false \
-  --set persistence.enabled=false \
   ${ARGS[*]} \
   ${PROJECT_NAME} ${HELM_CONFIG_HOME}

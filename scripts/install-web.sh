@@ -14,6 +14,5 @@ helm install --kubeconfig ${KUBE_CONFIG} --namespace ${NAMESPACE} --create-names
   --set kube-state-metrics.enabled=false \
   --set backend.enabled=false \
   --set frontend.enabled=true \
-  --set persistence.enabled=false \
   ${ARGS[*]} \
   ${PROJECT_NAME}-web ${HELM_CONFIG_HOME}

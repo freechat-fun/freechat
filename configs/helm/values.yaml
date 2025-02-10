@@ -60,6 +60,13 @@ backend:
             pathType: Prefix
     tls:
       enabled: true
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    annotations:
+      helm.sh/resource-policy: keep
+    size: 8Gi
   pdb:
     create: true
     minAvailable: ''
@@ -260,9 +267,5 @@ grafana-loki:
       http: 9080
 kube-state-metrics:
   enabled: false
-persistence:
-  enabled: false
-  accessModes: [ ReadWriteOnce ]
-  storage: 8Gi
 serviceAccount:
   create: true
