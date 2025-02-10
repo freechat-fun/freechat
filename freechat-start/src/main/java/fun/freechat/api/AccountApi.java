@@ -4,7 +4,6 @@ import fun.freechat.api.dto.ApiTokenInfoDTO;
 import fun.freechat.api.dto.UserBasicInfoDTO;
 import fun.freechat.api.dto.UserDetailsDTO;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.api.util.ConfigUtils;
 import fun.freechat.api.util.FileUtils;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysApiTokenService;
@@ -26,7 +25,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,9 +41,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
-import static fun.freechat.api.util.ConfigUtils.*;
+import static fun.freechat.api.util.ConfigUtils.AVATAR_MAX_COUNT_KEY;
+import static fun.freechat.api.util.ConfigUtils.AVATAR_MAX_SIZE_KEY;
 import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 
 @RestController
@@ -213,9 +220,8 @@ public class AccountApi {
             HttpServletRequest request,
             @Parameter(description = "User picture", style = ParameterStyle.FORM) @RequestParam("file") @NotNull
             MultipartFile file) {
-        Properties properties = runtimeConfig.getProperties();
-        long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
-        int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
+        long maxSize = runtimeConfig.getLong(AVATAR_MAX_SIZE_KEY);
+        int maxCount = runtimeConfig.getInt(AVATAR_MAX_COUNT_KEY);;
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);

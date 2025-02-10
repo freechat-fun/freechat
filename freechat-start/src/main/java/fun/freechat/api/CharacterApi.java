@@ -709,10 +709,8 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        Properties properties = runtimeConfig.getProperties();
-        long maxSize = ConfigUtils.getOrDefault(properties, PICTURE_MAX_SIZE_KEY, DEFAULT_PICTURE_MAX_SIZE);
-        int maxCount = ConfigUtils.getOrDefault(properties, PICTURE_MAX_COUNT_KEY, DEFAULT_PICTURE_MAX_COUNT);
-
+        long maxSize = runtimeConfig.getLong(PICTURE_MAX_SIZE_KEY);
+        int maxCount = runtimeConfig.getInt(PICTURE_MAX_COUNT_KEY);
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
@@ -806,9 +804,8 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        Properties properties = runtimeConfig.getProperties();
-        long maxSize = ConfigUtils.getOrDefault(properties, AVATAR_MAX_SIZE_KEY, DEFAULT_AVATAR_MAX_SIZE);
-        int maxCount = ConfigUtils.getOrDefault(properties, AVATAR_MAX_COUNT_KEY, DEFAULT_AVATAR_MAX_COUNT);
+        long maxSize = runtimeConfig.getLong(AVATAR_MAX_SIZE_KEY);
+        int maxCount = runtimeConfig.getInt(AVATAR_MAX_COUNT_KEY);
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
@@ -845,10 +842,8 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
             String characterUid) {
-        Properties properties = runtimeConfig.getProperties();
-        long maxSize = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_SIZE_KEY, DEFAULT_DOCUMENT_MAX_SIZE);
-        int maxCount = ConfigUtils.getOrDefault(properties, DOCUMENT_MAX_COUNT_KEY, DEFAULT_DOCUMENT_MAX_COUNT);
-
+        long maxSize = runtimeConfig.getLong(DOCUMENT_MAX_SIZE_KEY);
+        int maxCount = runtimeConfig.getInt(DOCUMENT_MAX_COUNT_KEY);
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
@@ -934,10 +929,8 @@ public class CharacterApi {
             MultipartFile file,
             @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
             String characterBackendId) {
-        Properties properties = runtimeConfig.getProperties();
-        long maxSize = ConfigUtils.getOrDefault(properties, VOICE_MAX_SIZE_KEY, DEFAULT_VOICE_MAX_SIZE);
-        int maxCount = ConfigUtils.getOrDefault(properties, VOICE_MAX_COUNT_KEY, DEFAULT_VOICE_MAX_COUNT);
-
+        long maxSize = runtimeConfig.getLong(VOICE_MAX_SIZE_KEY);
+        int maxCount = runtimeConfig.getInt(VOICE_MAX_COUNT_KEY);
 
         if (file.getSize() > maxSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);

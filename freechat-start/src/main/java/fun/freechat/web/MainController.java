@@ -24,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 
 import static fun.freechat.api.util.ConfigUtils.WEB_VERSION_KEY;
 
@@ -72,8 +71,7 @@ public class MainController {
         }
 
         String script = "/assets/index.js";
-        Properties properties = runtimeConfig.getProperties();
-        String webVersion = properties.getProperty(WEB_VERSION_KEY);
+        String webVersion = runtimeConfig.get(WEB_VERSION_KEY);
 
         if (StringUtils.isNotBlank(webVersion)) {
             script = "/assets/index-" + webVersion + ".js";

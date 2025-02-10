@@ -27,4 +27,10 @@ public interface RuntimeConfig {
     default String get(String key) {
         return getProperties().getProperty(key);
     }
+    default long getLong(String key) {
+        return Long.parseLong(get(key));
+    }
+    default int getInt(String key) {
+        return Integer.parseInt(get(key));
+    }
 }
