@@ -79,4 +79,8 @@ embedding:
     {{- end }}
     {{- end }}
     {{- end }}
+{{- with .Values.tts }}
+tts:
+  baseUrl: {{ default "http://localhost:5002" .baseUrl }}
+{{- end }}
 {{ end }}

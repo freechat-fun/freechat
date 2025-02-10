@@ -216,6 +216,8 @@ milvus:
       tls: true
       annotations:
         cert-manager.io/cluster-issuer: freechat-letsencrypt-http01
+tts:
+  baseUrl: https://tts.freechat.fun
 prometheus:
   enabled: false
   server:
