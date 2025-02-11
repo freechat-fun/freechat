@@ -90,10 +90,10 @@ spec:
               mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/config
             - name: config-runtime
               mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/config.run
-            - name: persistence
+            - name: storage
               mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/logs
               subPath: logs
-            - name: persistence
+            - name: storage
               mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/data
               subPath: data
         {{- if (index .Values "grafana-loki" "enabled") }}
@@ -107,7 +107,7 @@ spec:
               mountPath: /etc/promtail
             - name: promtail-positions
               mountPath: /run/promtail
-            - name: persistence
+            - name: storage
               mountPath: /home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/logs
               subPath: logs
         {{- end }}
@@ -124,9 +124,14 @@ spec:
             items:
               - key: application-runtime.properties
                 path: application-runtime.properties
-        - name: persistence
+        {{- if .Values.backend.persistence.enabled }}
+        - name: storage
           persistentVolumeClaim:
             claimName: {{ include "helpers.fullname" . }}-pvc
+        {{- else }}
+        - name: storage
+          emptyDir: {}
+        {{- end }}
         {{- if (index .Values "grafana-loki" "enabled") }}
         - name: promtail-config
           configMap:
