@@ -112,6 +112,21 @@ export function getSenderReply(
   debugMode: boolean,
   noLinks: boolean = false
 ): string {
+  const preHandleMessage = (message: string) => {
+    const matches = message.match(/<think>([\s\S]*?)<\/think>/g);
+    let preProcessedMessage = message;
+
+    if (matches) {
+      matches.forEach((match) => {
+        const content = match.replace(/<think>([\s\S]*?)<\/think>/, '$1').trim();
+        const processedContent = debugMode ? `> ${content.replace(/\n\n/g, '\n\n> ')}` : '';
+        preProcessedMessage = preProcessedMessage.replace(match, processedContent);
+      });
+    };
+
+    return preProcessedMessage;
+  };
+
   const handleLine = (line: string) => {
     if (debugMode) {
       return line;
@@ -130,7 +145,8 @@ export function getSenderReply(
     return matches?.[1] ?? text;
   };
 
-  const lines = message.split(/\r?\n/);
+  const preProcessedMessage = preHandleMessage(message);
+  const lines = preProcessedMessage.split(/\r?\n/);
   const processedLines = lines.map((line) => handleLine(line));
   let reply = processedLines.join('\n').trim();
   if (reply.startsWith('"') && reply.endsWith('"')) {

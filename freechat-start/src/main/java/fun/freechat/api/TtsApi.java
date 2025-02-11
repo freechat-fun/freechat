@@ -354,7 +354,9 @@ public class TtsApi {
     }
 
     private static String getDisplayMessage(String message) {
-        String[] lines = message.split("\\r?\\n"); // 分割行
+        String[] lines = message.replaceAll("<think>[\\s\\S]*?<\\/think>", "")
+                .trim()
+                .split("\\r?\\n");
         StringBuilder processedReply = new StringBuilder();
 
         for (String line : lines) {
