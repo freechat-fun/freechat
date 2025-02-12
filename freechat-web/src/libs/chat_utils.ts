@@ -113,16 +113,23 @@ export function getSenderReply(
   noLinks: boolean = false
 ): string {
   const preHandleMessage = (message: string) => {
-    const matches = message.match(/<think>([\s\S]*?)<\/think>/g);
+    const matches = message.match(/<think\b[^>]*>([\s\S]*?)<\/think>/gi);
     let preProcessedMessage = message;
 
     if (matches) {
       matches.forEach((match) => {
-        const content = match.replace(/<think>([\s\S]*?)<\/think>/, '$1').trim();
-        const processedContent = debugMode ? `> ${content.replace(/\n\n/g, '\n\n> ')}` : '';
-        preProcessedMessage = preProcessedMessage.replace(match, processedContent);
+        const content = match
+          .replace(/<think\b[^>]*>([\s\S]*?)<\/think>/i, '$1')
+          .trim();
+        const processedContent = debugMode
+          ? `> ${content.replace(/\n\n/g, '\n\n> ')}`
+          : '';
+        preProcessedMessage = preProcessedMessage.replace(
+          match,
+          processedContent
+        );
       });
-    };
+    }
 
     return preProcessedMessage;
   };

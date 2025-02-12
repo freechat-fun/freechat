@@ -49,7 +49,7 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
 
     @PostConstruct
     public void init() {
-        embeddingStores = new HashMap<>(EmbeddingStoreType.values().length);
+        embeddingStores = HashMap.newHashMap(EmbeddingStoreType.values().length);
         for (EmbeddingStoreType type : EmbeddingStoreType.values()) {
             MilvusEmbeddingStore origEmbeddingStore = MilvusEmbeddingStore.builder()
                     .uri(url)
