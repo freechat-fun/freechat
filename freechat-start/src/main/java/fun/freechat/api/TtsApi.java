@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
 import fun.freechat.api.util.AccountUtils;
+import fun.freechat.api.util.EmojiRegexUtil;
 import fun.freechat.model.User;
 import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatMessageRecord;
@@ -354,7 +355,8 @@ public class TtsApi {
     }
 
     private static String getDisplayMessage(String message) {
-        String[] lines = message.replaceAll("(?si)<think\\b[^>]*>.*?</think>", "")
+        String[] lines = EmojiRegexUtil.removeEmojis(message)
+                .replaceAll("(?si)<think\\b[^>]*>.*?</think>", "")
                 .trim()
                 .split("\\r?\\n");
         StringBuilder processedReply = new StringBuilder();
