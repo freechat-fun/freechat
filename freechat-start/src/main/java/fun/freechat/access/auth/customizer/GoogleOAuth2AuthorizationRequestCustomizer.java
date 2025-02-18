@@ -17,9 +17,9 @@ public class GoogleOAuth2AuthorizationRequestCustomizer implements BiConsumer<OA
 
     @Override
     public void accept(OAuth2AuthorizationRequest.Builder builder, Boolean isBinding) {
-        Map<String, Object> extraParams = new HashMap<>(3);
+        Map<String, Object> extraParams = HashMap.newHashMap(3);
         extraParams.put("include_granted_scopes", true);
-        if (isBinding) {
+        if (Boolean.TRUE.equals(isBinding)) {
             extraParams.put("access_type", "offline");
             extraParams.put("prompt", "consent");
         } else {

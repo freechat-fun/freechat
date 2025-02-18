@@ -43,8 +43,8 @@ public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2Auth
 
     private boolean isBinding() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes instanceof ServletRequestAttributes) {
-            HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+        if (requestAttributes instanceof ServletRequestAttributes attributes) {
+            HttpServletRequest request = attributes.getRequest();
             return "1".equals(request.getParameter(BIND_MODE_PARAMETER_NAME));
         }
         return false;
