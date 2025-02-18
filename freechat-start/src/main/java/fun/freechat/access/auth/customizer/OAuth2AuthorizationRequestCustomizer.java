@@ -21,7 +21,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -33,7 +32,7 @@ public class OAuth2AuthorizationRequestCustomizer implements Consumer<OAuth2Auth
     private static final String BIND_MODE_PARAMETER_NAME = "bind";
     private static final String CACHED_AUTHENTICATION_PREFIX =
             OAuth2AuthorizationRequestCustomizer.class.getName() + "-";
-    private static final Duration CACHED_AUTHENTICATION_TIMEOUT = Duration.of(10, ChronoUnit.MINUTES);
+    private static final Duration CACHED_AUTHENTICATION_TIMEOUT = Duration.ofMinutes(10);
     private static final StringKeyGenerator DEFAULT_STATE_GENERATOR =
             new Base64StringKeyGenerator(Base64.getUrlEncoder());
 
