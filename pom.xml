@@ -24,7 +24,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!--dependency versions-->
-        <spring-boot.version>3.4.2</spring-boot.version>
+        <spring-boot.version>3.4.3</spring-boot.version>
         <springdoc.version>2.8.5</springdoc.version>
         <lombok.version>1.18.36</lombok.version>
         <mybatis.version>3.5.19</mybatis.version>
