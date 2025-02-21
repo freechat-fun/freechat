@@ -46,7 +46,7 @@
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <mybatis-generator-maven-plugin.version>1.4.2</mybatis-generator-maven-plugin.version>
-        <spotless-maven-plugin.version>2.44.2</spotless-maven-plugin.version>
+        <spotless-maven-plugin.version>2.44.3</spotless-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
