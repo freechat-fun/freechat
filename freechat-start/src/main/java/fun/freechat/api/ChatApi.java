@@ -2,6 +2,7 @@ package fun.freechat.api;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
+import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
@@ -477,7 +478,7 @@ public class ChatApi {
                 // add greeting message
                 String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
                 if (StringUtils.isNotBlank(greeting)) {
-                    AiMessage greetingMessage = AiMessage.from(greeting);
+                    SystemMessage greetingMessage = SystemMessage.from(greeting);
                     firstRecord.setMessage(greetingMessage);
                     records.addFirst(firstRecord);
                     ++end;
@@ -534,7 +535,7 @@ public class ChatApi {
                 // add greeting message
                 String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
                 if (StringUtils.isNotBlank(greeting)) {
-                    AiMessage greetingMessage = AiMessage.from(greeting);
+                    SystemMessage greetingMessage = SystemMessage.from(greeting);
                     firstRecord.setMessage(greetingMessage);
                     records.addFirst(firstRecord);
                     ++end;

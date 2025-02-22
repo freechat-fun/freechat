@@ -5,9 +5,14 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.EmojiRegexUtil;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.ChatContext;
 import fun.freechat.model.User;
+import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.chat.ChatMemoryService;
 import fun.freechat.service.chat.ChatMessageRecord;
+import fun.freechat.service.chat.ChatService;
 import fun.freechat.service.chat.TtsService;
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.enums.TtsSpeakerType;
@@ -43,6 +48,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
@@ -62,7 +68,13 @@ public class TtsApi {
     private static final int BUFFER_SIZE = 8192;
 
     @Autowired
+    private CharacterService characterService;
+    @Autowired
+    private ChatContextService chatContextService;
+    @Autowired
     private ChatMemoryService chatMemoryService;
+    @Autowired
+    private ChatService chatService;
     @Autowired
     private TtsService ttsService;
     @Autowired
@@ -128,9 +140,22 @@ public class TtsApi {
     public ResponseEntity<StreamingResponseBody> speakMessage(
             @Parameter(description = "The message id") @PathVariable("messageId") @Positive Long messageId) {
         ChatMessageRecord messageRecord = chatMemoryService.get(messageId);
-        if (messageRecord == null ||
-                messageRecord.getMessage() == null ||
-                messageRecord.getMessage().type() != ChatMessageType.AI) {
+        if (messageRecord == null || messageRecord.getMessage() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
+        }
+
+        ChatMessageType messageType = messageRecord.getMessage().type();
+        if (messageType == ChatMessageType.SYSTEM) {
+            Optional.of(messageRecord.getChatId())
+                    .map(chatContextService::get)
+                    .map(ChatContext::getBackendId)
+                    .map(characterService::getBackendCharacterUid)
+                    .map(characterService::summaryByUid)
+                    .map(CharacterInfo::getGreeting)
+                    .filter(StringUtils::isNotBlank)
+                    .map(AiMessage::from)
+                    .ifPresent(messageRecord::setMessage);
+        } else if (messageType != ChatMessageType.AI) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
         }
 
