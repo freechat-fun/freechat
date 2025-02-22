@@ -6,8 +6,7 @@ Chat message record
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**message** | [**ChatMessageDTO**](ChatMessageDTO.md) |  | [optional] 
-**message_id** | **int** | Message identifier | [optional] 
+**message** | [**ChatMessageDTO**](ChatMessageDTO.md) | Message | [optional] 
 **gmt_create** | **datetime** | Creation time | [optional] 
 **ext** | **str** | Additional information | [optional] 
 

@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   description: "# FreeChat: Create Friends for Yourself with AI\n\nEnglish | [中文版\
     ](https://github.com/freechat-fun/freechat/blob/main/README.zh-CN.md)\n\n## Introduction\n\
@@ -13,58 +13,48 @@ info:
     - Extensively employs distributed technologies and caching to support **high concurrency**\
     \ access.\n- Provides flexible character customization options, supports direct\
     \ intervention in prompts, and supports **configuring multiple backends for each\
-    \ character**.\n- **Offers a comprehensive range of Open APIs**, with more than\
-    \ 180 interfaces and provides java/python/typescript SDKs. These interfaces enable\
-    \ easy construction of systems for end-users.\n- Supports setting **RAG** (Retrieval\
-    \ Augmented Generation) for characters.\n- Supports **long-term memory, preset\
-    \ memory** for characters.\n- Supports characters evoking **proactive chat**.\n\
-    - Supports setting **quota limits** for characters.\n- Supports characters **importing\
-    \ and exporting**.\n- Supports **character-to-character chats**.\n- Supports individual\
-    \ **debugging and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n\
-    ![Home Page Snapshot](/img/snapshot_w1.jpg)\n#### Development View\n![Development\
-    \ View Snapshot](/img/snapshot_w2.jpg)\n#### Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\
-    \n### On Mobile\n![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
+    \ character**.\n- **Offers a comprehensive range of Open APIs**, with [more than\
+    \ 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript\
+    \ SDKs. These methods enable easy construction of systems for end-users.\n- Supports\
+    \ setting **RAG** (Retrieval Augmented Generation) for characters.\n- Supports\
+    \ **long-term memory, preset memory** for characters.\n- Supports characters evoking\
+    \ **proactive chat**.\n- Supports characters replies with **mixed text and image\
+    \ information**.\n- Supports setting **quota limits** for characters.\n- Supports\
+    \ characters **importing and exporting**.\n- Supports **character-to-character\
+    \ chats**.\n- Supports **character voices**.\n- Supports individual **debugging\
+    \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
+    \ Snapshot](/img/snapshot_w1.jpg)\n#### Development View\n![Development View Snapshot](/img/snapshot_w2.jpg)\n\
+    #### Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\n### On Mobile\n\
+    ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
     \ />\n![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
     \ --> F(Backend-n...)\n    E --> G(Message Window)\n    E --> H(Long Term Memory\
-    \ Settings)\n    E --> I(Quota Limit)\n    E --> J(Chat Prompt Task)\n    E -->\
-    \ K(Greeting Prompt Task)\n    E --> L(Moderation Settings)\n    J --> M(Model\
-    \ & Parameters)\n    J --> N(API Keys)\n    J --> O(Prompt Refence)\n    J -->\
-    \ P(Tool Specifications)\n    O --> Q(Template)\n    O --> R(Variables)\n    O\
-    \ --> S(Version)\n    O --> T(...)\n    style K stroke-dasharray: 5, 5\n    style\
-    \ L stroke-dasharray: 5, 5\n    style P stroke-dasharray: 5, 5\n```\n\nAfter setting\
-    \ up an unified persona and knowledge for a character, different backends can\
-    \ be configured. For example, different model may be adopted for different users\
-    \ based on cost considerations.\n\n## How to Play\n### Online Website\nYou can\
-    \ visit [freechat.fun](https://freechat.fun) to experience FreeChat. Share your\
-    \ designed AI character!\n\n### Running in a Kubernetes Cluster\nFreeChat is dedicated\
-    \ to the principles of cloud-native design. If you have a Kubernetes cluster,\
-    \ you can deploy FreeChat to your environment by following these steps:\n\n1.\
-    \ Put the Kubernetes configuration file in the `configs/helm/` directory, named\
-    \ `kube-private.conf`.\n2. Place the Helm configuration file in the same directory,\
-    \ named `values-private.yaml`. Make sure to reference the default `values.yaml`\
-    \ and customize the variables as needed.\n3. Switch to the `scripts/` directory.\n\
-    4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes\
-    \ cluster.\n5. If needed, run `install-cm.sh` to deploy `cert-manager` on the\
-    \ Kubernetes cluster, which automatically issues certificates for domains specified\
-    \ in `ingress.hosts`.\n6. Run `install-pvc.sh` to install PersistentVolumeClaim\
-    \ resources.\n\n    > By default, FreeChat operates files by accessing the \"\
-    local file system.\" You may want to use high-availability distributed storage\
-    \ in the cloud. As a cloud-native-designed system, we recommend interfacing through\
-    \ Kubernetes CSI to avoid individually adapting storage products for each cloud\
-    \ platform. Most cloud service providers offer cloud storage drivers for Kubernetes,\
-    \ with a series of predefined StorageClass resources. Please choose the appropriate\
-    \ configuration according to your actual needs and set it in Helm's `global.storageClass`\
-    \ option.\n    > \n    > *In the future, FreeChat may be refactored to use MinIO's\
-    \ APIs directly, as it is now installed in the Kubernetes cluster as a dependency\
-    \ (serving Milvus).*\n\n7. Run `install.sh` script to install FreeChat and its\
-    \ dependencies.\n8. FreeChat aims to provide Open API services. If you like the\
-    \ interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh`\
-    \ to deploy the front-end application.\n9. Run `restart.sh` to restart the service.\n\
-    10. If you modified any Helm configuration files, use `upgrade.sh` to update the\
-    \ corresponding Kubernetes resources.\n11. To remove specific resources, run the\
-    \ `uninstall*.sh` script corresponding to the resource you want to uninstall.\n\
+    \ Settings)\n    E --> I(Quota Limit)\n    E --> J(Chat/Greeting Prompt Tasks)\n\
+    \    E --> P(Album/TTS Tools)\n    E --> L(Moderation Settings)\n    J --> M(Model\
+    \ & Parameters)\n    J --> N(API Keys)\n    J --> O(Prompt Reference)\n    O -->\
+    \ R(Template)\n    O --> S(Variables)\n    O --> T(Version)\n    O --> U(...)\n\
+    \    style L stroke-dasharray: 5, 5\n```\n\nAfter setting up an unified persona\
+    \ and knowledge for a character, different backends can be configured. For example,\
+    \ different model may be adopted for different users based on cost considerations.\n\
+    \n## How to Play\n### Online Website\nYou can visit [freechat.fun](https://freechat.fun)\
+    \ to experience FreeChat. Share your designed AI character!\n\n### Running in\
+    \ a Kubernetes Cluster\nFreeChat is dedicated to the principles of cloud-native\
+    \ design. If you have a Kubernetes cluster, you can deploy FreeChat to your environment\
+    \ by following these steps:\n\n1. Put the Kubernetes configuration file in the\
+    \ `configs/helm/` directory, named `kube-private.conf`.\n2. Place the Helm configuration\
+    \ file in the same directory, named `values-private.yaml`. Make sure to reference\
+    \ the default `values.yaml` and customize the variables as needed.\n3. Switch\
+    \ to the `scripts/` directory.\n4. If needed, run `install-in.sh` to deploy `ingress-nginx`\
+    \ on the Kubernetes cluster.\n5. If needed, run `install-cm.sh` to deploy `cert-manager`\
+    \ on the Kubernetes cluster, which automatically issues certificates for domains\
+    \ specified in `ingress.hosts`.\n6. Run `install.sh` script to install FreeChat\
+    \ and its dependencies.\n7. FreeChat aims to provide Open API services. If you\
+    \ like the interactive experience of [freechat.fun](https://freechat.fun), run\
+    \ `install-web.sh` to deploy the front-end application.\n8. Run `restart.sh` to\
+    \ restart the service.\n9. If you modified any Helm configuration files, use `upgrade.sh`\
+    \ to update the corresponding Kubernetes resources.\n10. To remove specific resources,\
+    \ run the `uninstall*.sh` script corresponding to the resource you want to uninstall.\n\
     \nAs a cloud-native application, the services FreeChat relies on are obtained\
     \ and deployed to your cluster through the helm repository.\n\nIf you prefer cloud\
     \ services with SLA (Service Level Agreement) guarantees, simply make the relevant\
@@ -92,7 +82,7 @@ info:
     \ services first but do not need to run the container for the FreeChat application\
     \ itself. You can execute the `scripts/local-deps.sh` script to start services\
     \ like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。\
-    Make sure you have set the following startup VM options:\n```shell\n-Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml\
+    Make sure you have set the following startup VM options:\n```shell\n-Dspring.config.location=classpath:/application.yml\
     \ \\\n-DAPP_HOME=local-data/freechat \\\n-Dspring.profiles.active=local\n```\n\
     \n### Use SDK\n#### Java\n- **Dependency**\n```xml\n<dependency>\n  <groupId>fun.freechat</groupId>\n\
     \  <artifactId>freechat-sdk</artifactId>\n  <version>${freechat-sdk.version}</version>\n\
@@ -144,7 +134,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.2.0
+  version: 2.3.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -154,10 +144,15 @@ tags:
   name: App Meta (for admin)
 - description: "System encryption service, callable only by super administrators."
   name: Encryption Manager (for admin)
+- description: "Manage tags, callable only by super administrators and business administrators."
+  name: "Tag Manager (for biz, admin)"
 - description: "Application configuration information, viewable only by super administrators."
   name: App Config (for admin)
 - description: "Manage users, callable only by super administrators."
   name: Account Manager (for admin)
+- description: "Manage model information, callable only by super administrators and\
+    \ business administrators."
+  name: "AI Manager (for biz, admin)"
 paths:
   /api/v2/rag/task/{taskId}:
     delete:
@@ -948,6 +943,32 @@ paths:
       - Character
       x-accepts:
       - application/json
+  /api/v2/biz/admin/ai/model:
+    put:
+      description: "Create or update model information. If no modelId is passed or\
+        \ the modelId does not exist in the database, create a new one (keep the same\
+        \ modelId); otherwise update. Return modelId if successful."
+      operationId: createOrUpdateAiModelInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiModelInfoUpdateDTO'
+        description: Model information
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Create or Update Model Information
+      tags:
+      - "AI Manager (for biz, admin)"
+      x-content-type: application/json
+      x-accepts:
+      - text/plain
   /api/v2/ai/apikey/enable/{id}:
     put:
       description: Enable the credential information of the model provider.
@@ -2914,6 +2935,38 @@ paths:
       x-content-type: application/json
       x-accepts:
       - application/json
+  /api/v2/character/voice/{characterBackendId}:
+    post:
+      description: Upload a voice of the character.
+      operationId: uploadCharacterVoice
+      parameters:
+      - description: The characterBackendId
+        explode: false
+        in: path
+        name: characterBackendId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/uploadCharacterVoice_request'
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Upload Character Voice
+      tags:
+      - Character
+      x-content-type: multipart/form-data
+      x-accepts:
+      - text/plain
   /api/v2/character/versions/{name}:
     post:
       description: List the versions and corresponding characterIds by character name.
@@ -3455,6 +3508,88 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
+  /api/v2/biz/admin/tag/{referType}/{referId}/{tag}:
+    delete:
+      description: "Delete a tag, any tag created by anyone can be deleted."
+      operationId: deleteTag
+      parameters:
+      - description: "Tag type (prompt, agent, plugin...)"
+        explode: false
+        in: path
+        name: referType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Resource identifier of the tag
+        explode: false
+        in: path
+        name: referId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Tag content
+        explode: false
+        in: path
+        name: tag
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Tag
+      tags:
+      - "Tag Manager (for biz, admin)"
+      x-accepts:
+      - application/json
+    post:
+      description: "Create a tag, tags created by the administrator cannot be deleted\
+        \ by ordinary users."
+      operationId: createTag
+      parameters:
+      - description: "Tag type (prompt, agent, plugin...)"
+        explode: false
+        in: path
+        name: referType
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Resource identifier of the tag
+        explode: false
+        in: path
+        name: referId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Tag content
+        explode: false
+        in: path
+        name: tag
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Create Tag
+      tags:
+      - "Tag Manager (for biz, admin)"
+      x-accepts:
+      - application/json
   /api/v2/ai/apikey:
     post:
       description: Add a credential for the model service.
@@ -4057,6 +4192,48 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
+  /api/v2/tts/speak/{messageId}:
+    get:
+      description: Read out the message.
+      operationId: speakMessage
+      parameters:
+      - description: The message id
+        explode: false
+        in: path
+        name: messageId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            audio/mpeg:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/aac:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/mp3:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/wav:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/octet-stream:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+          description: OK
+      summary: Speak Message
+      tags:
+      - TTS Service
+      x-accepts:
+      - audio/aac
+      - audio/mp3
+      - audio/mpeg
+      - audio/octet-stream
+      - audio/wav
   /api/v2/rag/tasks/{characterUid}:
     get:
       description: List the RAG tasks by characterId.
@@ -4111,6 +4288,74 @@ paths:
       - Rag
       x-accepts:
       - text/plain
+  /api/v2/public/tts/play/sample/{speakerType}/{speaker}:
+    get:
+      description: Play TTS sample audio of the builtin/custom speaker.
+      operationId: playSample
+      parameters:
+      - description: The speaker type
+        explode: false
+        in: path
+        name: speakerType
+        required: true
+        schema:
+          pattern: idx|wav
+          type: string
+        style: simple
+      - description: The speaker
+        explode: false
+        in: path
+        name: speaker
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            audio/mpeg:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/aac:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/mp3:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/wav:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+            audio/octet-stream:
+              schema:
+                $ref: '#/components/schemas/StreamingResponseBody'
+          description: OK
+      summary: Play Sample Audio
+      tags:
+      - TTS Service
+      x-accepts:
+      - audio/aac
+      - audio/mp3
+      - audio/mpeg
+      - audio/octet-stream
+      - audio/wav
+  /api/v2/public/tts/builtin/speakers:
+    get:
+      description: Return builtin TTS speakers.
+      operationId: listTtsBuiltinSpeakers
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: List Builtin Speakers
+      tags:
+      - TTS Service
+      x-accepts:
+      - application/json
   /api/v2/public/tags/hot/{infoType}/{pageSize}:
     get:
       description: Get popular tags for a specified info type.
@@ -5531,6 +5776,33 @@ paths:
       - Chat
       x-accepts:
       - application/json
+  /api/v2/character/voices/{characterBackendId}:
+    get:
+      description: List voices of the character.
+      operationId: listCharacterVoices
+      parameters:
+      - description: The characterBackendId
+        explode: false
+        in: path
+        name: characterBackendId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: List Character Voices
+      tags:
+      - Character
+      x-accepts:
+      - application/json
   /api/v2/character/summary/{characterId}:
     get:
       description: Get character summary information.
@@ -6149,53 +6421,22 @@ paths:
       - App Meta (for admin)
       x-accepts:
       - application/json
-  /api/v2/admin/app/expose:
+  /api/v2/admin/app/configs/default:
     get:
-      description: This method does nothing.
-      operationId: expose
-      parameters:
-      - explode: true
-        in: query
-        name: openAiParam
-        required: true
-        schema:
-          $ref: '#/components/schemas/OpenAiParamDTO'
-        style: form
-      - explode: true
-        in: query
-        name: qwenParam
-        required: true
-        schema:
-          $ref: '#/components/schemas/QwenParamDTO'
-        style: form
+      description: Get default configuration information of the application.
+      operationId: getDefaultConfig
       responses:
         "200":
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
           description: OK
-      summary: Expose DTO definitions
-      tags:
-      - App Meta (for admin)
-      x-accepts:
-      - application/json
-  /api/v2/admin/app/configs:
-    get:
-      description: Get all configuration information of the application.
-      operationId: getAppConfigs
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppConfigInfoDTO'
-          description: OK
-      summary: Get Configurations
+      summary: Get Default Config
       tags:
       - App Config (for admin)
       x-accepts:
-      - application/json
+      - text/plain
   /api/v2/account/tokens:
     get:
       description: List currently valid tokens.
@@ -6314,6 +6555,39 @@ paths:
       - Chat
       x-accepts:
       - application/json
+  /api/v2/character/voice/{characterBackendId}/{key}:
+    delete:
+      description: Delete a voice of the character by key.
+      operationId: deleteCharacterVoice
+      parameters:
+      - description: The characterBackendId
+        explode: false
+        in: path
+        name: characterBackendId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Voice key
+        explode: false
+        in: path
+        name: key
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Character Voice
+      tags:
+      - Character
+      x-accepts:
+      - application/json
   /api/v2/character/uid/{characterUid}:
     delete:
       description: Delete character by uid. return the list of successfully deleted
@@ -6422,6 +6696,31 @@ paths:
       - Character
       x-accepts:
       - application/json
+  /api/v2/biz/admin/ai/model/{modelId}:
+    delete:
+      description: Delete model information based on modelId.
+      operationId: deleteAiModelInfo
+      parameters:
+      - description: Model identifier
+        explode: false
+        in: path
+        name: modelId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Model Information
+      tags:
+      - "AI Manager (for biz, admin)"
+      x-accepts:
+      - application/json
   /api/v2/agent/batch/delete:
     delete:
       description: "Delete multiple agents. Ensure transactionality, return the list\
@@ -6465,6 +6764,7 @@ components:
       properties:
         sourceType:
           description: "Source type: file (default) | url"
+          pattern: file|url
           type: string
         source:
           description: "Source information, url, or a key for file"
@@ -6477,7 +6777,6 @@ components:
           description: The maximum size of the overlap between segments in tokens.
           format: int32
           type: integer
-      type: object
     ChatContentDTO:
       description: Chat content
       example:
@@ -6486,13 +6785,13 @@ components:
       properties:
         type:
           description: "Chat type: text (default) | image"
+          pattern: text|image
           type: string
         content:
           description: "Chat content(for image, it might be a normal url or data url)"
           type: string
       required:
       - content
-      type: object
     ChatMessageDTO:
       description: Chat message
       example:
@@ -6504,6 +6803,7 @@ components:
           content: content
         name: name
         context: context
+        messageId: 0
         toolCalls:
         - name: name
           arguments: arguments
@@ -6514,6 +6814,7 @@ components:
       properties:
         role:
           description: "Chat role: system | assistant | user | tool_call | tool_result"
+          pattern: system|assistant|user|tool_call|tool_result
           type: string
         name:
           description: "user: Name of the user role; tool_call: Name of the called\
@@ -6534,7 +6835,10 @@ components:
           description: Contextual information in this round of conversation (the external
             RAG result can be passed in through this parameter)
           type: string
-      type: object
+        messageId:
+          description: Message identifier
+          format: int64
+          type: integer
     ChatPromptContentDTO:
       description: Prompt chat template content
       example:
@@ -6548,6 +6852,7 @@ components:
             content: content
           name: name
           context: context
+          messageId: 0
           toolCalls:
           - name: name
             arguments: arguments
@@ -6563,6 +6868,7 @@ components:
             content: content
           name: name
           context: context
+          messageId: 0
           toolCalls:
           - name: name
             arguments: arguments
@@ -6579,6 +6885,7 @@ components:
             content: content
           name: name
           context: context
+          messageId: 0
           toolCalls:
           - name: name
             arguments: arguments
@@ -6597,7 +6904,6 @@ components:
           items:
             $ref: '#/components/schemas/ChatMessageDTO'
           type: array
-      type: object
     ChatToolCallDTO:
       description: Tool call information during the conversation
       example:
@@ -6614,7 +6920,6 @@ components:
         arguments:
           description: Tool parameters
           type: string
-      type: object
     PromptUpdateDTO:
       description: Request data for updating prompt information
       example:
@@ -6643,6 +6948,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -6658,6 +6964,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -6674,6 +6981,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -6705,6 +7013,7 @@ components:
           $ref: '#/components/schemas/ChatPromptContentDTO'
         format:
           description: "Prompt format: mustache (default) | f_string"
+          pattern: mustache|f_string
           type: string
         lang:
           description: "Prompt language: en (default) | zh_CN | ..."
@@ -6724,18 +7033,15 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
-            description: "Supported model set, empty means no model limit"
             type: string
           type: array
       required:
       - name
-      type: object
     PromptRefDTO:
       description: Prompt reference information
       example:
@@ -6750,16 +7056,13 @@ components:
           type: integer
         variables:
           additionalProperties:
-            description: "Variables applied to the template, can be empty"
             type: object
           description: "Variables applied to the template, can be empty"
-          type: object
         draft:
           description: Whether to use draft content
           type: boolean
       required:
       - promptId
-      type: object
     PromptTaskDTO:
       description: Prompt task information
       example:
@@ -6789,20 +7092,18 @@ components:
           type: string
         params:
           additionalProperties:
-            description: Model call parameters
             type: object
           description: Model call parameters
-          type: object
         cron:
           description: Task scheduling configuration which compatible with Quartz
             cron format
           type: string
         status:
           description: "Task execution status: pending | running | succeeded | failed"
+          pattern: pending|running|succeeded|failed
           type: string
       required:
       - promptRef
-      type: object
     PluginUpdateDTO:
       description: Request data for updating plugin information
       example:
@@ -6849,18 +7150,15 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
-            description: "Supported model set, empty means no model limit"
             type: string
           type: array
       required:
       - name
-      type: object
     ChatUpdateDTO:
       description: Request data for updating a chat session
       example:
@@ -6908,7 +7206,6 @@ components:
           type: string
       required:
       - characterUid
-      type: object
     CharacterUpdateDTO:
       description: Request data for updating character information
       example:
@@ -6955,6 +7252,7 @@ components:
           type: string
         gender:
           description: "Character gender: male | female | other"
+          pattern: male|female|other
           type: string
         profile:
           description: Character profile
@@ -6984,27 +7282,29 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
       required:
       - name
-      type: object
     CharacterBackendDTO:
       description: Character backend information
       example:
         moderationApiKeyName: moderationApiKeyName
-        quotaType: quotaType
-        isDefault: true
+        ttsSpeakerType: ttsSpeakerType
         moderationParams: moderationParams
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
+        ttsSpeakerWav: ttsSpeakerWav
+        enableTts: true
+        enableAlbumTool: true
+        quotaType: quotaType
+        isDefault: true
         initQuota: 5
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 0
         proactiveChatWaitingTime: 1
+        ttsSpeakerIdx: ttsSpeakerIdx
         longTermMemoryWindowSize: 6
-        enableAlbumTool: true
       properties:
         isDefault:
           description: Whether it is the default backend
@@ -7043,11 +7343,50 @@ components:
           type: integer
         quotaType:
           description: "Quota type: messages | tokens | none (not limited)"
+          pattern: messages|tokens|none
           type: string
         enableAlbumTool:
           description: Enable character album image retrieval tool
           type: boolean
-      type: object
+        enableTts:
+          description: Enable character tts feature
+          type: boolean
+        ttsSpeakerIdx:
+          description: Character's speaker idx for tts
+          type: string
+        ttsSpeakerWav:
+          description: Character's speaker sample for tts
+          type: string
+        ttsSpeakerType:
+          description: "Character's speaker type for tts: idx | wav"
+          pattern: idx|wav
+          type: string
+    AiModelInfoUpdateDTO:
+      description: Request data for creating/updating model information
+      example:
+        provider: provider
+        name: name
+        description: description
+        type: type
+      properties:
+        name:
+          description: Model name
+          type: string
+        description:
+          description: Model description
+          type: string
+        provider:
+          description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
+            \ | ollama | unknown"
+          pattern: hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown
+          type: string
+        type:
+          description: "Model type: text2text | text2chat | text2image | embedding\
+            \ | moderation"
+          pattern: text2text|text2chat|text2image|embedding|moderation
+          type: string
+      required:
+      - name
     AgentUpdateDTO:
       description: Request data for updating agent information
       example:
@@ -7101,18 +7440,15 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
-            description: "Supported model set, empty means no model limit"
             type: string
           type: array
       required:
       - name
-      type: object
     UserFullDetailsDTO:
       description: Account detailed information (with password)
       example:
@@ -7194,7 +7530,6 @@ components:
           type: string
         password:
           type: string
-      type: object
     UserDetailsDTO:
       description: Account detailed information
       example:
@@ -7273,7 +7608,6 @@ components:
           type: string
         address:
           type: string
-      type: object
     PromptQuery.Where:
       description: Query condition
       example:
@@ -7303,26 +7637,27 @@ components:
         tags:
           description: Tags
           items:
-            description: Tags
             type: string
           type: array
         tagsOp:
           description: "Relationship between tags: and | or (default)"
+          pattern: and|or
           type: string
         aiModels:
           description: Model set
           items:
-            description: Model set
             type: string
           type: array
         aiModelsOp:
           description: "Relationship between model sets: and | or (default)"
+          pattern: and|or
           type: string
         name:
           description: "Name, left match"
           type: string
         type:
           description: "Type, exact match: string (default) | chat"
+          pattern: string|chat
           type: string
         lang:
           description: "Language, exact match"
@@ -7332,7 +7667,6 @@ components:
             \ match is sufficient; public scope + general search for all users does\
             \ not guarantee real-time."
           type: string
-      type: object
     PromptQueryDTO:
       description: Prompt template query request
       example:
@@ -7369,14 +7703,6 @@ components:
 
             Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
           items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-              - (interactive statistical fields)
-
-              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
             type: string
           type: array
         pageNum:
@@ -7387,7 +7713,6 @@ components:
           description: "Number of items per page, 1～50, default is 10"
           format: int64
           type: integer
-      type: object
     AiModelInfoDTO:
       description: Model information
       example:
@@ -7418,7 +7743,6 @@ components:
           description: "Model type: text2text | text2chat | text2image | embedding\
             \ | moderation"
           type: string
-      type: object
     PromptSummaryDTO:
       description: Prompt summary content
       example:
@@ -7503,7 +7827,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -7511,7 +7834,6 @@ components:
           items:
             $ref: '#/components/schemas/AiModelInfoDTO'
           type: array
-      type: object
     CharacterQuery.Where:
       description: Query condition
       example:
@@ -7537,11 +7859,11 @@ components:
         tags:
           description: Tags
           items:
-            description: Tags
             type: string
           type: array
         tagsOp:
           description: "Relationship between tags: and | or (default)"
+          pattern: and|or
           type: string
         name:
           description: "Name, left match"
@@ -7558,7 +7880,6 @@ components:
           description: "Character priority, high-priority means recommended ones,\
             \ null for all"
           type: boolean
-      type: object
     CharacterQueryDTO:
       description: Character query request
       example:
@@ -7590,13 +7911,6 @@ components:
 
             Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
           items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-
-              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
             type: string
           type: array
         pageNum:
@@ -7607,7 +7921,6 @@ components:
           description: "Number of items per page, 1～50, default is 10"
           format: int64
           type: integer
-      type: object
     CharacterSummaryDTO:
       description: Character summary content
       example:
@@ -7700,10 +8013,8 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
-      type: object
     PromptCreateDTO:
       description: Request data for creating new prompt information
       example:
@@ -7732,6 +8043,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -7747,6 +8059,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -7763,6 +8076,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -7794,6 +8108,7 @@ components:
           $ref: '#/components/schemas/ChatPromptContentDTO'
         format:
           description: "Prompt format: mustache (default) | f_string"
+          pattern: mustache|f_string
           type: string
         lang:
           description: "Prompt language: en (default) | zh_CN | ..."
@@ -7813,18 +8128,15 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
-            description: "Supported model set, empty means no model limit"
             type: string
           type: array
       required:
       - name
-      type: object
     InteractiveStatsDTO:
       description: Interactive statistics information
       example:
@@ -7876,7 +8188,6 @@ components:
           description: Average score
           format: int64
           type: integer
-      type: object
     PromptItemForNameDTO:
       description: Prompt identifier and version information
       example:
@@ -7904,7 +8215,6 @@ components:
           type: integer
         stats:
           $ref: '#/components/schemas/InteractiveStatsDTO'
-      type: object
     PromptAiParamDTO:
       description: Prompt AI service information
       example:
@@ -7931,6 +8241,7 @@ components:
                 content: content
               name: name
               context: context
+              messageId: 0
               toolCalls:
               - name: name
                 arguments: arguments
@@ -7946,6 +8257,7 @@ components:
                 content: content
               name: name
               context: context
+              messageId: 0
               toolCalls:
               - name: name
                 arguments: arguments
@@ -7962,6 +8274,7 @@ components:
                 content: content
               name: name
               context: context
+              messageId: 0
               toolCalls:
               - name: name
                 arguments: arguments
@@ -7981,17 +8294,12 @@ components:
           $ref: '#/components/schemas/PromptRefDTO'
         params:
           additionalProperties:
-            description: "Model call parameters, the actual supported fields are related\
-              \ to modelId, depending on the model provider, specific fields can refer\
-              \ to: OpenAiParamDTO, QwenParamDTO"
             type: object
           description: "Model call parameters, the actual supported fields are related\
             \ to modelId, depending on the model provider, specific fields can refer\
             \ to: OpenAiParamDTO, QwenParamDTO"
-          type: object
       required:
       - params
-      type: object
     PromptTemplateDTO:
       description: Prompt template content
       example:
@@ -8009,6 +8317,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -8024,6 +8333,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -8040,6 +8350,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -8057,14 +8368,12 @@ components:
           $ref: '#/components/schemas/ChatPromptContentDTO'
         variables:
           additionalProperties:
-            description: "Variables applied to the template, can be empty"
             type: object
           description: "Variables applied to the template, can be empty"
-          type: object
         format:
           description: "Prompt format: mustache (default) | f_string"
+          pattern: mustache|f_string
           type: string
-      type: object
     LlmResultDTO:
       description: Prompt service result
       example:
@@ -8084,6 +8393,7 @@ components:
             content: content
           name: name
           context: context
+          messageId: 0
           toolCalls:
           - name: name
             arguments: arguments
@@ -8108,7 +8418,6 @@ components:
           type: string
         tokenUsage:
           $ref: '#/components/schemas/TokenUsageDTO'
-      type: object
     TokenUsageDTO:
       description: Token usage information
       example:
@@ -8128,13 +8437,11 @@ components:
           description: Total token count
           format: int32
           type: integer
-      type: object
     SseEmitter:
       properties:
         timeout:
           format: int64
           type: integer
-      type: object
     PromptDetailsDTO:
       description: Prompt detailed content
       example:
@@ -8178,6 +8485,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -8193,6 +8501,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -8209,6 +8518,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -8273,7 +8583,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -8298,7 +8607,6 @@ components:
         draft:
           description: Draft content
           type: string
-      type: object
     PluginCreateDTO:
       description: Request data for creating new plugin information
       example:
@@ -8345,18 +8653,15 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
-            description: "Supported model set, empty means no model limit"
             type: string
           type: array
       required:
       - name
-      type: object
     PluginQuery.Where:
       description: Query condition
       example:
@@ -8394,20 +8699,20 @@ components:
         tags:
           description: Tags
           items:
-            description: Tags
             type: string
           type: array
         tagsOp:
           description: "Relationship between tags: and | or (default)"
+          pattern: and|or
           type: string
         aiModels:
           description: Model set
           items:
-            description: Model set
             type: string
           type: array
         aiModelsOp:
           description: "Relationship between model sets: and | or (default)"
+          pattern: and|or
           type: string
         name:
           description: "Name, left match"
@@ -8420,7 +8725,6 @@ components:
             \ not supported at the moment), fuzzy matching, any one match is sufficient;\
             \ public scope + general search for all users does not guarantee real-time."
           type: string
-      type: object
     PluginQueryDTO:
       description: Plugin information query request
       example:
@@ -8456,12 +8760,6 @@ components:
 
             Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
           items:
-            description: |
-              Ordering condition, supported sorting fields are:
-              - modifyTime
-              - createTime
-
-              Sorting priority follows the list order, default is descending, if ascending is expected, it needs to be specified after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
             type: string
           type: array
         pageNum:
@@ -8472,7 +8770,6 @@ components:
           description: "Page item count, 1～50, default is 10"
           format: int64
           type: integer
-      type: object
     PluginSummaryDTO:
       description: Plugin summary information
       example:
@@ -8543,7 +8840,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -8551,7 +8847,6 @@ components:
           items:
             $ref: '#/components/schemas/AiModelInfoDTO'
           type: array
-      type: object
     PluginDetailsDTO:
       description: Plugin detailed content
       example:
@@ -8627,7 +8922,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -8651,7 +8945,6 @@ components:
         ext:
           description: "Additional information, JSON format"
           type: string
-      type: object
     ChatCreateDTO:
       description: Request data for starting a chat session
       example:
@@ -8694,7 +8987,6 @@ components:
           type: string
       required:
       - characterUid
-      type: object
     CharacterCreateDTO:
       description: Request data for creating new character information
       example:
@@ -8741,6 +9033,7 @@ components:
           type: string
         gender:
           description: "Character gender: male | female | other"
+          pattern: male|female|other
           type: string
         profile:
           description: Character profile
@@ -8770,12 +9063,10 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
       required:
       - name
-      type: object
     CharacterItemForNameDTO:
       description: Character identifier and version information
       example:
@@ -8803,16 +9094,18 @@ components:
           type: integer
         stats:
           $ref: '#/components/schemas/InteractiveStatsDTO'
-      type: object
     CharacterBackendDetailsDTO:
       description: Character backend detailed information
       example:
         moderationApiKeyName: moderationApiKeyName
+        ttsSpeakerType: ttsSpeakerType
         gmtModified: 2000-01-23T04:56:07.000+00:00
         moderationParams: moderationParams
         greetingPromptTaskId: greetingPromptTaskId
         moderationModelId: moderationModelId
+        ttsSpeakerWav: ttsSpeakerWav
         backendId: backendId
+        enableTts: true
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         enableAlbumTool: true
         quotaType: quotaType
@@ -8822,6 +9115,7 @@ components:
         chatPromptTaskId: chatPromptTaskId
         messageWindowSize: 5
         proactiveChatWaitingTime: 2
+        ttsSpeakerIdx: ttsSpeakerIdx
         longTermMemoryWindowSize: 5
         characterUid: characterUid
       properties:
@@ -8883,7 +9177,18 @@ components:
         enableAlbumTool:
           description: Enable character album image retrieval tool
           type: boolean
-      type: object
+        enableTts:
+          description: Enable character tts feature
+          type: boolean
+        ttsSpeakerIdx:
+          description: Character's speaker idx for tts
+          type: string
+        ttsSpeakerWav:
+          description: Character's speaker sample for tts
+          type: string
+        ttsSpeakerType:
+          description: "Character's speaker type for tts: idx | wav"
+          type: string
     CharacterDetailsDTO:
       description: Character detailed content
       example:
@@ -8910,11 +9215,14 @@ components:
         version: 6
         backends:
         - moderationApiKeyName: moderationApiKeyName
+          ttsSpeakerType: ttsSpeakerType
           gmtModified: 2000-01-23T04:56:07.000+00:00
           moderationParams: moderationParams
           greetingPromptTaskId: greetingPromptTaskId
           moderationModelId: moderationModelId
+          ttsSpeakerWav: ttsSpeakerWav
           backendId: backendId
+          enableTts: true
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           enableAlbumTool: true
           quotaType: quotaType
@@ -8924,14 +9232,18 @@ components:
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 5
           proactiveChatWaitingTime: 2
+          ttsSpeakerIdx: ttsSpeakerIdx
           longTermMemoryWindowSize: 5
           characterUid: characterUid
         - moderationApiKeyName: moderationApiKeyName
+          ttsSpeakerType: ttsSpeakerType
           gmtModified: 2000-01-23T04:56:07.000+00:00
           moderationParams: moderationParams
           greetingPromptTaskId: greetingPromptTaskId
           moderationModelId: moderationModelId
+          ttsSpeakerWav: ttsSpeakerWav
           backendId: backendId
+          enableTts: true
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           enableAlbumTool: true
           quotaType: quotaType
@@ -8941,6 +9253,7 @@ components:
           chatPromptTaskId: chatPromptTaskId
           messageWindowSize: 5
           proactiveChatWaitingTime: 2
+          ttsSpeakerIdx: ttsSpeakerIdx
           longTermMemoryWindowSize: 5
           characterUid: characterUid
         picture: picture
@@ -9016,7 +9329,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         profile:
@@ -9039,7 +9351,6 @@ components:
           items:
             $ref: '#/components/schemas/CharacterBackendDetailsDTO'
           type: array
-      type: object
     AiApiKeyCreateDTO:
       description: Request data for adding new model credential information
       example:
@@ -9054,6 +9365,7 @@ components:
         provider:
           description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
             \ | ollama | unknown"
+          pattern: hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown
           type: string
         token:
           description: Credential content
@@ -9065,7 +9377,6 @@ components:
       - name
       - provider
       - token
-      type: object
     AgentCreateDTO:
       description: Request data for creating new agent information
       example:
@@ -9119,18 +9430,15 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
           description: "Supported model set, empty means no model limit"
           items:
-            description: "Supported model set, empty means no model limit"
             type: string
           type: array
       required:
       - name
-      type: object
     AgentItemForNameDTO:
       description: Agent identifier and version information
       example:
@@ -9158,7 +9466,6 @@ components:
           type: integer
         stats:
           $ref: '#/components/schemas/InteractiveStatsDTO'
-      type: object
     AgentQuery.Where:
       description: Query condition
       example:
@@ -9190,20 +9497,20 @@ components:
         tags:
           description: Tags
           items:
-            description: Tags
             type: string
           type: array
         tagsOp:
           description: "Relationship between tags: and | or (default)"
+          pattern: and|or
           type: string
         aiModels:
           description: Model set
           items:
-            description: Model set
             type: string
           type: array
         aiModelsOp:
           description: "Relationship between model sets: and | or (default)"
+          pattern: and|or
           type: string
         name:
           description: "Name, left match"
@@ -9213,7 +9520,6 @@ components:
             \ is sufficient; public scope + general search for all users does not\
             \ guarantee real-time."
           type: string
-      type: object
     AgentQueryDTO:
       description: Agent information query request
       example:
@@ -9248,13 +9554,6 @@ components:
 
             Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
           items:
-            description: |
-              Sorting condition, supported sorting fields are:
-              - version
-              - modifyTime
-              - createTime
-
-              Sorting priority follows the list order, default is descending. If ascending is expected, specify after the field, such as: orderBy: [\"score\", \"scoreCount asc\"] (scoreCount in ascending order)
             type: string
           type: array
         pageNum:
@@ -9265,7 +9564,6 @@ components:
           description: "Number of items per page, 1~50, default is 10"
           format: int64
           type: integer
-      type: object
     AgentSummaryDTO:
       description: Agent summary information
       example:
@@ -9341,7 +9639,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -9349,7 +9646,6 @@ components:
           items:
             $ref: '#/components/schemas/AiModelInfoDTO'
           type: array
-      type: object
     AgentDetailsDTO:
       description: Agent detailed content
       example:
@@ -9430,7 +9726,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -9453,6 +9748,7 @@ components:
         draft:
           description: Draft content
           type: string
+    StreamingResponseBody:
       type: object
     RagTaskDetailsDTO:
       description: Prompt task detailed information
@@ -9518,7 +9814,6 @@ components:
         ext:
           description: "Additional information, JSON format"
           type: string
-      type: object
     HotTagDTO:
       description: Hot tag
       example:
@@ -9532,7 +9827,6 @@ components:
           description: Tag count
           format: int64
           type: integer
-      type: object
     PromptSummaryStatsDTO:
       description: "Prompt template summary content, including interactive statistical\
         \ information"
@@ -9623,7 +9917,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -9651,7 +9944,6 @@ components:
           description: Average score
           format: int64
           type: integer
-      type: object
     PluginSummaryStatsDTO:
       description: "Plugin template summary content, including interactive statistical\
         \ information"
@@ -9728,7 +10020,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -9756,7 +10047,6 @@ components:
           description: Average score
           format: int64
           type: integer
-      type: object
     CharacterSummaryStatsDTO:
       description: "Character summary content, including interactive statistical information"
       example:
@@ -9854,7 +10144,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         viewCount:
@@ -9877,7 +10166,6 @@ components:
           description: Average score
           format: int64
           type: integer
-      type: object
     AgentSummaryStatsDTO:
       description: "Agent template summary content, including interactive statistical\
         \ information"
@@ -9959,7 +10247,6 @@ components:
         tags:
           description: Tag set
           items:
-            description: Tag set
             type: string
           type: array
         aiModels:
@@ -9987,7 +10274,6 @@ components:
           description: Average score
           format: int64
           type: integer
-      type: object
     PromptTaskDetailsDTO:
       description: Prompt task detailed information
       example:
@@ -10046,10 +10332,8 @@ components:
           type: string
         params:
           additionalProperties:
-            description: Model call parameters
             type: object
           description: Model call parameters
-          type: object
         cron:
           description: Task scheduling configuration which compatible with Quartz
             cron format
@@ -10061,7 +10345,6 @@ components:
         ext:
           description: "Additional information, JSON format"
           type: string
-      type: object
     ChatContextDTO:
       description: Chat context
       example:
@@ -10132,12 +10415,10 @@ components:
           type: string
       required:
       - backendId
-      type: object
     ChatMessageRecordDTO:
       description: Chat message record
       example:
         ext: ext
-        messageId: 6
         message:
           role: role
           contents:
@@ -10147,6 +10428,7 @@ components:
             content: content
           name: name
           context: context
+          messageId: 0
           toolCalls:
           - name: name
             arguments: arguments
@@ -10158,10 +10440,6 @@ components:
       properties:
         message:
           $ref: '#/components/schemas/ChatMessageDTO'
-        messageId:
-          description: Message identifier
-          format: int64
-          type: integer
         gmtCreate:
           description: Creation time
           format: date-time
@@ -10169,7 +10447,6 @@ components:
         ext:
           description: Additional information
           type: string
-      type: object
     ChatSessionDTO:
       description: Chat session
       example:
@@ -10214,12 +10491,12 @@ components:
           quotaType: quotaType
           requestId: requestId
           quota: 0
-        proactiveChatWaitingTime: 1
+        proactiveChatWaitingTime: 6
         isDebugEnabled: true
+        isTtsEnabled: true
         isCustomizedApiKeyEnabled: true
         latestMessageRecord:
           ext: ext
-          messageId: 6
           message:
             role: role
             contents:
@@ -10229,6 +10506,7 @@ components:
               content: content
             name: name
             context: context
+            messageId: 0
             toolCalls:
             - name: name
               arguments: arguments
@@ -10245,6 +10523,7 @@ components:
         provider:
           description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
             \ | ollama | unknown"
+          pattern: hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown
           type: string
         latestMessageRecord:
           $ref: '#/components/schemas/ChatMessageRecordDTO'
@@ -10254,6 +10533,7 @@ components:
           type: integer
         senderStatus:
           description: "Sender status: online | offline | invisible"
+          pattern: online|offline|invisible
           type: string
         isDebugEnabled:
           description: Is it possible to debug
@@ -10261,7 +10541,9 @@ components:
         isCustomizedApiKeyEnabled:
           description: Is it possible to customize api-key
           type: boolean
-      type: object
+        isTtsEnabled:
+          description: Enable character tts feature or not
+          type: boolean
     MemoryUsageDTO:
       description: Memory usage information
       example:
@@ -10281,7 +10563,6 @@ components:
           type: integer
         tokenUsage:
           $ref: '#/components/schemas/TokenUsageDTO'
-      type: object
     AiApiKeyInfoDTO:
       description: Model credential information
       example:
@@ -10331,7 +10612,6 @@ components:
         username:
           description: Credential owner
           type: string
-      type: object
     UserBasicInfoDTO:
       description: User summary information
       example:
@@ -10352,7 +10632,6 @@ components:
         picture:
           description: Avatar
           type: string
-      type: object
     ApiTokenInfoDTO:
       description: API token information
       example:
@@ -10402,7 +10681,6 @@ components:
         username:
           description: Token owner
           type: string
-      type: object
     AppMetaDTO:
       description: Application metadata
       example:
@@ -10435,165 +10713,14 @@ components:
         runningEnv:
           description: Running environment
           type: string
-      type: object
-    OpenAiParamDTO:
-      description: OpenAI series model parameters
+    uploadCharacterVoice_request:
       properties:
-        apiKey:
-          description: "API-KEY, higher priority than apiKeyName. Either apiKey or\
-            \ apiKeyName must be specified."
+        file:
+          description: Character voice
+          format: binary
           type: string
-        apiKeyName:
-          description: API-KEY name
-          type: string
-        modelId:
-          description: Model identifier
-          type: string
-        baseUrl:
-          description: "OpenAI service provider address, default: https://api.openai.com/v1"
-          type: string
-        temperature:
-          description: "Used to adjust the degree of randomness from sampling in the\
-            \ generated model, the value range is (0, 1.0), a temperature of 0 will\
-            \ always produce the same output. The higher the temperature, the greater\
-            \ the randomness."
-          format: double
-          type: number
-        topP:
-          description: "Probability threshold of the nucleus sampling method in the\
-            \ generation process, for example, when the value is 0.8, only the smallest\
-            \ set of most likely tokens whose probabilities add up to 0.8 or more\
-            \ is retained as the candidate set. The value range is (0, 1.0), the larger\
-            \ the value, the higher the randomness of the generation; the smaller\
-            \ the value, the higher the certainty of the generation."
-          format: double
-          type: number
-        maxTokens:
-          description: The maximum number of tokens to generate in the chat completion.
-            The total length of input tokens and generated tokens is limited by the
-            model's context length.
-          format: int32
-          type: integer
-        presencePenalty:
-          description: "Number between -2.0 and 2.0. Positive values penalize new\
-            \ tokens based on whether they appear in the text so far, increasing the\
-            \ model's likelihood to talk about new topics."
-          format: double
-          type: number
-        frequencyPenalty:
-          description: "Number between -2.0 and 2.0. Positive values penalize new\
-            \ tokens based on their existing frequency in the text so far, decreasing\
-            \ the model's likelihood to repeat the same line verbatim."
-          format: double
-          type: number
-        seed:
-          description: "If specified, OpenAI will make a best effort to sample deterministically,\
-            \ such that repeated requests with the same seed and parameters should\
-            \ return the same result."
-          format: int32
-          type: integer
-        stop:
-          description: A collection of stop words that controls the API from generating
-            more tokens.
-          items:
-            description: A collection of stop words that controls the API from generating
-              more tokens.
-            type: string
-          type: array
       required:
-      - modelId
-      type: object
-    QwenParamDTO:
-      description: Qwen series model parameters
-      properties:
-        apiKey:
-          description: "API-KEY, higher priority than apiKeyName. Either apiKey or\
-            \ apiKeyName must be specified."
-          type: string
-        apiKeyName:
-          description: API-KEY name
-          type: string
-        modelId:
-          description: Model identifier
-          type: string
-        topP:
-          description: "Probability threshold of the nucleus sampling method in the\
-            \ generation process, for example, when the value is 0.8, only the smallest\
-            \ set of most likely tokens whose probabilities add up to 0.8 or more\
-            \ is retained as the candidate set. The value range is (0, 1.0), the larger\
-            \ the value, the higher the randomness of the generation; the smaller\
-            \ the value, the higher the certainty of the generation."
-          format: double
-          type: number
-        topK:
-          description: "The size of the sampling candidate set during generation.\
-            \ For example, when the value is 50, only the top 50 tokens with the highest\
-            \ scores in a single generation are included in the random sampling candidate\
-            \ set. The larger the value, the higher the randomness of the generation;\
-            \ the smaller the value, the higher the certainty of the generation. The\
-            \ default value is 0, which means that the top_k strategy is not enabled,\
-            \ and only the top_p strategy is effective."
-          format: int32
-          type: integer
-        maxTokens:
-          description: The maximum number of tokens to generate in the chat completion.
-            The total length of input tokens and generated tokens is limited by the
-            model's context length.
-          format: int32
-          type: integer
-        enableSearch:
-          description: Whether to use a search engine for data enhancement.
-          type: boolean
-        seed:
-          description: "The random number seed used when generating, the user controls\
-            \ the randomness of the content generated by the model. seed supports\
-            \ unsigned 64-bit integers, with a default value of 1234. When using seed,\
-            \ the model will try its best to generate the same or similar results,\
-            \ but there is currently no guarantee that the results will be exactly\
-            \ the same every time."
-          format: int32
-          type: integer
-        repetitionPenalty:
-          description: Used to control the repeatability when generating models. Increasing
-            repetition_penalty can reduce the duplication of model generation. 1.0
-            means no punishment.
-          format: float
-          type: number
-        temperature:
-          description: "Used to adjust the degree of randomness from sampling in the\
-            \ generated model, the value range is [0, 2), a temperature of 0 will\
-            \ always produce the same output. The higher the temperature, the greater\
-            \ the randomness."
-          format: float
-          type: number
-        stop:
-          description: A collection of stop words that controls the API from generating
-            more tokens.
-          items:
-            description: A collection of stop words that controls the API from generating
-              more tokens.
-            type: string
-          type: array
-      required:
-      - modelId
-      type: object
-    AppConfigInfoDTO:
-      description: Configuration information
-      example:
-        requestId: requestId
-        properties:
-          key: "{}"
-      properties:
-        requestId:
-          description: Request identifier
-          type: string
-        properties:
-          additionalProperties:
-            description: Configuration content
-            type: object
-          description: Configuration content
-          type: object
-      type: object
+      - file
     uploadCharacterPicture_request:
       properties:
         file:
@@ -10602,7 +10729,6 @@ components:
           type: string
       required:
       - file
-      type: object
     importCharacter_request:
       properties:
         file:
@@ -10611,7 +10737,6 @@ components:
           type: string
       required:
       - file
-      type: object
     uploadCharacterDocument_request:
       properties:
         file:
@@ -10620,7 +10745,6 @@ components:
           type: string
       required:
       - file
-      type: object
     uploadUserPicture_request:
       properties:
         file:
@@ -10629,7 +10753,6 @@ components:
           type: string
       required:
       - file
-      type: object
   securitySchemes:
     bearerAuth:
       scheme: bearer

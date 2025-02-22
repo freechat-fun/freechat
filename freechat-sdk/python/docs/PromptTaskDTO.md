@@ -6,7 +6,7 @@ Prompt task information
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) |  | 
+**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) | Prompt reference information | 
 **model_id** | **str** | Model identifier | [optional] 
 **api_key_name** | **str** | API-KEY name, priority: apiKeyName &gt; apiKeyValue | [optional] 
 **api_key_value** | **str** | API-KEY value | [optional] 

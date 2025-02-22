@@ -4,78 +4,8 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**expose**](AppMetaForAdminApi.md#expose) | **GET** /api/v2/admin/app/expose | Expose DTO definitions |
 | [**getAppMeta**](AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v2/admin/app/meta | Get Application Information |
 
-
-<a id="expose"></a>
-# **expose**
-> String expose(openAiParam, qwenParam)
-
-Expose DTO definitions
-
-This method does nothing.
-
-### Example
-```java
-// Import classes:
-import fun.freechat.client.ApiClient;
-import fun.freechat.client.ApiException;
-import fun.freechat.client.Configuration;
-import fun.freechat.client.auth.*;
-import fun.freechat.client.models.*;
-import fun.freechat.client.api.AppMetaForAdminApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://127.0.0.1:8080");
-    
-    // Configure HTTP bearer authorization: bearerAuth
-    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
-    bearerAuth.setBearerToken("BEARER TOKEN");
-
-    AppMetaForAdminApi apiInstance = new AppMetaForAdminApi(defaultClient);
-    OpenAiParamDTO openAiParam = new OpenAiParamDTO(); // OpenAiParamDTO | 
-    QwenParamDTO qwenParam = new QwenParamDTO(); // QwenParamDTO | 
-    try {
-      String result = apiInstance.expose(openAiParam, qwenParam);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling AppMetaForAdminApi#expose");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-|------------- | ------------- | ------------- | -------------|
-| **openAiParam** | [**OpenAiParamDTO**](.md)|  | |
-| **qwenParam** | [**QwenParamDTO**](.md)|  | |
-
-### Return type
-
-**String**
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-| **200** | OK |  -  |
 
 <a id="getAppMeta"></a>
 # **getAppMeta**

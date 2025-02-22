@@ -10,7 +10,7 @@ Prompt identifier and version information
 |------------ | ------------- | ------------- | -------------|
 |**promptId** | **Long** | promptId |  [optional] |
 |**version** | **Integer** | version |  [optional] |
-|**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  |  [optional] |
+|**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) | Interactive statistics information |  [optional] |
 
 
 

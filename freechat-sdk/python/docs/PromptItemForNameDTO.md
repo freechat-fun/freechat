@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **prompt_id** | **int** | promptId | [optional] 
 **version** | **int** | version | [optional] 
-**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  | [optional] 
+**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) | Interactive statistics information | [optional] 
 
 ## Example
 

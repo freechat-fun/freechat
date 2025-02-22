@@ -4,15 +4,15 @@ All URIs are relative to *http://127.0.0.1:8080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**get_app_configs**](AppConfigForAdminApi.md#get_app_configs) | **GET** /api/v2/admin/app/configs | Get Configurations
+[**get_default_config**](AppConfigForAdminApi.md#get_default_config) | **GET** /api/v2/admin/app/configs/default | Get Default Config
 
 
-# **get_app_configs**
-> AppConfigInfoDTO get_app_configs()
+# **get_default_config**
+> str get_default_config()
 
-Get Configurations
+Get Default Config
 
-Get all configuration information of the application.
+Get default configuration information of the application.
 
 ### Example
 
@@ -20,7 +20,6 @@ Get all configuration information of the application.
 
 ```python
 import freechat_sdk
-from freechat_sdk.models.app_config_info_dto import AppConfigInfoDTO
 from freechat_sdk.rest import ApiException
 from pprint import pprint
 
@@ -46,12 +45,12 @@ with freechat_sdk.ApiClient(configuration) as api_client:
     api_instance = freechat_sdk.AppConfigForAdminApi(api_client)
 
     try:
-        # Get Configurations
-        api_response = api_instance.get_app_configs()
-        print("The response of AppConfigForAdminApi->get_app_configs:\n")
+        # Get Default Config
+        api_response = api_instance.get_default_config()
+        print("The response of AppConfigForAdminApi->get_default_config:\n")
         pprint(api_response)
     except Exception as e:
-        print("Exception when calling AppConfigForAdminApi->get_app_configs: %s\n" % e)
+        print("Exception when calling AppConfigForAdminApi->get_default_config: %s\n" % e)
 ```
 
 
@@ -62,7 +61,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**AppConfigInfoDTO**](AppConfigInfoDTO.md)
+**str**
 
 ### Authorization
 
@@ -71,7 +70,7 @@ This endpoint does not need any parameter.
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: text/plain
 
 ### HTTP response details
 

@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **gmt_modified** | **datetime** | Modification time | [optional] 
 **gmt_start** | **datetime** | Task start execution time | [optional] 
 **gmt_end** | **datetime** | Task end execution time | [optional] 
-**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) |  | [optional] 
+**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) | Prompt reference information | [optional] 
 **model_id** | **str** | Model identifier | [optional] 
 **api_key_name** | **str** | API-KEY name | [optional] 
 **api_key_value** | **str** | API-KEY value | [optional] 

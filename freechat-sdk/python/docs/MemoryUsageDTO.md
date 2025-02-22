@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **request_id** | **str** | Request identifier | [optional] 
 **message_usage** | **int** | Messages usage information | [optional] 
-**token_usage** | [**TokenUsageDTO**](TokenUsageDTO.md) |  | [optional] 
+**token_usage** | [**TokenUsageDTO**](TokenUsageDTO.md) | Token usage information | [optional] 
 
 ## Example
 

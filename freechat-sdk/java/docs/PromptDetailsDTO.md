@@ -25,7 +25,7 @@ Prompt detailed content
 |**tags** | **List&lt;String&gt;** | Tag set |  [optional] |
 |**aiModels** | [**List&lt;AiModelInfoDTO&gt;**](AiModelInfoDTO.md) | Supported model set |  [optional] |
 |**template** | **String** | Prompt text template content |  [optional] |
-|**chatTemplate** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) |  |  [optional] |
+|**chatTemplate** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content |  [optional] |
 |**example** | **String** | Prompt example |  [optional] |
 |**inputs** | **String** | Prompt inputs, JSON format |  [optional] |
 |**ext** | **String** | Additional information, JSON format |  [optional] |

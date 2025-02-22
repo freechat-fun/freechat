@@ -20,6 +20,10 @@ Character backend information
 |**initQuota** | **Long** | Initial quota when opening a chat |  [optional] |
 |**quotaType** | **String** | Quota type: messages | tokens | none (not limited) |  [optional] |
 |**enableAlbumTool** | **Boolean** | Enable character album image retrieval tool |  [optional] |
+|**enableTts** | **Boolean** | Enable character tts feature |  [optional] |
+|**ttsSpeakerIdx** | **String** | Character&#39;s speaker idx for tts |  [optional] |
+|**ttsSpeakerWav** | **String** | Character&#39;s speaker sample for tts |  [optional] |
+|**ttsSpeakerType** | **String** | Character&#39;s speaker type for tts: idx | wav |  [optional] |
 
 
 

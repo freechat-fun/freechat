@@ -1,8 +1,8 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.2.0
-  - Generator version: 7.10.0
+- API version: 2.3.0
+  - Generator version: 7.11.0
 
 # FreeChat: Create Friends for Yourself with AI
 
@@ -20,13 +20,15 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 - Boasts **account systems and permission management**, supporting OAuth2 authentication. Introduces the \"organization\" concept and related permission constraint functions.
 - Extensively employs distributed technologies and caching to support **high concurrency** access.
 - Provides flexible character customization options, supports direct intervention in prompts, and supports **configuring multiple backends for each character**.
-- **Offers a comprehensive range of Open APIs**, with more than 180 interfaces and provides java/python/typescript SDKs. These interfaces enable easy construction of systems for end-users.
+- **Offers a comprehensive range of Open APIs**, with [more than 180 methods](https://freechat.fun/w/docs) and provides java/python/typescript SDKs. These methods enable easy construction of systems for end-users.
 - Supports setting **RAG** (Retrieval Augmented Generation) for characters.
 - Supports **long-term memory, preset memory** for characters.
 - Supports characters evoking **proactive chat**.
+- Supports characters replies with **mixed text and image information**.
 - Supports setting **quota limits** for characters.
 - Supports characters **importing and exporting**.
 - Supports **character-to-character chats**.
+- Supports **character voices**.
 - Supports individual **debugging and sharing prompts**.
 
 ## Snapshots
@@ -53,20 +55,17 @@ flowchart TD
     E --> G(Message Window)
     E --> H(Long Term Memory Settings)
     E --> I(Quota Limit)
-    E --> J(Chat Prompt Task)
-    E --> K(Greeting Prompt Task)
+    E --> J(Chat/Greeting Prompt Tasks)
+    E --> P(Album/TTS Tools)
     E --> L(Moderation Settings)
     J --> M(Model & Parameters)
     J --> N(API Keys)
-    J --> O(Prompt Refence)
-    J --> P(Tool Specifications)
-    O --> Q(Template)
-    O --> R(Variables)
-    O --> S(Version)
-    O --> T(...)
-    style K stroke-dasharray: 5, 5
+    J --> O(Prompt Reference)
+    O --> R(Template)
+    O --> S(Variables)
+    O --> T(Version)
+    O --> U(...)
     style L stroke-dasharray: 5, 5
-    style P stroke-dasharray: 5, 5
 ```
 
 After setting up an unified persona and knowledge for a character, different backends can be configured. For example, different model may be adopted for different users based on cost considerations.
@@ -83,17 +82,11 @@ FreeChat is dedicated to the principles of cloud-native design. If you have a Ku
 3. Switch to the `scripts/` directory.
 4. If needed, run `install-in.sh` to deploy `ingress-nginx` on the Kubernetes cluster.
 5. If needed, run `install-cm.sh` to deploy `cert-manager` on the Kubernetes cluster, which automatically issues certificates for domains specified in `ingress.hosts`.
-6. Run `install-pvc.sh` to install PersistentVolumeClaim resources.
-
-    > By default, FreeChat operates files by accessing the \"local file system.\" You may want to use high-availability distributed storage in the cloud. As a cloud-native-designed system, we recommend interfacing through Kubernetes CSI to avoid individually adapting storage products for each cloud platform. Most cloud service providers offer cloud storage drivers for Kubernetes, with a series of predefined StorageClass resources. Please choose the appropriate configuration according to your actual needs and set it in Helm's `global.storageClass` option.
-    > 
-    > *In the future, FreeChat may be refactored to use MinIO's APIs directly, as it is now installed in the Kubernetes cluster as a dependency (serving Milvus).*
-
-7. Run `install.sh` script to install FreeChat and its dependencies.
-8. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application.
-9. Run `restart.sh` to restart the service.
-10. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources.
-11. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.
+6. Run `install.sh` script to install FreeChat and its dependencies.
+7. FreeChat aims to provide Open API services. If you like the interactive experience of [freechat.fun](https://freechat.fun), run `install-web.sh` to deploy the front-end application.
+8. Run `restart.sh` to restart the service.
+9. If you modified any Helm configuration files, use `upgrade.sh` to update the corresponding Kubernetes resources.
+10. To remove specific resources, run the `uninstall*.sh` script corresponding to the resource you want to uninstall.
 
 As a cloud-native application, the services FreeChat relies on are obtained and deployed to your cluster through the helm repository.
 
@@ -140,7 +133,7 @@ Once ready, enter the `scripts/` directory and run `local-run.sh`, which will do
 ### Running in an IDE
 To run FreeChat in an IDE, you need to start all dependent services first but do not need to run the container for the FreeChat application itself. You can execute the `scripts/local-deps.sh` script to start services like `MySQL`, `Redis`, `Milvus`, etc., locally. Once done, open and debug `freechat-start/src/main/java/fun/freechat/Application.java`。Make sure you have set the following startup VM options:
 ```shell
--Dspring.config.location=classpath:/application.yml,classpath:/application-local.yml \\
+-Dspring.config.location=classpath:/application.yml \\
 -DAPP_HOME=local-data/freechat \\
 -Dspring.profiles.active=local
 ```
@@ -282,7 +275,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.2.0</version>
+  <version>2.3.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -298,7 +291,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.2.0"
+     implementation "fun.freechat:freechat-sdk:2.3.0"
   }
 ```
 
@@ -312,7 +305,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.2.0.jar`
+* `target/freechat-sdk-2.3.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -404,6 +397,8 @@ Class | Method | HTTP request | Description
 *AgentApi* | [**searchAgentDetails**](docs/AgentApi.md#searchAgentDetails) | **POST** /api/v2/agent/details/search | Search Agent Details
 *AgentApi* | [**searchAgentSummary**](docs/AgentApi.md#searchAgentSummary) | **POST** /api/v2/agent/search | Search Agent Summary
 *AgentApi* | [**updateAgent**](docs/AgentApi.md#updateAgent) | **PUT** /api/v2/agent/{agentId} | Update Agent
+*AiManagerForBizAdminApi* | [**createOrUpdateAiModelInfo**](docs/AiManagerForBizAdminApi.md#createOrUpdateAiModelInfo) | **PUT** /api/v2/biz/admin/ai/model | Create or Update Model Information
+*AiManagerForBizAdminApi* | [**deleteAiModelInfo**](docs/AiManagerForBizAdminApi.md#deleteAiModelInfo) | **DELETE** /api/v2/biz/admin/ai/model/{modelId} | Delete Model Information
 *AiServiceApi* | [**addAiApiKey**](docs/AiServiceApi.md#addAiApiKey) | **POST** /api/v2/ai/apikey | Add Model Provider Credential
 *AiServiceApi* | [**deleteAiApiKey**](docs/AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v2/ai/apikey/{id} | Delete Credential of Model Provider
 *AiServiceApi* | [**disableAiApiKey**](docs/AiServiceApi.md#disableAiApiKey) | **PUT** /api/v2/ai/apikey/disable/{id} | Disable Model Provider Credential
@@ -414,8 +409,7 @@ Class | Method | HTTP request | Description
 *AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v2/public/ai/models | List Models
 *AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v2/public/ai/models/{pageSize} | List Models
 *AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v2/public/ai/models/{pageSize}/{pageNum} | List Models
-*AppConfigForAdminApi* | [**getAppConfigs**](docs/AppConfigForAdminApi.md#getAppConfigs) | **GET** /api/v2/admin/app/configs | Get Configurations
-*AppMetaForAdminApi* | [**expose**](docs/AppMetaForAdminApi.md#expose) | **GET** /api/v2/admin/app/expose | Expose DTO definitions
+*AppConfigForAdminApi* | [**getDefaultConfig**](docs/AppConfigForAdminApi.md#getDefaultConfig) | **GET** /api/v2/admin/app/configs/default | Get Default Config
 *AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v2/admin/app/meta | Get Application Information
 *CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v2/character/backend/{characterUid} | Add Character Backend
 *CharacterApi* | [**batchSearchCharacterDetails**](docs/CharacterApi.md#batchSearchCharacterDetails) | **POST** /api/v2/character/batch/details/search | Batch Search Character Details
@@ -429,6 +423,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**deleteCharacterByUid**](docs/CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
 *CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
 *CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+*CharacterApi* | [**deleteCharacterVoice**](docs/CharacterApi.md#deleteCharacterVoice) | **DELETE** /api/v2/character/voice/{characterBackendId}/{key} | Delete Character Voice
 *CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
 *CharacterApi* | [**exportCharacter**](docs/CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
 *CharacterApi* | [**getCharacterDetails**](docs/CharacterApi.md#getCharacterDetails) | **GET** /api/v2/character/details/{characterId} | Get Character Details
@@ -441,6 +436,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
 *CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
 *CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+*CharacterApi* | [**listCharacterVoices**](docs/CharacterApi.md#listCharacterVoices) | **GET** /api/v2/character/voices/{characterBackendId} | List Character Voices
 *CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
 *CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
 *CharacterApi* | [**publishCharacter1**](docs/CharacterApi.md#publishCharacter1) | **POST** /api/v2/character/publish/{characterId} | Publish Character
@@ -454,6 +450,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
 *CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
 *CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
+*CharacterApi* | [**uploadCharacterVoice**](docs/CharacterApi.md#uploadCharacterVoice) | **POST** /api/v2/character/voice/{characterBackendId} | Upload Character Voice
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
 *ChatApi* | [**getDefaultChatId**](docs/ChatApi.md#getDefaultChatId) | **GET** /api/v2/chat/{characterUid} | Get Default Chat
@@ -552,6 +549,11 @@ Class | Method | HTTP request | Description
 *RagApi* | [**listRagTasks**](docs/RagApi.md#listRagTasks) | **GET** /api/v2/rag/tasks/{characterUid} | List RAG Tasks
 *RagApi* | [**startRagTask**](docs/RagApi.md#startRagTask) | **POST** /api/v2/rag/task/start/{taskId} | Start RAG Task
 *RagApi* | [**updateRagTask**](docs/RagApi.md#updateRagTask) | **PUT** /api/v2/rag/task/{taskId} | Update RAG Task
+*TagManagerForBizAdminApi* | [**createTag**](docs/TagManagerForBizAdminApi.md#createTag) | **POST** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Create Tag
+*TagManagerForBizAdminApi* | [**deleteTag**](docs/TagManagerForBizAdminApi.md#deleteTag) | **DELETE** /api/v2/biz/admin/tag/{referType}/{referId}/{tag} | Delete Tag
+*TtsServiceApi* | [**listTtsBuiltinSpeakers**](docs/TtsServiceApi.md#listTtsBuiltinSpeakers) | **GET** /api/v2/public/tts/builtin/speakers | List Builtin Speakers
+*TtsServiceApi* | [**playSample**](docs/TtsServiceApi.md#playSample) | **GET** /api/v2/public/tts/play/sample/{speakerType}/{speaker} | Play Sample Audio
+*TtsServiceApi* | [**speakMessage**](docs/TtsServiceApi.md#speakMessage) | **GET** /api/v2/tts/speak/{messageId} | Speak Message
 
 
 ## Documentation for Models
@@ -567,8 +569,8 @@ Class | Method | HTTP request | Description
  - [AiApiKeyCreateDTO](docs/AiApiKeyCreateDTO.md)
  - [AiApiKeyInfoDTO](docs/AiApiKeyInfoDTO.md)
  - [AiModelInfoDTO](docs/AiModelInfoDTO.md)
+ - [AiModelInfoUpdateDTO](docs/AiModelInfoUpdateDTO.md)
  - [ApiTokenInfoDTO](docs/ApiTokenInfoDTO.md)
- - [AppConfigInfoDTO](docs/AppConfigInfoDTO.md)
  - [AppMetaDTO](docs/AppMetaDTO.md)
  - [CharacterBackendDTO](docs/CharacterBackendDTO.md)
  - [CharacterBackendDetailsDTO](docs/CharacterBackendDetailsDTO.md)
@@ -593,7 +595,6 @@ Class | Method | HTTP request | Description
  - [InteractiveStatsDTO](docs/InteractiveStatsDTO.md)
  - [LlmResultDTO](docs/LlmResultDTO.md)
  - [MemoryUsageDTO](docs/MemoryUsageDTO.md)
- - [OpenAiParamDTO](docs/OpenAiParamDTO.md)
  - [PluginCreateDTO](docs/PluginCreateDTO.md)
  - [PluginDetailsDTO](docs/PluginDetailsDTO.md)
  - [PluginQueryDTO](docs/PluginQueryDTO.md)
@@ -614,7 +615,6 @@ Class | Method | HTTP request | Description
  - [PromptTaskDetailsDTO](docs/PromptTaskDetailsDTO.md)
  - [PromptTemplateDTO](docs/PromptTemplateDTO.md)
  - [PromptUpdateDTO](docs/PromptUpdateDTO.md)
- - [QwenParamDTO](docs/QwenParamDTO.md)
  - [RagTaskDTO](docs/RagTaskDTO.md)
  - [RagTaskDetailsDTO](docs/RagTaskDetailsDTO.md)
  - [SseEmitter](docs/SseEmitter.md)

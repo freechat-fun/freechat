@@ -10,7 +10,7 @@ Agent identifier and version information
 |------------ | ------------- | ------------- | -------------|
 |**agentId** | **Long** | agentId |  [optional] |
 |**version** | **Integer** | version |  [optional] |
-|**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  |  [optional] |
+|**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) | Interactive statistics information |  [optional] |
 
 
 

@@ -23,6 +23,10 @@ Name | Type | Description | Notes
 **init_quota** | **int** | Initial quota when opening a chat | [optional] 
 **quota_type** | **str** | Quota type: messages | tokens | none (not limited) | [optional] 
 **enable_album_tool** | **bool** | Enable character album image retrieval tool | [optional] 
+**enable_tts** | **bool** | Enable character tts feature | [optional] 
+**tts_speaker_idx** | **str** | Character&#39;s speaker idx for tts | [optional] 
+**tts_speaker_wav** | **str** | Character&#39;s speaker sample for tts | [optional] 
+**tts_speaker_type** | **str** | Character&#39;s speaker type for tts: idx | wav | [optional] 
 
 ## Example
 

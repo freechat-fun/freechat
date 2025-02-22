@@ -7,8 +7,8 @@ Prompt AI service information
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **prompt** | **str** | Complete input content, priority: prompt &gt; promptTemplate &gt; promptRef | [optional] 
-**prompt_template** | [**PromptTemplateDTO**](PromptTemplateDTO.md) |  | [optional] 
-**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) |  | [optional] 
+**prompt_template** | [**PromptTemplateDTO**](PromptTemplateDTO.md) | Prompt template content | [optional] 
+**prompt_ref** | [**PromptRefDTO**](PromptRefDTO.md) | Prompt reference information | [optional] 
 **params** | **Dict[str, object]** | Model call parameters, the actual supported fields are related to modelId, depending on the model provider, specific fields can refer to: OpenAiParamDTO, QwenParamDTO | 
 
 ## Example

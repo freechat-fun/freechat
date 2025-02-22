@@ -23,7 +23,7 @@ Name | Type | Description | Notes
 **tags** | **List[str]** | Tag set | [optional] 
 **ai_models** | [**List[AiModelInfoDTO]**](AiModelInfoDTO.md) | Supported model set | [optional] 
 **template** | **str** | Prompt text template content | [optional] 
-**chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) |  | [optional] 
+**chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content | [optional] 
 **example** | **str** | Prompt example | [optional] 
 **inputs** | **str** | Prompt inputs, JSON format | [optional] 
 **ext** | **str** | Additional information, JSON format | [optional] 

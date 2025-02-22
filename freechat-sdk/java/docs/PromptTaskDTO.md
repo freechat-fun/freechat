@@ -8,7 +8,7 @@ Prompt task information
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**promptRef** | [**PromptRefDTO**](PromptRefDTO.md) |  |  |
+|**promptRef** | [**PromptRefDTO**](PromptRefDTO.md) | Prompt reference information |  |
 |**modelId** | **String** | Model identifier |  [optional] |
 |**apiKeyName** | **String** | API-KEY name, priority: apiKeyName &gt; apiKeyValue |  [optional] |
 |**apiKeyValue** | **String** | API-KEY value |  [optional] |

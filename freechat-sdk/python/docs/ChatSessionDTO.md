@@ -6,14 +6,15 @@ Chat session
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**context** | [**ChatContextDTO**](ChatContextDTO.md) |  | [optional] 
-**character** | [**CharacterSummaryDTO**](CharacterSummaryDTO.md) |  | [optional] 
+**context** | [**ChatContextDTO**](ChatContextDTO.md) | Chat context | [optional] 
+**character** | [**CharacterSummaryDTO**](CharacterSummaryDTO.md) | Character summary info | [optional] 
 **provider** | **str** | Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown | [optional] 
-**latest_message_record** | [**ChatMessageRecordDTO**](ChatMessageRecordDTO.md) |  | [optional] 
+**latest_message_record** | [**ChatMessageRecordDTO**](ChatMessageRecordDTO.md) | Latest message record | [optional] 
 **proactive_chat_waiting_time** | **int** | Minutes to wait for a proactive chat | [optional] 
 **sender_status** | **str** | Sender status: online | offline | invisible | [optional] 
 **is_debug_enabled** | **bool** | Is it possible to debug | [optional] 
 **is_customized_api_key_enabled** | **bool** | Is it possible to customize api-key | [optional] 
+**is_tts_enabled** | **bool** | Enable character tts feature or not | [optional] 
 
 ## Example
 

@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **name** | **str** | Prompt name | 
 **description** | **str** | Prompt description | [optional] 
 **template** | **str** | Prompt text template content, choose one from template and chatTemplate field, priority: template &gt; chatTemplate | [optional] 
-**chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) |  | [optional] 
+**chat_template** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content | [optional] 
 **format** | **str** | Prompt format: mustache (default) | f_string | [optional] 
 **lang** | **str** | Prompt language: en (default) | zh_CN | ... | [optional] 
 **example** | **str** | Prompt example | [optional] 

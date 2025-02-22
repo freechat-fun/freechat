@@ -225,7 +225,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_query_dto = [{"where":{"visibility":"public","username":"amin","text":"robot"},"orderBy":["version","modifyTime asc"],"pageNum":1,"pageSize":1},{"where":{"visibility":"private","name":"A Test"}},{"where":{"visibility":"private","tags":["test1"]}},{"where":{"visibility":"public","username":"amin","name":"Second Test","text":"robot","tags":["robot"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1}] # List[PromptQueryDTO] | Query conditions
+    prompt_query_dto = [{where={visibility=public, username=amin, text=robot}, orderBy=[version, modifyTime asc], pageNum=1, pageSize=1}, {where={visibility=private, name=A Test}}, {where={visibility=private, tags=[test1]}}, {where={visibility=public, username=amin, name=Second Test, text=robot, tags=[robot], aiModels=[123]}, orderBy=[version, modifyTime asc], pageNum=0, pageSize=1}] # List[PromptQueryDTO] | Query conditions
 
     try:
         # Batch Search Prompt Details
@@ -1547,7 +1547,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","text":"(new)","tags":["demo2"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1} # PromptQueryDTO | Query conditions
+    prompt_query_dto = {where={visibility=public, username=amin, name=Second Test, text=(new), tags=[demo2], aiModels=[123]}, orderBy=[version, modifyTime asc], pageNum=0, pageSize=1} # PromptQueryDTO | Query conditions
 
     try:
         # Search Prompt Details
@@ -1626,7 +1626,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_query_dto = {"where":{"visibility":"public","username":"amin","name":"Second Test","text":"(new)","tags":["demo2"],"aiModels":["123"]},"orderBy":["version","modifyTime asc"],"pageNum":0,"pageSize":1} # PromptQueryDTO | Query conditions
+    prompt_query_dto = {where={visibility=public, username=amin, name=Second Test, text=(new), tags=[demo2], aiModels=[123]}, orderBy=[version, modifyTime asc], pageNum=0, pageSize=1} # PromptQueryDTO | Query conditions
 
     try:
         # Search Prompt Summary
@@ -1863,7 +1863,7 @@ configuration = freechat_sdk.Configuration(
 with freechat_sdk.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = freechat_sdk.PromptApi(api_client)
-    prompt_ai_param_dto = {"prompt":"say 'hello'","params":{"apiKey":"","modelId":"[open_ai]gpt-3.5-turbo"}} # PromptAiParamDTO | Call parameters
+    prompt_ai_param_dto = {prompt=say 'hello', params={apiKey=, modelId=[open_ai]gpt-3.5-turbo}} # PromptAiParamDTO | Call parameters
 
     try:
         # Send Prompt by Streaming Back

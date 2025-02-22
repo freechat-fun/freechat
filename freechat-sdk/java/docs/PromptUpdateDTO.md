@@ -13,7 +13,7 @@ Request data for updating prompt information
 |**name** | **String** | Prompt name |  |
 |**description** | **String** | Prompt description |  [optional] |
 |**template** | **String** | Prompt text template content, choose one from template and chatTemplate field, priority: template &gt; chatTemplate |  [optional] |
-|**chatTemplate** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) |  |  [optional] |
+|**chatTemplate** | [**ChatPromptContentDTO**](ChatPromptContentDTO.md) | Prompt chat template content |  [optional] |
 |**format** | **String** | Prompt format: mustache (default) | f_string |  [optional] |
 |**lang** | **String** | Prompt language: en (default) | zh_CN | ... |  [optional] |
 |**example** | **String** | Prompt example |  [optional] |

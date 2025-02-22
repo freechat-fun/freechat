@@ -10,7 +10,7 @@ Character identifier and version information
 |------------ | ------------- | ------------- | -------------|
 |**characterId** | **Long** | characterId |  [optional] |
 |**version** | **Integer** | version |  [optional] |
-|**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) |  |  [optional] |
+|**stats** | [**InteractiveStatsDTO**](InteractiveStatsDTO.md) | Interactive statistics information |  [optional] |
 
 
 
