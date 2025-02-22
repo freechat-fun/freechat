@@ -66,7 +66,7 @@ public class HttpUtils {
     }
 
     public static boolean ping(String url) {
-        HttpRequest request = builderFor(url, null).GET().build();
+        HttpRequest request = builderFor(url, null).HEAD().build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.statusCode() >= 200 && response.statusCode() < 300;
