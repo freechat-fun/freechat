@@ -168,7 +168,7 @@ public record SysUserDetailsManager(SysUserService userService,
         return username + "@" + platform;
     }
 
-    public String getDefaultPassword(OAuth2User oAuth2User, String platform) {
+    private String getDefaultPassword(OAuth2User oAuth2User, String platform) {
         return getSub(oAuth2User, platform);
     }
 

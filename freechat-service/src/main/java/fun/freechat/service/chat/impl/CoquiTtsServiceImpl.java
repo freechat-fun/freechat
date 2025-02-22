@@ -125,7 +125,7 @@ public class CoquiTtsServiceImpl implements TtsService {
 
     @Scheduled(fixedDelay = 5000L)
     public void ping() {
-        boolean isOnline = StringUtils.isNotBlank(HttpUtils.get(pingApi));
+        boolean isOnline = HttpUtils.ping(pingApi);
         if (!isOnline) {
             try {
                 Thread.sleep(500);
@@ -133,7 +133,7 @@ public class CoquiTtsServiceImpl implements TtsService {
                 // ignored
             }
             // try again
-            isOnline = StringUtils.isNotBlank(HttpUtils.get(pingApi));
+            isOnline = HttpUtils.ping(pingApi);
         }
         alive.set(isOnline);
     }

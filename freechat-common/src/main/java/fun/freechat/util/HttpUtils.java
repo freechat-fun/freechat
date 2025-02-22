@@ -65,6 +65,16 @@ public class HttpUtils {
         return null;
     }
 
+    public static boolean ping(String url) {
+        HttpRequest request = builderFor(url, null).GET().build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() >= 200 && response.statusCode() < 300;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
+
     public static String get(String url) {
         return get(url, null);
     }
