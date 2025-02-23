@@ -2,17 +2,31 @@ package fun.freechat.api;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
-import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.internal.Utils;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
-import fun.freechat.api.dto.*;
+import fun.freechat.api.dto.ChatCreateDTO;
+import fun.freechat.api.dto.ChatMessageDTO;
+import fun.freechat.api.dto.ChatMessageRecordDTO;
+import fun.freechat.api.dto.ChatSessionDTO;
+import fun.freechat.api.dto.ChatUpdateDTO;
+import fun.freechat.api.dto.LlmResultDTO;
+import fun.freechat.api.dto.MemoryUsageDTO;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.model.*;
+import fun.freechat.model.AiModelInfo;
+import fun.freechat.model.CharacterBackend;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.ChatContext;
+import fun.freechat.model.PromptTask;
 import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.*;
+import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatMemoryService;
+import fun.freechat.service.chat.ChatMessageRecord;
+import fun.freechat.service.chat.ChatService;
+import fun.freechat.service.chat.ChatSession;
+import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
 import fun.freechat.service.enums.QuotaType;
@@ -38,12 +52,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -478,7 +503,7 @@ public class ChatApi {
                 // add greeting message
                 String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
                 if (StringUtils.isNotBlank(greeting)) {
-                    SystemMessage greetingMessage = SystemMessage.from(greeting);
+                    AiMessage greetingMessage = AiMessage.from(greeting);
                     firstRecord.setMessage(greetingMessage);
                     records.addFirst(firstRecord);
                     ++end;
@@ -535,7 +560,7 @@ public class ChatApi {
                 // add greeting message
                 String greeting = (String) session.getVariables().get(ChatVar.CHARACTER_GREETING.text());
                 if (StringUtils.isNotBlank(greeting)) {
-                    SystemMessage greetingMessage = SystemMessage.from(greeting);
+                    AiMessage greetingMessage = AiMessage.from(greeting);
                     firstRecord.setMessage(greetingMessage);
                     records.addFirst(firstRecord);
                     ++end;

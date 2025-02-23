@@ -154,7 +154,9 @@ public class TtsApi {
                     .map(CharacterInfo::getGreeting)
                     .filter(StringUtils::isNotBlank)
                     .map(AiMessage::from)
-                    .ifPresent(messageRecord::setMessage);
+                    .ifPresentOrElse(messageRecord::setMessage, () -> {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
+                    });
         } else if (messageType != ChatMessageType.AI) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find message record by " + messageId);
         }
