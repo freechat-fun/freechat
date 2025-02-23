@@ -343,7 +343,7 @@
         <beanvalidation-version>2.0.2</beanvalidation-version>
         <junit-version>5.12.0</junit-version>
         <junit-platform-runner.version>1.12.0</junit-platform-runner.version>
-        <jakarta.ws.rs-api-version>2.1.6</jakarta.ws.rs-api-version>
+        <jakarta.ws.rs-api-version>4.0.0</jakarta.ws.rs-api-version>
         <jsr311-api-version>1.1.1</jsr311-api-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotless.version>2.44.3</spotless.version>
