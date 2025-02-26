@@ -66,6 +66,12 @@ public class TtsApi {
     private static final String CACHE_HOME = "audio/cache";
     private static final String SAMPLE_TEXT = "Hello, I am %s. Nice to meet you!";
     private static final int BUFFER_SIZE = 8192;
+    // pattern for excluding incomplete markdown tags such as: [abc](de or ![abc](de or ![abc](de)
+    private static final java.util.regex.Pattern INCOMPLETE_MARKDOWN_PATTERN =
+            java.util.regex.Pattern.compile("(.*?)!?\\[[^\\[\\]]*?\\]\\([^(]*$");
+    // pattern for speaker info: [provider]voice|emotion
+    private static final java.util.regex.Pattern SPEAKER_PATTERN =
+            java.util.regex.Pattern.compile("\\[(.+?)\\](.+?)(\\|([^|]*))?");
 
     @Autowired
     private CharacterService characterService;
@@ -110,14 +116,16 @@ public class TtsApi {
             @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav") String speakerType,
             @Parameter(description = "The speaker") @PathVariable("speaker") @NotBlank String speaker) {
         String validSpeaker;
+        String voice;
         try {
             validSpeaker = SecurityUtils.filterPath(speaker);
+            voice = voiceOfSpeaker(validSpeaker);
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid speaker: " + speaker);
         }
 
         TtsSpeakerType type = TtsSpeakerType.of(speakerType);
-        String name = type == TtsSpeakerType.IDX ? validSpeaker : "your friend";
+        String name = type == TtsSpeakerType.IDX ? voice : "your friend";
 
         ChatMessageRecord messageRecord = ChatMessageRecord.builder()
                 .id(0L)
@@ -411,10 +419,13 @@ public class TtsApi {
             return text;
         }
         // exclude incomplete markdown tags such as: [abc](de or ![abc](de or ![abc](de)
-        String markdownPattern = "(.*?)!?\\[[^\\[\\]]*?\\]\\([^(]*$";
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(markdownPattern);
-        Matcher matcher = pattern.matcher(text);
-
+        Matcher matcher = INCOMPLETE_MARKDOWN_PATTERN.matcher(text);
         return matcher.find() ? matcher.group(1) : text;
+    }
+
+    private static String voiceOfSpeaker(String speaker) {
+        // [provider]voice|emotion
+        Matcher matcher = SPEAKER_PATTERN.matcher(speaker);
+        return matcher.find() ? matcher.group(2) : speaker;
     }
 }

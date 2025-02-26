@@ -64,6 +64,7 @@ services:
       - ${TTS_VOLUME}:/var/lib/tts
     environment:
       - DATA_HOME=/var/lib/tts
+      - PYTHONPATH=/root
     healthcheck:
       test: ["CMD", "curl", "--silent", "--fail", "http://localhost:${TTS_PORT}/ping"]
       interval: 10s
