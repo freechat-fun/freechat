@@ -297,7 +297,7 @@ const CharacterBackendSettings = forwardRef<
     if (enableTts) {
       const speaker = ttsSpeakerType === 'idx' ? ttsSpeakerIdx : ttsSpeakerWav;
       const player = ttsSpeakerType === 'idx' ? 0 : 1;
-      const audioUrl = `/api/v2/public/tts/play/sample/${ttsSpeakerType}/${speaker}`;
+      const audioUrl = `/api/v2/public/tts/play/sample/${ttsSpeakerType}/${encodeURIComponent(speaker ?? '')}`;
 
       if (audioRefs.current[player].current) {
         setPlaying(true);

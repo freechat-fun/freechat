@@ -28,6 +28,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -65,6 +66,7 @@ import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 public class TtsApi {
     private static final String CACHE_HOME = "audio/cache";
     private static final String SAMPLE_TEXT = "Hello, I am %s. Nice to meet you!";
+    private static final String SAMPLE_TEXT_CN = "你好啊，我是你的朋友。很高兴认识你！";
     private static final int BUFFER_SIZE = 8192;
     // pattern for excluding incomplete markdown tags such as: [abc](de or ![abc](de or ![abc](de)
     private static final java.util.regex.Pattern INCOMPLETE_MARKDOWN_PATTERN =
@@ -116,10 +118,13 @@ public class TtsApi {
             @Parameter(description = "The speaker type") @PathVariable("speakerType") @Pattern(regexp = "idx|wav") String speakerType,
             @Parameter(description = "The speaker") @PathVariable("speaker") @NotBlank String speaker) {
         String validSpeaker;
+        String platform;
         String voice;
         try {
             validSpeaker = SecurityUtils.filterPath(speaker);
-            voice = voiceOfSpeaker(validSpeaker);
+            Triple<String, String, String> info = infoOfSpeaker(validSpeaker);
+            platform = info.getLeft();
+            voice = info.getMiddle();
         } catch (AccessDeniedException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid speaker: " + speaker);
         }
@@ -129,7 +134,7 @@ public class TtsApi {
 
         ChatMessageRecord messageRecord = ChatMessageRecord.builder()
                 .id(0L)
-                .message(AiMessage.from(SAMPLE_TEXT.formatted(name)))
+                .message(AiMessage.from(getSampleText(platform, name)))
                 .speakerType(type)
                 .speaker(validSpeaker)
                 .build();
@@ -425,9 +430,27 @@ public class TtsApi {
         return matcher.find() ? matcher.group(1) : text;
     }
 
-    private static String voiceOfSpeaker(String speaker) {
+    private static Triple<String, String, String> infoOfSpeaker(String speaker) {
         // [provider]voice|emotion
         Matcher matcher = SPEAKER_PATTERN.matcher(speaker);
-        return matcher.matches() ? matcher.group(2) : speaker;
+        String platform = "coqui";
+        String voice = speaker;
+        String emotion = null;
+        if (matcher.matches()) {
+            platform = matcher.group(1);
+            voice = matcher.group(2);
+            if (matcher.groupCount() >= 4) {
+                emotion = matcher.group(4);
+            }
+        }
+
+        return Triple.of(platform, voice, emotion);
+    }
+
+    private static String getSampleText(String platform, String name) {
+        if ("aliyun".equals(platform)) {
+            return SAMPLE_TEXT_CN;
+        }
+        return SAMPLE_TEXT.formatted(name);
     }
 }
