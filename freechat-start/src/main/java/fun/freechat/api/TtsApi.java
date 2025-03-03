@@ -190,13 +190,15 @@ public class TtsApi {
             String cachePath = getCachePath(messageRecord);
             if (fileStore.exists(cachePath)) {
                 try {
-                    InputStream voiceStream = fileStore.newInputStream(cachePath);
-                    return doSpeakByCachedVoice(
-                            messageRecord.getSpeaker(),
-                            messageRecord.getSpeakerType(),
-                            text,
-                            lang,
-                            voiceStream);
+                    if (fileStore.size(cachePath) > 0) {
+                        InputStream voiceStream = fileStore.newInputStream(cachePath);
+                        return doSpeakByCachedVoice(
+                                messageRecord.getSpeaker(),
+                                messageRecord.getSpeakerType(),
+                                text,
+                                lang,
+                                voiceStream);
+                    }
                 } catch (IOException e) {
                     log.warn("Failed to read cached wav file: {}", cachePath, e);
                     fileStore.tryDelete(cachePath);
@@ -426,6 +428,6 @@ public class TtsApi {
     private static String voiceOfSpeaker(String speaker) {
         // [provider]voice|emotion
         Matcher matcher = SPEAKER_PATTERN.matcher(speaker);
-        return matcher.find() ? matcher.group(2) : speaker;
+        return matcher.matches() ? matcher.group(2) : speaker;
     }
 }
