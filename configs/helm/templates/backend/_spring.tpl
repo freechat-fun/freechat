@@ -47,7 +47,7 @@ spring:
             authorizationGrantType: {{ default "authorization_code" .authorizationGrantType }}
             clientAuthenticationMethod: {{ default "client_secret_basic" .clientAuthenticationMethod }}
             clientName: {{ default "GitHub" .clientName }}
-            scope: {{ default "read:user" .scope }}
+            scope: {{ default "read:user,user:email" .scope }}
             clientId: {{ .clientId | quote }}
             clientSecret: {{ .clientSecret | quote }}
           {{- end }}
