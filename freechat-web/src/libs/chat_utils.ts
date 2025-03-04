@@ -113,6 +113,11 @@ export function getSenderReply(
   noLinks: boolean = false
 ): string {
   const preHandleMessage = (message: string) => {
+    if (message.startsWith('<think>') && message.search('</think>') === -1) {
+      // incomplete <think> section
+      return '';
+    }
+
     const matches = message.match(/<think\b[^>]*>([\s\S]*?)<\/think>/gi);
     let preProcessedMessage = message;
 
