@@ -201,8 +201,8 @@ const CHARACTER_PROMPT_DESCRIPTION_ZH = `
 `;
 
 export const PROACTIVE_CHAT_PROMPT_EN =
-  '> [Thought] What should we talk about?';
-export const PROACTIVE_CHAT_PROMPT_ZH = '> [想法] 聊点什么呢？';
+  '<think>What should we talk about?</think>';
+export const PROACTIVE_CHAT_PROMPT_ZH = '<think>聊点什么呢？</think>';
 
 const CHARACTER_PROMPT_TEMPLATE_EN = `{{#RELEVANT_INFORMATION}}
 [[[Relevant fragments retrieved that may be relevant to the query]]]
