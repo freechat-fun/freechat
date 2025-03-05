@@ -413,7 +413,8 @@ public class TtsApi {
 
         String reply = processedReply.toString().trim();
 
-        if (reply.startsWith("\"") && reply.endsWith("\"")) {
+        if ((reply.startsWith("\"") || reply.startsWith("“"))
+                && (reply.endsWith("\"") || reply.endsWith("”"))) {
             reply = reply.substring(1, reply.length() - 1);
         }
 

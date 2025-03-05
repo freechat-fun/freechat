@@ -161,7 +161,10 @@ export function getSenderReply(
   const lines = preProcessedMessage.split(/\r?\n/);
   const processedLines = lines.map((line) => handleLine(line));
   let reply = processedLines.join('\n').trim();
-  if (reply.startsWith('"') && reply.endsWith('"')) {
+  if (
+    (reply.startsWith('"') || reply.startsWith('“')) &&
+    (reply.endsWith('"') || reply.endsWith('”'))
+  ) {
     reply = reply.substring(1, reply.length - 1);
   }
   return reply;
