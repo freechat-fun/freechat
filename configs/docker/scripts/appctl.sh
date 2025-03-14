@@ -22,7 +22,9 @@ do_start() {
     SERVER_PORT=8080
   fi
 
-  MANAGEMENT_PORT=$((SERVER_PORT+1))
+  if [[ -z "${MANAGEMENT_PORT}" ]]; then
+    MANAGEMENT_PORT=$((SERVER_PORT+1))
+  fi
 
   JVM_OPTS="-server ${JVM_OPTS}"
   if [[ "${JPDA_ENABLE}" == "true" ]]; then
@@ -44,12 +46,13 @@ do_start() {
   echo "java" ${JVM_OPTS} ${SERVICE_OPTS} "-jar" ${JAR_PATH} ${SERVICE_ARGS}
   eval exec "java" ${JVM_OPTS} ${SERVICE_OPTS} "-jar" ${JAR_PATH} ${SERVICE_ARGS} "&"
 }
+
 check_start() {
   local exptime=0
   local time=600
   while true
   do
-    curl -sf "http://localhost:${SERVER_PORT:-8080}/public/check/ready" &>/dev/null
+    curl -sf "http://localhost:${MANAGEMENT_PORT:-8081}/public/actuator/health/readiness" &>/dev/null
     ret=$?
     if [ $ret -ne 0 ]; then
       sleep 1

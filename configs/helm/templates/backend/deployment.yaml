@@ -50,9 +50,13 @@ spec:
           env:
             - name: SERVICE_OPTS
               value: '-Dspring.config.location=classpath:/application.yml,/home/{{ .Values.backend.systemAccount }}/{{ include "helpers.name" . }}/config/application-online.yml -Dspring.profiles.active=online'
+            - name: SERVER_PORT
+              value: {{ default "8080" .Values.backend.container.server.port | quote }}
+            - name: MANAGEMENT_PORT
+              value: {{ default "8081" .Values.backend.container.management.port | quote }}
             {{- if .Values.backend.debug.jpda.enabled }}
             - name: JPDA_ENABLE
-              value: "true"
+              value: 'true'
             - name: JPDA_PORT
               value: {{ default "5005" .Values.backend.debug.jpda.port | quote }}
             {{- end }}
@@ -64,7 +68,10 @@ spec:
           imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ default 8080 .Values.backend.container.server.port }}
+              protocol: TCP
+            - name: management
+              containerPort: {{ default 8081 .Values.backend.container.management.port }}
               protocol: TCP
             {{- if .Values.backend.debug.jpda.enabled }}
             - name: jpda
@@ -73,14 +80,14 @@ spec:
             {{- end }}
           livenessProbe:
             httpGet:
-              path: public/check/live
-              port: http
+              path: /public/actuator/health/liveness
+              port: management
             initialDelaySeconds: 60
             failureThreshold: 60
           readinessProbe:
             httpGet:
-              path: public/check/ready
-              port: http
+              path: /public/actuator/health/readiness
+              port: management
             initialDelaySeconds: 60
             failureThreshold: 60
           resources:

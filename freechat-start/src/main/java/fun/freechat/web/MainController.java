@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedList;
@@ -111,18 +110,5 @@ public class MainController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return "redirect:" + origPath;
-    }
-
-    @GetMapping({"/public/check/live"})
-    @ResponseBody
-    public String live() {
-        return "success";
-    }
-
-    @GetMapping("/public/check/ready")
-    @ResponseBody
-    public String ready() {
-        // TODO: check services statuses
-        return "success";
     }
 }

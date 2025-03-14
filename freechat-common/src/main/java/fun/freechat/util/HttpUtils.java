@@ -17,6 +17,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -160,11 +161,16 @@ public class HttpUtils {
     }
 
     public static String toCurl(String url, Map<String, String> headers, String body, String method) {
-        StringBuilder debugInfo = new StringBuilder("curl -X ").append(method).append(" \\\n");
+        Map<String, String> httpHeaders = new HashMap<>();
+        httpHeaders.put("User-Agent", DEFAULT_USER_AGENT);
+        httpHeaders.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        httpHeaders.put("Accept", DEFAULT_ACCEPT);
         if (MapUtils.isNotEmpty(headers)) {
-            headers.forEach((k, v) ->
-                    debugInfo.append(" -H '").append(k).append(": ").append(v).append("' \\\n"));
+            httpHeaders.putAll(headers);
         }
+        StringBuilder debugInfo = new StringBuilder("curl -X ").append(method).append(" \\\n");
+        httpHeaders.forEach((k, v) ->
+                debugInfo.append(" -H '").append(k).append(": ").append(v).append("' \\\n"));
         if (StringUtils.isNotBlank(body)) {
             debugInfo.append(" -d '").append(body).append("' \\\n");
         }

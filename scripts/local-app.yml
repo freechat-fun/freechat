@@ -11,7 +11,7 @@ services:
       - APP_NAME=${APP_NAME}
       - SERVICE_OPTS=${SERVICE_OPTS}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/public/check/ready"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/public/actuator/health/readiness"]
       interval: 10s
       timeout: 30s
       retries: 9

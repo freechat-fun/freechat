@@ -82,6 +82,25 @@ redis:
     url: redis://localhost:6379
     password: hello1234
     timeout: 10000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      basePath: /public/actuator
+  endpoint:
+    health:
+      db:
+        enabled: true
+      diskSpace:
+        enabled: true
+      probes:
+        enabled: true
+      redis:
+        enabled: true
+      showDetails: always
+  server:
+    port: 8081
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
