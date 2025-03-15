@@ -22,6 +22,6 @@ lazy val root = (project in file(".")).
       "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0" % "compile",
       "org.junit.jupiter" % "junit-jupiter-api" % "5.12.1" % "test",
       "com.novocode" % "junit-interface" % "0.11" % "test",
-      "org.mockito" % "mockito-core" % "5.16.0" % "test"
+      "org.mockito" % "mockito-core" % "5.16.1" % "test"
     )
   )
