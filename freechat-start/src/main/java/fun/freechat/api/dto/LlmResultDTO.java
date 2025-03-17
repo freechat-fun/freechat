@@ -1,6 +1,7 @@
 package fun.freechat.api.dto;
 
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.output.Response;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -68,8 +69,8 @@ public class LlmResultDTO extends TraceableDTO {
                     messageBuilder.role(PromptRole.ASSISTANT.text());
                 }
             }
-            case null, default -> {
-                text = content != null ? content.toString() : "";
+            default -> {
+                text = content.toString();
                 messageBuilder.contents(List.of(ChatContentDTO.fromText(text)));
                 messageBuilder.role(PromptRole.ASSISTANT.text());
             }
@@ -83,5 +84,10 @@ public class LlmResultDTO extends TraceableDTO {
                 messageBuilder.build(),
                 finishReason,
                 TokenUsageDTO.from(response.tokenUsage()));
+    }
+
+    public static LlmResultDTO from(ChatResponse response, Long messageId) {
+        return from(
+                new Response<>(response.aiMessage(), response.tokenUsage(), response.finishReason()), messageId);
     }
 }

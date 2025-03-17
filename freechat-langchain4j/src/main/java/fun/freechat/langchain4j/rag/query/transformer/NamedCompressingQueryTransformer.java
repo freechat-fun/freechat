@@ -82,7 +82,7 @@ public class NamedCompressingQueryTransformer extends CompressingQueryTransforme
         }
 
         Prompt prompt = createPrompt(query, format(chatMemory));
-        String compressedQueryText = chatLanguageModel.generate(prompt.text());
+        String compressedQueryText = chatLanguageModel.chat(prompt.text());
         log.info("Transformed original query '{}' into '{}'", query.text(), compressedQueryText);
         Query compressedQuery = Query.from(compressedQueryText, query.metadata());
         return singletonList(compressedQuery);
@@ -107,7 +107,7 @@ public class NamedCompressingQueryTransformer extends CompressingQueryTransforme
 
     @Override
     protected Prompt createPrompt(Query query, String chatMemory) {
-        Map<String, Object> variables = new HashMap<>(3);
+        Map<String, Object> variables = HashMap.newHashMap(3);
         if (StringUtils.isNotBlank(aiName)) {
             variables.put("aiName", aiName);
         }

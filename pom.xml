@@ -37,7 +37,7 @@
         <redisson.version>3.45.0</redisson.version>
         <objenesis.version>3.4</objenesis.version>
         <swagger-parser.version>2.1.25</swagger-parser.version>
-        <langchain4j.version>0.36.2</langchain4j.version>
+        <langchain4j.version>1.0.0-beta2</langchain4j.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.2.1</buildnumber-maven-plugin.version>
@@ -141,6 +141,13 @@
             <dependency>
                 <groupId>dev.langchain4j</groupId>
                 <artifactId>langchain4j-bom</artifactId>
+                <version>${langchain4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-community-bom</artifactId>
                 <version>${langchain4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>

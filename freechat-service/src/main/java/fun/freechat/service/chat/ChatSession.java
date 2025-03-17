@@ -1,6 +1,5 @@
 package fun.freechat.service.chat;
 
-import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -9,7 +8,6 @@ import dev.langchain4j.model.moderation.ModerationModel;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServiceContext;
-import dev.langchain4j.service.tool.DefaultToolExecutor;
 import dev.langchain4j.service.tool.ToolExecutor;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
@@ -19,16 +17,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static dev.langchain4j.agent.tool.ToolSpecifications.toolSpecificationFrom;
-import static dev.langchain4j.exception.IllegalConfigurationException.illegalConfiguration;
 
 @Getter
 @Slf4j
@@ -76,26 +68,7 @@ public class ChatSession {
 
     @SuppressWarnings("unused")
     public void tools(List<Object> objectsWithTools) {
-        if (aiServiceContext.toolSpecifications == null) {
-            aiServiceContext.toolSpecifications = new ArrayList<>();
-        }
-        if (aiServiceContext.toolExecutors == null) {
-            aiServiceContext.toolExecutors = new HashMap<>();
-        }
-
-        for (Object objectWithTool : objectsWithTools) {
-            if (objectWithTool instanceof Class) {
-                throw illegalConfiguration("Tool '%s' must be an object, not a class", objectWithTool);
-            }
-
-            for (Method method : objectWithTool.getClass().getDeclaredMethods()) {
-                if (method.isAnnotationPresent(Tool.class)) {
-                    ToolSpecification toolSpecification = toolSpecificationFrom(method);
-                    aiServiceContext.toolSpecifications.add(toolSpecification);
-                    aiServiceContext.toolExecutors.put(toolSpecification.name(), new DefaultToolExecutor(objectWithTool, method));
-                }
-            }
-        }
+        aiServiceContext.toolService.tools(objectsWithTools);
     }
 
     public ChatLanguageModel getChatModel() {
@@ -115,11 +88,11 @@ public class ChatSession {
     }
 
     public List<ToolSpecification> getToolSpecifications() {
-        return aiServiceContext.toolSpecifications;
+        return aiServiceContext.toolService.toolSpecifications();
     }
 
     public Map<String, ToolExecutor> getToolExecutors() {
-        return aiServiceContext.toolExecutors;
+        return aiServiceContext.toolService.toolExecutors();
     }
 
     public RetrievalAugmentor getRetriever() {

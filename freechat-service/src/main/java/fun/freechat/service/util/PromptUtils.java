@@ -55,13 +55,14 @@ public class PromptUtils {
             case AI -> ((AiMessage) message).text();
             case SYSTEM -> ((SystemMessage) message).text();
             case TOOL_EXECUTION_RESULT -> ((ToolExecutionResultMessage) message).text();
+            case CUSTOM -> ((CustomMessage) message).text();
         };
     }
 
-    public static String prefixFrom(dev.langchain4j.data.message.ChatMessage message) {
-        if (message instanceof dev.langchain4j.data.message.AiMessage) {
+    public static String prefixFrom(ChatMessage message) {
+        if (message instanceof AiMessage) {
             return ASSISTANT_PREFIX;
-        } else if (message instanceof dev.langchain4j.data.message.SystemMessage) {
+        } else if (message instanceof SystemMessage) {
             return SYSTEM_PREFIX;
         } else {
             return USER_PREFIX;

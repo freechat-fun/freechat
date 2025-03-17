@@ -2,12 +2,17 @@ package fun.freechat.service.chat.impl;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.data.message.*;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.request.ChatRequest;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.moderation.Moderation;
-import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.AugmentationRequest;
 import dev.langchain4j.rag.AugmentationResult;
@@ -24,7 +29,13 @@ import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.User;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.*;
+import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatMemoryService;
+import fun.freechat.service.chat.ChatMessageRecord;
+import fun.freechat.service.chat.ChatService;
+import fun.freechat.service.chat.ChatSession;
+import fun.freechat.service.chat.ChatSessionService;
+import fun.freechat.service.chat.LongTermChatMemoryStore;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
@@ -40,7 +51,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -48,7 +64,15 @@ import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
 import static fun.freechat.service.chat.ChatService.asMemoryId;
-import static fun.freechat.service.enums.ChatVar.*;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_DESCRIPTION;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_GREETING;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_NICKNAME;
+import static fun.freechat.service.enums.ChatVar.CHAT_CONTEXT;
+import static fun.freechat.service.enums.ChatVar.CURRENT_TIME;
+import static fun.freechat.service.enums.ChatVar.INPUT;
+import static fun.freechat.service.enums.ChatVar.MESSAGE_CONTEXT;
+import static fun.freechat.service.enums.ChatVar.RELEVANT_INFORMATION;
+import static fun.freechat.service.enums.ChatVar.USER_NICKNAME;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
 @Service
@@ -166,7 +190,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     // @Trace(ignoreArgs = true, extInfo = "'chat:' + #p0 + ',role:' + #p1.type().name() + ',message:' + #p1.text() + ',context:' + #p2")
-    public Pair<Response<AiMessage>, Long> send(String chatId, ChatMessage message, String context) {
+    public Pair<ChatResponse, Long> send(String chatId, ChatMessage message, String context) {
         ChatSession session = chatSessionService.get(chatId);
         if (session == null || message == null || !session.acquire()) {
             return null;
@@ -183,9 +207,12 @@ public class ChatServiceImpl implements ChatService {
             ChatLanguageModel chatModel = session.getChatModel();
             List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
 
-            Response<AiMessage> response = toolSpecifications != null ?
-                    chatModel.generate(messages, toolSpecifications) :
-                    chatModel.generate(messages);
+            ChatResponse response = toolSpecifications != null ?
+                    chatModel.chat(ChatRequest.builder()
+                            .messages(messages)
+                            .toolSpecifications(toolSpecifications)
+                            .build()) :
+                    chatModel.chat(messages);
             TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
             chatSessionService.verifyModerationIfNeeded(moderationFuture);
@@ -193,13 +220,13 @@ public class ChatServiceImpl implements ChatService {
 
             for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
                 if (chatMemory instanceof SystemAlwaysOnTopMessageWindowChatMemory myMemory) {
-                    messageId = myMemory.addAiMessage(response.content(), response.tokenUsage());
+                    messageId = myMemory.addAiMessage(response.aiMessage(), response.tokenUsage());
                 } else {
-                    chatMemory.add(response.content());
+                    chatMemory.add(response.aiMessage());
                 }
 
                 session.addMemoryUsage(1L, response.tokenUsage());
-                AiMessage aiMessage = response.content();
+                AiMessage aiMessage = response.aiMessage();
 
                 if (!aiMessage.hasToolExecutionRequests()) {
                     break;
@@ -213,12 +240,19 @@ public class ChatServiceImpl implements ChatService {
                     chatMemory.add(toolExecutionResultMessage);
                 }
 
-                response = chatModel.generate(chatMemory.messages(), toolSpecifications);
+                response = chatModel.chat(ChatRequest.builder()
+                        .messages(chatMemory.messages())
+                        .toolSpecifications(toolSpecifications)
+                        .build());
                 tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
             }
 
             return Pair.of(
-                    Response.from(response.content(), tokenUsageAccumulator, response.finishReason()),
+                    ChatResponse.builder()
+                            .aiMessage(response.aiMessage())
+                            .tokenUsage(tokenUsageAccumulator)
+                            .finishReason(response.finishReason())
+                            .build(),
                     messageId);
         } finally {
             session.release();
@@ -268,7 +302,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Response<AiMessage> sendAssistant(String chatId, String assistantUid) {
+    public ChatResponse sendAssistant(String chatId, String assistantUid) {
         ChatSession session = chatSessionService.get(chatId);
         if (session == null || assistantUid == null || session.isProcessing()) {
             return null;
@@ -290,18 +324,21 @@ public class ChatServiceImpl implements ChatService {
         ChatLanguageModel chatModel = assistantSession.getChatModel();
         List<ToolSpecification> toolSpecifications = assistantSession.getToolSpecifications();
 
-        Response<AiMessage> response = toolSpecifications != null ?
-                chatModel.generate(messages, toolSpecifications) :
-                chatModel.generate(messages);
+        ChatResponse response = toolSpecifications != null ?
+                chatModel.chat(ChatRequest.builder()
+                        .messages(messages)
+                        .toolSpecifications(toolSpecifications)
+                        .build()) :
+                chatModel.chat(messages);
         TokenUsage tokenUsageAccumulator = response.tokenUsage();
 
         chatSessionService.verifyModerationIfNeeded(moderationFuture);
         ChatMemory chatMemory = assistantSession.getChatMemory(assistantChatId);
 
         for (int i = 0; i < MAX_SEQUENTIAL_TOOL_EXECUTIONS; ++i) {
-            chatMemory.add(response.content());
+            chatMemory.add(response.aiMessage());
 
-            AiMessage aiMessage = response.content();
+            AiMessage aiMessage = response.aiMessage();
             if (!aiMessage.hasToolExecutionRequests()) {
                 break;
             }
@@ -314,11 +351,18 @@ public class ChatServiceImpl implements ChatService {
                 chatMemory.add(toolExecutionResultMessage);
             }
 
-            response = chatModel.generate(chatMemory.messages(), toolSpecifications);
+            response = chatModel.chat(ChatRequest.builder()
+                    .messages(chatMemory.messages())
+                    .toolSpecifications(toolSpecifications)
+                    .build());
             tokenUsageAccumulator = TokenUsage.sum(tokenUsageAccumulator, response.tokenUsage());
         }
 
-        return Response.from(response.content(), tokenUsageAccumulator, response.finishReason());
+        return ChatResponse.builder()
+                .aiMessage(response.aiMessage())
+                .tokenUsage(tokenUsageAccumulator)
+                .finishReason(response.finishReason())
+                .build();
     }
 
     @Override

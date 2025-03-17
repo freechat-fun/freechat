@@ -1,11 +1,28 @@
 package fun.freechat.service.ai;
 
-import com.azure.ai.openai.models.ChatCompletionsJsonResponseFormat;
-import com.azure.ai.openai.models.ChatCompletionsTextResponseFormat;
-import dev.langchain4j.model.azure.*;
-import dev.langchain4j.model.dashscope.*;
-import dev.langchain4j.model.ollama.*;
-import dev.langchain4j.model.openai.*;
+import dev.langchain4j.community.model.dashscope.QwenChatModel;
+import dev.langchain4j.community.model.dashscope.QwenEmbeddingModel;
+import dev.langchain4j.community.model.dashscope.QwenLanguageModel;
+import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
+import dev.langchain4j.community.model.dashscope.QwenStreamingLanguageModel;
+import dev.langchain4j.model.azure.AzureOpenAiChatModel;
+import dev.langchain4j.model.azure.AzureOpenAiEmbeddingModel;
+import dev.langchain4j.model.azure.AzureOpenAiLanguageModel;
+import dev.langchain4j.model.azure.AzureOpenAiStreamingChatModel;
+import dev.langchain4j.model.azure.AzureOpenAiStreamingLanguageModel;
+import dev.langchain4j.model.chat.request.ResponseFormat;
+import dev.langchain4j.model.ollama.OllamaChatModel;
+import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import dev.langchain4j.model.ollama.OllamaLanguageModel;
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
+import dev.langchain4j.model.ollama.OllamaStreamingLanguageModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiLanguageModel;
+import dev.langchain4j.model.openai.OpenAiModerationModel;
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
+import dev.langchain4j.model.openai.OpenAiStreamingLanguageModel;
+import dev.langchain4j.model.openai.OpenAiTokenizer;
 
 import java.time.Duration;
 import java.util.List;
@@ -103,7 +120,7 @@ public class LanguageModelFactory {
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
                 .user(getString(parameters, "user"))
-                .n(getInteger(parameters, "n"))
+                .bestOf(getInteger(parameters, "bestOf"))
                 .echo(false)
                 .stop((List<String>) parameters.get("stop"))
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
@@ -123,7 +140,6 @@ public class LanguageModelFactory {
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
                 .user(getString(parameters, "user"))
-                .n(getInteger(parameters, "n"))
                 .echo(false)
                 .stop((List<String>) parameters.get("stop"))
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
@@ -143,11 +159,10 @@ public class LanguageModelFactory {
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
                 .user(getString(parameters, "user"))
-                .n(getInteger(parameters, "n"))
                 .stop((List<String>) parameters.get("stop"))
                 .seed(getLong(parameters, "seed"))
                 .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
-                        new ChatCompletionsJsonResponseFormat() : new ChatCompletionsTextResponseFormat())
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
                 .tokenizer(new OpenAiTokenizer(modelName))
@@ -165,11 +180,10 @@ public class LanguageModelFactory {
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
                 .user(getString(parameters, "user"))
-                .n(getInteger(parameters, "n"))
                 .stop((List<String>) parameters.get("stop"))
                 .seed(getLong(parameters, "seed"))
                 .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
-                        new ChatCompletionsJsonResponseFormat() : new ChatCompletionsTextResponseFormat())
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
                 .tokenizer(new OpenAiTokenizer(modelName))
@@ -200,7 +214,8 @@ public class LanguageModelFactory {
                 .numPredict(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stop((List<String>) parameters.get("stop"))
-                .format(getString(parameters, "format"))
+                .responseFormat("json".equals(getString(parameters, "format")) ?
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
     }
 
@@ -217,7 +232,8 @@ public class LanguageModelFactory {
                 .numPredict(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stop((List<String>) parameters.get("stop"))
-                .format(getString(parameters, "format"))
+                .responseFormat("json".equals(getString(parameters, "format")) ?
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
     }
 
@@ -234,7 +250,8 @@ public class LanguageModelFactory {
                 .numPredict(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stop((List<String>) parameters.get("stop"))
-                .format(getString(parameters, "format"))
+                .responseFormat("json".equals(getString(parameters, "format")) ?
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
     }
 
@@ -251,7 +268,8 @@ public class LanguageModelFactory {
                 .numPredict(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
                 .stop((List<String>) parameters.get("stop"))
-                .format(getString(parameters, "format"))
+                .responseFormat("json".equals(getString(parameters, "format")) ?
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
     }
 

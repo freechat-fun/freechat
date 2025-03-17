@@ -1,8 +1,7 @@
 package fun.freechat.service.chat;
 
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.model.output.Response;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.model.CharacterInfo;
@@ -26,7 +25,7 @@ public interface ChatService {
     boolean delete(String chatId);
     List<Triple<ChatContext, CharacterInfo, ChatMessageRecord>> list(User user);
     String getDefaultChatId(User user, String characterUid);
-    Pair<Response<AiMessage>, Long> send(String chatId, ChatMessage message, String context) throws ModerationException;
+    Pair<ChatResponse, Long> send(String chatId, ChatMessage message, String context) throws ModerationException;
     TokenStream streamSend(String chatId, ChatMessage message, String context);
     static Object asMemoryId(String chatId) {
         return chatId;
@@ -35,6 +34,6 @@ public interface ChatService {
         return (String) memoryId;
     }
     void clearMemory(String chatId);
-    Response<AiMessage> sendAssistant(String chatId, String assistantUid);
+    ChatResponse sendAssistant(String chatId, String assistantUid);
     TokenStream streamSendAssistant(String chatId, String assistantUid);
 }

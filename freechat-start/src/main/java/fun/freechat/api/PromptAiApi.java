@@ -1,11 +1,14 @@
 package fun.freechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.model.StreamingResponseHandler;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.output.FinishReason;
-import dev.langchain4j.model.output.Response;
-import fun.freechat.api.dto.*;
+import fun.freechat.api.dto.ChatPromptContentDTO;
+import fun.freechat.api.dto.LlmResultDTO;
+import fun.freechat.api.dto.PromptAiParamDTO;
+import fun.freechat.api.dto.PromptRefDTO;
+import fun.freechat.api.dto.PromptTemplateDTO;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.model.AiModelInfo;
@@ -27,7 +30,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -99,7 +101,7 @@ public class PromptAiApi {
         AiModelInfo modelInfo = promptAiParam.getModelInfo();
         Map<String, Object> parameters = promptAiParam.getParameters();
 
-        Response<AiMessage> response =
+        ChatResponse response =
                 promptAiService.send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
         if (response == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, prompt);
@@ -145,11 +147,11 @@ public class PromptAiApi {
 
         SseEmitter sseEmitter = new SseEmitter();
         promptAiService.streamSend(prompt, promptType, user, apiKeyInfo, modelInfo, parameters,
-                new StreamingResponseHandler<T>() {
+                new StreamingChatResponseHandler() {
                     private boolean abort = false;
 
                     @Override
-                    public void onNext(String partialResult) {
+                    public void onPartialResponse(String partialResult) {
                         if (abort) {
                             return;
                         }
@@ -166,7 +168,7 @@ public class PromptAiApi {
                     }
 
                     @Override
-                    public void onComplete(Response<T> response) {
+                    public void onCompleteResponse(ChatResponse response) {
                         if (abort) {
                             return;
                         }

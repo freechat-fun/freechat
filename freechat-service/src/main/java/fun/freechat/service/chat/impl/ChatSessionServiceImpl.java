@@ -8,11 +8,11 @@ import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.moderation.ModerationModel;
-import dev.langchain4j.model.output.Response;
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.injector.ContentInjector;
@@ -27,13 +27,23 @@ import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.langchain4j.rag.query.transformer.DelegatedQueryTransformer;
 import fun.freechat.langchain4j.rag.query.transformer.NamedCompressingQueryTransformer;
-import fun.freechat.model.*;
+import fun.freechat.model.AiModelInfo;
+import fun.freechat.model.CharacterBackend;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.ChatContext;
+import fun.freechat.model.PromptInfo;
+import fun.freechat.model.PromptTask;
+import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.ai.CloseableAiApiKey;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.*;
+import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatMemoryService;
+import fun.freechat.service.chat.ChatSession;
+import fun.freechat.service.chat.ChatSessionService;
+import fun.freechat.service.chat.MemoryUsage;
 import fun.freechat.service.common.ShortLinkService;
 import fun.freechat.service.enums.ChatVar;
 import fun.freechat.service.enums.ModelProvider;
@@ -62,7 +72,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -71,15 +86,32 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
-import static fun.freechat.service.ai.LanguageModelFactory.*;
-import static fun.freechat.service.enums.ChatVar.*;
+import static fun.freechat.service.ai.LanguageModelFactory.createAzureOpenAiChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createAzureOpenAiStreamingChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createOllamaChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createOllamaStreamingChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createOpenAiChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createOpenAiModerationModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createOpenAiStreamingChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createQwenChatModel;
+import static fun.freechat.service.ai.LanguageModelFactory.createQwenStreamingChatModel;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_CHAT_EXAMPLE;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_CHAT_STYLE;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_DESCRIPTION;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_GENDER;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_GREETING;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_LANG;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_NICKNAME;
+import static fun.freechat.service.enums.ChatVar.CHARACTER_PROFILE;
+import static fun.freechat.service.enums.ChatVar.CHAT_CONTEXT;
+import static fun.freechat.service.enums.ChatVar.USER_NICKNAME;
+import static fun.freechat.service.enums.ChatVar.USER_PROFILE;
 import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
 import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
 import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
 import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER;
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static fun.freechat.util.ByteUtils.isTrue;
-import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -255,7 +287,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 userProfile = user.getProfile();
             }
 
-            Map<String, Object> variables = new HashMap<>(ChatVar.values().length);
+            Map<String, Object> variables = HashMap.newHashMap(ChatVar.values().length);
 
             if (StringUtils.isNotBlank(promptInfo.getInputs())) {
                 Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
@@ -306,8 +338,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     prompt.getMessages().forEach(chatMemory::add);
                 }
             } else if (messages.getLast().type() == USER) {
-                Response<AiMessage> response = chatModel.generate(messages);
-                chatMemory.addAiMessage(response.content(), response.tokenUsage());
+                ChatResponse response = chatModel.chat(messages);
+                chatMemory.addAiMessage(response.aiMessage(), response.tokenUsage());
             }
 
             // knowledge
@@ -413,7 +445,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         } finally {
             try {
                 lock.unlock();
-            } catch (Throwable unlockEx) {
+            } catch (Exception unlockEx) {
                 log.warn("Unlock failed!", unlockEx);
             }
         }
@@ -423,7 +455,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME,
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = CACHE_KEY_SPEL_PREFIX + "#p0")
-    public void reset(String chatId) {}
+    public void reset(String chatId) {
+        // ignored
+    }
 
     @Override
     @Async
@@ -448,7 +482,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                             String.format("Text \"%s\" violates content policy", moderation.flaggedText()));
                 }
             } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
     }
@@ -526,7 +560,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             String userNickname = context.getUserNickname();
             String userProfile = context.getUserProfile();
 
-            Map<String, Object> variables = new HashMap<>(ChatVar.values().length);
+            Map<String, Object> variables = HashMap.newHashMap(ChatVar.values().length);
 
             if (StringUtils.isNotBlank(promptInfo.getInputs())) {
                 Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
@@ -662,7 +696,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         return messages.stream()
                 .filter(it -> !(it instanceof ToolExecutionResultMessage))
                 .filter(it -> !(it instanceof AiMessage aiMessage && CollectionUtils.isNotEmpty(aiMessage.toolExecutionRequests())))
-                .collect(toList());
+                .toList();
     }
 
     private String getOrBlank(String content) {

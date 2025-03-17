@@ -3,8 +3,8 @@ package fun.freechat.api;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessageType;
 import dev.langchain4j.internal.Utils;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.output.FinishReason;
-import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 import fun.freechat.api.dto.ChatCreateDTO;
 import fun.freechat.api.dto.ChatMessageDTO;
@@ -308,7 +308,7 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Chat message") @RequestBody @NotNull ChatMessageDTO chatMessage) {
         checkQuota(chatId);
-        Pair<Response<AiMessage>, Long> response = chatService.send(
+        Pair<ChatResponse, Long> response = chatService.send(
                 chatId, chatMessage.toChatMessage(), chatMessage.getContext());
 
         if (response == null) {
@@ -348,7 +348,7 @@ public class ChatApi {
         String characterName = characterService.getNameByUid(characterUid);
         AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
-        tokenStream.onNext(partialResult -> {
+        tokenStream.onPartialResponse(partialResult -> {
             if (!session.isProcessing()) {
                 return;
             }
@@ -391,7 +391,7 @@ public class ChatApi {
                         .build();
                 TraceUtils.getPerfLogger().trace(traceInfo);
             }
-        }).onComplete(response -> {
+        }).onCompleteResponse(response -> {
             if (!session.isProcessing()) {
                 return;
             }
@@ -399,9 +399,14 @@ public class ChatApi {
             long lastPackageReceivedTime = System.currentTimeMillis();
             try {
                 session.addMemoryUsage(1L, response.tokenUsage());
-                Long messageId = chatMemoryService.updateChatMessageTokenUsage(chatId, response.content(), response.tokenUsage());
+                Long messageId = chatMemoryService.updateChatMessageTokenUsage(
+                        chatId, response.aiMessage(), response.tokenUsage());
                 if (response.finishReason() == null) {
-                    response = Response.from(response.content(), response.tokenUsage(), FinishReason.STOP);
+                    response = ChatResponse.builder()
+                            .aiMessage(response.aiMessage())
+                            .tokenUsage(response.tokenUsage())
+                            .finishReason(FinishReason.STOP)
+                            .build();
                 }
                 LlmResultDTO result = LlmResultDTO.from(response, messageId);
                 Objects.requireNonNull(result).setText(null);
@@ -611,7 +616,7 @@ public class ChatApi {
             @Parameter(description = "Chat session identifier") @PathVariable("chatId") @NotBlank String chatId,
             @Parameter(description = "Assistant uid") @PathVariable("assistantUid") @NotBlank String assistantUid) {
         checkQuota(chatId);
-        Response<AiMessage> response = chatService.sendAssistant(chatId, assistantUid);
+        ChatResponse response = chatService.sendAssistant(chatId, assistantUid);
 
         if (response == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to send assistant to " + assistantUid);
@@ -647,7 +652,7 @@ public class ChatApi {
         String assistantName = characterService.getNameByUid(assistantUid);
         AtomicBoolean firstPackageReceived = new AtomicBoolean(false);
 
-        tokenStream.onNext(partialResult -> {
+        tokenStream.onPartialResponse(partialResult -> {
             if (!firstPackageReceived.get()) {
                 TraceUtils.putTraceAttribute("traceId", traceId);
                 TraceUtils.putTraceAttribute("username", username);
@@ -685,7 +690,7 @@ public class ChatApi {
                         .build();
                 TraceUtils.getPerfLogger().trace(traceInfo);
             }
-        }).onComplete(response -> {
+        }).onCompleteResponse(response -> {
             long lastPackageReceivedTime = System.currentTimeMillis();
             try {
                 LlmResultDTO result = LlmResultDTO.from(response, null);
