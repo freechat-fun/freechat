@@ -1,6 +1,11 @@
 package fun.freechat.service.rag.impl;
 
-import dev.langchain4j.data.document.*;
+import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.DocumentLoader;
+import dev.langchain4j.data.document.DocumentParser;
+import dev.langchain4j.data.document.DocumentSource;
+import dev.langchain4j.data.document.DocumentSplitter;
+import dev.langchain4j.data.document.DocumentTransformer;
 import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
 import dev.langchain4j.data.document.source.FileSystemSource;
 import dev.langchain4j.data.document.source.UrlSource;
@@ -17,13 +22,16 @@ import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.RagTask;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.enums.SourceType;
-import fun.freechat.service.rag.*;
+import fun.freechat.service.rag.EmbeddingModelService;
+import fun.freechat.service.rag.EmbeddingStoreService;
+import fun.freechat.service.rag.RagTaskRunner;
+import fun.freechat.service.rag.RagTaskStartedEvent;
+import fun.freechat.service.rag.RagTaskSucceededEvent;
 import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.tika.Tika;
-import org.apache.tika.metadata.Metadata;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +85,7 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             eventPublisher.publishEvent(new RagTaskStartedEvent(task));
 
             String lang = Optional.ofNullable(memoryId)
-                    .map(characterService::getLatestIdByUid)
-                    .map(characterService::summary)
+                    .map(characterService::summaryByUid)
                     .map(CharacterInfo::getLang)
                     .orElseThrow(() -> new IllegalArgumentException("Can't find character by uid[" + memoryId + "]"));
 
@@ -96,13 +103,8 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             Integer maxSegmentSize = Utils.getOrDefault(task.getMaxSegmentSize(), defaultMaxSegmentSize);
             Integer maxOverlapSize = Utils.getOrDefault(task.getMaxOverlapSize(), defaultMaxOverlapSize);
 
-            Metadata tikaMetadata = new Metadata();
-            DocumentParser parser = new ApacheTikaDocumentParser(
-                    null, null, () -> tikaMetadata, null);
+            DocumentParser parser = new ApacheTikaDocumentParser(true);
             Document document = DocumentLoader.load(source, parser);
-            for (String metaName: tikaMetadata.names()) {
-                document.metadata().put(metaName, tikaMetadata.get(metaName));
-            }
             document.metadata().put(MEMORY_ID.text(), memoryId);
             document.metadata().put(TASK_ID.text(), task.getId());
 

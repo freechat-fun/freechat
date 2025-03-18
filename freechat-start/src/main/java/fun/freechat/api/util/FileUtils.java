@@ -27,7 +27,7 @@ public class FileUtils {
         try {
             filteredOriginFilename = SecurityUtils.filterPath(file.getOriginalFilename());
         } catch (IOException | IllegalArgumentException e) {
-            // ignore
+            // ignored
         }
 
         return StringUtils.isBlank(filteredOriginFilename) ?

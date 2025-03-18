@@ -60,7 +60,7 @@ public class EncryptedPropertyProcessor implements BeanPostProcessor {
                     }
                     return bean;
                 } catch (Exception e) {
-                    // ignore
+                    // ignored
                 }
             }
         }

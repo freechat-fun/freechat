@@ -369,7 +369,7 @@ public class TestController {
                 }
             }
         } catch (IOException e) {
-            // ignore
+            // ignored
         }
 
         try {

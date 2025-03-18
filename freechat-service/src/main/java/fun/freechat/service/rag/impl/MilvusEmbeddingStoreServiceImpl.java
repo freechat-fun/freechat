@@ -77,7 +77,7 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
 
     @Override
     public void flush(Object memoryId, EmbeddingStoreType storeType, EmbeddingStore<TextSegment> store) {
-        // ignore
+        // ignored
     }
 
     @Override

@@ -114,6 +114,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                             .queryEmbedding(embedding)
                             .filter(filter)
                             .minScore(0.8)
+                            .maxResults(1)
                             .build();
                     EmbeddingSearchResult<TextSegment> result = embeddingStore.search(request);
                     if (result.matches().isEmpty()) {

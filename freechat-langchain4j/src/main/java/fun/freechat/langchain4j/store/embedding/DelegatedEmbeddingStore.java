@@ -89,6 +89,11 @@ public class DelegatedEmbeddingStore implements EmbeddingStore<TextSegment> {
     }
 
     @Override
+    public void addAll(List<String> ids, List<Embedding> embeddings, List<TextSegment> embedded) {
+        embeddingStore.addAll(ids, embeddings, embedded);
+    }
+
+    @Override
     public void remove(String id) {
         embeddingStore.remove(id);
     }
