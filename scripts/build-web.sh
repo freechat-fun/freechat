@@ -47,6 +47,6 @@ if [[ "${VERBOSE}" == "1" ]];then
   cat ${COMPOSE_CONFIG}
 fi
 
-docker compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
+docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
 
 rm -rf web

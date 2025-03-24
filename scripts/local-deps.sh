@@ -6,7 +6,7 @@ check_docker
 
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
-SERVICE_NAMES="mysql redis milvus tts"
+SERVICE_NAMES="mysql redis milvus"
 SERVICES_CONFIG=local-deps.yml
 
 export MYSQL_TAG=latest
@@ -39,6 +39,10 @@ export TTS_PORT=5002
 export TTS_HOST_PORT=5002
 export TTS_VOLUME=${PROJECT_PATH}/local-data/tts
 
+if [[ " ${ARGS[*]} " =~ " --enable-tts " ]]; then
+  SERVICE_NAMES="tts ${SERVICE_NAMES}"
+fi
+
 if [[ " ${ARGS[*]} " =~ " --start " ]]; then
   # config mysql
   mkdir -p ${MYSQL_VOLUME}/conf.d
@@ -65,9 +69,9 @@ auto-compaction-mode: revision
 auto-compaction-retention: '1000'
 EOF
 
-  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
+  docker-compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
 elif [[ " ${ARGS[*]} " =~ " --stop " ]]; then
-  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} down
+  docker-compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} down
 else
-  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} top
+  docker-compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} top
 fi

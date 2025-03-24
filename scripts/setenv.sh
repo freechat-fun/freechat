@@ -104,6 +104,7 @@ check_kubectl() {
 
 check_docker() {
   which docker &>/dev/null || die "ERROR: You need to have the docker toolset in your PATH."
+  which docker-compose &>/dev/null || die "ERROR: You need to have the docker-compose toolset in your PATH."
 }
 
 check_helm() {

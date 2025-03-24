@@ -78,7 +78,7 @@ EOF
   fi
 
   export DOCKER_BUILDKIT=1
-  docker compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build \
+  docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build \
     --builder multiple-platforms-builder \
     --push \
     ${PROJECT_NAME}
@@ -97,7 +97,7 @@ EOF
     cat ${COMPOSE_CONFIG}
   fi
 
-  docker compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build --push ${PROJECT_NAME}
+  docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build --push ${PROJECT_NAME}
 fi
 
 rm -f ${DOCKER_CONFIG_HOME}/${PROJECT_NAME}.jar
