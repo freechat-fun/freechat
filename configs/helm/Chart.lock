@@ -7,18 +7,18 @@ dependencies:
   version: 20.11.4
 - name: milvus
   repository: https://charts.bitnami.com/bitnami
-  version: 12.0.0
+  version: 13.0.0
 - name: prometheus
   repository: https://charts.bitnami.com/bitnami
-  version: 1.4.9
+  version: 1.4.10
 - name: grafana
   repository: https://charts.bitnami.com/bitnami
-  version: 11.6.1
+  version: 11.6.3
 - name: grafana-loki
   repository: https://charts.bitnami.com/bitnami
-  version: 4.7.6
+  version: 4.7.7
 - name: kube-state-metrics
   repository: https://charts.bitnami.com/bitnami
-  version: 5.0.4
-digest: sha256:b1b0a04b4726b9ecd3b92ace05a39bf43bbbf1287668eef95f34e717bf641b8d
-generated: "2025-03-27T12:06:15.260044716Z"
+  version: 5.0.5
+digest: sha256:9aec2b58265c6a1e60e3ef683bf026691855405a62d3c617c8a06e8ab0afa805
+generated: "2025-04-04T15:20:04.46478194Z"
