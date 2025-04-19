@@ -21,17 +21,27 @@ public interface FileStore extends Closeable {
     }
     default long write(String path, String content) throws IOException {
         byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        return write(path, new ByteArrayInputStream(bytes), (long) bytes.length, Instant.now());
+        try (InputStream stream = new ByteArrayInputStream(bytes)) {
+            return write(path, stream, (long) bytes.length, Instant.now());
+        }
     }
     OutputStream newOutputStream(String path) throws IOException;
     InputStream newInputStream(String path) throws IOException;
     default byte[] readBytes(String path) throws IOException {
-        InputStream stream = newInputStream(path);
-        return stream != null ? IOUtils.toByteArray(stream) : null;
+        try (InputStream stream = newInputStream(path)) {
+            return IOUtils.toByteArray(stream);
+        } catch (NullPointerException ignored) {
+            // ignored
+            return null;
+        }
     }
     default String readString(String path) throws IOException {
-        InputStream stream = newInputStream(path);
-        return stream != null ? IOUtils.toString(stream, StandardCharsets.UTF_8) : null;
+        try (InputStream stream = newInputStream(path)) {
+            return IOUtils.toString(stream, StandardCharsets.UTF_8);
+        } catch (NullPointerException ignored) {
+            // ignored
+            return null;
+        }
     }
     boolean exists(String path);
     void delete(String path) throws IOException;
@@ -43,7 +53,11 @@ public interface FileStore extends Closeable {
         }
     }
     default void copy(String sourcePath, String destinationPath) throws IOException {
-        write(destinationPath, newInputStream(sourcePath));
+        try (InputStream stream = newInputStream(sourcePath)) {
+            write(destinationPath, stream);
+        } catch (NullPointerException ignored) {
+            // ignored
+        }
     }
     default void move(String sourcePath, String destinationPath) throws IOException {
         copy(sourcePath, destinationPath);
