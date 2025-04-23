@@ -28,15 +28,15 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 ## Snapshots
 ### On PC
 #### Home Page
-![Home Page Snapshot](/img/snapshot_w1.jpg)
+![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)
 #### Development View
-![Development View Snapshot](/img/snapshot_w2.jpg)
+![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)
 #### Chat View
-![Chat View Snapshot](/img/snapshot_w3.jpg)
+![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)
 
 ### On Mobile
-![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br />
-![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)
+![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />
+![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)
 
 ## Character Design
 ```mermaid
