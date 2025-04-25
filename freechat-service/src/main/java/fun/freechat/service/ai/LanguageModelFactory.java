@@ -125,7 +125,6 @@ public class LanguageModelFactory {
                 .stop((List<String>) parameters.get("stop"))
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
-                .tokenizer(new OpenAiTokenizer(modelName))
                 .timeout(DEFAULT_TIMEOUT)
                 .build();
     }
@@ -165,7 +164,6 @@ public class LanguageModelFactory {
                         ResponseFormat.JSON : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
-                .tokenizer(new OpenAiTokenizer(modelName))
                 .timeout(DEFAULT_TIMEOUT)
                 .build();
     }
@@ -197,7 +195,6 @@ public class LanguageModelFactory {
                 .apiKey(apiKey)
                 .endpoint(getString(parameters, "baseUrl"))
                 .deploymentName(modelName)
-                .tokenizer(new OpenAiTokenizer(modelName))
                 .build();
     }
 
