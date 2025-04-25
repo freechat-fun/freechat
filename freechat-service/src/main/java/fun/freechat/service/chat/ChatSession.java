@@ -19,7 +19,6 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
@@ -51,9 +50,8 @@ public class ChatSession {
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
         aiServiceContext.moderationModel = moderationModel;
-        aiServiceContext.chatMemories = new ConcurrentHashMap<>();
-        aiServiceContext.chatMemoryProvider = memoryId -> chatMemory;
         aiServiceContext.retrievalAugmentor = retriever;
+        aiServiceContext.initChatMemories(memoryId -> chatMemory);
 
         this.prompt = prompt;
         this.promptFormat = promptFormat;
@@ -84,7 +82,7 @@ public class ChatSession {
     }
 
     public ChatMemory getChatMemory(Object memoryId) {
-        return aiServiceContext.chatMemory(memoryId);
+        return aiServiceContext.chatMemoryService.getOrCreateChatMemory(memoryId);
     }
 
     public List<ToolSpecification> getToolSpecifications() {
