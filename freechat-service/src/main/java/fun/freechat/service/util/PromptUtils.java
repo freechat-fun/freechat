@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fun.freechat.service.util.InfoUtils.defaultMapper;
+
 @Slf4j
 public class PromptUtils {
     private static final String SYSTEM_PREFIX = "<|system|>:";
@@ -55,7 +57,14 @@ public class PromptUtils {
             case AI -> ((AiMessage) message).text();
             case SYSTEM -> ((SystemMessage) message).text();
             case TOOL_EXECUTION_RESULT -> ((ToolExecutionResultMessage) message).text();
-            case CUSTOM -> ((CustomMessage) message).text();
+            case CUSTOM -> {
+                try {
+                    yield defaultMapper().writeValueAsString(((CustomMessage) message).attributes());
+                } catch (JsonProcessingException e) {
+                    log.warn("Failed to serialize {}", ((CustomMessage) message).attributes(), e);
+                    yield  "";
+                }
+            }
         };
     }
 
@@ -75,7 +84,7 @@ public class PromptUtils {
         }
         String template = null;
         try {
-            JsonNode rootNode = InfoUtils.defaultMapper().readTree(draft);
+            JsonNode rootNode = defaultMapper().readTree(draft);
             JsonNode typeNode = rootNode.get("type");
             if (typeNode != null) {
                 PromptType type = PromptType.of(typeNode.asText());

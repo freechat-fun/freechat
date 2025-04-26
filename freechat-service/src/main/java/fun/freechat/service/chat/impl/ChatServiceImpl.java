@@ -20,6 +20,7 @@ import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.Content;
 import dev.langchain4j.rag.query.Metadata;
 import dev.langchain4j.service.AiServiceTokenStream;
+import dev.langchain4j.service.AiServiceTokenStreamParameters;
 import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.tool.ToolExecutor;
 import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
@@ -270,12 +271,13 @@ public class ChatServiceImpl implements ChatService {
         try {
             Object memoryId = asMemoryId(chatId);
             var messages = handleMessages(message, context, memoryId, session);
-            return new AiServiceTokenStream(messages,
-                    session.getToolSpecifications(),
-                    session.getToolExecutors(),
-                    null,
-                    session.getAiServiceContext(),
-                    memoryId);
+            return new AiServiceTokenStream(AiServiceTokenStreamParameters.builder()
+                    .messages(messages)
+                    .toolSpecifications(session.getToolSpecifications())
+                    .toolExecutors(session.getToolExecutors())
+                    .context(session.getAiServiceContext())
+                    .memoryId(memoryId)
+                    .build());
         } catch (Exception e) {
             session.release();
             throw e;
@@ -381,13 +383,13 @@ public class ChatServiceImpl implements ChatService {
         Object assistantMemoryId = asMemoryId(assistantChatId);
         var messages = handleMessages(null, null, assistantChatId, assistantSession);
 
-        return new AiServiceTokenStream(
-                messages,
-                assistantSession.getToolSpecifications(),
-                assistantSession.getToolExecutors(),
-                null,
-                assistantSession.getAiServiceContext(),
-                assistantMemoryId);
+        return new AiServiceTokenStream(AiServiceTokenStreamParameters.builder()
+                .messages(messages)
+                .toolSpecifications(assistantSession.getToolSpecifications())
+                .toolExecutors(assistantSession.getToolExecutors())
+                .context(assistantSession.getAiServiceContext())
+                .memoryId(assistantMemoryId)
+                .build());
 
     }
 
