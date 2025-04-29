@@ -34,7 +34,7 @@ dependencies:
   - condition: prometheus.enabled
     name: prometheus
     repository: https://charts.bitnami.com/bitnami
-    version: 1.x.x
+    version: 2.x
     tags:
       - backend
       - prometheus
