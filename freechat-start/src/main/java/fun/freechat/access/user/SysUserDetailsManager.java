@@ -88,9 +88,6 @@ public record SysUserDetailsManager(SysUserService userService,
             }
         } else {
             user = ((SysUserDetails) loadUserByUsername(userDetails.getUsername()));
-            if (user == null) {
-                return;
-            }
             user = mapUser(userDetails, user);
         }
 
