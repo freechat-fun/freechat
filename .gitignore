@@ -29,6 +29,9 @@ nbdist/
 configs/helm/**/*.tgz
 configs/helm/**/requirements.lock
 
+# Generated jar
+configs/docker/*.jar
+
 # Logs
 logs
 log.txt
