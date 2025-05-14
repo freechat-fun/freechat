@@ -6,8 +6,8 @@ import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.PromptTemplate;
@@ -217,8 +217,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {}) :
                     Collections.emptyMap();
 
-            ChatLanguageModel chatModel;
-            StreamingChatLanguageModel streamingChatModel;
+            ChatModel chatModel;
+            StreamingChatModel streamingChatModel;
             try (var apiKeyClient = getCloseableAiApiKey(context, ownerId, promptTask)) {
                 switch (provider) {
                     case OPEN_AI -> {
@@ -349,7 +349,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             QueryTransformer origQueryTransformer = NamedCompressingQueryTransformer.extraBuilder()
                     .aiName(characterNickname)
-                    .chatLanguageModel(chatModel)
+                    .chatModel(chatModel)
                     .promptTemplate("zh".equalsIgnoreCase(lang) ?
                             NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH :
                             NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
@@ -504,8 +504,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {}) :
                     Collections.emptyMap();
 
-            ChatLanguageModel chatModel;
-            StreamingChatLanguageModel streamingChatModel;
+            ChatModel chatModel;
+            StreamingChatModel streamingChatModel;
             try (var apiKeyClient = getCloseableAiApiKey(context, ownerId, promptTask)) {
                 switch (provider) {
                     case OPEN_AI -> {
@@ -619,7 +619,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             QueryTransformer origQueryTransformer = NamedCompressingQueryTransformer.extraBuilder()
                     .aiName(characterNickname)
-                    .chatLanguageModel(chatModel)
+                    .chatModel(chatModel)
                     .promptTemplate("zh".equalsIgnoreCase(lang) ?
                             NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH :
                             NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)

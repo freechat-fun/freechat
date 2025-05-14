@@ -2,8 +2,8 @@ package fun.freechat.service.chat;
 
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.moderation.ModerationModel;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.RetrievalAugmentor;
@@ -35,8 +35,8 @@ public class ChatSession {
     private MemoryUsage memoryUsage;
 
     @Builder
-    public ChatSession(ChatLanguageModel chatModel,
-                       StreamingChatLanguageModel streamingChatModel,
+    public ChatSession(ChatModel chatModel,
+                       StreamingChatModel streamingChatModel,
                        ModerationModel moderationModel,
                        ChatMemory chatMemory,
                        ChatPromptContent prompt,
@@ -69,11 +69,11 @@ public class ChatSession {
         aiServiceContext.toolService.tools(objectsWithTools);
     }
 
-    public ChatLanguageModel getChatModel() {
+    public ChatModel getChatModel() {
         return aiServiceContext.chatModel;
     }
 
-    public StreamingChatLanguageModel getStreamingChatModel() {
+    public StreamingChatModel getStreamingChatModel() {
         return aiServiceContext.streamingChatModel;
     }
 

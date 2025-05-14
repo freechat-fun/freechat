@@ -3,8 +3,8 @@ package fun.freechat.service.prompt.impl;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.StreamingResponseHandler;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -97,7 +97,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                                 .build())
                         .orElse(null);
             } else if (type == ModelType.TEXT2CHAT) {
-                ChatLanguageModel model = switch (provider) {
+                ChatModel model = switch (provider) {
                     case OPEN_AI -> createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
@@ -161,7 +161,7 @@ public class PromptAiServiceImpl implements PromptAiService {
                 }
                 model.generate(prompt, (StreamingResponseHandler<String>) handler);
             } else if (type == ModelType.TEXT2CHAT) {
-                StreamingChatLanguageModel model = switch (provider) {
+                StreamingChatModel model = switch (provider) {
                     case OPEN_AI -> createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case AZURE_OPEN_AI -> createAzureOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     case DASH_SCOPE -> createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
