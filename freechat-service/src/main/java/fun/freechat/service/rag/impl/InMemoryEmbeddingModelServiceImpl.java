@@ -1,8 +1,8 @@
 package fun.freechat.service.rag.impl;
 
-import dev.langchain4j.model.Tokenizer;
+import dev.langchain4j.model.TokenCountEstimator;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.onnx.HuggingFaceTokenizer;
+import dev.langchain4j.model.embedding.onnx.HuggingFaceTokenCountEstimator;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2q.AllMiniLmL6V2QuantizedEmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15QuantizedEmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.bgesmallzhv15q.BgeSmallZhV15QuantizedEmbeddingModel;
@@ -24,11 +24,11 @@ import java.util.Objects;
 @Slf4j
 public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService {
     private EmbeddingModel enEmbeddingModel;
-    private Tokenizer enTokenizer;
+    private TokenCountEstimator enTokenCountEstimator;
     private EmbeddingModel zhEmbeddingModel;
-    private Tokenizer zhTokenizer;
+    private TokenCountEstimator zhTokenCountEstimator;
     private EmbeddingModel defaultEmbeddingModel;
-    private Tokenizer defaultTokenizer;
+    private TokenCountEstimator defaultTokenCountEstimator;
 
     private boolean isEn(String lang) {
         return "en".equalsIgnoreCase(lang);
@@ -38,7 +38,7 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
         return "zh".equalsIgnoreCase(lang) || "zh_CN".equalsIgnoreCase(lang) || "zh_TW".equalsIgnoreCase(lang);
     }
 
-    private Tokenizer tokenizerFromResource(String resourceName, EmbeddingModel model) {
+    private TokenCountEstimator tokenCountEstimatorFromResource(String resourceName, EmbeddingModel model) {
         Class<? extends EmbeddingModel> clazz = model.getClass();
         Map<String, String> options = Map.of(
                 "padding", "false",
@@ -50,16 +50,16 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
             if ("jar".equals(uri.getScheme())) {
                 try (FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
                     Path resourcePath = fileSystem.getPath(resourceName);
-                    new HuggingFaceTokenizer(resourcePath, options);
+                    new HuggingFaceTokenCountEstimator(resourcePath, options);
                 }
             } else {
                 Path resourcePath = Path.of(uri);
-                new HuggingFaceTokenizer(resourcePath, options);
+                new HuggingFaceTokenCountEstimator(resourcePath, options);
             }
         } catch (Exception e) {
             log.error("Failed to find resource {}", resourceName, e);
         }
-        return new HuggingFaceTokenizer();
+        return new HuggingFaceTokenCountEstimator();
     }
 
     @PostConstruct
@@ -68,15 +68,15 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
         zhEmbeddingModel = new BgeSmallZhV15QuantizedEmbeddingModel();
         defaultEmbeddingModel = new AllMiniLmL6V2QuantizedEmbeddingModel();
 
-        enTokenizer = tokenizerFromResource(
+        enTokenCountEstimator = tokenCountEstimatorFromResource(
                 "/bge-small-en-v1.5-q-tokenizer.json",
                 enEmbeddingModel);
 
-        zhTokenizer = tokenizerFromResource(
+        zhTokenCountEstimator = tokenCountEstimatorFromResource(
                 "/bge-small-zh-v1.5-q-tokenizer.json",
                 zhEmbeddingModel);
 
-        defaultTokenizer = tokenizerFromResource(
+        defaultTokenCountEstimator = tokenCountEstimatorFromResource(
                 "/all-minilm-l6-v2-q-tokenizer.json",
                 defaultEmbeddingModel);
     }
@@ -93,13 +93,13 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
     }
 
     @Override
-    public Tokenizer tokenizerForLang(String lang) {
+    public TokenCountEstimator tokenCountEstimatorForLang(String lang) {
         if (isEn(lang)) {
-            return enTokenizer;
+            return enTokenCountEstimator;
         } else if (isZh(lang)) {
-            return zhTokenizer;
+            return zhTokenCountEstimator;
         } else {
-            return defaultTokenizer;
+            return defaultTokenCountEstimator;
         }
     }
 

@@ -9,7 +9,7 @@ import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.moderation.Moderation;
@@ -205,7 +205,7 @@ public class ChatServiceImpl implements ChatService {
             Future<Moderation> moderationFuture = session.getModerationModel() != null ?
                     chatSessionService.triggerModerationIfNeeded(session, messages) : null;
 
-            ChatLanguageModel chatModel = session.getChatModel();
+            ChatModel chatModel = session.getChatModel();
             List<ToolSpecification> toolSpecifications = session.getToolSpecifications();
 
             ChatResponse response = toolSpecifications != null ?
@@ -323,7 +323,7 @@ public class ChatServiceImpl implements ChatService {
         Future<Moderation> moderationFuture = assistantSession.getModerationModel() != null ?
                 chatSessionService.triggerModerationIfNeeded(assistantSession, messages) : null;
 
-        ChatLanguageModel chatModel = assistantSession.getChatModel();
+        ChatModel chatModel = assistantSession.getChatModel();
         List<ToolSpecification> toolSpecifications = assistantSession.getToolSpecifications();
 
         ChatResponse response = toolSpecifications != null ?

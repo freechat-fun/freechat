@@ -22,7 +22,7 @@ import dev.langchain4j.model.openai.OpenAiLanguageModel;
 import dev.langchain4j.model.openai.OpenAiModerationModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingLanguageModel;
-import dev.langchain4j.model.openai.OpenAiTokenizer;
+import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 
 import java.time.Duration;
 import java.util.List;
@@ -143,7 +143,7 @@ public class LanguageModelFactory {
                 .stop((List<String>) parameters.get("stop"))
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
-                .tokenizer(new OpenAiTokenizer(modelName))
+                .tokenCountEstimator(new OpenAiTokenCountEstimator(modelName))
                 .timeout(DEFAULT_TIMEOUT)
                 .build();
     }
@@ -184,7 +184,7 @@ public class LanguageModelFactory {
                         ResponseFormat.JSON : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
-                .tokenizer(new OpenAiTokenizer(modelName))
+                .tokenCountEstimator(new OpenAiTokenCountEstimator(modelName))
                 .timeout(DEFAULT_TIMEOUT)
                 .build();
     }

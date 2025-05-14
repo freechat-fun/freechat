@@ -2,7 +2,7 @@ package fun.freechat.langchain4j.rag.query.transformer;
 
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.internal.Utils;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.rag.query.Metadata;
@@ -66,8 +66,8 @@ public class NamedCompressingQueryTransformer extends CompressingQueryTransforme
     private final String aiName;
 
     @Builder(builderMethodName = "extraBuilder")
-    public NamedCompressingQueryTransformer(ChatLanguageModel chatLanguageModel, PromptTemplate promptTemplate, String aiName) {
-        super(chatLanguageModel, Utils.getOrDefault(promptTemplate, DEFAULT_PROMPT_TEMPLATE_EN));
+    public NamedCompressingQueryTransformer(ChatModel chatModel, PromptTemplate promptTemplate, String aiName) {
+        super(chatModel, Utils.getOrDefault(promptTemplate, DEFAULT_PROMPT_TEMPLATE_EN));
         this.aiName = aiName;
     }
 
@@ -82,7 +82,7 @@ public class NamedCompressingQueryTransformer extends CompressingQueryTransforme
         }
 
         Prompt prompt = createPrompt(query, format(chatMemory));
-        String compressedQueryText = chatLanguageModel.chat(prompt.text());
+        String compressedQueryText = chatModel.chat(prompt.text());
         log.info("Transformed original query '{}' into '{}'", query.text(), compressedQueryText);
         Query compressedQuery = Query.from(compressedQueryText, query.metadata());
         return singletonList(compressedQuery);

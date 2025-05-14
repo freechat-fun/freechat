@@ -13,7 +13,7 @@ import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.document.transformer.jsoup.HtmlToTextDocumentTransformer;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.internal.Utils;
-import dev.langchain4j.model.Tokenizer;
+import dev.langchain4j.model.TokenCountEstimator;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
@@ -110,11 +110,11 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
 
 
             EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
-            Tokenizer tokenizer = embeddingModelService.tokenizerForLang(lang);
+            TokenCountEstimator tokenCountEstimator = embeddingModelService.tokenCountEstimatorForLang(lang);
             EmbeddingStore<TextSegment> embeddingStore =
                     embeddingStoreService.of(memoryId, documentTypeForLang(lang));
             DocumentTransformer documentTransformer = isHtml(document) ? new HtmlToTextDocumentTransformer() : null;
-            DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenizer);
+            DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenCountEstimator);
 
             EmbeddingStoreIngestor.builder()
                     .embeddingModel(embeddingModel)
