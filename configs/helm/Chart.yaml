@@ -25,7 +25,7 @@ dependencies:
   - condition: milvus.enabled
     name: milvus
     repository: https://charts.bitnami.com/bitnami
-    version: 13.x
+    version: 14.x
     tags:
       - backend
       - milvus
