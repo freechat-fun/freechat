@@ -15,7 +15,7 @@ import {
   Switch,
   Typography,
 } from '@mui/joy';
-import { AddCircleRounded } from '@mui/icons-material';
+import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
   CommonContainer,
   OptionCard,
@@ -30,6 +30,7 @@ import {
   defaultModels,
 } from '../../configs/model-providers-config';
 import { useMetaInfoContext } from '../../contexts';
+import { InputAdornment } from '@mui/material';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -300,7 +301,7 @@ export default function AzureOpenAiSettings(props: {
                 disabled={!enableTopP}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[0],
                     min: 0,
                     max: 1,
@@ -332,7 +333,6 @@ export default function AzureOpenAiSettings(props: {
           <CommonContainer>
             <Typography>maxTokens</Typography>
             <OptionTooltip
-              size="sm"
               title={t(
                 "The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length."
               )}
@@ -344,7 +344,7 @@ export default function AzureOpenAiSettings(props: {
                 disabled={!enableMaxTokens}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[2],
                     min: 1000,
                     step: 1000,
@@ -377,7 +377,7 @@ export default function AzureOpenAiSettings(props: {
                 disabled={!enableSeed}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[3],
                     min: 1,
                     step: 1,
@@ -410,7 +410,7 @@ export default function AzureOpenAiSettings(props: {
                 disabled={!enablePresencePenalty}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[4],
                     min: -2,
                     max: 2,
@@ -457,7 +457,7 @@ export default function AzureOpenAiSettings(props: {
                 disabled={!enableFrequencyPenalty}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[4],
                     min: -2,
                     max: 2,
@@ -504,7 +504,7 @@ export default function AzureOpenAiSettings(props: {
                 disabled={!enableTemperature}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[5],
                     min: 0,
                     max: 2,
@@ -585,6 +585,17 @@ export default function AzureOpenAiSettings(props: {
                   type="text"
                   value={stopWord}
                   onChange={(event) => setStopWord(event.target.value)}
+                  slotProps={{
+                    input: {
+                      size: 'small',
+                      sx: { fontSize: 'small' },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <TransitEnterexitRounded fontSize="small" />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </form>
             )}

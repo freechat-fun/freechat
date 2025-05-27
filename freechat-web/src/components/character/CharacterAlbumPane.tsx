@@ -140,13 +140,13 @@ export default function CharacterAlbumPane({
         onClose={() => setPictureDeleteUrl(null)}
         obj={pictureDeleteUrl}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Do you really want to delete this picture?'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handlePictureDelete}
       >

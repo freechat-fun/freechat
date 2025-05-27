@@ -31,7 +31,6 @@ import {
   Switch,
   Table,
   Textarea,
-  Theme,
   Tooltip,
   Typography,
   listItemDecoratorClasses,
@@ -50,6 +49,7 @@ import {
   PlayCircleOutlineRounded,
   RemoveCircleOutlineRounded,
   SaveAltRounded,
+  TransitEnterexitRounded,
 } from '@mui/icons-material';
 import {
   CommonBox,
@@ -83,6 +83,7 @@ import {
 import { providers } from '../../configs/model-providers-config';
 import { HelpIcon } from '../../components/icon';
 import { objectsEqual } from '../../libs/js_utils';
+import { InputAdornment, Theme } from '@mui/material';
 
 type MessageRound = {
   user: ChatMessageDTO;
@@ -171,8 +172,8 @@ export default function PromptEditor({
     width: '100%',
     mr: 'auto',
     justifyContent: 'flex-end',
-    border: `1px solid ${theme.palette.primary.outlinedBorder}`,
-    backgroundColor: theme.palette.background.body,
+    border: `1px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.default,
     padding: theme.spacing(1, 2),
     borderRadius: '12px',
   });
@@ -1288,6 +1289,17 @@ export default function PromptEditor({
                       type="text"
                       value={tag}
                       onChange={(event) => setTag(event.target.value)}
+                      slotProps={{
+                        input: {
+                          size: 'small',
+                          sx: { fontSize: 'small' },
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <TransitEnterexitRounded fontSize="small" />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
                     />
                   </form>
                 )}
@@ -1458,7 +1470,7 @@ export default function PromptEditor({
         }}
         button={{
           text: t('button:Save'),
-          startDecorator: <SaveAltRounded />,
+          startIcon: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >

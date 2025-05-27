@@ -1,8 +1,20 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useErrorMessageBusContext, useFreeChatApiContext } from '../contexts';
-import { SearchRounded } from '@mui/icons-material';
-import { Box, Input, Select, Option, Chip, Typography, Button } from '@mui/joy';
+import SearchIcon from '@mui/icons-material/Search';
+import {
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  Chip,
+  Button,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+  Checkbox,
+  ListItemText,
+} from '@mui/material';
 import { providers as modelProviders } from '../configs/model-providers-config';
 import { AiModelInfoDTO } from 'freechat-sdk';
 
@@ -16,7 +28,7 @@ export default function InfoSearchbar(props: {
   const { handleError } = useErrorMessageBusContext();
 
   const [text, setText] = useState('');
-  const [providers, setProviders] = useState<string[] | undefined>();
+  const [providers, setProviders] = useState<string[]>([]);
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
 
   const getModels = useCallback(() => {
@@ -41,12 +53,10 @@ export default function InfoSearchbar(props: {
     }
   }
 
-  function handleSelectChange(
-    _event: React.SyntheticEvent | null,
-    newValue: Array<string> | null
-  ): void {
+  function handleSelectChange(event: SelectChangeEvent<string[]>): void {
+    const newValue = event.target.value as string[];
     if (newValue !== providers) {
-      setProviders(newValue || []);
+      setProviders(newValue);
     }
   }
 
@@ -71,56 +81,73 @@ export default function InfoSearchbar(props: {
           py: 1,
           pr: 1,
           gap: 3,
-          borderTopLeftRadius: 'var(--unstable_actionRadius)',
-          borderTopRightRadius: 'var(--unstable_actionRadius)',
+          borderRadius: 1,
         }}
       >
-        <Input
+        <TextField
           name="text"
           type="text"
           value={text}
+          size="small"
           onChange={handleInputChange}
           placeholder={t('Search title, description, content and more')}
-          startDecorator={<SearchRounded />}
-          sx={{ flex: 1 }}
+          slotProps={{
+            input: {
+              style: {
+                fontSize: 'small',
+              },
+              startAdornment: (
+                <SearchIcon sx={{ color: 'action.active', mr: 1 }} />
+              ),
+            },
+          }}
+          sx={{
+            flex: 1,
+          }}
         />
         {enableModelSelect && (
           <Fragment>
-            <Select
-              placeholder={
-                <Typography textColor="gray">
-                  {t('Select model providers')}
-                </Typography>
-              }
-              value={providers}
-              multiple
-              onChange={handleSelectChange}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', gap: '0.25rem' }}>
-                  {selected.map((selectedOption) => (
-                    <Chip
-                      variant="soft"
-                      color="primary"
-                      key={`${selectedOption.id}-${selectedOption.value}`}
-                    >
-                      {selectedOption.label}
-                    </Chip>
-                  ))}
-                </Box>
-              )}
-              sx={{
-                minWidth: '14rem',
-              }}
-            >
-              {modelProviders.map((p) => (
-                <Option value={p.provider} key={`options-${p.provider}`}>
-                  {p.label}
-                </Option>
-              ))}
-            </Select>
+            <FormControl sx={{ minWidth: '14rem' }} size="small">
+              <InputLabel id="model-providers-label">
+                {t('Select model providers')}
+              </InputLabel>
+              <Select
+                label={t('Select model providers')}
+                multiple
+                value={providers}
+                onChange={handleSelectChange}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                    {selected.map((value) => (
+                      <Chip
+                        key={value}
+                        label={
+                          modelProviders.find((p) => p.provider === value)
+                            ?.label || value
+                        }
+                        size="small"
+                      />
+                    ))}
+                  </Box>
+                )}
+              >
+                {modelProviders.map((p) => (
+                  <MenuItem key={p.provider} value={p.provider}>
+                    <Checkbox
+                      size="small"
+                      checked={providers.includes(p.provider)}
+                    />
+                    <ListItemText
+                      primary={p.label}
+                      sx={{ fontSize: 'small' }}
+                    />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Fragment>
         )}
-        <Button type="submit" variant="soft">
+        <Button size="small" type="submit" variant="contained" color="primary">
           {t('Search')}
         </Button>
       </Box>

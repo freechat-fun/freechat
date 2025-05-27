@@ -105,7 +105,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           <div>
             <HighlightedTypography
               highlight={keyWord}
-              level="title-lg"
+              variant="subtitle1"
               sx={{
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
@@ -118,7 +118,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
             {nickname !== record.name && (
               <HighlightedTypography
                 highlight={keyWord}
-                level="body-sm"
+                variant="caption"
               >{`@${record.name}`}</HighlightedTypography>
             )}
           </div>

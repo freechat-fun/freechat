@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Typography, TypographyProps } from '@mui/joy';
+import { Typography, TypographyProps } from '@mui/material';
 
 const LabelTypography = forwardRef<HTMLDivElement, TypographyProps>(
   (props, ref) => {
@@ -8,8 +8,8 @@ const LabelTypography = forwardRef<HTMLDivElement, TypographyProps>(
     return (
       <Typography
         ref={ref}
-        level="title-md"
-        textColor="neutral"
+        variant="subtitle1"
+        color="textSecondary"
         sx={{
           mr: 2,
           ...sx,

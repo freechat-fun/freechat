@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link, LinkProps } from '@mui/joy';
+import { Link, LinkProps } from '@mui/material';
 
 const RouterLink = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
   const navigate = useNavigate();

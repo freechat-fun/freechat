@@ -1,10 +1,15 @@
-import { Card, styled } from '@mui/joy';
+import { Box, styled } from '@mui/material';
 
-const OptionCard = styled(Card)(({ theme }) => ({
-  borderColor: 'transparent',
+const OptionCard = styled(Box)(({ theme }) => ({
+  border: '1px solid transparent',
+  borderRadius: theme.shape.borderRadius * 2,
   boxShadow: 'none',
-  '&:hover': { borderColor: theme.palette.primary.outlinedBorder },
-  p: 0,
+  '&:hover': {
+    borderColor: theme.palette.primary.main,
+  },
+  padding: 16,
+  display: 'flex',
+  flexDirection: 'column',
   gap: 0,
 }));
 

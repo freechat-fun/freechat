@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { useBlocker } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@mui/joy';
+import { Typography } from '@mui/material';
 import { ConfirmModal } from '.';
 import { LaunchRounded } from '@mui/icons-material';
 
@@ -28,10 +28,10 @@ const RouterBlocker = forwardRef<HTMLDivElement, RouterBlockerProps>(
         open={blocker.state === 'blocked'}
         dialog={{
           title: title || t('Confirm to Leave'),
-          color: 'warning',
+          color: 'error',
         }}
         button={{
-          startDecorator: <LaunchRounded />,
+          startIcon: <LaunchRounded />,
         }}
         onClose={() => blocker.reset?.()}
         onConfirm={() => blocker.proceed?.()}

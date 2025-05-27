@@ -1,65 +1,48 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import {
-  IconButton,
-  IconButtonProps,
-  useColorScheme as useJoyColorScheme,
-} from '@mui/joy';
+import { ListItemButton, ListItemButtonProps } from '@mui/material';
 import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
-
 import { useColorScheme as useMaterialColorScheme } from '@mui/material';
+import { useColorScheme as useJoyColorScheme } from '@mui/joy';
 
-export default function ColorSchemeToggle(props: IconButtonProps) {
-  const { onClick, sx, ...other } = props;
-  const { mode, setMode: setJoyMode } = useJoyColorScheme();
-  const { setMode: setMaterialMode } = useMaterialColorScheme();
+export default function ColorSchemeToggle(props: ListItemButtonProps) {
   const [mounted, setMounted] = useState(false);
+  const { setMode: setJoyMode } = useJoyColorScheme();
+  const { mode, setMode: setMaterialMode } = useMaterialColorScheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
   if (!mounted) {
-    return (
-      <IconButton
-        size="sm"
-        variant="plain"
-        color="neutral"
-        {...other}
-        sx={sx}
-        disabled
-      />
-    );
+    return <ListItemButton dense color="inherit" {...props} disabled />;
   }
+
+  const toggleColorMode = () => {
+    if (mode === 'light') {
+      setJoyMode('dark');
+      setMaterialMode('dark');
+    } else {
+      setJoyMode('light');
+      setMaterialMode('light');
+    }
+  };
+
   return (
-    <IconButton
+    <ListItemButton
+      dense
       id="toggle-mode"
-      size="sm"
-      variant="plain"
-      color="neutral"
-      {...props}
       onClick={(event) => {
-        if (mode === 'light') {
-          setJoyMode('dark');
-          setMaterialMode('dark');
-        } else {
-          setJoyMode('light');
-          setMaterialMode('light');
-        }
-        onClick?.(event);
+        event.preventDefault();
+        toggleColorMode();
       }}
-      sx={[
-        {
-          '& > *:first-of-type': {
-            display: mode === 'dark' ? 'none' : 'initial',
-          },
-          '& > *:last-of-type': {
-            display: mode === 'light' ? 'none' : 'initial',
-          },
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+      {...props}
     >
-      <DarkModeRounded />
-      <LightModeRounded />
-    </IconButton>
+      {mode === 'dark' ? (
+        <LightModeRounded />
+      ) : (
+        <DarkModeRounded />
+      )}
+    </ListItemButton>
   );
 }

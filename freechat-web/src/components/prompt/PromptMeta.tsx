@@ -108,8 +108,8 @@ export default function PromptMeta(props: {
             if (id === record?.promptId) {
               return (
                 <HistoryTypography
-                  textColor="gray"
-                  level="body-sm"
+                  color="gray"
+                  fontSize="small"
                   key={`history-${id}`}
                 >
                   {label}
@@ -118,7 +118,9 @@ export default function PromptMeta(props: {
             } else {
               return (
                 <RouterLink href={`/w/prompt/${id}`} key={`history-${id}`}>
-                  <HistoryTypography level="body-sm">{label}</HistoryTypography>
+                  <HistoryTypography fontSize="small">
+                    {label}
+                  </HistoryTypography>
                 </RouterLink>
               );
             }

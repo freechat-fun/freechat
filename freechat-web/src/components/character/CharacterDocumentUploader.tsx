@@ -292,7 +292,7 @@ export default function CharacterDocumentUploader({
                   disabled={documentUploading}
                   type="number"
                   slotProps={{
-                    input: {
+                    htmlInput: {
                       ref: splitterInputRefs.current[0],
                       step: 100,
                       min: 0,
@@ -336,7 +336,7 @@ export default function CharacterDocumentUploader({
                   disabled={documentUploading}
                   type="number"
                   slotProps={{
-                    input: {
+                    htmlInput: {
                       ref: splitterInputRefs.current[1],
                       step: 10,
                       min: 0,

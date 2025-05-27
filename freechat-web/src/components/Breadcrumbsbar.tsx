@@ -1,5 +1,8 @@
-import { ChevronRightRounded, HomeRounded } from '@mui/icons-material';
-import { Box, Breadcrumbs, Typography } from '@mui/joy';
+import {
+  ChevronRight as ChevronRightIcon,
+  Home as HomeIcon,
+} from '@mui/icons-material';
+import { Box, Breadcrumbs, Typography } from '@mui/material';
 import { RouterLink } from '.';
 
 type BreadcrumbsbarProps = {
@@ -10,9 +13,8 @@ export default function Breadcrumbsbar({ breadcrumbs }: BreadcrumbsbarProps) {
   return (
     <Box sx={{ width: '100%' }}>
       <Breadcrumbs
-        size="sm"
         aria-label="breadcrumbs"
-        separator={<ChevronRightRounded />}
+        separator={<ChevronRightIcon />}
         sx={{ pl: 0 }}
       >
         {Object.entries(breadcrumbs).map(([name, value]) => {
@@ -22,16 +24,20 @@ export default function Breadcrumbsbar({ breadcrumbs }: BreadcrumbsbarProps) {
                 key={name}
                 underline="hover"
                 color="primary"
-                fontWeight={500}
+                sx={{ fontWeight: 500 }}
                 href={value}
                 aria-label={name}
               >
-                {name === 'Home' ? <HomeRounded /> : name}
+                {name === 'Home' ? <HomeIcon /> : name}
               </RouterLink>
             );
           } else {
             return (
-              <Typography key={name} color="neutral" fontWeight={500}>
+              <Typography
+                key={name}
+                color="text.secondary"
+                sx={{ fontWeight: 500 }}
+              >
                 {name}
               </Typography>
             );

@@ -13,7 +13,7 @@ import {
   Switch,
   Typography,
 } from '@mui/joy';
-import { AddCircleRounded } from '@mui/icons-material';
+import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
   CommonContainer,
   OptionCard,
@@ -27,6 +27,7 @@ import {
   defaultModels,
 } from '../../configs/model-providers-config';
 import { toModelInfo, extractModelName } from '../../libs/template_utils';
+import { InputAdornment } from '@mui/material';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -246,7 +247,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableTemperature}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[0],
                     min: 0,
                     max: 2,
@@ -289,7 +290,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableTopK}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[1],
                     min: 10,
                     max: 100,
@@ -332,7 +333,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableTopP}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[2],
                     min: 0,
                     max: 1,
@@ -375,7 +376,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableRepeatPenalty}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[3],
                     min: 0,
                     max: 2,
@@ -420,7 +421,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableSeed}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[4],
                     min: 1,
                     step: 1,
@@ -453,7 +454,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableNumPredict}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[5],
                     min: -2,
                     step: 1,
@@ -486,7 +487,7 @@ export default function OllamaSettings(props: {
                 disabled={!enableNumCtx}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[6],
                     min: 1028,
                     step: 1028,
@@ -557,6 +558,17 @@ export default function OllamaSettings(props: {
                   type="text"
                   value={stopWord}
                   onChange={(event) => setStopWord(event.target.value)}
+                  slotProps={{
+                    input: {
+                      size: 'small',
+                      sx: { fontSize: 'small' },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <TransitEnterexitRounded fontSize="small" />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </form>
             )}

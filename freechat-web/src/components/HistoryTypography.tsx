@@ -1,4 +1,4 @@
-import { Typography, styled } from '@mui/joy';
+import { Typography, styled } from '@mui/material';
 
 const HistoryTypography = styled(Typography)(({ theme }) => ({
   overflow: 'hidden',

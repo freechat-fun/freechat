@@ -1,5 +1,10 @@
-import { forwardRef, useMemo } from 'react';
-import { Typography, TypographyProps } from '@mui/joy';
+import { forwardRef, useEffect, useMemo, useState } from 'react';
+import {
+  Typography,
+  TypographyProps,
+  useColorScheme,
+  useTheme,
+} from '@mui/material';
 import { escapeRegExp } from '../libs/js_utils';
 
 export type HighlightedTypographyProps = TypographyProps & {
@@ -11,6 +16,19 @@ const HighlightedTypography = forwardRef<
   HighlightedTypographyProps
 >((props, ref) => {
   const { highlight, children, ...others } = props;
+  const theme = useTheme();
+  const { mode } = useColorScheme();
+  const [bgColor, setBgColor] = useState<string>(
+    mode === 'light' ? theme.palette.warning.light : theme.palette.warning.dark
+  );
+
+  useEffect(() => {
+    setBgColor(
+      mode === 'light'
+        ? theme.palette.warning.light
+        : theme.palette.warning.dark
+    );
+  }, [mode, theme.palette.warning.dark, theme.palette.warning.light]);
 
   const parts = useMemo<string[]>(() => {
     if (!highlight?.trim() || typeof children !== 'string') {
@@ -37,7 +55,7 @@ const HighlightedTypography = forwardRef<
           <span
             key={`${part}-${index}`}
             style={{
-              backgroundColor: 'var(--joy-palette-warning-softActiveBg)',
+              background: bgColor,
             }}
           >
             {part}

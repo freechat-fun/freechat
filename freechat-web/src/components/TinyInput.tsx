@@ -1,16 +1,34 @@
-import { Input, styled } from '@mui/joy';
+import { forwardRef } from 'react';
+import { TextField, TextFieldProps, useTheme } from '@mui/material';
 
-const TinyInput = styled(Input)(({ theme }) => ({
-  minWidth: theme.spacing(8.5),
-  maxWidth: theme.spacing(15),
-  margin: theme.spacing(0),
-  padding: theme.spacing(0),
-  alignSelf: 'start',
-  '& input': {
-    padding: `${theme.spacing(0.5)} ${theme.spacing(1)}`,
-    fontSize: '0.875rem',
-    minHeight: '1rem',
-  },
-}));
+const TinyInput = forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
+  const { sx, slotProps, ...others } = props;
+  const theme = useTheme();
+
+  return (
+    <TextField
+      inputRef={ref}
+      size="small"
+      slotProps={{
+        input: {
+          size: 'small',
+          sx: { fontSize: 'small' },
+        },
+        ...slotProps,
+      }}
+      sx={{
+        minWidth: theme.spacing(8.5),
+        maxWidth: theme.spacing(15),
+        m: theme.spacing(0),
+        p: theme.spacing(0),
+        alignSelf: 'start',
+        ...sx,
+      }}
+      {...others}
+    />
+  );
+});
+
+TinyInput.displayName = 'TinyInput';
 
 export default TinyInput;

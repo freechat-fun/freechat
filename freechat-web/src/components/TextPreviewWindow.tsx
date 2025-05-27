@@ -1,17 +1,17 @@
+/* eslint-disable prettier/prettier */
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollableTypography } from '.';
 import {
-  DialogActions,
-  DialogContent,
+  Dialog,
   DialogTitle,
+  DialogContent,
+  DialogActions,
   IconButton,
-  Modal,
-  ModalDialog,
-  Stack,
+  Box,
   TypographyProps,
-} from '@mui/joy';
+} from '@mui/material';
 import { DoneRounded } from '@mui/icons-material';
+import { ScrollableTypography } from '.';
 
 type TextPreviewWindowProps = TypographyProps<'div'> & {
   title?: string;
@@ -31,42 +31,43 @@ const TextPreviewWindow: React.FC<
     ...others
   } = props;
 
-  function handleClose(
+  const handleClose = (
     _event: React.MouseEvent<HTMLButtonElement>,
     reason: string
-  ): void {
+  ): void => {
     if (reason !== 'backdropClick') {
       setOpen(false);
     }
-  }
+  };
 
   return (
-    <>
-      <Modal open={open} onClose={handleClose}>
-        <ModalDialog>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogContent>
-            <Stack
-              spacing={2}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <ScrollableTypography {...others}>
-                {children}
-              </ScrollableTypography>
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <IconButton onClick={() => setOpen(false)}>
-              <DoneRounded />
-            </IconButton>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
+          <ScrollableTypography {...others}>
+            {children}
+          </ScrollableTypography>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <IconButton onClick={() => setOpen(false)} sx={{ mr: 2 }}>
+          <DoneRounded />
+        </IconButton>
+      </DialogActions>
+    </Dialog>
   );
 };
 

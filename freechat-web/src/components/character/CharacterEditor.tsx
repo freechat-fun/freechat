@@ -74,6 +74,7 @@ import { createPromptForCharacter } from '../../libs/chat_utils';
 import { getCompressedImage } from '../../libs/ui_utils';
 import { objectsEqual } from '../../libs/js_utils';
 import { exportCharacter } from '../../libs/character_utils';
+import { InputAdornment } from '@mui/material';
 
 type CharacterEditorProps = {
   id: number;
@@ -690,7 +691,17 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   type="text"
                   value={tag}
                   onChange={(event) => setTag(event.target.value)}
-                  endDecorator={<TransitEnterexitRounded fontSize="small" />}
+                  slotProps={{
+                    input: {
+                      size: 'small',
+                      sx: { fontSize: 'small' },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <TransitEnterexitRounded fontSize="small" />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </form>
             )}
@@ -804,9 +815,6 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                     borderRadius: '50%',
                   }}
                   disabled={!editEnabled}
-                  size="sm"
-                  variant="outlined"
-                  color="neutral"
                   sx={{
                     bgcolor: 'background.body',
                     position: 'absolute',
@@ -940,7 +948,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
         }}
         button={{
           text: t('button:Save'),
-          startDecorator: <SaveAltRounded />,
+          startIcon: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >

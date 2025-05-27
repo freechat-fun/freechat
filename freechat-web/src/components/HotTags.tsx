@@ -1,7 +1,13 @@
 import { forwardRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useErrorMessageBusContext, useFreeChatApiContext } from '../contexts';
-import { Input, Link, Stack, StackProps } from '@mui/joy';
+import {
+  TextField,
+  Link,
+  Stack,
+  StackProps,
+  InputAdornment,
+} from '@mui/material';
 import { HotTagDTO } from 'freechat-sdk';
 import { SearchRounded } from '@mui/icons-material';
 import { useDebounce } from '../libs/ui_utils';
@@ -49,27 +55,44 @@ const HotTags = forwardRef<HTMLDivElement, HotTagsProp>((props, ref) => {
       {hotTags.map((tag, index) => (
         <Link
           key={`tag-${tag.content}=${index}`}
+          href="#"
           onClick={(event) => {
             event.preventDefault();
             if (tag.content) {
               onTagClick?.(tag.content);
             }
           }}
+          sx={{
+            textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline',
+            },
+          }}
         >
           {`${tag.content} (${tag.count})`}
         </Link>
       ))}
       <LinePlaceholder spacing={6} />
-      <Input
+      <TextField
         name="keyWord"
         type="text"
         value={keyWord}
         onChange={handleInputChange}
         placeholder={t('Search tags')}
-        startDecorator={<SearchRounded />}
-        sx={{
-          minWidth: '100%',
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchRounded
+                  fontSize="small"
+                  sx={{ color: 'text.secondary' }}
+                />
+              </InputAdornment>
+            ),
+          },
         }}
+        fullWidth
+        size="small"
       />
     </Stack>
   );

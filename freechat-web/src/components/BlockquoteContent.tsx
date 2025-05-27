@@ -1,16 +1,16 @@
-import { Box } from '@mui/joy';
+import { Box, Theme } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 const BlockquoteContent: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <Box
       component="blockquote"
-      sx={(theme) => ({
+      sx={(theme: Theme) => ({
         borderLeft: 4,
         borderColor: theme.palette.divider,
-        pl: 2,
-        ml: 0,
-        color: theme.palette.text.tertiary,
+        paddingLeft: 2,
+        marginLeft: 0,
+        color: theme.palette.text.secondary,
       })}
     >
       {children}

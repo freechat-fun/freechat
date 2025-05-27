@@ -1,4 +1,4 @@
-import { Box } from '@mui/joy';
+import { Box } from '@mui/material';
 
 export default function LinePlaceholder(props: { spacing?: number }) {
   const { spacing } = props;
