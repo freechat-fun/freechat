@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/joy';
+import { Box } from '@mui/material';
 import { DEFAULT_IMAGE_MAX_WIDTH } from '../libs/ui_utils';
 
 export type ImagePreviewProps = {

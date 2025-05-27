@@ -401,13 +401,13 @@ export default function Prompts() {
         onClose={() => setRecordDeleted(undefined)}
         obj={recordDeleted}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Do you really want to delete this prompt?'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handleDelete}
       >
@@ -425,7 +425,7 @@ export default function Prompts() {
         }}
         button={{
           text: t('button:Create'),
-          startDecorator: <SaveAltRounded />,
+          startIcon: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >

@@ -103,7 +103,7 @@ export default function ChatInfoUsage({
         }}
         button={{
           text: t('button:Confirm'),
-          startDecorator: <CheckRounded />,
+          startIcon: <CheckRounded />,
         }}
         onConfirm={() => {
           setApiKeyValue?.(editApiKey ?? '');

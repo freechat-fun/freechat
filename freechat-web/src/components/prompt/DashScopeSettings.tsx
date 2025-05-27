@@ -14,7 +14,7 @@ import {
   Switch,
   Typography,
 } from '@mui/joy';
-import { AddCircleRounded } from '@mui/icons-material';
+import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
   CommonContainer,
   OptionCard,
@@ -25,6 +25,7 @@ import {
 import { AiModelInfoDTO } from 'freechat-sdk';
 import { HelpIcon } from '../icon';
 import { defaultModels } from '../../configs/model-providers-config';
+import { InputAdornment } from '@mui/material';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -271,7 +272,7 @@ export default function DashScopeSettings(props: {
                 disabled={!enableTopP}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[0],
                     min: 0,
                     max: 1,
@@ -314,7 +315,7 @@ export default function DashScopeSettings(props: {
                 disabled={!enableTopK}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[1],
                     min: 0,
                     max: 100,
@@ -357,7 +358,7 @@ export default function DashScopeSettings(props: {
                 disabled={!enableMaxTokens}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[2],
                     min: 1000,
                     step: 1000,
@@ -408,7 +409,7 @@ export default function DashScopeSettings(props: {
                 disabled={!enableSeed}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[3],
                     min: 1,
                     step: 1,
@@ -441,7 +442,7 @@ export default function DashScopeSettings(props: {
                 disabled={!enableRepetitionPenalty}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[4],
                     min: 1,
                     step: 0.1,
@@ -476,7 +477,7 @@ export default function DashScopeSettings(props: {
                 disabled={!enableTemperature}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[5],
                     min: 0,
                     max: 2,
@@ -557,6 +558,17 @@ export default function DashScopeSettings(props: {
                   type="text"
                   value={stopWord}
                   onChange={(event) => setStopWord(event.target.value)}
+                  slotProps={{
+                    input: {
+                      size: 'small',
+                      sx: { fontSize: 'small' },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <TransitEnterexitRounded fontSize="small" />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </form>
             )}

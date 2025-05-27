@@ -153,7 +153,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       <Typography level="title-sm" textColor="neutral">
         {t('Description')}
       </Typography>
-      <TextareaTypography level="title-sm" textColor="neutral">
+      <TextareaTypography variant="subtitle2" color="neutral">
         {session?.character?.description}
       </TextareaTypography>
 

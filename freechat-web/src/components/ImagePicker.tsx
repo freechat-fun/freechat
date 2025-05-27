@@ -1,23 +1,24 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  CloseRounded,
   DoneRounded,
   PhotoCameraRounded,
   SvgIconComponent,
   UndoRounded,
 } from '@mui/icons-material';
 import {
+  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
   IconButtonProps,
   Input,
-  Modal,
-  ModalClose,
-  ModalDialog,
   Stack,
-} from '@mui/joy';
+  Typography,
+} from '@mui/material';
 import { extractFilenameFromUrl } from '../libs/url_utils';
 import { ImagePreview } from '.';
 
@@ -65,8 +66,6 @@ export default function ImagePicker(props: ImagePickerProps) {
     if (filePath) {
       setFile(filePath);
       setImage(URL.createObjectURL(filePath));
-      // getCompressedImageDataURL(filePath)
-      //   .then(setImage);
       setOpen(true);
     }
   }
@@ -104,11 +103,9 @@ export default function ImagePicker(props: ImagePickerProps) {
         id={inputId}
         onChange={handleImageChange}
         sx={{ display: 'none' }}
-        slotProps={{
-          input: {
-            ref: inputRef,
-            accept: 'image/*',
-          },
+        inputProps={{
+          ref: inputRef,
+          accept: 'image/jpeg, image/png, image/gif, image/bmp, image/tiff, image/webp, .jpg, .jpeg, .png, .gif, .bmp, .tiff, .webp',
         }}
       />
       <label htmlFor={inputId}>
@@ -117,43 +114,61 @@ export default function ImagePicker(props: ImagePickerProps) {
         </IconButton>
       </label>
 
-      <Modal open={open} onClose={handleClose}>
-        <ModalDialog>
-          <ModalClose />
-          <DialogTitle>{t('Choose a picture')}</DialogTitle>
-          <DialogContent>
-            <Stack
-              spacing={2}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              {image && (
-                <ImagePreview
-                  src={image}
-                  maxWidth={
-                    preview.maxWidth !== 'auto' ? preview.maxWidth : undefined
-                  }
-                  maxHight={
-                    preview.maxHeight !== 'auto' ? preview.maxHeight : undefined
-                  }
-                  borderRadius={preview.borderRadius}
-                />
-              )}
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <IconButton onClick={handleConfirm}>
-              <DoneRounded />
-            </IconButton>
-            <IconButton onClick={handleModify}>
-              <UndoRounded />
-            </IconButton>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
+      <Dialog 
+        open={open} 
+        onClose={handleClose}
+        maxWidth="sm"
+      >
+        <DialogTitle
+          sx={{
+            px: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography variant="h6" sx={{ mr: 2 }}>
+            {t('Choose a picture')}
+          </Typography>
+          <IconButton
+            aria-label="close"
+            onClick={(event) => handleClose(event, 'escapeKeyDown')}
+          >
+            <CloseRounded />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Stack
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mx: 2,
+            }}
+          >
+            {image && (
+              <ImagePreview
+                src={image}
+                maxWidth={
+                  preview.maxWidth !== 'auto' ? preview.maxWidth : undefined
+                }
+                maxHight={
+                  preview.maxHeight !== 'auto' ? preview.maxHeight : undefined
+                }
+                borderRadius={preview.borderRadius}
+              />
+            )}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <IconButton onClick={handleConfirm}>
+            <DoneRounded />
+          </IconButton>
+          <IconButton onClick={handleModify}>
+            <UndoRounded />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

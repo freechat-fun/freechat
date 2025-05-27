@@ -387,7 +387,7 @@ const CharacterBackendSettings = forwardRef<
               <TinyInput
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[0],
                     min: 10,
                     max: 500,
@@ -427,7 +427,7 @@ const CharacterBackendSettings = forwardRef<
               <TinyInput
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[1],
                     min: 0,
                     max: 30,
@@ -469,7 +469,7 @@ const CharacterBackendSettings = forwardRef<
               <TinyInput
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[2],
                     min: 0,
                     max: 60,
@@ -572,7 +572,7 @@ const CharacterBackendSettings = forwardRef<
                 disabled={!enableQuota}
                 type="number"
                 slotProps={{
-                  input: {
+                  htmlInput: {
                     ref: inputRefs.current[3],
                     min: 0,
                     max: 10000,

@@ -1,11 +1,11 @@
 import React from 'react';
-import { SxProps } from '@mui/joy/styles/types';
-import { Link, Skeleton, Table, styled } from '@mui/joy';
+import { SxProps, Theme } from '@mui/material/styles';
+import { Link, Skeleton, Table, styled } from '@mui/material';
 import { BlockquoteContent, CodeContent } from '.';
 
 const Markdown = React.lazy(async () => import('markdown-to-jsx'));
 
-const MarkdownContainer = styled('div')(({ theme }) => ({
+const MarkdownContainer = styled('div')(({ theme }: { theme: Theme }) => ({
   display: 'block',
   overflowWrap: 'anywhere',
   '&:empty::before, & > span:empty::before': {
@@ -33,12 +33,12 @@ const MarkdownContainer = styled('div')(({ theme }) => ({
     marginBottom: 12,
   },
   '& h5': {
-    ...theme.typography['title-lg'],
+    ...theme.typography.h5,
     marginTop: 4,
     marginBottom: 4,
   },
   '& h6': {
-    ...theme.typography['title-md'],
+    ...theme.typography.h6,
     marginTop: 4,
     marginBottom: 4,
   },
@@ -89,7 +89,7 @@ const ImageContainer: React.FC<ImageProps> = ({ alt, ...props }) => {
 
 type MarkdownContentProps = {
   loading?: boolean;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   children: React.ReactNode | undefined;
 };
 

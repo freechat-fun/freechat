@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useErrorMessageBusContext } from '../contexts';
 import { LlmResultDTO, TokenUsageDTO } from 'freechat-sdk';
-import { SxProps } from '@mui/joy/styles/types';
+import { SxProps, Theme } from '@mui/material/styles';
 import { LinePlaceholder, MarkdownContent } from '.';
-import { Box, Chip, Divider, IconButton, Typography } from '@mui/joy';
+import { Box, Chip, Divider, IconButton, Typography } from '@mui/material';
 import { ContentCopyRounded } from '@mui/icons-material';
 import { getSenderReply } from '../libs/chat_utils';
 import { getMessageText } from '../libs/template_utils';
@@ -16,7 +16,7 @@ type ChatContentProps = {
   url?: string;
   body?: string;
   initialData?: string;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   onMessage?: (partialResult: LlmResultDTO) => boolean;
   onFinish?: (result?: LlmResultDTO) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,7 +134,7 @@ export default function ChatContent({
             }}
           >
             {copied ? (
-              <Chip variant="outlined">{t('Copied!')}</Chip>
+              <Chip variant="outlined" label={t('Copied!')} />
             ) : (
               <IconButton
                 onClick={() => {
@@ -145,12 +145,13 @@ export default function ChatContent({
                       .catch(handleError);
                   }
                 }}
+                size="small"
               >
                 <ContentCopyRounded fontSize="small" />
               </IconButton>
             )}
           </Box>
-          <Divider sx={{ mt: 1, mb: 1 }}>{t('Token Usage')}</Divider>
+          <Divider sx={{ my: 1 }}>{t('Token Usage')}</Divider>
           <Box
             sx={{
               display: 'flex',
@@ -158,9 +159,9 @@ export default function ChatContent({
               alignItems: 'center',
             }}
           >
-            <Typography level="body-sm">{`${t('Input')}: ${usage.inputTokenCount}`}</Typography>
-            <Typography level="body-sm">{`${t('Output')}: ${usage.outputTokenCount}`}</Typography>
-            <Typography level="body-sm">{`${t('Total')}: ${usage.totalTokenCount}`}</Typography>
+            <Typography variant="body2">{`${t('Input')}: ${usage.inputTokenCount}`}</Typography>
+            <Typography variant="body2">{`${t('Output')}: ${usage.outputTokenCount}`}</Typography>
+            <Typography variant="body2">{`${t('Total')}: ${usage.totalTokenCount}`}</Typography>
           </Box>
         </Fragment>
       )}

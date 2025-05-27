@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Link, Modal, ModalDialog, Typography } from '@mui/joy';
+import {
+  Link as MuiLink,
+  Dialog,
+  DialogContent,
+  Typography,
+  Box,
+} from '@mui/material';
 import { useMetaInfoContext } from '../contexts';
 
 export default function UnauthorizedDialog() {
@@ -11,19 +17,27 @@ export default function UnauthorizedDialog() {
   const publicPaths = [null, '', '/w', '/w/login', '/w/docs'];
 
   return (
-    <Modal open={!isAuthorized() && !publicPaths.includes(normalizePathname)}>
-      <ModalDialog layout="center">
-        <Typography
+    <Dialog
+      open={!isAuthorized() && !publicPaths.includes(normalizePathname)}
+      maxWidth="sm"
+    >
+      <DialogContent>
+        <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
             whiteSpace: 'pre-wrap',
+            gap: 1,
           }}
         >
-          {t('You are not signed in yet.')} {t('Please')}
-          <Link href="/w/login">{t('sign in')}</Link>
-        </Typography>
-      </ModalDialog>
-    </Modal>
+          <Typography>
+            {t('You are not signed in yet.')} {t('Please')}
+          </Typography>
+          <MuiLink href="/w/login" color="primary">
+            {t('sign in')}
+          </MuiLink>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 }

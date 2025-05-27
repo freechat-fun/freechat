@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Box, BoxProps, Card, Skeleton, Stack } from '@mui/joy';
+import { Box, BoxProps, Card, Skeleton, Stack } from '@mui/material';
 
 type DocumentSkeletonProps = BoxProps & {
   lines?: number;
@@ -11,7 +11,7 @@ const DocumentSkeleton = forwardRef<HTMLDivElement, DocumentSkeletonProps>(
     const { lines = 1, loading = true, sx, ...others } = props;
 
     const titles = Array.from({ length: lines }, (_, index) => (
-      <Card key={`title-${index}`} variant="plain">
+      <Card key={`title-${index}`} variant="outlined" sx={{ p: 1 }}>
         <Skeleton />
       </Card>
     ));
@@ -31,7 +31,7 @@ const DocumentSkeleton = forwardRef<HTMLDivElement, DocumentSkeletonProps>(
         {...others}
       >
         <Stack spacing={1}>{titles}</Stack>
-        <Card variant="plain">
+        <Card variant="outlined" sx={{ p: 1 }}>
           <Skeleton />
         </Card>
       </Box>

@@ -1,14 +1,14 @@
+/* eslint-disable prettier/prettier */
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  DialogActions,
-  DialogContent,
+  Dialog,
   DialogTitle,
+  DialogContent,
+  DialogActions,
   IconButton,
-  Modal,
-  ModalDialog,
-} from '@mui/joy';
-import { DoneRounded } from '@mui/icons-material';
+} from '@mui/material';
+import { Done as DoneIcon } from '@mui/icons-material';
 import ImagePreview, { ImagePreviewProps } from './ImagePreview';
 
 type ImagePreviewWindowProps = ImagePreviewProps & {
@@ -39,21 +39,21 @@ const ImagePreviewWindow: React.FC<
   }
 
   return (
-    <>
-      <Modal open={open} onClose={handleClose}>
-        <ModalDialog>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogContent>
-            <ImagePreview {...others} />
-          </DialogContent>
-          <DialogActions>
-            <IconButton onClick={() => setOpen(false)}>
-              <DoneRounded />
-            </IconButton>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+    >
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <ImagePreview {...others} />
+      </DialogContent>
+      <DialogActions>
+        <IconButton onClick={() => setOpen(false)}>
+          <DoneIcon />
+        </IconButton>
+      </DialogActions>
+    </Dialog>
   );
 };
 

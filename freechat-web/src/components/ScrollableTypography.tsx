@@ -1,14 +1,15 @@
 import { forwardRef } from 'react';
-import { Typography, TypographyProps } from '@mui/joy';
+import { Typography, TypographyProps, useTheme } from '@mui/material';
 
 const ScrollableTypography = forwardRef<HTMLDivElement, TypographyProps>(
   (props, ref) => {
     const { sx, children, ...others } = props;
+    const theme = useTheme();
 
     return (
       <Typography
         ref={ref}
-        variant="outlined"
+        variant="body1"
         component="div"
         sx={{
           maxHeight: 'calc(1.6em * 10)',
@@ -17,6 +18,9 @@ const ScrollableTypography = forwardRef<HTMLDivElement, TypographyProps>(
           width: '100%',
           boxSizing: 'border-box',
           whiteSpace: 'pre-wrap',
+          border: 1,
+          borderColor: theme.palette.divider,
+          borderRadius: theme.shape.borderRadius / 2,
           ...sx,
         }}
         {...others}

@@ -208,7 +208,7 @@ export default function Chats() {
         display: 'grid',
         gridTemplateColumns: {
           xs: '1fr',
-          sm: '1fr 3fr 1fr',
+          sm: '2fr 5fr 3fr',
         },
       }}
     >
@@ -270,13 +270,13 @@ export default function Chats() {
         onClose={() => setChatIdDeleted(null)}
         obj={chatIdDeleted}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Do you really want to delete this chat?'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handleChatDelete}
       >

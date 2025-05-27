@@ -3,16 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
-  IconButton,
   List,
-  ListDivider,
   ListItem,
   ListItemButton,
   ListItemButtonProps,
   Tooltip,
   TooltipProps,
   useTheme,
-} from '@mui/joy';
+} from '@mui/material';
 import {
   AccountTreeRounded,
   AndroidRounded,
@@ -26,7 +24,7 @@ import {
   ManageAccountsRounded,
   SmsRounded,
 } from '@mui/icons-material';
-import { ColorSchemeToggle, LanguageToggle } from '.';
+import { ColorSchemeToggle, LanguageToggle, SidebarDivider } from '.';
 import { useMetaInfoContext } from '../contexts';
 
 const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
@@ -35,7 +33,6 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
     <Tooltip
       ref={ref}
       placement="right"
-      size="sm"
       sx={{
         zIndex: 9999,
         ...sx,
@@ -64,6 +61,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { isAuthorized } = useMetaInfoContext();
+  const theme = useTheme();
 
   const isSelected = useCallback(
     (targetPathname: string, currentPathname: string) => {
@@ -84,6 +82,10 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
         event.preventDefault();
         navigate(href);
       }}
+      sx={{
+        borderRadius: theme.shape.borderRadius / 2,
+        px: 1,
+      }}
       {...others}
     >
       {children}
@@ -95,6 +97,7 @@ export default function ThinSidebar() {
   const theme = useTheme();
   const { t } = useTranslation('sidebar');
   const { csrfToken, isAuthorized } = useMetaInfoContext();
+  const borderRadius = theme.shape.borderRadius / 2;
 
   return (
     <Box
@@ -115,22 +118,25 @@ export default function ThinSidebar() {
     >
       <div>
         <List
-          size="sm"
+          dense
           sx={{
             bgcolor: 'transparent',
-            borderRadius: 'md',
-            boxShadow: 'lg',
+            borderRadius: borderRadius,
+            boxShadow: theme.shadows[3],
+            borderLeft: 0,
+            borderTop: 1,
             borderRight: 1,
-            borderBottom: 1,
-            borderColor: theme.palette.background.level3,
-            py: 3,
+            borderBottom: 0,
+            borderColor: theme.palette.background.default,
             px: 0.5,
-            gap: 0.5,
-            '--List-nestedInsetStart': '30px',
-            '--ListItem-radius': (theme) => theme.vars.radius.sm,
+            py: 2,
+            m: 0,
+            gap: 1,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Home')}>
               <ItemButton href="/" anonymous>
                 <HomeRounded />
@@ -138,7 +144,7 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Chat')}>
               <ItemButton href="/w/chat">
                 <SmsRounded />
@@ -146,14 +152,9 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider
-            sx={{
-              my: 2,
-              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-            }}
-          />
+          <SidebarDivider />
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Characters')}>
               <ItemButton href="/w/characters">
                 <AndroidRounded />
@@ -161,7 +162,7 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Prompts')}>
               <ItemButton href="/w/prompts">
                 <ArticleRounded />
@@ -169,7 +170,7 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Agents')}>
               <ItemButton disabled href="/w/agents">
                 <AccountTreeRounded />
@@ -177,88 +178,98 @@ export default function ThinSidebar() {
             </ItemTooltip>
           </ListItem>
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('API Reference')}>
-              <ItemButton href="/w/docs" disabled={false}>
+              <ItemButton href="/w/docs" anonymous>
                 <HelpRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider
-            sx={{
-              my: 2,
-              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-            }}
-          />
+          <SidebarDivider />
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Profile')}>
-              <ItemButton href="/w/profile" disabled={!isAuthorized()}>
+              <ItemButton href="/w/profile">
                 <ManageAccountsRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>
 
-          <ListItem>
+          <ListItem disablePadding>
             <ItemTooltip title={t('Secrets & API keys')}>
-              <ItemButton href="/w/credentials" disabled={!isAuthorized()}>
+              <ItemButton href="/w/credentials">
                 <KeyRounded />
               </ItemButton>
             </ItemTooltip>
           </ListItem>
 
-          <ListDivider
-            sx={{
-              my: 2,
-              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-            }}
-          />
+          <SidebarDivider />
 
-          <ItemTooltip title={t('Switch Theme')}>
-            <ColorSchemeToggle sx={{ width: '100%', mr: 1 }} />
-          </ItemTooltip>
+          <ListItem disablePadding>
+            <ItemTooltip title={t('Switch Theme')}>
+              <ColorSchemeToggle
+                sx={{
+                  borderRadius: borderRadius,
+                  px: 1,
+                }}
+              />
+            </ItemTooltip>
+          </ListItem>
 
-          <ItemTooltip title={t('Switch Language')}>
-            <LanguageToggle sx={{ width: '100%' }} />
-          </ItemTooltip>
+          <ListItem disablePadding>
+            <ItemTooltip title={t('Switch Language')}>
+              <LanguageToggle
+                sx={{
+                  borderRadius: borderRadius,
+                  px: 1,
+                }}
+              />
+            </ItemTooltip>
+          </ListItem>
 
-          <ItemTooltip title={t('Code Repository')}>
-            <IconButton
-              component="a"
-              href="https://github.com/freechat-fun/freechat"
-              target="_blank"
-              sx={{ width: '100%' }}
-            >
-              <GitHub />
-            </IconButton>
-          </ItemTooltip>
+          <ListItem disablePadding>
+            <ItemTooltip title={t('Code Repository')}>
+              <ListItemButton
+                dense
+                component="a"
+                href="https://github.com/freechat-fun/freechat"
+                target="_blank"
+                sx={{
+                  borderRadius: borderRadius,
+                  px: 1,
+                }}
+              >
+                <GitHub />
+              </ListItemButton>
+            </ItemTooltip>
+          </ListItem>
 
-          <ListDivider
-            sx={{
-              my: 2,
-              '--Divider-lineColor': 'var(--joy-palette-background-level3)',
-            }}
-          />
+          <SidebarDivider />
 
           {isAuthorized() ? (
-            <form method="post" action="/logout">
-              <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
-              <Tooltip
-                title={t('Sign Out', { ns: 'account' })}
-                size="sm"
-                placement="right"
-                sx={{ zIndex: 9999 }}
-              >
-                <IconButton type="submit" sx={{ width: '100%' }}>
-                  <LogoutRounded />
-                </IconButton>
-              </Tooltip>
-            </form>
+            <ListItem disablePadding>
+              <form method="post" action="/logout">
+                <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
+                <ItemTooltip title={t('Sign Out', { ns: 'account' })}>
+                  <ListItemButton
+                    component="button"
+                    dense
+                    type="submit"
+                    sx={{
+                      borderRadius: borderRadius,
+                      px: 1,
+                    }}
+                  >
+                    <LogoutRounded />
+                  </ListItemButton>
+                </ItemTooltip>
+              </form>
+            </ListItem>
           ) : (
-            <ListItem>
+            <ListItem disablePadding>
               <ItemTooltip title={t('Sign In', { ns: 'account' })}>
-                <ItemButton href="/w/login" disabled={false}>
+                <ItemButton href="/w/login" anonymous>
                   <LoginRounded />
                 </ItemButton>
               </ItemTooltip>

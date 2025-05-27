@@ -1,4 +1,4 @@
-import { styled } from '@mui/joy';
+import { styled } from '@mui/material/styles';
 import HighlightedTypography, {
   HighlightedTypographyProps,
 } from './HighlightedTypography';
