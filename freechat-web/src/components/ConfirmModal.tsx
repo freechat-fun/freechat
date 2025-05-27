@@ -73,6 +73,7 @@ const ConfirmModal = forwardRef<HTMLDivElement, ConfirmModalProps>(
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              p: 1,
             }}
           >
             <DialogContentText>{children}</DialogContentText>
@@ -81,10 +82,16 @@ const ConfirmModal = forwardRef<HTMLDivElement, ConfirmModalProps>(
         <DialogActions>
           <Button
             autoFocus
+            fullWidth
             color={button?.color}
             onClick={() => onConfirm?.(obj)}
             startIcon={button?.startIcon}
             variant="contained"
+            size="small"
+            sx={{
+              fontSize: 'small',
+              m: 2,
+            }}
           >
             {button?.text || t('button:Confirm')}
           </Button>

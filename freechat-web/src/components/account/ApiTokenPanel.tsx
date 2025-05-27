@@ -8,11 +8,17 @@ import {
   Box,
   Checkbox,
   Chip,
+  FormControlLabel,
   IconButton,
   Stack,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
-} from '@mui/joy';
+} from '@mui/material';
 import {
   AddCircleRounded,
   ContentCopyRounded,
@@ -102,12 +108,12 @@ export default function ApiTokenPanel() {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'start',
+          justifyContent: 'flex-start',
           alignItems: 'center',
           gap: 3,
         }}
       >
-        <Typography level="title-md">
+        <Typography variant="h6">
           {t('API tokens: (maximum of 5 tokens allowed)')}
         </Typography>
         <IconButton
@@ -124,47 +130,47 @@ export default function ApiTokenPanel() {
           <AddCircleRounded />
         </IconButton>
       </Box>
-      <Table>
-        <thead>
-          <tr>
-            <th>{t('Token')}</th>
-            <th>{t('Creation Time')}</th>
-            <th>{t('Expiration Time')}</th>
-            <th>{t('Actions')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tokens.map((token, index) => {
-            return (
-              <tr tabIndex={-1} key={token.token || `unknown-token-${index}`}>
-                <td>{token.token}</td>
-                <td>{formatDateTime(token.issuedAt)}</td>
-                <td>{formatDateTime(token.expiresAt)}</td>
-                <td>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Token')}</TableCell>
+              <TableCell>{t('Creation Time')}</TableCell>
+              <TableCell>{t('Expiration Time')}</TableCell>
+              <TableCell>{t('Actions')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tokens.map((token, index) => (
+              <TableRow key={token.token || `unknown-token-${index}`}>
+                <TableCell>{token.token}</TableCell>
+                <TableCell>{formatDateTime(token.issuedAt)}</TableCell>
+                <TableCell>{formatDateTime(token.expiresAt)}</TableCell>
+                <TableCell>
                   <IconButton onClick={() => handleView(token.id)}>
                     <VisibilityRounded />
                   </IconButton>
                   <IconButton onClick={() => handleTryDelete(token.id)}>
                     <DeleteRounded />
                   </IconButton>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <ConfirmModal
         open={!!tokenIdToConfirm}
         onClose={() => setTokenIdToConfirm(undefined)}
         obj={tokenIdToConfirm || 0}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Please confirm carefully!'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handleDelete}
       >
@@ -188,7 +194,7 @@ export default function ApiTokenPanel() {
       >
         <Box
           sx={{
-            m: 2,
+            mx: 2,
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -216,13 +222,13 @@ export default function ApiTokenPanel() {
             </IconButton>
           </Box>
           <Chip
-            variant={tokenTextCopied ? 'outlined' : 'plain'}
+            variant={tokenTextCopied ? 'outlined' : 'filled'}
             sx={{
-              color: tokenTextCopied ? 'gray' : 'transparent',
+              color: tokenTextCopied ? 'text.secondary' : 'transparent',
+              display: tokenTextCopied ? 'inherit' : 'none',
             }}
-          >
-            {t('Copied!')}
-          </Chip>
+            label={t('Copied!')}
+          />
         </Box>
       </ConfirmModal>
       <ConfirmModal
@@ -233,7 +239,7 @@ export default function ApiTokenPanel() {
         }}
         button={{
           text: t('button:Create'),
-          startDecorator: <SaveAltRounded />,
+          startIcon: <SaveAltRounded />,
         }}
         onConfirm={handleCreate}
       >
@@ -251,9 +257,14 @@ export default function ApiTokenPanel() {
             disabled={tokenNeverExpires}
             onAccept={(value) => setTokenExpiresTime(value?.toDate())}
           />
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={tokenNeverExpires}
+                onChange={(event) => setTokenNeverExpires(event.target.checked)}
+              />
+            }
             label={t('Never expires')}
-            onChange={(event) => setTokenNeverExpires(event.target.checked)}
           />
         </Stack>
       </ConfirmModal>

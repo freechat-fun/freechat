@@ -8,11 +8,16 @@ import {
   Box,
   FormLabel,
   IconButton,
-  Input,
   Stack,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
-} from '@mui/joy';
+  Paper,
+} from '@mui/material';
 import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from 'freechat-sdk';
 import {
   AddCircleRounded,
@@ -21,7 +26,7 @@ import {
   RemoveCircleRounded,
 } from '@mui/icons-material';
 import { formatDateTime } from '../../libs/date_utils';
-import { ConfirmModal } from '..';
+import { ConfirmModal, TinyInput } from '..';
 
 export default function AiApiKeyPanel(props: { provider: string }) {
   const { provider } = props;
@@ -108,7 +113,7 @@ export default function AiApiKeyPanel(props: { provider: string }) {
           gap: 3,
         }}
       >
-        <Typography level="title-md">
+        <Typography variant="h6">
           {t('API keys: (maximum of 3 keys allowed)')}
         </Typography>
         <IconButton
@@ -119,46 +124,46 @@ export default function AiApiKeyPanel(props: { provider: string }) {
           <AddCircleRounded />
         </IconButton>
       </Box>
-      <Table>
-        <thead>
-          <tr>
-            <th>{t('Name')}</th>
-            <th>{t('API Key')}</th>
-            <th>{t('Creation Time')}</th>
-            <th>{t('Last Used Time')}</th>
-            <th>{t('button:Remove')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {keys.map((key, index) => {
-            return (
-              <tr tabIndex={-1} key={key.token || `unknown-key-${index}`}>
-                <td>{key.name}</td>
-                <td>{key.token}</td>
-                <td>{formatDateTime(key.gmtCreate)}</td>
-                <td>{formatDateTime(key.gmtUsed)}</td>
-                <td>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('Name')}</TableCell>
+              <TableCell>{t('API Key')}</TableCell>
+              <TableCell>{t('Creation Time')}</TableCell>
+              <TableCell>{t('Last Used Time')}</TableCell>
+              <TableCell>{t('button:Remove')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {keys.map((key, index) => (
+              <TableRow key={key.token || `unknown-key-${index}`}>
+                <TableCell>{key.name}</TableCell>
+                <TableCell>{key.token}</TableCell>
+                <TableCell>{formatDateTime(key.gmtCreate)}</TableCell>
+                <TableCell>{formatDateTime(key.gmtUsed)}</TableCell>
+                <TableCell>
                   <IconButton onClick={() => handleTryRemove(key.id)}>
                     <RemoveCircleRounded />
                   </IconButton>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <ConfirmModal
         open={!!keyIdToConfirm}
         onClose={() => setKeyIdToConfirm(undefined)}
         obj={keyIdToConfirm || 0}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Please confirm carefully!'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Remove'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handleRemove}
       >
@@ -178,7 +183,7 @@ export default function AiApiKeyPanel(props: { provider: string }) {
         }}
         button={{
           text: t('button:Add'),
-          startDecorator: <BookmarkAddRounded />,
+          startIcon: <BookmarkAddRounded />,
         }}
         onConfirm={handleAdd}
       >
@@ -187,17 +192,19 @@ export default function AiApiKeyPanel(props: { provider: string }) {
             flex: 1,
             display: 'grid',
             gridTemplateColumns: 'auto 1fr',
+            alignItems: 'center',
             gap: 2,
           }}
         >
           <FormLabel>{t('Name')}</FormLabel>
-          <Input
+          <TinyInput
             name="apiKeyName"
             value={keyNameToAdd || keyTextToAdd}
             onChange={handleKeyNameChange}
+            fullWidth
           />
           <FormLabel>{t('API Key')}</FormLabel>
-          <Input
+          <TinyInput
             required
             name="apiKeyText"
             value={keyTextToAdd}
@@ -205,6 +212,7 @@ export default function AiApiKeyPanel(props: { provider: string }) {
             sx={{
               minWidth: '16rem',
             }}
+            fullWidth
           />
         </Box>
       </ConfirmModal>
