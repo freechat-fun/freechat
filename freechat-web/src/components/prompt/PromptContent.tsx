@@ -1,6 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { Card, Divider, Stack, Table, Typography } from '@mui/joy';
-import { MarkdownContent } from '../../components';
+import {
+  Card,
+  Divider,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+import { LinePlaceholder, MarkdownContent } from '../../components';
 import { PromptDetailsDTO } from 'freechat-sdk';
 import { extractJson } from '../../libs/template_utils';
 import { TemplateContent } from '.';
@@ -25,14 +36,16 @@ export default function PromptContent(props: {
         sx={{
           minWidth: { sm: '12rem' },
           p: 2,
-          boxShadow: 'sm',
+          boxShadow: 2,
+          border: 1,
+          borderColor: 'divider',
         }}
       >
-        <Typography level="title-lg" color="primary">
+        <Typography variant="h6" color="primary">
           {t('Description')}
         </Typography>
-        <Divider />
-        <Typography component="span" level="body-md">
+        <Divider sx={{ my: 1 }} />
+        <Typography component="span" variant="body1">
           <MarkdownContent>{record?.description}</MarkdownContent>
         </Typography>
       </Card>
@@ -41,41 +54,48 @@ export default function PromptContent(props: {
         sx={{
           minWidth: { sm: '12rem' },
           p: 2,
-          boxShadow: 'sm',
+          boxShadow: 2,
+          border: 1,
+          borderColor: 'divider',
         }}
       >
-        <Typography level="title-lg" color="primary">
+        <Typography variant="h6" color="primary">
           {t('Template')}
         </Typography>
-        <Divider />
+        <Divider sx={{ my: 1 }} />
         <TemplateContent record={record} />
       </Card>
 
       {inputs && Object.keys(inputs).length > 0 && (
-        <Table sx={{ my: 1 }}>
-          <thead>
-            <tr>
-              <th
-                style={{
-                  width: '30%',
-                  maxWidth: '50%',
-                  overflowWrap: 'break-word',
-                }}
-              >
-                {t('Placeholder')}
-              </th>
-              <th>{t('Default value')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(inputs).map(([k, v]) => (
-              <tr key={`input-${k}`}>
-                <td>{k}</td>
-                <td>{v}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  sx={{
+                    width: '30%',
+                    maxWidth: '50%',
+                    wordWrap: 'break-word',
+                    backgroundColor: 'action.hover',
+                  }}
+                >
+                  {t('Placeholder')}
+                </TableCell>
+                <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                  {t('Default value')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.entries(inputs).map(([k, v]) => (
+                <TableRow key={`input-${k}`}>
+                  <TableCell>{k}</TableCell>
+                  <TableCell>{v}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
 
       {record?.example && (
@@ -83,17 +103,21 @@ export default function PromptContent(props: {
           sx={{
             minWidth: { sm: '12rem' },
             p: 2,
+            boxShadow: 2,
+            border: 1,
+            borderColor: 'divider',
           }}
         >
-          <Typography level="title-lg" color="primary">
+          <Typography variant="h6" color="primary">
             {t('Example')}
           </Typography>
-          <Divider />
-          <Typography component="span" level="body-md">
+          <Divider sx={{ my: 1 }} />
+          <Typography component="span" variant="body1">
             <MarkdownContent>{record?.example}</MarkdownContent>
           </Typography>
         </Card>
       )}
+      <LinePlaceholder spacing={2} />
     </Stack>
   );
 }

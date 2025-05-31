@@ -17,7 +17,7 @@ const TinyInput = forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
         ...slotProps,
       }}
       sx={{
-        minWidth: theme.spacing(8.5),
+        minWidth: theme.spacing(10),
         maxWidth: theme.spacing(15),
         m: theme.spacing(0),
         p: theme.spacing(0),

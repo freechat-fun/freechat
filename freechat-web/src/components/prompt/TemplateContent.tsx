@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Box, Card, Chip, Divider, Typography } from '@mui/joy';
+import { Box, Card, Chip, Divider, Typography } from '@mui/material';
 import { PromptDetailsDTO, ChatMessageDTO } from 'freechat-sdk';
 import { getMessageText } from '../../libs/template_utils';
 
@@ -23,11 +23,15 @@ export default function TemplateContent(props: {
 
     return (
       <Fragment>
-        <Card sx={{ p: 2, border: 'none' }}>
-          <Chip variant="soft" color="primary">
-            SYSTEM
-          </Chip>
-          <Typography level="body-md" sx={contentStyle}>
+        <Card sx={{ p: 2, border: 'none', boxShadow: 'none' }}>
+          <Chip
+            label="SYSTEM"
+            color="info"
+            variant="filled"
+            size="small"
+            sx={{ mt: 1, mb: 2 }}
+          />
+          <Typography variant="body1" sx={contentStyle}>
             {system}
           </Typography>
         </Card>
@@ -38,6 +42,7 @@ export default function TemplateContent(props: {
               sx={{
                 display: 'grid',
                 gridTemplateColumns: 'auto 1fr',
+                p: 2,
               }}
             >
               {messages?.map((message, index) => {
@@ -51,16 +56,16 @@ export default function TemplateContent(props: {
 
                 return (
                   <Fragment key={`message-${index}`}>
-                    <Box sx={{ px: 2, pb: 1 }}>
+                    <Box sx={{ px: 2, pb: 2 }}>
                       <Chip
-                        variant="soft"
+                        label={name}
                         color={isAssistant ? 'warning' : 'success'}
-                      >
-                        {name}
-                      </Chip>
+                        variant="outlined"
+                        size="small"
+                      />
                     </Box>
                     <Box sx={{ pb: 1 }}>
-                      <Typography level="body-md" sx={contentStyle}>
+                      <Typography variant="body1" sx={contentStyle}>
                         {content}
                       </Typography>
                     </Box>
@@ -71,11 +76,15 @@ export default function TemplateContent(props: {
           </Fragment>
         )}
         <Divider sx={{ mx: 2 }} />
-        <Card sx={{ p: 2, border: 'none' }}>
-          <Chip variant="soft" color="success">
-            {userName.toUpperCase()}
-          </Chip>
-          <Typography level="body-md" sx={contentStyle}>
+        <Card sx={{ p: 2, border: 'none', boxShadow: 'none' }}>
+          <Chip
+            label={userName?.toUpperCase() ?? 'USER'}
+            color="success"
+            variant="filled"
+            size="small"
+            sx={{ mt: 1, mb: 2 }}
+          />
+          <Typography variant="body1" sx={contentStyle}>
             {userMessage}
           </Typography>
         </Card>
@@ -83,7 +92,7 @@ export default function TemplateContent(props: {
     );
   } else {
     return (
-      <Typography level="body-md" sx={contentStyle}>
+      <Typography variant="body1" sx={contentStyle}>
         {record?.template || ' '}
       </Typography>
     );

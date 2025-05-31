@@ -21,7 +21,7 @@ const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
       anchor="right"
       PaperProps={{
         sx: {
-          width: { md: '30%' },
+          width: { md: '35%' },
           backgroundColor: 'transparent',
           p: { sm: 0, md: 2 },
           boxShadow: 'none',

@@ -51,7 +51,7 @@ function CardIconButton({
         onClick();
       }}
     >
-      <Icon sx={{ fill: '#e0e0e0' }} />
+      <Icon sx={{ fill: '#fefefe' }} />
     </IconButton>
   );
 }

@@ -5,7 +5,7 @@
   "Set API Key": "Set API Key",
   "Select a key": "Select a key",
   "or you can use a temporary key": "or you can use a temporary key",
-  "Choose a model": "Choose a model",
+  "Choose model": "Choose model",
   "Model Parameters": "Model Parameters",
   "If an input's value is not specified at runtime, the default value set here will be used": "If an input's value is not specified at runtime, the default value set here will be used",
   "These messages will always be used as the starting message in the chat history": "These messages will always be used as the starting message in the chat history",

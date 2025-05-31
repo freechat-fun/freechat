@@ -93,9 +93,6 @@ export default function InfoSearchbar(props: {
           placeholder={t('Search title, description, content and more')}
           slotProps={{
             input: {
-              style: {
-                fontSize: 'small',
-              },
               startAdornment: (
                 <SearchIcon sx={{ color: 'action.active', mr: 1 }} />
               ),

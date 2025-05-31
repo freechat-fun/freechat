@@ -13,30 +13,27 @@ import {
   ButtonGroup,
   Card,
   Chip,
-  ChipDelete,
   Divider,
   FormControl,
   FormHelperText,
   IconButton,
-  Input,
-  List,
-  ListDivider,
-  ListItem,
-  ListItemDecorator,
-  Option,
-  Radio,
-  RadioGroup,
+  InputAdornment,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
   Select,
+  SelectChangeEvent,
   Stack,
   Switch,
   Table,
-  Textarea,
-  Tooltip,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
-  listItemDecoratorClasses,
-  optionClasses,
-  switchClasses,
-} from '@mui/joy';
+  styled,
+} from '@mui/material';
 import {
   AddCircleRounded,
   ArrowBackRounded,
@@ -58,6 +55,7 @@ import {
   ConfirmModal,
   ContentTextarea,
   LinePlaceholder,
+  OptionTooltip,
   RouterBlocker,
   TinyInput,
 } from '../../components';
@@ -83,7 +81,7 @@ import {
 import { providers } from '../../configs/model-providers-config';
 import { HelpIcon } from '../../components/icon';
 import { objectsEqual } from '../../libs/js_utils';
-import { InputAdornment, Theme } from '@mui/material';
+import { Theme } from '@mui/material';
 
 type MessageRound = {
   user: ChatMessageDTO;
@@ -95,6 +93,12 @@ type PromptEditorProps = {
   parameters?: { [key: string]: any };
   variables?: { [key: string]: any };
 };
+
+const TypographyContent = styled(Typography)(() => ({
+  whiteSpace: 'pre-wrap',
+  overflowWrap: 'break-word',
+  flex: 1,
+}));
 
 export default function PromptEditor({
   id,
@@ -131,7 +135,7 @@ export default function PromptEditor({
 
   const [visibility, setVisibility] = useState<string>();
   const [format, setFormat] = useState<string>('mustache');
-  const [lang, setLang] = useState<string>();
+  const [lang, setLang] = useState<string>('en');
   const [tags, setTags] = useState<string[]>([]);
   const [tag, setTag] = useState<string>();
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
@@ -161,12 +165,6 @@ export default function PromptEditor({
       value: 'f_string',
     },
   ];
-
-  const contentStyle = {
-    whiteSpace: 'pre-wrap',
-    overflowWrap: 'break-word',
-    flex: 1,
-  };
 
   const roundItemStyle = (theme: Theme) => ({
     width: '100%',
@@ -495,8 +493,12 @@ export default function PromptEditor({
     }
   }
 
-  function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  function handleTagSubmit(
+    event: React.FormEvent<HTMLFormElement> | undefined
+  ): void {
+    if (event) {
+      event.preventDefault();
+    }
     if (tags && tag && !tags.includes(tag)) {
       setTags([...tags, tag]);
     }
@@ -779,16 +781,16 @@ export default function PromptEditor({
             flex: 1,
           }}
         >
-          <Typography level="h3">{recordName}</Typography>
+          <Typography variant="h4">{recordName}</Typography>
           <IconButton
+            size="small"
             disabled={!!editRecordName}
-            size="sm"
             onClick={() => setEditRecordName(recordName || 'untitled')}
           >
             <EditRounded fontSize="small" />
           </IconButton>
         </CommonContainer>
-        <Typography level="body-sm">
+        <Typography variant="body2">
           {t('Updated on')}{' '}
           {getDateLabel(
             origRecord?.gmtModified || new Date(0),
@@ -798,37 +800,44 @@ export default function PromptEditor({
         </Typography>
 
         <ButtonGroup
-          size="sm"
-          variant="soft"
-          color="primary"
+          size="small"
+          variant="contained"
           sx={{
             borderRadius: '16px',
+            mb: 0.5,
+            mr: 2,
           }}
         >
           <Button
             disabled={isSaved() || visibility === 'hidden'}
-            startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
+            startIcon={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
+            sx={{
+              borderRadius: '16px',
+            }}
           >
             {t('button:Save')}
           </Button>
-          <Button
-            startDecorator={<IosShareRounded />}
-            onClick={handleRecordPublish}
-          >
+          <Button startIcon={<IosShareRounded />} onClick={handleRecordPublish}>
             {t('button:Publish')}
           </Button>
           {play ? (
             <Button
-              startDecorator={<ArrowBackRounded />}
+              startIcon={<ArrowBackRounded />}
               onClick={() => setPlay(false)}
+              sx={{
+                borderRadius: '16px',
+              }}
             >
               {t('button:Back')}
             </Button>
           ) : (
             <Button
-              startDecorator={<PlayCircleOutlineRounded />}
+              startIcon={<PlayCircleOutlineRounded />}
               onClick={() => setPlay(true)}
+              sx={{
+                borderRadius: '16px',
+              }}
             >
               {t('Try it', { ns: 'button' })}
             </Button>
@@ -855,17 +864,15 @@ export default function PromptEditor({
               }}
             >
               <CommonBox>
-                <Typography level="title-lg" color="primary">
+                <Typography variant="h6" color="primary">
                   {t('Description')}
                 </Typography>
-                <Tooltip
-                  sx={{ maxWidth: '20rem' }}
-                  size="sm"
+                <OptionTooltip
                   placement="right"
                   title={t('Supports markdown format')}
                 >
                   <HelpIcon />
-                </Tooltip>
+                </OptionTooltip>
               </CommonBox>
               <ContentTextarea
                 name="info-description"
@@ -884,9 +891,14 @@ export default function PromptEditor({
                     minWidth: { sm: '12rem' },
                   }}
                 >
-                  <Chip ref={systemRef} variant="soft" color="primary">
-                    SYSTEM
-                  </Chip>
+                  <Chip
+                    label="SYSTEM"
+                    ref={systemRef}
+                    color="info"
+                    variant="filled"
+                    size="small"
+                    sx={{ mt: 1, mb: 2, alignSelf: 'flex-start' }}
+                  />
                   <ContentTextarea
                     name="system"
                     minRows={3}
@@ -901,19 +913,15 @@ export default function PromptEditor({
                   }}
                 >
                   <CommonBox ref={messageRef}>
-                    <Chip variant="soft" color="primary">
-                      MESSAGES
-                    </Chip>
-                    <Tooltip
-                      sx={{ maxWidth: '20rem' }}
-                      size="sm"
+                    <Chip label="MESSAGES" variant="filled" color="warning" />
+                    <OptionTooltip
                       placement="right"
                       title={t(
                         'These messages will always be used as the starting message in the chat history'
                       )}
                     >
                       <HelpIcon />
-                    </Tooltip>
+                    </OptionTooltip>
                     <IconButton
                       disabled={editRound}
                       color="primary"
@@ -935,33 +943,31 @@ export default function PromptEditor({
                               }}
                             >
                               <Chip
-                                variant="soft"
+                                size="small"
+                                variant="outlined"
                                 color="success"
-                                sx={{ '--Chip-radius': '2px' }}
-                              >
-                                {(
+                                label={(
                                   round.user.name ||
                                   round.user.role ||
                                   'user'
                                 ).toUpperCase()}
-                              </Chip>
-                              <Typography level="body-md" sx={contentStyle}>
+                              />
+                              <TypographyContent>
                                 {getMessageText(round.user)}
-                              </Typography>
+                              </TypographyContent>
                               <Chip
-                                variant="soft"
+                                size="small"
+                                variant="outlined"
                                 color="warning"
-                                sx={{ '--Chip-radius': '2px' }}
-                              >
-                                {(
+                                label={(
                                   round.assistant.name ||
                                   round.assistant.role ||
                                   'assistant'
                                 ).toUpperCase()}
-                              </Chip>
-                              <Typography level="body-md" sx={contentStyle}>
+                              />
+                              <TypographyContent>
                                 {getMessageText(round.assistant)}
-                              </Typography>
+                              </TypographyContent>
                             </CommonGridBox>
                             <IconButton
                               sx={{
@@ -988,12 +994,11 @@ export default function PromptEditor({
                       >
                         {rounds.length > 0 ? (
                           <Chip
-                            variant="soft"
+                            size="small"
+                            variant="filled"
                             color="success"
-                            sx={{ '--Chip-radius': '2px' }}
-                          >
-                            {editUserName}
-                          </Chip>
+                            label={editUserName}
+                          />
                         ) : (
                           <TinyInput
                             name="editUserName"
@@ -1012,12 +1017,11 @@ export default function PromptEditor({
                         />
                         {rounds.length > 0 ? (
                           <Chip
-                            variant="soft"
+                            size="small"
+                            variant="filled"
                             color="warning"
-                            sx={{ '--Chip-radius': '2px' }}
-                          >
-                            {editAssistantName}
-                          </Chip>
+                            label={editAssistantName}
+                          />
                         ) : (
                           <TinyInput
                             name="editAssistantName"
@@ -1060,9 +1064,13 @@ export default function PromptEditor({
                     minWidth: { sm: '12rem' },
                   }}
                 >
-                  <Chip variant="soft" color="success">
-                    {userName?.toUpperCase() ?? 'USER'}
-                  </Chip>
+                  <Chip
+                    label={userName?.toUpperCase() ?? 'USER'}
+                    color="success"
+                    variant="filled"
+                    size="small"
+                    sx={{ mt: 1, mb: 2, alignSelf: 'flex-start' }}
+                  />
                   <ContentTextarea
                     name="user"
                     value={userMessage}
@@ -1077,7 +1085,7 @@ export default function PromptEditor({
                   minWidth: { sm: '12rem' },
                 }}
               >
-                <Typography level="title-lg" color="primary">
+                <Typography variant="h6" color="primary">
                   {t('Template')}
                 </Typography>
                 <ContentTextarea
@@ -1091,54 +1099,66 @@ export default function PromptEditor({
 
             <LinePlaceholder />
             <CommonBox>
-              <Typography level="title-lg" color="primary">
+              <Typography variant="h6" color="primary">
                 {t('Inputs')}
               </Typography>
-              <Tooltip
-                sx={{ maxWidth: '20rem' }}
-                size="sm"
+              <OptionTooltip
                 placement="right"
                 title={t(
                   "If an input's value is not specified at runtime, the default value set here will be used"
                 )}
               >
                 <HelpIcon />
-              </Tooltip>
+              </OptionTooltip>
             </CommonBox>
             {inputs && Object.keys(inputs).length > 0 && (
-              <Table sx={{ my: 1 }}>
-                <thead>
-                  <tr>
-                    <th
-                      style={{
-                        width: '30%',
-                        maxWidth: '50%',
-                        overflowWrap: 'break-word',
-                      }}
-                    >
-                      {t('Placeholder')}
-                    </th>
-                    <th>{t('Default value')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(inputs).map(([k, v]) => (
-                    <tr key={`input-${k}`}>
-                      <td>{k}</td>
-                      <td>
-                        <Textarea
-                          disabled={k === 'input'}
-                          name={`input-value-${k}`}
-                          value={v}
-                          onChange={(event) =>
-                            handleInputsChange(k, event.target.value)
-                          }
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              <TableContainer>
+                <Table size="small" sx={{ mx: 1 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        sx={{
+                          width: '30%',
+                          maxWidth: '50%',
+                          backgroundColor: 'action.hover',
+                        }}
+                      >
+                        {t('Placeholder')}
+                      </TableCell>
+                      <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                        {t('Default value')}
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.entries(inputs).map(([k, v]) => (
+                      <TableRow key={`input-${k}`}>
+                        <TableCell>{k}</TableCell>
+                        <TableCell>
+                          <TinyInput
+                            disabled={k === 'input'}
+                            name={`input-value-${k}`}
+                            value={v}
+                            multiline
+                            fullWidth
+                            onChange={(event) =>
+                              handleInputsChange(k, event.target.value)
+                            }
+                            slotProps={{
+                              input: {
+                                size: 'small',
+                              },
+                            }}
+                            sx={{
+                              maxWidth: undefined,
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             )}
 
             <Stack
@@ -1148,17 +1168,15 @@ export default function PromptEditor({
               }}
             >
               <CommonBox>
-                <Typography level="title-lg" color="primary">
+                <Typography variant="h6" color="primary">
                   {t('Example')}
                 </Typography>
-                <Tooltip
-                  sx={{ maxWidth: '20rem' }}
-                  size="sm"
+                <OptionTooltip
                   placement="right"
                   title={t('Supports markdown format')}
                 >
                   <HelpIcon />
-                </Tooltip>
+                </OptionTooltip>
               </CommonBox>
               <ContentTextarea
                 name="example"
@@ -1167,33 +1185,30 @@ export default function PromptEditor({
                 onChange={(event) => setExample(event.target.value)}
               />
             </Stack>
+            <LinePlaceholder spacing={2} />
           </Stack>
 
           {/* Meta Settings */}
           {!play && (
             <Card
               sx={{
-                width: { xs: '100%', sm: '16rem' },
+                width: { xs: '100%', sm: '20rem' },
                 my: 2,
                 mx: { xs: 0, sm: 2 },
                 p: 2,
-                boxShadow: 'sm',
+                boxShadow: 2,
+                border: 1,
+                borderColor: 'divider',
               }}
             >
               <CommonGridBox>
-                <Typography level="title-sm" textColor="neutral">
+                <Typography variant="subtitle1" color="text.secondary">
                   {t('Public')}
                 </Typography>
                 <Switch
+                  color="success"
                   checked={visibility === 'public' || visibility === 'hidden'}
-                  sx={{
-                    [`&.${switchClasses.checked}`]: {
-                      '--Switch-trackBackground': '#4CA176',
-                      '&:hover': {
-                        '--Switch-trackBackground': '#5CB186',
-                      },
-                    },
-                  }}
+                  disableRipple
                   onChange={(event) =>
                     event.target.checked
                       ? setVisibility('public')
@@ -1201,82 +1216,67 @@ export default function PromptEditor({
                   }
                 />
 
-                <Typography level="title-sm" textColor="neutral">
+                <Typography variant="subtitle1" color="text.secondary">
                   {t('Format')}
                 </Typography>
-                <RadioGroup
-                  orientation="horizontal"
-                  name="format"
-                  size="sm"
-                  value={format}
-                  onChange={(event) => setFormat(event.target.value)}
+
+                <ButtonGroup
+                  size="small"
+                  variant="contained"
                   sx={{
-                    p: 0.5,
-                    borderRadius: '12px',
-                    bgcolor: 'neutral.softBg',
-                    '--RadioGroup-gap': '4px',
-                    '--Radio-actionRadius': '8px',
+                    border: 0,
+                    boxShadow: 0,
+                    borderRadius: 2,
                   }}
                 >
                   {FORMATS.map((item) => (
-                    <Radio
+                    <Button
                       key={`format-${item.value}`}
-                      color="neutral"
-                      size="sm"
                       value={item.value}
-                      disableIcon
-                      label={
-                        <Typography noWrap level="body-xs">
-                          {item.label}
-                        </Typography>
-                      }
-                      variant="plain"
+                      color="info"
+                      onClick={() => setFormat(item.value)}
+                      size="small"
                       sx={{
-                        p: 0.5,
-                        alignItems: 'center',
+                        fontSize: 'small',
+                        borderRadius: 2,
+                        color:
+                          format === item.value ? 'text.default' : 'GrayText',
+                        backgroundColor:
+                          format === item.value ? 'primary' : 'transparent',
                       }}
-                      slotProps={{
-                        action: ({ checked }) => ({
-                          sx: (theme) => ({
-                            ...(checked && {
-                              backgroundColor:
-                                theme.palette.primary.softHoverBg,
-                              boxShadow: 'sm',
-                              '&:hover': {
-                                bgcolor: theme.palette.primary.softActiveBg,
-                              },
-                            }),
-                          }),
-                        }),
-                      }}
-                    />
+                    >
+                      {item.label}
+                    </Button>
                   ))}
-                </RadioGroup>
+                </ButtonGroup>
 
-                <Typography level="title-sm" textColor="neutral">
+                <Typography variant="subtitle1" color="text.secondary">
                   {t('Language')}
                 </Typography>
-                <Select
-                  size="sm"
-                  variant="outlined"
-                  value={lang}
-                  onChange={(_event, value) => value && setLang(value)}
-                >
-                  {Object.keys(locales).map((locale) => (
-                    <Option key={`locale-${locale}`} value={locale}>
-                      {locales[locale]}
-                    </Option>
-                  ))}
-                </Select>
+                <FormControl sx={{ flex: 1 }} size="small">
+                  <Select
+                    variant="outlined"
+                    value={lang}
+                    onChange={(event) =>
+                      event.target.value && setLang(event.target.value)
+                    }
+                  >
+                    {Object.keys(locales).map((locale) => (
+                      <MenuItem key={`locale-${locale}`} value={locale}>
+                        {locales[locale]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </CommonGridBox>
 
-              <CommonBox sx={{ mt: 4 }}>
-                <Typography level="title-sm" textColor="neutral">
+              <CommonBox sx={{ mt: 4, mb: 2 }}>
+                <Typography variant="subtitle1" color="text.secondary">
                   {t('Tags')}
                 </Typography>
                 {(!tags || tags.length < 5) && tag === undefined && (
                   <IconButton
-                    size="sm"
+                    size="small"
                     color="primary"
                     onClick={() => setTag('')}
                   >
@@ -1289,6 +1289,7 @@ export default function PromptEditor({
                       type="text"
                       value={tag}
                       onChange={(event) => setTag(event.target.value)}
+                      onBlur={() => handleTagSubmit(undefined)}
                       slotProps={{
                         input: {
                           size: 'small',
@@ -1308,26 +1309,23 @@ export default function PromptEditor({
                 {tags.length > 0 &&
                   tags.map((tag, index) => (
                     <Chip
+                      label={tag}
                       variant="outlined"
                       color="success"
                       key={`tag-${tag}-${index}`}
-                      endDecorator={
-                        <ChipDelete onDelete={() => handleTagDelete(tag)} />
-                      }
-                    >
-                      {tag}
-                    </Chip>
+                      onDelete={() => handleTagDelete(tag)}
+                    />
                   ))}
               </CommonBox>
               <LinePlaceholder spacing={2} />
 
-              <CommonBox>
-                <Typography level="title-sm" textColor="neutral">
+              <CommonBox sx={{ mt: 4, mb: 1 }}>
+                <Typography variant="subtitle1" color="text.secondary">
                   {t('Models')}
                 </Typography>
                 {modelId === undefined && (
                   <IconButton
-                    size="sm"
+                    size="small"
                     color="primary"
                     onClick={() => setModelId('')}
                   >
@@ -1339,105 +1337,74 @@ export default function PromptEditor({
                 <CommonBox>
                   {models.map((model, index) => (
                     <Chip
+                      label={model.name}
                       variant="outlined"
                       color="warning"
                       key={`model-${model.modelId}-${index}`}
-                      endDecorator={
-                        <ChipDelete
-                          onDelete={() =>
-                            model.modelId && handleModelDelete(model.modelId)
-                          }
-                        />
-                      }
-                    >
-                      {model.name}
-                    </Chip>
+                      onDelete={() => handleModelDelete(model.modelId ?? '')}
+                    />
                   ))}
                 </CommonBox>
               )}
               {modelId !== undefined && (
                 <Fragment>
                   <CommonBox>
-                    <Select
-                      placeholder={
-                        <Typography textColor="gray">
-                          {t('Choose a model')}
-                        </Typography>
-                      }
-                      size="sm"
-                      variant="outlined"
-                      value={modelId}
-                      sx={{
-                        flex: 1,
-                      }}
-                      slotProps={{
-                        listbox: {
-                          component: 'div',
-                          sx: {
-                            overflow: 'auto',
-                            '--List-padding': '0px',
-                            '--ListItem-radius': '0px',
+                    <FormControl size="small" sx={{ flex: 1, mt: 2 }}>
+                      <InputLabel id="choose-model-label">
+                        {t('Choose model')}
+                      </InputLabel>
+                      <Select
+                        label={t('Choose model')}
+                        variant="outlined"
+                        value={modelId}
+                        onChange={(event: SelectChangeEvent) =>
+                          event.target.value && setModelId(event.target.value)
+                        }
+                      >
+                        {providers.reduce<React.ReactNode[]>(
+                          (acc, provider, index) => {
+                            if (index !== 0) {
+                              acc.push(
+                                <Divider
+                                  sx={{ my: 1 }}
+                                  key={`divider-${index}`}
+                                />
+                              );
+                            }
+                            acc.push(
+                              <ListSubheader key={`header-${index}`}>
+                                <Typography variant="body2">
+                                  {provider.label}
+                                </Typography>
+                              </ListSubheader>
+                            );
+                            filterModels(provider.provider).forEach(
+                              (modelInfo) => {
+                                acc.push(
+                                  <MenuItem
+                                    key={`option-${modelInfo.modelId}`}
+                                    value={modelInfo.modelId}
+                                    sx={{
+                                      ml: 2,
+                                    }}
+                                  >
+                                    {modelInfo.name}
+                                  </MenuItem>
+                                );
+                              }
+                            );
+                            return acc;
                           },
-                        },
-                      }}
-                      onChange={(_event, value) => value && setModelId(value)}
-                    >
-                      {providers.map((provider, index) => (
-                        <Fragment key={`select-${provider.provider}`}>
-                          {index !== 0 && <ListDivider role="none" />}
-                          <List
-                            aria-labelledby={`select-group-${provider.provider}`}
-                            sx={{ '--ListItemDecorator-size': '28px' }}
-                          >
-                            <ListItem
-                              id={`select-group-${provider.provider}`}
-                              sticky
-                            >
-                              <Typography level="body-xs">
-                                {provider.label}
-                              </Typography>
-                            </ListItem>
-                            {filterModels(provider.provider).map(
-                              (modelInfo) => (
-                                <Option
-                                  key={`option-${modelInfo.modelId}`}
-                                  value={modelInfo.modelId}
-                                  label={
-                                    <Fragment>
-                                      <Chip
-                                        color="warning"
-                                        size="sm"
-                                        sx={{ borderRadius: 'xs', mr: 1 }}
-                                      >
-                                        {provider.label}
-                                      </Chip>{' '}
-                                      {modelInfo.name}
-                                    </Fragment>
-                                  }
-                                  sx={{
-                                    [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
-                                      {
-                                        opacity: 1,
-                                      },
-                                  }}
-                                >
-                                  <ListItemDecorator sx={{ opacity: 0 }}>
-                                    <CheckRounded />
-                                  </ListItemDecorator>
-                                  {modelInfo.name}
-                                </Option>
-                              )
-                            )}
-                          </List>
-                        </Fragment>
-                      ))}
-                    </Select>
+                          []
+                        )}
+                      </Select>
+                    </FormControl>
                   </CommonBox>
                   <CommonBox sx={{ justifyContent: 'flex-end' }}>
-                    <IconButton size="sm" onClick={handleModelSubmit}>
+                    <IconButton onClick={handleModelSubmit}>
                       <CheckCircleOutlineRounded fontSize="small" />
                     </IconButton>
-                    <IconButton size="sm" onClick={() => setModelId(undefined)}>
+                    <IconButton onClick={() => setModelId(undefined)}>
                       <CancelOutlined fontSize="small" />
                     </IconButton>
                   </CommonBox>
@@ -1475,7 +1442,7 @@ export default function PromptEditor({
         onConfirm={handleNameChange}
       >
         <FormControl error={editRecordNameError}>
-          <Input
+          <TinyInput
             name="RecordName"
             value={editRecordName ?? ''}
             onChange={(event) => {

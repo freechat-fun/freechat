@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  FormControl,
   FormLabel,
   Select,
-  Option,
+  MenuItem,
   Typography,
-  Input,
-  FormControl,
   IconButton,
-  SelectStaticProps,
   Stack,
-} from '@mui/joy';
+  SelectChangeEvent,
+} from '@mui/material';
 import { CheckRounded, CloseRounded, KeyRounded } from '@mui/icons-material';
-import { ConfirmModal } from '../../components';
+import { ConfirmModal, TinyInput } from '../../components';
 
 type AiApiKeySettingsProps = {
   defaultKeyName: string | undefined;
@@ -40,7 +39,7 @@ export default function AiApiKeySettings(props: AiApiKeySettingsProps) {
   const [apiKeyName, setApiKeyName] = useState(defaultKeyName ?? '');
   const [apiKeyValue, setApiKeyValue] = useState(defaultKeyValue ?? '');
 
-  const action: SelectStaticProps['action'] = useRef(null);
+  const selectRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setApiKeyName(defaultKeyName ?? '');
@@ -64,12 +63,10 @@ export default function AiApiKeySettings(props: AiApiKeySettingsProps) {
     onConfirm(apiKeyName, apiKeyValue);
   }
 
-  function handleSelectChange(
-    _event: React.SyntheticEvent | null,
-    newValue: string | null
-  ): void {
+  function handleSelectChange(event: SelectChangeEvent<string>): void {
+    const newValue = event.target.value;
     if (newValue !== apiKeyName && newValue !== 'No API Key') {
-      setApiKeyName(newValue ?? '');
+      setApiKeyName(newValue);
     }
   }
 
@@ -88,69 +85,74 @@ export default function AiApiKeySettings(props: AiApiKeySettingsProps) {
       }}
       button={{
         text: t('button:Confirm'),
-        startDecorator: <CheckRounded />,
+        startIcon: <CheckRounded />,
       }}
       onConfirm={handleConfirm}
     >
       <Stack spacing={2}>
-        <FormControl>
+        <FormControl fullWidth size="small" sx={{ gap: 1 }}>
           <FormLabel>{t('Select a key')}</FormLabel>
           <Select
-            action={action}
-            name="apiKeyName"
-            placeholder={<Typography textColor="gray">No API Key</Typography>}
+            displayEmpty
+            ref={selectRef}
             value={apiKeyName || 'No API Key'}
             onChange={handleSelectChange}
-            sx={{
-              flex: 1,
+            renderValue={(value) => (
+              <Typography color="text.secondary">
+                {value === 'No API Key' ? '--No API Key--' : value}
+              </Typography>
+            )}
+            slotProps={{
+              input: {
+                sx: { fontSize: 'small' },
+              },
             }}
-            {...(apiKeyName && {
-              // display the button and remove select indicator
-              // when user has selected a value
-              endDecorator: (
+            endAdornment={
+              apiKeyName && (
                 <IconButton
-                  size="sm"
-                  variant="plain"
-                  color="neutral"
-                  onMouseDown={(event) => {
-                    // don't open the popup when clicking on this button
-                    event.stopPropagation();
-                  }}
-                  onClick={() => {
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setApiKeyName('');
-                    action.current?.focusVisible();
+                    selectRef.current?.focus();
                   }}
+                  sx={{ mr: 1 }}
                 >
                   <CloseRounded fontSize="small" />
                 </IconButton>
-              ),
-              indicator: null,
-            })}
+              )
+            }
           >
             {keyNames && keyNames.length > 0 ? (
               keyNames?.map(
                 (keyName) =>
                   keyName && (
-                    <Option value={keyName} key={`option-${keyName}`}>
+                    <MenuItem value={keyName} key={`option-${keyName}`}>
                       {keyName}
-                    </Option>
+                    </MenuItem>
                   )
               )
             ) : (
-              <Option value="No API Key" key="option-unknown">
+              <MenuItem value="No API Key" key="option-unknown">
                 --No API Key--
-              </Option>
+              </MenuItem>
             )}
           </Select>
         </FormControl>
-        <FormControl>
+        <FormControl fullWidth size="small" sx={{ gap: 1 }}>
           <FormLabel>{t('or you can use a temporary key')}</FormLabel>
-          <Input
+          <TinyInput
             type="password"
             placeholder="Paste a key here..."
-            startDecorator={<KeyRounded />}
             value={apiKeyValue}
             onChange={handleValueChange}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <KeyRounded sx={{ mr: 1, color: 'action.active' }} />
+                ),
+              },
+            }}
             sx={{
               minWidth: '20rem',
             }}

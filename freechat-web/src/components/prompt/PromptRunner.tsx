@@ -17,15 +17,15 @@ import {
   Card,
   FormLabel,
   Select,
-  Option,
-  Textarea,
+  MenuItem,
   Typography,
   Button,
   IconButton,
-  Tooltip,
   Chip,
-  ChipDelete,
-} from '@mui/joy';
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import {
   AttachmentRounded,
   IosShareRounded,
@@ -41,6 +41,8 @@ import {
   ChatContent,
   ImagePicker,
   CommonBox,
+  TinyInput,
+  OptionTooltip,
 } from '../../components';
 import {
   AiApiKeySettings,
@@ -309,14 +311,17 @@ export default function PromptRunner(props: PromptRunnerProps) {
           width: { xs: '100%', sm: width },
           mt: 2,
           p: 2,
-          boxShadow: 'sm',
+          boxShadow: 2,
+          border: 1,
+          borderColor: 'divider',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
           transition: 'width 0.3s',
+          gap: 2,
         }}
       >
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Inputs')}
         </Typography>
         {inputs && Object.keys(inputs).length > 0 && (
@@ -324,7 +329,9 @@ export default function PromptRunner(props: PromptRunnerProps) {
             sx={{
               display: 'grid',
               gridTemplateColumns: 'auto 1fr',
-              gap: 1,
+              rowGap: 1,
+              columnGap: 2,
+              alignItems: 'center',
             }}
           >
             {Object.entries(inputs)
@@ -333,54 +340,57 @@ export default function PromptRunner(props: PromptRunnerProps) {
               .map(([k, v]) => (
                 <Fragment key={`input-${k}`}>
                   <FormLabel>{k}</FormLabel>
-                  <Textarea
+                  <TinyInput
                     name={`input-${k}`}
                     value={v}
                     required={k === 'input'}
-                    color={k === 'input' && !v ? 'danger' : 'neutral'}
+                    error={k === 'input' && !v}
+                    multiline
+                    fullWidth
                     onChange={(event) =>
                       handleInputChange(k, event.target.value)
                     }
+                    slotProps={{
+                      input: {
+                        size: 'small',
+                      },
+                    }}
+                    sx={{
+                      maxWidth: undefined,
+                    }}
                   />
                 </Fragment>
               ))}
             <FormLabel>
-              <Typography
-                endDecorator={
-                  <Tooltip
-                    title={t('Only image attachment is supported for now.')}
-                  >
-                    <HelpIcon />
-                  </Tooltip>
-                }
-              >
-                {t('attachment')}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="body1">{t('attachment')}</Typography>
+                <OptionTooltip
+                  title={t('Only image attachment is supported for now.')}
+                >
+                  <HelpIcon />
+                </OptionTooltip>
+              </Box>
             </FormLabel>
             <CommonBox>
               <ImagePicker
                 onImageSelect={handleImageSelect}
                 aria-label="upload attachment"
-                size="sm"
-                color="neutral"
+                size="small"
+                color="primary"
                 Icon={AttachmentRounded}
               />
               {attachment && (
                 <Chip
                   variant="outlined"
                   color="success"
-                  endDecorator={<ChipDelete onDelete={handleImageDelete} />}
-                >
-                  {attachment}
-                </Chip>
+                  onDelete={handleImageDelete}
+                  label={attachment}
+                />
               )}
             </CommonBox>
           </Box>
         )}
         <LinePlaceholder />
-        <Typography level="title-sm" textColor="neutral">
-          {t('Select model providers')}
-        </Typography>
         <Box
           sx={{
             display: 'flex',
@@ -390,63 +400,68 @@ export default function PromptRunner(props: PromptRunnerProps) {
             gap: 2,
           }}
         >
-          <Select
-            placeholder={
-              <Typography textColor="gray">
-                {t('Select model providers')}
-              </Typography>
-            }
-            value={provider}
-            onChange={handleSelectChange}
-            sx={{
-              flex: 1,
-            }}
-          >
-            {modelProviders.map((p) => (
-              <Option value={p.provider} key={`options-${p.provider}`}>
-                {p.label}
-              </Option>
-            ))}
-          </Select>
+          <FormControl sx={{ flex: 1 }} size="small">
+            <InputLabel id="model-providers-label">
+              {t('Select model providers')}
+            </InputLabel>
+            <Select
+              label={t('Select model providers')}
+              value={provider}
+              onChange={(event: SelectChangeEvent) =>
+                handleSelectChange(null, event.target.value)
+              }
+              displayEmpty
+            >
+              {modelProviders.map((p) => (
+                <MenuItem value={p.provider} key={`options-${p.provider}`}>
+                  {p.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <Button
-            variant="soft"
-            color={apiKeyName || apiKeyValue ? 'neutral' : 'danger'}
+            variant="outlined"
+            color={apiKeyName || apiKeyValue ? 'inherit' : 'error'}
             disabled={!enabledApiKey(provider)}
-            startDecorator={<KeyRounded />}
+            startIcon={<KeyRounded />}
             onClick={() => setOpenApiKeySetting(true)}
           >
             {t('API Key')}
           </Button>
           <Button
-            variant="soft"
-            color={parameters?.modelId ? 'primary' : 'danger'}
+            variant="outlined"
+            color={parameters?.modelId ? 'primary' : 'error'}
             disabled={!provider}
-            startDecorator={<TuneRounded />}
+            startIcon={<TuneRounded />}
             onClick={() => setModelSetting(true)}
           >
             {t('button:Tune')}
           </Button>
         </Box>
         <LinePlaceholder />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography level="title-sm" textColor="neutral">
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: -1.5,
+          }}
+        >
+          <Typography variant="subtitle1" color="textSecondary">
             {t('Output')}
           </Typography>
-          {playing ? (
-            <Button loading variant="plain" />
-          ) : (
-            <IconButton
-              disabled={!isPlayable()}
-              color="primary"
-              onClick={handlePlay}
-            >
-              {output.current || defaultOutputText ? (
-                <ReplayCircleFilledRounded fontSize="large" />
-              ) : (
-                <PlayCircleFilledRounded fontSize="large" />
-              )}
-            </IconButton>
-          )}
+          <IconButton
+            disabled={!isPlayable()}
+            loading={playing}
+            color="primary"
+            onClick={handlePlay}
+          >
+            {output.current || defaultOutputText ? (
+              <ReplayCircleFilledRounded fontSize="large" />
+            ) : (
+              <PlayCircleFilledRounded fontSize="large" />
+            )}
+          </IconButton>
         </Box>
         <TextareaTypography component="span">
           <ChatContent
@@ -473,10 +488,10 @@ export default function PromptRunner(props: PromptRunnerProps) {
         >
           {onExampleSave && output.current && aiRequest && (
             <Button
-              size="sm"
+              size="small"
               variant="outlined"
               color="success"
-              startDecorator={<IosShareRounded />}
+              startIcon={<IosShareRounded />}
               onClick={() => onExampleSave(aiRequest, output.current)}
             >
               {t('Save as Example', { ns: 'button' })}
