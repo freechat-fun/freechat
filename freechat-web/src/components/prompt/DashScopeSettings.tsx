@@ -1,20 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Box,
   Chip,
-  ChipDelete,
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
   IconButton,
-  Option,
+  MenuItem,
   Select,
+  SelectChangeEvent,
   Slider,
   Switch,
   Typography,
-} from '@mui/joy';
+} from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
+import { AiModelInfoDTO } from 'freechat-sdk';
+import { defaultModels } from '../../configs/model-providers-config';
+import { InputAdornment } from '@mui/material';
 import {
   CommonContainer,
   OptionCard,
@@ -22,10 +28,7 @@ import {
   Sidedrawer,
   TinyInput,
 } from '..';
-import { AiModelInfoDTO } from 'freechat-sdk';
 import { HelpIcon } from '../icon';
-import { defaultModels } from '../../configs/model-providers-config';
-import { InputAdornment } from '@mui/material';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -106,8 +109,6 @@ export default function DashScopeSettings(props: {
     )?.modelId ?? ''
   );
 
-  const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
-
   useEffect(() => {
     setModel(
       models?.find(
@@ -151,18 +152,20 @@ export default function DashScopeSettings(props: {
     );
   }, [defaultParameters, models]);
 
-  function handleSelectChange(
-    _event: React.SyntheticEvent | null,
-    newValue: string | null
-  ): void {
+  function handleSelectChange(event: SelectChangeEvent<string>): void {
+    const newValue = event.target.value;
     if (newValue && newValue !== model?.modelId) {
       setModel(models?.find((modelInfo) => modelInfo?.modelId === newValue));
     }
-    setModelId(newValue ?? '');
+    setModelId(newValue);
   }
 
-  function handleStopWordSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  function handleStopWordSubmit(
+    event: React.FormEvent<HTMLFormElement> | undefined
+  ): void {
+    if (event) {
+      event.preventDefault();
+    }
     if (stopWord && !stop.includes(stopWord)) {
       setStop([...stop, stopWord]);
     }
@@ -216,46 +219,53 @@ export default function DashScopeSettings(props: {
 
   return (
     <Sidedrawer open={open} onClose={() => handleClose()}>
-      <DialogTitle>{t('Model Parameters')}</DialogTitle>
-      <Divider sx={{ mt: 'auto' }} />
+      <DialogTitle variant="subtitle1" sx={{ m: 0, p: 0, fontWeight: 'bold' }}>
+        {t('Model Parameters')}
+      </DialogTitle>
+      <Divider sx={{ mt: 0 }} />
 
-      <DialogContent>
+      <DialogContent sx={{ p: 0 }}>
         <OptionCard>
           <CommonContainer>
             <Typography>model</Typography>
-            <Select
-              name="modelName"
-              placeholder={
-                <Typography textColor="gray">No model provided</Typography>
-              }
-              value={modelId}
-              onChange={handleSelectChange}
-              sx={{
-                ml: 2,
-                flex: 1,
-              }}
-            >
-              {models && models.length > 0 ? (
-                models?.map(
-                  (modelInfo) =>
-                    modelInfo && (
-                      <Option
-                        value={modelInfo.modelId}
-                        key={`option-${modelInfo.modelId}`}
-                      >
-                        {modelInfo.name}
-                      </Option>
-                    )
-                )
-              ) : (
-                <Option value="" key="option-unknown">
-                  --No Model--
-                </Option>
-              )}
-            </Select>
+            <FormControl size="small" sx={{ flex: 1 }}>
+              <Select
+                name="modelName"
+                value={modelId}
+                onChange={handleSelectChange}
+                displayEmpty
+                sx={{
+                  ml: 2,
+                  flex: 1,
+                }}
+              >
+                <MenuItem value="" disabled>
+                  <Typography color="text.secondary">
+                    No model provided
+                  </Typography>
+                </MenuItem>
+                {models && models.length > 0 ? (
+                  models?.map(
+                    (modelInfo) =>
+                      modelInfo && (
+                        <MenuItem
+                          value={modelInfo.modelId}
+                          key={`option-${modelInfo.modelId}`}
+                        >
+                          {modelInfo.name}
+                        </MenuItem>
+                      )
+                  )
+                ) : (
+                  <MenuItem value="" disabled>
+                    --No Model--
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -265,15 +275,18 @@ export default function DashScopeSettings(props: {
                 'Probability threshold of the nucleus sampling method in the generation process, for example, when the value is 0.8, only the smallest set of most likely tokens whose probabilities add up to 0.8 or more is retained as the candidate set. The value range is (0, 1.0), the larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation.'
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <TinyInput
                 disabled={!enableTopP}
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[0],
                     min: 0,
                     max: 1,
                     step: 0.01,
@@ -286,7 +299,7 @@ export default function DashScopeSettings(props: {
                 checked={enableTopP}
                 onChange={() => setEnableTopP(!enableTopP)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
           <Slider
             disabled={!enableTopP}
@@ -298,7 +311,7 @@ export default function DashScopeSettings(props: {
             onChange={(_event, newValue) => setTopP(newValue as number)}
           />
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -308,15 +321,18 @@ export default function DashScopeSettings(props: {
                 'The size of the sampling candidate set during generation. For example, when the value is 50, only the top 50 tokens with the highest scores in a single generation are included in the random sampling candidate set. The larger the value, the higher the randomness of the generation; the smaller the value, the higher the certainty of the generation. The default value is 0, which means that the top_k strategy is not enabled, and only the top_p strategy is effective.'
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <TinyInput
                 disabled={!enableTopK}
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[1],
                     min: 0,
                     max: 100,
                     step: 1,
@@ -329,7 +345,7 @@ export default function DashScopeSettings(props: {
                 checked={enableTopK}
                 onChange={() => setEnableTopK(!enableTopK)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
           <Slider
             disabled={!enableTopK}
@@ -341,7 +357,7 @@ export default function DashScopeSettings(props: {
             onChange={(_event, newValue) => setTopK(newValue as number)}
           />
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -351,15 +367,18 @@ export default function DashScopeSettings(props: {
                 "The maximum number of tokens to generate in the chat completion. The total length of input tokens and generated tokens is limited by the model's context length."
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <TinyInput
                 disabled={!enableMaxTokens}
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[2],
                     min: 1000,
                     step: 1000,
                   },
@@ -371,10 +390,10 @@ export default function DashScopeSettings(props: {
                 checked={enableMaxTokens}
                 onChange={() => setEnableMaxTokens(!enableMaxTokens)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -382,17 +401,19 @@ export default function DashScopeSettings(props: {
             <OptionTooltip
               title={t('Whether to use a search engine for data enhancement.')}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box sx={{ ml: 'auto' }}>
               <Switch
                 checked={enableSearch}
                 onChange={() => setEnableSearch(!enableSearch)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -402,15 +423,18 @@ export default function DashScopeSettings(props: {
                 'The random number seed used when generating, the user controls the randomness of the content generated by the model. seed supports unsigned 64-bit integers, with a default value of 1234. When using seed, the model will try its best to generate the same or similar results, but there is currently no guarantee that the results will be exactly the same every time.'
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <TinyInput
                 disabled={!enableSeed}
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[3],
                     min: 1,
                     step: 1,
                   },
@@ -422,10 +446,10 @@ export default function DashScopeSettings(props: {
                 checked={enableSeed}
                 onChange={() => setEnableSeed(!enableSeed)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -435,15 +459,18 @@ export default function DashScopeSettings(props: {
                 'Used to control the repeatability when generating models. Increasing repetition_penalty can reduce the duplication of model generation. 1.0 means no punishment.'
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <TinyInput
                 disabled={!enableRepetitionPenalty}
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[4],
                     min: 1,
                     step: 0.1,
                   },
@@ -457,10 +484,10 @@ export default function DashScopeSettings(props: {
                   setEnableRepetitionPenalty(!enableRepetitionPenalty)
                 }
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -470,15 +497,18 @@ export default function DashScopeSettings(props: {
                 'Used to adjust the degree of randomness from sampling in the generated model, the value range is [0, 2), a temperature of 0 will always produce the same output. The higher the temperature, the greater the randomness.'
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box
+              sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <TinyInput
                 disabled={!enableTemperature}
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[5],
                     min: 0,
                     max: 2,
                     step: 0.1,
@@ -491,7 +521,7 @@ export default function DashScopeSettings(props: {
                 checked={enableTemperature}
                 onChange={() => setEnableTemperature(!enableTemperature)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
           <Slider
             disabled={!enableTemperature}
@@ -503,7 +533,7 @@ export default function DashScopeSettings(props: {
             onChange={(_event, newValue) => setTemperature(newValue as number)}
           />
         </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -513,35 +543,30 @@ export default function DashScopeSettings(props: {
                 'Sequences where the API will stop generating further tokens.'
               )}
             >
-              <HelpIcon />
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <Box sx={{ ml: 'auto' }}>
               <Switch
                 checked={enableStop}
                 onChange={() => setEnableStop(!enableStop)}
               />
-            </CommonContainer>
+            </Box>
           </CommonContainer>
-          <CommonContainer sx={{ pt: 1 }}>
-            {stop &&
-              stop.length > 0 &&
-              stop.map(
-                (word, index) =>
-                  word && (
-                    <Chip
-                      disabled={!enableStop}
-                      variant="outlined"
-                      key={`${word}-${index}`}
-                      endDecorator={
-                        <ChipDelete
-                          onDelete={() => handleStopWordDelete(word)}
-                        />
-                      }
-                    >
-                      {word}
-                    </Chip>
-                  )
-              )}
+          <Box sx={{ pt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {stop?.map(
+              (word, index) =>
+                word && (
+                  <Chip
+                    disabled={!enableStop}
+                    variant="outlined"
+                    key={`${word}-${index}`}
+                    onDelete={() => handleStopWordDelete(word)}
+                    label={word}
+                  />
+                )
+            )}
             {(!stop || stop.length < 4) && stopWord === undefined && (
               <IconButton
                 disabled={!enableStop}
@@ -558,10 +583,9 @@ export default function DashScopeSettings(props: {
                   type="text"
                   value={stopWord}
                   onChange={(event) => setStopWord(event.target.value)}
+                  onBlur={() => handleStopWordSubmit(undefined)}
                   slotProps={{
                     input: {
-                      size: 'small',
-                      sx: { fontSize: 'small' },
                       endAdornment: (
                         <InputAdornment position="end">
                           <TransitEnterexitRounded fontSize="small" />
@@ -572,7 +596,7 @@ export default function DashScopeSettings(props: {
                 />
               </form>
             )}
-          </CommonContainer>
+          </Box>
         </OptionCard>
       </DialogContent>
     </Sidedrawer>

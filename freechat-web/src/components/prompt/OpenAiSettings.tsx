@@ -2,19 +2,21 @@
 import { createRef, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Box,
   Chip,
-  ChipDelete,
   DialogContent,
   DialogTitle,
   Divider,
   IconButton,
-  Input,
-  Option,
+  InputAdornment,
+  MenuItem,
   Select,
   Slider,
   Switch,
   Typography,
-} from '@mui/joy';
+  SelectChangeEvent,
+  FormControl,
+} from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
   CommonContainer,
@@ -29,7 +31,6 @@ import {
   defaultBaseURLs,
   defaultModels,
 } from '../../configs/model-providers-config';
-import { InputAdornment } from '@mui/material';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -156,18 +157,20 @@ export default function OpenAiSettings(props: {
     );
   }, [defaultParameters, models]);
 
-  function handleSelectChange(
-    _event: React.SyntheticEvent | null,
-    newValue: string | null
-  ): void {
+  function handleSelectChange(event: SelectChangeEvent<string>): void {
+    const newValue = event.target.value;
     if (newValue && newValue !== model?.modelId) {
       setModel(models?.find((modelInfo) => modelInfo?.modelId === newValue));
     }
-    setModelId(newValue ?? '');
+    setModelId(newValue);
   }
 
-  function handleStopWordSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  function handleStopWordSubmit(
+    event: React.FormEvent<HTMLFormElement> | undefined
+  ): void {
+    if (event) {
+      event.preventDefault();
+    }
     if (stopWord && !stop.includes(stopWord)) {
       setStop([...stop, stopWord]);
     }
@@ -223,43 +226,50 @@ export default function OpenAiSettings(props: {
 
   return (
     <Sidedrawer open={open} onClose={() => handleClose()}>
-      <DialogTitle>{t('Model Parameters')}</DialogTitle>
-      <Divider sx={{ mt: 'auto' }} />
+      <DialogTitle variant="subtitle1" sx={{ m: 0, p: 0, fontWeight: 'bold' }}>
+        {t('Model Parameters')}
+      </DialogTitle>
+      <Divider sx={{ mt: 0 }} />
 
-      <DialogContent>
+      <DialogContent sx={{ p: 0 }}>
         <OptionCard>
           <CommonContainer>
             <Typography>model</Typography>
-            <Select
-              name="modelName"
-              placeholder={
-                <Typography textColor="gray">No model provided</Typography>
-              }
-              value={modelId}
-              onChange={handleSelectChange}
-              sx={{
-                ml: 2,
-                flex: 1,
-              }}
-            >
-              {models && models.length > 0 ? (
-                models?.map(
-                  (modelInfo) =>
-                    modelInfo && (
-                      <Option
-                        value={modelInfo.modelId}
-                        key={`option-${modelInfo.modelId}`}
-                      >
-                        {modelInfo.name}
-                      </Option>
-                    )
-                )
-              ) : (
-                <Option value="" key="option-unknown">
-                  --No Model--
-                </Option>
-              )}
-            </Select>
+            <FormControl size="small" sx={{ flex: 1 }}>
+              <Select
+                name="modelName"
+                value={modelId}
+                onChange={handleSelectChange}
+                displayEmpty
+                sx={{
+                  ml: 2,
+                  flex: 1,
+                }}
+              >
+                <MenuItem value="" disabled>
+                  <Typography color="text.secondary">
+                    No model provided
+                  </Typography>
+                </MenuItem>
+                {models && models.length > 0 ? (
+                  models?.map(
+                    (modelInfo) =>
+                      modelInfo && (
+                        <MenuItem
+                          value={modelInfo.modelId}
+                          key={`option-${modelInfo.modelId}`}
+                        >
+                          {modelInfo.name}
+                        </MenuItem>
+                      )
+                  )
+                ) : (
+                  <MenuItem value="" disabled>
+                    --No Model--
+                  </MenuItem>
+                )}
+              </Select>
+            </FormControl>
           </CommonContainer>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -267,11 +277,17 @@ export default function OpenAiSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>baseUrl</Typography>
-            <Input
+            <TinyInput
               type="text"
               value={baseUrl}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
               sx={{
                 ml: 0.5,
+                maxWidth: undefined,
                 flex: 1,
               }}
               onChange={(event) => setBaseUrl(event.target.value)}
@@ -543,7 +559,7 @@ export default function OpenAiSettings(props: {
               />
             </CommonContainer>
           </CommonContainer>
-          <CommonContainer sx={{ pt: 1 }}>
+          <Box sx={{ pt: 1 }}>
             {stop &&
               stop.length > 0 &&
               stop.map(
@@ -553,14 +569,10 @@ export default function OpenAiSettings(props: {
                       disabled={!enableStop}
                       variant="outlined"
                       key={`${word}-${index}`}
-                      endDecorator={
-                        <ChipDelete
-                          onDelete={() => handleStopWordDelete(word)}
-                        />
-                      }
-                    >
-                      {word}
-                    </Chip>
+                      onDelete={() => handleStopWordDelete(word)}
+                      label={word}
+                      sx={{ m: 0.5 }}
+                    />
                   )
               )}
             {(!stop || stop.length < 4) && stopWord === undefined && (
@@ -579,10 +591,9 @@ export default function OpenAiSettings(props: {
                   type="text"
                   value={stopWord}
                   onChange={(event) => setStopWord(event.target.value)}
+                  onBlur={() => handleStopWordSubmit(undefined)}
                   slotProps={{
                     input: {
-                      size: 'small',
-                      sx: { fontSize: 'small' },
                       endAdornment: (
                         <InputAdornment position="end">
                           <TransitEnterexitRounded fontSize="small" />
@@ -593,7 +604,7 @@ export default function OpenAiSettings(props: {
                 />
               </form>
             )}
-          </CommonContainer>
+          </Box>
         </OptionCard>
       </DialogContent>
     </Sidedrawer>

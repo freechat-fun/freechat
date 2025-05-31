@@ -666,6 +666,7 @@ select distinct p.user_id, p.prompt_id, p.visibility... \
         Long publishedInfoId;
         SqlSession session = sqlSessionFactory.openSession();
         try {
+            @SuppressWarnings("SpringCacheableMethodCallsInspection")
             var infoTriple = details(promptId, user);
             if (infoTriple == null) {
                 return null;

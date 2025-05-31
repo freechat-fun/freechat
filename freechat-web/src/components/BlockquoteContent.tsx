@@ -18,4 +18,6 @@ const BlockquoteContent: React.FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
+BlockquoteContent.displayName = 'BlockquoteContent';
+
 export default BlockquoteContent;

@@ -1,7 +1,11 @@
 package fun.freechat.api.dto;
 
-import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.data.message.*;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.Content;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.internal.ValidationUtils;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +22,11 @@ import java.util.stream.Collectors;
 
 import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.api.util.ChatUtils.contentTypeOf;
-import static fun.freechat.service.enums.PromptRole.*;
+import static fun.freechat.service.enums.PromptRole.ASSISTANT;
+import static fun.freechat.service.enums.PromptRole.FUNCTION_CALL;
+import static fun.freechat.service.enums.PromptRole.FUNCTION_RESULT;
+import static fun.freechat.service.enums.PromptRole.SYSTEM;
+import static fun.freechat.service.enums.PromptRole.USER;
 
 @Schema(description = "Chat message")
 @Data
@@ -60,12 +68,12 @@ public class ChatMessageDTO {
                 if (StringUtils.isNotBlank(aiMessage.text())) {
                     builder.contents(List.of(ChatContentDTO.fromText(aiMessage.text())));
                 }
-                List<ToolExecutionRequest> requests = aiMessage.toolExecutionRequests();
-                if (requests == null) {
+                if (!aiMessage.hasToolExecutionRequests()) {
                     builder.role(ASSISTANT.text());
                 } else {
                     builder.role(FUNCTION_CALL.text());
-                    builder.toolCalls(requests.stream()
+                    builder.toolCalls(aiMessage.toolExecutionRequests()
+                            .stream()
                             .map(ChatToolCallDTO::from)
                             .toList()
                     );

@@ -206,8 +206,12 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
     }
   }
 
-  function handleTagSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  function handleTagSubmit(
+    event: React.FormEvent<HTMLFormElement> | undefined
+  ): void {
+    if (event) {
+      event.preventDefault();
+    }
     if (tags && tag && !tags.includes(tag)) {
       setTags([...tags, tag]);
     }
@@ -691,6 +695,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   type="text"
                   value={tag}
                   onChange={(event) => setTag(event.target.value)}
+                  onBlur={() => handleTagSubmit(undefined)}
                   slotProps={{
                     input: {
                       size: 'small',

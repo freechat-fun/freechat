@@ -1,4 +1,11 @@
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  forwardRef,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -285,34 +292,31 @@ export default function CharacterGallery({
     setLoading(true);
     characterApi
       ?.searchPublicCharacterSummary(currentQuery)
-      .then((resp) => {
+      .then(async (resp) => {
         if (resp.length == 0) {
           setFinish(true);
           return;
         }
+        const newRecords: SetStateAction<CharacterSummaryStatsDTO[]> = [];
+        await Promise.all(
+          resp.map(async (r) => {
+            if (r.characterUid) {
+              await interactiveStatisticsApi
+                ?.getStatistics('character', r.characterUid)
+                .then((stats) => characterInfoWithStats(r, stats))
+                .then((recordWithStats) => newRecords.push(recordWithStats))
+                .catch(handleError);
+            }
+          })
+        );
         setRecords((prevRecords) => {
-          const delta = resp.filter(
-            (r0) =>
-              !prevRecords.map((pr) => pr.characterId).includes(r0.characterId)
+          const delta = newRecords.filter(
+            (r) => !prevRecords.map((pr) => pr.promptId).includes(r.promptId)
           );
-          return prevRecords.concat(delta);
-        });
-        resp.forEach((r) => {
-          if (r.characterUid) {
-            interactiveStatisticsApi
-              ?.getStatistics('character', r.characterUid)
-              .then((stats) => characterInfoWithStats(r, stats))
-              .then((recordWithStats) => {
-                setRecords((prevRecords) => {
-                  const newRecords = prevRecords.filter(
-                    (r1) => r1.characterId !== recordWithStats.characterId
-                  );
-                  newRecords.push(recordWithStats);
-                  return newRecords;
-                });
-              })
-              .catch(handleError);
+          if (delta && delta.length > 0) {
+            return prevRecords.concat(delta);
           }
+          return prevRecords;
         });
       })
       .catch(handleError)
@@ -345,6 +349,8 @@ export default function CharacterGallery({
   }
 
   function handleSearch(text: string | undefined): void {
+    setRecords([]);
+    setFinish(false);
     const where = new CharacterQueryWhere();
     where.text = text;
     where.visibility = 'public';
@@ -364,6 +370,8 @@ export default function CharacterGallery({
   }
 
   function handleTagClick(tag: string): void {
+    setRecords([]);
+    setFinish(false);
     const where = new CharacterQueryWhere();
     where.tags = [tag];
     where.visibility = 'public';

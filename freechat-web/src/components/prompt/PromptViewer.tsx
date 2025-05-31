@@ -13,9 +13,8 @@ import {
   ButtonGroup,
   Chip,
   Divider,
-  Tooltip,
   Typography,
-} from '@mui/joy';
+} from '@mui/material';
 import {
   ArrowBackRounded,
   ChatBubbleOutlineRounded,
@@ -26,7 +25,11 @@ import {
   PublicRounded,
   Title,
 } from '@mui/icons-material';
-import { CommonContainer, LinePlaceholder } from '../../components';
+import {
+  CommonContainer,
+  LinePlaceholder,
+  OptionTooltip,
+} from '../../components';
 import { PromptDetailsDTO } from 'freechat-sdk';
 import { getDateLabel } from '../../libs/date_utils';
 import {
@@ -146,36 +149,43 @@ export default function PromptViewer({
           sx={{
             justifySelf: 'flex-start',
             display: 'flex',
-            alignItems: 'flex-end',
+            alignItems: 'center',
             flex: 1,
             gap: 2,
           }}
         >
-          <Typography level="h3">{record?.name}</Typography>
-          <Chip color="success" variant="soft">
-            v{record?.version}
-          </Chip>
-          <Tooltip
+          <Typography variant="h4">{record?.name}</Typography>
+          <Chip
+            label={`v${record?.version}`}
+            color="success"
+            variant="filled"
+            size="small"
+          />
+          <OptionTooltip
             title={
               record?.type === 'chat' ? 'chat template' : 'string template'
             }
-            size="sm"
+            sx={{ mt: 1 }}
           >
-            {record?.type === 'chat' ? (
-              <ChatBubbleOutlineRounded color="info" fontSize="small" />
-            ) : (
-              <Title color="info" fontSize="small" />
-            )}
-          </Tooltip>
-          <Tooltip title={record?.visibility} size="sm">
-            {record?.visibility === 'public' ? (
-              <PublicRounded color="info" fontSize="small" />
-            ) : (
-              <PublicOffRounded color="info" fontSize="small" />
-            )}
-          </Tooltip>
+            <Box component="span">
+              {record?.type === 'chat' ? (
+                <ChatBubbleOutlineRounded color="info" fontSize="small" />
+              ) : (
+                <Title color="info" fontSize="small" />
+              )}
+            </Box>
+          </OptionTooltip>
+          <OptionTooltip title={record?.visibility} sx={{ mt: 1 }}>
+            <Box component="span">
+              {record?.visibility === 'public' ? (
+                <PublicRounded color="info" fontSize="small" />
+              ) : (
+                <PublicOffRounded color="info" fontSize="small" />
+              )}
+            </Box>
+          </OptionTooltip>
         </Box>
-        <Typography level="body-sm">
+        <Typography variant="body2">
           {t('Updated on')}{' '}
           {getDateLabel(
             record?.gmtModified || new Date(0),
@@ -185,35 +195,45 @@ export default function PromptViewer({
         </Typography>
 
         <ButtonGroup
-          size="sm"
-          variant="soft"
-          color="primary"
+          size="small"
+          variant="contained"
           sx={{
             borderRadius: '16px',
+            mb: 0.5,
+            mr: 2,
           }}
         >
           <Button
-            startDecorator={<ContentCopyRounded fontSize="small" />}
+            startIcon={<ContentCopyRounded fontSize="small" />}
             onClick={handleCopy}
+            sx={{
+              borderRadius: '16px',
+            }}
           >
             {t('button:Copy')}
           </Button>
           {record?.username === username && (
-            <Button startDecorator={<EditRounded />} onClick={handleEdit}>
+            <Button startIcon={<EditRounded />} onClick={handleEdit}>
               {t('button:Edit')}
             </Button>
           )}
           {play ? (
             <Button
-              startDecorator={<ArrowBackRounded />}
+              startIcon={<ArrowBackRounded />}
               onClick={() => setPlay(false)}
+              sx={{
+                borderRadius: '16px',
+              }}
             >
               {t('button:Back')}
             </Button>
           ) : (
             <Button
-              startDecorator={<PlayCircleOutlineRounded />}
+              startIcon={<PlayCircleOutlineRounded />}
               onClick={() => setPlay(true)}
+              sx={{
+                borderRadius: '16px',
+              }}
             >
               {t('Try it', { ns: 'button' })}
             </Button>

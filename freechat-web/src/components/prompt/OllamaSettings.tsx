@@ -2,17 +2,17 @@
 import { createRef, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Box,
   Chip,
-  ChipDelete,
   DialogContent,
   DialogTitle,
   Divider,
   IconButton,
-  Input,
+  InputAdornment,
   Slider,
   Switch,
   Typography,
-} from '@mui/joy';
+} from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
   CommonContainer,
@@ -27,7 +27,6 @@ import {
   defaultModels,
 } from '../../configs/model-providers-config';
 import { toModelInfo, extractModelName } from '../../libs/template_utils';
-import { InputAdornment } from '@mui/material';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -133,8 +132,12 @@ export default function OllamaSettings(props: {
     setEnableStop(containsKey(defaultParameters, 'stop'));
   }, [defaultParameters]);
 
-  function handleStopWordSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
+  function handleStopWordSubmit(
+    event: React.FormEvent<HTMLFormElement> | undefined
+  ): void {
+    if (event) {
+      event.preventDefault();
+    }
     if (stopWord && !stop.includes(stopWord)) {
       setStop([...stop, stopWord]);
     }
@@ -194,21 +197,30 @@ export default function OllamaSettings(props: {
 
   return (
     <Sidedrawer open={open} onClose={() => handleClose()}>
-      <DialogTitle>{t('Model Parameters')}</DialogTitle>
-      <Divider sx={{ mt: 'auto' }} />
+      <DialogTitle variant="subtitle1" sx={{ m: 0, p: 0, fontWeight: 'bold' }}>
+        {t('Model Parameters')}
+      </DialogTitle>
+      <Divider sx={{ mt: 0 }} />
 
-      <DialogContent>
+      <DialogContent sx={{ p: 0 }}>
         <OptionCard>
           <CommonContainer>
             <Typography>baseUrl</Typography>
-            <Input
+            <TinyInput
               type="text"
               value={baseUrl}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
               sx={{
                 ml: 0.5,
+                maxWidth: undefined,
                 flex: 1,
               }}
               onChange={(event) => setBaseUrl(event.target.value)}
+              size="small"
             />
           </CommonContainer>
         </OptionCard>
@@ -217,11 +229,17 @@ export default function OllamaSettings(props: {
         <OptionCard>
           <CommonContainer>
             <Typography>model</Typography>
-            <Input
+            <TinyInput
               type="text"
               value={extractModelName(model)}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
               sx={{
-                ml: 0.5,
+                ml: 2,
+                maxWidth: undefined,
                 flex: 1,
               }}
               onChange={(event) =>
@@ -522,7 +540,7 @@ export default function OllamaSettings(props: {
               />
             </CommonContainer>
           </CommonContainer>
-          <CommonContainer sx={{ pt: 1 }}>
+          <Box sx={{ pt: 1 }}>
             {stop &&
               stop.length > 0 &&
               stop.map(
@@ -532,14 +550,10 @@ export default function OllamaSettings(props: {
                       disabled={!enableStop}
                       variant="outlined"
                       key={`${word}-${index}`}
-                      endDecorator={
-                        <ChipDelete
-                          onDelete={() => handleStopWordDelete(word)}
-                        />
-                      }
-                    >
-                      {word}
-                    </Chip>
+                      onDelete={() => handleStopWordDelete(word)}
+                      label={word}
+                      sx={{ m: 0.5 }}
+                    />
                   )
               )}
             {(!stop || stop.length < 4) && stopWord === undefined && (
@@ -558,10 +572,9 @@ export default function OllamaSettings(props: {
                   type="text"
                   value={stopWord}
                   onChange={(event) => setStopWord(event.target.value)}
+                  onBlur={() => handleStopWordSubmit(undefined)}
                   slotProps={{
                     input: {
-                      size: 'small',
-                      sx: { fontSize: 'small' },
                       endAdornment: (
                         <InputAdornment position="end">
                           <TransitEnterexitRounded fontSize="small" />
@@ -572,7 +585,7 @@ export default function OllamaSettings(props: {
                 />
               </form>
             )}
-          </CommonContainer>
+          </Box>
         </OptionCard>
       </DialogContent>
     </Sidedrawer>

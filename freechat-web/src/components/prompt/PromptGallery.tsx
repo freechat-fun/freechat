@@ -1,4 +1,11 @@
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  forwardRef,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -13,6 +20,7 @@ import {
   HotTags,
   InfoSearchbar,
   LinePlaceholder,
+  OptionTooltip,
   SummaryTypography,
 } from '../../components';
 import {
@@ -32,17 +40,17 @@ import {
   Divider,
   Link,
   Stack,
-  Tooltip,
   Typography,
-} from '@mui/joy';
-import { SxProps } from '@mui/joy/styles/types';
+  SxProps,
+  Theme,
+} from '@mui/material';
 import { ShareRounded, VisibilityRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
 
 type RecordCardProps = {
   record: PromptSummaryStatsDTO;
   keyWord?: string;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   onClick?: () => void;
 };
 
@@ -73,10 +81,14 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
       ref={ref}
       sx={{
         ...sx,
+        gap: 2,
+        p: 2,
+        border: 1,
+        borderColor: 'divider',
         transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 'sm',
+        boxShadow: 1,
         '&:hover': {
-          boxShadow: 'lg',
+          boxShadow: 3,
           transform: 'translateY(-2px)',
         },
       }}
@@ -88,18 +100,20 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           justifyContent: 'flex-start',
           alignItems: 'center',
           gap: 2,
+          mb: 2,
         }}
       >
         <Link
-          overlay
+          component="button"
           onClick={(event) => {
             event.preventDefault();
             onClick?.();
           }}
+          sx={{ textDecoration: 'none' }}
         >
           <HighlightedTypography
             highlight={keyWord}
-            level="title-lg"
+            variant="h6"
             sx={{
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -110,43 +124,50 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
             {record.name}
           </HighlightedTypography>
         </Link>
-        <Chip color="success" variant="soft">
-          v{record.version}
-        </Chip>
+        <Chip
+          color="success"
+          variant="filled"
+          size="small"
+          label={`v${record.version}`}
+        />
         <Chip
           color={record.type === 'string' ? 'warning' : 'success'}
           variant="outlined"
-        >
-          {record.type}
-        </Chip>
+          size="small"
+          label={record.type}
+        />
         <CommonBox sx={{ ml: 'auto' }}>
-          <Tooltip sx={{ maxWidth: '20rem' }} size="sm" title={userName}>
-            <Avatar alt={userName} src={user?.picture} size="md" />
-          </Tooltip>
+          <OptionTooltip title={userName}>
+            <Avatar
+              alt={userName}
+              src={user?.picture}
+              sx={{ width: 32, height: 32 }}
+            />
+          </OptionTooltip>
         </CommonBox>
       </Box>
-      <Divider />
+      <Divider sx={{ mx: -2 }} />
 
-      <SummaryTypography highlight={keyWord} sx={{ ...sx }}>
+      <SummaryTypography highlight={keyWord} sx={{ ...sx, my: 2 }}>
         {record.description}
       </SummaryTypography>
-      <Divider />
+      <Divider sx={{ mx: -2 }} />
 
       {tags.length > 0 && (
-        <CommonBox>
+        <CommonBox sx={{ gap: 2, my: 2 }}>
           {tags.map((tag, index) => (
             <Chip
               variant="outlined"
               color="success"
+              size="small"
               key={`tag-${record.promptId}-${tag}-${index}`}
-            >
-              {tag}
-            </Chip>
+              label={tag}
+            />
           ))}
         </CommonBox>
       )}
 
-      {tags.length > 0 && <Divider />}
+      {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
 
       <Box
         sx={{
@@ -154,22 +175,25 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          mt: 2,
         }}
       >
-        <Typography level="body-sm" textColor="gray">
+        <Typography variant="body2" color="text.secondary">
           {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
         <CommonBox>
           <Chip
-            size="sm"
-            variant="plain"
-            startDecorator={<VisibilityRounded />}
-          >
-            {record.viewCount}
-          </Chip>
-          <Chip size="sm" variant="plain" startDecorator={<ShareRounded />}>
-            {record.referCount}
-          </Chip>
+            size="small"
+            variant="outlined"
+            icon={<VisibilityRounded />}
+            label={record.viewCount}
+          />
+          <Chip
+            size="small"
+            variant="outlined"
+            icon={<ShareRounded />}
+            label={record.referCount}
+          />
         </CommonBox>
       </Box>
     </Card>
@@ -226,9 +250,6 @@ export default function PromptGallery() {
       scrollRemainingHeight < threshold &&
       scrollRemainingHeight >= 0
     ) {
-      if (finish) {
-        return;
-      }
       setPage((prevPage) => {
         const newPage = prevPage + 1;
         setQuery((prevQuery) => {
@@ -249,40 +270,38 @@ export default function PromptGallery() {
         return newPage;
       });
     }
-  }, [loading, finish, scrollRemainingHeight, defaultQuery]);
+  }, [defaultQuery, finish, loading, scrollRemainingHeight]);
 
   useEffect(() => {
     setLoading(true);
     const currentQuery = query || defaultQuery();
     promptApi
       ?.searchPublicPromptSummary(currentQuery)
-      .then((resp) => {
+      .then(async (resp) => {
         if (resp.length == 0) {
           setFinish(true);
           return;
         }
+        const newRecords: SetStateAction<PromptSummaryStatsDTO[]> = [];
+        await Promise.all(
+          resp.map(async (r) => {
+            if (r.promptUid) {
+              await interactiveStatisticsApi
+                ?.getStatistics('prompt', r.promptUid)
+                .then((stats) => promptInfoWithStats(r, stats))
+                .then((recordWithStats) => newRecords.push(recordWithStats))
+                .catch(handleError);
+            }
+          })
+        );
         setRecords((prevRecords) => {
-          const delta = resp.filter(
-            (r0) => !prevRecords.map((pr) => pr.promptId).includes(r0.promptId)
+          const delta = newRecords.filter(
+            (r) => !prevRecords.map((pr) => pr.promptId).includes(r.promptId)
           );
-          return prevRecords.concat(delta);
-        });
-        resp.forEach((r) => {
-          if (r.promptUid) {
-            interactiveStatisticsApi
-              ?.getStatistics('prompt', r.promptUid)
-              .then((stats) => promptInfoWithStats(r, stats))
-              .then((recordWithStats) => {
-                setRecords((prevRecords) => {
-                  const newRecords = prevRecords.filter(
-                    (r1) => r1.promptId !== recordWithStats.promptId
-                  );
-                  newRecords.push(recordWithStats);
-                  return newRecords;
-                });
-              })
-              .catch(handleError);
+          if (delta && delta.length > 0) {
+            return prevRecords.concat(delta);
           }
+          return prevRecords;
         });
       })
       .catch(handleError)
@@ -311,6 +330,8 @@ export default function PromptGallery() {
     text: string | undefined,
     modelIds: string[] | undefined
   ): void {
+    setRecords([]);
+    setFinish(false);
     const where = new PromptQueryWhere();
     where.text = text;
     where.aiModels = modelIds;
@@ -328,6 +349,8 @@ export default function PromptGallery() {
   }
 
   function handleTagClick(tag: string): void {
+    setRecords([]);
+    setFinish(false);
     const where = new PromptQueryWhere();
     where.tags = [tag];
     where.visibility = 'public';
@@ -420,6 +443,7 @@ export default function PromptGallery() {
         </Stack>
         <Divider
           orientation="vertical"
+          flexItem
           sx={{
             display: { xs: 'none', sm: 'block' },
           }}

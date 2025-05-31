@@ -695,7 +695,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     private List<ChatMessage> removeToolMessages(List<ChatMessage> messages) {
         return messages.stream()
                 .filter(it -> !(it instanceof ToolExecutionResultMessage))
-                .filter(it -> !(it instanceof AiMessage aiMessage && CollectionUtils.isNotEmpty(aiMessage.toolExecutionRequests())))
+                .filter(it -> !(it instanceof AiMessage aiMessage && aiMessage.hasToolExecutionRequests()))
                 .toList();
     }
 

@@ -1,12 +1,7 @@
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Chip, Typography } from '@mui/joy';
-import {
-  CommonBox,
-  HistoryTypography,
-  LinePlaceholder,
-  RouterLink,
-} from '../../components';
+import { Card, Chip, Typography } from '@mui/material';
+import { CommonBox, HistoryTypography, LinePlaceholder, RouterLink } from '..';
 import { PromptDetailsDTO, AiModelInfoDTO } from 'freechat-sdk';
 import { getLocaleLabel } from '../../configs/i18n-config';
 
@@ -29,15 +24,18 @@ export default function PromptMeta(props: {
         my: 2,
         mx: { xs: 0, sm: 2 },
         p: 2,
-        boxShadow: 'sm',
+        boxShadow: 2,
+        border: 1,
+        borderColor: 'divider',
       }}
     >
       {format && (
         <Fragment>
-          <Typography level="title-sm" textColor="neutral">
+          <Typography variant="subtitle2" color="text.secondary">
             {t('Format')}
           </Typography>
-          <Typography level="body-sm">
+          <LinePlaceholder spacing={0.5} />
+          <Typography variant="body2">
             {format === 'f_string' ? 'F-String: ' : 'Mustache: '}&nbsp;
             <b>{format === 'f_string' ? '{placeholder}' : '{{placeholder}}'}</b>
           </Typography>
@@ -47,10 +45,11 @@ export default function PromptMeta(props: {
 
       {lang && (
         <Fragment>
-          <Typography level="title-sm" textColor="neutral">
+          <Typography variant="subtitle2" color="text.secondary">
             {t('Language')}
           </Typography>
-          <Typography level="body-sm">
+          <LinePlaceholder spacing={0.5} />
+          <Typography variant="body2">
             {getLocaleLabel(lang.split('_')[0]) || lang}
           </Typography>
           <LinePlaceholder spacing={2} />
@@ -59,18 +58,19 @@ export default function PromptMeta(props: {
 
       {tags.length > 0 && (
         <Fragment>
-          <Typography level="title-sm" textColor="neutral">
+          <Typography variant="subtitle2" color="text.secondary">
             {t('Tags')}
           </Typography>
+          <LinePlaceholder spacing={0.5} />
           <CommonBox>
             {tags.map((tag, index) => (
               <Chip
+                label={tag}
                 variant="outlined"
                 color="success"
                 key={`tag-${tag}-${index}`}
-              >
-                {tag}
-              </Chip>
+                size="small"
+              />
             ))}
           </CommonBox>
           <LinePlaceholder spacing={2} />
@@ -79,18 +79,19 @@ export default function PromptMeta(props: {
 
       {models.length > 0 && (
         <Fragment>
-          <Typography level="title-sm" textColor="neutral">
+          <Typography variant="subtitle2" color="text.secondary">
             {t('Models')}
           </Typography>
+          <LinePlaceholder spacing={0.5} />
           <CommonBox>
             {models.map((model, index) => (
               <Chip
+                label={model.name}
                 variant="outlined"
                 color="warning"
                 key={`model-${model.modelId}-${index}`}
-              >
-                {model.name}
-              </Chip>
+                size="small"
+              />
             ))}
           </CommonBox>
           <LinePlaceholder spacing={2} />
@@ -99,16 +100,17 @@ export default function PromptMeta(props: {
 
       {history.length > 0 && (
         <Fragment>
-          <Typography level="title-sm" textColor="neutral">
+          <Typography variant="subtitle2" color="text.secondary">
             {t('History')}
           </Typography>
+          <LinePlaceholder spacing={0.5} />
           {history.map((item) => {
             const label = item[0];
             const id = item[1];
             if (id === record?.promptId) {
               return (
                 <HistoryTypography
-                  color="gray"
+                  color="text.secondary"
                   fontSize="small"
                   key={`history-${id}`}
                 >
