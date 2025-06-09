@@ -22,7 +22,7 @@ import {
   LinePlaceholder,
   OptionTooltip,
   SummaryTypography,
-} from '../../components';
+} from '..';
 import {
   InteractiveStatsDTO,
   PromptQueryDTO,
@@ -34,7 +34,6 @@ import {
 import {
   Avatar,
   Box,
-  Card,
   Chip,
   CircularProgress,
   Divider,
@@ -77,7 +76,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   }, [record]);
 
   return (
-    <Card
+    <Stack
       ref={ref}
       sx={{
         ...sx,
@@ -197,7 +196,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           />
         </CommonBox>
       </Box>
-    </Card>
+    </Stack>
   );
 });
 

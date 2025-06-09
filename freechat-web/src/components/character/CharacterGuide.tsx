@@ -4,22 +4,22 @@ import {
   FiberSmartRecordRounded,
 } from '@mui/icons-material';
 import {
-  Card,
-  CardProps,
   Stepper,
   Step,
   StepLabel,
   Typography,
   Box,
+  Stack,
+  StackProps,
 } from '@mui/material';
 
-export default function CharacterGuide(props: CardProps) {
+export default function CharacterGuide(props: StackProps) {
   const { t } = useTranslation('character');
 
   const { sx, ...others } = props;
 
   return (
-    <Card
+    <Stack
       sx={{
         margin: 2,
         p: 2,
@@ -290,6 +290,6 @@ export default function CharacterGuide(props: CardProps) {
           </StepLabel>
         </Step>
       </Stepper>
-    </Card>
+    </Stack>
   );
 }
