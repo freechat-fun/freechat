@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Sheet, SheetProps } from '@mui/joy';
+import { Box, BoxProps } from '@mui/material';
 import {
   useErrorMessageBusContext,
   useFreeChatApiContext,
@@ -11,7 +11,7 @@ import {
 } from 'freechat-sdk';
 import { CharacterRecommendationList, CharacterRecommendationPoster } from '.';
 
-type CharacterRecommendationPaneProps = SheetProps & {
+type CharacterRecommendationPaneProps = BoxProps & {
   lang?: string;
 };
 
@@ -42,7 +42,6 @@ export default function CharacterRecommendationPane({
   }, [lang]);
 
   const selectedRecord = useMemo(() => {
-    // console.log(JSON.stringify(records.find(record => record.characterId === selectedId)));
     return records.find((record) => record.characterId === selectedId);
   }, [records, selectedId]);
 
@@ -66,11 +65,11 @@ export default function CharacterRecommendationPane({
   }, [characterApi, handleError, recommendationQuery]);
 
   return (
-    <Sheet
+    <Box
       sx={{
         flex: 1,
         mx: 'auto',
-        borderRadius: 'md',
+        borderRadius: 2,
         p: 2,
         display: records.length > 0 ? 'grid' : 'none',
         gridTemplateColumns: '1fr 4fr',
@@ -96,6 +95,6 @@ export default function CharacterRecommendationPane({
           gridTemplateRows: `calc(64px * ${records.length})`,
         }}
       />
-    </Sheet>
+    </Box>
   );
 }

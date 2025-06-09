@@ -3,12 +3,12 @@ import {
   Box,
   Stack,
   StackProps,
-  Step,
-  StepButton,
-  StepIndicator,
   Stepper,
-} from '@mui/joy';
+  Step,
+  StepLabel,
+} from '@mui/material';
 import CharacterRecommendationPane from './CharacterRecommendationPane';
+import { CircleRounded } from '@mui/icons-material';
 
 type CharacterRecommendationViewsProps = StackProps & {
   interval?: number;
@@ -57,7 +57,7 @@ export default function CharacterRecommendationViews({
     <Stack
       sx={{
         mx: 'auto',
-        borderRadius: 'md',
+        borderRadius: 1,
         p: 0,
         display: 'flex',
         alignItems: 'stretch',
@@ -83,18 +83,27 @@ export default function CharacterRecommendationViews({
         </Box>
       </Box>
 
-      <Stepper sx={{ mx: 'auto' }}>
+      <Stepper
+        activeStep={activeIndex}
+        sx={{
+          mx: 'auto',
+          '& .MuiStepLabel-root': {
+            cursor: 'pointer',
+          },
+        }}
+      >
         {languages.map((lang, index) => (
-          <Step
-            key={lang}
-            indicator={
-              <StepIndicator
-                variant={activeIndex === index ? 'solid' : 'soft'}
-                color="primary"
-              />
-            }
-          >
-            <StepButton onClick={() => setActiveIndex(index)} />
+          <Step key={lang} onClick={() => setActiveIndex(index)}>
+            <StepLabel
+              slots={{
+                stepIcon: () => (
+                  <CircleRounded
+                    color={index === activeIndex ? 'primary' : 'disabled'}
+                    sx={{ fontSize: '2rem' }}
+                  />
+                ),
+              }}
+            />
           </Step>
         ))}
       </Stepper>
