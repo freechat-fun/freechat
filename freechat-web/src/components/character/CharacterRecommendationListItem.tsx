@@ -1,16 +1,17 @@
 import { Fragment, forwardRef, useEffect, useState } from 'react';
 import {
   Card,
-  CardCover,
-  ListDivider,
+  CardContent,
   ListItem,
   ListItemButton,
   ListItemButtonProps,
   Typography,
-} from '@mui/joy';
+  Divider,
+  styled,
+} from '@mui/material';
 import { CharacterSummaryDTO } from 'freechat-sdk';
 import { getSenderName } from '../../libs/chat_utils';
-import { SxProps } from '@mui/joy/styles/types';
+import { SxProps } from '@mui/material/styles';
 
 type CharacterRecommendationListItemProps = ListItemButtonProps & {
   record: CharacterSummaryDTO;
@@ -18,6 +19,37 @@ type CharacterRecommendationListItemProps = ListItemButtonProps & {
   setSelectedId: (id?: number) => void;
   sx?: SxProps;
 };
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  width: '100%',
+  transition: 'transform 0.4s, box-shadow 0.4s',
+  borderRadius: theme.spacing(0.5),
+  boxShadow: theme.shadows[1],
+  '&:hover': {
+    boxShadow: theme.shadows[4],
+    transform: 'translateY(-1px)',
+  },
+  position: 'relative',
+  overflow: 'hidden',
+  backgroundSize: 'cover',
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+}));
+
+const StyledCardContent = styled(CardContent)(() => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  transition: '0.3s ease-in',
+  '&:hover, &:focus-within': {
+    opacity: 1,
+  },
+}));
 
 const CharacterRecommendationListItem = forwardRef<
   HTMLLIElement,
@@ -34,42 +66,24 @@ const CharacterRecommendationListItem = forwardRef<
 
   return (
     <Fragment>
-      <ListItem ref={ref}>
+      <ListItem ref={ref} sx={{ p: 0 }}>
         <ListItemButton
           onClick={() => setSelectedId(record.characterId)}
           selected={selected}
-          color="neutral"
           sx={{
-            borderRadius: 6,
+            borderRadius: 3,
             p: 0,
           }}
         >
-          <Card
+          <StyledCard
             sx={{
               ...sx,
-              width: '100%',
-              transition: 'transform 0.4s, box-shadow 0.4s',
-              borderRadius: 6,
-              boxShadow: 'sm',
-              '&:hover': {
-                boxShadow: 'lg',
-                transform: 'translateY(-1px)',
-              },
-              position: 'relative',
-              overflow: 'hidden',
               backgroundImage: `url(${record.avatar})`,
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
             }}
           >
-            <CardCover
+            <StyledCardContent
               sx={{
-                '&:hover, &:focus-within': {
-                  opacity: 1,
-                },
                 opacity: selectedId === record.characterId ? 1 : 0,
-                transition: '0.3s ease-in',
                 background:
                   selectedId === record.characterId
                     ? 'rgba(0 0 0 / 0.5)'
@@ -79,7 +93,7 @@ const CharacterRecommendationListItem = forwardRef<
               }}
             >
               <Typography
-                level="title-lg"
+                variant="h6"
                 sx={{
                   color: 'white',
                   transition: 'transform 0.4s, box-shadow 0.4s',
@@ -87,11 +101,11 @@ const CharacterRecommendationListItem = forwardRef<
               >
                 {nickname}
               </Typography>
-            </CardCover>
-          </Card>
+            </StyledCardContent>
+          </StyledCard>
         </ListItemButton>
       </ListItem>
-      <ListDivider sx={{ margin: 0 }} />
+      <Divider sx={{ margin: 0 }} />
     </Fragment>
   );
 });

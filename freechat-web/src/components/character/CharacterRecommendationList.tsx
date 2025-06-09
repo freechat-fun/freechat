@@ -1,5 +1,5 @@
 import { createRef, useEffect, useRef, useState } from 'react';
-import { List, ListProps } from '@mui/joy';
+import { List, ListProps } from '@mui/material';
 import { CharacterSummaryDTO } from 'freechat-sdk';
 import { CharacterRecommendationListItem } from '.';
 import {
@@ -32,10 +32,11 @@ export default function CharacterRecommendationList(
   return (
     <List
       sx={{
-        py: 0,
-        my: 0,
-        '--ListItem-paddingY': '0.75rem',
-        '--ListItem-paddingX': '1rem',
+        padding: 0,
+        margin: 0,
+        '& .MuiListItem-root': {
+          p: 0.1,
+        },
         ...sx,
       }}
     >
