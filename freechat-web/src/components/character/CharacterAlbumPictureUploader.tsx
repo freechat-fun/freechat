@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Card } from '@mui/joy';
+import { Card, CardContent } from '@mui/material';
 import { SxProps } from '@mui/material';
 import { AddRounded } from '@mui/icons-material';
 import { ImagePicker } from '..';
@@ -41,23 +41,28 @@ const CharacterAlbumPictureUploader = forwardRef<
       ref={ref}
       sx={{
         ...sx,
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 'sm',
+        boxShadow: 1,
+        borderRadius: '6px',
+        border: 1,
+        borderColor: 'divider',
         '&:hover': {
-          boxShadow: 'lg',
+          boxShadow: 3,
           transform: 'translateY(-2px)',
         },
       }}
     >
-      <ImagePicker
-        key="picture-picker"
-        onImageSelect={handleImageSelect}
-        variant="plain"
-        color="neutral"
-        Icon={AddRounded}
-      />
+      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+        <ImagePicker
+          key="picture-picker"
+          onImageSelect={handleImageSelect}
+          Icon={AddRounded}
+          sx={{ color: 'primary.main' }}
+        />
+      </CardContent>
     </Card>
   );
 });

@@ -1,7 +1,18 @@
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconButton, Link, Stack, Table, Typography } from '@mui/joy';
-import { SxProps } from '@mui/joy/styles/types';
+import {
+  IconButton,
+  Link,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+import { SxProps, Theme } from '@mui/material/styles';
 import {
   AddCircleRounded,
   ArticleRounded,
@@ -30,7 +41,7 @@ import { CharacterDocumentUploader } from '.';
 type CharacterDocumentsPaneProps = {
   characterUid?: string;
   editMode?: boolean;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 };
 
 export default function CharacterDocumentsPane({
@@ -142,24 +153,24 @@ export default function CharacterDocumentsPane({
 
     switch (task.status) {
       case 'pending':
-        return <PendingOutlined />;
+        return <PendingOutlined fontSize="small" />;
       case 'running':
-        return <RunCircleOutlined />;
+        return <RunCircleOutlined fontSize="small" />;
       case 'succeeded':
-        return <CheckCircleOutlined />;
+        return <CheckCircleOutlined fontSize="small" />;
       case 'failed':
-        return <ErrorOutlineRounded />;
+        return <ErrorOutlineRounded fontSize="small" />;
       default:
-        return <HelpOutlineRounded />;
+        return <HelpOutlineRounded fontSize="small" />;
     }
   }
 
   return (
-    <Stack spacing={3} sx={{ ...sx }}>
+    <Stack spacing={2} sx={{ ...sx }}>
       <CommonBox>
-        <Typography level="title-md">
+        <Typography variant="subtitle1">
           {t(
-            'Character documents: (A maximum of 10 documents are allowed, each document is less than 3M)'
+            'Character documents: (You can have up to 10 documents, each under 3MB)'
           )}
         </Typography>
         <IconButton onClick={() => handleRefreshTasks()}>
@@ -177,82 +188,109 @@ export default function CharacterDocumentsPane({
         )}
       </CommonBox>
 
-      <Table sx={{ display: ragTasks.length > 0 ? 'table' : 'none' }}>
-        <thead>
-          <tr>
-            <th style={{ width: '10%' }}>#</th>
-            <th>{t('Creation Time')}</th>
-            <th>{t('Start Time')}</th>
-            <th>{t('End Time')}</th>
-            <th>{t('Source')}</th>
-            <th>{t('Status')}</th>
-            <th>{t('Actions')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ragTasks.map((task) => (
-            <tr tabIndex={-1} key={`rag-task-${task.id}`}>
-              <td>{task.id}</td>
-              <td>{formatDateTime(task.gmtCreate)}</td>
-              <td>{formatDateTime(task.gmtStart)}</td>
-              <td>{formatDateTime(task.gmtEnd)}</td>
-              <td>
-                <Link
-                  startDecorator={
-                    task?.sourceType === 'url' ? (
-                      <LinkRounded />
+      <TableContainer sx={{ display: ragTasks.length > 0 ? 'block' : 'none' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell width="2%" sx={{ fontWeight: 'bold' }}>
+                #
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                {t('Creation Time')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                {t('Start Time')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('End Time')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('Source')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>{t('Status')}</TableCell>
+              <TableCell width="25%" sx={{ fontWeight: 'bold' }}>
+                {t('Actions')}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {ragTasks.map((task) => (
+              <TableRow key={`rag-task-${task.id}`}>
+                <TableCell>{task.id}</TableCell>
+                <TableCell>{formatDateTime(task.gmtCreate)}</TableCell>
+                <TableCell>{formatDateTime(task.gmtStart)}</TableCell>
+                <TableCell>{formatDateTime(task.gmtEnd)}</TableCell>
+                <TableCell>
+                  <Link
+                    component="a"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      textDecoration: 'none',
+                      '&:hover': {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    target="_blank"
+                    href={getTaskLink(task)}
+                  >
+                    {task?.sourceType === 'url' ? (
+                      <LinkRounded fontSize="small" />
                     ) : (
-                      <ArticleRounded />
-                    )
-                  }
-                  target="_blank"
-                  href={getTaskLink(task)}
-                >
-                  {getTaskFilename(task)}
-                </Link>
-              </td>
-              <td>
-                <Typography startDecorator={getTaskStatusIcon(task)}>
-                  {task.status?.toUpperCase()}
-                </Typography>
-              </td>
-              <td>
-                {editMode && (
-                  <Fragment>
-                    {task.status === 'running' ? (
-                      <IconButton onClick={() => handleCancelTask(task)}>
-                        <StopCircleOutlined fontSize="small" />
-                      </IconButton>
-                    ) : (
-                      <IconButton onClick={() => handleRerunTask(task)}>
-                        <ReplayRounded fontSize="small" />
-                      </IconButton>
+                      <ArticleRounded fontSize="small" />
                     )}
+                    {getTaskFilename(task)}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      fontSize: '0.6rem',
+                    }}
+                  >
+                    {getTaskStatusIcon(task)}
+                    {task.status?.toUpperCase()}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  {editMode && (
+                    <Fragment>
+                      {task.status === 'running' ? (
+                        <IconButton onClick={() => handleCancelTask(task)}>
+                          <StopCircleOutlined fontSize="small" />
+                        </IconButton>
+                      ) : (
+                        <IconButton onClick={() => handleRerunTask(task)}>
+                          <ReplayRounded fontSize="small" />
+                        </IconButton>
+                      )}
 
-                    <IconButton
-                      onClick={() => task.id && setTaskToConfirm(task)}
-                    >
-                      <DeleteRounded fontSize="small" />
-                    </IconButton>
-                  </Fragment>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                      <IconButton
+                        onClick={() => task.id && setTaskToConfirm(task)}
+                      >
+                        <DeleteRounded fontSize="small" />
+                      </IconButton>
+                    </Fragment>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <ConfirmModal
         open={!!taskToConfirm}
         onClose={() => setTaskToConfirm(undefined)}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Do you really want to delete this document?'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={() => handleDeleteTask(taskToConfirm)}
       >

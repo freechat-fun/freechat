@@ -6,10 +6,13 @@ const ContentTextarea = forwardRef<HTMLInputElement, TextFieldProps>(
     return (
       <TextField
         ref={ref}
+        size="small"
         multiline
+        fullWidth
         slotProps={{
           input: {
             sx: {
+              borderRadius: '6px',
               whiteSpace: 'pre-wrap',
               overflowWrap: 'break-word',
             },

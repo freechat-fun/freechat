@@ -1196,7 +1196,8 @@ export default function PromptEditor({
                 my: 2,
                 mx: { xs: 0, sm: 2 },
                 p: 2,
-                boxShadow: 2,
+                boxShadow: 1,
+                borderRadius: '6px',
                 border: 1,
                 borderColor: 'divider',
               }}
@@ -1237,7 +1238,7 @@ export default function PromptEditor({
                       onClick={() => setFormat(item.value)}
                       size="small"
                       sx={{
-                        fontSize: 'small',
+                        fontSize: '0.7rem',
                         borderRadius: 2,
                         color:
                           format === item.value ? 'text.default' : 'GrayText',

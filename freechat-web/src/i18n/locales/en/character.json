@@ -7,7 +7,7 @@
   "Greeting": "Greeting",
   "Character information": "Character information",
   "Character backends: (maximum of 3 backends allowed)": "Character backends: (maximum of 3 backends allowed)",
-  "Character documents: (A maximum of 10 documents are allowed, each document is less than 3M)": "Character documents: (A maximum of 10 documents are allowed, each document is less than 3M)",
+  "Character documents: (You can have up to 10 documents, each under 3MB)": "Character documents: (You can have up to 10 documents, each under 3MB)",
   "Character's information, significantly influences chat feedback": "Character's information, significantly influences chat feedback",
   "Do you really want to delete this character?": "Do you really want to delete this character?",
   "Creation Time": "Creation Time",

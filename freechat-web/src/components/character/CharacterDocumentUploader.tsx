@@ -24,16 +24,13 @@ import {
   Slider,
   Stack,
   Tab,
-  TabList,
-  TabPanel,
   Tabs,
   Typography,
-  tabClasses,
-} from '@mui/joy';
+} from '@mui/material';
 import { FileUploadRounded } from '@mui/icons-material';
 import { extractFilenameFromUrl } from '../../libs/url_utils';
 import { RagTaskDTO } from 'freechat-sdk';
-import { SxProps } from '@mui/joy/styles/types';
+import { SxProps, Theme } from '@mui/material/styles';
 import { HelpIcon } from '../icon';
 
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
@@ -43,7 +40,7 @@ type CharacterDocumentUploaderProps = {
   characterUid?: string;
   open?: boolean;
   onClose?: (succeeded: boolean) => void;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 };
 
 export default function CharacterDocumentUploader({
@@ -161,11 +158,12 @@ export default function CharacterDocumentUploader({
         title: t('Add Document'),
       }}
       onConfirm={handleDocumentConfirm}
+      maxWidth="md"
       sx={sx}
     >
       <Stack spacing={2}>
         <Tabs
-          defaultValue={0}
+          value={documentType === 'file' ? 0 : 1}
           onChange={(_event, newValue) =>
             setDocumentType(newValue === 0 ? 'file' : 'url')
           }
@@ -174,112 +172,97 @@ export default function CharacterDocumentUploader({
             minWidth: '760px',
           }}
         >
-          <TabList
-            tabFlex={1}
-            size="sm"
+          <Tab
+            label={t('FILE')}
             sx={{
-              pl: { xs: 0, md: 4 },
-              justifyContent: 'left',
-              [`&& .${tabClasses.root}`]: {
-                fontWeight: '600',
-                flex: 'initial',
-                color: 'text.tertiary',
-                [`&.${tabClasses.selected}`]: {
-                  bgcolor: 'transparent',
-                  color: 'text.primary',
-                  '&::after': {
-                    height: '2px',
-                    bgcolor: 'primary.500',
-                  },
-                },
+              fontWeight: 600,
+              color: 'text.secondary',
+              '&.Mui-selected': {
+                color: 'text.primary',
               },
             }}
-          >
-            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={0}>
-              {t('FILE')}
-            </Tab>
-            <Tab sx={{ borderRadius: '6px 6px 0 0' }} indicatorInset value={1}>
-              {t('URL')}
-            </Tab>
-          </TabList>
-          <TabPanel value={0}>
-            <Stack spacing={2}>
-              <Typography level="body-sm">
-                {t(
-                  'Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 3MB.'
-                )}
-              </Typography>
-              <CommonBox>
-                <Chip sx={{ display: documentFile?.name ? 'unset' : 'none' }}>
-                  {documentFile?.name}
-                </Chip>
-                {documentUploading ? (
-                  <CircularProgress />
-                ) : (
-                  <FormControl>
-                    <Input
+          />
+          <Tab
+            label={t('URL')}
+            sx={{
+              fontWeight: 600,
+              color: 'text.secondary',
+              '&.Mui-selected': {
+                color: 'text.primary',
+              },
+            }}
+          />
+        </Tabs>
+
+        {documentType === 'file' ? (
+          <Stack spacing={2}>
+            <Typography variant="body2">
+              {t(
+                'Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 3MB.'
+              )}
+            </Typography>
+            <CommonBox>
+              {documentFile?.name && <Chip label={documentFile.name} />}
+              {documentUploading ? (
+                <CircularProgress />
+              ) : (
+                <FormControl>
+                  <Input
+                    disabled={documentUploading}
+                    type="file"
+                    id={fileInputId}
+                    onChange={handleDocumentFileChange}
+                    sx={{ display: 'none' }}
+                    inputProps={{
+                      ref: fileInputRef,
+                      accept: '*/*',
+                    }}
+                  />
+                  <label htmlFor={fileInputId}>
+                    <IconButton
+                      onClick={handleDocumentFileModify}
                       disabled={documentUploading}
-                      type="file"
-                      id={fileInputId}
-                      onChange={handleDocumentFileChange}
-                      sx={{ display: 'none' }}
-                      slotProps={{
-                        input: {
-                          ref: fileInputRef,
-                          accept: '*/*',
-                        },
-                      }}
-                    />
-                    <label htmlFor={fileInputId}>
-                      <IconButton
-                        onClick={handleDocumentFileModify}
-                        disabled={documentUploading}
-                      >
-                        <FileUploadRounded />
-                      </IconButton>
-                    </label>
-                    <FormHelperText
-                      sx={{ display: documentFileInvalid ? 'unset' : 'none' }}
                     >
+                      <FileUploadRounded />
+                    </IconButton>
+                  </label>
+                  {documentFileInvalid && (
+                    <FormHelperText error>
                       {t('File too large!')}
                     </FormHelperText>
-                  </FormControl>
-                )}
-              </CommonBox>
-            </Stack>
-          </TabPanel>
-
-          <TabPanel value={1}>
-            <Stack spacing={2}>
-              <Typography level="body-sm">
-                {t('Only publicly accessible URLs are supported.')}
-              </Typography>
-              <FormControl>
-                <Input
-                  disabled={documentUploading}
-                  autoFocus
-                  type="text"
-                  value={documentUrl}
-                  onChange={(event) =>
-                    handleDocumentUrlModify(event.target.value)
-                  }
-                />
-                <FormHelperText
-                  sx={{ display: documentUrlInvalid ? 'unset' : 'none' }}
-                >
-                  {t('Invalid URL')}
-                </FormHelperText>
-              </FormControl>
-            </Stack>
-          </TabPanel>
-        </Tabs>
+                  )}
+                </FormControl>
+              )}
+            </CommonBox>
+          </Stack>
+        ) : (
+          <Stack spacing={2}>
+            <Typography variant="body2">
+              {t('Only publicly accessible URLs are supported.')}
+            </Typography>
+            <FormControl>
+              <Input
+                disabled={documentUploading}
+                autoFocus
+                type="text"
+                value={documentUrl}
+                onChange={(event) =>
+                  handleDocumentUrlModify(event.target.value)
+                }
+              />
+              {documentUrlInvalid && (
+                <FormHelperText error>{t('Invalid URL')}</FormHelperText>
+              )}
+            </FormControl>
+          </Stack>
+        )}
 
         <Divider sx={{ mt: 'auto', mx: 2 }}>{t('Splitter Settings')}</Divider>
 
         <CommonGridBox sx={{ gridTemplateColumns: '1fr 1fr' }}>
           <OptionCard>
             <CommonContainer>
-              <Typography level="title-sm" textColor="neutral">
+              <Typography variant="subtitle1" color="text.secondary">
                 {t('Max Segment Size')}
               </Typography>
               <OptionTooltip
@@ -321,7 +304,7 @@ export default function CharacterDocumentUploader({
 
           <OptionCard>
             <CommonContainer>
-              <Typography level="title-sm" textColor="neutral">
+              <Typography variant="subtitle1" color="text.secondary">
                 {t('Max Overlap Size')}
               </Typography>
               <OptionTooltip

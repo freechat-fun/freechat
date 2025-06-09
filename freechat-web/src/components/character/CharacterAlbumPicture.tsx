@@ -1,11 +1,26 @@
 import { forwardRef } from 'react';
-import { AspectRatio, Card, CardOverflow } from '@mui/joy';
+import { Card, CardContent, styled } from '@mui/material';
 import { SxProps } from '@mui/material';
 import {
   RadioButtonCheckedRounded,
   RadioButtonUncheckedRounded,
 } from '@mui/icons-material';
 import { InfoCardCover } from '..';
+
+// Styled component for aspect ratio container
+const AspectRatioContainer = styled('div')({
+  position: 'relative',
+  width: '100%',
+  paddingTop: '100%', // 1:1 aspect ratio
+  '& > img': {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+});
 
 type CharacterAlbumPictureProps = {
   url: string;
@@ -28,34 +43,28 @@ const CharacterAlbumPicture = forwardRef<
 
   return (
     <Card
-      ref={ref}
       onClick={() => onView()}
       sx={{
         ...sx,
         transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 'sm',
+        boxShadow: 1,
+        borderRadius: '6px',
         '&:hover': {
-          boxShadow: 'lg',
+          boxShadow: 3,
           transform: 'translateY(-2px)',
         },
       }}
     >
-      <CardOverflow>
-        <AspectRatio ratio="1">
-          <img
-            src={url}
-            loading="lazy"
-            style={{
-              objectFit: 'cover',
-            }}
+      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+        <AspectRatioContainer ref={ref}>
+          <img src={url} loading="lazy" />
+          <InfoCardCover
+            icons={icons}
+            onEdit={() => onCheck()}
+            onDelete={() => onDelete()}
           />
-        </AspectRatio>
-        <InfoCardCover
-          icons={icons}
-          onEdit={() => onCheck()}
-          onDelete={() => onDelete()}
-        />
-      </CardOverflow>
+        </AspectRatioContainer>
+      </CardContent>
     </Card>
   );
 });

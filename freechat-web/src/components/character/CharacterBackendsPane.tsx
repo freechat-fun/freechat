@@ -6,7 +6,18 @@ import {
   useFreeChatApiContext,
 } from '../../contexts';
 import { CharacterBackendDetailsDTO } from 'freechat-sdk';
-import { IconButton, Radio, Stack, Table, Typography } from '@mui/joy';
+import {
+  IconButton,
+  Radio,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import { SxProps } from '@mui/material';
 import {
   AddCircleRounded,
@@ -101,7 +112,7 @@ export default function CharacterBackendsPane({
   return (
     <Stack spacing={3} sx={{ ...sx }}>
       <CommonBox>
-        <Typography level="title-md">
+        <Typography variant="subtitle1">
           {t('Character backends: (maximum of 3 backends allowed)')}
         </Typography>
         {editMode && (
@@ -117,72 +128,88 @@ export default function CharacterBackendsPane({
         )}
       </CommonBox>
 
-      <Table sx={{ display: backends.length > 0 ? 'table' : 'none' }}>
-        <thead>
-          <tr>
-            <th style={{ width: '10%' }}>#</th>
-            <th>{t('Creation Time')}</th>
-            <th>{t('Message Window')}</th>
-            <th>{t('Moderation Model')}</th>
-            <th>{t('As Default')}</th>
-            <th style={{ width: '25%' }}>{t('Actions')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {backends.map((backend, index) => (
-            <tr tabIndex={-1} key={`backend-${backend.backendId ?? index}`}>
-              <td>{index}</td>
-              <td>{formatDateTime(backend.gmtCreate)}</td>
-              <td>{backend.messageWindowSize}</td>
-              <td>{backend.moderationModelId}</td>
-              <td>
-                <Radio
-                  disabled={!editMode}
-                  value={backend.backendId}
-                  checked={backend.isDefault}
-                  name="backend-default"
-                  onChange={(event) => handleDefaultChange(event.target.value)}
-                />
-              </td>
-              <td>
-                <IconButton
-                  disabled={!backend.chatPromptTaskId}
-                  onClick={() => handleView(backend)}
-                >
-                  <ArticleRounded fontSize="small" />
-                </IconButton>
-                {editMode && (
-                  <Fragment>
-                    <IconButton
-                      onClick={() => onEdit?.({ ...backend }, [...backends])}
-                    >
-                      <EditRounded fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleTryDelete(backend.backendId)}
-                    >
-                      <DeleteRounded fontSize="small" />
-                    </IconButton>
-                  </Fragment>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <TableContainer sx={{ display: backends.length > 0 ? 'block' : 'none' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell width="2%" sx={{ fontWeight: 'bold' }}>
+                #
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                {t('Creation Time')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                {t('Message Window')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                {t('Moderation Model')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                {t('As Default')}
+              </TableCell>
+              <TableCell width="25%" sx={{ fontWeight: 'bold' }}>
+                {t('Actions')}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {backends.map((backend, index) => (
+              <TableRow key={`backend-${backend.backendId ?? index}`}>
+                <TableCell>{index}</TableCell>
+                <TableCell>{formatDateTime(backend.gmtCreate)}</TableCell>
+                <TableCell>{backend.messageWindowSize}</TableCell>
+                <TableCell>{backend.moderationModelId}</TableCell>
+                <TableCell>
+                  <Radio
+                    disabled={!editMode}
+                    value={backend.backendId}
+                    checked={backend.isDefault}
+                    name="backend-default"
+                    onChange={(event) =>
+                      handleDefaultChange(event.target.value)
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    disabled={!backend.chatPromptTaskId}
+                    onClick={() => handleView(backend)}
+                  >
+                    <ArticleRounded fontSize="small" />
+                  </IconButton>
+                  {editMode && (
+                    <Fragment>
+                      <IconButton
+                        onClick={() => onEdit?.({ ...backend }, [...backends])}
+                      >
+                        <EditRounded fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleTryDelete(backend.backendId)}
+                      >
+                        <DeleteRounded fontSize="small" />
+                      </IconButton>
+                    </Fragment>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <ConfirmModal
         open={!!backendIdToConfirm}
         onClose={() => setBackendIdToConfirm('')}
         obj={backendIdToConfirm}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Do you really want to delete this character backend?'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handleDelete}
       >

@@ -30,28 +30,26 @@ import {
   TinyInput,
 } from '../../components';
 import {
-  AspectRatio,
   Avatar,
   Box,
   Button,
   ButtonGroup,
   Card,
   Chip,
-  ChipDelete,
   Divider,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   IconButton,
-  Input,
-  Option,
+  MenuItem,
   Radio,
   RadioGroup,
   Select,
   Stack,
   Switch,
+  TextField,
   Typography,
-  switchClasses,
-} from '@mui/joy';
+} from '@mui/material';
 import {
   AddCircleRounded,
   CheckRounded,
@@ -570,16 +568,16 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             flex: 1,
           }}
         >
-          <Typography level="h3">{recordName}</Typography>
+          <Typography variant="h4">{recordName}</Typography>
           <IconButton
             disabled={!!editRecordName}
-            size="sm"
+            size="small"
             onClick={() => setEditRecordName(recordName || 'untitled')}
           >
             <EditRounded fontSize="small" />
           </IconButton>
         </CommonContainer>
-        <Typography level="body-sm">
+        <Typography variant="body2">
           {t('Updated on')}{' '}
           {getDateLabel(
             origRecord?.gmtModified || new Date(0),
@@ -589,31 +587,41 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
         </Typography>
 
         <ButtonGroup
-          size="sm"
-          variant="soft"
-          color="primary"
+          size="small"
+          variant="contained"
           sx={{
             borderRadius: '16px',
+            mb: 0.5,
+            mr: 2,
           }}
         >
           <Button
             disabled={isSaved() || visibility === 'hidden' || !editEnabled}
-            startDecorator={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
+            startIcon={isSaved() ? <CheckRounded /> : <SaveAltRounded />}
             onClick={handleRecordSave}
+            sx={{
+              borderRadius: '16px',
+            }}
           >
             {t('button:Save')}
           </Button>
           <Button
             disabled={!editEnabled}
-            startDecorator={<IosShareRounded />}
+            startIcon={<IosShareRounded />}
             onClick={handleRecordPublish}
+            sx={{
+              borderRadius: '16px',
+            }}
           >
             {t('button:Publish')}
           </Button>
           <Button
             disabled={!editEnabled}
-            startDecorator={<ImportExportRounded />}
+            startIcon={<ImportExportRounded />}
             onClick={handleRecordExport}
+            sx={{
+              borderRadius: '16px',
+            }}
           >
             {t('button:Export')}
           </Button>
@@ -632,19 +640,12 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           }}
         >
           <CommonBox sx={{ gap: 2 }}>
-            <Typography level="title-lg" color="primary">
+            <Typography variant="h6" color="primary">
               {t('Public')}
             </Typography>
             <Switch
               checked={visibility === 'public' || visibility === 'hidden'}
-              sx={{
-                [`&.${switchClasses.checked}`]: {
-                  '--Switch-trackBackground': '#4CA176',
-                  '&:hover': {
-                    '--Switch-trackBackground': '#5CB186',
-                  },
-                },
-              }}
+              color="success"
               onChange={(event) =>
                 event.target.checked
                   ? setVisibility('public')
@@ -659,7 +660,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             }}
           >
             <CommonBox>
-              <Typography level="title-lg" color="primary">
+              <Typography variant="h6" color="primary">
                 {t('Description')}
               </Typography>
               <OptionTooltip
@@ -680,11 +681,15 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           <LinePlaceholder />
 
           <CommonBox>
-            <Typography level="title-lg" color="primary">
+            <Typography variant="h6" color="primary">
               {t('Tags')}
             </Typography>
             {(!tags || tags.length < 5) && tag === undefined && (
-              <IconButton size="sm" color="primary" onClick={() => setTag('')}>
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => setTag('')}
+              >
                 <AddCircleRounded />
               </IconButton>
             )}
@@ -718,12 +723,9 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   variant="outlined"
                   color="success"
                   key={`tag-${tag}-${index}`}
-                  endDecorator={
-                    <ChipDelete onDelete={() => handleTagDelete(tag)} />
-                  }
-                >
-                  {tag}
-                </Chip>
+                  onDelete={() => handleTagDelete(tag)}
+                  label={tag}
+                />
               ))}
           </CommonBox>
 
@@ -733,84 +735,105 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             )}
           </Divider>
 
-          <Card
+          <Stack
+            spacing={2}
             sx={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-              mx: 'auto',
-              gap: 2,
+              my: 2,
+              mx: { xs: 0, sm: 2 },
+              p: 2,
+              boxShadow: 1,
+              borderRadius: '6px',
+              border: 1,
+              borderColor: 'divider',
             }}
           >
             <Stack direction="row" spacing={3} sx={{ display: 'flex', my: 1 }}>
               <Box
-                alignItems="center"
                 sx={{
                   flex: 1,
                   display: 'grid',
                   gridTemplateColumns: 'auto 1fr',
                   gap: 1,
+                  alignItems: 'center',
                 }}
               >
                 <LabelTypography>{t('account:Nickname')}</LabelTypography>
-                <Input
+                <TextField
                   disabled={!editEnabled}
                   name="nickname"
                   value={nickname || ''}
                   onChange={(event) =>
                     setNickname(event.target.value || undefined)
                   }
+                  size="small"
                 />
                 <LabelTypography>{t('account:Gender')}</LabelTypography>
                 <RadioGroup
                   name="genderGroup"
-                  orientation="horizontal"
+                  row
                   value={gender}
                   onChange={(event) => setGender(event.target.value)}
                   sx={{ my: 1 }}
                 >
-                  <Radio
+                  <FormControlLabel
                     value="male"
+                    control={<Radio disabled={!editEnabled} />}
                     label={t('account:Male')}
-                    disabled={!editEnabled}
                   />
-                  <Radio
+                  <FormControlLabel
                     value="female"
+                    control={<Radio disabled={!editEnabled} />}
                     label={t('account:Female')}
-                    disabled={!editEnabled}
                   />
-                  <Radio
+                  <FormControlLabel
                     value="other"
+                    control={<Radio disabled={!editEnabled} />}
                     label={t('account:Other')}
-                    disabled={!editEnabled}
                   />
                 </RadioGroup>
 
                 <LabelTypography>{t('Language')}</LabelTypography>
-                <Select
-                  size="sm"
-                  variant="outlined"
-                  value={lang}
-                  onChange={(_event, value) => value && setLang(value)}
-                  sx={{ mr: 'auto' }}
-                >
-                  {Object.keys(locales).map((locale) => (
-                    <Option key={`locale-${locale}`} value={locale}>
-                      {locales[locale]}
-                    </Option>
-                  ))}
-                </Select>
+                <FormControl sx={{ flex: 1 }} size="small">
+                  <Select
+                    size="small"
+                    value={lang}
+                    onChange={(event) => setLang(event.target.value)}
+                    sx={{ mr: 'auto' }}
+                  >
+                    {Object.keys(locales).map((locale) => (
+                      <MenuItem key={`locale-${locale}`} value={locale}>
+                        {locales[locale]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
 
-              <Stack direction="column" spacing={1} sx={{ minWidth: 120 }}>
-                <AspectRatio
-                  ratio="1"
-                  maxHeight={200}
-                  sx={{ flex: 1, borderRadius: '50%' }}
+              <Stack
+                direction="column"
+                spacing={1}
+                sx={{ minWidth: 120, position: 'relative' }}
+              >
+                <Box
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                    paddingBottom: '100%',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                  }}
                 >
-                  <Avatar variant="soft" src={avatar} />
-                </AspectRatio>
+                  <Avatar
+                    src={avatar}
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  />
+                </Box>
                 <ImagePicker
                   key="avatar-picker"
                   onImageSelect={handleAvatarSelect}
@@ -821,13 +844,16 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   }}
                   disabled={!editEnabled}
                   sx={{
-                    bgcolor: 'background.body',
+                    backgroundColor: 'background.paper',
                     position: 'absolute',
                     zIndex: 2,
                     borderRadius: '50%',
-                    right: 20,
-                    top: 110,
-                    boxShadow: 'sm',
+                    right: 5,
+                    top: 85,
+                    boxShadow: 1,
+                    '&:hover, &:focus-within': {
+                      backgroundColor: 'background.paper',
+                    },
                   }}
                 />
               </Stack>
@@ -888,15 +914,35 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               value={greeting || ''}
               onChange={(event) => setGreeting(event.target.value || undefined)}
             />
-          </Card>
+          </Stack>
           <LinePlaceholder />
 
-          <Card>
+          <Card
+            sx={{
+              my: 2,
+              mx: { xs: 0, sm: 2 },
+              p: 2,
+              boxShadow: 1,
+              borderRadius: '6px',
+              border: 1,
+              borderColor: 'divider',
+            }}
+          >
             <CharacterDocumentsPane characterUid={recordUid} editMode={true} />
           </Card>
           <LinePlaceholder />
 
-          <Card>
+          <Card
+            sx={{
+              my: 2,
+              mx: { xs: 0, sm: 2 },
+              p: 2,
+              boxShadow: 1,
+              borderRadius: '6px',
+              border: 1,
+              borderColor: 'divider',
+            }}
+          >
             <CharacterBackendsPane
               characterUid={recordUid}
               defaultBackends={backends}
@@ -958,13 +1004,14 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
         onConfirm={handleNameChange}
       >
         <FormControl error={editRecordNameError}>
-          <Input
+          <TextField
             name="RecordName"
             value={editRecordName ?? ''}
             onChange={(event) => {
               setEditRecordName(event.target.value);
               setEditRecordNameError(false);
             }}
+            size="small"
           />
           {editRecordNameError && (
             <FormHelperText>

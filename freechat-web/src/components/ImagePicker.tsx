@@ -109,7 +109,7 @@ export default function ImagePicker(props: ImagePickerProps) {
         }}
       />
       <label htmlFor={inputId}>
-        <IconButton onClick={handleModify} {...iconButtonProps}>
+        <IconButton onClick={handleModify} {...iconButtonProps} size="small">
           <Icon />
         </IconButton>
       </label>

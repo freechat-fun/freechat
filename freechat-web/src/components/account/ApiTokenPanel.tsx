@@ -131,13 +131,21 @@ export default function ApiTokenPanel() {
         </IconButton>
       </Box>
       <TableContainer>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>{t('Token')}</TableCell>
-              <TableCell>{t('Creation Time')}</TableCell>
-              <TableCell>{t('Expiration Time')}</TableCell>
-              <TableCell>{t('Actions')}</TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Token')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Creation Time')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Expiration Time')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Actions')}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

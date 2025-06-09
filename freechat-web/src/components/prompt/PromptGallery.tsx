@@ -87,6 +87,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         borderColor: 'divider',
         transition: 'transform 0.4s, box-shadow 0.4s',
         boxShadow: 1,
+        borderRadius: '6px',
         '&:hover': {
           boxShadow: 3,
           transform: 'translateY(-2px)',

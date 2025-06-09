@@ -24,7 +24,8 @@ export default function PromptMeta(props: {
         my: 2,
         mx: { xs: 0, sm: 2 },
         p: 2,
-        boxShadow: 2,
+        boxShadow: 1,
+        borderRadius: '6px',
         border: 1,
         borderColor: 'divider',
       }}
