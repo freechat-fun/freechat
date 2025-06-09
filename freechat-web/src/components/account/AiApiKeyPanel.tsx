@@ -125,14 +125,24 @@ export default function AiApiKeyPanel(props: { provider: string }) {
         </IconButton>
       </Box>
       <TableContainer component={Paper}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>{t('Name')}</TableCell>
-              <TableCell>{t('API Key')}</TableCell>
-              <TableCell>{t('Creation Time')}</TableCell>
-              <TableCell>{t('Last Used Time')}</TableCell>
-              <TableCell>{t('button:Remove')}</TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Name')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('API Key')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Creation Time')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('Last Used Time')}
+              </TableCell>
+              <TableCell sx={{ backgroundColor: 'action.hover' }}>
+                {t('button:Remove')}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -198,10 +208,13 @@ export default function AiApiKeyPanel(props: { provider: string }) {
         >
           <FormLabel>{t('Name')}</FormLabel>
           <TinyInput
+            fullWidth
             name="apiKeyName"
             value={keyNameToAdd || keyTextToAdd}
             onChange={handleKeyNameChange}
-            fullWidth
+            sx={{
+              minWidth: '16rem',
+            }}
           />
           <FormLabel>{t('API Key')}</FormLabel>
           <TinyInput

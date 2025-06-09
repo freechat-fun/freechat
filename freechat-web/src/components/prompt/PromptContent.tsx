@@ -36,7 +36,8 @@ export default function PromptContent(props: {
         sx={{
           minWidth: { sm: '12rem' },
           p: 2,
-          boxShadow: 2,
+          boxShadow: 1,
+          borderRadius: '6px',
           border: 1,
           borderColor: 'divider',
         }}
@@ -54,7 +55,8 @@ export default function PromptContent(props: {
         sx={{
           minWidth: { sm: '12rem' },
           p: 2,
-          boxShadow: 2,
+          boxShadow: 1,
+          borderRadius: '6px',
           border: 1,
           borderColor: 'divider',
         }}
@@ -103,7 +105,8 @@ export default function PromptContent(props: {
           sx={{
             minWidth: { sm: '12rem' },
             p: 2,
-            boxShadow: 2,
+            boxShadow: 1,
+            borderRadius: '6px',
             border: 1,
             borderColor: 'divider',
           }}

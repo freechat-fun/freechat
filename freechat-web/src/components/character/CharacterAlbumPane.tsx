@@ -1,17 +1,10 @@
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Transition } from 'react-transition-group';
 import {
   useErrorMessageBusContext,
   useFreeChatApiContext,
 } from '../../contexts';
-import { Box } from '@mui/joy';
-import {
-  defaultTransitionInterval,
-  defaultTransitionSetting,
-  initTransitionSequence,
-  transitionStyles,
-} from '../../libs/ui_utils';
+import { Box } from '@mui/material';
 import { CharacterAlbumPicture, CharacterAlbumPictureUploader } from '.';
 import { ConfirmModal, ImagePreview, ImagePreviewWindow } from '..';
 import { DeleteForeverRounded } from '@mui/icons-material';
@@ -39,9 +32,7 @@ export default function CharacterAlbumPane({
     null
   );
   const [pictureDeleteUrl, setPictureDeleteUrl] = useState<string | null>(null);
-  const [showPictures, setShowPictures] = useState(false);
   const [pictures, setPictures] = useState<string[]>([]);
-  const cardRefs = useRef(Array(pageSize).fill(createRef()));
 
   useEffect(() => {
     if (characterUid) {
@@ -50,7 +41,6 @@ export default function CharacterAlbumPane({
         .then(setPictures)
         .catch(handleError);
     }
-    return initTransitionSequence(setShowPictures, undefined, pageSize);
   }, [characterApi, characterUid, handleError]);
 
   function handlePictureUploaded(url: string): void {
@@ -79,54 +69,26 @@ export default function CharacterAlbumPane({
         alignItems: 'stretch',
       }}
     >
-      {pictures.map((url, index) => (
-        <Transition
-          in={showPictures}
-          timeout={index * defaultTransitionInterval}
-          unmountOnExit
-          key={`transition-${index}`}
-          nodeRef={cardRefs.current[index]}
-        >
-          {(state) => (
-            <CharacterAlbumPicture
-              key={`picture-${url}`}
-              ref={cardRefs.current[index]}
-              url={url}
-              checked={url === picture}
-              onView={() => setPicturePreviewUrl(url)}
-              onCheck={() => setPicture?.(url === picture ? '' : url)}
-              onDelete={() => setPictureDeleteUrl(url)}
-              sx={{
-                transition: defaultTransitionSetting,
-                ...transitionStyles[state],
-              }}
-            />
-          )}
-        </Transition>
+      {pictures.map((url) => (
+        <CharacterAlbumPicture
+          key={`picture-${url}`}
+          url={url}
+          checked={url === picture}
+          onView={() => setPicturePreviewUrl(url)}
+          onCheck={() => setPicture?.(url === picture ? '' : url)}
+          onDelete={() => setPictureDeleteUrl(url)}
+        />
       ))}
 
       {characterUid && pictures.length < pageSize && (
-        <Transition
-          in={showPictures}
-          timeout={pictures.length * defaultTransitionInterval}
-          unmountOnExit
-          key={`transition-${pageSize - 1}`}
-          nodeRef={cardRefs.current[pageSize - 1]}
-        >
-          {(state) => (
-            <CharacterAlbumPictureUploader
-              key="picture-new"
-              ref={cardRefs.current[pageSize - 1]}
-              characterUid={characterUid}
-              onUploaded={handlePictureUploaded}
-              sx={{
-                minHeight: pictureWidth,
-                transition: defaultTransitionSetting,
-                ...transitionStyles[state],
-              }}
-            />
-          )}
-        </Transition>
+        <CharacterAlbumPictureUploader
+          key="picture-new"
+          characterUid={characterUid}
+          onUploaded={handlePictureUploaded}
+          sx={{
+            minHeight: pictureWidth,
+          }}
+        />
       )}
 
       <ImagePreviewWindow

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Fragment,
   createRef,
@@ -11,24 +12,26 @@ import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
+  ButtonGroup,
   Card,
   CardProps,
   Chip,
-  ChipDelete,
   CircularProgress,
+  FormControl,
   FormHelperText,
   FormLabel,
   IconButton,
-  Input,
-  Option,
+  InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
   Select,
+  SelectChangeEvent,
   Slider,
-  Stack,
   Switch,
+  TextField,
   Typography,
-} from '@mui/joy';
+} from '@mui/material';
 import {
   ArrowOutwardRounded,
   AudioFileRounded,
@@ -146,8 +149,6 @@ const CharacterBackendSettings = forwardRef<
   const [modelSetting, setModelSetting] = useState(false);
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
 
-  const inputRefs = useRef(Array(4).fill(createRef<HTMLInputElement | null>()));
-
   const matchingModels = useMemo(() => {
     return provider && models
       ? models.filter(
@@ -181,12 +182,6 @@ const CharacterBackendSettings = forwardRef<
       ?.listTtsBuiltinSpeakers()
       .then((resp) => {
         setTtsBuiltinSpeakers(resp);
-        setTtsSpeakerIdx((defaultSpeaker) => {
-          if (resp.length > 0 && !defaultSpeaker) {
-            return resp[0];
-          }
-          return defaultSpeaker;
-        });
       })
       .catch(handleError);
   }, [ttsServiceApi, handleError]);
@@ -366,14 +361,17 @@ const CharacterBackendSettings = forwardRef<
           my: 2,
           mx: { xs: 0, sm: 2 },
           p: 2,
-          boxShadow: 'sm',
+          boxShadow: 1,
+          border: 1,
+          borderRadius: '6px',
+          borderColor: 'divider',
           ...sx,
         }}
         {...others}
       >
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Message Window')}
             </Typography>
             <OptionTooltip
@@ -388,7 +386,6 @@ const CharacterBackendSettings = forwardRef<
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[0],
                     min: 10,
                     max: 500,
                     step: 10,
@@ -413,7 +410,7 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Long Term Memory Window')}
             </Typography>
             <OptionTooltip
@@ -428,7 +425,6 @@ const CharacterBackendSettings = forwardRef<
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[1],
                     min: 0,
                     max: 30,
                     step: 5,
@@ -455,7 +451,7 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Proactive Chat Waiting Time')}
             </Typography>
             <OptionTooltip
@@ -470,7 +466,6 @@ const CharacterBackendSettings = forwardRef<
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[2],
                     min: 0,
                     max: 60,
                     step: 1,
@@ -497,7 +492,7 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Quota Limit')}
             </Typography>
             <OptionTooltip
@@ -515,55 +510,36 @@ const CharacterBackendSettings = forwardRef<
           </CommonContainer>
 
           <CommonContainer>
-            <RadioGroup
-              orientation="horizontal"
-              name="format"
-              size="sm"
-              value={quotaType}
-              onChange={(event) => setQuotaType(event.target.value)}
+            <ButtonGroup
+              disabled={!enableQuota}
+              size="small"
+              variant="contained"
               sx={{
-                my: 2,
-                p: 0.5,
-                borderRadius: '12px',
-                bgcolor: 'neutral.softBg',
-                '--RadioGroup-gap': '4px',
-                '--Radio-actionRadius': '8px',
+                border: 0,
+                boxShadow: 0,
+                borderRadius: 2,
               }}
             >
               {QUOTA_TYPES.map((item) => (
-                <Radio
-                  disabled={!enableQuota}
-                  key={`format-${item.value}`}
-                  color="neutral"
-                  size="sm"
+                <Button
+                  key={`quota-type-${item.value}`}
                   value={item.value}
-                  disableIcon
-                  label={
-                    <Typography noWrap level="body-xs">
-                      {item.label}
-                    </Typography>
-                  }
-                  variant="plain"
+                  color="info"
+                  onClick={() => setQuotaType(item.value)}
+                  size="small"
                   sx={{
-                    p: 0.5,
-                    alignItems: 'center',
+                    fontSize: '0.6rem',
+                    borderRadius: 2,
+                    color:
+                      quotaType === item.value ? 'text.default' : 'GrayText',
+                    backgroundColor:
+                    quotaType === item.value ? 'primary' : 'transparent',
                   }}
-                  slotProps={{
-                    action: ({ checked }) => ({
-                      sx: (theme) => ({
-                        ...(checked && {
-                          backgroundColor: theme.palette.primary.softHoverBg,
-                          boxShadow: 'sm',
-                          '&:hover': {
-                            bgcolor: theme.palette.primary.softActiveBg,
-                          },
-                        }),
-                      }),
-                    }),
-                  }}
-                />
+                >
+                  {item.label}
+                </Button>
               ))}
-            </RadioGroup>
+            </ButtonGroup>
 
             <CommonContainer
               sx={{ ml: 'auto', justifyContent: 'space-between' }}
@@ -573,7 +549,6 @@ const CharacterBackendSettings = forwardRef<
                 type="number"
                 slotProps={{
                   htmlInput: {
-                    ref: inputRefs.current[3],
                     min: 0,
                     max: 10000,
                     step: 10,
@@ -595,29 +570,27 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonGridBox>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Model')}
             </Typography>
-            <Select
-              placeholder={
-                <Typography textColor="gray">
-                  {t('Select model providers')}
-                </Typography>
-              }
-              value={provider}
-              onChange={handleModelProviderSelectChange}
-              sx={{
-                flex: 1,
-              }}
-            >
-              {modelProviders.map((p) => (
-                <Option value={p.provider} key={`options-${p.provider}`}>
-                  {p.label}
-                </Option>
-              ))}
-            </Select>
+            <FormControl sx={{ flex: 1 }} size="small">
+              <Select
+                value={provider}
+                onChange={(event: SelectChangeEvent) => 
+                  handleModelProviderSelectChange(null, event.target.value)
+                }
+                displayEmpty
+                sx={{ flex: 1 }}
+              >
+                {modelProviders.map((p) => (
+                  <MenuItem value={p.provider} key={`options-${p.provider}`}>
+                    {p.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {' '}
             </Typography>
             <CommonContainer
@@ -627,21 +600,21 @@ const CharacterBackendSettings = forwardRef<
               }}
             >
               <Button
-                size="sm"
-                variant="soft"
-                color={apiKeyName || apiKeyValue ? 'neutral' : 'danger'}
+                size="small"
+                variant="outlined"
+                color={apiKeyName || apiKeyValue ? 'inherit' : 'error'}
                 disabled={!enabledApiKey(provider)}
-                startDecorator={<KeyRounded />}
+                startIcon={<KeyRounded />}
                 onClick={() => setOpenApiKeySetting(true)}
               >
                 {t('API Key')}
               </Button>
               <Button
-                size="sm"
-                variant="soft"
-                color={parameters?.modelId ? 'primary' : 'danger'}
+                size="small"
+                variant="outlined"
+                color={parameters?.modelId ? 'primary' : 'error'}
                 disabled={!provider}
-                startDecorator={<TuneRounded />}
+                startIcon={<TuneRounded />}
                 onClick={() => setModelSetting(true)}
               >
                 {t('button:Tune')}
@@ -652,7 +625,7 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Enable TTS')}
             </Typography>
             <OptionTooltip title={t('Enable characters to read replies.')}>
@@ -670,123 +643,102 @@ const CharacterBackendSettings = forwardRef<
             onChange={(event) => setTtsSpeakerType(event.target.value)}
             sx={{ mt: 2 }}
           >
-            <Stack direction="row" sx={{ p: 2, gap: 2 }}>
-              <Radio
-                key="tts-speaker-type-idx"
-                value="idx"
-                disabled={!enableTts}
-              />
-              <Stack sx={{ flex: 1, gap: 2 }}>
-                <FormLabel>{t('Builtin Voice')}</FormLabel>
-                <CommonBox sx={{ flex: 1 }}>
-                  <Select
-                    placeholder={
-                      <Typography fontSize="small" textColor="gray">
-                        {t('Select speaker')}
-                      </Typography>
-                    }
-                    renderValue={(selected) => (
-                      <Typography fontSize="small">
-                        {selected?.value}
-                      </Typography>
-                    )}
-                    sx={{ flex: 1, maxWidth: '12rem' }}
-                    value={ttsSpeakerIdx}
-                    onChange={(_, newValue) => setTtsSpeakerIdx(newValue ?? '')}
-                    disabled={!enableTts || ttsSpeakerType !== 'idx'}
-                  >
-                    {ttsBuiltinSpeaders.map((speaker) => (
-                      <Option value={speaker} key={`tts-speaker-${speaker}`}>
-                        <Typography fontSize="small">{speaker}</Typography>
-                      </Option>
-                    ))}
-                  </Select>
+            <CommonGridBox sx={{ gridTemplateColumns: '1fr 5fr auto' }}>
+              <Radio value="idx" disabled={!enableTts} />
+              <FormControl size="small">
+                <InputLabel id="builtin-voice-label">
+                  {t('Builtin Voice')}
+                </InputLabel>
+                <Select
+                  label={t('Builtin Voice')}
+                  value={ttsSpeakerIdx}
+                  onChange={(event) => setTtsSpeakerIdx(event.target.value)}
+                  disabled={!enableTts || ttsSpeakerType !== 'idx'}
+                  sx={{ flex: 1, maxWidth: '12rem' }}
+                >
+                  {ttsBuiltinSpeaders.map((speaker) => (
+                    <MenuItem value={speaker} key={`tts-speaker-${speaker}`}>
+                      <Typography variant="body2">{speaker}</Typography>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {
+                playing && ttsSpeakerType === 'idx' ? (
+                  <CommonBox>
+                    <Box sx={{ ml: 'auto' }}>
+                      <CircularProgress size="small" />
+                    </Box>
+                    <audio ref={audioRefs.current[1]} />
+                  </CommonBox>
+                ) : (
                   <IconButton
                     disabled={
                       fileUploading || !enableTts || ttsSpeakerType !== 'idx'
                     }
-                    size="sm"
+                    size="small"
                     onClick={handlePlay}
-                    sx={{
-                      display:
-                        playing && ttsSpeakerType === 'idx' ? 'none' : 'flex',
-                      ml: 'auto',
-                    }}
+                    sx={{  ml: 'auto' }}
                   >
                     <PlayCircleFilledRounded />
                   </IconButton>
-                  <Box
-                    sx={{
-                      display:
-                        playing && ttsSpeakerType === 'idx' ? 'flex' : 'none',
-                      ml: 'auto',
-                    }}
-                  >
-                    <CircularProgress size="sm" />
-                  </Box>
-                  <audio ref={audioRefs.current[1]} />
-                </CommonBox>
-              </Stack>
-            </Stack>
-            <Stack direction="row" sx={{ p: 2, gap: 2 }}>
-              <Radio
-                key="tts-speaker-type-wav"
-                value="wav"
-                disabled={!enableTts}
-                sx={{ mt: 1 }}
-              />
-              <Stack sx={{ flex: 1, gap: 2 }}>
-                <CommonBox>
-                  <FormLabel sx={{ alignSelf: 'center' }}>
-                    {t('Custom Voice')}
-                  </FormLabel>
-                  <OptionTooltip
-                    title={t('MP3 format, about 5 seconds, size less than 1M.')}
-                  >
-                    <HelpIcon />
-                  </OptionTooltip>
-                  <Input
+                )
+              }
+
+              <Radio value="wav" disabled={!enableTts} />
+              <CommonBox>
+                <FormLabel sx={{ alignSelf: 'center' }}>
+                  {t('Custom Voice')}
+                </FormLabel>
+                <OptionTooltip
+                  title={t('MP3 format, about 5 seconds, size less than 1M.')}
+                >
+                  <HelpIcon />
+                </OptionTooltip>
+              </CommonBox>
+              <CommonBox>
+                <TextField
+                  disabled={
+                    fileUploading || !enableTts || ttsSpeakerType !== 'wav'
+                  }
+                  type="file"
+                  id={fileInputId}
+                  onChange={handleFileChange}
+                  sx={{ display: 'none' }}
+                  slotProps={{
+                    htmlInput: {
+                      ref: fileInputRef,
+                      accept: 'audio/mp3, .mp3',
+                    },
+                  }}
+                />
+                <label htmlFor={fileInputId}>
+                  <IconButton
+                    onClick={handleFileModify}
                     disabled={
                       fileUploading || !enableTts || ttsSpeakerType !== 'wav'
                     }
-                    type="file"
-                    id={fileInputId}
-                    onChange={handleFileChange}
-                    sx={{ display: 'none' }}
-                    slotProps={{
-                      input: {
-                        ref: fileInputRef,
-                        accept: 'audio/mp3, .mp3',
-                      },
-                    }}
-                  />
-                  <label htmlFor={fileInputId}>
-                    <IconButton
-                      onClick={handleFileModify}
-                      disabled={
-                        fileUploading || !enableTts || ttsSpeakerType !== 'wav'
-                      }
-                    >
-                      <AudioFileRounded />
-                    </IconButton>
-                  </label>
-                  <FormHelperText
-                    sx={{ display: fileInvalid ? 'unset' : 'none' }}
                   >
-                    {t('File too large!')}
-                  </FormHelperText>
-                </CommonBox>
-                <CommonBox sx={{ flex: 1, flexWrap: 'nowrap' }}>
-                  {ttsSpeakerWav && (
-                    <Fragment>
-                      <Chip
-                        disabled={!enableTts || ttsSpeakerType !== 'wav'}
-                        variant="outlined"
-                        color="success"
-                        endDecorator={
-                          <ChipDelete onDelete={handleFileDelete} />
-                        }
-                      >
+                    <AudioFileRounded />
+                  </IconButton>
+                </label>
+                <FormHelperText
+                  sx={{ display: fileInvalid ? 'unset' : 'none' }}
+                >
+                  {t('File too large!')}
+                </FormHelperText>
+              </CommonBox>
+            </CommonGridBox>
+            <CommonGridBox sx={{ gridTemplateColumns: '1fr 5fr auto' }}>
+              <CommonBox sx={{ flex: 1, flexWrap: 'nowrap' }} />
+                {ttsSpeakerWav && (
+                  <Fragment>
+                    <Chip
+                      disabled={!enableTts || ttsSpeakerType !== 'wav'}
+                      variant="outlined"
+                      color="success"
+                      onDelete={handleFileDelete}
+                      label={
                         <Typography
                           sx={{
                             whiteSpace: 'nowrap',
@@ -797,48 +749,47 @@ const CharacterBackendSettings = forwardRef<
                         >
                           {ttsSpeakerWav}
                         </Typography>
-                      </Chip>
-                      <IconButton
-                        disabled={
-                          fileUploading ||
-                          !enableTts ||
-                          ttsSpeakerType !== 'wav'
-                        }
-                        size="sm"
-                        onClick={handlePlay}
-                        sx={{
-                          display:
-                            playing && ttsSpeakerType === 'wav'
-                              ? 'none'
-                              : 'flex',
-                          ml: 'auto',
-                        }}
-                      >
-                        <PlayCircleFilledRounded />
-                      </IconButton>
-                      <Box
-                        sx={{
-                          display:
-                            playing && ttsSpeakerType === 'wav'
-                              ? 'flex'
-                              : 'none',
-                          ml: 'auto',
-                        }}
-                      >
-                        <CircularProgress size="sm" />
-                      </Box>
-                      <audio ref={audioRefs.current[0]} />
-                    </Fragment>
-                  )}
-                </CommonBox>
-              </Stack>
-            </Stack>
+                      }
+                    />
+                    <IconButton
+                      disabled={
+                        fileUploading ||
+                        !enableTts ||
+                        ttsSpeakerType !== 'wav'
+                      }
+                      size="small"
+                      onClick={handlePlay}
+                      sx={{
+                        display:
+                          playing && ttsSpeakerType === 'wav'
+                            ? 'none'
+                            : 'flex',
+                        ml: 'auto',
+                      }}
+                    >
+                      <PlayCircleFilledRounded />
+                    </IconButton>
+                    <Box
+                      sx={{
+                        display:
+                          playing && ttsSpeakerType === 'wav'
+                            ? 'flex'
+                            : 'none',
+                        ml: 'auto',
+                      }}
+                    >
+                      <CircularProgress size="small" />
+                    </Box>
+                    <audio ref={audioRefs.current[0]} />
+                  </Fragment>
+                )}
+            </CommonGridBox>
           </RadioGroup>
         </OptionCard>
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Enable Album Tool')}
             </Typography>
             <OptionTooltip
@@ -858,7 +809,7 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Moderation Model')}
             </Typography>
             <OptionTooltip title={t('Set up the moderation model.')}>
@@ -872,7 +823,7 @@ const CharacterBackendSettings = forwardRef<
 
         <OptionCard>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Prompt Template')}
             </Typography>
             <OptionTooltip title={t('Adjust prompt words.')}>
@@ -882,7 +833,7 @@ const CharacterBackendSettings = forwardRef<
             </OptionTooltip>
           </CommonContainer>
           <CommonContainer>
-            <Typography level="title-sm" textColor="neutral">
+            <Typography variant="body2">
               {t('Preset Memory')}
             </Typography>
             <OptionTooltip title={t('Adjust preset memory.')}>
@@ -895,7 +846,7 @@ const CharacterBackendSettings = forwardRef<
 
         <LinePlaceholder />
 
-        <CommonBox sx={{ justifyContent: 'flex-end ' }}>
+        <CommonBox sx={{ justifyContent: 'flex-end' }}>
           <IconButton onClick={() => onCancel?.()}>
             <UndoRounded />
           </IconButton>
