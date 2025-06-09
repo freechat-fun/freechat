@@ -21,7 +21,7 @@ import {
   InfoSearchbar,
   LinePlaceholder,
   SummaryTypography,
-} from '../../components';
+} from '..';
 import {
   CharacterQueryDTO,
   CharacterQueryWhere,
@@ -33,24 +33,29 @@ import {
 import {
   Avatar,
   Box,
-  Card,
   Chip,
   CircularProgress,
   Divider,
   Link,
   Stack,
   Typography,
+  SxProps,
+  Theme,
   useColorScheme,
-} from '@mui/joy';
-import { SxProps } from '@mui/joy/styles/types';
-import { ShareRounded, VisibilityRounded } from '@mui/icons-material';
+} from '@mui/material';
+import {
+  Face3Outlined,
+  FaceOutlined,
+  ShareRounded,
+  VisibilityRounded,
+} from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
 import { processBackground } from '../../libs/ui_utils';
 
 type RecordCardProps = {
   record: CharacterSummaryStatsDTO;
   keyWord?: string;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   onClick?: () => void;
 };
 
@@ -72,14 +77,19 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   }, [mode, record]);
 
   return (
-    <Card
+    <Stack
       ref={ref}
+      spacing={1}
       sx={{
         ...sx,
+        p: 2,
         transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 'sm',
+        boxShadow: 1,
+        borderRadius: '6px',
+        border: 1,
+        borderColor: 'divider',
         '&:hover': {
-          boxShadow: 'lg',
+          boxShadow: 3,
           transform: 'translateY(-2px)',
         },
         position: 'relative',
@@ -99,21 +109,29 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         }}
       >
         <Link
-          overlay
+          component="button"
           onClick={(event) => {
             event.preventDefault();
             onClick?.();
           }}
           sx={{
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
             gap: 2,
           }}
         >
-          <Avatar alt={nickname} src={record.avatar} size="md" />
-          <div>
+          <Avatar
+            alt={nickname}
+            src={record.avatar}
+            sx={{ width: 40, height: 40 }}
+          />
+          <CommonBox sx={{ gap: 0 }}>
             <HighlightedTypography
               highlight={keyWord}
-              variant="subtitle1"
+              variant="h6"
               sx={{
+                color: 'text.primary',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -126,17 +144,34 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               <HighlightedTypography
                 highlight={keyWord}
                 variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  mt: 1,
+                }}
               >{`@${record.name}`}</HighlightedTypography>
             )}
-          </div>
+          </CommonBox>
         </Link>
-        <Chip color="success" variant="soft">
-          v{record.version}
-        </Chip>
-        {(record.gender === 'female' || record.gender === 'male') && (
-          <Chip color="warning" variant="outlined">
-            {record.gender}
-          </Chip>
+        <Chip
+          color="success"
+          variant="filled"
+          size="small"
+          label={`v${record.version}`}
+        />
+        {record.gender === 'male' ? (
+          <FaceOutlined
+            fontSize="small"
+            color="info"
+            sx={{ ml: 'auto', mr: 2, opacity: 0.7 }}
+          />
+        ) : (
+          record.gender === 'female' && (
+            <Face3Outlined
+              fontSize="small"
+              color="info"
+              sx={{ ml: 'auto', mr: 2, opacity: 0.8 }}
+            />
+          )
         )}
       </Box>
       <Divider />
@@ -150,12 +185,15 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         <CommonBox>
           {tags.map((tag, index) => (
             <Chip
-              variant="outlined"
-              color="success"
-              key={`tag-${record.characterId}-${tag}-${index}`}
-            >
-              {tag}
-            </Chip>
+              variant="filled"
+              color="secondary"
+              key={`tag-${tag}-${index}`}
+              label={tag}
+              size="small"
+              sx={{
+                opacity: 0.7,
+              }}
+            />
           ))}
         </CommonBox>
       )}
@@ -170,29 +208,25 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           alignItems: 'center',
         }}
       >
-        <Typography level="body-sm">
+        <Typography variant="body2" color="text.secondary">
           {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
         <CommonBox>
           <Chip
-            size="sm"
-            variant="plain"
-            sx={{ bgcolor: 'transparent' }}
-            startDecorator={<VisibilityRounded />}
-          >
-            {record.viewCount}
-          </Chip>
+            size="small"
+            variant="outlined"
+            icon={<VisibilityRounded />}
+            label={record.viewCount}
+          />
           <Chip
-            size="sm"
-            variant="plain"
-            sx={{ bgcolor: 'transparent' }}
-            startDecorator={<ShareRounded />}
-          >
-            {record.referCount}
-          </Chip>
+            size="small"
+            variant="outlined"
+            icon={<ShareRounded />}
+            label={record.referCount}
+          />
         </CommonBox>
       </Box>
-    </Card>
+    </Stack>
   );
 });
 
@@ -311,7 +345,8 @@ export default function CharacterGallery({
         );
         setRecords((prevRecords) => {
           const delta = newRecords.filter(
-            (r) => !prevRecords.map((pr) => pr.promptId).includes(r.promptId)
+            (r) =>
+              !prevRecords.map((pr) => pr.characterId).includes(r.characterId)
           );
           if (delta && delta.length > 0) {
             return prevRecords.concat(delta);
@@ -499,6 +534,7 @@ export default function CharacterGallery({
         </Stack>
         <Divider
           orientation="vertical"
+          flexItem
           sx={{
             display: { xs: 'none', sm: 'block' },
           }}
