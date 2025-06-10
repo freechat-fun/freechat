@@ -2,13 +2,11 @@
 import { useState, useEffect } from 'react';
 import { ListItemButton, ListItemButtonProps } from '@mui/material';
 import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
-import { useColorScheme as useMaterialColorScheme } from '@mui/material';
-import { useColorScheme as useJoyColorScheme } from '@mui/joy';
+import { useColorScheme } from '@mui/material';
 
 export default function ColorSchemeToggle(props: ListItemButtonProps) {
   const [mounted, setMounted] = useState(false);
-  const { setMode: setJoyMode } = useJoyColorScheme();
-  const { mode, setMode: setMaterialMode } = useMaterialColorScheme();
+  const { mode, setMode } = useColorScheme();
 
   useEffect(() => {
     setMounted(true);
@@ -20,11 +18,9 @@ export default function ColorSchemeToggle(props: ListItemButtonProps) {
 
   const toggleColorMode = () => {
     if (mode === 'light') {
-      setJoyMode('dark');
-      setMaterialMode('dark');
+      setMode('dark');
     } else {
-      setJoyMode('light');
-      setMaterialMode('light');
+      setMode('light');
     }
   };
 
@@ -38,10 +34,10 @@ export default function ColorSchemeToggle(props: ListItemButtonProps) {
       }}
       {...props}
     >
-      {mode === 'dark' ? (
-        <LightModeRounded />
-      ) : (
+      {mode === 'light' ? (
         <DarkModeRounded />
+      ) : (
+        <LightModeRounded />
       )}
     </ListItemButton>
   );

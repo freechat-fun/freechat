@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { Box, BoxProps, Card, Skeleton, Stack } from '@mui/material';
+import StyledStack from './StyledStack';
 
 type DocumentSkeletonProps = BoxProps & {
   lines?: number;
@@ -11,9 +12,9 @@ const DocumentSkeleton = forwardRef<HTMLDivElement, DocumentSkeletonProps>(
     const { lines = 1, loading = true, sx, ...others } = props;
 
     const titles = Array.from({ length: lines }, (_, index) => (
-      <Card key={`title-${index}`} variant="outlined" sx={{ p: 1 }}>
+      <StyledStack key={`title-${index}`} sx={{ p: 1 }}>
         <Skeleton />
-      </Card>
+      </StyledStack>
     ));
 
     return (

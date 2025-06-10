@@ -86,7 +86,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         ...sx,
         transition: 'transform 0.4s, box-shadow 0.4s',
         boxShadow: 'sm',
-        '&:hover': {
+        '&:hover, &:focus-within': {
           boxShadow: 'lg',
           transform: 'translateY(-1px)',
         },
@@ -142,7 +142,8 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           v{record.version}
         </Chip>
       </Box>
-      <SummaryTypography sx={{ ...sx }}>{record.description}</SummaryTypography>
+      {/* <SummaryTypography sx={{ ...sx }}>{record.description}</SummaryTypography> */}
+      <SummaryTypography>{record.description}</SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
         icons={{ view: SmsRounded }}
@@ -487,13 +488,13 @@ export default function Characters() {
         onClose={() => setRecordDeleted(undefined)}
         obj={recordDeleted}
         dialog={{
-          color: 'danger',
+          color: 'error',
           title: t('Do you really want to delete this character?'),
         }}
         button={{
-          color: 'danger',
+          color: 'error',
           text: t('button:Delete'),
-          startDecorator: <DeleteForeverRounded />,
+          startIcon: <DeleteForeverRounded />,
         }}
         onConfirm={handleDelete}
       >
@@ -511,7 +512,7 @@ export default function Characters() {
         }}
         button={{
           text: t('button:Create'),
-          startDecorator: <SaveAltRounded />,
+          startIcon: <SaveAltRounded />,
         }}
         onConfirm={handleNameChange}
       >

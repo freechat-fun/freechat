@@ -12,11 +12,11 @@ import {
   CircularProgress,
   Divider,
   IconButton,
-  Sheet,
-  SheetProps,
   Stack,
+  StackProps,
   Typography,
-} from '@mui/joy';
+  styled,
+} from '@mui/material';
 import {
   ChatContent,
   CommonBox,
@@ -44,14 +44,14 @@ import {
   VolumeUpRounded,
 } from '@mui/icons-material';
 
-type BubbleContainerProps = SheetProps & {
+type BubbleContainerProps = StackProps & {
   isSent: boolean;
   onMouseEnter?: MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: MouseEventHandler<HTMLDivElement>;
 };
 
-const BubbleContainer = forwardRef<HTMLDivElement, BubbleContainerProps>(
-  (props, ref) => {
+const BubbleContainer = styled(
+  forwardRef<HTMLDivElement, BubbleContainerProps>((props, ref) => {
     const { children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
 
     return (
@@ -60,28 +60,29 @@ const BubbleContainer = forwardRef<HTMLDivElement, BubbleContainerProps>(
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        <Sheet
+        <Stack
           ref={ref}
-          color={isSent ? 'primary' : 'neutral'}
-          variant={isSent ? 'solid' : 'soft'}
-          sx={(theme) => ({
-            p: 1.25,
-            borderRadius: 'lg',
-            borderTopRightRadius: isSent ? 0 : 'lg',
-            borderTopLeftRadius: isSent ? 'lg' : 0,
-            backgroundColor: isSent ? '#0B6BCBC0' : '#FFFFFFC0',
-            [theme.getColorSchemeSelector('dark')]: {
-              backgroundColor: isSent ? '#0B6BCBC0' : '#000000C0',
+          sx={[
+            {
+              p: 1.25,
+              borderRadius: '12px',
+              borderTopRightRadius: isSent ? 0 : '12px',
+              borderTopLeftRadius: isSent ? '12px' : 0,
+              backgroundColor: isSent ? '#0B6BCBC0' : '#FFFFFFC0',
             },
-          })}
+            (theme) =>
+              theme.applyStyles('dark', {
+                backgroundColor: isSent ? '#0B6BCBC0' : '#000000C0',
+              }),
+          ]}
           {...others}
         >
           {children}
-        </Sheet>
+        </Stack>
       </Box>
     );
-  }
-);
+  })
+)();
 
 type ChatBubbleProps = {
   session?: ChatSessionDTO;
@@ -213,12 +214,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
         sx={{ mb: 0.25, width: '100%' }}
       >
         <Typography
-          level="body-xs"
+          variant="body2"
           sx={{ overflowWrap: 'anywhere', minWidth: '35%' }}
         >
           {nickname}
         </Typography>
-        <Typography level="body-xs" sx={{ overflowWrap: 'anywhere' }}>
+        <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }}>
           {getDateLabel(record.gmtCreate || new Date(), i18n.language, true)}
         </Typography>
       </Stack>
@@ -269,10 +270,10 @@ export default function ChatBubble(props: ChatBubbleProps) {
                     }}
                   >
                     {content.type === 'text' && copied ? (
-                      <Chip variant="outlined">{t('Copied!')}</Chip>
+                      <Chip variant="outlined" label={t('Copied!')} />
                     ) : (
                       <IconButton
-                        size="sm"
+                        size="small"
                         onClick={() => {
                           if (content.content) {
                             navigator?.clipboard
@@ -293,10 +294,10 @@ export default function ChatBubble(props: ChatBubbleProps) {
                     {session?.isTtsEnabled && (
                       <Fragment>
                         {loading ? (
-                          <CircularProgress size="sm" />
+                          <CircularProgress size={20} />
                         ) : (
                           <IconButton
-                            size="sm"
+                            size="small"
                             onClick={() =>
                               speaking ? handleStop() : handlePlay()
                             }
@@ -312,7 +313,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                       </Fragment>
                     )}
                     <IconButton
-                      size="sm"
+                      size="small"
                       disabled={loading}
                       onClick={() => onReplay?.()}
                     >
@@ -335,9 +336,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="body-sm">{`${t('Input')}: ${tokenUsage[0]}`}</Typography>
-                        <Typography level="body-sm">{`${t('Output')}: ${tokenUsage[1]}`}</Typography>
-                        <Typography level="body-sm">{`${t('Total')}: ${tokenUsage[2]}`}</Typography>
+                        <Typography variant="body2">{`${t('Input')}: ${tokenUsage[0]}`}</Typography>
+                        <Typography variant="body2">{`${t('Output')}: ${tokenUsage[1]}`}</Typography>
+                        <Typography variant="body2">{`${t('Total')}: ${tokenUsage[2]}`}</Typography>
                       </Box>
                     </Fragment>
                   )}
@@ -345,7 +346,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                     <Fragment>
                       <LinePlaceholder spacing={3} />
                       <CommonBox sx={{ justifyContent: 'flex-end' }}>
-                        <Typography level="body-sm" sx={{ color: 'white' }}>
+                        <Typography variant="body2" sx={{ color: 'white' }}>
                           {t('System Prompt')}
                         </Typography>
                         <IconButton
@@ -353,12 +354,10 @@ export default function ChatBubble(props: ChatBubbleProps) {
                           onClick={() => {
                             setShowSystemPrompt(true);
                           }}
-                          size="sm"
-                          variant="solid"
-                          color="neutral"
+                          size="small"
                           sx={{ bgcolor: 'rgba(0 0 0 / 0)' }}
                         >
-                          <ArticleRounded fill="e0e0e0" />
+                          <ArticleRounded sx={{ color: '#e0e0e0' }} />
                         </IconButton>
                       </CommonBox>
                       <TextPreviewWindow

@@ -22,7 +22,7 @@ const MessageAssistant = forwardRef<HTMLDivElement, MessageAssistantProps>(
           transition: 'transform 0.4s, box-shadow 0.4s',
           border: checked ? 2 : 0,
           boxShadow: 'sm',
-          '&:hover': {
+          '&:hover, &:focus-within': {
             boxShadow: 'lg',
             transform: 'translateY(-2px)',
           },

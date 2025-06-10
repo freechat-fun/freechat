@@ -13,8 +13,6 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Card,
-  CardProps,
   Chip,
   CircularProgress,
   FormControl,
@@ -28,6 +26,7 @@ import {
   Select,
   SelectChangeEvent,
   Slider,
+  StackProps,
   Switch,
   TextField,
   Typography,
@@ -58,6 +57,7 @@ import {
   LinePlaceholder,
   OptionCard,
   OptionTooltip,
+  StyledStack,
   TinyInput,
 } from '..';
 import { HelpIcon } from '../icon';
@@ -71,7 +71,7 @@ import {
   OpenAiSettings,
 } from '../prompt';
 
-type CharacterBackendSettingsProps = CardProps & {
+type CharacterBackendSettingsProps = StackProps & {
   backend?: CharacterBackendDetailsDTO;
   onSave?: (
     backend: CharacterBackendDetailsDTO,
@@ -355,16 +355,10 @@ const CharacterBackendSettings = forwardRef<
 
   return (
     <Fragment>
-      <Card
+      <StyledStack
         ref={ref}
         sx={{
-          my: 2,
-          mx: { xs: 0, sm: 2 },
-          p: 2,
-          boxShadow: 1,
-          border: 1,
-          borderRadius: '6px',
-          borderColor: 'divider',
+          '&:hover, &:focus-within': { transform: 'none' },
           ...sx,
         }}
         {...others}
@@ -854,7 +848,7 @@ const CharacterBackendSettings = forwardRef<
             <DoneRounded />
           </IconButton>
         </CommonBox>
-      </Card>
+      </StyledStack>
 
       <AiApiKeySettings
         defaultKeyName={apiKeyName}

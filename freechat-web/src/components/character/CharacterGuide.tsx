@@ -9,28 +9,15 @@ import {
   StepLabel,
   Typography,
   Box,
-  Stack,
   StackProps,
 } from '@mui/material';
+import { StyledStack } from '..';
 
 export default function CharacterGuide(props: StackProps) {
   const { t } = useTranslation('character');
 
-  const { sx, ...others } = props;
-
   return (
-    <Stack
-      sx={{
-        margin: 2,
-        p: 2,
-        boxShadow: 1,
-        borderRadius: '6px',
-        border: 1,
-        borderColor: 'divider',
-        ...sx,
-      }}
-      {...others}
-    >
+    <StyledStack {...props}>
       <Stepper
         orientation="vertical"
         sx={{
@@ -290,6 +277,6 @@ export default function CharacterGuide(props: StackProps) {
           </StepLabel>
         </Step>
       </Stepper>
-    </Stack>
+    </StyledStack>
   );
 }

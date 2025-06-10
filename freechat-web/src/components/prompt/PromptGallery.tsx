@@ -21,6 +21,7 @@ import {
   InfoSearchbar,
   LinePlaceholder,
   OptionTooltip,
+  StyledStack,
   SummaryTypography,
 } from '..';
 import {
@@ -76,23 +77,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   }, [record]);
 
   return (
-    <Stack
-      ref={ref}
-      sx={{
-        ...sx,
-        gap: 2,
-        p: 2,
-        border: 1,
-        borderColor: 'divider',
-        transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 1,
-        borderRadius: '6px',
-        '&:hover': {
-          boxShadow: 3,
-          transform: 'translateY(-2px)',
-        },
-      }}
-    >
+    <StyledStack ref={ref} sx={sx}>
       <Box
         sx={{
           ...sx,
@@ -196,7 +181,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           />
         </CommonBox>
       </Box>
-    </Stack>
+    </StyledStack>
   );
 });
 

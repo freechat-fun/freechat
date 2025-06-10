@@ -4,12 +4,12 @@ import {
   Box,
   Chip,
   IconButton,
-  Input,
+  TextField,
   List,
-  Sheet,
   Stack,
   Typography,
-} from '@mui/joy';
+  InputAdornment,
+} from '@mui/material';
 import { ChatSessionDTO } from 'freechat-sdk';
 import { ChatListItem } from '.';
 import {
@@ -77,7 +77,7 @@ export default function ChatsPane(props: ChatsPaneProps) {
   }
 
   return (
-    <Sheet
+    <Stack
       sx={{
         borderRight: '1px solid',
         borderColor: 'divider',
@@ -95,39 +95,29 @@ export default function ChatsPane(props: ChatsPaneProps) {
         pb={1.5}
       >
         <Typography
-          fontSize={{ xs: 'md', md: 'lg' }}
+          variant="h6"
           component="h1"
-          fontWeight="lg"
-          endDecorator={
-            <Chip
-              variant="soft"
-              color="primary"
-              size="md"
-              slotProps={{ root: { component: 'span' } }}
-            >
-              {chats.length}
-            </Chip>
-          }
-          sx={{ mr: 'auto' }}
+          fontWeight="bold"
+          sx={{ mr: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
         >
           {t('Messages')}
+          <Chip
+            label={chats.length}
+            color="primary"
+            size="small"
+            sx={{ ml: 1 }}
+          />
         </Typography>
-        <Stack direction="row" sx={{ gap: 1 }}>
+        <Stack direction="row" spacing={1}>
           <IconButton
-            variant="plain"
-            aria-label="edit"
-            color="neutral"
-            size="sm"
-            sx={{ display: 'unset' }}
+            size="small"
             onClick={() => setEditMode(!editMode)}
+            sx={{ display: 'unset' }}
           >
             {editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded />}
           </IconButton>
           <IconButton
-            variant="plain"
-            aria-label="edit"
-            color="neutral"
-            size="sm"
+            size="small"
             onClick={() => {
               toggleChatsPane();
             }}
@@ -138,19 +128,29 @@ export default function ChatsPane(props: ChatsPaneProps) {
         </Stack>
       </Stack>
       <Box sx={{ px: 2, pb: 1.5 }}>
-        <Input
-          size="sm"
-          startDecorator={<SearchRounded />}
+        <TextField
+          size="small"
+          fullWidth
           placeholder={t('Search')}
           aria-label={t('Search')}
           onChange={handleInputChange}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRounded />
+                </InputAdornment>
+              ),
+            },
+          }}
         />
       </Box>
       <List
         sx={{
           py: 0,
-          '--ListItem-paddingY': '0.75rem',
-          '--ListItem-paddingX': '1rem',
+          '& .MuiListItem-root': {
+            px: 2,
+          },
         }}
       >
         {chats.map((session, index) => (
@@ -165,6 +165,6 @@ export default function ChatsPane(props: ChatsPaneProps) {
           />
         ))}
       </List>
-    </Sheet>
+    </Stack>
   );
 }

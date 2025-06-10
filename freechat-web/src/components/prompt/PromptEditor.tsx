@@ -11,7 +11,6 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Card,
   Chip,
   Divider,
   FormControl,
@@ -57,6 +56,7 @@ import {
   LinePlaceholder,
   OptionTooltip,
   RouterBlocker,
+  StyledStack,
   TinyInput,
 } from '../../components';
 import {
@@ -1190,16 +1190,10 @@ export default function PromptEditor({
 
           {/* Meta Settings */}
           {!play && (
-            <Card
+            <StyledStack
               sx={{
                 width: { xs: '100%', sm: '20rem' },
-                my: 2,
-                mx: { xs: 0, sm: 2 },
-                p: 2,
-                boxShadow: 1,
-                borderRadius: '6px',
-                border: 1,
-                borderColor: 'divider',
+                '&:hover, &:focus-within': {},
               }}
             >
               <CommonGridBox>
@@ -1411,7 +1405,7 @@ export default function PromptEditor({
                   </CommonBox>
                 </Fragment>
               )}
-            </Card>
+            </StyledStack>
           )}
         </CommonContainer>
 

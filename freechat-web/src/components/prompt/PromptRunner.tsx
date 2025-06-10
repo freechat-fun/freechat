@@ -14,7 +14,6 @@ import {
 } from '../../contexts';
 import {
   Box,
-  Card,
   FormLabel,
   Select,
   MenuItem,
@@ -43,7 +42,8 @@ import {
   CommonBox,
   TinyInput,
   OptionTooltip,
-} from '../../components';
+  StyledStack,
+} from '..';
 import {
   AiApiKeySettings,
   AzureOpenAiSettings,
@@ -306,20 +306,13 @@ export default function PromptRunner(props: PromptRunnerProps) {
 
   return (
     <Fragment>
-      <Card
+      <StyledStack
         sx={{
           width: { xs: '100%', sm: width },
-          mt: 2,
-          p: 2,
-          boxShadow: 1,
-          borderRadius: '6px',
-          border: 1,
-          borderColor: 'divider',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
           transition: 'width 0.3s',
-          gap: 2,
         }}
       >
         <Typography variant="subtitle1" color="text.secondary">
@@ -499,7 +492,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
             </Button>
           )}
         </CommonContainer>
-      </Card>
+      </StyledStack>
       <AiApiKeySettings
         defaultKeyName={apiKeyName}
         defaultKeyValue={apiKeyValue}

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import {
-  Card,
   Divider,
   Stack,
   Table,
@@ -11,7 +10,11 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { LinePlaceholder, MarkdownContent } from '../../components';
+import {
+  LinePlaceholder,
+  MarkdownContent,
+  StyledStack,
+} from '../../components';
 import { PromptDetailsDTO } from 'freechat-sdk';
 import { extractJson } from '../../libs/template_utils';
 import { TemplateContent } from '.';
@@ -32,16 +35,7 @@ export default function PromptContent(props: {
         flex: 1,
       }}
     >
-      <Card
-        sx={{
-          minWidth: { sm: '12rem' },
-          p: 2,
-          boxShadow: 1,
-          borderRadius: '6px',
-          border: 1,
-          borderColor: 'divider',
-        }}
-      >
+      <StyledStack sx={{ minWidth: { sm: '12rem' } }}>
         <Typography variant="h6" color="primary">
           {t('Description')}
         </Typography>
@@ -49,24 +43,15 @@ export default function PromptContent(props: {
         <Typography component="span" variant="body1">
           <MarkdownContent>{record?.description}</MarkdownContent>
         </Typography>
-      </Card>
+      </StyledStack>
 
-      <Card
-        sx={{
-          minWidth: { sm: '12rem' },
-          p: 2,
-          boxShadow: 1,
-          borderRadius: '6px',
-          border: 1,
-          borderColor: 'divider',
-        }}
-      >
+      <StyledStack sx={{ minWidth: { sm: '12rem' } }}>
         <Typography variant="h6" color="primary">
           {t('Template')}
         </Typography>
         <Divider sx={{ my: 1 }} />
         <TemplateContent record={record} />
-      </Card>
+      </StyledStack>
 
       {inputs && Object.keys(inputs).length > 0 && (
         <TableContainer>
@@ -101,16 +86,7 @@ export default function PromptContent(props: {
       )}
 
       {record?.example && (
-        <Card
-          sx={{
-            minWidth: { sm: '12rem' },
-            p: 2,
-            boxShadow: 1,
-            borderRadius: '6px',
-            border: 1,
-            borderColor: 'divider',
-          }}
-        >
+        <StyledStack sx={{ minWidth: { sm: '12rem' } }}>
           <Typography variant="h6" color="primary">
             {t('Example')}
           </Typography>
@@ -118,7 +94,7 @@ export default function PromptContent(props: {
           <Typography component="span" variant="body1">
             <MarkdownContent>{record?.example}</MarkdownContent>
           </Typography>
-        </Card>
+        </StyledStack>
       )}
       <LinePlaceholder spacing={2} />
     </Stack>

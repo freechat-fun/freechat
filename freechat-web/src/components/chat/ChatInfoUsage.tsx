@@ -1,9 +1,15 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconButton, Input, Stack, Tooltip, Typography } from '@mui/joy';
+import {
+  IconButton,
+  TextField,
+  Stack,
+  Typography,
+  InputAdornment,
+} from '@mui/material';
 import { CheckRounded, KeyRounded, TuneRounded } from '@mui/icons-material';
 import { ChatSessionDTO, MemoryUsageDTO } from 'freechat-sdk';
-import { CommonBox, CommonGridBox, ConfirmModal } from '..';
+import { CommonBox, CommonGridBox, ConfirmModal, OptionTooltip } from '..';
 import { providers as modelProviders } from '../../configs/model-providers-config';
 
 type ChatInfoUsageProps = {
@@ -61,13 +67,11 @@ export default function ChatInfoUsage({
   return (
     <Fragment>
       <CommonGridBox>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('My API Key', { ns: 'account' })}
         </Typography>
         <CommonBox sx={{ ml: 'auto' }}>
-          <Tooltip
-            size="sm"
-            sx={{ maxWidth: '20rem' }}
+          <OptionTooltip
             title={
               session?.isCustomizedApiKeyEnabled
                 ? t('Customize API key for the chat')
@@ -78,17 +82,18 @@ export default function ChatInfoUsage({
               <IconButton
                 disabled={!session?.isCustomizedApiKeyEnabled}
                 onClick={() => setApiKeySettingOpen(true)}
+                size="small"
               >
                 <TuneRounded />
               </IconButton>
             </div>
-          </Tooltip>
+          </OptionTooltip>
         </CommonBox>
 
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Usage')}
         </Typography>
-        <Typography level="body-sm" sx={{ ml: 'auto' }}>
+        <Typography variant="body2" sx={{ ml: 'auto' }}>
           {getUsageLabel()}
         </Typography>
       </CommonGridBox>
@@ -111,20 +116,27 @@ export default function ChatInfoUsage({
         }}
       >
         <Stack spacing={2}>
-          <Typography level="body-sm">
+          <Typography variant="body2">
             {t(
               'Your API key is only used for this chat and will not be obtained by anyone else.'
             )}
           </Typography>
-          <Input
+          <TextField
             type="password"
             placeholder="Paste a key here..."
-            startDecorator={<KeyRounded />}
             value={editApiKey}
             onChange={(event) => setEditApiKey(event.target.value)}
-            sx={{
-              minWidth: '20rem',
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <KeyRounded />
+                  </InputAdornment>
+                ),
+              },
             }}
+            size="small"
+            sx={{ minWidth: '20rem' }}
           />
         </Stack>
       </ConfirmModal>

@@ -4,7 +4,7 @@ const OptionCard = styled(Box)(({ theme }) => ({
   border: '1px solid transparent',
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: 'none',
-  '&:hover': {
+  '&:hover, &:focus-within': {
     borderColor: theme.palette.primary.main,
   },
   padding: 16,
