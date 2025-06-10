@@ -27,6 +27,7 @@ import {
   LinePlaceholder,
   OptionTooltip,
   RouterBlocker,
+  StyledStack,
   TinyInput,
 } from '../../components';
 import {
@@ -34,7 +35,6 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Card,
   Chip,
   Divider,
   FormControl,
@@ -735,17 +735,9 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             )}
           </Divider>
 
-          <Stack
+          <StyledStack
             spacing={2}
-            sx={{
-              my: 2,
-              mx: { xs: 0, sm: 2 },
-              p: 2,
-              boxShadow: 1,
-              borderRadius: '6px',
-              border: 1,
-              borderColor: 'divider',
-            }}
+            sx={{ '&:hover, &:focus-within': { transform: 'none' } }}
           >
             <Stack direction="row" spacing={3} sx={{ display: 'flex', my: 1 }}>
               <Box
@@ -914,34 +906,18 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               value={greeting || ''}
               onChange={(event) => setGreeting(event.target.value || undefined)}
             />
-          </Stack>
+          </StyledStack>
           <LinePlaceholder />
 
-          <Card
-            sx={{
-              my: 2,
-              mx: { xs: 0, sm: 2 },
-              p: 2,
-              boxShadow: 1,
-              borderRadius: '6px',
-              border: 1,
-              borderColor: 'divider',
-            }}
+          <StyledStack
+            sx={{ '&:hover, &:focus-within': { transform: 'none' } }}
           >
             <CharacterDocumentsPane characterUid={recordUid} editMode={true} />
-          </Card>
+          </StyledStack>
           <LinePlaceholder />
 
-          <Card
-            sx={{
-              my: 2,
-              mx: { xs: 0, sm: 2 },
-              p: 2,
-              boxShadow: 1,
-              borderRadius: '6px',
-              border: 1,
-              borderColor: 'divider',
-            }}
+          <StyledStack
+            sx={{ '&:hover, &:focus-within': { transform: 'none' } }}
           >
             <CharacterBackendsPane
               characterUid={recordUid}
@@ -949,7 +925,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               editMode={true}
               onEdit={handleBackendEdit}
             />
-          </Card>
+          </StyledStack>
           <LinePlaceholder />
 
           <CommonBox>

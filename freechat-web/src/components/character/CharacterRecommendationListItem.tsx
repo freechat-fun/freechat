@@ -1,13 +1,13 @@
 import { Fragment, forwardRef, useEffect, useState } from 'react';
 import {
-  Card,
-  CardContent,
   ListItem,
   ListItemButton,
   ListItemButtonProps,
   Typography,
   Divider,
   styled,
+  Box,
+  Stack,
 } from '@mui/material';
 import { CharacterSummaryDTO } from 'freechat-sdk';
 import { getSenderName } from '../../libs/chat_utils';
@@ -20,12 +20,12 @@ type CharacterRecommendationListItemProps = ListItemButtonProps & {
   sx?: SxProps;
 };
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Stack)(({ theme }) => ({
   width: '100%',
   transition: 'transform 0.4s, box-shadow 0.4s',
   borderRadius: theme.spacing(0.5),
   boxShadow: theme.shadows[1],
-  '&:hover': {
+  '&:hover, &:focus-within': {
     boxShadow: theme.shadows[4],
     transform: 'translateY(-1px)',
   },
@@ -36,7 +36,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   backgroundPosition: 'center',
 }));
 
-const StyledCardContent = styled(CardContent)(() => ({
+const StyledCardContent = styled(Box)(() => ({
   position: 'absolute',
   top: 0,
   left: 0,

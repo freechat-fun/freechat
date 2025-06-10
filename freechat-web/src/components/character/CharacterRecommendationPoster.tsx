@@ -181,11 +181,7 @@ const CharacterRecommendationPoster = forwardRef<
 
           <LinePlaceholder />
 
-          <Stack
-            sx={{
-              justifyContent: 'center',
-            }}
-          >
+          <Stack sx={{ justifyContent: 'center' }}>
             <Box
               sx={{
                 overflow: 'hidden',

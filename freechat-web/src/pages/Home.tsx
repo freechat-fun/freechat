@@ -10,7 +10,6 @@ import {
   Tabs,
   Typography,
   tabClasses,
-  useColorScheme,
 } from '@mui/joy';
 import { LinePlaceholder } from '../components';
 import { PromptGallery } from '../components/prompt';
@@ -18,6 +17,7 @@ import {
   CharacterGallery,
   CharacterRecommendationViews,
 } from '../components/character';
+import { useColorScheme } from '@mui/material';
 
 export default function Home() {
   const { t } = useTranslation('sidebar');

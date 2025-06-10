@@ -40,7 +40,7 @@ function CardIconButton({
       sx={{
         bgcolor: 'transparent',
         transition: 'transform 0.4s, box-shadow 0.4s',
-        '&:hover': {
+        '&:hover, &:focus-within': {
           bgcolor: 'transparent',
           transform: 'translateY(-2px)',
         },
@@ -51,7 +51,7 @@ function CardIconButton({
         onClick();
       }}
     >
-      <Icon sx={{ fill: '#fefefe' }} />
+      <Icon sx={{ color: '#fefefe' }} />
     </IconButton>
   );
 }

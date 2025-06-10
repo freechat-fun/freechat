@@ -64,7 +64,7 @@ const HotTags = forwardRef<HTMLDivElement, HotTagsProp>((props, ref) => {
           }}
           sx={{
             textDecoration: 'none',
-            '&:hover': {
+            '&:hover, &:focus-within': {
               textDecoration: 'underline',
             },
           }}

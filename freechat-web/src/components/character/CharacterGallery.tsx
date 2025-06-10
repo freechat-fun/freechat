@@ -20,6 +20,7 @@ import {
   HotTags,
   InfoSearchbar,
   LinePlaceholder,
+  StyledStack,
   SummaryTypography,
 } from '..';
 import {
@@ -77,21 +78,11 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   }, [mode, record]);
 
   return (
-    <Stack
+    <StyledStack
       ref={ref}
       spacing={1}
       sx={{
         ...sx,
-        p: 2,
-        transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 1,
-        borderRadius: '6px',
-        border: 1,
-        borderColor: 'divider',
-        '&:hover': {
-          boxShadow: 3,
-          transform: 'translateY(-2px)',
-        },
         position: 'relative',
         overflow: 'hidden',
         backgroundImage: `url(${background})`,
@@ -226,7 +217,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           />
         </CommonBox>
       </Box>
-    </Stack>
+    </StyledStack>
   );
 });
 

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Box, Card, Chip, Divider, Typography } from '@mui/material';
+import { Box, Chip, Divider, Stack, Typography } from '@mui/material';
 import { PromptDetailsDTO, ChatMessageDTO } from 'freechat-sdk';
 import { getMessageText } from '../../libs/template_utils';
 
@@ -23,7 +23,7 @@ export default function TemplateContent(props: {
 
     return (
       <Fragment>
-        <Card sx={{ p: 2, border: 'none', boxShadow: 'none' }}>
+        <Stack sx={{ p: 2, border: 'none', boxShadow: 'none' }}>
           <Chip
             label="SYSTEM"
             color="info"
@@ -34,7 +34,7 @@ export default function TemplateContent(props: {
           <Typography variant="body1" sx={contentStyle}>
             {system}
           </Typography>
-        </Card>
+        </Stack>
         {messages.length > 0 && (
           <Fragment>
             <Divider sx={{ mx: 2 }} />
@@ -76,7 +76,7 @@ export default function TemplateContent(props: {
           </Fragment>
         )}
         <Divider sx={{ mx: 2 }} />
-        <Card sx={{ p: 2, border: 'none', boxShadow: 'none' }}>
+        <Stack sx={{ p: 2, border: 'none', boxShadow: 'none' }}>
           <Chip
             label={userName?.toUpperCase() ?? 'USER'}
             color="success"
@@ -87,7 +87,7 @@ export default function TemplateContent(props: {
           <Typography variant="body1" sx={contentStyle}>
             {userMessage}
           </Typography>
-        </Card>
+        </Stack>
       </Fragment>
     );
   } else {

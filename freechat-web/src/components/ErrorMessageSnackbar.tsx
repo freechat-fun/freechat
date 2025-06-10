@@ -62,7 +62,7 @@ export default function ErrorMessageSnackbar() {
                   right: 0,
                   bottom: 0,
                   textDecoration: 'none',
-                  '&:hover': {
+                  '&:hover, &:focus-within': {
                     textDecoration: 'none',
                     bgcolor: 'transparent',
                   },

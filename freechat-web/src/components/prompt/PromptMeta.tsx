@@ -1,7 +1,13 @@
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Chip, Typography } from '@mui/material';
-import { CommonBox, HistoryTypography, LinePlaceholder, RouterLink } from '..';
+import { Chip, Typography } from '@mui/material';
+import {
+  CommonBox,
+  HistoryTypography,
+  LinePlaceholder,
+  RouterLink,
+  StyledStack,
+} from '..';
 import { PromptDetailsDTO, AiModelInfoDTO } from 'freechat-sdk';
 import { getLocaleLabel } from '../../configs/i18n-config';
 
@@ -18,16 +24,12 @@ export default function PromptMeta(props: {
   const models: AiModelInfoDTO[] = record?.aiModels ?? [];
 
   return (
-    <Card
+    <StyledStack
       sx={{
         width: { xs: '100%', sm: '16rem' },
         my: 2,
         mx: { xs: 0, sm: 2 },
-        p: 2,
-        boxShadow: 1,
-        borderRadius: '6px',
-        border: 1,
-        borderColor: 'divider',
+        gap: 0,
       }}
     >
       {format && (
@@ -40,7 +42,7 @@ export default function PromptMeta(props: {
             {format === 'f_string' ? 'F-String: ' : 'Mustache: '}&nbsp;
             <b>{format === 'f_string' ? '{placeholder}' : '{{placeholder}}'}</b>
           </Typography>
-          <LinePlaceholder spacing={2} />
+          <LinePlaceholder />
         </Fragment>
       )}
 
@@ -53,7 +55,7 @@ export default function PromptMeta(props: {
           <Typography variant="body2">
             {getLocaleLabel(lang.split('_')[0]) || lang}
           </Typography>
-          <LinePlaceholder spacing={2} />
+          <LinePlaceholder />
         </Fragment>
       )}
 
@@ -74,7 +76,7 @@ export default function PromptMeta(props: {
               />
             ))}
           </CommonBox>
-          <LinePlaceholder spacing={2} />
+          <LinePlaceholder />
         </Fragment>
       )}
 
@@ -95,7 +97,7 @@ export default function PromptMeta(props: {
               />
             ))}
           </CommonBox>
-          <LinePlaceholder spacing={2} />
+          <LinePlaceholder />
         </Fragment>
       )}
 
@@ -130,6 +132,6 @@ export default function PromptMeta(props: {
           })}
         </Fragment>
       )}
-    </Card>
+    </StyledStack>
   );
 }

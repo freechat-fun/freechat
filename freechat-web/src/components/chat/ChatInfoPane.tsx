@@ -3,15 +3,13 @@ import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
-  Card,
   Chip,
   Divider,
   FormControl,
   IconButton,
-  Input,
   Stack,
   Typography,
-} from '@mui/joy';
+} from '@mui/material';
 import { ChatSessionDTO, MemoryUsageDTO } from 'freechat-sdk';
 import {
   CommonBox,
@@ -19,6 +17,7 @@ import {
   ContentTextarea,
   LinePlaceholder,
   TextareaTypography,
+  TinyInput,
 } from '..';
 import {
   CheckRounded,
@@ -89,13 +88,12 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
   }
 
   return (
-    <Card
+    <Stack
       sx={{
         p: 2,
-        borderRadius: 0,
-        borderColor: 'divider',
         height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
         overflowY: 'auto',
+        gap: 1,
       }}
     >
       <Stack
@@ -106,10 +104,9 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         }}
       >
         <IconButton
-          variant="plain"
           aria-label="edit"
-          color="neutral"
-          size="sm"
+          color="default"
+          size="small"
           onClick={() => {
             toggleChatInfoPane();
           }}
@@ -131,29 +128,29 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       </Divider>
 
       <CommonGridBox>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Name')}
         </Typography>
-        <Typography level="body-sm">{session?.character?.name}</Typography>
+        <Typography variant="body2">{session?.character?.name}</Typography>
 
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('account:Gender')}
         </Typography>
-        <Typography level="body-sm">
+        <Typography variant="body2">
           {getGenderLabel(session?.character?.gender)}
         </Typography>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Language')}
         </Typography>
-        <Typography level="body-sm">{getLocaleLabel(lang)}</Typography>
+        <Typography variant="body2">{getLocaleLabel(lang)}</Typography>
       </CommonGridBox>
 
       <LinePlaceholder spacing={1} />
 
-      <Typography level="title-sm" textColor="neutral">
+      <Typography variant="subtitle1" color="text.secondary">
         {t('Description')}
       </Typography>
-      <TextareaTypography variant="subtitle2" color="neutral">
+      <TextareaTypography variant="subtitle2" color="text.secondary">
         {session?.character?.description}
       </TextareaTypography>
 
@@ -161,12 +158,12 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         <CommonBox>
           {tags.map((tag, index) => (
             <Chip
+              size="small"
               variant="outlined"
               color="success"
               key={`tag-${tag}-${index}`}
-            >
-              {tag}
-            </Chip>
+              label={tag}
+            />
           ))}
         </CommonBox>
       )}
@@ -178,20 +175,28 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       </Divider>
 
       <CommonGridBox>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Your Nickname')}
         </Typography>
-        <Input
+        <TinyInput
           name="info-user-nickname"
           value={userNickname}
           onChange={(event) => setUserNickname(event.target.value)}
+          size="small"
+          fullWidth
+          sx={{ maxWidth: undefined }}
+          slotProps={{
+            input: {
+              size: 'small',
+            },
+          }}
         />
       </CommonGridBox>
 
       <LinePlaceholder spacing={1} />
 
       <FormControl sx={{ gap: 1 }}>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Your Profile')}
         </Typography>
         <ContentTextarea
@@ -206,20 +211,28 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       <LinePlaceholder spacing={1} />
 
       <CommonGridBox>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Character Nickname')}
         </Typography>
-        <Input
+        <TinyInput
           name="info-character-nickname"
           value={characterNickname}
           onChange={(event) => setCharacterNickname(event.target.value)}
+          size="small"
+          fullWidth
+          sx={{ maxWidth: undefined }}
+          slotProps={{
+            input: {
+              size: 'small',
+            },
+          }}
         />
       </CommonGridBox>
 
       <LinePlaceholder spacing={1} />
 
       <FormControl sx={{ gap: 1 }}>
-        <Typography level="title-sm" textColor="neutral">
+        <Typography variant="subtitle1" color="text.secondary">
           {t('Anything about this chat')}
         </Typography>
         <ContentTextarea
@@ -243,10 +256,10 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       >
         <Button
           disabled={saved || !session?.context?.chatId}
-          size="sm"
+          size="small"
           variant="outlined"
           color="success"
-          startDecorator={saved ? <CheckRounded /> : <SaveAltRounded />}
+          startIcon={saved ? <CheckRounded /> : <SaveAltRounded />}
           onClick={() =>
             onSave?.(userNickname, userProfile, characterNickname, about, () =>
               setSaved(true)
@@ -256,6 +269,6 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
           {t('button:Save')}
         </Button>
       </Box>
-    </Card>
+    </Stack>
   );
 }

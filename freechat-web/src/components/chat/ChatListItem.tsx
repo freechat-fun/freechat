@@ -2,13 +2,13 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   IconButton,
-  ListDivider,
   ListItem,
   ListItemButton,
   ListItemButtonProps,
   Stack,
   Typography,
-} from '@mui/joy';
+  Divider,
+} from '@mui/material';
 import { ChatSessionDTO } from 'freechat-sdk';
 import {
   getSenderName,
@@ -78,14 +78,13 @@ export default function ChatListItem(props: ChatListItemProps) {
 
   return (
     <Fragment>
-      <ListItem>
+      <ListItem disablePadding>
         <ListItemButton
           onClick={() => {
             toggleChatsPane();
             onSelectChat?.();
           }}
           selected={selected}
-          color="neutral"
           sx={{
             flexDirection: 'column',
             alignItems: 'initial',
@@ -107,8 +106,8 @@ export default function ChatListItem(props: ChatListItemProps) {
                 />
                 <HighlightedTypography
                   highlight={highlight}
-                  fontWeight="lg"
-                  fontSize="lg"
+                  fontWeight="bold"
+                  fontSize="1.125rem"
                   component="h2"
                   noWrap
                 >
@@ -125,8 +124,8 @@ export default function ChatListItem(props: ChatListItemProps) {
                   )}
                   {record?.gmtCreate && (
                     <Typography
-                      level="body-xs"
-                      display={{ xs: 'none', md: 'block' }}
+                      variant="caption"
+                      sx={{ display: { xs: 'none', md: 'block' } }}
                       noWrap
                     >
                       {getDateLabel(record.gmtCreate, i18n.language)}
@@ -135,7 +134,7 @@ export default function ChatListItem(props: ChatListItemProps) {
                 </Box>
               </Stack>
               <Typography
-                level="body-sm"
+                variant="body2"
                 sx={{
                   display: '-webkit-box',
                   WebkitLineClamp: '2',
@@ -154,7 +153,7 @@ export default function ChatListItem(props: ChatListItemProps) {
             </Stack>
             {editMode && (
               <IconButton
-                size="sm"
+                size="small"
                 sx={{ px: 1 }}
                 onClick={() => onRemoveChat?.()}
               >
@@ -164,7 +163,7 @@ export default function ChatListItem(props: ChatListItemProps) {
           </CommonGridBox>
         </ListItemButton>
       </ListItem>
-      <ListDivider sx={{ mx: 2, my: 0 }} />
+      <Divider sx={{ mx: 2, my: 0 }} />
     </Fragment>
   );
 }

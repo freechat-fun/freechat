@@ -224,7 +224,7 @@ export default function CharacterDocumentsPane({
                       alignItems: 'center',
                       gap: 1,
                       textDecoration: 'none',
-                      '&:hover': {
+                      '&:hover, &:focus-within': {
                         textDecoration: 'underline',
                       },
                     }}
