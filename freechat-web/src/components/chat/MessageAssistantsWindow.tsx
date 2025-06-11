@@ -2,15 +2,14 @@ import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MessageAssistantsPane } from '.';
 import {
-  DialogActions,
-  DialogContent,
+  Dialog,
   DialogTitle,
+  DialogContent,
+  DialogActions,
   IconButton,
-  Modal,
-  ModalDialog,
   Stack,
   TypographyProps,
-} from '@mui/joy';
+} from '@mui/material';
 import { DoneRounded } from '@mui/icons-material';
 import { CharacterSummaryDTO } from 'freechat-sdk';
 
@@ -61,37 +60,39 @@ const MessageAssistantsWindow: React.FC<
 
   return (
     <>
-      <Modal
+      <Dialog
         open={open}
         onClose={handleClose}
+        maxWidth="md"
         sx={{
-          mb: 'var(--Footer-height)',
+          '& .MuiDialog-paper': {
+            borderRadius: '6px',
+            marginBottom: 'var(--Footer-height)',
+          },
         }}
       >
-        <ModalDialog>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogContent>
-            <Stack
-              spacing={2}
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <MessageAssistantsPane
-                assistantUid={getAssistantUid()}
-                setAssistant={setSelectedAssistant}
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <IconButton onClick={handleConfirm}>
-              <DoneRounded />
-            </IconButton>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <Stack
+            spacing={2}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <MessageAssistantsPane
+              assistantUid={getAssistantUid()}
+              setAssistant={setSelectedAssistant}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <IconButton onClick={handleConfirm}>
+            <DoneRounded />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

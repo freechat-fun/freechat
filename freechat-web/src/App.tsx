@@ -33,7 +33,22 @@ const joyTheme = joyExtendTheme({
 
 const theme = createTheme({
   colorSchemes: {
-    dark: true,
+    light: {
+      palette: {
+        background: {
+          default: '#FBFCFE',
+          paper: '#F0F4F8',
+        },
+      },
+    },
+    dark: {
+      palette: {
+        background: {
+          default: '#0B0D0E',
+          paper: '#171A1C',
+        },
+      },
+    },
   },
 });
 

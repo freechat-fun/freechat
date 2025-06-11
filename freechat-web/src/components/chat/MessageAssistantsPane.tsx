@@ -9,9 +9,9 @@ import {
   CharacterQueryWhere,
   CharacterSummaryDTO,
 } from 'freechat-sdk';
-import { Box, Divider, Stack, styled } from '@mui/joy';
+import { Box, Divider, Stack, styled } from '@mui/material';
 import { MessageAssistant } from '.';
-import LinePlaceholder from '../LinePlaceholder';
+import { LinePlaceholder } from '..';
 
 const AssistantsBox = styled(Box)(({ theme }) => ({
   display: 'grid',
@@ -95,10 +95,14 @@ export default function MessageAssistantsPane({
   }
 
   return (
-    <Stack>
+    <Stack spacing={2}>
       {officialRecords.length > 0 && (
         <Fragment>
-          <Divider>{t('Recommended Characters')}</Divider>
+          <Divider sx={{ my: 2 }}>
+            <Box component="span" sx={{ px: 2 }}>
+              {t('Recommended Characters')}
+            </Box>
+          </Divider>
           <AssistantsBox>
             {officialRecords.map((summary, index) => (
               <MessageAssistant
@@ -106,7 +110,7 @@ export default function MessageAssistantsPane({
                 url={summary.avatar}
                 checked={assistantUid === summary.characterUid}
                 onSelect={() => handleSelect(summary)}
-              ></MessageAssistant>
+              />
             ))}
           </AssistantsBox>
         </Fragment>
@@ -114,7 +118,11 @@ export default function MessageAssistantsPane({
       {personalRecords.length > 0 && (
         <Fragment>
           <LinePlaceholder spacing={6} />
-          <Divider>{t('Your Characters')}</Divider>
+          <Divider sx={{ my: 2 }}>
+            <Box component="span" sx={{ px: 2 }}>
+              {t('Your Characters')}
+            </Box>
+          </Divider>
           <AssistantsBox>
             {personalRecords.map((summary, index) => (
               <MessageAssistant
@@ -122,7 +130,7 @@ export default function MessageAssistantsPane({
                 url={summary.avatar}
                 checked={assistantUid === summary.characterUid}
                 onSelect={() => handleSelect(summary)}
-              ></MessageAssistant>
+              />
             ))}
           </AssistantsBox>
         </Fragment>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Sheet, SheetProps, Stack, useColorScheme } from '@mui/joy';
+import { Box, Stack, useTheme, SxProps, Theme } from '@mui/material';
 import {
   AvatarWithStatus,
   ChatBubble,
@@ -27,11 +27,12 @@ import {
 import { processBackground } from '../../libs/ui_utils';
 import { getMessageText } from '../../libs/template_utils';
 
-type MessagesPaneProps = SheetProps & {
+type MessagesPaneProps = {
   session?: ChatSessionDTO;
   defaultDebugMode?: boolean;
   onOpen?: () => void;
   onReceivedMessage?: (result: LlmResultDTO) => void;
+  sx?: SxProps<Theme>;
 };
 
 export default function MessagesPane(props: MessagesPaneProps) {
@@ -41,10 +42,9 @@ export default function MessagesPane(props: MessagesPaneProps) {
     onOpen,
     onReceivedMessage,
     sx,
-    ...others
   } = props;
   const { t } = useTranslation('chat');
-  const { mode } = useColorScheme();
+  const theme = useTheme();
   const { chatApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
 
@@ -130,10 +130,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
               return;
             }
             if (sender?.picture) {
-              processBackground(sender.picture, mode, 0.6).then((bg) => {
-                setBackground(bg);
-                setChatMessages(resp);
-              });
+              processBackground(sender.picture, theme.palette.mode, 0.6).then(
+                (bg) => {
+                  setBackground(bg);
+                  setChatMessages(resp);
+                }
+              );
             } else {
               setBackground('');
               setChatMessages(resp);
@@ -151,10 +153,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
               return;
             }
             if (sender?.picture) {
-              processBackground(sender.picture, mode, 0.6).then((bg) => {
-                setBackground(bg);
-                setChatMessages(resp);
-              });
+              processBackground(sender.picture, theme.palette.mode, 0.6).then(
+                (bg) => {
+                  setBackground(bg);
+                  setChatMessages(resp);
+                }
+              );
             } else {
               setBackground('');
               setChatMessages(resp);
@@ -169,7 +173,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
     debugMode,
     context?.chatId,
     handleError,
-    mode,
+    theme.palette.mode,
     onOpen,
     sender?.picture,
   ]);
@@ -305,12 +309,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
   }
 
   return (
-    <Sheet
+    <Stack
       sx={{
         height: { xs: 'calc(100dvh - var(--Footer-height))', sm: '100dvh' },
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'background.level1',
+        backgroundColor: theme.palette.background.paper,
         position: 'relative',
         overflow: 'hidden',
         backgroundImage: `url(${enableBackground ? background : ''})`,
@@ -318,7 +322,6 @@ export default function MessagesPane(props: MessagesPaneProps) {
         backgroundRepeat: 'no-repeat',
         ...sx,
       }}
-      {...others}
     >
       <MessagesPaneHeader
         session={session}
@@ -413,6 +416,6 @@ export default function MessagesPane(props: MessagesPaneProps) {
           )
         }
       />
-    </Sheet>
+    </Stack>
   );
 }

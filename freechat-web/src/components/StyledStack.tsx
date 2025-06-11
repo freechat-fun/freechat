@@ -8,6 +8,7 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   transition: 'transform 0.4s, box-shadow 0.4s',
   gap: theme.spacing(2),
+  backgroundColor: theme.palette.background.default,
   [theme.breakpoints.down('sm')]: {
     marginLeft: theme.spacing(0),
     marginRight: theme.spacing(0),
