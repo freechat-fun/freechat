@@ -14,6 +14,7 @@ import {
   SelectChangeEvent,
   Checkbox,
   ListItemText,
+  SxProps,
 } from '@mui/material';
 import { providers as modelProviders } from '../configs/model-providers-config';
 import { AiModelInfoDTO } from 'freechat-sdk';
@@ -21,8 +22,9 @@ import { AiModelInfoDTO } from 'freechat-sdk';
 export default function InfoSearchbar(props: {
   onSearch: (text: string | undefined, modelIds: string[] | undefined) => void;
   enableModelSelect?: boolean;
+  sx?: SxProps;
 }) {
-  const { onSearch, enableModelSelect = true } = props;
+  const { onSearch, enableModelSelect = true, sx } = props;
   const { t } = useTranslation('button');
   const { aiServiceApi } = useFreeChatApiContext();
   const { handleError } = useErrorMessageBusContext();
@@ -82,6 +84,7 @@ export default function InfoSearchbar(props: {
           pr: 1,
           gap: 3,
           borderRadius: 1,
+          ...sx,
         }}
       >
         <TextField
@@ -96,6 +99,9 @@ export default function InfoSearchbar(props: {
               startAdornment: (
                 <SearchIcon sx={{ color: 'action.active', mr: 1 }} />
               ),
+              sx: {
+                borderRadius: '6px',
+              },
             },
           }}
           sx={{

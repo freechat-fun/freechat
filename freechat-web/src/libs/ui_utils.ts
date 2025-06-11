@@ -17,7 +17,7 @@ export function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export const defaultTransitionSetting = `opacity 200ms ease-in-out`;
+export const defaultTransitionSetting = `opacity 200ms ease-in-out transform 0.4s, box-shadow 0.4s`;
 export const defaultTransitionInterval = 100;
 export const transitionStyles: {
   [key in TransitionStatus]?: React.CSSProperties;

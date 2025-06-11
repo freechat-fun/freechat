@@ -88,6 +88,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         backgroundImage: `url(${background})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
+        gap: 0,
       }}
     >
       <Box
@@ -165,7 +166,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           )
         )}
       </Box>
-      <Divider />
+      <Divider sx={{ mx: -2 }} />
 
       <SummaryTypography highlight={keyWord} sx={{ ...sx }}>
         {record.description}
@@ -189,7 +190,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         </CommonBox>
       )}
 
-      {tags.length > 0 && <Divider />}
+      {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
 
       <Box
         sx={{
