@@ -2,8 +2,8 @@ import 'openapi-explorer';
 import { reactEventListener } from 'openapi-explorer/dist/es/react';
 import { useEffect, useRef, useState } from 'react';
 import { useFreeChatApiContext } from '../../contexts';
-import { DocumentSkeleton, LinePlaceholder } from '../../components';
 import { useTheme } from '@mui/material';
+import { DocumentSkeleton, LinePlaceholder } from '../../components';
 
 export default function OpenApi() {
   const theme = useTheme();
@@ -20,28 +20,31 @@ export default function OpenApi() {
   useEffect(() => {
     if (specLoaded) {
       const apiExplorer = explorerRef.current;
-      const style = document.createElement('style');
-      style.innerHTML = `
-      :host {
-        --border-radius: 4px;
-        --input-bg: ${theme.palette.background.default};
-        --nav-hover-bg-color: ${theme.palette.background.paper};
-        --nav-hover-text-color:${theme.palette.background.default};
-        --primary-color: ${theme.palette.primary};
-        --bg: ${theme.palette.background.default};
-        --bg1: ${theme.palette.background.paper};
-        --bg2: ${theme.palette.background.paper};
-        --bg3: ${theme.palette.background.paper};
+      if (apiExplorer) {
+        const style = document.createElement('style');
+        style.innerHTML = `
+        :host {
+          --border-radius: 6px;
+          --input-bg: ${theme.palette.background.default};
+          --nav-hover-bg-color: ${theme.palette.background.paper};
+          --nav-hover-text-color:${theme.palette.text.primary};
+          --bg: ${theme.palette.background.default};
+          --bg1: ${theme.palette.background.paper};
+          --bg2: ${theme.palette.background.paper};
+          --bg3: ${theme.palette.background.paper};
+        }
+        `;
+        apiExplorer.shadowRoot?.appendChild(style);
       }
-      `;
-      apiExplorer?.shadowRoot?.appendChild(style);
       setLoading(false);
     }
   }, [
     specLoaded,
+    theme,
     theme.palette.background.default,
     theme.palette.background.paper,
     theme.palette.primary,
+    theme.palette.secondary,
   ]);
 
   return (
@@ -49,7 +52,7 @@ export default function OpenApi() {
       <style>
         {`
         openapi-explorer::part(section-navbar) {
-          background-color: ${theme.palette.background.paper};
+          background-color: ${theme.palette.background.default};
           border-radius: 6px;
           color: ${theme.palette.text.primary};
         }
@@ -68,10 +71,11 @@ export default function OpenApi() {
           color: ${theme.palette.text.primary};
         }
         openapi-explorer::part(btn-outline) {
+          background-color: ${theme.palette.background.paper};
           color: ${theme.palette.text.primary};
         }
         openapi-explorer::part(btn-search) {
-          background-color: ${theme.palette.background.default};
+          background-color: ${theme.palette.background.paper};
           color: ${theme.palette.text.primary};
         }
         openapi-explorer::part(label-operation-path) {
@@ -88,7 +92,7 @@ export default function OpenApi() {
           display: loading ? 'none' : 'unset',
         }}
       />
-      <DocumentSkeleton lines={3} loading={loading} sx={{ width: '100%' }} />
+      <DocumentSkeleton lines={13} loading={loading} sx={{ width: '100%' }} />
       <LinePlaceholder spacing={1} />
     </main>
   );
