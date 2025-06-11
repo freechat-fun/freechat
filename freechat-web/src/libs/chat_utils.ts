@@ -127,7 +127,7 @@ export function getSenderReply(
           .replace(/<think\b[^>]*>([\s\S]*?)<\/think>/i, '$1')
           .trim();
         const processedContent = debugMode
-          ? `> ${content.replace(/\n\n/g, '\n\n> ')}`
+          ? `> ${content.replace(/\n\n/g, '\n\n> ')}` + '\n\n'
           : '';
         preProcessedMessage = preProcessedMessage.replace(
           match,

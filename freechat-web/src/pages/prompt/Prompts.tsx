@@ -17,6 +17,7 @@ import {
   InfoCardCover,
   InfoSearchbar,
   LinePlaceholder,
+  StyledStack,
   SummaryTypography,
 } from '../../components';
 import {
@@ -30,17 +31,17 @@ import {
 import {
   Box,
   Button,
-  Card,
   Chip,
   FormControl,
   FormHelperText,
   IconButton,
-  Input,
+  TextField,
+  Typography,
   Radio,
   RadioGroup,
-  Typography,
-} from '@mui/joy';
-import { SxProps } from '@mui/joy/styles/types';
+  FormControlLabel,
+} from '@mui/material';
+import { SxProps } from '@mui/material/styles';
 import {
   AddCircleRounded,
   DeleteForeverRounded,
@@ -73,20 +74,23 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   const { t, i18n } = useTranslation();
 
   return (
-    <Card
+    <StyledStack
       ref={ref}
       sx={{
         ...sx,
-        transition: 'transform 0.4s, box-shadow 0.4s',
-        boxShadow: 'sm',
-        '&:hover': {
-          boxShadow: 'lg',
-          transform: 'translateY(-1px)',
+        position: 'relative',
+        width: '100%',
+        overflow: 'hidden',
+        gap: 1,
+        boxShadow: 0,
+        '&:hover, &:focus-within': {
+          boxShadow: 0,
         },
+        m: 0,
       }}
     >
       <Typography
-        level="title-lg"
+        variant="h6"
         sx={{
           ...sx,
           whiteSpace: 'nowrap',
@@ -105,13 +109,13 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           alignItems: 'center',
         }}
       >
-        <Typography level="body-sm" textColor="gray">
+        <Typography variant="body2" color="text.secondary">
           {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
         </Typography>
         <Typography
-          level="body-sm"
-          textColor={
-            record.visibility === 'public' ? 'success.500' : 'warning.500'
+          variant="body2"
+          color={
+            record.visibility === 'public' ? 'success.main' : 'warning.main'
           }
         >
           {record.visibility === 'public' ? t('public') : t('private')}
@@ -126,24 +130,28 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           gap: 2,
         }}
       >
-        <Chip color="success" variant="soft">
-          v{record.version}
-        </Chip>
         <Chip
+          label={`v${record.version}`}
+          color="success"
+          variant="outlined"
+          size="small"
+          sx={{ m: 0 }}
+        />
+        <Chip
+          label={record.type}
           color={record.type === 'string' ? 'warning' : 'success'}
           variant="outlined"
-        >
-          {record.type}
-        </Chip>
+          size="small"
+        />
       </Box>
-      <SummaryTypography sx={{ ...sx }}>{record.description}</SummaryTypography>
+      <SummaryTypography>{record.description}</SummaryTypography>
       <LinePlaceholder spacing={2} />
       <InfoCardCover
         onView={() => onView()}
         onEdit={() => onEdit()}
         onDelete={() => onDelete()}
       />
-    </Card>
+    </StyledStack>
   );
 });
 
@@ -315,9 +323,10 @@ export default function Prompts() {
       >
         <InfoSearchbar onSearch={handleSearch} />
         <Button
-          startDecorator={<AddCircleRounded />}
-          sx={{ borderRadius: '20px' }}
+          startIcon={<AddCircleRounded />}
+          variant="contained"
           onClick={() => setEditRecordName('untitled')}
+          sx={{ borderRadius: '20px' }}
         >
           {t('Create new')}
         </Button>
@@ -365,32 +374,40 @@ export default function Prompts() {
           mt: 2,
         }}
       >
-        <Chip variant="outlined" sx={{ mr: 1.5 }}>
-          {labelDisplayedRows(
+        <Chip
+          variant="outlined"
+          sx={{ mr: 1.5 }}
+          label={labelDisplayedRows(
             records.length === 0 ? 0 : page * pageSize + 1,
             getLabelDisplayedRowsTo(),
             total
           )}
-        </Chip>
+        />
         <IconButton
-          size="sm"
-          color="neutral"
-          variant="outlined"
+          size="small"
+          color="default"
           disabled={page === 0}
           onClick={() => handleChangePage(page - 1)}
-          sx={{ bgcolor: 'background.surface' }}
+          sx={{
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
         >
           <KeyboardArrowLeftRounded />
         </IconButton>
         <IconButton
-          size="sm"
-          color="neutral"
-          variant="outlined"
+          size="small"
+          color="default"
           disabled={
             records.length !== -1 ? (1 + page) * pageSize >= total : false
           }
           onClick={() => handleChangePage(page + 1)}
-          sx={{ bgcolor: 'background.surface' }}
+          sx={{
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
         >
           <KeyboardArrowRightRounded />
         </IconButton>
@@ -439,13 +456,16 @@ export default function Prompts() {
           }}
         >
           <FormControl error={editRecordNameError}>
-            <Input
+            <TextField
               name="RecordName"
               value={editRecordName}
-              onChange={(event) => {
-                setEditRecordName(event.target.value);
-                setEditRecordNameError(false);
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                if (event.target) {
+                  setEditRecordName(event.target.value);
+                  setEditRecordNameError(false);
+                }
               }}
+              size="small"
             />
             {editRecordNameError && (
               <FormHelperText>
@@ -462,37 +482,27 @@ export default function Prompts() {
               gap: 1,
             }}
           >
-            <Chip variant="outlined" size="md">
-              {t('Type')}
-            </Chip>
+            <Chip label={t('Type')} variant="outlined" size="small" />
             <RadioGroup
-              orientation="horizontal"
+              row
               name="format"
-              size="sm"
               value={editRecordType}
-              onChange={(event) => setEditRecordType(event.target.value)}
-              sx={{
-                p: 0.5,
-                '--RadioGroup-gap': '4px',
-                '--Radio-actionRadius': '4px',
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                if (event.target) {
+                  setEditRecordType(event.target.value);
+                }
               }}
             >
               {['chat', 'string'].map((type) => (
-                <Radio
+                <FormControlLabel
                   key={`prompt-type-${type}`}
-                  color="neutral"
-                  size="sm"
                   value={type}
+                  control={<Radio size="small" />}
                   label={
-                    <Typography noWrap level="body-sm">
+                    <Typography variant="body2" noWrap>
                       {type}
                     </Typography>
                   }
-                  variant="outlined"
-                  sx={{
-                    p: 0.5,
-                    alignItems: 'center',
-                  }}
                 />
               ))}
             </RadioGroup>
