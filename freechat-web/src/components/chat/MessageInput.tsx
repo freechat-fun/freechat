@@ -1,14 +1,6 @@
 import { useRef, KeyboardEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Avatar,
-  Button,
-  IconButton,
-  Input,
-  Stack,
-  Textarea,
-  useTheme,
-} from '@mui/joy';
+import { Avatar, Button, IconButton, Stack, useTheme } from '@mui/material';
 import { AndroidRounded, SendRounded } from '@mui/icons-material';
 import { CharacterSummaryDTO, LlmResultDTO } from 'freechat-sdk';
 import { MessageAssistantsWindow } from '.';
@@ -19,6 +11,7 @@ import {
   useFreeChatApiContext,
 } from '../../contexts';
 import { isChatsPaneOpened } from '../../libs/chat_utils';
+import { TinyInput } from '..';
 
 export type MessageInputProps = {
   chatId?: string;
@@ -196,30 +189,6 @@ export default function MessageInput(props: MessageInputProps) {
     setAssistantHelp(true);
   }
 
-  // function handleSendByEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
-  //   if (event.nativeEvent.isComposing) {
-  //     return;
-  //   }
-
-  //   if (event.key === 'Enter') {
-  //     if (event.metaKey || event.ctrlKey) {
-  //       // new line
-  //       event.preventDefault();
-  //       const textarea = event.target as HTMLTextAreaElement;
-  //       const cursorPosition = textarea.selectionStart;
-  //       const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-  //       const textAfterCursor = textarea.value.substring(cursorPosition);
-  //       textarea.value = textBeforeCursor + '\n' + textAfterCursor;
-  //       textarea.selectionStart = cursorPosition + 1;
-  //       textarea.selectionEnd = cursorPosition + 1;
-  //     } else {
-  //       // send
-  //       event.preventDefault();
-  //       handleClick();
-  //     }
-  //   }
-  // }
-
   return (
     <Stack
       sx={{
@@ -228,147 +197,118 @@ export default function MessageInput(props: MessageInputProps) {
         flexDirection: 'row',
       }}
     >
-      {/* <Textarea
-          disabled={disabled}
-          placeholder="Type something here…"
-          aria-label="Message"
-          ref={textAreaRef}
-          onChange={(e) => setTextAreaValue(e.target.value)}
-          value={textAreaValue}
-          minRows={2}
-          maxRows={10}
-          endDecorator={
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              flex={1}
-              sx={{
-                py: 1,
-                pr: 1,
-                borderTop: '1px solid',
-                borderColor: 'divider',
-              }}
-            >
-              <Chip variant="soft" color="primary">
-                {`${t('Newline')} (Ctrl/⌘ + ⏎)`}
-              </Chip>
-              <Button
-                disabled={disabled}
-                size="sm"
-                color="primary"
-                sx={{ alignSelf: 'center', borderRadius: 'lg' }}
-                endDecorator={<SendRounded />}
-                onClick={handleClick}
-              >
-                {t('Send')}
-              </Button>
-            </Stack>
-          }
-          onKeyDown={handleSendByEnter}
-        /> */}
-
       <Stack flex={1} direction="row">
-        <Input
+        <TinyInput
           disabled={disabled}
           placeholder="Type something here…"
           aria-label="Message"
           onChange={(e) => setTextAreaValue(e.target.value)}
           value={assistantMessage || textAreaValue}
+          multiline
+          minRows={1}
+          maxRows={5}
+          inputRef={textAreaRef}
+          onKeyDown={handleSend}
           sx={{
+            maxWidth: undefined,
             flex: 1,
+            bgcolor: 'background.default',
+            borderRadius: '4px',
+            '& .MuiOutlinedInput-root': {
+              py: 0,
+              '&.Mui-focused': {
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderWidth: 1,
+                },
+              },
+            },
           }}
           slotProps={{
             input: {
-              component: Textarea,
-              variant: 'plain',
-              minRows: 1,
-              maxRows: 5,
-              slotProps: { textarea: { ref: textAreaRef } },
-              sx: {
-                '--Textarea-focusedInset': 'inset',
-                '--Textarea-focusedThickness': 0,
-                p: 1.2,
-                flex: 1,
-              },
-            },
-            endDecorator: {
-              sx: {
-                alignSelf: 'flex-end',
-              },
+              size: 'small',
+              endAdornment: (
+                <Stack
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  alignSelf="flex-end"
+                  sx={{
+                    py: 1,
+                    pr: 1,
+                    gap: 1,
+                    maxHeight: '48px',
+                  }}
+                >
+                  <IconButton
+                    disabled={disabled || assistantHelp}
+                    size="small"
+                    sx={{
+                      display:
+                        assistantUid && !textAreaValue ? 'inherit' : 'none',
+                      alignSelf: 'center',
+                    }}
+                    onClick={handleAssistantSend}
+                  >
+                    <Avatar
+                      sx={{ width: 30, height: 30 }}
+                      alt={assistantName}
+                      src={assistantAvatar}
+                    >
+                      {assistantName}
+                    </Avatar>
+                  </IconButton>
+                  <Button
+                    disabled={disabled || assistantHelp || !textAreaValue}
+                    size="small"
+                    variant="contained"
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        lg: assistantUid && !textAreaValue ? 'none' : 'inherit',
+                      },
+                      alignSelf: 'center',
+                      whiteSpace: 'nowrap',
+                      bgcolor: '#3b82f6',
+                      color: '#fefefe',
+                      '&:hover, &:focus-within': {
+                        bgcolor: '#2563eb',
+                      },
+                    }}
+                    endIcon={<SendRounded />}
+                    onClick={handleClick}
+                  >
+                    {`${t('Send')} (Ctrl/⌘ + ⏎)`}
+                  </Button>
+                  <IconButton
+                    disabled={disabled || assistantHelp || !textAreaValue}
+                    size="small"
+                    sx={{
+                      display: {
+                        xs: assistantUid && !textAreaValue ? 'none' : 'inherit',
+                        lg: 'none',
+                      },
+                      alignSelf: 'center',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: '4px',
+                      bgcolor: '#3b82f6',
+                      color: '#fefefe',
+                      '&:hover, &:focus-within': {
+                        bgcolor: '#2563eb',
+                      },
+                    }}
+                    onClick={handleClick}
+                  >
+                    <SendRounded />
+                  </IconButton>
+                </Stack>
+              ),
             },
           }}
-          endDecorator={
-            <Stack
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-              sx={{
-                py: 1,
-                pr: 1,
-                gap: 1,
-              }}
-            >
-              <IconButton
-                disabled={disabled || assistantHelp}
-                loading={assistantHelp}
-                size="sm"
-                variant="plain"
-                sx={{
-                  display: assistantUid && !textAreaValue ? 'inherit' : 'none',
-                  alignSelf: 'center',
-                }}
-                onClick={handleAssistantSend}
-              >
-                <Avatar
-                  variant="plain"
-                  size="sm"
-                  alt={assistantName}
-                  src={assistantAvatar}
-                >
-                  {assistantName}
-                </Avatar>
-              </IconButton>
-              <Button
-                disabled={disabled || assistantHelp || !textAreaValue}
-                size="sm"
-                color="primary"
-                sx={{
-                  display: {
-                    xs: 'none',
-                    lg: assistantUid && !textAreaValue ? 'none' : 'inherit',
-                  },
-                  alignSelf: 'center',
-                }}
-                endDecorator={<SendRounded />}
-                onClick={handleClick}
-              >
-                {`${t('Send')} (Ctrl/⌘ + ⏎)`}
-              </Button>
-              <IconButton
-                disabled={disabled || assistantHelp || !textAreaValue}
-                size="sm"
-                color="primary"
-                variant="solid"
-                sx={{
-                  display: {
-                    xs: assistantUid && !textAreaValue ? 'none' : 'inherit',
-                    lg: 'none',
-                  },
-                  alignSelf: 'center',
-                }}
-                onClick={handleClick}
-              >
-                <SendRounded />
-              </IconButton>
-            </Stack>
-          }
-          onKeyDown={handleSend}
         />
         <IconButton
           disabled={disabled || assistantHelp}
-          size="sm"
-          variant="outlined"
+          size="small"
           sx={{
             mx: 1,
             mb: 0.1,
@@ -377,6 +317,12 @@ export default function MessageInput(props: MessageInputProps) {
             justifySelf: 'flex-end',
             alignSelf: 'flex-end',
             alignItems: 'flex-end',
+            border: '1px solid',
+            borderColor: 'background.default',
+            borderRadius: '4px',
+            '&:hover': {
+              bgcolor: 'background.default',
+            },
           }}
           onClick={handleAssistantChoose}
         >

@@ -49,6 +49,7 @@ const CharacterAlbumPictureUploader = forwardRef<
         borderRadius: '6px',
         border: 1,
         borderColor: 'divider',
+        backgroundColor: 'background.default',
         '&:hover': {
           boxShadow: 3,
           transform: 'translateY(-2px)',
