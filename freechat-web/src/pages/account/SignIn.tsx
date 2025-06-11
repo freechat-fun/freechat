@@ -6,19 +6,21 @@ import {
   Divider,
   FormControl,
   FormLabel,
-  Input,
   Stack,
   Typography,
-} from '@mui/joy';
+  useTheme,
+} from '@mui/material';
 import { GitHub, Google } from '@mui/icons-material';
 import { AliyunIcon } from '../../components/icon';
 import { useErrorMessageBusContext, useMetaInfoContext } from '../../contexts';
 import { UserFullDetailsDTO } from 'freechat-sdk';
+import { TinyInput } from '../../components';
 
 export default function SignIn() {
   const { t } = useTranslation('sign-in');
   const { csrfToken, csrfHeaderName, registrations } = useMetaInfoContext();
   const { handleError } = useErrorMessageBusContext();
+  const theme = useTheme();
 
   const [guestFormState, setGuestFormState] = useState({
     guestUsername: '',
@@ -104,7 +106,7 @@ export default function SignIn() {
   return (
     <Stack direction="row">
       <Box
-        sx={(theme) => ({
+        sx={{
           transition: 'width var(--Transition-duration)',
           transitionDelay: 'calc(var(--Transition-duration) + 0.1s)',
           zIndex: 1,
@@ -113,11 +115,11 @@ export default function SignIn() {
           justifyContent: 'flex-end',
           backdropFilter: 'blur(12px)',
           backgroundColor: 'rgba(255 255 255 / 0.2)',
-          [theme.getColorSchemeSelector('dark')]: {
+          ...(theme.palette.mode === 'dark' && {
             backgroundColor: 'rgba(19 19 24 / 0.4)',
-          },
+          }),
           flexBasis: '50%',
-        })}
+        }}
       >
         <Box
           sx={{
@@ -151,26 +153,25 @@ export default function SignIn() {
               },
             }}
           >
-            <Stack gap={4} sx={{ mb: 2 }}>
-              <Stack gap={1}>
-                <Typography level="h3">{t('Sign in')}</Typography>
-                {/* <Typography level="body-sm">
-                  {t('Don\'t have an account?')}
-                  <Link href="#replace-with-a-link" level="title-sm">
-                    {t('Sign up!')}
-                  </Link>
-                </Typography> */}
+            <Stack spacing={4} sx={{ mb: 2 }}>
+              <Stack spacing={1}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                  {t('Sign in')}
+                </Typography>
               </Stack>
 
               {registrations?.includes('github') && (
                 <Button
-                  variant="soft"
-                  color="neutral"
+                  variant="contained"
+                  color="inherit"
                   fullWidth
-                  startDecorator={<GitHub />}
+                  startIcon={<GitHub />}
                   onClick={() =>
                     handleOAuth2Click('/oauth2/authorization/github')
                   }
+                  sx={{
+                    backgroundColor: 'background.paper',
+                  }}
                 >
                   {t('Continue with GitHub')}
                 </Button>
@@ -178,13 +179,16 @@ export default function SignIn() {
 
               {registrations?.includes('google') && (
                 <Button
-                  variant="soft"
-                  color="neutral"
+                  variant="contained"
+                  color="inherit"
                   fullWidth
-                  startDecorator={<Google />}
+                  startIcon={<Google />}
                   onClick={() =>
                     handleOAuth2Click('/oauth2/authorization/google')
                   }
+                  sx={{
+                    backgroundColor: 'background.paper',
+                  }}
                 >
                   {t('Continue with Google')}
                 </Button>
@@ -192,31 +196,66 @@ export default function SignIn() {
 
               {registrations?.includes('aliyun') && (
                 <Button
-                  variant="soft"
-                  color="neutral"
+                  variant="contained"
+                  color="inherit"
                   fullWidth
-                  startDecorator={<AliyunIcon />}
+                  startIcon={<AliyunIcon />}
                   onClick={() =>
                     handleOAuth2Click('/oauth2/authorization/aliyun')
                   }
+                  sx={{
+                    backgroundColor: 'background.paper',
+                  }}
                 >
                   {t('Continue with Aliyun')}
                 </Button>
               )}
 
-              {registrations.length > 0 && <Divider>{t('or')}</Divider>}
+              {registrations.length > 0 && (
+                <Divider sx={{ color: 'text.secondary' }}>{t('or')}</Divider>
+              )}
 
               <form method="post" action="/login">
-                <FormControl required>
+                <FormControl required fullWidth>
                   <FormLabel>{t('Username')}</FormLabel>
-                  <Input type="text" name="username" />
+                  <TinyInput
+                    type="text"
+                    name="username"
+                    fullWidth
+                    slotProps={{
+                      input: {
+                        sx: {
+                          size: 'small',
+                        },
+                      },
+                    }}
+                    sx={{
+                      maxWidth: undefined,
+                      backgroundColor: 'background.default',
+                    }}
+                  />
                 </FormControl>
-                <FormControl required>
+                <FormControl required fullWidth>
                   <FormLabel>{t('Password')}</FormLabel>
-                  <Input type="password" name="password" />
+                  <TinyInput
+                    type="password"
+                    name="password"
+                    fullWidth
+                    slotProps={{
+                      input: {
+                        sx: {
+                          size: 'small',
+                        },
+                      },
+                    }}
+                    sx={{
+                      maxWidth: undefined,
+                      backgroundColor: 'background.default',
+                    }}
+                  />
                 </FormControl>
-                <Stack gap={4} sx={{ mt: 2 }}>
-                  <Button type="submit" fullWidth>
+                <Stack spacing={4} sx={{ mt: 2 }}>
+                  <Button type="submit" variant="contained" fullWidth>
                     {t('Sign in')}
                   </Button>
                 </Stack>
@@ -238,7 +277,7 @@ export default function SignIn() {
                 />
                 <input type="hidden" name="_csrf" value={csrfToken ?? ''} />
                 <Button
-                  variant="plain"
+                  variant="text"
                   color="primary"
                   onClick={handleGuestClick}
                   sx={{
@@ -253,61 +292,12 @@ export default function SignIn() {
                 </Button>
               </form>
             </Stack>
-            {/* <Stack sx={{
-              alignItems: 'center',
-              display: icpCode ? 'flex' : 'none'
-            }}>
-              <Link fontSize="small" href="https://beian.miit.gov.cn/" target="_blank">ICP备{icpCode}</Link>
-            </Stack>
-            <Divider
-              sx={(theme) => ({
-                [theme.getColorSchemeSelector('light')]: {
-                  color: { xs: '#FFF', md: 'text.tertiary' },
-                  '--Divider-lineColor': {
-                    xs: '#FFF',
-                    md: 'var(--joy-palette-divider)',
-                  },
-                },
-              })}
-            >
-              {t('or')}
-            </Divider>
-            <Stack gap={4} sx={{ mt: 2 }}>
-              <form method="post" action="/login">
-                <FormControl required>
-                  <FormLabel>{t('Username')}</FormLabel>
-                  <Input type="text" name="username" />
-                </FormControl>
-                <FormControl required>
-                  <FormLabel>{t('Password')}</FormLabel>
-                  <Input type="password" name="password" />
-                </FormControl>
-                <Stack gap={4} sx={{ mt: 2 }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Checkbox size="sm" label={t('Remember me')} name="persistent" />
-                    <Link level="title-sm" href="#replace-with-a-link">
-                    {t('Forgot your password?')}
-                    </Link>
-                  </Box>
-                  <Button type="submit" fullWidth>
-                  {t('Sign in')}
-                  </Button>
-                </Stack>
-                <input type="hidden" name="_csrf" value={csrfToken} />
-              </form>
-            </Stack> */}
           </Box>
         </Box>
       </Box>
       <Box
         id="sign-in-cover"
-        sx={(theme) => ({
+        sx={{
           height: '100dvh',
           position: 'fixed',
           right: 0,
@@ -323,11 +313,11 @@ export default function SignIn() {
           backgroundBlendMode: 'overlay',
           backgroundImage:
             'url(/img/sign_in_light.jpg), linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
-          [theme.getColorSchemeSelector('dark')]: {
+          ...(theme.palette.mode === 'dark' && {
             backgroundImage:
               'url(/img/sign_in_dark.jpg), linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-          },
-        })}
+          }),
+        }}
       />
     </Stack>
   );
