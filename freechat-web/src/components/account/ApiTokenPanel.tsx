@@ -130,7 +130,7 @@ export default function ApiTokenPanel() {
           <AddCircleRounded />
         </IconButton>
       </Box>
-      <TableContainer>
+      <TableContainer sx={{ borderRadius: '6px' }}>
         <Table size="small">
           <TableHead>
             <TableRow>

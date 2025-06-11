@@ -16,7 +16,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Paper,
 } from '@mui/material';
 import { AiApiKeyCreateDTO, AiApiKeyInfoDTO } from 'freechat-sdk';
 import {
@@ -124,7 +123,7 @@ export default function AiApiKeyPanel(props: { provider: string }) {
           <AddCircleRounded />
         </IconButton>
       </Box>
-      <TableContainer component={Paper}>
+      <TableContainer sx={{ borderRadius: '6px' }}>
         <Table size="small">
           <TableHead>
             <TableRow>

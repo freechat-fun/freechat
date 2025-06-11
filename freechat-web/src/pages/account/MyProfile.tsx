@@ -6,25 +6,27 @@ import {
   useMetaInfoContext,
 } from '../../contexts';
 import {
-  AspectRatio,
   Button,
-  Card,
-  CardActions,
-  CardOverflow,
   FormControl,
   FormLabel,
-  Input,
   Stack,
-  Textarea,
   Typography,
   Radio,
   RadioGroup,
-  Grid,
+  FormControlLabel,
   Avatar,
   Divider,
-} from '@mui/joy';
+  Box,
+} from '@mui/material';
 import { DoneRounded, SaveAltRounded } from '@mui/icons-material';
-import { ImagePicker, LinePlaceholder } from '../../components';
+import {
+  CommonGridBox,
+  ContentTextarea,
+  ImagePicker,
+  LinePlaceholder,
+  StyledStack,
+  TinyInput,
+} from '../../components';
 import { UserDetailsDTO } from 'freechat-sdk';
 import { getCompressedImage } from '../../libs/ui_utils';
 
@@ -40,9 +42,6 @@ export default function MyProfile() {
   const [currentAvatar, setCurrentAvatar] = useState<string>();
   const [editEnabled, setEditEnabled] = useState(false);
   const [saved, setSaved] = useState(false);
-
-  const labelGridUnits = 3;
-  const valueGridUnits = 12 - labelGridUnits;
 
   useEffect(() => {
     getUserInfo();
@@ -164,13 +163,13 @@ export default function MyProfile() {
   return (
     <>
       <LinePlaceholder spacing={6} />
-      <Typography level="title-lg" sx={{ ml: 3 }}>
+      <Typography variant="h5" sx={{ ml: 3 }}>
         {t('My details')}
       </Typography>
       <Divider />
       <LinePlaceholder />
       <form onSubmit={handleSubmit}>
-        <Card
+        <StyledStack
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -178,97 +177,123 @@ export default function MyProfile() {
             maxWidth: '800px',
             minWidth: '540px',
             mx: 'auto',
-            gap: 2,
+            '&:hover, &:focus-within': { transform: 'none' },
           }}
         >
           <Stack direction="row" spacing={3} sx={{ display: 'flex', my: 1 }}>
-            <Grid
-              container
-              spacing={2}
-              alignItems="center"
-              sx={{ flexGrow: 1 }}
-            >
-              <Grid xs={labelGridUnits}>
-                <FormLabel>{t('Username')}</FormLabel>
-              </Grid>
-              <Grid xs={valueGridUnits}>
-                <Typography>{username || ''}</Typography>
-              </Grid>
+            <CommonGridBox sx={{ flexGrow: 1, gridTemplateColumns: '1fr 3fr' }}>
+              <FormLabel>{t('Username')}</FormLabel>
+              <Typography>{username || ''}</Typography>
 
-              <Grid xs={labelGridUnits}>
-                <FormLabel>{t('Coming from')}</FormLabel>
-              </Grid>
-              <Grid xs={valueGridUnits}>
-                <Typography>{platform || ''}</Typography>
-              </Grid>
+              <FormLabel>{t('Coming from')}</FormLabel>
+              <Typography>{platform || ''}</Typography>
 
-              <Grid xs={labelGridUnits}>
-                <FormLabel>{t('Gender')}</FormLabel>
-              </Grid>
-              <Grid xs={valueGridUnits}>
-                <RadioGroup
-                  name="genderGroup"
-                  orientation="horizontal"
-                  value={currentGender}
-                  onChange={handleGenderChange}
-                  sx={{ my: 1 }}
-                >
-                  <Radio
-                    value="male"
-                    label={t('Male')}
-                    disabled={!editEnabled}
-                  />
-                  <Radio
-                    value="female"
-                    label={t('Female')}
-                    disabled={!editEnabled}
-                  />
-                  <Radio
-                    value="other"
-                    label={t('Other')}
-                    disabled={!editEnabled}
-                  />
-                </RadioGroup>
-              </Grid>
-
-              <Grid xs={labelGridUnits}>
-                <FormLabel>{t('Nickname')}</FormLabel>
-              </Grid>
-              <Grid xs={valueGridUnits}>
-                <Input
-                  disabled={!editEnabled}
-                  name="nickname"
-                  placeholder={currentNickname}
-                  value={currentNickname}
-                  onChange={handleNicknameChange}
-                />
-              </Grid>
-              <Grid xs={12}>
-                <FormControl>
-                  <FormLabel>
-                    {t(
-                      'Describe yourself: (This will make characters know you better.)'
-                    )}
-                  </FormLabel>
-                  <Textarea
-                    disabled={!editEnabled}
-                    name="description"
-                    value={currentDescription}
-                    minRows={3}
-                    onChange={handleDescriptionChange}
-                  />
-                </FormControl>
-              </Grid>
-            </Grid>
-            <Stack direction="column" spacing={1} sx={{ minWidth: 120 }}>
-              <AspectRatio
-                ratio="1"
-                maxHeight={200}
-                sx={{ flex: 1, borderRadius: '50%' }}
+              <FormLabel>{t('Gender')}</FormLabel>
+              <RadioGroup
+                name="genderGroup"
+                row
+                value={currentGender}
+                onChange={handleGenderChange}
               >
-                <Avatar variant="soft" src={currentAvatar} />
-              </AspectRatio>
+                <FormControlLabel
+                  value="male"
+                  control={<Radio size="small" />}
+                  label={t('Male')}
+                  disabled={!editEnabled}
+                  sx={{
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '0.9rem',
+                    },
+                  }}
+                />
+                <FormControlLabel
+                  value="female"
+                  control={<Radio size="small" />}
+                  label={t('Female')}
+                  disabled={!editEnabled}
+                  sx={{
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '0.9rem',
+                    },
+                  }}
+                />
+                <FormControlLabel
+                  value="other"
+                  control={<Radio size="small" />}
+                  label={t('Other')}
+                  disabled={!editEnabled}
+                  sx={{
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '0.9rem',
+                    },
+                  }}
+                />
+              </RadioGroup>
+
+              <FormLabel>{t('Nickname')}</FormLabel>
+              <TinyInput
+                disabled={!editEnabled}
+                name="nickname"
+                placeholder={currentNickname}
+                value={currentNickname}
+                onChange={handleNicknameChange}
+                fullWidth
+                slotProps={{
+                  input: {
+                    size: 'small',
+                    sx: { fontSize: '0.9rem' },
+                  },
+                }}
+                sx={{
+                  maxWidth: undefined,
+                }}
+              />
+
+              <FormControl fullWidth sx={{ gridColumn: 'span 2', gap: 0.5 }}>
+                <FormLabel>
+                  {t(
+                    'Describe yourself: (This will make characters know you better.)'
+                  )}
+                </FormLabel>
+                <ContentTextarea
+                  disabled={!editEnabled}
+                  name="description"
+                  value={currentDescription}
+                  minRows={3}
+                  onChange={handleDescriptionChange}
+                  sx={{
+                    fontSize: '0.9rem',
+                  }}
+                />
+              </FormControl>
+            </CommonGridBox>
+            <Stack
+              direction="column"
+              spacing={1}
+              sx={{ minWidth: 120, position: 'relative' }}
+            >
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  paddingBottom: '100%',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                }}
+              >
+                <Avatar
+                  src={currentAvatar}
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
+              </Box>
               <ImagePicker
+                key="picture-picker"
                 onImageSelect={handleImageSelect}
                 previewProps={{
                   maxWidth: '200px',
@@ -277,35 +302,34 @@ export default function MyProfile() {
                 }}
                 disabled={!editEnabled}
                 aria-label="upload new picture"
-                size="sm"
-                variant="outlined"
-                color="neutral"
+                size="small"
                 sx={{
-                  bgcolor: 'background.body',
+                  backgroundColor: 'background.paper',
                   position: 'absolute',
                   zIndex: 2,
                   borderRadius: '50%',
-                  right: 20,
-                  top: 110,
-                  boxShadow: 'sm',
+                  right: 5,
+                  top: 85,
+                  boxShadow: 1,
+                  '&:hover, &:focus-within': {
+                    backgroundColor: 'background.paper',
+                  },
                 }}
               />
             </Stack>
           </Stack>
-          <CardOverflow>
-            <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-              <Button
-                size="sm"
-                variant="solid"
-                type="submit"
-                startDecorator={saved ? <DoneRounded /> : <SaveAltRounded />}
-                disabled={saved}
-              >
-                {t('button:Save')}
-              </Button>
-            </CardActions>
-          </CardOverflow>
-        </Card>
+          <Box sx={{ alignSelf: 'flex-end', pt: 2 }}>
+            <Button
+              size="small"
+              variant="contained"
+              type="submit"
+              startIcon={saved ? <DoneRounded /> : <SaveAltRounded />}
+              disabled={saved}
+            >
+              {t('button:Save')}
+            </Button>
+          </Box>
+        </StyledStack>
       </form>
     </>
   );

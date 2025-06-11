@@ -22,6 +22,7 @@ const TinyInput = forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
         m: theme.spacing(0),
         p: theme.spacing(0),
         alignSelf: 'start',
+        borderRadius: '6px',
         ...sx,
       }}
       {...others}

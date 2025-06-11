@@ -50,6 +50,15 @@ const theme = createTheme({
       },
     },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
+  },
 });
 
 function App() {

@@ -1,77 +1,77 @@
 import { useTranslation } from 'react-i18next';
-import { Tab, TabList, TabPanel, Tabs, tabClasses } from '@mui/joy';
+import { Tab, Tabs, Box } from '@mui/material';
 import { ApiTokenPanel, AiApiKeyPanel } from '../../components/account';
 import { providers } from '../../configs/model-providers-config';
 import { LinePlaceholder } from '../../components';
+import { useState } from 'react';
 
 export default function Credentials() {
   const { t } = useTranslation(['account', 'button']);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   return (
     <>
       <LinePlaceholder spacing={6} />
-      <Tabs
-        defaultValue={0}
-        sx={{
-          bgcolor: 'transparent',
-        }}
-      >
-        <TabList
-          tabFlex={1}
-          size="sm"
+      <Box sx={{ bgcolor: 'transparent' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
           sx={{
             pl: { xs: 0, md: 4 },
-            justifyContent: 'left',
-            [`&& .${tabClasses.root}`]: {
-              fontWeight: '600',
-              flex: 'initial',
-              color: 'text.tertiary',
-              [`&.${tabClasses.selected}`]: {
-                bgcolor: 'transparent',
-                color: 'text.primary',
-                '&::after': {
-                  height: '2px',
-                  bgcolor: 'primary.500',
-                },
-              },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'primary.main',
+              height: '2px',
             },
           }}
         >
           <Tab
-            sx={{ borderRadius: '6px 6px 0 0' }}
-            indicatorInset
-            value={0}
-            key="api-token-tab"
-          >
-            {t('Site')}
-          </Tab>
+            label={t('Site')}
+            sx={{
+              fontWeight: 600,
+              color: 'text.secondary',
+              '&.Mui-selected': {
+                color: 'text.primary',
+                bgcolor: 'transparent',
+              },
+            }}
+          />
           {providers
             .filter((provider) => provider.enableApiKey)
             .map((provider, index) => (
               <Tab
-                sx={{ borderRadius: '6px 6px 0 0' }}
-                indicatorInset
-                value={index + 1}
                 key={`ai-model-provider-tab-${index}`}
-              >
-                {provider.label}
-              </Tab>
+                label={provider.label}
+                sx={{
+                  fontWeight: 600,
+                  color: 'text.secondary',
+                  '&.Mui-selected': {
+                    color: 'text.primary',
+                    bgcolor: 'transparent',
+                  },
+                }}
+              />
             ))}
-        </TabList>
-        <TabPanel value={0} key="ap-token-panel">
-          <ApiTokenPanel />
-        </TabPanel>
-        {providers
-          .filter((provider) => provider.enableApiKey)
-          .map((provider, index) => (
-            <TabPanel
-              value={index + 1}
-              key={`ai-model-provider-panel-${index}`}
-            >
-              <AiApiKeyPanel provider={provider.provider} />
-            </TabPanel>
-          ))}
-      </Tabs>
+        </Tabs>
+
+        <Box sx={{ mt: 2 }}>
+          {value === 0 && <ApiTokenPanel />}
+          {providers
+            .filter((provider) => provider.enableApiKey)
+            .map(
+              (provider, index) =>
+                value === index + 1 && (
+                  <AiApiKeyPanel
+                    key={`ai-model-provider-panel-${index}`}
+                    provider={provider.provider}
+                  />
+                )
+            )}
+        </Box>
+      </Box>
     </>
   );
 }
