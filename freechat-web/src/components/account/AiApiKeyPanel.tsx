@@ -6,6 +6,7 @@ import {
 } from '../../contexts';
 import {
   Box,
+  DialogContentText,
   FormLabel,
   IconButton,
   Stack,
@@ -176,13 +177,13 @@ export default function AiApiKeyPanel(props: { provider: string }) {
         }}
         onConfirm={handleRemove}
       >
-        <Typography>
+        <DialogContentText>
           {
             keys
               .filter((key) => key.id === keyIdToConfirm)
               .map((key) => key.token)[0]
           }
-        </Typography>
+        </DialogContentText>
       </ConfirmModal>
       <ConfirmModal
         open={addingKey}

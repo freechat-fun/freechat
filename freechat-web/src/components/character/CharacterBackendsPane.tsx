@@ -7,6 +7,7 @@ import {
 } from '../../contexts';
 import { CharacterBackendDetailsDTO } from 'freechat-sdk';
 import {
+  DialogContentText,
   IconButton,
   Radio,
   Stack,
@@ -213,7 +214,7 @@ export default function CharacterBackendsPane({
         }}
         onConfirm={handleDelete}
       >
-        <Typography />
+        <DialogContentText />
       </ConfirmModal>
     </Stack>
   );

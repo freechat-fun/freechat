@@ -10,7 +10,6 @@ import {
   Stack,
   IconButton,
   DialogProps,
-  DialogContentText,
   Typography,
 } from '@mui/material';
 import { CloseRounded } from '@mui/icons-material';
@@ -60,7 +59,7 @@ const ConfirmModal = forwardRef<HTMLDivElement, ConfirmModalProps>(
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="h6" color={dialog?.color} sx={{ mr: 2 }}>
+          <Typography color={dialog?.color} sx={{ mr: 2 }}>
             {dialog?.title}
           </Typography>
           <IconButton aria-label="close" onClick={handleClose}>
@@ -76,7 +75,7 @@ const ConfirmModal = forwardRef<HTMLDivElement, ConfirmModalProps>(
               p: 1,
             }}
           >
-            <DialogContentText>{children}</DialogContentText>
+            {children}
           </Stack>
         </DialogContent>
         <DialogActions>

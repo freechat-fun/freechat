@@ -40,6 +40,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  DialogContentText,
 } from '@mui/material';
 import { SxProps } from '@mui/material/styles';
 import {
@@ -428,7 +429,7 @@ export default function Prompts() {
         }}
         onConfirm={handleDelete}
       >
-        <Typography>{recordDeleted?.name}</Typography>
+        <DialogContentText>{recordDeleted?.name}</DialogContentText>
       </ConfirmModal>
 
       <ConfirmModal

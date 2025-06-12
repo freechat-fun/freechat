@@ -1,6 +1,7 @@
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  DialogContentText,
   IconButton,
   Link,
   Stack,
@@ -294,7 +295,7 @@ export default function CharacterDocumentsPane({
         }}
         onConfirm={() => handleDeleteTask(taskToConfirm)}
       >
-        <Typography>{getTaskFilename(taskToConfirm)}</Typography>
+        <DialogContentText>{getTaskFilename(taskToConfirm)}</DialogContentText>
       </ConfirmModal>
 
       <CharacterDocumentUploader

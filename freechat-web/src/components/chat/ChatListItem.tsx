@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   Box,
-  IconButton,
   ListItem,
   ListItemButton,
   ListItemButtonProps,
@@ -17,7 +16,11 @@ import {
   toggleChatsPane,
 } from '../../libs/chat_utils';
 import { AvatarWithStatus } from '.';
-import { CommonGridBox, HighlightedTypography } from '..';
+import {
+  CommonGridBox,
+  HighlightedTypography,
+  TransparentIconButton,
+} from '..';
 import { CircleRounded, RemoveCircleRounded } from '@mui/icons-material';
 import { getDateLabel } from '../../libs/date_utils';
 import { useTranslation } from 'react-i18next';
@@ -152,13 +155,15 @@ export default function ChatListItem(props: ChatListItemProps) {
               </Typography>
             </Stack>
             {editMode && (
-              <IconButton
+              <TransparentIconButton
                 size="small"
-                sx={{ px: 1 }}
-                onClick={() => onRemoveChat?.()}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onRemoveChat?.();
+                }}
               >
                 <RemoveCircleRounded fontSize="small" />
-              </IconButton>
+              </TransparentIconButton>
             )}
           </CommonGridBox>
         </ListItemButton>
