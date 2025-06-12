@@ -9,7 +9,6 @@ import {
   ListItemButtonProps,
   Tooltip,
   TooltipProps,
-  useTheme,
 } from '@mui/material';
 import {
   AccountTreeRounded,
@@ -61,7 +60,6 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { isAuthorized } = useMetaInfoContext();
-  const theme = useTheme();
 
   const isSelected = useCallback(
     (targetPathname: string, currentPathname: string) => {
@@ -83,7 +81,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
         navigate(href);
       }}
       sx={{
-        borderRadius: theme.shape.borderRadius / 2,
+        borderRadius: '4px',
         px: 1,
       }}
       {...others}
@@ -94,10 +92,9 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
 });
 
 export default function ThinSidebar() {
-  const theme = useTheme();
   const { t } = useTranslation('sidebar');
   const { csrfToken, isAuthorized } = useMetaInfoContext();
-  const borderRadius = theme.shape.borderRadius / 2;
+  const borderRadius = '4px';
 
   return (
     <Box
@@ -119,22 +116,28 @@ export default function ThinSidebar() {
       <div>
         <List
           dense
-          sx={{
-            bgcolor: 'transparent',
-            borderRadius: borderRadius,
-            boxShadow: theme.shadows[3],
-            borderLeft: 0,
-            borderTop: 1,
-            borderRight: 1,
-            borderBottom: 0,
-            borderColor: theme.palette.background.default,
-            px: 0.5,
-            py: 2,
-            m: 0,
-            gap: 1,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
+          sx={[
+            () => ({
+              bgcolor: 'transparent',
+              borderRadius: borderRadius,
+              boxShadow: 3,
+              borderLeft: 0,
+              borderTop: 1,
+              borderRight: 1,
+              borderBottom: 0,
+              borderColor: 'divider',
+              px: 0.5,
+              py: 2,
+              m: 0,
+              gap: 1,
+              display: 'flex',
+              flexDirection: 'column',
+            }),
+            (theme) =>
+              theme.applyStyles('dark', {
+                bgcolor: 'background.paper',
+              }),
+          ]}
         >
           <ListItem disablePadding>
             <ItemTooltip title={t('Home')}>

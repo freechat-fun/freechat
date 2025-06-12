@@ -322,7 +322,10 @@ export default function Prompts() {
           alignItems: { xs: 'start', lg: 'center' },
         }}
       >
-        <InfoSearchbar onSearch={handleSearch} />
+        <InfoSearchbar
+          onSearch={handleSearch}
+          sx={{ width: { sm: '850px' } }}
+        />
         <Button
           startIcon={<AddCircleRounded />}
           variant="contained"

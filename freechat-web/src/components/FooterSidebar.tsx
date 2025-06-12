@@ -9,7 +9,6 @@ import {
   ListItemButtonProps,
   Tooltip,
   TooltipProps,
-  useTheme,
 } from '@mui/material';
 import {
   GitHub,
@@ -52,7 +51,6 @@ type ItemButtonProps = ListItemButtonProps & {
 
 const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
   const { children, href, anonymous = false, ...others } = props;
-  const theme = useTheme();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { isAuthorized } = useMetaInfoContext();
@@ -77,7 +75,7 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
         navigate(href);
       }}
       sx={{
-        borderRadius: theme.shape.borderRadius / 2,
+        borderRadius: '4px',
         px: 1,
       }}
       {...others}
@@ -88,10 +86,9 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
 });
 
 export default function FooterSidebar() {
-  const theme = useTheme();
   const { t } = useTranslation('sidebar');
   const { csrfToken, isAuthorized } = useMetaInfoContext();
-  const borderRadius = theme.shape.borderRadius / 2;
+  const borderRadius = '4px';
 
   return (
     <Box
@@ -115,22 +112,28 @@ export default function FooterSidebar() {
       <div>
         <List
           dense
-          sx={{
-            bgcolor: 'transparent',
-            borderRadius: borderRadius,
-            boxShadow: theme.shadows[3],
-            borderLeft: 1,
-            borderTop: 1,
-            borderRight: 1,
-            borderBottom: 0,
-            borderColor: theme.palette.background.default,
-            px: 1,
-            py: 0.5,
-            m: 0,
-            gap: 0.5,
-            display: 'flex',
-            flexDirection: 'row',
-          }}
+          sx={[
+            () => ({
+              bgcolor: 'transparent',
+              borderRadius: borderRadius,
+              boxShadow: 3,
+              borderLeft: 1,
+              borderTop: 1,
+              borderRight: 1,
+              borderBottom: 0,
+              borderColor: 'divider',
+              px: 1,
+              py: 0.5,
+              m: 0,
+              gap: 0.5,
+              display: 'flex',
+              flexDirection: 'row',
+            }),
+            (theme) =>
+              theme.applyStyles('dark', {
+                borderColor: theme.palette.grey[600],
+              }),
+          ]}
         >
           <ListItem disablePadding>
             <ItemTooltip title={t('Home')}>
