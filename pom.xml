@@ -38,6 +38,7 @@
         <objenesis.version>3.4</objenesis.version>
         <swagger-parser.version>2.1.29</swagger-parser.version>
         <langchain4j.version>1.0.1</langchain4j.version>
+        <langchain4j-community.version>1.0.1-beta6</langchain4j-community.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.2.1</buildnumber-maven-plugin.version>
@@ -148,7 +149,7 @@
             <dependency>
                 <groupId>dev.langchain4j</groupId>
                 <artifactId>langchain4j-community-bom</artifactId>
-                <version>${langchain4j.version}</version>
+                <version>${langchain4j-community.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
