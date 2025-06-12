@@ -3,7 +3,7 @@ import { Drawer, DrawerProps, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  borderRadius: theme.shape.borderRadius * 2,
+  borderRadius: '8px',
   padding: theme.spacing(2),
   display: 'flex',
   flexDirection: 'column',
@@ -19,12 +19,14 @@ const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     <Drawer
       ref={ref}
       anchor="right"
-      PaperProps={{
-        sx: {
-          width: { md: '35%' },
-          backgroundColor: 'transparent',
-          p: { sm: 0, md: 2 },
-          boxShadow: 'none',
+      slotProps={{
+        paper: {
+          sx: {
+            width: { md: '35%' },
+            backgroundColor: 'transparent',
+            p: { sm: 0, md: 2 },
+            boxShadow: 'none',
+          },
         },
       }}
       {...others}

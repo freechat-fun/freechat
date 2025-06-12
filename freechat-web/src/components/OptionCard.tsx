@@ -2,7 +2,7 @@ import { Box, styled } from '@mui/material';
 
 const OptionCard = styled(Box)(({ theme }) => ({
   border: '1px solid transparent',
-  borderRadius: theme.shape.borderRadius * 2,
+  borderRadius: '8px',
   boxShadow: 'none',
   '&:hover, &:focus-within': {
     borderColor: theme.palette.primary.main,

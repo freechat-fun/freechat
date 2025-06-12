@@ -1,23 +1,30 @@
 #!/usr/bin/env bash
 
-source $(dirname ${BASH_SOURCE[0]})/setenv.sh
+source $(dirname "${BASH_SOURCE[0]}")/setenv.sh
 
 check_docker
 
 COMPOSE_CONFIG=$(mktemp -d)/build.yml
+PUSH_OPTION=""
 
 if [[ " ${ARGS[*]} " =~ " --release " ]]; then
-  cd ${PROJECT_PATH}/${SDK_MODULE}/typescript
+  cd ${PROJECT_PATH}/"${SDK_MODULE}"/typescript || exit
   npm install;ret=$?
   test ${ret} -eq 0 || die "ERROR: Failed to build${SDK_MODULE}/typescript!"
   npm run build;ret=$?
   test ${ret} -eq 0 || die "ERROR: Failed to build${SDK_MODULE}/typescript!"
-  cd ${PROJECT_PATH}/${WEB_MODULE}
+  cd ${PROJECT_PATH}/"${WEB_MODULE}" || exit
   npm install
   test ${ret} -eq 0 || die "ERROR: Failed to build ${WEB_MODULE}!"
+  PUSH_OPTION="--push"
 else
-  cd ${PROJECT_PATH}/${WEB_MODULE}
+  if [[ " ${ARGS[*]} " =~ " --push " ]]; then
+    PUSH_OPTION="--push"
+  fi
+  cd ${PROJECT_PATH}/"${WEB_MODULE}" || exit
 fi
+
+
 
 rm -rf dist
 npm run build;ret=$?
@@ -34,7 +41,7 @@ cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/assets ${PROJECT_PATH}/${STARTER_MOD
 cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist/img ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img
 cp -R -f ${PROJECT_PATH}/img/* ${PROJECT_PATH}/${STARTER_MODULE}/src/main/resources/static/img/
 
-cd ${SCRIPTS_PATH}
+cd "${SCRIPTS_PATH}" || exit
 
 mvn -B clean package -Dmaven.test.skip=true -f ${PROJECT_PATH}/pom.xml;ret=$?
 test ${ret} -eq 0 || die "ERROR: Failed to build ${PROJECT_NAME}!"
@@ -80,7 +87,7 @@ EOF
   export DOCKER_BUILDKIT=1
   docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build \
     --builder multiple-platforms-builder \
-    --push \
+    ${PUSH_OPTION} \
     ${PROJECT_NAME}
 
 else
@@ -97,7 +104,7 @@ EOF
     cat ${COMPOSE_CONFIG}
   fi
 
-  docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build --push ${PROJECT_NAME}
+  docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build ${PUSH_OPTION} ${PROJECT_NAME}
 fi
 
 rm -f ${DOCKER_CONFIG_HOME}/${PROJECT_NAME}.jar

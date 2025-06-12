@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
-source $(dirname ${BASH_SOURCE[0]})/setenv.sh
+source $(dirname "${BASH_SOURCE[0]}")/setenv.sh
 
 check_docker
 
 COMPOSE_CONFIG=$(mktemp -d)/build-web.yml
+PUSH_OPTION=""
 
-cd ${PROJECT_PATH}/${WEB_MODULE}
+if [[ " ${ARGS[*]} " =~ " --push " ]]; then
+  PUSH_OPTION="--push"
+fi
+
+cd ${PROJECT_PATH}/"${WEB_MODULE}" || exit
 rm -rf dist
 npm run build;ret=$?
 test ${ret} -eq 0 || die "ERROR: Failed to build ${WEB_MODULE}!"
@@ -16,7 +21,7 @@ if [[ -n "${web_version}" ]]; then
   cp -f dist/assets/index.js dist/assets/index-${web_version}.js
 fi
 
-cd ${DOCKER_CONFIG_HOME}
+cd "${DOCKER_CONFIG_HOME}" || exit
 rm -rf web
 cp -R -f ${PROJECT_PATH}/${WEB_MODULE}/dist web
 
@@ -47,6 +52,6 @@ if [[ "${VERBOSE}" == "1" ]];then
   cat ${COMPOSE_CONFIG}
 fi
 
-docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
+docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build ${PUSH_OPTION} ${WEB_MODULE}
 
 rm -rf web
