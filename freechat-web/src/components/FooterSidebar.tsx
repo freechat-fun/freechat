@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { forwardRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -125,7 +126,7 @@ export default function FooterSidebar() {
               px: 1,
               py: 0.5,
               m: 0,
-              gap: 0.5,
+              gap: 2,
               display: 'flex',
               flexDirection: 'row',
             }),

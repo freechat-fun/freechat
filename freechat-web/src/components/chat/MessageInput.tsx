@@ -192,7 +192,7 @@ export default function MessageInput(props: MessageInputProps) {
   return (
     <Stack
       sx={{
-        px: 2,
+        px: 1,
         pb: { xs: 1, sm: 3 },
         flexDirection: 'row',
       }}
@@ -212,6 +212,7 @@ export default function MessageInput(props: MessageInputProps) {
           sx={{
             maxWidth: undefined,
             flex: 1,
+            mx: 1,
             bgcolor: 'background.paper',
             borderRadius: '4px',
             '& .MuiOutlinedInput-root': {
@@ -318,7 +319,7 @@ export default function MessageInput(props: MessageInputProps) {
             alignSelf: 'flex-end',
             alignItems: 'flex-end',
             border: '1px solid',
-            borderColor: 'background.default',
+            borderColor: 'divider',
             borderRadius: '4px',
             '&:hover': {
               bgcolor: 'background.default',
