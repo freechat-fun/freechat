@@ -57,7 +57,7 @@ function App() {
               '--Transition-duration': '0.4s', // set to `none` to disable transition
               '--Sidebar-width': '240px',
               '--Header-height': '40px',
-              '--Footer-height': '50px',
+              '--Footer-height': '42px',
               '--Footer-width': '80vw',
             },
           })}
