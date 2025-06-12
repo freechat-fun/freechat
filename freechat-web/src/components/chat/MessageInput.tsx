@@ -212,7 +212,7 @@ export default function MessageInput(props: MessageInputProps) {
           sx={{
             maxWidth: undefined,
             flex: 1,
-            bgcolor: 'background.default',
+            bgcolor: 'background.paper',
             borderRadius: '4px',
             '& .MuiOutlinedInput-root': {
               py: 0,

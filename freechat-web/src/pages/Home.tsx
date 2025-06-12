@@ -15,7 +15,6 @@ import {
   CharacterRecommendationViews,
 } from '../components/character';
 import { useColorScheme } from '@mui/material';
-import StyledStack from '../components/StyledStack';
 import { useState } from 'react';
 
 export default function Home() {
@@ -31,15 +30,17 @@ export default function Home() {
     <>
       <LinePlaceholder />
       <Stack sx={{ display: { xs: 'none', sm: 'inherit' } }}>
-        <StyledStack
+        <Stack
           sx={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            '&:hover, &:focus-within': {
-              boxShadow: 1,
-              transform: 'none',
-            },
+            m: 2,
+            p: 2,
+            boxShadow: 1,
+            borderRadius: '6px',
+            border: `1px solid divider`,
+            gap: 2,
           }}
         >
           <Box
@@ -78,7 +79,7 @@ export default function Home() {
               }}
             />
           </Box>
-        </StyledStack>
+        </Stack>
 
         <LinePlaceholder spacing={6} />
 
@@ -127,15 +128,14 @@ export default function Home() {
       </Stack>
 
       <Stack sx={{ display: { xs: 'inherit', sm: 'none' } }}>
-        <StyledStack
+        <Stack
           sx={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            '&:hover, &:focus-within': {
-              boxShadow: 1,
-              transform: 'none',
-            },
+            m: 0,
+            p: 2,
+            gap: 2,
           }}
         >
           <Box
@@ -174,7 +174,7 @@ export default function Home() {
               }}
             />
           </Box>
-        </StyledStack>
+        </Stack>
 
         <LinePlaceholder />
         <Paper
