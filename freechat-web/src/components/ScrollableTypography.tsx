@@ -20,7 +20,7 @@ const ScrollableTypography = forwardRef<HTMLDivElement, TypographyProps>(
           whiteSpace: 'pre-wrap',
           border: 1,
           borderColor: theme.palette.divider,
-          borderRadius: theme.shape.borderRadius / 2,
+          borderRadius: '2px',
           ...sx,
         }}
         {...others}
