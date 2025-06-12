@@ -8,6 +8,7 @@ import {
   Box,
   Checkbox,
   Chip,
+  DialogContentText,
   FormControlLabel,
   IconButton,
   Stack,
@@ -182,13 +183,13 @@ export default function ApiTokenPanel() {
         }}
         onConfirm={handleDelete}
       >
-        <Typography sx={{ textDecoration: 'line-through' }}>
+        <DialogContentText sx={{ textDecoration: 'line-through' }}>
           {
             tokens
               .filter((token) => token.id === tokenIdToConfirm)
               .map((token) => token.token)[0]
           }
-        </Typography>
+        </DialogContentText>
       </ConfirmModal>
       <ConfirmModal
         open={!!tokenText}

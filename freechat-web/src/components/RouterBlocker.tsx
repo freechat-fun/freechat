@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { useBlocker } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@mui/material';
+import { DialogContentText } from '@mui/material';
 import { ConfirmModal } from '.';
 import { LaunchRounded } from '@mui/icons-material';
 
@@ -36,10 +36,10 @@ const RouterBlocker = forwardRef<HTMLDivElement, RouterBlockerProps>(
         onClose={() => blocker.reset?.()}
         onConfirm={() => blocker.proceed?.()}
       >
-        <Typography>
+        <DialogContentText>
           {message ||
             t('You have unsaved changes. Are you sure you want to leave?')}
-        </Typography>
+        </DialogContentText>
       </ConfirmModal>
     );
   }

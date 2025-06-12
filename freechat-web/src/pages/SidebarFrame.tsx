@@ -1,4 +1,4 @@
-import { Box, IconButton } from '@mui/joy';
+import { Box, IconButton } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import { ThinSidebar, FooterSidebar } from '../components';
 import { useEffect, useRef, useState } from 'react';
@@ -54,24 +54,28 @@ export default function SidebarFrame() {
       >
         <Outlet />
       </Box>
-      <IconButton
-        variant="solid"
-        size="lg"
-        sx={{
-          display: showScrollToTop ? 'block' : 'none',
-          position: 'fixed',
-          bottom: {
-            xs: 'calc(10px + var(--Footer-height))',
-            sm: '40px',
-          },
-          right: '40px',
-          borderRadius: '50%',
-          zIndex: 1000,
-        }}
-        onClick={scrollToTop}
-      >
-        <KeyboardDoubleArrowUpRounded />
-      </IconButton>
+      {showScrollToTop && (
+        <IconButton
+          size="large"
+          onClick={scrollToTop}
+          sx={(theme) => ({
+            position: 'fixed',
+            bottom: {
+              xs: 'calc(10px + var(--Footer-height))',
+              sm: '40px',
+            },
+            right: '40px',
+            zIndex: 1000,
+            backgroundColor: theme.palette.grey[600],
+            color: theme.palette.common.white,
+            '&:hover': {
+              backgroundColor: theme.palette.grey[700],
+            },
+          })}
+        >
+          <KeyboardDoubleArrowUpRounded />
+        </IconButton>
+      )}
       <FooterSidebar />
     </>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Sheet, Typography } from '@mui/joy';
+import { Box, DialogContentText, Typography } from '@mui/material';
 import {
   useErrorMessageBusContext,
   useFreeChatApiContext,
@@ -200,19 +200,20 @@ export default function Chats() {
   }
 
   return (
-    <Sheet
+    <Box
       sx={{
         flex: 1,
         width: '100%',
         mx: 'auto',
         display: 'grid',
+        backgroundColor: 'background.default',
         gridTemplateColumns: {
           xs: '1fr',
           sm: '2fr 5fr 3fr',
         },
       }}
     >
-      <Sheet
+      <Box
         sx={{
           position: { xs: 'fixed', sm: 'sticky' },
           transform: {
@@ -222,6 +223,7 @@ export default function Chats() {
           transition: 'transform 0.2s, width 0.2s',
           zIndex: 100,
           width: '100%',
+          backgroundColor: 'background.default',
         }}
       >
         <ChatsPane
@@ -234,7 +236,7 @@ export default function Chats() {
           }}
           onRemoveChat={setChatIdDeleted}
         />
-      </Sheet>
+      </Box>
 
       <MessagesPane
         key={selectedSession?.context?.chatId}
@@ -244,7 +246,7 @@ export default function Chats() {
         onReceivedMessage={handleReceivedMessage}
       />
 
-      <Sheet
+      <Box
         sx={{
           position: { xs: 'fixed', sm: 'sticky' },
           transform: {
@@ -254,6 +256,7 @@ export default function Chats() {
           transition: 'transform 0.2s, width 0.2s',
           zIndex: 100,
           width: '100%',
+          backgroundColor: 'background.default',
         }}
       >
         <ChatInfoPane
@@ -263,7 +266,7 @@ export default function Chats() {
           onApiKeyChanged={handleApiKeyChanged}
           onSave={handleChatUpdate}
         />
-      </Sheet>
+      </Box>
 
       <ConfirmModal
         open={!!chatIdDeleted}
@@ -280,14 +283,17 @@ export default function Chats() {
         }}
         onConfirm={handleChatDelete}
       >
-        <Typography>
+        <DialogContentText sx={{ whiteSpace: 'nowrap' }}>
           {getCharacterNickname(chatIdDeleted)}
           {getCharacterNickname(chatIdDeleted) !==
             getCharacterName(chatIdDeleted) && (
-            <Typography level="body-sm">{`@${getCharacterName(chatIdDeleted)}`}</Typography>
+            <Typography
+              variant="body2"
+              component="span"
+            >{`@${getCharacterName(chatIdDeleted)}`}</Typography>
           )}
-        </Typography>
+        </DialogContentText>
       </ConfirmModal>
-    </Sheet>
+    </Box>
   );
 }

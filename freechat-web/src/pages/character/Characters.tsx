@@ -34,6 +34,7 @@ import {
   Button,
   ButtonGroup,
   Chip,
+  DialogContentText,
   FormControl,
   FormHelperText,
   IconButton,
@@ -525,7 +526,7 @@ export default function Characters() {
         }}
         onConfirm={handleDelete}
       >
-        <Typography>{recordDeleted?.name}</Typography>
+        <DialogContentText>{recordDeleted?.name}</DialogContentText>
       </ConfirmModal>
 
       <ConfirmModal

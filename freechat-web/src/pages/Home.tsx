@@ -1,16 +1,13 @@
+/* eslint-disable prettier/prettier */
 import { useTranslation } from 'react-i18next';
 import {
-  AspectRatio,
   Box,
-  Card,
+  Paper,
   Stack,
   Tab,
-  TabList,
-  TabPanel,
   Tabs,
   Typography,
-  tabClasses,
-} from '@mui/joy';
+} from '@mui/material';
 import { LinePlaceholder } from '../components';
 import { PromptGallery } from '../components/prompt';
 import {
@@ -18,21 +15,31 @@ import {
   CharacterRecommendationViews,
 } from '../components/character';
 import { useColorScheme } from '@mui/material';
+import StyledStack from '../components/StyledStack';
+import { useState } from 'react';
 
 export default function Home() {
   const { t } = useTranslation('sidebar');
   const { mode } = useColorScheme();
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   return (
     <>
       <LinePlaceholder />
       <Stack sx={{ display: { xs: 'none', sm: 'inherit' } }}>
-        <Card
+        <StyledStack
           sx={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            boxShadow: 'lg',
+            '&:hover, &:focus-within': {
+              boxShadow: 1,
+              transform: 'none',
+            },
           }}
         >
           <Box
@@ -44,77 +51,91 @@ export default function Home() {
               minWidth: '160px',
             }}
           >
-            <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
-            <Typography level="title-md">
+            <Typography variant="subtitle1">
               {t('Create friends for yourself')}
             </Typography>
           </Box>
-          <AspectRatio variant="plain" ratio={1} sx={{ width: 240 }}>
+          <Box
+            sx={{
+              width: 240,
+              height: 240,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
             <img
               src={
                 mode === 'dark'
                   ? '/img/freechat_dark.png'
                   : '/img/freechat_light.png'
               }
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
             />
-          </AspectRatio>
-        </Card>
+          </Box>
+        </StyledStack>
 
         <LinePlaceholder spacing={6} />
 
         <CharacterRecommendationViews sx={{ mb: 6, width: '80%' }} />
 
-        <Tabs
-          defaultValue={0}
-          sx={{
-            bgcolor: 'transparent',
-          }}
-        >
-          <TabList
-            tabFlex={1}
-            size="sm"
-            sx={{
-              pl: { xs: 0, md: 4 },
-              justifyContent: 'left',
-              [`&& .${tabClasses.root}`]: {
-                fontWeight: '600',
-                flex: 'initial',
-                color: 'text.tertiary',
-                [`&.${tabClasses.selected}`]: {
-                  bgcolor: 'transparent',
-                  color: 'text.primary',
-                  '&::after': {
-                    height: '2px',
-                    bgcolor: 'primary.500',
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              sx={{
+                '& .MuiTabs-indicator': {
+                  backgroundColor: 'primary.main',
+                },
+                '& .MuiTab-root': {
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  color: 'text.secondary',
+                  '&.Mui-selected': {
+                    color: 'text.primary',
                   },
                 },
-              },
-            }}
+              }}
+            >
+              <Tab label={t('Characters')} />
+              <Tab label={t('Prompts')} />
+            </Tabs>
+          </Box>
+          <Box
+            role="tabpanel"
+            hidden={tabValue !== 0}
+            id="character-tabpanel"
+            aria-labelledby="character-tab"
           >
-            <Tab sx={{ borderRadius: '6px 6px 0 0' }} value={0}>
-              {t('Characters')}
-            </Tab>
-            <Tab sx={{ borderRadius: '6px 6px 0 0' }} value={1}>
-              {t('Prompts')}
-            </Tab>
-          </TabList>
-          <TabPanel value={0} key="character-gallery-panel">
-            <CharacterGallery all={false} />
-          </TabPanel>
-          <TabPanel value={1} key="prompt-gallery-panel">
-            <PromptGallery />
-          </TabPanel>
-        </Tabs>
+            {tabValue === 0 && <CharacterGallery all={false} />}
+          </Box>
+          <Box
+            role="tabpanel"
+            hidden={tabValue !== 1}
+            id="prompt-tabpanel"
+            aria-labelledby="prompt-tab"
+          >
+            {tabValue === 1 && <PromptGallery />}
+          </Box>
+        </Box>
       </Stack>
 
       <Stack sx={{ display: { xs: 'inherit', sm: 'none' } }}>
-        <Card
+        <StyledStack
           sx={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            boxShadow: 'lg',
+            '&:hover, &:focus-within': {
+              boxShadow: 1,
+              transform: 'none',
+            },
           }}
         >
           <Box
@@ -126,17 +147,18 @@ export default function Home() {
               minWidth: '160px',
             }}
           >
-            <Typography level="h1">{t('Welcome to FreeChat')}</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{t('Welcome to FreeChat')}</Typography>
             <LinePlaceholder spacing={1} />
-            <Typography level="title-md">
+            <Typography variant="subtitle1">
               {t('Create friends for yourself')}
             </Typography>
           </Box>
-          <AspectRatio
-            variant="plain"
-            ratio={1}
+          <Box
             sx={{
               width: 240,
+              height: 240,
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
             <img
@@ -145,25 +167,30 @@ export default function Home() {
                   ? '/img/freechat_dark.png'
                   : '/img/freechat_light.png'
               }
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
             />
-          </AspectRatio>
-        </Card>
+          </Box>
+        </StyledStack>
 
         <LinePlaceholder />
-        <Card
+        <Paper
           sx={{
             mx: 2,
             py: 1,
-            boxShadow: 'lg',
-            bgcolor: 'var(--joy-palette-background-level1)',
+            px: 2,
+            bgcolor: 'background.paper',
           }}
         >
-          <Typography fontSize="small">
+          <Typography variant="body2">
             {t(
               'If you want to create your own characters, please visit this website on PC.'
             )}
           </Typography>
-        </Card>
+        </Paper>
         <CharacterGallery all={true} />
       </Stack>
     </>

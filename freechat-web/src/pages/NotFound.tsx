@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Typography } from '@mui/joy';
+import { Box, Stack, Typography } from '@mui/material';
 import { RouterLink } from '../components';
 
 export default function NotFound() {
@@ -7,8 +7,6 @@ export default function NotFound() {
 
   return (
     <Box
-      component="main"
-      className="MainContent"
       sx={{
         height: '100dvh',
         display: 'flex',
@@ -20,8 +18,7 @@ export default function NotFound() {
         overflow: 'auto',
       }}
     >
-      <Card
-        variant="plain"
+      <Stack
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -29,20 +26,20 @@ export default function NotFound() {
           alignItems: 'center',
         }}
       >
-        <Typography level="title-lg" gutterBottom>
+        <Typography variant="h5" gutterBottom>
           {t('Page not found')}
         </Typography>
-        <Typography level="body-md">
+        <Typography variant="body1">
           {t('Sorry, the page you are looking for does not exist.')}
         </Typography>
-        <Typography level="body-md">
+        <Typography variant="body1">
           {t('You can always go back to the')}{' '}
           <RouterLink href="/w" sx={{ cursor: 'pointer' }}>
             {t('homepage')}
           </RouterLink>
           {t('.')}
         </Typography>
-      </Card>
+      </Stack>
     </Box>
   );
 }

@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Link, Typography } from '@mui/joy';
+import { Box, Link, Stack, Typography } from '@mui/material';
 
 export default function ComingSoon() {
   const { t } = useTranslation();
   return (
     <Box
-      component="main"
-      className="MainContent"
       sx={{
         height: '100dvh',
         display: 'flex',
@@ -18,21 +16,21 @@ export default function ComingSoon() {
         overflow: 'auto',
       }}
     >
-      <Card
-        variant="plain"
+      <Stack
         sx={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-evenly',
           alignItems: 'center',
+          gap: 2,
         }}
       >
-        <Typography level="title-lg">{t('Coming soon!')}</Typography>
-        <Typography level="body-md" sx={{ wordWrap: 'pre-wrap' }}>
-          {t('Refer to the')} <Link href="/public/docs/api">Open API</Link>{' '}
+        <Typography variant="h6">{t('Coming soon!')}</Typography>
+        <Typography variant="body1" sx={{ wordWrap: 'pre-wrap' }}>
+          {t('Refer to the')} <Link href="/w/docs">Open API</Link>{' '}
           {t('documentation')}
         </Typography>
-      </Card>
+      </Stack>
     </Box>
   );
 }
