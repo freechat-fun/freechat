@@ -44,7 +44,6 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.0.0",
-    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
