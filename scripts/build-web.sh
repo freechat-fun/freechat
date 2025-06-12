@@ -5,11 +5,6 @@ source $(dirname "${BASH_SOURCE[0]}")/setenv.sh
 check_docker
 
 COMPOSE_CONFIG=$(mktemp -d)/build-web.yml
-PUSH_OPTION=""
-
-if [[ " ${ARGS[*]} " =~ " --push " ]]; then
-  PUSH_OPTION="--push"
-fi
 
 cd ${PROJECT_PATH}/"${WEB_MODULE}" || exit
 rm -rf dist
@@ -52,6 +47,10 @@ if [[ "${VERBOSE}" == "1" ]];then
   cat ${COMPOSE_CONFIG}
 fi
 
-docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build ${PUSH_OPTION} ${WEB_MODULE}
+if [[ " ${ARGS[*]} " =~ " --push " ]]; then
+  docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
+else
+  docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build ${WEB_MODULE}
+fi
 
 rm -rf web
