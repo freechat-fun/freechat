@@ -393,7 +393,7 @@ export default function PromptGallery() {
         }}
       >
         <Stack sx={{ flex: 1 }}>
-          <InfoSearchbar onSearch={handleSearch} />
+          <InfoSearchbar onSearch={handleSearch} sx={{ mx: 2 }} />
           <LinePlaceholder />
           <Box
             sx={{

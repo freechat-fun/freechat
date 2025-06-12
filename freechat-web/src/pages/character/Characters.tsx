@@ -372,15 +372,15 @@ export default function Characters() {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
+          flexDirection: 'row',
           justifyContent: 'space-between',
-          alignItems: { xs: 'start', lg: 'center' },
+          alignItems: 'center',
         }}
       >
         <InfoSearchbar
           enableModelSelect={false}
           onSearch={handleSearch}
-          sx={{ width: '360px' }}
+          sx={{ width: { sm: '420px' } }}
         />
         <TextField
           disabled={characterUploading}
