@@ -18,6 +18,7 @@ const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
   return (
     <Drawer
       ref={ref}
+      elevation={0}
       anchor="right"
       slotProps={{
         paper: {
