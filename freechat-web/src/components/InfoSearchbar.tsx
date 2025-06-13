@@ -15,6 +15,7 @@ import {
   Checkbox,
   ListItemText,
   SxProps,
+  Theme,
 } from '@mui/material';
 import { providers as modelProviders } from '../configs/model-providers-config';
 import { AiModelInfoDTO } from 'freechat-sdk';
@@ -22,7 +23,7 @@ import { AiModelInfoDTO } from 'freechat-sdk';
 export default function InfoSearchbar(props: {
   onSearch: (text: string | undefined, modelIds: string[] | undefined) => void;
   enableModelSelect?: boolean;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 }) {
   const { onSearch, enableModelSelect = true, sx } = props;
   const { t } = useTranslation('button');

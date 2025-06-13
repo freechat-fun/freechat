@@ -115,7 +115,7 @@ export default function ChatInfoUsage({
           setApiKeySettingOpen(false);
         }}
       >
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ mx: 2 }}>
           <Typography variant="body2">
             {t(
               'Your API key is only used for this chat and will not be obtained by anyone else.'

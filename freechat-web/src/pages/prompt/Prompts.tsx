@@ -42,7 +42,7 @@ import {
   FormControlLabel,
   DialogContentText,
 } from '@mui/material';
-import { SxProps } from '@mui/material/styles';
+import { SxProps, Theme } from '@mui/material/styles';
 import {
   AddCircleRounded,
   DeleteForeverRounded,
@@ -67,7 +67,7 @@ type RecordCardProps = {
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 };
 
 const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {

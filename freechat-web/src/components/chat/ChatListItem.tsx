@@ -83,12 +83,11 @@ export default function ChatListItem(props: ChatListItemProps) {
     <Fragment>
       <ListItem disablePadding>
         <ListItemButton
-          onClick={(event) => {
-            if (event.isPropagationStopped()) {
-              return;
+          onClick={() => {
+            if (!editMode) {
+              toggleChatsPane();
+              onSelectChat?.();
             }
-            toggleChatsPane();
-            onSelectChat?.();
           }}
           selected={selected}
           sx={{
@@ -163,6 +162,9 @@ export default function ChatListItem(props: ChatListItemProps) {
                 onClick={(event) => {
                   event.stopPropagation();
                   onRemoveChat?.();
+                }}
+                onTouchStart={(event) => {
+                  event.stopPropagation();
                 }}
               >
                 <RemoveCircleRounded fontSize="small" />

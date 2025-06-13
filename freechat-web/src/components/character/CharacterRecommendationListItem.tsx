@@ -11,13 +11,13 @@ import {
 } from '@mui/material';
 import { CharacterSummaryDTO } from 'freechat-sdk';
 import { getSenderName } from '../../libs/chat_utils';
-import { SxProps } from '@mui/material/styles';
+import { SxProps, Theme } from '@mui/material/styles';
 
 type CharacterRecommendationListItemProps = ListItemButtonProps & {
   record: CharacterSummaryDTO;
   selectedId: number;
   setSelectedId: (id?: number) => void;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 };
 
 const StyledCard = styled(Stack)(({ theme }) => ({

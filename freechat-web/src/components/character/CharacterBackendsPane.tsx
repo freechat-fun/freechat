@@ -17,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Theme,
   Typography,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
@@ -34,7 +35,7 @@ type CharacterBackendsPaneProps = {
   characterUid?: string;
   defaultBackends?: CharacterBackendDetailsDTO[];
   editMode?: boolean;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   onEdit?: (
     backend: CharacterBackendDetailsDTO,
     backends: CharacterBackendDetailsDTO[]

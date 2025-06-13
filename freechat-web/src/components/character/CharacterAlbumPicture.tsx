@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Card, CardContent, styled } from '@mui/material';
+import { Card, CardContent, styled, Theme } from '@mui/material';
 import { SxProps } from '@mui/material';
 import {
   RadioButtonCheckedRounded,
@@ -25,7 +25,7 @@ const AspectRatioContainer = styled('div')({
 type CharacterAlbumPictureProps = {
   url: string;
   checked?: boolean;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   onView: () => void;
   onCheck: () => void;
   onDelete: () => void;

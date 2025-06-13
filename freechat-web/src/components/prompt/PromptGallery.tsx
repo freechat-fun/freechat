@@ -139,7 +139,10 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         </Box>
         <Divider sx={{ mx: -2 }} />
 
-        <SummaryTypography highlight={keyWord} sx={{ ...sx, my: 2 }}>
+        <SummaryTypography
+          highlight={keyWord}
+          sx={{ color: 'text.primary', my: 2, ...sx }}
+        >
           {record.description}
         </SummaryTypography>
         <Divider sx={{ mx: -2 }} />

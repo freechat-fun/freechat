@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Card, CardContent } from '@mui/material';
+import { Card, CardContent, Theme } from '@mui/material';
 import { SxProps } from '@mui/material';
 import { AddRounded } from '@mui/icons-material';
 import { ImagePicker } from '..';
@@ -11,7 +11,7 @@ import { getCompressedImage } from '../../libs/ui_utils';
 
 type CharacterAlbumPictureUploaderProps = {
   characterUid: string;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
   onUploaded?: (url: string) => void;
 };
 

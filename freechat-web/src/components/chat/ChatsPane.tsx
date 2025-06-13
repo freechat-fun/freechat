@@ -111,7 +111,10 @@ export default function ChatsPane(props: ChatsPaneProps) {
         <Stack direction="row" spacing={1}>
           <IconButton
             size="small"
-            onClick={() => setEditMode(!editMode)}
+            onClick={(event) => {
+              event.stopPropagation();
+              setEditMode(!editMode);
+            }}
             sx={{ display: 'unset' }}
           >
             {editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded />}
