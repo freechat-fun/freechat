@@ -81,8 +81,6 @@ export default function Home() {
           </Box>
         </Stack>
 
-        <LinePlaceholder spacing={6} />
-
         <CharacterRecommendationViews sx={{ mb: 6, width: '80%' }} />
 
         <Box sx={{ width: '100%' }}>
