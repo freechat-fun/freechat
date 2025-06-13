@@ -69,4 +69,6 @@ const CharacterAlbumPicture = forwardRef<
   );
 });
 
+CharacterAlbumPicture.displayName = 'CharacterAlbumPicture';
+
 export default CharacterAlbumPicture;

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { ListItemButton, ListItemButtonProps } from '@mui/material';
 import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
@@ -34,11 +33,7 @@ export default function ColorSchemeToggle(props: ListItemButtonProps) {
       }}
       {...props}
     >
-      {mode === 'light' ? (
-        <DarkModeRounded />
-      ) : (
-        <LightModeRounded />
-      )}
+      {mode === 'light' ? <DarkModeRounded /> : <LightModeRounded />}
     </ListItemButton>
   );
 }

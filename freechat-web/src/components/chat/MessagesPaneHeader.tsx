@@ -154,7 +154,7 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
               setOpenMenu(false);
             }}
             sx={{
-              display: { xs: 'inherit', sm: 'none' },
+              display: { sm: 'none' },
             }}
           >
             <ListItemIcon>
@@ -170,7 +170,10 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
             }}
           >
             <ListItemIcon>
-              {enableBackground && <CheckRounded fontSize="small" />}
+              <CheckRounded
+                fontSize="small"
+                sx={{ opacity: enableBackground ? 1 : 0 }}
+              />
             </ListItemIcon>
             {t('Enable Background')}
           </MenuItem>

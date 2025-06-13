@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,6 +14,7 @@ import {
 import { CloseRounded } from '@mui/icons-material';
 
 interface ConfirmModalProps extends DialogProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   obj?: any;
   dialog?: {
     title?: string;
@@ -25,6 +25,7 @@ interface ConfirmModalProps extends DialogProps {
     color?: 'error' | 'info' | 'primary' | 'secondary' | 'success' | 'warning';
     startIcon?: React.ReactNode;
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onConfirm?: (obj: any) => void;
   children: React.ReactNode;
 }
@@ -99,5 +100,7 @@ const ConfirmModal = forwardRef<HTMLDivElement, ConfirmModalProps>(
     );
   }
 );
+
+ConfirmModal.displayName = 'ConfirmModal';
 
 export default ConfirmModal;

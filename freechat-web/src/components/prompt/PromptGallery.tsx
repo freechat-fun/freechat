@@ -185,6 +185,8 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   );
 });
 
+RecordCard.displayName = 'PromptGallery.RecordCard';
+
 export default function PromptGallery() {
   const navigate = useNavigate();
   const { setFrameScrollHandler } = useFrameScrollContext();

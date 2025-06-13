@@ -68,4 +68,6 @@ const CharacterAlbumPictureUploader = forwardRef<
   );
 });
 
+CharacterAlbumPictureUploader.displayName = 'CharacterAlbumPictureUploader';
+
 export default CharacterAlbumPictureUploader;

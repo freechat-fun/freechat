@@ -167,13 +167,12 @@ const CharacterRecommendationPoster = forwardRef<
               record.tags.map((tag, index) => (
                 <Chip
                   variant="filled"
-                  color="secondary"
+                  color="success"
                   key={`tag-${tag}-${index}`}
                   label={tag}
                   size="small"
                   sx={{
-                    opacity: 0.8,
-                    fontSize: '1rem',
+                    opacity: 0.9,
                   }}
                 />
               ))}
@@ -235,5 +234,7 @@ const CharacterRecommendationPoster = forwardRef<
     </Fragment>
   );
 });
+
+CharacterRecommendationPoster.displayName = 'CharacterRecommendationPoster';
 
 export default CharacterRecommendationPoster;

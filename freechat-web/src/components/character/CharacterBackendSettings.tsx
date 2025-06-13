@@ -889,4 +889,6 @@ const CharacterBackendSettings = forwardRef<
   );
 });
 
+CharacterBackendSettings.displayName = 'CharacterBackendSettings';
+
 export default CharacterBackendSettings;

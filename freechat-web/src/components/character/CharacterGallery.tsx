@@ -146,7 +146,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         </Link>
         <Chip
           color="success"
-          variant="filled"
+          variant="outlined"
           size="small"
           label={`v${record.version}`}
         />
@@ -178,12 +178,12 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           {tags.map((tag, index) => (
             <Chip
               variant="filled"
-              color="secondary"
+              color="success"
               key={`tag-${tag}-${index}`}
               label={tag}
               size="small"
               sx={{
-                opacity: 0.7,
+                opacity: 0.9,
               }}
             />
           ))}
@@ -221,6 +221,8 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
     </StyledStack>
   );
 });
+
+RecordCard.displayName = 'CharacterGallery.RecordCard';
 
 type CharacterGalleryProps = {
   all?: boolean;
@@ -488,7 +490,11 @@ export default function CharacterGallery({
         }}
       >
         <Stack sx={{ flex: 1 }}>
-          <InfoSearchbar enableModelSelect={false} onSearch={handleSearch} sx={{ mx: 2 }} />
+          <InfoSearchbar
+            enableModelSelect={false}
+            onSearch={handleSearch}
+            sx={{ mx: 2 }}
+          />
           <LinePlaceholder />
           <Box
             sx={{

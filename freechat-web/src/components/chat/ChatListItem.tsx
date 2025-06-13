@@ -83,7 +83,10 @@ export default function ChatListItem(props: ChatListItemProps) {
     <Fragment>
       <ListItem disablePadding>
         <ListItemButton
-          onClick={() => {
+          onClick={(event) => {
+            if (event.isPropagationStopped()) {
+              return;
+            }
             toggleChatsPane();
             onSelectChat?.();
           }}
