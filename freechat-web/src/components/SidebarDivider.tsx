@@ -19,4 +19,6 @@ const SidebarDivider = forwardRef<HTMLHRElement, DividerProps>((props, ref) => {
   );
 });
 
+SidebarDivider.displayName = 'SidebarDivider';
+
 export default SidebarDivider;

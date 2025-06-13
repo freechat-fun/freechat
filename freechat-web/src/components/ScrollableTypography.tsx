@@ -31,4 +31,6 @@ const ScrollableTypography = forwardRef<HTMLDivElement, TypographyProps>(
   }
 );
 
+ScrollableTypography.displayName = 'ScrollableTypography';
+
 export default ScrollableTypography;

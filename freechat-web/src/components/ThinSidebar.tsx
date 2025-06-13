@@ -50,6 +50,8 @@ const ItemTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   );
 });
 
+ItemTooltip.displayName = 'ThinSidebar.ItemTooltip';
+
 type ItemButtonProps = ListItemButtonProps & {
   href: string;
   anonymous?: boolean;
@@ -90,6 +92,8 @@ const ItemButton = forwardRef<HTMLDivElement, ItemButtonProps>((props, ref) => {
     </ListItemButton>
   );
 });
+
+ItemButton.displayName = 'ThinSidebar.ItemButton';
 
 export default function ThinSidebar() {
   const { t } = useTranslation('sidebar');

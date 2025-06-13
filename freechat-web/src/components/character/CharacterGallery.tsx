@@ -78,147 +78,157 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   }, [mode, record]);
 
   return (
-    <StyledStack
-      ref={ref}
-      spacing={1}
+    <Link
+      onClick={(event) => {
+        event.preventDefault();
+        onClick?.();
+      }}
       sx={{
-        ...sx,
-        position: 'relative',
-        overflow: 'hidden',
-        backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        gap: 0,
+        m: 2,
+        p: 0,
+        textDecoration: 'none',
+        '&:hover, &:focus-within': {
+          cursor: 'pointer',
+        },
       }}
     >
-      <Box
+      <StyledStack
+        ref={ref}
+        spacing={1}
         sx={{
           ...sx,
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          gap: 2,
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundImage: `url(${background})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          m: 0,
+          gap: 0,
         }}
       >
-        <Link
-          component="button"
-          onClick={(event) => {
-            event.preventDefault();
-            onClick?.();
-          }}
+        <Box
           sx={{
-            textDecoration: 'none',
+            ...sx,
             display: 'flex',
+            justifyContent: 'flex-start',
             alignItems: 'center',
             gap: 2,
           }}
         >
-          <Avatar
-            alt={nickname}
-            src={record.avatar}
-            sx={{ width: 40, height: 40 }}
-          />
-          <CommonBox sx={{ gap: 0 }}>
-            <HighlightedTypography
-              highlight={keyWord}
-              variant="h6"
-              sx={{
-                color: 'text.primary',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '20rem',
-              }}
-            >
-              {nickname}
-            </HighlightedTypography>
-            {nickname !== record.name && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+            }}
+          >
+            <Avatar
+              alt={nickname}
+              src={record.avatar}
+              sx={{ width: 40, height: 40 }}
+            />
+            <CommonBox sx={{ gap: 0 }}>
               <HighlightedTypography
                 highlight={keyWord}
-                variant="caption"
+                variant="h6"
                 sx={{
-                  color: 'text.secondary',
-                  mt: 1,
+                  color: 'text.primary',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '20rem',
                 }}
-              >{`@${record.name}`}</HighlightedTypography>
-            )}
-          </CommonBox>
-        </Link>
-        <Chip
-          color="success"
-          variant="outlined"
-          size="small"
-          label={`v${record.version}`}
-        />
-        {record.gender === 'male' ? (
-          <FaceOutlined
-            fontSize="small"
-            color="info"
-            sx={{ ml: 'auto', mr: 2, opacity: 0.7 }}
+              >
+                {nickname}
+              </HighlightedTypography>
+              {nickname !== record.name && (
+                <HighlightedTypography
+                  highlight={keyWord}
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    mt: 1,
+                  }}
+                >{`@${record.name}`}</HighlightedTypography>
+              )}
+            </CommonBox>
+          </Box>
+          <Chip
+            color="success"
+            variant="outlined"
+            size="small"
+            label={`v${record.version}`}
           />
-        ) : (
-          record.gender === 'female' && (
-            <Face3Outlined
+          {record.gender === 'male' ? (
+            <FaceOutlined
               fontSize="small"
               color="info"
-              sx={{ ml: 'auto', mr: 2, opacity: 0.8 }}
+              sx={{ ml: 'auto', mr: 2, opacity: 0.7 }}
             />
-          )
+          ) : (
+            record.gender === 'female' && (
+              <Face3Outlined
+                fontSize="small"
+                color="info"
+                sx={{ ml: 'auto', mr: 2, opacity: 0.8 }}
+              />
+            )
+          )}
+        </Box>
+        <Divider sx={{ mx: -2 }} />
+
+        <SummaryTypography highlight={keyWord} sx={{ ...sx }}>
+          {record.description}
+        </SummaryTypography>
+        <Divider />
+
+        {tags.length > 0 && (
+          <CommonBox>
+            {tags.map((tag, index) => (
+              <Chip
+                variant="filled"
+                color="success"
+                key={`tag-${tag}-${index}`}
+                label={tag}
+                size="small"
+                sx={{
+                  opacity: 0.9,
+                }}
+              />
+            ))}
+          </CommonBox>
         )}
-      </Box>
-      <Divider sx={{ mx: -2 }} />
 
-      <SummaryTypography highlight={keyWord} sx={{ ...sx }}>
-        {record.description}
-      </SummaryTypography>
-      <Divider />
+        {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
 
-      {tags.length > 0 && (
-        <CommonBox>
-          {tags.map((tag, index) => (
+        <Box
+          sx={{
+            ...sx,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
+          </Typography>
+          <CommonBox>
             <Chip
-              variant="filled"
-              color="success"
-              key={`tag-${tag}-${index}`}
-              label={tag}
               size="small"
-              sx={{
-                opacity: 0.9,
-              }}
+              variant="outlined"
+              icon={<VisibilityRounded />}
+              label={record.viewCount}
             />
-          ))}
-        </CommonBox>
-      )}
-
-      {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
-
-      <Box
-        sx={{
-          ...sx,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="body2" color="text.secondary">
-          {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
-        </Typography>
-        <CommonBox>
-          <Chip
-            size="small"
-            variant="outlined"
-            icon={<VisibilityRounded />}
-            label={record.viewCount}
-          />
-          <Chip
-            size="small"
-            variant="outlined"
-            icon={<ShareRounded />}
-            label={record.referCount}
-          />
-        </CommonBox>
-      </Box>
-    </StyledStack>
+            <Chip
+              size="small"
+              variant="outlined"
+              icon={<ShareRounded />}
+              label={record.referCount}
+            />
+          </CommonBox>
+        </Box>
+      </StyledStack>
+    </Link>
   );
 });
 

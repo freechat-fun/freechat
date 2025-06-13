@@ -110,4 +110,6 @@ const CharacterRecommendationListItem = forwardRef<
   );
 });
 
+CharacterRecommendationListItem.displayName = 'CharacterRecommendationListItem';
+
 export default CharacterRecommendationListItem;

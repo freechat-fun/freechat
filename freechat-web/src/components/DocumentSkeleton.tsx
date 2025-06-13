@@ -42,4 +42,6 @@ const DocumentSkeleton = forwardRef<HTMLDivElement, DocumentSkeletonProps>(
   }
 );
 
+DocumentSkeleton.displayName = 'DocumentSkeleton';
+
 export default DocumentSkeleton;

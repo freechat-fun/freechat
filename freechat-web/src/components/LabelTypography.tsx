@@ -22,4 +22,6 @@ const LabelTypography = forwardRef<HTMLDivElement, TypographyProps>(
   }
 );
 
+LabelTypography.displayName = 'LabelTypography';
+
 export default LabelTypography;

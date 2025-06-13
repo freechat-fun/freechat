@@ -162,6 +162,8 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   );
 });
 
+RecordCard.displayName = 'Characters.RecordCard';
+
 export default function Characters() {
   const navigate = useNavigate();
   const { t } = useTranslation(['character']);

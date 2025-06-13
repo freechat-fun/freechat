@@ -98,4 +98,6 @@ const HotTags = forwardRef<HTMLDivElement, HotTagsProp>((props, ref) => {
   );
 });
 
+HotTags.displayName = 'HotTags';
+
 export default HotTags;

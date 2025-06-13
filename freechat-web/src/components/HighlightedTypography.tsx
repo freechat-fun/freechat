@@ -68,4 +68,6 @@ const HighlightedTypography = forwardRef<
   );
 });
 
+HighlightedTypography.displayName = 'HighlightedTypography';
+
 export default HighlightedTypography;

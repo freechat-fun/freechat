@@ -36,4 +36,6 @@ const Sidedrawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
   );
 });
 
+Sidedrawer.displayName = 'Sidedrawer';
+
 export default Sidedrawer;

@@ -51,6 +51,7 @@ type BubbleContainerProps = StackProps & {
 };
 
 const BubbleContainer = styled(
+  // eslint-disable-next-line react/display-name
   forwardRef<HTMLDivElement, BubbleContainerProps>((props, ref) => {
     const { children, isSent, onMouseEnter, onMouseLeave, ...others } = props;
 
@@ -83,6 +84,8 @@ const BubbleContainer = styled(
     );
   })
 )();
+
+BubbleContainer.displayName = 'ChatBubble.BubbleContainer';
 
 type ChatBubbleProps = {
   session?: ChatSessionDTO;

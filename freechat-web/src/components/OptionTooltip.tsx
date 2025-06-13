@@ -21,4 +21,6 @@ const OptionTooltip = forwardRef<HTMLDivElement, TooltipProps>((props, ref) => {
   );
 });
 
+OptionTooltip.displayName = 'OptionTooltip';
+
 export default OptionTooltip;

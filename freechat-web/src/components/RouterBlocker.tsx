@@ -45,4 +45,6 @@ const RouterBlocker = forwardRef<HTMLDivElement, RouterBlockerProps>(
   }
 );
 
+RouterBlocker.displayName = 'RouterBlocker';
+
 export default RouterBlocker;

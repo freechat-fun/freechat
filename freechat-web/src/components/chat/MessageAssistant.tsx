@@ -52,4 +52,6 @@ const MessageAssistant = forwardRef<HTMLDivElement, MessageAssistantProps>(
   }
 );
 
+MessageAssistant.displayName = 'MessageAssistant';
+
 export default MessageAssistant;

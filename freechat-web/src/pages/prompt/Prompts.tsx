@@ -156,6 +156,8 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   );
 });
 
+RecordCard.displayName = 'Prompts.RecordCard';
+
 export default function Prompts() {
   const navigate = useNavigate();
   const { t } = useTranslation(['prompt']);

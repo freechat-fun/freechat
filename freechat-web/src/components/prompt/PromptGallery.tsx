@@ -77,24 +77,30 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
   }, [record]);
 
   return (
-    <StyledStack ref={ref} sx={sx}>
-      <Box
-        sx={{
-          ...sx,
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          gap: 2,
-          mb: 2,
-        }}
-      >
-        <Link
-          component="button"
-          onClick={(event) => {
-            event.preventDefault();
-            onClick?.();
+    <Link
+      onClick={(event) => {
+        event.preventDefault();
+        onClick?.();
+      }}
+      sx={{
+        m: 2,
+        p: 0,
+        textDecoration: 'none',
+        '&:hover, &:focus-within': {
+          cursor: 'pointer',
+        },
+      }}
+    >
+      <StyledStack ref={ref} sx={{ m: 0, gap: 0, ...sx }}>
+        <Box
+          sx={{
+            ...sx,
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            gap: 2,
+            mb: 2,
           }}
-          sx={{ textDecoration: 'none' }}
         >
           <HighlightedTypography
             highlight={keyWord}
@@ -108,80 +114,81 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           >
             {record.name}
           </HighlightedTypography>
-        </Link>
-        <Chip
-          color="success"
-          variant="filled"
-          size="small"
-          label={`v${record.version}`}
-        />
-        <Chip
-          color={record.type === 'string' ? 'warning' : 'success'}
-          variant="outlined"
-          size="small"
-          label={record.type}
-        />
-        <CommonBox sx={{ ml: 'auto' }}>
-          <OptionTooltip title={userName}>
-            <Avatar
-              alt={userName}
-              src={user?.picture}
-              sx={{ width: 32, height: 32 }}
-            />
-          </OptionTooltip>
-        </CommonBox>
-      </Box>
-      <Divider sx={{ mx: -2 }} />
 
-      <SummaryTypography highlight={keyWord} sx={{ ...sx, my: 2 }}>
-        {record.description}
-      </SummaryTypography>
-      <Divider sx={{ mx: -2 }} />
+          <Chip
+            color="success"
+            variant="outlined"
+            size="small"
+            label={`v${record.version}`}
+          />
+          <Chip
+            color={record.type === 'string' ? 'warning' : 'info'}
+            variant="filled"
+            size="small"
+            label={record.type}
+          />
+          <CommonBox sx={{ ml: 'auto' }}>
+            <OptionTooltip title={userName}>
+              <Avatar
+                alt={userName}
+                src={user?.picture}
+                sx={{ width: 32, height: 32 }}
+              />
+            </OptionTooltip>
+          </CommonBox>
+        </Box>
+        <Divider sx={{ mx: -2 }} />
 
-      {tags.length > 0 && (
-        <CommonBox sx={{ gap: 2, my: 2 }}>
-          {tags.map((tag, index) => (
+        <SummaryTypography highlight={keyWord} sx={{ ...sx, my: 2 }}>
+          {record.description}
+        </SummaryTypography>
+        <Divider sx={{ mx: -2 }} />
+
+        {tags.length > 0 && (
+          <CommonBox sx={{ gap: 2, my: 2 }}>
+            {tags.map((tag, index) => (
+              <Chip
+                variant="filled"
+                color="success"
+                size="small"
+                key={`tag-${record.promptId}-${tag}-${index}`}
+                label={tag}
+              />
+            ))}
+          </CommonBox>
+        )}
+
+        {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
+
+        <Box
+          sx={{
+            ...sx,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mt: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
+          </Typography>
+          <CommonBox>
             <Chip
-              variant="outlined"
-              color="success"
               size="small"
-              key={`tag-${record.promptId}-${tag}-${index}`}
-              label={tag}
+              variant="outlined"
+              icon={<VisibilityRounded />}
+              label={record.viewCount}
             />
-          ))}
-        </CommonBox>
-      )}
-
-      {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
-
-      <Box
-        sx={{
-          ...sx,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mt: 2,
-        }}
-      >
-        <Typography variant="body2" color="text.secondary">
-          {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
-        </Typography>
-        <CommonBox>
-          <Chip
-            size="small"
-            variant="outlined"
-            icon={<VisibilityRounded />}
-            label={record.viewCount}
-          />
-          <Chip
-            size="small"
-            variant="outlined"
-            icon={<ShareRounded />}
-            label={record.referCount}
-          />
-        </CommonBox>
-      </Box>
-    </StyledStack>
+            <Chip
+              size="small"
+              variant="outlined"
+              icon={<ShareRounded />}
+              label={record.referCount}
+            />
+          </CommonBox>
+        </Box>
+      </StyledStack>
+    </Link>
   );
 });
 
