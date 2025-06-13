@@ -115,6 +115,9 @@ export default function ChatsPane(props: ChatsPaneProps) {
               event.stopPropagation();
               setEditMode(!editMode);
             }}
+            onTouchStart={(event) => {
+              event.stopPropagation();
+            }}
             sx={{ display: 'unset' }}
           >
             {editMode ? <PlaylistAddCheckRounded /> : <EditNoteRounded />}

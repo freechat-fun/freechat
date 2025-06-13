@@ -663,7 +663,6 @@ const CharacterBackendSettings = forwardRef<
                     <Box sx={{ ml: 'auto' }}>
                       <CircularProgress size="small" />
                     </Box>
-                    <audio ref={audioRefs.current[1]} />
                   </CommonBox>
                 ) : (
                   <IconButton
@@ -678,6 +677,7 @@ const CharacterBackendSettings = forwardRef<
                   </IconButton>
                 )
               }
+              <audio ref={audioRefs.current[1]} />
 
               <Radio value="wav" disabled={!enableTts} />
               <CommonBox>
@@ -774,9 +774,9 @@ const CharacterBackendSettings = forwardRef<
                     >
                       <CircularProgress size="small" />
                     </Box>
-                    <audio ref={audioRefs.current[0]} />
                   </Fragment>
                 )}
+                <audio ref={audioRefs.current[0]} />
             </CommonGridBox>
           </RadioGroup>
         </OptionCard>
