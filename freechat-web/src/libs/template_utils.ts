@@ -146,7 +146,8 @@ export function extractModelName(modelId: string): string | undefined {
   const MODEL_ID_PATTERN = /^\[[^\]]+\](.+?)(\|[^|]*)?$/;
 
   const match = modelId.match(MODEL_ID_PATTERN);
-  return match?.[1];
+  const modelName = match?.[1];
+  return modelName?.startsWith('|') ? '' : modelName;
 }
 
 export function toModelInfo(

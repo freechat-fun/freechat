@@ -283,10 +283,12 @@ export default function PromptRunner(props: PromptRunnerProps) {
     request.promptTemplate = promptTemplate;
 
     request.params = parameters as typeof request.params;
-    if (apiKeyValue) {
-      request.params['apiKey'] = apiKeyValue;
-    } else if (apiKeyName) {
-      request.params['apiKeyName'] = apiKeyName;
+    if (enabledApiKey(provider)) {
+      if (apiKeyValue) {
+        request.params['apiKey'] = apiKeyValue;
+      } else if (apiKeyName) {
+        request.params['apiKeyName'] = apiKeyName;
+      }
     }
 
     setPlaying(true);

@@ -172,7 +172,7 @@ const CharacterRecommendationPoster = forwardRef<
                   label={tag}
                   size="small"
                   sx={{
-                    opacity: 0.9,
+                    opacity: 0.8,
                   }}
                 />
               ))}
