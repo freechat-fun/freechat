@@ -282,6 +282,7 @@ public class LanguageModelFactory {
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenLanguageModel.builder()
                 .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
                 .topK(getInteger(parameters, "topK"))
@@ -298,6 +299,7 @@ public class LanguageModelFactory {
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenStreamingLanguageModel.builder()
                 .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
                 .topK(getInteger(parameters, "topK"))
@@ -314,6 +316,7 @@ public class LanguageModelFactory {
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenChatModel.builder()
                 .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
                 .topK(getInteger(parameters, "topK"))
@@ -330,6 +333,7 @@ public class LanguageModelFactory {
             String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenStreamingChatModel.builder()
                 .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
                 .topK(getInteger(parameters, "topK"))
@@ -343,9 +347,10 @@ public class LanguageModelFactory {
     }
 
     public static QwenEmbeddingModel createQwenEmbeddingModel (
-            String apiKey, String modelName, Map<String, Object> ignoredParameters) {
+            String apiKey, String modelName, Map<String, Object> parameters) {
         return QwenEmbeddingModel.builder()
                 .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .modelName(modelName)
                 .build();
     }

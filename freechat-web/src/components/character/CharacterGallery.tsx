@@ -503,11 +503,7 @@ export default function CharacterGallery({
         }}
       >
         <Stack sx={{ flex: 1 }}>
-          <InfoSearchbar
-            enableModelSelect={false}
-            onSearch={handleSearch}
-            sx={{ mx: 2 }}
-          />
+          <InfoSearchbar onSearch={handleSearch} sx={{ mx: 2 }} />
           <LinePlaceholder />
           <Box
             sx={{

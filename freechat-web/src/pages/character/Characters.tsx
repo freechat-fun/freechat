@@ -380,7 +380,6 @@ export default function Characters() {
         }}
       >
         <InfoSearchbar
-          enableModelSelect={false}
           onSearch={handleSearch}
           sx={{ width: { sm: '420px' } }}
         />

@@ -9,13 +9,9 @@ import {
   Divider,
   IconButton,
   InputAdornment,
-  MenuItem,
-  Select,
   Slider,
   Switch,
   Typography,
-  SelectChangeEvent,
-  FormControl,
 } from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
@@ -25,12 +21,12 @@ import {
   Sidedrawer,
   TinyInput,
 } from '..';
-import { AiModelInfoDTO } from 'freechat-sdk';
 import { HelpIcon } from '../icon';
 import {
   defaultBaseURLs,
   defaultModels,
 } from '../../configs/model-providers-config';
+import { extractModelName, toModelInfo } from '../../libs/template_utils';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -41,24 +37,19 @@ function containsKey(
 
 export default function OpenAiSettings(props: {
   open: boolean;
-  models: (AiModelInfoDTO | undefined)[] | undefined;
   onClose: (parameters: { [key: string]: any }) => void;
   defaultParameters?: { [key: string]: any };
 }) {
-  const { open, models, onClose, defaultParameters } = props;
+  const { open, onClose, defaultParameters } = props;
 
   const { t } = useTranslation(['prompt']);
 
-  const [model, setModel] = useState<AiModelInfoDTO | undefined>(
-    models?.find(
-      (modelInfo) =>
-        modelInfo?.modelId ===
-        (defaultParameters?.modelId ?? defaultModels.open_ai)
-    )
-  );
-
   const [baseUrl, setBaseUrl] = useState(
     defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai
+  );
+
+  const [model, setModel] = useState<string>(
+    defaultParameters?.modelId ?? defaultModels.open_ai
   );
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
@@ -105,25 +96,11 @@ export default function OpenAiSettings(props: {
   );
   const [stopWord, setStopWord] = useState<string>();
 
-  const [modelId, setModelId] = useState<string>(
-    models?.find(
-      (modelInfo) =>
-        modelInfo?.modelId ===
-        (defaultParameters?.modelId ?? defaultModels.azure_open_ai)
-    )?.modelId ?? ''
-  );
-
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
-    setModel(
-      models?.find(
-        (modelInfo) =>
-          modelInfo?.modelId ===
-          (defaultParameters?.modelId ?? defaultModels.open_ai)
-      )
-    );
     setBaseUrl(defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai);
+    setModel(defaultParameters?.modelId ?? defaultModels.open_ai);
 
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));
@@ -148,22 +125,8 @@ export default function OpenAiSettings(props: {
     setStop(defaultParameters?.stop ?? []);
     setEnableStop(containsKey(defaultParameters, 'stop'));
 
-    setModelId(
-      models?.find(
-        (modelInfo) =>
-          modelInfo?.modelId ===
-          (defaultParameters?.modelId ?? defaultModels.azure_open_ai)
-      )?.modelId ?? ''
-    );
-  }, [defaultParameters, models]);
-
-  function handleSelectChange(event: SelectChangeEvent<string>): void {
-    const newValue = event.target.value;
-    if (newValue && newValue !== model?.modelId) {
-      setModel(models?.find((modelInfo) => modelInfo?.modelId === newValue));
-    }
-    setModelId(newValue);
-  }
+    setStopWord(undefined);
+  }, [defaultParameters]);
 
   function handleStopWordSubmit(
     event: React.FormEvent<HTMLFormElement> | undefined
@@ -185,12 +148,12 @@ export default function OpenAiSettings(props: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parameters: { [key: string]: any } = {};
 
-    if (model) {
-      parameters['modelId'] = model.modelId;
-    }
-
     if (baseUrl) {
       parameters['baseUrl'] = baseUrl;
+    }
+
+    if (model) {
+      parameters['modelId'] = model;
     }
 
     if (enableTopP) {
@@ -234,48 +197,6 @@ export default function OpenAiSettings(props: {
       <DialogContent sx={{ p: 0 }}>
         <OptionCard>
           <CommonContainer>
-            <Typography>model</Typography>
-            <FormControl size="small" sx={{ flex: 1 }}>
-              <Select
-                name="modelName"
-                value={modelId}
-                onChange={handleSelectChange}
-                displayEmpty
-                sx={{
-                  ml: 2,
-                  flex: 1,
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <Typography color="text.secondary">
-                    No model provided
-                  </Typography>
-                </MenuItem>
-                {models && models.length > 0 ? (
-                  models?.map(
-                    (modelInfo) =>
-                      modelInfo && (
-                        <MenuItem
-                          value={modelInfo.modelId}
-                          key={`option-${modelInfo.modelId}`}
-                        >
-                          {modelInfo.name}
-                        </MenuItem>
-                      )
-                  )
-                ) : (
-                  <MenuItem value="" disabled>
-                    --No Model--
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </CommonContainer>
-        </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-        <OptionCard>
-          <CommonContainer>
             <Typography>baseUrl</Typography>
             <TinyInput
               type="text"
@@ -291,6 +212,32 @@ export default function OpenAiSettings(props: {
                 flex: 1,
               }}
               onChange={(event) => setBaseUrl(event.target.value)}
+            />
+          </CommonContainer>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
+            <Typography>model</Typography>
+            <TinyInput
+              type="text"
+              value={extractModelName(model)}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
+              sx={{
+                ml: 2,
+                maxWidth: undefined,
+                flex: 1,
+              }}
+              onChange={(event) =>
+                setModel(
+                  toModelInfo('open_ai', event.target.value, 'text2chat')
+                )
+              }
             />
           </CommonContainer>
         </OptionCard>

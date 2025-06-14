@@ -4,7 +4,6 @@ import {
   createRef,
   forwardRef,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -41,7 +40,6 @@ import {
   UndoRounded,
 } from '@mui/icons-material';
 import {
-  AiModelInfoDTO,
   CharacterBackendDetailsDTO,
   PromptTaskDTO,
   PromptTaskDetailsDTO,
@@ -138,7 +136,6 @@ const CharacterBackendSettings = forwardRef<
   const audioRefs = useRef(Array(2).fill(createRef<HTMLAudioElement | null>()));
 
   const [promptTask, setPromptTask] = useState<PromptTaskDetailsDTO>();
-  const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
   const [provider, setProvider] = useState('open_ai');
   const [apiKeyName, setApiKeyName] = useState('');
   const [apiKeyValue, setApiKeyValue] = useState('');
@@ -148,15 +145,6 @@ const CharacterBackendSettings = forwardRef<
 
   const [modelSetting, setModelSetting] = useState(false);
   const [openApiKeySetting, setOpenApiKeySetting] = useState(false);
-
-  const matchingModels = useMemo(() => {
-    return provider && models
-      ? models.filter(
-          (model) =>
-            model && model.provider === provider && model.type === 'text2chat'
-        )
-      : [];
-  }, [models, provider]);
 
   const QUOTA_TYPES = [
     {
@@ -172,10 +160,6 @@ const CharacterBackendSettings = forwardRef<
   useEffect(() => {
     idCounter++;
   }, []);
-
-  useEffect(() => {
-    aiServiceApi?.listAiModelInfo().then(setModels).catch(handleError);
-  }, [aiServiceApi, handleError]);
 
   useEffect(() => {
     ttsServiceApi
@@ -864,19 +848,16 @@ const CharacterBackendSettings = forwardRef<
       />
       <OpenAiSettings
         open={modelSetting && provider === 'open_ai'}
-        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
       <AzureOpenAiSettings
         open={modelSetting && provider === 'azure_open_ai'}
-        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
-        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
