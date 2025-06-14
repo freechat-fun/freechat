@@ -12,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.DockerClientFactory;
@@ -40,7 +39,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureWebTestClient(timeout = "180000")
 @ActiveProfiles("local")
 @TestPropertySource(properties = "APP_HOME=${TMPDIR}")
-@Sql({"classpath:/sql/data.sql"})
 @SuppressWarnings("unused")
 public class AbstractIntegrationTest {
     static GenericContainer<?> redis;

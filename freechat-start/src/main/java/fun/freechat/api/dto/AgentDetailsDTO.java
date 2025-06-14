@@ -1,7 +1,6 @@
 package fun.freechat.api.dto;
 
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.AgentInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +38,7 @@ public class AgentDetailsDTO extends AgentSummaryDTO {
         dto.setTags(agentInfoTriple.getMiddle());
         dto.setAiModels(agentInfoTriple.getRight()
                 .stream()
-                .map(AiModelUtils::getModelInfoDTO)
+                .map(AiModelInfoDTO::from)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
         return dto;

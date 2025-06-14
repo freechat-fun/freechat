@@ -10,7 +10,7 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.language.LanguageModel;
 import dev.langchain4j.model.language.StreamingLanguageModel;
-import fun.freechat.model.AiModelInfo;
+import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.ai.AiApiKeyService;
 import fun.freechat.service.ai.CloseableAiApiKey;

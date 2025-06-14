@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.model.output.TokenUsage;
+import fun.freechat.service.ai.AiModelInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
@@ -20,6 +23,9 @@ public class InfoUtils {
             .disable(FAIL_ON_UNKNOWN_PROPERTIES)
             .setSerializationInclusion(NON_NULL);
     private static final int VISIBLE_SIZE = 4;
+    // [provider]modelName|type
+    private static final Pattern MODEL_ID_PATTERN =
+            Pattern.compile("\\[(.+?)\\](.+?)(\\|([^|]*))?");
 
     public static ObjectMapper defaultMapper() {
         return DEFAULT_MAPPER;
@@ -32,6 +38,25 @@ public class InfoUtils {
                 .map(String::trim)
                 .filter(StringUtils::isNotBlank)
                 .toList();
+    }
+
+    public static AiModelInfo toAiModelInfo(String modelId) {
+        Matcher m = MODEL_ID_PATTERN.matcher(modelId);
+        return m.matches() ?
+                AiModelInfo.builder()
+                        .modelId(modelId)
+                        .description("Unknown model.")
+                        .provider(m.group(1))
+                        .name(m.group(2))
+                        .type(StringUtils.isBlank(m.group(4)) ? "text2chat" : m.group(4))
+                        .build() :
+                AiModelInfo.builder()
+                        .modelId(modelId)
+                        .description("Unknown model.")
+                        .provider("unknown")
+                        .name("unknown")
+                        .type("unknown")
+                        .build();
     }
 
     public static String desensitize(String text) {

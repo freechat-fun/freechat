@@ -82,22 +82,6 @@ CREATE TABLE IF NOT EXISTS `api_token` (
 ) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='api token table'
 ;
 
-CREATE TABLE IF NOT EXISTS `ai_model_info` (
-  `model_id` varchar(98) NOT NULL,
-  `gmt_create` datetime NOT NULL,
-  `gmt_modified` datetime NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `description` varchar(128) DEFAULT NULL,
-  `provider` varchar(32) DEFAULT 'unknown'  COMMENT 'hugging_face | open_ai | local_ai | in_process | dash_scope | unknown',
-  `type` varchar(24) DEFAULT 'text2text' COMMENT 'text2text | text2chat | text2image | embedding | moderation | unknown',
-  PRIMARY KEY (`model_id`),
-  UNIQUE KEY `uk_model_id` (`model_id`),
-  INDEX `idx_name` (`name`),
-  INDEX `idx_provider` (`provider`),
-  INDEX `idx_name_provider` (`name`, `provider`)
-) ENGINE=InnoDB AUTO_INCREMENT=265 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ai model info table'
-;
-
 CREATE TABLE IF NOT EXISTS `prompt_info` (
   `prompt_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'record identifier',
   `prompt_uid` varchar(32) NOT NULL COMMENT 'immutable prompt identifier',

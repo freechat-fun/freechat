@@ -2,7 +2,6 @@ package fun.freechat.api.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.PromptInfo;
 import fun.freechat.service.enums.PromptType;
@@ -59,7 +58,7 @@ public class PromptDetailsDTO extends PromptSummaryDTO {
         dto.setTags(promptInfoTriple.getMiddle());
         dto.setAiModels(promptInfoTriple.getRight()
                 .stream()
-                .map(AiModelUtils::getModelInfoDTO)
+                .map(AiModelInfoDTO::from)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
         return dto;

@@ -41,8 +41,6 @@
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
-        <table tableName="ai_model_info" />
-
         <table tableName="prompt_info">
             <generatedKey column="prompt_id" sqlStatement="Mysql" identity="true"/>
         </table>

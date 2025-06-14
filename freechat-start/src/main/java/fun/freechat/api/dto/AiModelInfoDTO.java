@@ -1,13 +1,14 @@
 package fun.freechat.api.dto;
 
 import fun.freechat.api.util.CommonUtils;
-import fun.freechat.model.AiModelInfo;
+import fun.freechat.service.ai.AiModelInfo;
+import fun.freechat.service.util.InfoUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Schema(description = "Model information")
 @Data
@@ -27,10 +28,6 @@ public class AiModelInfoDTO extends TraceableDTO {
     @Schema(description = "Model type: text2text | text2chat | text2image | embedding | moderation")
     private String type;
 
-    // [provider]modelName|type
-    private static final Pattern MODEL_ID_PATTERN =
-            Pattern.compile("\\[(.+?)\\](.+?)(\\|([^|]*))?");
-
     public static AiModelInfoDTO from(AiModelInfo aiModelInfo) {
         if (aiModelInfo == null) {
             return null;
@@ -39,22 +36,7 @@ public class AiModelInfoDTO extends TraceableDTO {
     }
 
     public static AiModelInfoDTO from(String modelId) {
-        Matcher m = MODEL_ID_PATTERN.matcher(modelId);
-        return m.matches() ?
-                AiModelInfoDTO.builder()
-                        .modelId(modelId)
-                        .description("Unknown model.")
-                        .provider(m.group(1))
-                        .name(m.group(2))
-                        .type(StringUtils.isBlank(m.group(4)) ? "text2chat" : m.group(4))
-                        .build() :
-                AiModelInfoDTO.builder()
-                        .modelId(modelId)
-                        .description("Unknown model.")
-                        .provider("unknown")
-                        .name("unknown")
-                        .type("unknown")
-                        .build();
+        return from(InfoUtils.toAiModelInfo(modelId));
     }
 
     public AiModelInfo toAiModelInfo() {
