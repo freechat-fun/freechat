@@ -26,7 +26,11 @@ import {
   defaultBaseURLs,
   defaultModels,
 } from '../../configs/model-providers-config';
-import { toModelInfo, extractModelName } from '../../libs/template_utils';
+import {
+  toModelInfo,
+  extractModelName,
+  extractModelProvider,
+} from '../../libs/template_utils';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -45,11 +49,14 @@ export default function OllamaSettings(props: {
   const { t } = useTranslation(['prompt']);
 
   const [baseUrl, setBaseUrl] = useState(
-    defaultParameters?.baseUrl ?? defaultBaseURLs.ollama
+    extractModelProvider(defaultParameters?.modelId) === 'ollama'
+      ? (defaultParameters?.baseUrl ?? defaultBaseURLs.ollama)
+      : defaultBaseURLs.ollama
   );
-
   const [model, setModel] = useState<string>(
-    defaultParameters?.modelId ?? defaultModels.ollama
+    extractModelProvider(defaultParameters?.modelId) === 'ollama'
+      ? (defaultParameters?.modelId ?? defaultModels.ollama)
+      : defaultModels.ollama
   );
 
   const [temperature, setTemperature] = useState<number>(
@@ -104,8 +111,16 @@ export default function OllamaSettings(props: {
   const inputRefs = useRef(Array(7).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
-    setBaseUrl(defaultParameters?.baseUrl ?? defaultBaseURLs.ollama);
-    setModel(defaultParameters?.modelId ?? defaultModels.ollama);
+    setBaseUrl(
+      extractModelProvider(defaultParameters?.modelId) === 'ollama'
+        ? (defaultParameters?.baseUrl ?? defaultBaseURLs.ollama)
+        : defaultBaseURLs.ollama
+    );
+    setModel(
+      extractModelProvider(defaultParameters?.modelId) === 'ollama'
+        ? (defaultParameters?.modelId ?? defaultModels.ollama)
+        : defaultModels.ollama
+    );
 
     setTemperature(defaultParameters?.temperature ?? 0.8);
     setEnableTemperature(containsKey(defaultParameters, 'temperature'));

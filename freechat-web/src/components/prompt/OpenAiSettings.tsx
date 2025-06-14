@@ -26,7 +26,11 @@ import {
   defaultBaseURLs,
   defaultModels,
 } from '../../configs/model-providers-config';
-import { extractModelName, toModelInfo } from '../../libs/template_utils';
+import {
+  extractModelName,
+  extractModelProvider,
+  toModelInfo,
+} from '../../libs/template_utils';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -45,11 +49,14 @@ export default function OpenAiSettings(props: {
   const { t } = useTranslation(['prompt']);
 
   const [baseUrl, setBaseUrl] = useState(
-    defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai
+    extractModelProvider(defaultParameters?.modelId) === 'open_ai'
+      ? (defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai)
+      : defaultBaseURLs.open_ai
   );
-
   const [model, setModel] = useState<string>(
-    defaultParameters?.modelId ?? defaultModels.open_ai
+    extractModelProvider(defaultParameters?.modelId) === 'open_ai'
+      ? (defaultParameters?.modelId ?? defaultModels.open_ai)
+      : defaultModels.open_ai
   );
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
@@ -99,8 +106,16 @@ export default function OpenAiSettings(props: {
   const inputRefs = useRef(Array(6).fill(createRef<HTMLInputElement | null>()));
 
   useEffect(() => {
-    setBaseUrl(defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai);
-    setModel(defaultParameters?.modelId ?? defaultModels.open_ai);
+    setBaseUrl(
+      extractModelProvider(defaultParameters?.modelId) === 'open_ai'
+        ? (defaultParameters?.baseUrl ?? defaultBaseURLs.open_ai)
+        : defaultBaseURLs.open_ai
+    );
+    setModel(
+      extractModelProvider(defaultParameters?.modelId) === 'open_ai'
+        ? (defaultParameters?.modelId ?? defaultModels.open_ai)
+        : defaultModels.open_ai
+    );
 
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));

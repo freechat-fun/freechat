@@ -27,7 +27,11 @@ import {
   TinyInput,
 } from '..';
 import { HelpIcon } from '../icon';
-import { extractModelName, toModelInfo } from '../../libs/template_utils';
+import {
+  extractModelName,
+  extractModelProvider,
+  toModelInfo,
+} from '../../libs/template_utils';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -46,11 +50,14 @@ export default function DashScopeSettings(props: {
   const { t } = useTranslation(['prompt']);
 
   const [baseUrl, setBaseUrl] = useState(
-    defaultParameters?.baseUrl ?? defaultBaseURLs.dash_scope
+    extractModelProvider(defaultParameters?.modelId) === 'dash_scope'
+      ? (defaultParameters?.baseUrl ?? defaultBaseURLs.dash_scope)
+      : defaultBaseURLs.dash_scope
   );
-
   const [model, setModel] = useState<string>(
-    defaultParameters?.modelId ?? defaultModels.dash_scope
+    extractModelProvider(defaultParameters?.modelId) === 'dash_scope'
+      ? (defaultParameters?.modelId ?? defaultModels.dash_scope)
+      : defaultModels.dash_scope
   );
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
@@ -100,8 +107,16 @@ export default function DashScopeSettings(props: {
   const [stopWord, setStopWord] = useState<string>();
 
   useEffect(() => {
-    setBaseUrl(defaultParameters?.baseUrl ?? defaultBaseURLs.dash_scope);
-    setModel(defaultParameters?.modelId ?? defaultModels.dash_scope);
+    setBaseUrl(
+      extractModelProvider(defaultParameters?.modelId) === 'dash_scope'
+        ? (defaultParameters?.baseUrl ?? defaultBaseURLs.dash_scope)
+        : defaultBaseURLs.dash_scope
+    );
+    setModel(
+      extractModelProvider(defaultParameters?.modelId) === 'dash_scope'
+        ? (defaultParameters?.modelId ?? defaultModels.dash_scope)
+        : defaultModels.dash_scope
+    );
 
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));
@@ -218,7 +233,7 @@ export default function DashScopeSettings(props: {
             />
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -244,7 +259,7 @@ export default function DashScopeSettings(props: {
             />
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -290,7 +305,7 @@ export default function DashScopeSettings(props: {
             onChange={(_event, newValue) => setTopP(newValue as number)}
           />
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -336,7 +351,7 @@ export default function DashScopeSettings(props: {
             onChange={(_event, newValue) => setTopK(newValue as number)}
           />
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -372,7 +387,7 @@ export default function DashScopeSettings(props: {
             </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -392,7 +407,7 @@ export default function DashScopeSettings(props: {
             </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -428,7 +443,7 @@ export default function DashScopeSettings(props: {
             </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -466,7 +481,7 @@ export default function DashScopeSettings(props: {
             </Box>
           </CommonContainer>
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
@@ -512,7 +527,7 @@ export default function DashScopeSettings(props: {
             onChange={(_event, newValue) => setTemperature(newValue as number)}
           />
         </OptionCard>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
           <CommonContainer>
