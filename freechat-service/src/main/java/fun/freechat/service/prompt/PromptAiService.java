@@ -2,7 +2,7 @@ package fun.freechat.service.prompt;
 
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import fun.freechat.model.AiModelInfo;
+import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.enums.PromptType;
 

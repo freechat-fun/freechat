@@ -15,6 +15,9 @@ target/
 *.iml
 *.ipr
 
+# VS Code
+*.code-workspace
+
 # NetBeans
 nbproject/private/
 build/

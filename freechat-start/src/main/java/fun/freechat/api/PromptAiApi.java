@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.output.FinishReason;
+import fun.freechat.api.dto.AiModelInfoDTO;
 import fun.freechat.api.dto.ChatPromptContentDTO;
 import fun.freechat.api.dto.LlmResultDTO;
 import fun.freechat.api.dto.PromptAiParamDTO;
 import fun.freechat.api.dto.PromptRefDTO;
 import fun.freechat.api.dto.PromptTemplateDTO;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.api.util.AiModelUtils;
-import fun.freechat.model.AiModelInfo;
+import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.User;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
@@ -216,7 +216,7 @@ public class PromptAiApi {
         if (StringUtils.isBlank(modelId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "modelId must be defined.");
         }
-        AiModelInfo modelInfo = AiModelUtils.getModelInfoDTO(getString(parameters, "modelId")).toAiModelInfo();
+        AiModelInfo modelInfo = AiModelInfoDTO.from(getString(parameters, "modelId")).toAiModelInfo();
         User user;
         String apiKeyInfo;
         String apiKey = getString(parameters, "apiKey");

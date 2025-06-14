@@ -27,7 +27,7 @@ import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
 import fun.freechat.langchain4j.rag.query.transformer.DelegatedQueryTransformer;
 import fun.freechat.langchain4j.rag.query.transformer.NamedCompressingQueryTransformer;
-import fun.freechat.model.AiModelInfo;
+import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
@@ -36,7 +36,6 @@ import fun.freechat.model.PromptTask;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.service.ai.AiApiKeyService;
-import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.ai.CloseableAiApiKey;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
@@ -139,8 +138,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Autowired
     private SysUserService userService;
     @Autowired
-    private AiModelInfoService aiModelInfoService;
-    @Autowired
     private ChatMemoryService chatMemoryService;
     @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
@@ -211,7 +208,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             Long characterId = characterService.getLatestIdByUid(characterUid, owner);
             CharacterInfo characterInfo = characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
-            AiModelInfo modelInfo = aiModelInfoService.get(promptTask.getModelId());
+            AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
             ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
             Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams()) ?
                     InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {}) :
@@ -245,7 +242,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             String moderationModelId = backend.getModerationModelId();
             String moderationApiKeyName = backend.getModerationApiKeyName();
             if (StringUtils.isNotBlank(moderationModelId) && StringUtils.isNotBlank(moderationApiKeyName)) {
-                modelInfo = aiModelInfoService.get(moderationModelId);
+                modelInfo = InfoUtils.toAiModelInfo(moderationModelId);
                 provider = ModelProvider.of(modelInfo.getProvider());
                 parameters = StringUtils.isNotBlank(backend.getModerationParams()) ?
                         InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {}) :
@@ -498,7 +495,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             Long characterId = characterService.getLatestIdByUid(characterUid, owner);
             CharacterInfo characterInfo = characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
-            AiModelInfo modelInfo = aiModelInfoService.get(promptTask.getModelId());
+            AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
             ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
             Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams()) ?
                     InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {}) :
@@ -532,7 +529,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             String moderationModelId = backend.getModerationModelId();
             String moderationApiKeyName = backend.getModerationApiKeyName();
             if (StringUtils.isNotBlank(moderationModelId) && StringUtils.isNotBlank(moderationApiKeyName)) {
-                modelInfo = aiModelInfoService.get(moderationModelId);
+                modelInfo = InfoUtils.toAiModelInfo(moderationModelId);
                 provider = ModelProvider.of(modelInfo.getProvider());
                 parameters = StringUtils.isNotBlank(backend.getModerationParams()) ?
                         InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {}) :

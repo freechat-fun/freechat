@@ -14,12 +14,11 @@ import fun.freechat.api.dto.ChatUpdateDTO;
 import fun.freechat.api.dto.LlmResultDTO;
 import fun.freechat.api.dto.MemoryUsageDTO;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.model.AiModelInfo;
+import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.CharacterBackend;
 import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.PromptTask;
-import fun.freechat.service.ai.AiModelInfoService;
 import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.chat.ChatMemoryService;
@@ -33,6 +32,7 @@ import fun.freechat.service.enums.QuotaType;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.PromptTaskService;
+import fun.freechat.service.util.InfoUtils;
 import fun.freechat.util.TraceUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -95,8 +95,6 @@ public class ChatApi {
     private OrgService orgService;
     @Autowired
     private PromptTaskService promptTaskService;
-    @Autowired
-    private AiModelInfoService aiModelInfoService;
 
     private void checkQuotaValue(long usage, long limit) {
         if (usage >= limit) {
@@ -206,7 +204,7 @@ public class ChatApi {
                     String provider = backend.map(CharacterBackend::getChatPromptTaskId)
                             .map(promptTaskService::get)
                             .map(PromptTask::getModelId)
-                            .map(aiModelInfoService::get)
+                            .map(InfoUtils::toAiModelInfo)
                             .map(AiModelInfo::getProvider)
                             .orElse(null);
 

@@ -1,7 +1,6 @@
 package fun.freechat.api.dto;
 
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.api.util.AiModelUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.api.util.ToolSpecFormatUtils;
 import fun.freechat.model.PluginInfo;
@@ -44,7 +43,7 @@ public class PluginDetailsDTO extends PluginSummaryDTO {
         dto.setTags(pluginInfoTriple.getMiddle());
         dto.setAiModels(pluginInfoTriple.getRight()
                 .stream()
-                .map(AiModelUtils::getModelInfoDTO)
+                .map(AiModelInfoDTO::from)
                 .peek(aiModelInfo -> aiModelInfo.setRequestId(null))
                 .toList());
         return dto;
