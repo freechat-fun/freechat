@@ -8,18 +8,16 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  FormControl,
   IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
   Slider,
   Switch,
   Typography,
 } from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
-import { AiModelInfoDTO } from 'freechat-sdk';
-import { defaultModels } from '../../configs/model-providers-config';
+import {
+  defaultBaseURLs,
+  defaultModels,
+} from '../../configs/model-providers-config';
 import { InputAdornment } from '@mui/material';
 import {
   CommonContainer,
@@ -29,6 +27,7 @@ import {
   TinyInput,
 } from '..';
 import { HelpIcon } from '../icon';
+import { extractModelName, toModelInfo } from '../../libs/template_utils';
 
 function containsKey(
   parameters: { [key: string]: any } | undefined,
@@ -39,20 +38,19 @@ function containsKey(
 
 export default function DashScopeSettings(props: {
   open: boolean;
-  models: (AiModelInfoDTO | undefined)[] | undefined;
   onClose: (parameters: { [key: string]: any }) => void;
   defaultParameters?: { [key: string]: any };
 }) {
-  const { open, models, onClose, defaultParameters } = props;
+  const { open, onClose, defaultParameters } = props;
 
   const { t } = useTranslation(['prompt']);
 
-  const [model, setModel] = useState<AiModelInfoDTO | undefined>(
-    models?.find(
-      (modelInfo) =>
-        modelInfo?.modelId ===
-        (defaultParameters?.modelId ?? defaultModels.dash_scope)
-    )
+  const [baseUrl, setBaseUrl] = useState(
+    defaultParameters?.baseUrl ?? defaultBaseURLs.dash_scope
+  );
+
+  const [model, setModel] = useState<string>(
+    defaultParameters?.modelId ?? defaultModels.dash_scope
   );
 
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
@@ -101,22 +99,9 @@ export default function DashScopeSettings(props: {
   );
   const [stopWord, setStopWord] = useState<string>();
 
-  const [modelId, setModelId] = useState<string>(
-    models?.find(
-      (modelInfo) =>
-        modelInfo?.modelId ===
-        (defaultParameters?.modelId ?? defaultModels.azure_open_ai)
-    )?.modelId ?? ''
-  );
-
   useEffect(() => {
-    setModel(
-      models?.find(
-        (modelInfo) =>
-          modelInfo?.modelId ===
-          (defaultParameters?.modelId ?? defaultModels.dash_scope)
-      )
-    );
+    setBaseUrl(defaultParameters?.baseUrl ?? defaultBaseURLs.dash_scope);
+    setModel(defaultParameters?.modelId ?? defaultModels.dash_scope);
 
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));
@@ -142,23 +127,7 @@ export default function DashScopeSettings(props: {
 
     setStop(defaultParameters?.stop ?? []);
     setEnableStop(containsKey(defaultParameters, 'stop'));
-
-    setModelId(
-      models?.find(
-        (modelInfo) =>
-          modelInfo?.modelId ===
-          (defaultParameters?.modelId ?? defaultModels.azure_open_ai)
-      )?.modelId ?? ''
-    );
-  }, [defaultParameters, models]);
-
-  function handleSelectChange(event: SelectChangeEvent<string>): void {
-    const newValue = event.target.value;
-    if (newValue && newValue !== model?.modelId) {
-      setModel(models?.find((modelInfo) => modelInfo?.modelId === newValue));
-    }
-    setModelId(newValue);
-  }
+  }, [defaultParameters]);
 
   function handleStopWordSubmit(
     event: React.FormEvent<HTMLFormElement> | undefined
@@ -180,8 +149,12 @@ export default function DashScopeSettings(props: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parameters: { [key: string]: any } = {};
 
+    if (baseUrl) {
+      parameters['baseUrl'] = baseUrl;
+    }
+
     if (model) {
-      parameters['modelId'] = model.modelId;
+      parameters['modelId'] = model;
     }
 
     if (enableTopP) {
@@ -227,42 +200,48 @@ export default function DashScopeSettings(props: {
       <DialogContent sx={{ p: 0 }}>
         <OptionCard>
           <CommonContainer>
+            <Typography>baseUrl</Typography>
+            <TinyInput
+              type="text"
+              value={baseUrl}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
+              sx={{
+                ml: 0.5,
+                maxWidth: undefined,
+                flex: 1,
+              }}
+              onChange={(event) => setBaseUrl(event.target.value)}
+            />
+          </CommonContainer>
+        </OptionCard>
+        <Divider sx={{ my: 2 }} />
+
+        <OptionCard>
+          <CommonContainer>
             <Typography>model</Typography>
-            <FormControl size="small" sx={{ flex: 1 }}>
-              <Select
-                name="modelName"
-                value={modelId}
-                onChange={handleSelectChange}
-                displayEmpty
-                sx={{
-                  ml: 2,
-                  flex: 1,
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <Typography color="text.secondary">
-                    No model provided
-                  </Typography>
-                </MenuItem>
-                {models && models.length > 0 ? (
-                  models?.map(
-                    (modelInfo) =>
-                      modelInfo && (
-                        <MenuItem
-                          value={modelInfo.modelId}
-                          key={`option-${modelInfo.modelId}`}
-                        >
-                          {modelInfo.name}
-                        </MenuItem>
-                      )
-                  )
-                ) : (
-                  <MenuItem value="" disabled>
-                    --No Model--
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
+            <TinyInput
+              type="text"
+              value={extractModelName(model)}
+              slotProps={{
+                input: {
+                  size: 'small',
+                },
+              }}
+              sx={{
+                ml: 2,
+                maxWidth: undefined,
+                flex: 1,
+              }}
+              onChange={(event) =>
+                setModel(
+                  toModelInfo('dash_scope', event.target.value, 'text2chat')
+                )
+              }
+            />
           </CommonContainer>
         </OptionCard>
         <Divider sx={{ my: 2 }} />

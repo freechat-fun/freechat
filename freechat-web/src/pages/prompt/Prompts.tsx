@@ -326,7 +326,7 @@ export default function Prompts() {
       >
         <InfoSearchbar
           onSearch={handleSearch}
-          sx={{ width: { sm: '850px' } }}
+          sx={{ width: { sm: '420px' } }}
         />
         <Button
           startIcon={<AddCircleRounded />}

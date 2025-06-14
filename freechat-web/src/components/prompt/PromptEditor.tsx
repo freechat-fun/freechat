@@ -17,11 +17,8 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
-  InputLabel,
-  ListSubheader,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Stack,
   Switch,
   Table,
@@ -78,7 +75,6 @@ import {
   getMessageText,
   setMessageText,
 } from '../../libs/template_utils';
-import { providers } from '../../configs/model-providers-config';
 import { HelpIcon } from '../../components/icon';
 import { objectsEqual } from '../../libs/js_utils';
 import { Theme } from '@mui/material';
@@ -139,8 +135,6 @@ export default function PromptEditor({
   const [tags, setTags] = useState<string[]>([]);
   const [tag, setTag] = useState<string>();
   const [models, setModels] = useState<AiModelInfoDTO[]>([]);
-  const [modelId, setModelId] = useState<string>();
-  const [modelInfos, setModelInfos] = useState<AiModelInfoDTO[]>([]);
 
   const [rounds, setRounds] = useState<MessageRound[]>([]);
   const [editRound, setEditRound] = useState(false);
@@ -224,8 +218,6 @@ export default function PromptEditor({
     if (id) {
       promptApi?.getPromptDetails(id).then(setOrigRecord).catch(handleError);
     }
-
-    aiServiceApi?.listAiModelInfo().then(setModelInfos).catch(handleError);
   }, [handleError, id, promptApi, aiServiceApi]);
 
   useEffect(() => {
@@ -487,12 +479,6 @@ export default function PromptEditor({
     }
   }
 
-  function handleModelDelete(modelIdDeleted: string): void {
-    if (models) {
-      setModels(models.filter((model) => modelIdDeleted !== model.modelId));
-    }
-  }
-
   function handleTagSubmit(
     event: React.FormEvent<HTMLFormElement> | undefined
   ): void {
@@ -503,20 +489,6 @@ export default function PromptEditor({
       setTags([...tags, tag]);
     }
     setTag(undefined);
-  }
-
-  function handleModelSubmit(): void {
-    const modelInfo = modelInfos.find(
-      (modelInfo) => modelInfo.modelId === modelId
-    );
-    if (
-      modelInfo &&
-      models &&
-      !models.find((model) => modelId === model.modelId)
-    ) {
-      setModels([...models, modelInfo]);
-    }
-    setModelId(undefined);
   }
 
   function handleExampleGenerate(
@@ -643,27 +615,6 @@ export default function PromptEditor({
         }
       })
       .catch(handleError);
-  }
-
-  function filterModels(provider?: string): AiModelInfoDTO[] {
-    return modelInfos
-      ? modelInfos.filter((modelInfo) => {
-          if (!modelInfo || (provider && modelInfo.provider !== provider)) {
-            return false;
-          }
-          switch (origRecord.type) {
-            case 'chat': {
-              return modelInfo.type === 'text2chat';
-            }
-            case 'string': {
-              return modelInfo.type === 'text2text';
-            }
-            default: {
-              return false;
-            }
-          }
-        })
-      : [];
   }
 
   function messagesToRounds(
@@ -1313,98 +1264,6 @@ export default function PromptEditor({
                   ))}
               </CommonBox>
               <LinePlaceholder spacing={2} />
-
-              <CommonBox sx={{ mt: 4, mb: 1 }}>
-                <Typography variant="subtitle1" color="text.secondary">
-                  {t('Models')}
-                </Typography>
-                {modelId === undefined && (
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    onClick={() => setModelId('')}
-                  >
-                    <AddCircleRounded />
-                  </IconButton>
-                )}
-              </CommonBox>
-              {models.length > 0 && (
-                <CommonBox>
-                  {models.map((model, index) => (
-                    <Chip
-                      label={model.name}
-                      variant="outlined"
-                      color="warning"
-                      key={`model-${model.modelId}-${index}`}
-                      onDelete={() => handleModelDelete(model.modelId ?? '')}
-                    />
-                  ))}
-                </CommonBox>
-              )}
-              {modelId !== undefined && (
-                <Fragment>
-                  <CommonBox>
-                    <FormControl size="small" sx={{ flex: 1, mt: 2 }}>
-                      <InputLabel id="choose-model-label">
-                        {t('Choose model')}
-                      </InputLabel>
-                      <Select
-                        label={t('Choose model')}
-                        variant="outlined"
-                        value={modelId}
-                        onChange={(event: SelectChangeEvent) =>
-                          event.target.value && setModelId(event.target.value)
-                        }
-                      >
-                        {providers.reduce<React.ReactNode[]>(
-                          (acc, provider, index) => {
-                            if (index !== 0) {
-                              acc.push(
-                                <Divider
-                                  sx={{ my: 1 }}
-                                  key={`divider-${index}`}
-                                />
-                              );
-                            }
-                            acc.push(
-                              <ListSubheader key={`header-${index}`}>
-                                <Typography variant="body2">
-                                  {provider.label}
-                                </Typography>
-                              </ListSubheader>
-                            );
-                            filterModels(provider.provider).forEach(
-                              (modelInfo) => {
-                                acc.push(
-                                  <MenuItem
-                                    key={`option-${modelInfo.modelId}`}
-                                    value={modelInfo.modelId}
-                                    sx={{
-                                      ml: 2,
-                                    }}
-                                  >
-                                    {modelInfo.name}
-                                  </MenuItem>
-                                );
-                              }
-                            );
-                            return acc;
-                          },
-                          []
-                        )}
-                      </Select>
-                    </FormControl>
-                  </CommonBox>
-                  <CommonBox sx={{ justifyContent: 'flex-end' }}>
-                    <IconButton onClick={handleModelSubmit}>
-                      <CheckCircleOutlineRounded fontSize="small" />
-                    </IconButton>
-                    <IconButton onClick={() => setModelId(undefined)}>
-                      <CancelOutlined fontSize="small" />
-                    </IconButton>
-                  </CommonBox>
-                </Fragment>
-              )}
             </StyledStack>
           )}
         </CommonContainer>

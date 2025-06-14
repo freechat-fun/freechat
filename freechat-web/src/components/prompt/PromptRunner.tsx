@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useErrorMessageBusContext,
@@ -60,7 +53,6 @@ import {
   PromptAiParamDTO,
   PromptDetailsDTO,
   PromptTemplateDTO,
-  AiModelInfoDTO,
   LlmResultDTO,
 } from 'freechat-sdk';
 import {
@@ -123,7 +115,6 @@ export default function PromptRunner(props: PromptRunnerProps) {
   );
   const [apiKeyNames, setApiKeyNames] = useState<(string | undefined)[]>([]);
   const [modelSetting, setModelSetting] = useState(false);
-  const [models, setModels] = useState<(AiModelInfoDTO | undefined)[]>([]);
   const [aiRequest, setAiRequest] = useState<PromptAiParamDTO>();
   const [playing, setPlaying] = useState(false);
   const [parameters, setParameters] = useState(defaultParameters);
@@ -132,63 +123,30 @@ export default function PromptRunner(props: PromptRunnerProps) {
 
   const [width, setWidth] = useState(minWidth || '30%');
 
-  const matchingModels = useMemo(() => {
-    return record && provider && models
-      ? models.filter((model) => {
-          if (!model || model.provider !== provider) {
-            return false;
-          }
-          switch (record.type) {
-            case 'chat': {
-              return model.type === 'text2chat';
-            }
-            case 'string': {
-              return model.type === 'text2text';
-            }
-            default: {
-              return false;
-            }
-          }
-        })
-      : [];
-  }, [models, provider, record]);
-
   const initParameters = useCallback(
     (
       initialParameters: { [key: string]: any } | undefined,
-      initialProvider: string,
-      initialModels: (AiModelInfoDTO | undefined)[]
+      initialProvider: string
     ): { [key: string]: any } | undefined => {
       if (
         extractModelProvider(initialParameters?.modelId) === initialProvider
       ) {
         return { ...initialParameters };
       } else {
-        const defaultModelId =
+        const initialParameters: { [key: string]: any } = {};
+        initialParameters['modelId'] =
           defaultModels?.[
             (initialProvider ?? 'open_ai') as keyof typeof defaultModels
           ] ?? defaultModels.open_ai;
-        const defaultModel = initialModels?.find(
-          (modelInfo) => modelInfo?.modelId === defaultModelId
-        );
-        if (defaultModel) {
-          const initialParameters: { [key: string]: any } = {};
-          initialParameters['modelId'] = defaultModel.modelId;
-          initialParameters['baseUrl'] =
-            defaultBaseURLs?.[
-              (initialProvider ?? 'open_ai') as keyof typeof defaultBaseURLs
-            ] ?? defaultBaseURLs.open_ai;
-          return initialParameters;
-        }
+        initialParameters['baseUrl'] =
+          defaultBaseURLs?.[
+            (initialProvider ?? 'open_ai') as keyof typeof defaultBaseURLs
+          ] ?? defaultBaseURLs.open_ai;
+        return initialParameters;
       }
-      return undefined;
     },
     []
   );
-
-  useEffect(() => {
-    aiServiceApi?.listAiModelInfo().then(setModels).catch(handleError);
-  }, [aiServiceApi, handleError]);
 
   useEffect(() => {
     aiServiceApi
@@ -211,14 +169,13 @@ export default function PromptRunner(props: PromptRunnerProps) {
 
     const initialParameters = initParameters(
       defaultParameters,
-      initialProvider,
-      models
+      initialProvider
     );
 
     if (initialParameters) {
       setParameters(initialParameters);
     }
-  }, [defaultParameters, initParameters, models]);
+  }, [defaultParameters, initParameters]);
 
   useEffect(() => {
     setInputs({ ...defaultVariables });
@@ -509,19 +466,16 @@ export default function PromptRunner(props: PromptRunnerProps) {
       />
       <OpenAiSettings
         open={modelSetting && provider === 'open_ai'}
-        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
       <AzureOpenAiSettings
         open={modelSetting && provider === 'azure_open_ai'}
-        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />
       <DashScopeSettings
         open={modelSetting && provider === 'dash_scope'}
-        models={matchingModels}
         onClose={handleModelSettings}
         defaultParameters={parameters}
       />

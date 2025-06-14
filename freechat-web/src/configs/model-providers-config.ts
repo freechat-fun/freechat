@@ -22,10 +22,10 @@ const providers = [
 ];
 
 const defaultModels = {
-  open_ai: '[open_ai]gpt-4o',
-  azure_open_ai: '[azure_open_ai]gpt-4o',
+  open_ai: '[open_ai]gpt-4o-mini',
+  azure_open_ai: '[azure_open_ai]gpt-4o-mini',
   dash_scope: '[dash_scope]qwen-max',
-  ollama: '[ollama]llama3.2|text2chat',
+  ollama: '[ollama]deepseek-r1:8b|text2chat',
 };
 
 const defaultBaseURLs = {
