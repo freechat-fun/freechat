@@ -1,6 +1,6 @@
 import { useRef, KeyboardEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Button, IconButton, Stack, useTheme } from '@mui/material';
+import { Avatar, IconButton, Stack, useTheme } from '@mui/material';
 import { AndroidRounded, SendRounded } from '@mui/icons-material';
 import { CharacterSummaryDTO, LlmResultDTO } from 'freechat-sdk';
 import { MessageAssistantsWindow } from '.';
@@ -151,10 +151,11 @@ export default function MessageInput(props: MessageInputProps) {
       return;
     }
 
-    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-      // send
-      event.preventDefault();
-      handleClick();
+    if (event.key === 'Enter') {
+      if (!(event.shiftKey || event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        handleClick();
+      }
     }
   }
 
@@ -258,36 +259,12 @@ export default function MessageInput(props: MessageInputProps) {
                       {assistantName}
                     </Avatar>
                   </IconButton>
-                  <Button
-                    disabled={disabled || assistantHelp || !textAreaValue}
-                    size="small"
-                    variant="contained"
-                    sx={{
-                      display: {
-                        xs: 'none',
-                        lg: assistantUid && !textAreaValue ? 'none' : 'inherit',
-                      },
-                      alignSelf: 'center',
-                      whiteSpace: 'nowrap',
-                      bgcolor: '#3b82f6',
-                      color: '#fefefe',
-                      '&:hover, &:focus-within': {
-                        bgcolor: '#2563eb',
-                      },
-                    }}
-                    endIcon={<SendRounded />}
-                    onClick={handleClick}
-                  >
-                    {`${t('Send')} (Ctrl/⌘ + ⏎)`}
-                  </Button>
                   <IconButton
                     disabled={disabled || assistantHelp || !textAreaValue}
                     size="small"
                     sx={{
-                      display: {
-                        xs: assistantUid && !textAreaValue ? 'none' : 'inherit',
-                        lg: 'none',
-                      },
+                      display:
+                        assistantUid && !textAreaValue ? 'none' : 'inherit',
                       alignSelf: 'center',
                       border: '1px solid',
                       borderColor: 'divider',

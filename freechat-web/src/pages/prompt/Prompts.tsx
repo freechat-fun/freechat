@@ -319,9 +319,9 @@ export default function Prompts() {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
+          flexDirection: 'row',
           justifyContent: 'space-between',
-          alignItems: { xs: 'start', lg: 'center' },
+          alignItems: 'center',
         }}
       >
         <InfoSearchbar

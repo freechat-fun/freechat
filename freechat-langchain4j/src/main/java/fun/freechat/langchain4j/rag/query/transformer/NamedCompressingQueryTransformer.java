@@ -83,7 +83,6 @@ public class NamedCompressingQueryTransformer extends CompressingQueryTransforme
 
         Prompt prompt = createPrompt(query, format(chatMemory));
         String compressedQueryText = chatModel.chat(prompt.text());
-        log.info("Transformed original query '{}' into '{}'", query.text(), compressedQueryText);
         Query compressedQuery = Query.from(compressedQueryText, query.metadata());
         return singletonList(compressedQuery);
     }

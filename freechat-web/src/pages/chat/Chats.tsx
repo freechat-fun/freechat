@@ -209,7 +209,7 @@ export default function Chats() {
         backgroundColor: 'background.default',
         gridTemplateColumns: {
           xs: '1fr',
-          sm: '2fr 5fr 3fr',
+          sm: '3fr 11fr 6fr',
         },
       }}
     >
