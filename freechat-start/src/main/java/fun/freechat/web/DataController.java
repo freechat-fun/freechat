@@ -31,6 +31,11 @@ public class DataController {
     private static final List<String> AVAILABLE_IMAGE_TYPES = List.of(
             IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE
     );
+    
+    private static final List<String> AVAILABLE_VIDEO_TYPES = List.of(
+            "video/mp4", "video/webm", "video/ogg", "video/quicktime", "video/x-msvideo",
+            "video/x-flv", "video/3gpp", "video/3gpp2", "video/x-matroska", "video/mpeg", "video/x-m4v"
+    );
 
     @Autowired
     private Tika tika;
@@ -53,6 +58,36 @@ public class DataController {
             }
 
             HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag, IMAGE_JPEG, AVAILABLE_IMAGE_TYPES);
+            Resource resource = new PathResource(fileStore.toPath(pathStr));
+            return ResponseEntity.ok().headers(headers).body(resource);
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/public/video/{key}", produces = {"video/*"})
+    @CrossOrigin(originPatterns = "*")
+    public ResponseEntity<Resource> getPublicVideo(
+            HttpServletRequest request,
+            @PathVariable("key") @NotBlank String key) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String pathStr = FileUtils.getDefaultPublicPath(key);
+            long lastModified = fileStore.getLastModifiedTime(pathStr);
+            String eTag = "\"" + DigestUtils.md5Hex(String.valueOf(lastModified)) + "\"";
+
+            String ifNoneMatch = request.getHeader(HttpHeaders.IF_NONE_MATCH);
+            long ifModifiedSince = request.getDateHeader(HttpHeaders.IF_MODIFIED_SINCE);
+            if (eTag.equals(ifNoneMatch) || (ifModifiedSince >= lastModified)) {
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+            }
+
+            HttpHeaders headers = getResponseHeaders(pathStr, lastModified, eTag,
+                    MediaType.parseMediaType("video/mp4"), AVAILABLE_VIDEO_TYPES);
             Resource resource = new PathResource(fileStore.toPath(pathStr));
             return ResponseEntity.ok().headers(headers).body(resource);
         } catch (AccessDeniedException e) {

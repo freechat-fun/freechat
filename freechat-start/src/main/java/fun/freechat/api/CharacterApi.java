@@ -792,6 +792,101 @@ public class CharacterApi {
     }
 
     @Operation(
+            operationId = "uploadCharacterVideo",
+            summary = "Upload Character Video",
+            description = "Upload a video of the character."
+    )
+    @PostMapping(value = "/video/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
+    public String uploadVideo(
+            HttpServletRequest request,
+            @Parameter(description = "Character video") @RequestParam("file") @NotNull
+            MultipartFile file,
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
+        long maxSize = runtimeConfig.getLong(VIDEO_MAX_SIZE_KEY);
+        int maxCount = runtimeConfig.getInt(VIDEO_MAX_COUNT_KEY);
+
+        if (file.getSize() > maxSize) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size should be less than " + maxSize);
+        }
+
+        if (StringUtils.isBlank(characterUid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character");
+        }
+
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/video/" + characterUid;
+            String dstPath = FileUtils.transfer(file, fileStore, dstDir, maxCount);
+            String shareUrl = fileStore.getShareUrl(dstPath, Integer.MAX_VALUE);
+            if (StringUtils.isBlank(shareUrl)) {
+                shareUrl = FileUtils.getDefaultPublicUrlForVideo(request, dstPath);
+            }
+            return shareUrl;
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        }
+    }
+
+    @Operation(
+            operationId = "deleteCharacterVideo",
+            summary = "Delete Character Video",
+            description = "Delete a video of the character by key."
+    )
+    @DeleteMapping("/video/{key}")
+    public Boolean deleteVideo(
+            @Parameter(description = "Video key") @PathVariable("key") @NotBlank
+            String key) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String path = FileUtils.getDefaultPublicPath(key);
+            String characterUid = getCharacterUidFromPath(path);
+            String userId = characterService.getOwnerByUid(characterUid);
+            if (!AccountUtils.currentUser().getUserId().equals(userId)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Video doesn't belong to you");
+            }
+            fileStore.delete(path);
+            return true;
+        } catch (AccessDeniedException e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Operation(
+            operationId = "listCharacterVideos",
+            summary = "List Character Videos",
+            description = "List videos of the character."
+    )
+    @GetMapping("/videos/{characterUid}")
+    @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
+    public List<String> listVideos(
+            HttpServletRequest request,
+            @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
+            String characterUid) {
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try {
+            String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/video/" + characterUid;
+            return fileStore.list(dstDir, null, false)
+                    .stream()
+                    .map(path -> {
+                        String shareUrl = fileStore.getShareUrl(path, Integer.MAX_VALUE);
+                        if (StringUtils.isBlank(shareUrl)) {
+                            shareUrl = FileUtils.getDefaultPublicUrlForVideo(request, path);
+                        }
+                        return shareUrl;
+                    })
+                    .toList();
+        } catch (IOException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Operation(
             operationId = "uploadCharacterAvatar",
             summary = "Upload Character Avatar",
             description = "Upload an avatar of the character."
@@ -1134,6 +1229,9 @@ public class CharacterApi {
             // pictures
             entries.addAll(pictures(currentUserId, characterUid));
 
+            // videos
+            entries.addAll(videos(currentUserId, characterUid));
+
             // avatars
             avatar(currentUserId, characterUid, characterTriple.getLeft().getAvatar())
                     .ifPresent(entries::add);
@@ -1166,6 +1264,11 @@ public class CharacterApi {
     private static List<Triple<String, InputStream, Long>> pictures(String userId, String characterUid) {
         String dir = PUBLIC_DIR + userId + "/character/picture/" + characterUid;
         return listFileStreams("pictures", dir);
+    }
+
+    private static List<Triple<String, InputStream, Long>> videos(String userId, String characterUid) {
+        String dir = PUBLIC_DIR + userId + "/character/videos/" + characterUid;
+        return listFileStreams("videos", dir);
     }
 
     private Optional<Triple<String, InputStream, Long>> avatar(String userId, String characterUid, String avatarUrl) {
@@ -1239,6 +1342,7 @@ public class CharacterApi {
             List<CharacterBackend> backends = characterConf.getRight();
             handleAvatar(request, userId, characterInfo, tempDir);
             handlePictures(userId, characterInfo, tempDir);
+            handleVideos(userId, characterInfo, tempDir);
             handleDocuments(userId, characterInfo, tempDir);
             handleVoices(userId, characterInfo, backends, tempDir);
 
@@ -1348,6 +1452,23 @@ public class CharacterApi {
                     FileUtils.move(picturePath, fileStore, dir);
                 } catch (IOException e) {
                     log.warn("Failed to move file from {} to {}", picturePath, dir, e);
+                }
+            });
+        }
+    }
+
+    private void handleVideos(String userId,
+                              CharacterInfo characterInfo,
+                              Path confPath) throws IOException {
+        Path srcPath = confPath.resolve("videos");
+        String dir = PUBLIC_DIR + userId + "/character/videos/" + characterInfo.getCharacterUid();
+        FileStore fileStore = StoreUtils.defaultFileStore();
+        try (Stream<Path> stream = Files.list(srcPath)) {
+            stream.filter(Files::isRegularFile).forEach(videoPath -> {
+                try {
+                    FileUtils.move(videoPath, fileStore, dir);
+                } catch (IOException e) {
+                    log.warn("Failed to move file from {} to {}", videoPath, dir, e);
                 }
             });
         }
