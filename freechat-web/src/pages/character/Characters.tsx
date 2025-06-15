@@ -13,7 +13,7 @@ import {
   useFreeChatApiContext,
 } from '../../contexts';
 import {
-  CommonBox,
+  FlexBox,
   ConfirmModal,
   InfoCardCover,
   InfoSearchbar,
@@ -96,7 +96,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         m: 0,
       }}
     >
-      <CommonBox>
+      <FlexBox>
         <Avatar alt={characterName} src={record.avatar}>
           {characterName}
         </Avatar>
@@ -112,7 +112,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         >
           {record.name}
         </Typography>
-      </CommonBox>
+      </FlexBox>
       <Box
         sx={{
           ...sx,

@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { CheckRounded, KeyRounded, TuneRounded } from '@mui/icons-material';
 import { ChatSessionDTO, MemoryUsageDTO } from 'freechat-sdk';
-import { CommonBox, CommonGridBox, ConfirmModal, OptionTooltip } from '..';
+import { FlexBox, GridBox, ConfirmModal, OptionTooltip } from '..';
 import { providers as modelProviders } from '../../configs/model-providers-config';
 
 type ChatInfoUsageProps = {
@@ -66,11 +66,11 @@ export default function ChatInfoUsage({
 
   return (
     <Fragment>
-      <CommonGridBox>
+      <GridBox>
         <Typography variant="subtitle1" color="text.secondary">
           {t('My API Key', { ns: 'account' })}
         </Typography>
-        <CommonBox sx={{ ml: 'auto' }}>
+        <FlexBox sx={{ ml: 'auto' }}>
           <OptionTooltip
             title={
               session?.isCustomizedApiKeyEnabled
@@ -88,7 +88,7 @@ export default function ChatInfoUsage({
               </IconButton>
             </div>
           </OptionTooltip>
-        </CommonBox>
+        </FlexBox>
 
         <Typography variant="subtitle1" color="text.secondary">
           {t('Usage')}
@@ -96,7 +96,7 @@ export default function ChatInfoUsage({
         <Typography variant="body2" sx={{ ml: 'auto' }}>
           {getUsageLabel()}
         </Typography>
-      </CommonGridBox>
+      </GridBox>
 
       <ConfirmModal
         open={apiKeySettingOpen}

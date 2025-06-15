@@ -1,9 +1,9 @@
 import { createRef, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  CommonBox,
-  CommonContainer,
-  CommonGridBox,
+  FlexBox,
+  DynamicFlexBox,
+  GridBox,
   ConfirmModal,
   OptionCard,
   OptionTooltip,
@@ -201,7 +201,7 @@ export default function CharacterDocumentUploader({
                 'Supported file formats include txt, doc, docx, pdf, ppt, pptx, xls, xlsx, etc. The maximum size for a single file is 3MB.'
               )}
             </Typography>
-            <CommonBox>
+            <FlexBox>
               {documentFile?.name && <Chip label={documentFile.name} />}
               {documentUploading ? (
                 <CircularProgress />
@@ -233,7 +233,7 @@ export default function CharacterDocumentUploader({
                   )}
                 </FormControl>
               )}
-            </CommonBox>
+            </FlexBox>
           </Stack>
         ) : (
           <Stack spacing={2}>
@@ -259,9 +259,9 @@ export default function CharacterDocumentUploader({
 
         <Divider sx={{ mt: 'auto', mx: 2 }}>{t('Splitter Settings')}</Divider>
 
-        <CommonGridBox sx={{ gridTemplateColumns: '1fr 1fr' }}>
+        <GridBox sx={{ gridTemplateColumns: '1fr 1fr' }}>
           <OptionCard>
-            <CommonContainer>
+            <DynamicFlexBox>
               <Typography variant="subtitle1" color="text.secondary">
                 {t('Max Segment Size')}
               </Typography>
@@ -270,7 +270,7 @@ export default function CharacterDocumentUploader({
               >
                 <HelpIcon />
               </OptionTooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
+              <DynamicFlexBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={documentUploading}
                   type="number"
@@ -287,8 +287,8 @@ export default function CharacterDocumentUploader({
                     setDocumentMaxSegmentSize(+event.target.value)
                   }
                 />
-              </CommonContainer>
-            </CommonContainer>
+              </DynamicFlexBox>
+            </DynamicFlexBox>
             <Slider
               disabled={documentUploading}
               value={documentMaxSegmentSize}
@@ -303,7 +303,7 @@ export default function CharacterDocumentUploader({
           </OptionCard>
 
           <OptionCard>
-            <CommonContainer>
+            <DynamicFlexBox>
               <Typography variant="subtitle1" color="text.secondary">
                 {t('Max Overlap Size')}
               </Typography>
@@ -314,7 +314,7 @@ export default function CharacterDocumentUploader({
               >
                 <HelpIcon />
               </OptionTooltip>
-              <CommonContainer sx={{ ml: 'auto' }}>
+              <DynamicFlexBox sx={{ ml: 'auto' }}>
                 <TinyInput
                   disabled={documentUploading}
                   type="number"
@@ -331,8 +331,8 @@ export default function CharacterDocumentUploader({
                     setDocumentMaxOverlapSize(+event.target.value)
                   }
                 />
-              </CommonContainer>
-            </CommonContainer>
+              </DynamicFlexBox>
+            </DynamicFlexBox>
             <Slider
               disabled={documentUploading}
               value={documentMaxOverlapSize}
@@ -345,7 +345,7 @@ export default function CharacterDocumentUploader({
               }
             />
           </OptionCard>
-        </CommonGridBox>
+        </GridBox>
       </Stack>
     </ConfirmModal>
   );

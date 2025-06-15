@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 
-const CommonContainer = styled(Box)(({ theme }) => ({
+const DynamicFlexBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'flex-start',
   alignItems: 'center',
@@ -16,4 +16,4 @@ const CommonContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default CommonContainer;
+export default DynamicFlexBox;

@@ -36,7 +36,7 @@ import {
 import { RagTaskDetailsDTO } from 'freechat-sdk';
 import { formatDateTime } from '../../libs/date_utils';
 import { base64PathDecode, extractFilenameFromUrl } from '../../libs/url_utils';
-import { CommonBox, ConfirmModal } from '..';
+import { FlexBox, ConfirmModal } from '..';
 import { CharacterDocumentUploader } from '.';
 
 type CharacterDocumentsPaneProps = {
@@ -168,7 +168,7 @@ export default function CharacterDocumentsPane({
 
   return (
     <Stack spacing={2} sx={{ ...sx }}>
-      <CommonBox>
+      <FlexBox>
         <Typography variant="subtitle1">
           {t(
             'Character documents: (You can have up to 10 documents, each under 3MB)'
@@ -187,7 +187,7 @@ export default function CharacterDocumentsPane({
             <AddCircleRounded />
           </IconButton>
         )}
-      </CommonBox>
+      </FlexBox>
 
       <TableContainer sx={{ display: ragTasks.length > 0 ? 'block' : 'none' }}>
         <Table size="small">

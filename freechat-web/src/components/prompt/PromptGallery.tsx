@@ -15,7 +15,7 @@ import {
   useMetaInfoContext,
 } from '../../contexts';
 import {
-  CommonBox,
+  FlexBox,
   HighlightedTypography,
   HotTags,
   InfoSearchbar,
@@ -127,7 +127,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
             size="small"
             label={record.type}
           />
-          <CommonBox sx={{ ml: 'auto' }}>
+          <FlexBox sx={{ ml: 'auto' }}>
             <OptionTooltip title={userName}>
               <Avatar
                 alt={userName}
@@ -135,7 +135,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
                 sx={{ width: 32, height: 32 }}
               />
             </OptionTooltip>
-          </CommonBox>
+          </FlexBox>
         </Box>
         <Divider sx={{ mx: -2 }} />
 
@@ -148,7 +148,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         <Divider sx={{ mx: -2 }} />
 
         {tags.length > 0 && (
-          <CommonBox sx={{ gap: 2, my: 2 }}>
+          <FlexBox sx={{ gap: 2, my: 2 }}>
             {tags.map((tag, index) => (
               <Chip
                 variant="filled"
@@ -158,7 +158,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
                 label={tag}
               />
             ))}
-          </CommonBox>
+          </FlexBox>
         )}
 
         {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
@@ -175,7 +175,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           <Typography variant="body2" color="text.secondary">
             {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
           </Typography>
-          <CommonBox>
+          <FlexBox>
             <Chip
               size="small"
               variant="outlined"
@@ -188,7 +188,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               icon={<ShareRounded />}
               label={record.referCount}
             />
-          </CommonBox>
+          </FlexBox>
         </Box>
       </StyledStack>
     </Link>

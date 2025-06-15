@@ -26,7 +26,7 @@ import {
   Title,
 } from '@mui/icons-material';
 import {
-  CommonContainer,
+  DynamicFlexBox,
   LinePlaceholder,
   OptionTooltip,
 } from '../../components';
@@ -139,7 +139,7 @@ export default function PromptViewer({
   return (
     <>
       <LinePlaceholder />
-      <CommonContainer
+      <DynamicFlexBox
         sx={{
           alignItems: { xs: 'flex-start', sm: 'flex-end' },
           justifyContent: 'flex-end',
@@ -239,9 +239,9 @@ export default function PromptViewer({
             </Button>
           )}
         </ButtonGroup>
-      </CommonContainer>
+      </DynamicFlexBox>
       <Divider />
-      <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
+      <DynamicFlexBox sx={{ flex: 1, alignItems: 'flex-start' }}>
         <PromptContent record={record} />
         {play ? (
           <PromptRunner
@@ -304,7 +304,7 @@ export default function PromptViewer({
         ) : (
           <PromptMeta record={record} history={history} />
         )}
-      </CommonContainer>
+      </DynamicFlexBox>
     </>
   );
 }

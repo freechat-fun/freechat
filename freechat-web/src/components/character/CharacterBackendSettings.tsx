@@ -49,9 +49,9 @@ import {
   useFreeChatApiContext,
 } from '../../contexts';
 import {
-  CommonBox,
-  CommonContainer,
-  CommonGridBox,
+  FlexBox,
+  DynamicFlexBox,
+  GridBox,
   LinePlaceholder,
   OptionCard,
   OptionTooltip,
@@ -348,7 +348,7 @@ const CharacterBackendSettings = forwardRef<
         {...others}
       >
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Message Window')}
             </Typography>
@@ -359,7 +359,7 @@ const CharacterBackendSettings = forwardRef<
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 type="number"
                 slotProps={{
@@ -372,8 +372,8 @@ const CharacterBackendSettings = forwardRef<
                 value={messageWindowSize}
                 onChange={(event) => setMessageWindowSize(+event.target.value)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             value={messageWindowSize}
             min={10}
@@ -387,7 +387,7 @@ const CharacterBackendSettings = forwardRef<
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Long Term Memory Window')}
             </Typography>
@@ -398,7 +398,7 @@ const CharacterBackendSettings = forwardRef<
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 type="number"
                 slotProps={{
@@ -413,8 +413,8 @@ const CharacterBackendSettings = forwardRef<
                   setLongTermMemoryWindowSize(+event.target.value)
                 }
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             value={longTermMemoryWindowSize}
             step={5}
@@ -428,7 +428,7 @@ const CharacterBackendSettings = forwardRef<
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Proactive Chat Waiting Time')}
             </Typography>
@@ -439,7 +439,7 @@ const CharacterBackendSettings = forwardRef<
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 type="number"
                 slotProps={{
@@ -454,8 +454,8 @@ const CharacterBackendSettings = forwardRef<
                   setProactiveChatWaitingTime(+event.target.value)
                 }
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             value={proactiveChatWaitingTime}
             step={1}
@@ -469,7 +469,7 @@ const CharacterBackendSettings = forwardRef<
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Quota Limit')}
             </Typography>
@@ -485,9 +485,9 @@ const CharacterBackendSettings = forwardRef<
               sx={{ ml: 'auto' }}
               onChange={() => setEnableQuota(!enableQuota)}
             />
-          </CommonContainer>
+          </DynamicFlexBox>
 
-          <CommonContainer>
+          <DynamicFlexBox>
             <ButtonGroup
               disabled={!enableQuota}
               size="small"
@@ -519,7 +519,7 @@ const CharacterBackendSettings = forwardRef<
               ))}
             </ButtonGroup>
 
-            <CommonContainer
+            <DynamicFlexBox
               sx={{ ml: 'auto', justifyContent: 'space-between' }}
             >
               <TinyInput
@@ -542,12 +542,12 @@ const CharacterBackendSettings = forwardRef<
               >
                 K
               </Typography>
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
         </OptionCard>
 
         <OptionCard>
-          <CommonGridBox>
+          <GridBox>
             <Typography variant="body2">
               {t('Model')}
             </Typography>
@@ -571,7 +571,7 @@ const CharacterBackendSettings = forwardRef<
             <Typography variant="body2">
               {' '}
             </Typography>
-            <CommonContainer
+            <DynamicFlexBox
               sx={{
                 mt: 2,
                 justifyContent: 'space-between',
@@ -597,12 +597,12 @@ const CharacterBackendSettings = forwardRef<
               >
                 {t('button:Tune')}
               </Button>
-            </CommonContainer>
-          </CommonGridBox>
+            </DynamicFlexBox>
+          </GridBox>
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Enable TTS')}
             </Typography>
@@ -614,14 +614,14 @@ const CharacterBackendSettings = forwardRef<
               sx={{ ml: 'auto' }}
               onChange={() => setEnableTts(!enableTts)}
             />
-          </CommonContainer>
+          </DynamicFlexBox>
           <RadioGroup
             name="ttsSpeakerType"
             value={ttsSpeakerType}
             onChange={(event) => setTtsSpeakerType(event.target.value)}
             sx={{ mt: 2 }}
           >
-            <CommonGridBox sx={{ gridTemplateColumns: '1fr 5fr auto' }}>
+            <GridBox sx={{ gridTemplateColumns: '1fr 5fr auto' }}>
               <Radio value="idx" disabled={!enableTts} />
               <FormControl size="small">
                 <InputLabel id="builtin-voice-label">
@@ -643,11 +643,11 @@ const CharacterBackendSettings = forwardRef<
               </FormControl>
               {
                 playing && ttsSpeakerType === 'idx' ? (
-                  <CommonBox>
+                  <FlexBox>
                     <Box sx={{ ml: 'auto' }}>
                       <CircularProgress size="small" />
                     </Box>
-                  </CommonBox>
+                  </FlexBox>
                 ) : (
                   <IconButton
                     disabled={
@@ -664,7 +664,7 @@ const CharacterBackendSettings = forwardRef<
               <audio ref={audioRefs.current[1]} />
 
               <Radio value="wav" disabled={!enableTts} />
-              <CommonBox>
+              <FlexBox>
                 <FormLabel sx={{ alignSelf: 'center' }}>
                   {t('Custom Voice')}
                 </FormLabel>
@@ -673,8 +673,8 @@ const CharacterBackendSettings = forwardRef<
                 >
                   <HelpIcon />
                 </OptionTooltip>
-              </CommonBox>
-              <CommonBox>
+              </FlexBox>
+              <FlexBox>
                 <TextField
                   disabled={
                     fileUploading || !enableTts || ttsSpeakerType !== 'wav'
@@ -705,10 +705,10 @@ const CharacterBackendSettings = forwardRef<
                 >
                   {t('File too large!')}
                 </FormHelperText>
-              </CommonBox>
-            </CommonGridBox>
-            <CommonGridBox sx={{ gridTemplateColumns: '1fr 5fr auto' }}>
-              <CommonBox sx={{ flex: 1, flexWrap: 'nowrap' }} />
+              </FlexBox>
+            </GridBox>
+            <GridBox sx={{ gridTemplateColumns: '1fr 5fr auto' }}>
+              <FlexBox sx={{ flex: 1, flexWrap: 'nowrap' }} />
                 {ttsSpeakerWav && (
                   <Fragment>
                     <Chip
@@ -761,12 +761,12 @@ const CharacterBackendSettings = forwardRef<
                   </Fragment>
                 )}
                 <audio ref={audioRefs.current[0]} />
-            </CommonGridBox>
+            </GridBox>
           </RadioGroup>
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Enable Album Tool')}
             </Typography>
@@ -782,11 +782,11 @@ const CharacterBackendSettings = forwardRef<
               sx={{ ml: 'auto' }}
               onChange={() => setEnableAlbumTool(!enableAlbumTool)}
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Moderation Model')}
             </Typography>
@@ -796,11 +796,11 @@ const CharacterBackendSettings = forwardRef<
               </IconButton>
             </OptionTooltip>
             <Switch checked={false} disabled sx={{ ml: 'auto' }} />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Prompt Template')}
             </Typography>
@@ -809,8 +809,8 @@ const CharacterBackendSettings = forwardRef<
                 <ArrowOutwardRounded />
               </IconButton>
             </OptionTooltip>
-          </CommonContainer>
-          <CommonContainer>
+          </DynamicFlexBox>
+          <DynamicFlexBox>
             <Typography variant="body2">
               {t('Preset Memory')}
             </Typography>
@@ -819,19 +819,19 @@ const CharacterBackendSettings = forwardRef<
                 <ArrowOutwardRounded />
               </IconButton>
             </OptionTooltip>
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
 
         <LinePlaceholder />
 
-        <CommonBox sx={{ justifyContent: 'flex-end' }}>
+        <FlexBox sx={{ justifyContent: 'flex-end' }}>
           <IconButton onClick={() => onCancel?.()}>
             <UndoRounded />
           </IconButton>
           <IconButton onClick={() => handleSave(false)}>
             <DoneRounded />
           </IconButton>
-        </CommonBox>
+        </FlexBox>
       </StyledStack>
 
       <AiApiKeySettings

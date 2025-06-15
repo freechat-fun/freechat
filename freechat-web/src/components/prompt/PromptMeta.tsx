@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Chip, Typography } from '@mui/material';
 import {
-  CommonBox,
+  FlexBox,
   HistoryTypography,
   LinePlaceholder,
   RouterLink,
@@ -65,7 +65,7 @@ export default function PromptMeta(props: {
             {t('Tags')}
           </Typography>
           <LinePlaceholder spacing={0.5} />
-          <CommonBox>
+          <FlexBox>
             {tags.map((tag, index) => (
               <Chip
                 label={tag}
@@ -75,7 +75,7 @@ export default function PromptMeta(props: {
                 size="small"
               />
             ))}
-          </CommonBox>
+          </FlexBox>
           <LinePlaceholder />
         </Fragment>
       )}
@@ -86,7 +86,7 @@ export default function PromptMeta(props: {
             {t('Models')}
           </Typography>
           <LinePlaceholder spacing={0.5} />
-          <CommonBox>
+          <FlexBox>
             {models.map((model, index) => (
               <Chip
                 label={model.name}
@@ -96,7 +96,7 @@ export default function PromptMeta(props: {
                 size="small"
               />
             ))}
-          </CommonBox>
+          </FlexBox>
           <LinePlaceholder />
         </Fragment>
       )}

@@ -27,12 +27,12 @@ import {
   TuneRounded,
 } from '@mui/icons-material';
 import {
-  CommonContainer,
+  DynamicFlexBox,
   LinePlaceholder,
   TextareaTypography,
   ChatContent,
   ImagePicker,
-  CommonBox,
+  FlexBox,
   TinyInput,
   OptionTooltip,
   StyledStack,
@@ -324,7 +324,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
                 </OptionTooltip>
               </Box>
             </FormLabel>
-            <CommonBox>
+            <FlexBox>
               <ImagePicker
                 onImageSelect={handleImageSelect}
                 aria-label="upload attachment"
@@ -340,7 +340,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
                   label={attachment}
                 />
               )}
-            </CommonBox>
+            </FlexBox>
           </Box>
         )}
         <LinePlaceholder />
@@ -434,7 +434,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
             }}
           />
         </TextareaTypography>
-        <CommonContainer
+        <DynamicFlexBox
           sx={{
             justifyContent: 'flex-end',
           }}
@@ -450,7 +450,7 @@ export default function PromptRunner(props: PromptRunnerProps) {
               {t('Save as Example', { ns: 'button' })}
             </Button>
           )}
-        </CommonContainer>
+        </DynamicFlexBox>
       </StyledStack>
       <AiApiKeySettings
         defaultKeyName={apiKeyName}

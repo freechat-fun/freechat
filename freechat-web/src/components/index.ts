@@ -1,10 +1,10 @@
 export { default as BlockquoteContent } from './BlockquoteContent';
 export { default as ChatContent } from './ChatContent';
-export { default as CodeContent } from './CodeContainer'; // Note: path is CodeContainer
+export { default as CodeContent } from './CodeContent';
 export { default as ColorSchemeToggle } from './ColorSchemeToggle';
-export { default as CommonBox } from './CommonBox';
-export { default as CommonContainer } from './CommonContainer';
-export { default as CommonGridBox } from './CommonGridBox';
+export { default as FlexBox } from './FlexBox';
+export { default as DynamicFlexBox } from './DynamicFlexBox';
+export { default as GridBox } from './GridBox';
 export { default as ConfirmModal } from './ConfirmModal';
 export { default as ContentTextarea } from './ContentTextarea';
 export { default as DocumentSkeleton } from './DocumentSkeleton';

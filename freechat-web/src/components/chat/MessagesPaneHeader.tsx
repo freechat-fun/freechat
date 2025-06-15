@@ -27,7 +27,7 @@ import {
   toggleChatInfoPane,
   toggleChatsPane,
 } from '../../libs/chat_utils';
-import { CommonBox } from '..';
+import { FlexBox } from '..';
 import { useRef, useState } from 'react';
 
 type MessagesPaneHeaderProps = {
@@ -125,14 +125,14 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
       </Stack>
       <Stack spacing={1} direction="row" alignItems="center">
         {session?.isDebugEnabled && (
-          <CommonBox sx={{ gap: 0 }}>
+          <FlexBox sx={{ gap: 0 }}>
             <Typography variant="body2">{t('Debug')}</Typography>
             <Switch
               disabled={disabled}
               checked={debugMode}
               onChange={() => setDebugMode?.(!debugMode)}
             />
-          </CommonBox>
+          </FlexBox>
         )}
         <IconButton
           disabled={disabled}

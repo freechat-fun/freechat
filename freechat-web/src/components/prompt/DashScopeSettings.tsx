@@ -20,7 +20,7 @@ import {
 } from '../../configs/model-providers-config';
 import { InputAdornment } from '@mui/material';
 import {
-  CommonContainer,
+  DynamicFlexBox,
   OptionCard,
   OptionTooltip,
   Sidedrawer,
@@ -214,7 +214,7 @@ export default function DashScopeSettings(props: {
 
       <DialogContent sx={{ p: 0 }}>
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>baseUrl</Typography>
             <TinyInput
               type="text"
@@ -231,12 +231,12 @@ export default function DashScopeSettings(props: {
               }}
               onChange={(event) => setBaseUrl(event.target.value)}
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>model</Typography>
             <TinyInput
               type="text"
@@ -257,12 +257,12 @@ export default function DashScopeSettings(props: {
                 )
               }
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>topP</Typography>
             <OptionTooltip
               title={t(
@@ -294,7 +294,7 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableTopP(!enableTopP)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTopP}
             value={topP}
@@ -308,7 +308,7 @@ export default function DashScopeSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>topK</Typography>
             <OptionTooltip
               title={t(
@@ -340,7 +340,7 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableTopK(!enableTopK)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTopK}
             value={topK}
@@ -354,7 +354,7 @@ export default function DashScopeSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>maxTokens</Typography>
             <OptionTooltip
               title={t(
@@ -385,12 +385,12 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableMaxTokens(!enableMaxTokens)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>enableSearch</Typography>
             <OptionTooltip
               title={t('Whether to use a search engine for data enhancement.')}
@@ -405,12 +405,12 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableSearch(!enableSearch)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>seed</Typography>
             <OptionTooltip
               title={t(
@@ -441,12 +441,12 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableSeed(!enableSeed)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>repetitionPenalty</Typography>
             <OptionTooltip
               title={t(
@@ -479,12 +479,12 @@ export default function DashScopeSettings(props: {
                 }
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>temperature</Typography>
             <OptionTooltip
               title={t(
@@ -516,7 +516,7 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableTemperature(!enableTemperature)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTemperature}
             value={temperature}
@@ -530,7 +530,7 @@ export default function DashScopeSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>stop</Typography>
             <OptionTooltip
               title={t(
@@ -547,7 +547,7 @@ export default function DashScopeSettings(props: {
                 onChange={() => setEnableStop(!enableStop)}
               />
             </Box>
-          </CommonContainer>
+          </DynamicFlexBox>
           <Box sx={{ pt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {stop?.map(
               (word, index) =>

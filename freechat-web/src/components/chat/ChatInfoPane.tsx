@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import { ChatSessionDTO, MemoryUsageDTO } from 'freechat-sdk';
 import {
-  CommonBox,
-  CommonGridBox,
+  FlexBox,
+  GridBox,
   ContentTextarea,
   LinePlaceholder,
   TextareaTypography,
@@ -127,7 +127,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         {t('Character information', { ns: 'character' })}
       </Divider>
 
-      <CommonGridBox>
+      <GridBox>
         <Typography variant="subtitle1" color="text.secondary">
           {t('Name')}
         </Typography>
@@ -143,7 +143,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
           {t('Language')}
         </Typography>
         <Typography variant="body2">{getLocaleLabel(lang)}</Typography>
-      </CommonGridBox>
+      </GridBox>
 
       <LinePlaceholder spacing={1} />
 
@@ -155,7 +155,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
       </TextareaTypography>
 
       {tags.length > 0 && (
-        <CommonBox>
+        <FlexBox>
           {tags.map((tag, index) => (
             <Chip
               size="small"
@@ -165,7 +165,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
               label={tag}
             />
           ))}
-        </CommonBox>
+        </FlexBox>
       )}
 
       <LinePlaceholder spacing={1} />
@@ -174,7 +174,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
         {t('Settings that affect chat feedback')}
       </Divider>
 
-      <CommonGridBox>
+      <GridBox>
         <Typography variant="subtitle1" color="text.secondary">
           {t('Your Nickname')}
         </Typography>
@@ -191,7 +191,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
             },
           }}
         />
-      </CommonGridBox>
+      </GridBox>
 
       <LinePlaceholder spacing={1} />
 
@@ -210,7 +210,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
 
       <LinePlaceholder spacing={1} />
 
-      <CommonGridBox>
+      <GridBox>
         <Typography variant="subtitle1" color="text.secondary">
           {t('Character Nickname')}
         </Typography>
@@ -227,7 +227,7 @@ export default function ChatInfoPane(props: ChatInfoPaneProps) {
             },
           }}
         />
-      </CommonGridBox>
+      </GridBox>
 
       <LinePlaceholder spacing={1} />
 

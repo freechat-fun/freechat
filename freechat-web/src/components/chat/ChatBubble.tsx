@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import {
   ChatContent,
-  CommonBox,
+  FlexBox,
   ImagePreview,
   LinePlaceholder,
   MarkdownContent,
@@ -348,7 +348,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                   {systemPrompt && (
                     <Fragment>
                       <LinePlaceholder spacing={3} />
-                      <CommonBox sx={{ justifyContent: 'flex-end' }}>
+                      <FlexBox sx={{ justifyContent: 'flex-end' }}>
                         <Typography variant="body2" sx={{ color: 'white' }}>
                           {t('System Prompt')}
                         </Typography>
@@ -362,7 +362,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                         >
                           <ArticleRounded sx={{ color: '#e0e0e0' }} />
                         </IconButton>
-                      </CommonBox>
+                      </FlexBox>
                       <TextPreviewWindow
                         title={t('System Prompt')}
                         open={showSystemPrompt}

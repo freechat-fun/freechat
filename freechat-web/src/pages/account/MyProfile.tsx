@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { DoneRounded, SaveAltRounded } from '@mui/icons-material';
 import {
-  CommonGridBox,
+  GridBox,
   ContentTextarea,
   ImagePicker,
   LinePlaceholder,
@@ -181,7 +181,7 @@ export default function MyProfile() {
           }}
         >
           <Stack direction="row" spacing={3} sx={{ display: 'flex', my: 1 }}>
-            <CommonGridBox sx={{ flexGrow: 1, gridTemplateColumns: '1fr 3fr' }}>
+            <GridBox sx={{ flexGrow: 1, gridTemplateColumns: '1fr 3fr' }}>
               <FormLabel>{t('Username')}</FormLabel>
               <Typography>{username || ''}</Typography>
 
@@ -266,7 +266,7 @@ export default function MyProfile() {
                   }}
                 />
               </FormControl>
-            </CommonGridBox>
+            </GridBox>
             <Stack
               direction="column"
               spacing={1}

@@ -17,7 +17,7 @@ import {
 } from '../../libs/chat_utils';
 import { AvatarWithStatus } from '.';
 import {
-  CommonGridBox,
+  GridBox,
   HighlightedTypography,
   TransparentIconButton,
 } from '..';
@@ -97,7 +97,7 @@ export default function ChatListItem(props: ChatListItemProps) {
             mx: 0,
           }}
         >
-          <CommonGridBox
+          <GridBox
             sx={{
               alignItems: 'center',
               gridTemplateColumns: editMode ? '80% 20%' : 'auto 1fr',
@@ -170,7 +170,7 @@ export default function ChatListItem(props: ChatListItemProps) {
                 <RemoveCircleRounded fontSize="small" />
               </TransparentIconButton>
             )}
-          </CommonGridBox>
+          </GridBox>
         </ListItemButton>
       </ListItem>
       <Divider sx={{ mx: 2, my: 0 }} />

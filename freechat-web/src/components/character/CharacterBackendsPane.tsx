@@ -29,7 +29,7 @@ import {
   EditRounded,
 } from '@mui/icons-material';
 import { formatDateTime } from '../../libs/date_utils';
-import { CommonBox, ConfirmModal } from '..';
+import { FlexBox, ConfirmModal } from '..';
 
 type CharacterBackendsPaneProps = {
   characterUid?: string;
@@ -113,7 +113,7 @@ export default function CharacterBackendsPane({
 
   return (
     <Stack spacing={3} sx={{ ...sx }}>
-      <CommonBox>
+      <FlexBox>
         <Typography variant="subtitle1">
           {t('Character backends: (maximum of 3 backends allowed)')}
         </Typography>
@@ -128,7 +128,7 @@ export default function CharacterBackendsPane({
             <AddCircleRounded />
           </IconButton>
         )}
-      </CommonBox>
+      </FlexBox>
 
       <TableContainer sx={{ display: backends.length > 0 ? 'block' : 'none' }}>
         <Table size="small">

@@ -45,9 +45,9 @@ import {
   TransitEnterexitRounded,
 } from '@mui/icons-material';
 import {
-  CommonBox,
-  CommonContainer,
-  CommonGridBox,
+  FlexBox,
+  DynamicFlexBox,
+  GridBox,
   ConfirmModal,
   ContentTextarea,
   LinePlaceholder,
@@ -726,7 +726,7 @@ export default function PromptEditor({
           justifyContent: 'flex-end',
         }}
       >
-        <CommonContainer
+        <DynamicFlexBox
           sx={{
             alignItems: 'center',
             flex: 1,
@@ -740,7 +740,7 @@ export default function PromptEditor({
           >
             <EditRounded fontSize="small" />
           </IconButton>
-        </CommonContainer>
+        </DynamicFlexBox>
         <Typography variant="body2">
           {t('Updated on')}{' '}
           {getDateLabel(
@@ -798,8 +798,8 @@ export default function PromptEditor({
 
       <Divider />
 
-      <CommonContainer sx={{ alignItems: 'flex-start' }}>
-        <CommonContainer sx={{ flex: 1, alignItems: 'flex-start' }}>
+      <DynamicFlexBox sx={{ alignItems: 'flex-start' }}>
+        <DynamicFlexBox sx={{ flex: 1, alignItems: 'flex-start' }}>
           <Stack
             spacing={3}
             sx={{
@@ -814,7 +814,7 @@ export default function PromptEditor({
                 minWidth: { sm: '12rem' },
               }}
             >
-              <CommonBox>
+              <FlexBox>
                 <Typography variant="h6" color="primary">
                   {t('Description')}
                 </Typography>
@@ -824,7 +824,7 @@ export default function PromptEditor({
                 >
                   <HelpIcon />
                 </OptionTooltip>
-              </CommonBox>
+              </FlexBox>
               <ContentTextarea
                 name="info-description"
                 minRows={3}
@@ -863,7 +863,7 @@ export default function PromptEditor({
                     minWidth: { sm: '12rem' },
                   }}
                 >
-                  <CommonBox ref={messageRef}>
+                  <FlexBox ref={messageRef}>
                     <Chip label="MESSAGES" variant="filled" color="warning" />
                     <OptionTooltip
                       placement="right"
@@ -880,14 +880,14 @@ export default function PromptEditor({
                     >
                       <AddCircleRounded />
                     </IconButton>
-                  </CommonBox>
+                  </FlexBox>
                   {rounds.length > 0 && (
                     <Fragment>
                       <Divider sx={{ mx: 2 }} />
                       {rounds?.map((round, index) => {
                         return (
-                          <CommonBox key={`round-${index}`} sx={roundItemStyle}>
-                            <CommonGridBox
+                          <FlexBox key={`round-${index}`} sx={roundItemStyle}>
+                            <GridBox
                               sx={{
                                 flex: 1,
                                 gap: 1,
@@ -919,7 +919,7 @@ export default function PromptEditor({
                               <TypographyContent>
                                 {getMessageText(round.assistant)}
                               </TypographyContent>
-                            </CommonGridBox>
+                            </GridBox>
                             <IconButton
                               sx={{
                                 mr: 4,
@@ -928,13 +928,13 @@ export default function PromptEditor({
                             >
                               <RemoveCircleOutlineRounded />
                             </IconButton>
-                          </CommonBox>
+                          </FlexBox>
                         );
                       })}
                     </Fragment>
                   )}
                   {editRound && (
-                    <CommonBox sx={roundItemStyle}>
+                    <FlexBox sx={roundItemStyle}>
                       <Box
                         sx={{
                           flex: 1,
@@ -1006,7 +1006,7 @@ export default function PromptEditor({
                       >
                         <CancelOutlined />
                       </IconButton>
-                    </CommonBox>
+                    </FlexBox>
                   )}
                 </Stack>
                 <Stack
@@ -1049,7 +1049,7 @@ export default function PromptEditor({
             )}
 
             <LinePlaceholder />
-            <CommonBox>
+            <FlexBox>
               <Typography variant="h6" color="primary">
                 {t('Inputs')}
               </Typography>
@@ -1061,7 +1061,7 @@ export default function PromptEditor({
               >
                 <HelpIcon />
               </OptionTooltip>
-            </CommonBox>
+            </FlexBox>
             {inputs && Object.keys(inputs).length > 0 && (
               <TableContainer>
                 <Table size="small" sx={{ mx: 1 }}>
@@ -1118,7 +1118,7 @@ export default function PromptEditor({
                 minWidth: { sm: '12rem' },
               }}
             >
-              <CommonBox>
+              <FlexBox>
                 <Typography variant="h6" color="primary">
                   {t('Example')}
                 </Typography>
@@ -1128,7 +1128,7 @@ export default function PromptEditor({
                 >
                   <HelpIcon />
                 </OptionTooltip>
-              </CommonBox>
+              </FlexBox>
               <ContentTextarea
                 name="example"
                 minRows={3}
@@ -1147,7 +1147,7 @@ export default function PromptEditor({
                 '&:hover, &:focus-within': {},
               }}
             >
-              <CommonGridBox>
+              <GridBox>
                 <Typography variant="subtitle1" color="text.secondary">
                   {t('Public')}
                 </Typography>
@@ -1214,9 +1214,9 @@ export default function PromptEditor({
                     ))}
                   </Select>
                 </FormControl>
-              </CommonGridBox>
+              </GridBox>
 
-              <CommonBox sx={{ mt: 4, mb: 2 }}>
+              <FlexBox sx={{ mt: 4, mb: 2 }}>
                 <Typography variant="subtitle1" color="text.secondary">
                   {t('Tags')}
                 </Typography>
@@ -1250,8 +1250,8 @@ export default function PromptEditor({
                     />
                   </form>
                 )}
-              </CommonBox>
-              <CommonBox>
+              </FlexBox>
+              <FlexBox>
                 {tags.length > 0 &&
                   tags.map((tag, index) => (
                     <Chip
@@ -1262,11 +1262,11 @@ export default function PromptEditor({
                       onDelete={() => handleTagDelete(tag)}
                     />
                   ))}
-              </CommonBox>
+              </FlexBox>
               <LinePlaceholder spacing={2} />
             </StyledStack>
           )}
-        </CommonContainer>
+        </DynamicFlexBox>
 
         {play && (
           <PromptRunner
@@ -1282,7 +1282,7 @@ export default function PromptEditor({
             onExampleSave={handleExampleGenerate}
           />
         )}
-      </CommonContainer>
+      </DynamicFlexBox>
       <ConfirmModal
         open={editRecordName !== null}
         onClose={() => setEditRecordName(null)}

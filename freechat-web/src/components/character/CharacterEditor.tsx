@@ -18,8 +18,8 @@ import {
 import { formatDate, getDateLabel } from '../../libs/date_utils';
 import { locales } from '../../configs/i18n-config';
 import {
-  CommonBox,
-  CommonContainer,
+  FlexBox,
+  DynamicFlexBox,
   ConfirmModal,
   ContentTextarea,
   ImagePicker,
@@ -562,7 +562,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           justifyContent: 'flex-end',
         }}
       >
-        <CommonContainer
+        <DynamicFlexBox
           sx={{
             alignItems: 'center',
             flex: 1,
@@ -576,7 +576,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           >
             <EditRounded fontSize="small" />
           </IconButton>
-        </CommonContainer>
+        </DynamicFlexBox>
         <Typography variant="body2">
           {t('Updated on')}{' '}
           {getDateLabel(
@@ -630,7 +630,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
 
       <Divider />
 
-      <CommonContainer sx={{ alignItems: 'flex-start' }}>
+      <DynamicFlexBox sx={{ alignItems: 'flex-start' }}>
         <Stack
           spacing={3}
           sx={{
@@ -639,7 +639,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             flex: 1,
           }}
         >
-          <CommonBox sx={{ gap: 2 }}>
+          <FlexBox sx={{ gap: 2 }}>
             <Typography variant="h6" color="primary">
               {t('Public')}
             </Typography>
@@ -652,14 +652,14 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   : setVisibility('private')
               }
             />
-          </CommonBox>
+          </FlexBox>
           <Stack
             spacing={1}
             sx={{
               minWidth: { sm: '12rem' },
             }}
           >
-            <CommonBox>
+            <FlexBox>
               <Typography variant="h6" color="primary">
                 {t('Description')}
               </Typography>
@@ -669,7 +669,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               >
                 <HelpIcon />
               </OptionTooltip>
-            </CommonBox>
+            </FlexBox>
             <ContentTextarea
               name="info-description"
               minRows={3}
@@ -680,7 +680,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
 
           <LinePlaceholder />
 
-          <CommonBox>
+          <FlexBox>
             <Typography variant="h6" color="primary">
               {t('Tags')}
             </Typography>
@@ -715,8 +715,8 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                 />
               </form>
             )}
-          </CommonBox>
-          <CommonBox>
+          </FlexBox>
+          <FlexBox>
             {tags.length > 0 &&
               tags.map((tag, index) => (
                 <Chip
@@ -727,7 +727,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
                   label={tag}
                 />
               ))}
-          </CommonBox>
+          </FlexBox>
 
           <Divider>
             {t(
@@ -879,7 +879,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               }
             />
 
-            <CommonBox>
+            <FlexBox>
               <LabelTypography>{t('Default Scene')}</LabelTypography>
               <OptionTooltip
                 placement="right"
@@ -889,7 +889,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
               >
                 <HelpIcon />
               </OptionTooltip>
-            </CommonBox>
+            </FlexBox>
             <ContentTextarea
               name="info-default-scene"
               minRows={1}
@@ -928,7 +928,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
           </StyledStack>
           <LinePlaceholder />
 
-          <CommonBox>
+          <FlexBox>
             <LabelTypography sx={{ mr: 0 }}>{t('Album')}</LabelTypography>
             <OptionTooltip
               placement="right"
@@ -938,7 +938,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             >
               <HelpIcon />
             </OptionTooltip>
-          </CommonBox>
+          </FlexBox>
           <CharacterAlbumPane
             characterUid={recordUid}
             picture={picture}
@@ -965,7 +965,7 @@ export default function CharacterEditor({ id }: CharacterEditorProps) {
             }}
           />
         )}
-      </CommonContainer>
+      </DynamicFlexBox>
 
       <ConfirmModal
         open={editRecordName !== null}

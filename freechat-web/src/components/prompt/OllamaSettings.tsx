@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
-  CommonContainer,
+  DynamicFlexBox,
   OptionCard,
   OptionTooltip,
   Sidedrawer,
@@ -219,7 +219,7 @@ export default function OllamaSettings(props: {
 
       <DialogContent sx={{ p: 0 }}>
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>baseUrl</Typography>
             <TinyInput
               type="text"
@@ -237,12 +237,12 @@ export default function OllamaSettings(props: {
               onChange={(event) => setBaseUrl(event.target.value)}
               size="small"
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>model</Typography>
             <TinyInput
               type="text"
@@ -261,12 +261,12 @@ export default function OllamaSettings(props: {
                 setModel(toModelInfo('ollama', event.target.value, 'text2chat'))
               }
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>temperature</Typography>
             <OptionTooltip
               title={t(
@@ -275,7 +275,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableTemperature}
                 type="number"
@@ -294,8 +294,8 @@ export default function OllamaSettings(props: {
                 checked={enableTemperature}
                 onChange={() => setEnableTemperature(!enableTemperature)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTemperature}
             value={temperature}
@@ -309,7 +309,7 @@ export default function OllamaSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>topK</Typography>
             <OptionTooltip
               title={t(
@@ -318,7 +318,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableTopK}
                 type="number"
@@ -337,8 +337,8 @@ export default function OllamaSettings(props: {
                 checked={enableTopK}
                 onChange={() => setEnableTopK(!enableTopK)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTopK}
             value={topK}
@@ -352,7 +352,7 @@ export default function OllamaSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>topP</Typography>
             <OptionTooltip
               title={t(
@@ -361,7 +361,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableTopP}
                 type="number"
@@ -380,8 +380,8 @@ export default function OllamaSettings(props: {
                 checked={enableTopP}
                 onChange={() => setEnableTopP(!enableTopP)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTopP}
             value={topP}
@@ -395,7 +395,7 @@ export default function OllamaSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>repeatPenalty</Typography>
             <OptionTooltip
               title={t(
@@ -404,7 +404,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableRepeatPenalty}
                 type="number"
@@ -423,8 +423,8 @@ export default function OllamaSettings(props: {
                 checked={enableRepeatPenalty}
                 onChange={() => setEnableRepeatPenalty(!enableRepeatPenalty)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableRepeatPenalty}
             value={repeatPenalty}
@@ -440,7 +440,7 @@ export default function OllamaSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>seed</Typography>
             <OptionTooltip
               title={t(
@@ -449,7 +449,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableSeed}
                 type="number"
@@ -467,13 +467,13 @@ export default function OllamaSettings(props: {
                 checked={enableSeed}
                 onChange={() => setEnableSeed(!enableSeed)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>numPredict</Typography>
             <OptionTooltip
               title={t(
@@ -482,7 +482,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableNumPredict}
                 type="number"
@@ -500,13 +500,13 @@ export default function OllamaSettings(props: {
                 checked={enableNumPredict}
                 onChange={() => setEnableNumPredict(!enableNumPredict)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>numCtx</Typography>
             <OptionTooltip
               title={t(
@@ -515,7 +515,7 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableNumCtx}
                 type="number"
@@ -533,13 +533,13 @@ export default function OllamaSettings(props: {
                 checked={enableNumCtx}
                 onChange={() => setEnableNumCtx(!enableNumCtx)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>stop</Typography>
             <OptionTooltip
               title={t(
@@ -548,13 +548,13 @@ export default function OllamaSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <Switch
                 checked={enableStop}
                 onChange={() => setEnableStop(!enableStop)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Box sx={{ pt: 1 }}>
             {stop &&
               stop.length > 0 &&

@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import { CharacterSummaryDTO, ChatCreateDTO } from 'freechat-sdk';
 import {
-  CommonBox,
-  CommonGridBox,
+  FlexBox,
+  GridBox,
   LinePlaceholder,
   SummaryTypography,
 } from '..';
@@ -30,7 +30,7 @@ type CharacterRecommendationPosterProps = BoxProps & {
   disabled?: boolean;
 };
 
-const StyledCommonGridBox = styled(CommonGridBox)(({ theme }) => ({
+const StyledGridBox = styled(GridBox)(({ theme }) => ({
   display: 'grid',
   padding: theme.spacing(4),
   alignItems: 'flex-start',
@@ -116,7 +116,7 @@ const CharacterRecommendationPoster = forwardRef<
 
   return (
     <Fragment>
-      <StyledCommonGridBox
+      <StyledGridBox
         ref={ref}
         sx={{
           display: disabled ? 'none' : 'grid',
@@ -161,7 +161,7 @@ const CharacterRecommendationPoster = forwardRef<
             </Typography>
           </Box>
 
-          <CommonBox>
+          <FlexBox>
             {record?.tags &&
               record.tags.length > 0 &&
               record.tags.map((tag, index) => (
@@ -176,7 +176,7 @@ const CharacterRecommendationPoster = forwardRef<
                   }}
                 />
               ))}
-          </CommonBox>
+          </FlexBox>
 
           <LinePlaceholder />
 
@@ -230,7 +230,7 @@ const CharacterRecommendationPoster = forwardRef<
             </Typography>
           </StyledButton>
         </Stack>
-      </StyledCommonGridBox>
+      </StyledGridBox>
     </Fragment>
   );
 });

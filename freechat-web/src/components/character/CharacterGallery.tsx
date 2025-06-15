@@ -15,7 +15,7 @@ import {
   useMetaInfoContext,
 } from '../../contexts';
 import {
-  CommonBox,
+  FlexBox,
   HighlightedTypography,
   HotTags,
   InfoSearchbar,
@@ -127,7 +127,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               src={record.avatar}
               sx={{ width: 40, height: 40 }}
             />
-            <CommonBox sx={{ gap: 0 }}>
+            <FlexBox sx={{ gap: 0 }}>
               <HighlightedTypography
                 highlight={keyWord}
                 variant="h6"
@@ -151,7 +151,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
                   }}
                 >{`@${record.name}`}</HighlightedTypography>
               )}
-            </CommonBox>
+            </FlexBox>
           </Box>
           <Chip
             color="success"
@@ -186,7 +186,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         <Divider />
 
         {tags.length > 0 && (
-          <CommonBox>
+          <FlexBox>
             {tags.map((tag, index) => (
               <Chip
                 variant="filled"
@@ -199,7 +199,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
                 }}
               />
             ))}
-          </CommonBox>
+          </FlexBox>
         )}
 
         {tags.length > 0 && <Divider sx={{ mx: -2 }} />}
@@ -215,7 +215,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           <Typography variant="body2" color="text.secondary">
             {getDateLabel(record.gmtModified || new Date(0), i18n.language)}
           </Typography>
-          <CommonBox>
+          <FlexBox>
             <Chip
               size="small"
               variant="outlined"
@@ -228,7 +228,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
               icon={<ShareRounded />}
               label={record.referCount}
             />
-          </CommonBox>
+          </FlexBox>
         </Box>
       </StyledStack>
     </Link>

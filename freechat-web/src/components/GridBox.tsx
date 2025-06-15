@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-const CommonGridBox = styled(Box)(({ theme }) => ({
+const GridBox = styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'grid',
   gridTemplateColumns: 'auto 1fr',
@@ -9,4 +9,4 @@ const CommonGridBox = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export default CommonGridBox;
+export default GridBox;

@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { AddCircleRounded, TransitEnterexitRounded } from '@mui/icons-material';
 import {
-  CommonContainer,
+  DynamicFlexBox,
   OptionCard,
   OptionTooltip,
   Sidedrawer,
@@ -215,7 +215,7 @@ export default function AzureOpenAiSettings(props: {
 
       <DialogContent sx={{ p: 0 }}>
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>baseUrl</Typography>
             <TinyInput
               type="text"
@@ -232,11 +232,11 @@ export default function AzureOpenAiSettings(props: {
               }}
               onChange={(event) => setBaseUrl(event.target.value)}
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>model</Typography>
             <TinyInput
               type="text"
@@ -257,11 +257,11 @@ export default function AzureOpenAiSettings(props: {
                 )
               }
             />
-          </CommonContainer>
+          </DynamicFlexBox>
         </OptionCard>
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>topP</Typography>
             <OptionTooltip
               title={t(
@@ -270,7 +270,7 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableTopP}
                 type="number"
@@ -289,8 +289,8 @@ export default function AzureOpenAiSettings(props: {
                 checked={enableTopP}
                 onChange={() => setEnableTopP(!enableTopP)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTopP}
             value={topP}
@@ -304,7 +304,7 @@ export default function AzureOpenAiSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>maxTokens</Typography>
             <OptionTooltip
               title={t(
@@ -313,7 +313,7 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableMaxTokens}
                 type="number"
@@ -331,13 +331,13 @@ export default function AzureOpenAiSettings(props: {
                 checked={enableMaxTokens}
                 onChange={() => setEnableMaxTokens(!enableMaxTokens)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>seed</Typography>
             <OptionTooltip
               title={t(
@@ -346,7 +346,7 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableSeed}
                 type="number"
@@ -364,13 +364,13 @@ export default function AzureOpenAiSettings(props: {
                 checked={enableSeed}
                 onChange={() => setEnableSeed(!enableSeed)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>presencePenalty</Typography>
             <OptionTooltip
               title={t(
@@ -379,7 +379,7 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enablePresencePenalty}
                 type="number"
@@ -400,8 +400,8 @@ export default function AzureOpenAiSettings(props: {
                   setEnablePresencePenalty(!enablePresencePenalty);
                 }}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enablePresencePenalty}
             value={presencePenalty}
@@ -417,7 +417,7 @@ export default function AzureOpenAiSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>frequencyPenalty</Typography>
             <OptionTooltip
               title={t(
@@ -426,7 +426,7 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableFrequencyPenalty}
                 type="number"
@@ -447,8 +447,8 @@ export default function AzureOpenAiSettings(props: {
                   setEnableFrequencyPenalty(!enableFrequencyPenalty);
                 }}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableFrequencyPenalty}
             value={frequencyPenalty}
@@ -464,7 +464,7 @@ export default function AzureOpenAiSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>temperature</Typography>
             <OptionTooltip
               title={t(
@@ -473,7 +473,7 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <TinyInput
                 disabled={!enableTemperature}
                 type="number"
@@ -492,8 +492,8 @@ export default function AzureOpenAiSettings(props: {
                 checked={enableTemperature}
                 onChange={() => setEnableTemperature(!enableTemperature)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Slider
             disabled={!enableTemperature}
             value={temperature}
@@ -507,7 +507,7 @@ export default function AzureOpenAiSettings(props: {
         <Divider sx={{ mt: 'auto', mx: 2 }} />
 
         <OptionCard>
-          <CommonContainer>
+          <DynamicFlexBox>
             <Typography>stop</Typography>
             <OptionTooltip
               title={t(
@@ -516,13 +516,13 @@ export default function AzureOpenAiSettings(props: {
             >
               <HelpIcon />
             </OptionTooltip>
-            <CommonContainer sx={{ ml: 'auto' }}>
+            <DynamicFlexBox sx={{ ml: 'auto' }}>
               <Switch
                 checked={enableStop}
                 onChange={() => setEnableStop(!enableStop)}
               />
-            </CommonContainer>
-          </CommonContainer>
+            </DynamicFlexBox>
+          </DynamicFlexBox>
           <Box sx={{ pt: 1 }}>
             {stop &&
               stop.length > 0 &&

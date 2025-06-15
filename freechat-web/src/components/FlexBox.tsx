@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 
-const CommonBox = styled(Box)(({ theme }) => ({
+const FlexBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'flex-start',
   alignItems: 'center',
@@ -8,4 +8,4 @@ const CommonBox = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export default CommonBox;
+export default FlexBox;
