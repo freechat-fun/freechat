@@ -79,6 +79,10 @@ public class FileUtils {
         return getDefaultPublicUrl(request, path, "image");
     }
 
+    public static String getDefaultPublicUrlForVideo(HttpServletRequest request, String path) {
+        return getDefaultPublicUrl(request, path, "video");
+    }
+
     public static String getDefaultPublicUrlForDocument(HttpServletRequest request, String path) {
         return getDefaultPublicUrl(request, path, "document");
     }
@@ -102,6 +106,10 @@ public class FileUtils {
 
     public static String getDefaultPrivateUrlForImage(HttpServletRequest request, String path, String userId) {
         return getDefaultPrivateUrl(request, path, userId, "image");
+    }
+
+    public static String getDefaultPrivateUrlForVideo(HttpServletRequest request, String path, String userId) {
+        return getDefaultPrivateUrl(request, path, userId, "video");
     }
 
     public static String getDefaultPrivateUrlForDocument(HttpServletRequest request, String path, String userId) {

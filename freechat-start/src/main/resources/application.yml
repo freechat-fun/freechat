@@ -12,6 +12,9 @@ app:
   picture:
     maxSize: 2097152  # 2M
     maxCount: 10
+  video:
+    maxSize: 10485760  # 10M
+    maxCount: 1
   voice:
     maxSize: 1048576  # 1M
     maxCount: 1
