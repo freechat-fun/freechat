@@ -102,6 +102,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
           backgroundImage: `url(${background})`,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
+          backgroundColor: 'background.paper',
           m: 0,
           gap: 0,
         }}

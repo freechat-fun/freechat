@@ -84,6 +84,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         overflow: 'hidden',
         gap: 1,
         boxShadow: 0,
+        backgroundColor: 'background.paper',
         '&:hover, &:focus-within': {
           boxShadow: 0,
         },

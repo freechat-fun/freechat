@@ -91,7 +91,10 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardProps>((props, ref) => {
         },
       }}
     >
-      <StyledStack ref={ref} sx={{ m: 0, gap: 0, ...sx }}>
+      <StyledStack
+        ref={ref}
+        sx={{ backgroundColor: 'background.paper', m: 0, gap: 0, ...sx }}
+      >
         <Box
           sx={{
             ...sx,
