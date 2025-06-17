@@ -158,7 +158,6 @@ export default function CharacterDocumentUploader({
         title: t('Add Document'),
       }}
       onConfirm={handleDocumentConfirm}
-      maxWidth="md"
       sx={sx}
     >
       <Stack spacing={2}>

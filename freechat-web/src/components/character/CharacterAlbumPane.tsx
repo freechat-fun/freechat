@@ -112,7 +112,7 @@ export default function CharacterAlbumPane({
         }}
         onConfirm={handlePictureDelete}
       >
-        <ImagePreview src={pictureDeleteUrl ?? ''} maxWidth={240} />
+        <ImagePreview src={pictureDeleteUrl ?? ''} />
       </ConfirmModal>
     </Box>
   );
