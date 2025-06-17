@@ -1,7 +1,7 @@
 # freechat-sdk
 
 FreeChat OpenAPI Definition
-- API version: 2.3.0
+- API version: 2.5.0
   - Generator version: 7.11.0
 
 # FreeChat: Create Friends for Yourself with AI
@@ -34,15 +34,15 @@ It is recommended to run [Ollama](https://ollama.com/) + FreeChat locally to tes
 ## Snapshots
 ### On PC
 #### Home Page
-![Home Page Snapshot](/img/snapshot_w1.jpg)
+![Home Page Snapshot](https://freechat.fun/img/snapshot_w1.jpg)
 #### Development View
-![Development View Snapshot](/img/snapshot_w2.jpg)
+![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)
 #### Chat View
-![Chat View Snapshot](/img/snapshot_w3.jpg)
+![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)
 
 ### On Mobile
-![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br />
-![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)
+![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />
+![Chat Snapshot 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)
 
 ## Character Design
 ```mermaid
@@ -275,7 +275,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fun.freechat</groupId>
   <artifactId>freechat-sdk</artifactId>
-  <version>2.3.0</version>
+  <version>2.5.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -291,7 +291,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "fun.freechat:freechat-sdk:2.3.0"
+     implementation "fun.freechat:freechat-sdk:2.5.0"
   }
 ```
 
@@ -305,7 +305,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/freechat-sdk-2.3.0.jar`
+* `target/freechat-sdk-2.5.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -397,18 +397,12 @@ Class | Method | HTTP request | Description
 *AgentApi* | [**searchAgentDetails**](docs/AgentApi.md#searchAgentDetails) | **POST** /api/v2/agent/details/search | Search Agent Details
 *AgentApi* | [**searchAgentSummary**](docs/AgentApi.md#searchAgentSummary) | **POST** /api/v2/agent/search | Search Agent Summary
 *AgentApi* | [**updateAgent**](docs/AgentApi.md#updateAgent) | **PUT** /api/v2/agent/{agentId} | Update Agent
-*AiManagerForBizAdminApi* | [**createOrUpdateAiModelInfo**](docs/AiManagerForBizAdminApi.md#createOrUpdateAiModelInfo) | **PUT** /api/v2/biz/admin/ai/model | Create or Update Model Information
-*AiManagerForBizAdminApi* | [**deleteAiModelInfo**](docs/AiManagerForBizAdminApi.md#deleteAiModelInfo) | **DELETE** /api/v2/biz/admin/ai/model/{modelId} | Delete Model Information
 *AiServiceApi* | [**addAiApiKey**](docs/AiServiceApi.md#addAiApiKey) | **POST** /api/v2/ai/apikey | Add Model Provider Credential
 *AiServiceApi* | [**deleteAiApiKey**](docs/AiServiceApi.md#deleteAiApiKey) | **DELETE** /api/v2/ai/apikey/{id} | Delete Credential of Model Provider
 *AiServiceApi* | [**disableAiApiKey**](docs/AiServiceApi.md#disableAiApiKey) | **PUT** /api/v2/ai/apikey/disable/{id} | Disable Model Provider Credential
 *AiServiceApi* | [**enableAiApiKey**](docs/AiServiceApi.md#enableAiApiKey) | **PUT** /api/v2/ai/apikey/enable/{id} | Enable Model Provider Credential
 *AiServiceApi* | [**getAiApiKey**](docs/AiServiceApi.md#getAiApiKey) | **GET** /api/v2/ai/apikey/{id} | Get credential of Model Provider
-*AiServiceApi* | [**getAiModelInfo**](docs/AiServiceApi.md#getAiModelInfo) | **GET** /api/v2/public/ai/model/{modelId} | Get Model Information
 *AiServiceApi* | [**listAiApiKeys**](docs/AiServiceApi.md#listAiApiKeys) | **GET** /api/v2/ai/apikeys/{provider} | List Credentials of Model Provider
-*AiServiceApi* | [**listAiModelInfo**](docs/AiServiceApi.md#listAiModelInfo) | **GET** /api/v2/public/ai/models | List Models
-*AiServiceApi* | [**listAiModelInfo1**](docs/AiServiceApi.md#listAiModelInfo1) | **GET** /api/v2/public/ai/models/{pageSize} | List Models
-*AiServiceApi* | [**listAiModelInfo2**](docs/AiServiceApi.md#listAiModelInfo2) | **GET** /api/v2/public/ai/models/{pageSize}/{pageNum} | List Models
 *AppConfigForAdminApi* | [**getDefaultConfig**](docs/AppConfigForAdminApi.md#getDefaultConfig) | **GET** /api/v2/admin/app/configs/default | Get Default Config
 *AppMetaForAdminApi* | [**getAppMeta**](docs/AppMetaForAdminApi.md#getAppMeta) | **GET** /api/v2/admin/app/meta | Get Application Information
 *CharacterApi* | [**addCharacterBackend**](docs/CharacterApi.md#addCharacterBackend) | **POST** /api/v2/character/backend/{characterUid} | Add Character Backend
@@ -423,6 +417,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**deleteCharacterByUid**](docs/CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
 *CharacterApi* | [**deleteCharacterDocument**](docs/CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
 *CharacterApi* | [**deleteCharacterPicture**](docs/CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+*CharacterApi* | [**deleteCharacterVideo**](docs/CharacterApi.md#deleteCharacterVideo) | **DELETE** /api/v2/character/video/{key} | Delete Character Video
 *CharacterApi* | [**deleteCharacterVoice**](docs/CharacterApi.md#deleteCharacterVoice) | **DELETE** /api/v2/character/voice/{characterBackendId}/{key} | Delete Character Voice
 *CharacterApi* | [**existsCharacterName**](docs/CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
 *CharacterApi* | [**exportCharacter**](docs/CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
@@ -436,6 +431,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**listCharacterDocuments**](docs/CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
 *CharacterApi* | [**listCharacterPictures**](docs/CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
 *CharacterApi* | [**listCharacterVersionsByName**](docs/CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+*CharacterApi* | [**listCharacterVideos**](docs/CharacterApi.md#listCharacterVideos) | **GET** /api/v2/character/videos/{characterUid} | List Character Videos
 *CharacterApi* | [**listCharacterVoices**](docs/CharacterApi.md#listCharacterVoices) | **GET** /api/v2/character/voices/{characterBackendId} | List Character Voices
 *CharacterApi* | [**newCharacterName**](docs/CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
 *CharacterApi* | [**publishCharacter**](docs/CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
@@ -450,6 +446,7 @@ Class | Method | HTTP request | Description
 *CharacterApi* | [**uploadCharacterAvatar**](docs/CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
 *CharacterApi* | [**uploadCharacterDocument**](docs/CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
 *CharacterApi* | [**uploadCharacterPicture**](docs/CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
+*CharacterApi* | [**uploadCharacterVideo**](docs/CharacterApi.md#uploadCharacterVideo) | **POST** /api/v2/character/video/{characterUid} | Upload Character Video
 *CharacterApi* | [**uploadCharacterVoice**](docs/CharacterApi.md#uploadCharacterVoice) | **POST** /api/v2/character/voice/{characterBackendId} | Upload Character Voice
 *ChatApi* | [**clearMemory**](docs/ChatApi.md#clearMemory) | **DELETE** /api/v2/chat/memory/{chatId} | Clear Memory
 *ChatApi* | [**deleteChat**](docs/ChatApi.md#deleteChat) | **DELETE** /api/v2/chat/{chatId} | Delete Chat Session
@@ -569,7 +566,6 @@ Class | Method | HTTP request | Description
  - [AiApiKeyCreateDTO](docs/AiApiKeyCreateDTO.md)
  - [AiApiKeyInfoDTO](docs/AiApiKeyInfoDTO.md)
  - [AiModelInfoDTO](docs/AiModelInfoDTO.md)
- - [AiModelInfoUpdateDTO](docs/AiModelInfoUpdateDTO.md)
  - [ApiTokenInfoDTO](docs/ApiTokenInfoDTO.md)
  - [AppMetaDTO](docs/AppMetaDTO.md)
  - [CharacterBackendDTO](docs/CharacterBackendDTO.md)

@@ -12,7 +12,6 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
-import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -65,65 +64,6 @@ import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
-import { ObservableAIManagerForBizAdminApi } from './ObservableAPI.js';
-
-import { AIManagerForBizAdminApiRequestFactory, AIManagerForBizAdminApiResponseProcessor} from "../apis/AIManagerForBizAdminApi.js";
-export class PromiseAIManagerForBizAdminApi {
-    private api: ObservableAIManagerForBizAdminApi
-
-    public constructor(
-        configuration: Configuration,
-        requestFactory?: AIManagerForBizAdminApiRequestFactory,
-        responseProcessor?: AIManagerForBizAdminApiResponseProcessor
-    ) {
-        this.api = new ObservableAIManagerForBizAdminApi(configuration, requestFactory, responseProcessor);
-    }
-
-    /**
-     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
-     * Create or Update Model Information
-     * @param aiModelInfoUpdateDTO Model information
-     */
-    public createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Promise<HttpInfo<string>> {
-        const result = this.api.createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
-     * Create or Update Model Information
-     * @param aiModelInfoUpdateDTO Model information
-     */
-    public createOrUpdateAiModelInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Promise<string> {
-        const result = this.api.createOrUpdateAiModelInfo(aiModelInfoUpdateDTO, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete model information based on modelId.
-     * Delete Model Information
-     * @param modelId Model identifier
-     */
-    public deleteAiModelInfoWithHttpInfo(modelId: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
-        const result = this.api.deleteAiModelInfoWithHttpInfo(modelId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Delete model information based on modelId.
-     * Delete Model Information
-     * @param modelId Model identifier
-     */
-    public deleteAiModelInfo(modelId: string, _options?: Configuration): Promise<boolean> {
-        const result = this.api.deleteAiModelInfo(modelId, _options);
-        return result.toPromise();
-    }
-
-
-}
-
-
-
 import { ObservableAIServiceApi } from './ObservableAPI.js';
 
 import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
@@ -239,26 +179,6 @@ export class PromiseAIServiceApi {
     }
 
     /**
-     * Return specific model information.
-     * Get Model Information
-     * @param modelId Model identifier
-     */
-    public getAiModelInfoWithHttpInfo(modelId: string, _options?: Configuration): Promise<HttpInfo<AiModelInfoDTO>> {
-        const result = this.api.getAiModelInfoWithHttpInfo(modelId, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return specific model information.
-     * Get Model Information
-     * @param modelId Model identifier
-     */
-    public getAiModelInfo(modelId: string, _options?: Configuration): Promise<AiModelInfoDTO> {
-        const result = this.api.getAiModelInfo(modelId, _options);
-        return result.toPromise();
-    }
-
-    /**
      * List all credential information of the model provider.
      * List Credentials of Model Provider
      * @param provider Model provider
@@ -275,66 +195,6 @@ export class PromiseAIServiceApi {
      */
     public listAiApiKeys(provider: string, _options?: Configuration): Promise<Array<AiApiKeyInfoDTO>> {
         const result = this.api.listAiApiKeys(provider, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     */
-    public listAiModelInfoWithHttpInfo(_options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfoWithHttpInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     */
-    public listAiModelInfo(_options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo(_options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     */
-    public listAiModelInfo1WithHttpInfo(pageSize: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfo1WithHttpInfo(pageSize, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     */
-    public listAiModelInfo1(pageSize: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo1(pageSize, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     */
-    public listAiModelInfo2WithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        const result = this.api.listAiModelInfo2WithHttpInfo(pageSize, pageNum, _options);
-        return result.toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     */
-    public listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        const result = this.api.listAiModelInfo2(pageSize, pageNum, _options);
         return result.toPromise();
     }
 
@@ -1591,6 +1451,26 @@ export class PromiseCharacterApi {
     }
 
     /**
+     * Delete a video of the character by key.
+     * Delete Character Video
+     * @param key Video key
+     */
+    public deleteCharacterVideoWithHttpInfo(key: string, _options?: Configuration): Promise<HttpInfo<boolean>> {
+        const result = this.api.deleteCharacterVideoWithHttpInfo(key, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Delete a video of the character by key.
+     * Delete Character Video
+     * @param key Video key
+     */
+    public deleteCharacterVideo(key: string, _options?: Configuration): Promise<boolean> {
+        const result = this.api.deleteCharacterVideo(key, _options);
+        return result.toPromise();
+    }
+
+    /**
      * Delete a voice of the character by key.
      * Delete Character Voice
      * @param characterBackendId The characterBackendId
@@ -1849,6 +1729,26 @@ export class PromiseCharacterApi {
      */
     public listCharacterVersionsByName(name: string, _options?: Configuration): Promise<Array<CharacterItemForNameDTO>> {
         const result = this.api.listCharacterVersionsByName(name, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List videos of the character.
+     * List Character Videos
+     * @param characterUid Character unique identifier
+     */
+    public listCharacterVideosWithHttpInfo(characterUid: string, _options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        const result = this.api.listCharacterVideosWithHttpInfo(characterUid, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * List videos of the character.
+     * List Character Videos
+     * @param characterUid Character unique identifier
+     */
+    public listCharacterVideos(characterUid: string, _options?: Configuration): Promise<Array<string>> {
+        const result = this.api.listCharacterVideos(characterUid, _options);
         return result.toPromise();
     }
 
@@ -2141,6 +2041,28 @@ export class PromiseCharacterApi {
      */
     public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
         const result = this.api.uploadCharacterPicture(characterUid, file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Upload a video of the character.
+     * Upload Character Video
+     * @param characterUid Character unique identifier
+     * @param file Character video
+     */
+    public uploadCharacterVideoWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<HttpInfo<string>> {
+        const result = this.api.uploadCharacterVideoWithHttpInfo(characterUid, file, _options);
+        return result.toPromise();
+    }
+
+    /**
+     * Upload a video of the character.
+     * Upload Character Video
+     * @param characterUid Character unique identifier
+     * @param file Character video
+     */
+    public uploadCharacterVideo(characterUid: string, file: HttpFile, _options?: Configuration): Promise<string> {
+        const result = this.api.uploadCharacterVideo(characterUid, file, _options);
         return result.toPromise();
     }
 

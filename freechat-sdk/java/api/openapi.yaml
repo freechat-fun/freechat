@@ -23,10 +23,12 @@ info:
     \ characters **importing and exporting**.\n- Supports **character-to-character\
     \ chats**.\n- Supports **character voices**.\n- Supports individual **debugging\
     \ and sharing prompts**.\n\n## Snapshots\n### On PC\n#### Home Page\n![Home Page\
-    \ Snapshot](/img/snapshot_w1.jpg)\n#### Development View\n![Development View Snapshot](/img/snapshot_w2.jpg)\n\
-    #### Chat View\n![Chat View Snapshot](/img/snapshot_w3.jpg)\n\n### On Mobile\n\
-    ![Chat Snapshot 1](/img/snapshot_m1.jpg) ![Chat Snapshot 2](/img/snapshot_m2.jpg)<br\
-    \ />\n![Chat Snapshot 3](/img/snapshot_m3.jpg) ![Chat Snapshot 4](/img/snapshot_m4.jpg)\n\
+    \ Snapshot](https://freechat.fun/img/snapshot_w1.jpg)\n#### Development View\n\
+    ![Development View Snapshot](https://freechat.fun/img/snapshot_w2.jpg)\n#### Chat\
+    \ View\n![Chat View Snapshot](https://freechat.fun/img/snapshot_w3.jpg)\n\n###\
+    \ On Mobile\n![Chat Snapshot 1](https://freechat.fun/img/snapshot_m1.jpg) ![Chat\
+    \ Snapshot 2](https://freechat.fun/img/snapshot_m2.jpg)<br />\n![Chat Snapshot\
+    \ 3](https://freechat.fun/img/snapshot_m3.jpg) ![Chat Snapshot 4](https://freechat.fun/img/snapshot_m4.jpg)\n\
     \n## Character Design\n```mermaid\nflowchart TD\n    A(Character) --> B(Profile)\n\
     \    A --> C(Knowledge/RAG)\n    A --> D(Album)\n    A --> E(Backend-1)\n    A\
     \ --> F(Backend-n...)\n    E --> G(Message Window)\n    E --> H(Long Term Memory\
@@ -134,7 +136,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.3.0
+  version: 2.5.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -150,9 +152,6 @@ tags:
   name: App Config (for admin)
 - description: "Manage users, callable only by super administrators."
   name: Account Manager (for admin)
-- description: "Manage model information, callable only by super administrators and\
-    \ business administrators."
-  name: "AI Manager (for biz, admin)"
 paths:
   /api/v2/rag/task/{taskId}:
     delete:
@@ -323,6 +322,7 @@ paths:
         name: promptTaskId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -347,6 +347,7 @@ paths:
         name: promptTaskId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -371,6 +372,7 @@ paths:
         name: promptTaskId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -500,6 +502,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -529,6 +532,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Whether to return virtual managed subordinates
@@ -567,6 +571,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -606,6 +611,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Whether to return virtual reported owners
@@ -644,6 +650,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -680,6 +687,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -709,6 +717,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -745,6 +754,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -769,6 +779,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -872,6 +883,7 @@ paths:
         name: characterBackendId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -896,6 +908,7 @@ paths:
         name: characterBackendId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -929,6 +942,7 @@ paths:
         name: characterBackendId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -943,32 +957,6 @@ paths:
       - Character
       x-accepts:
       - application/json
-  /api/v2/biz/admin/ai/model:
-    put:
-      description: "Create or update model information. If no modelId is passed or\
-        \ the modelId does not exist in the database, create a new one (keep the same\
-        \ modelId); otherwise update. Return modelId if successful."
-      operationId: createOrUpdateAiModelInfo
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AiModelInfoUpdateDTO'
-        description: Model information
-        required: true
-      responses:
-        "200":
-          content:
-            text/plain:
-              schema:
-                type: string
-          description: OK
-      summary: Create or Update Model Information
-      tags:
-      - "AI Manager (for biz, admin)"
-      x-content-type: application/json
-      x-accepts:
-      - text/plain
   /api/v2/ai/apikey/enable/{id}:
     put:
       description: Enable the credential information of the model provider.
@@ -1157,6 +1145,7 @@ paths:
         name: token
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1181,6 +1170,7 @@ paths:
         name: token
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1206,6 +1196,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1233,6 +1224,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -1269,6 +1261,7 @@ paths:
         name: token
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1293,6 +1286,7 @@ paths:
         name: token
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1436,6 +1430,7 @@ paths:
         name: infoType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Unique resource identifier
@@ -1444,6 +1439,7 @@ paths:
         name: infoId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Statistics type: view_count | refer_count | recommend_count\
@@ -1453,6 +1449,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1480,6 +1477,7 @@ paths:
         name: infoType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Unique resource identifier
@@ -1488,6 +1486,7 @@ paths:
         name: infoId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Statistics type: view_count | refer_count | recommend_count\
@@ -1497,6 +1496,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Delta in statistical value
@@ -1532,6 +1532,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -1820,6 +1821,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -1996,6 +1998,7 @@ paths:
         name: visibility
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -2810,6 +2813,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -2844,6 +2848,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -2877,6 +2882,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Message count to be rolled back
@@ -2946,6 +2952,7 @@ paths:
         name: characterBackendId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -2967,6 +2974,39 @@ paths:
       x-content-type: multipart/form-data
       x-accepts:
       - text/plain
+  /api/v2/character/video/{characterUid}:
+    post:
+      description: Upload a video of the character.
+      operationId: uploadCharacterVideo
+      parameters:
+      - description: Character unique identifier
+        explode: false
+        in: path
+        name: characterUid
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/uploadCharacterVideo_request'
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      summary: Upload Character Video
+      tags:
+      - Character
+      x-content-type: multipart/form-data
+      x-accepts:
+      - text/plain
   /api/v2/character/versions/{name}:
     post:
       description: List the versions and corresponding characterIds by character name.
@@ -2978,6 +3018,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -3121,6 +3162,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -3153,6 +3195,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -3203,6 +3246,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -3454,6 +3498,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -3487,6 +3532,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       requestBody:
@@ -3519,6 +3565,7 @@ paths:
         name: referType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Resource identifier of the tag
@@ -3527,6 +3574,7 @@ paths:
         name: referId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Tag content
@@ -3535,6 +3583,7 @@ paths:
         name: tag
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -3560,6 +3609,7 @@ paths:
         name: referType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Resource identifier of the tag
@@ -3568,6 +3618,7 @@ paths:
         name: referId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Tag content
@@ -3576,6 +3627,7 @@ paths:
         name: tag
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -3672,6 +3724,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -3764,6 +3817,7 @@ paths:
         name: visibility
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -4102,6 +4156,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Validity period (seconds)
@@ -4245,6 +4300,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -4308,6 +4364,7 @@ paths:
         name: speaker
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -4367,6 +4424,7 @@ paths:
         name: infoType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4411,6 +4469,7 @@ paths:
         name: infoType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Unique resource identifier
@@ -4419,6 +4478,7 @@ paths:
         name: infoId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -4445,6 +4505,7 @@ paths:
         name: infoType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Unique resource identifier
@@ -4453,6 +4514,7 @@ paths:
         name: infoId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Statistics type: view_count | refer_count | recommend_count\
@@ -4462,6 +4524,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -4490,6 +4553,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -4527,6 +4591,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4573,6 +4638,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4628,6 +4694,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4683,6 +4750,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -4720,6 +4788,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4766,6 +4835,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -4803,6 +4873,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4849,6 +4920,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4904,6 +4976,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -4950,6 +5023,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Maximum quantity
@@ -5005,6 +5079,7 @@ paths:
         name: statsType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: "Default is descending order, set asc=1 for ascending order"
@@ -5040,6 +5115,7 @@ paths:
         name: infoType
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Unique resource identifier
@@ -5048,6 +5124,7 @@ paths:
         name: infoId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5061,118 +5138,6 @@ paths:
       summary: Get Score for Resource
       tags:
       - Interactive Statistics
-      x-accepts:
-      - application/json
-  /api/v2/public/ai/models:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo
-      parameters: []
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v2/public/ai/models/{pageSize}:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo_1
-      parameters:
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v2/public/ai/models/{pageSize}/{pageNum}:
-    get:
-      description: "Return model information by page, return the pageNum page, up\
-        \ to pageSize model information."
-      operationId: listAiModelInfo_2
-      parameters:
-      - description: Maximum quantity
-        explode: false
-        in: path
-        name: pageSize
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      - description: Current page number
-        explode: false
-        in: path
-        name: pageNum
-        required: true
-        schema:
-          format: int64
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/AiModelInfoDTO'
-                type: array
-          description: OK
-      summary: List Models
-      tags:
-      - AI Service
-      x-accepts:
-      - application/json
-  /api/v2/public/ai/model/{modelId}:
-    get:
-      description: Return specific model information.
-      operationId: getAiModelInfo
-      parameters:
-      - description: Model identifier
-        explode: false
-        in: path
-        name: modelId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AiModelInfoDTO'
-          description: OK
-      summary: Get Model Information
-      tags:
-      - AI Service
       x-accepts:
       - application/json
   /api/v2/prompt/summary/{promptId}:
@@ -5212,6 +5177,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5263,6 +5229,7 @@ paths:
         name: desired
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5454,6 +5421,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5480,6 +5448,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Assistant uid
@@ -5488,6 +5457,7 @@ paths:
         name: assistantUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5513,6 +5483,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Assistant uid
@@ -5521,6 +5492,7 @@ paths:
         name: assistantUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5546,6 +5518,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Messages limit
@@ -5582,6 +5555,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Messages limit
@@ -5627,6 +5601,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5654,6 +5629,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Messages limit
@@ -5690,6 +5666,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Messages limit
@@ -5735,6 +5712,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5762,6 +5740,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5787,6 +5766,7 @@ paths:
         name: characterBackendId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5799,6 +5779,34 @@ paths:
                 type: array
           description: OK
       summary: List Character Voices
+      tags:
+      - Character
+      x-accepts:
+      - application/json
+  /api/v2/character/videos/{characterUid}:
+    get:
+      description: List videos of the character.
+      operationId: listCharacterVideos
+      parameters:
+      - description: Character unique identifier
+        explode: false
+        in: path
+        name: characterUid
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: List Character Videos
       tags:
       - Character
       x-accepts:
@@ -5840,6 +5848,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5890,6 +5899,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5915,6 +5925,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5968,6 +5979,7 @@ paths:
         name: desired
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -5993,6 +6005,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6020,6 +6033,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6047,6 +6061,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6072,6 +6087,7 @@ paths:
         name: provider
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6289,6 +6305,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6313,6 +6330,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6338,6 +6356,7 @@ paths:
         name: token
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6363,6 +6382,7 @@ paths:
         name: username
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6390,6 +6410,7 @@ paths:
         name: text
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6511,6 +6532,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6539,6 +6561,7 @@ paths:
         name: chatId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6566,6 +6589,7 @@ paths:
         name: characterBackendId
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       - description: Voice key
@@ -6574,6 +6598,7 @@ paths:
         name: key
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6584,6 +6609,32 @@ paths:
                 type: boolean
           description: OK
       summary: Delete Character Voice
+      tags:
+      - Character
+      x-accepts:
+      - application/json
+  /api/v2/character/video/{key}:
+    delete:
+      description: Delete a video of the character by key.
+      operationId: deleteCharacterVideo
+      parameters:
+      - description: Video key
+        explode: false
+        in: path
+        name: key
+        required: true
+        schema:
+          minLength: 1
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: OK
+      summary: Delete Character Video
       tags:
       - Character
       x-accepts:
@@ -6600,6 +6651,7 @@ paths:
         name: characterUid
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6628,6 +6680,7 @@ paths:
         name: key
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6654,6 +6707,7 @@ paths:
         name: name
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6682,6 +6736,7 @@ paths:
         name: key
         required: true
         schema:
+          minLength: 1
           type: string
         style: simple
       responses:
@@ -6694,31 +6749,6 @@ paths:
       summary: Delete Character Document
       tags:
       - Character
-      x-accepts:
-      - application/json
-  /api/v2/biz/admin/ai/model/{modelId}:
-    delete:
-      description: Delete model information based on modelId.
-      operationId: deleteAiModelInfo
-      parameters:
-      - description: Model identifier
-        explode: false
-        in: path
-        name: modelId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: boolean
-          description: OK
-      summary: Delete Model Information
-      tags:
-      - "AI Manager (for biz, admin)"
       x-accepts:
       - application/json
   /api/v2/agent/batch/delete:
@@ -7046,7 +7076,7 @@ components:
       description: Prompt reference information
       example:
         variables:
-          key: "{}"
+          key: ""
         promptId: 0
         draft: true
       properties:
@@ -7055,8 +7085,7 @@ components:
           format: int64
           type: integer
         variables:
-          additionalProperties:
-            type: object
+          additionalProperties: {}
           description: "Variables applied to the template, can be empty"
         draft:
           description: Whether to use draft content
@@ -7070,13 +7099,13 @@ components:
         cron: cron
         promptRef:
           variables:
-            key: "{}"
+            key: ""
           promptId: 0
           draft: true
         modelId: modelId
         apiKeyName: apiKeyName
         params:
-          key: "{}"
+          key: ""
         status: status
       properties:
         promptRef:
@@ -7091,8 +7120,7 @@ components:
           description: API-KEY value
           type: string
         params:
-          additionalProperties:
-            type: object
+          additionalProperties: {}
           description: Model call parameters
         cron:
           description: Task scheduling configuration which compatible with Quartz
@@ -7219,6 +7247,7 @@ components:
         description: description
         chatExample: chatExample
         avatar: avatar
+        video: video
         picture: picture
         tags:
         - tags
@@ -7249,6 +7278,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        video:
+          description: Character video url
           type: string
         gender:
           description: "Character gender: male | female | other"
@@ -7361,32 +7393,6 @@ components:
           description: "Character's speaker type for tts: idx | wav"
           pattern: idx|wav
           type: string
-    AiModelInfoUpdateDTO:
-      description: Request data for creating/updating model information
-      example:
-        provider: provider
-        name: name
-        description: description
-        type: type
-      properties:
-        name:
-          description: Model name
-          type: string
-        description:
-          description: Model description
-          type: string
-        provider:
-          description: "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope\
-            \ | ollama | unknown"
-          pattern: hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown
-          type: string
-        type:
-          description: "Model type: text2text | text2chat | text2image | embedding\
-            \ | moderation"
-          pattern: text2text|text2chat|text2image|embedding|moderation
-          type: string
-      required:
-      - name
     AgentUpdateDTO:
       description: Request data for updating agent information
       example:
@@ -7932,6 +7938,7 @@ components:
         greeting: greeting
         description: description
         avatar: avatar
+        video: video
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         priority: 1
         version: 6
@@ -7989,6 +7996,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        video:
+          description: Character video url
           type: string
         gender:
           description: "Character gender: male | female | other"
@@ -8220,16 +8230,16 @@ components:
       example:
         promptRef:
           variables:
-            key: "{}"
+            key: ""
           promptId: 0
           draft: true
         params:
-          key: "{}"
+          key: ""
         prompt: prompt
         promptTemplate:
           template: template
           variables:
-            key: "{}"
+            key: ""
           chatTemplate:
             system: system
             messages:
@@ -8293,8 +8303,7 @@ components:
         promptRef:
           $ref: '#/components/schemas/PromptRefDTO'
         params:
-          additionalProperties:
-            type: object
+          additionalProperties: {}
           description: "Model call parameters, the actual supported fields are related\
             \ to modelId, depending on the model provider, specific fields can refer\
             \ to: OpenAiParamDTO, QwenParamDTO"
@@ -8305,7 +8314,7 @@ components:
       example:
         template: template
         variables:
-          key: "{}"
+          key: ""
         chatTemplate:
           system: system
           messages:
@@ -8367,8 +8376,7 @@ components:
         chatTemplate:
           $ref: '#/components/schemas/ChatPromptContentDTO'
         variables:
-          additionalProperties:
-            type: object
+          additionalProperties: {}
           description: "Variables applied to the template, can be empty"
         format:
           description: "Prompt format: mustache (default) | f_string"
@@ -9000,6 +9008,7 @@ components:
         description: description
         chatExample: chatExample
         avatar: avatar
+        video: video
         picture: picture
         tags:
         - tags
@@ -9030,6 +9039,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        video:
+          description: Character video url
           type: string
         gender:
           description: "Character gender: male | female | other"
@@ -9197,6 +9209,7 @@ components:
         defaultScene: defaultScene
         greeting: greeting
         description: description
+        video: video
         requestId: requestId
         draft: draft
         nickname: nickname
@@ -9305,6 +9318,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        video:
+          description: Character video url
           type: string
         gender:
           description: "Character gender: male | female | other"
@@ -9748,8 +9764,7 @@ components:
         draft:
           description: Draft content
           type: string
-    StreamingResponseBody:
-      type: object
+    StreamingResponseBody: {}
     RagTaskDetailsDTO:
       description: Prompt task detailed information
       example:
@@ -10057,6 +10072,7 @@ components:
         scoreCount: 7
         greeting: greeting
         description: description
+        video: video
         score: 9
         requestId: requestId
         nickname: nickname
@@ -10120,6 +10136,9 @@ components:
           type: string
         picture:
           description: Character picture url
+          type: string
+        video:
+          description: Character video url
           type: string
         gender:
           description: "Character gender: male | female | other"
@@ -10283,14 +10302,14 @@ components:
         gmtModified: 2000-01-23T04:56:07.000+00:00
         promptRef:
           variables:
-            key: "{}"
+            key: ""
           promptId: 0
           draft: true
         modelId: modelId
         apiKeyName: apiKeyName
         gmtCreate: 2000-01-23T04:56:07.000+00:00
         params:
-          key: "{}"
+          key: ""
         gmtStart: 2000-01-23T04:56:07.000+00:00
         gmtEnd: 2000-01-23T04:56:07.000+00:00
         requestId: requestId
@@ -10331,8 +10350,7 @@ components:
           description: API-KEY value
           type: string
         params:
-          additionalProperties:
-            type: object
+          additionalProperties: {}
           description: Model call parameters
         cron:
           description: Task scheduling configuration which compatible with Quartz
@@ -10459,6 +10477,7 @@ components:
           greeting: greeting
           description: description
           avatar: avatar
+          video: video
           gmtCreate: 2000-01-23T04:56:07.000+00:00
           priority: 1
           version: 6
@@ -10717,6 +10736,14 @@ components:
       properties:
         file:
           description: Character voice
+          format: binary
+          type: string
+      required:
+      - file
+    uploadCharacterVideo_request:
+      properties:
+        file:
+          description: Character video
           format: binary
           type: string
       required:

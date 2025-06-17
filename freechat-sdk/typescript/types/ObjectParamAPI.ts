@@ -12,7 +12,6 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
-import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -66,73 +65,6 @@ import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
 
-import { ObservableAIManagerForBizAdminApi } from "./ObservableAPI.js";
-import { AIManagerForBizAdminApiRequestFactory, AIManagerForBizAdminApiResponseProcessor} from "../apis/AIManagerForBizAdminApi.js";
-
-export interface AIManagerForBizAdminApiCreateOrUpdateAiModelInfoRequest {
-    /**
-     * Model information
-     * @type AiModelInfoUpdateDTO
-     * @memberof AIManagerForBizAdminApicreateOrUpdateAiModelInfo
-     */
-    aiModelInfoUpdateDTO: AiModelInfoUpdateDTO
-}
-
-export interface AIManagerForBizAdminApiDeleteAiModelInfoRequest {
-    /**
-     * Model identifier
-     * Defaults to: undefined
-     * @type string
-     * @memberof AIManagerForBizAdminApideleteAiModelInfo
-     */
-    modelId: string
-}
-
-export class ObjectAIManagerForBizAdminApi {
-    private api: ObservableAIManagerForBizAdminApi
-
-    public constructor(configuration: Configuration, requestFactory?: AIManagerForBizAdminApiRequestFactory, responseProcessor?: AIManagerForBizAdminApiResponseProcessor) {
-        this.api = new ObservableAIManagerForBizAdminApi(configuration, requestFactory, responseProcessor);
-    }
-
-    /**
-     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
-     * Create or Update Model Information
-     * @param param the request object
-     */
-    public createOrUpdateAiModelInfoWithHttpInfo(param: AIManagerForBizAdminApiCreateOrUpdateAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<string>> {
-        return this.api.createOrUpdateAiModelInfoWithHttpInfo(param.aiModelInfoUpdateDTO,  options).toPromise();
-    }
-
-    /**
-     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
-     * Create or Update Model Information
-     * @param param the request object
-     */
-    public createOrUpdateAiModelInfo(param: AIManagerForBizAdminApiCreateOrUpdateAiModelInfoRequest, options?: Configuration): Promise<string> {
-        return this.api.createOrUpdateAiModelInfo(param.aiModelInfoUpdateDTO,  options).toPromise();
-    }
-
-    /**
-     * Delete model information based on modelId.
-     * Delete Model Information
-     * @param param the request object
-     */
-    public deleteAiModelInfoWithHttpInfo(param: AIManagerForBizAdminApiDeleteAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
-        return this.api.deleteAiModelInfoWithHttpInfo(param.modelId,  options).toPromise();
-    }
-
-    /**
-     * Delete model information based on modelId.
-     * Delete Model Information
-     * @param param the request object
-     */
-    public deleteAiModelInfo(param: AIManagerForBizAdminApiDeleteAiModelInfoRequest, options?: Configuration): Promise<boolean> {
-        return this.api.deleteAiModelInfo(param.modelId,  options).toPromise();
-    }
-
-}
-
 import { ObservableAIServiceApi } from "./ObservableAPI.js";
 import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
 
@@ -185,16 +117,6 @@ export interface AIServiceApiGetAiApiKeyRequest {
     id: number
 }
 
-export interface AIServiceApiGetAiModelInfoRequest {
-    /**
-     * Model identifier
-     * Defaults to: undefined
-     * @type string
-     * @memberof AIServiceApigetAiModelInfo
-     */
-    modelId: string
-}
-
 export interface AIServiceApiListAiApiKeysRequest {
     /**
      * Model provider
@@ -203,36 +125,6 @@ export interface AIServiceApiListAiApiKeysRequest {
      * @memberof AIServiceApilistAiApiKeys
      */
     provider: string
-}
-
-export interface AIServiceApiListAiModelInfoRequest {
-}
-
-export interface AIServiceApiListAiModelInfo1Request {
-    /**
-     * Maximum quantity
-     * Defaults to: undefined
-     * @type number
-     * @memberof AIServiceApilistAiModelInfo1
-     */
-    pageSize: number
-}
-
-export interface AIServiceApiListAiModelInfo2Request {
-    /**
-     * Maximum quantity
-     * Defaults to: undefined
-     * @type number
-     * @memberof AIServiceApilistAiModelInfo2
-     */
-    pageSize: number
-    /**
-     * Current page number
-     * Defaults to: undefined
-     * @type number
-     * @memberof AIServiceApilistAiModelInfo2
-     */
-    pageNum: number
 }
 
 export class ObjectAIServiceApi {
@@ -333,24 +225,6 @@ export class ObjectAIServiceApi {
     }
 
     /**
-     * Return specific model information.
-     * Get Model Information
-     * @param param the request object
-     */
-    public getAiModelInfoWithHttpInfo(param: AIServiceApiGetAiModelInfoRequest, options?: Configuration): Promise<HttpInfo<AiModelInfoDTO>> {
-        return this.api.getAiModelInfoWithHttpInfo(param.modelId,  options).toPromise();
-    }
-
-    /**
-     * Return specific model information.
-     * Get Model Information
-     * @param param the request object
-     */
-    public getAiModelInfo(param: AIServiceApiGetAiModelInfoRequest, options?: Configuration): Promise<AiModelInfoDTO> {
-        return this.api.getAiModelInfo(param.modelId,  options).toPromise();
-    }
-
-    /**
      * List all credential information of the model provider.
      * List Credentials of Model Provider
      * @param param the request object
@@ -366,60 +240,6 @@ export class ObjectAIServiceApi {
      */
     public listAiApiKeys(param: AIServiceApiListAiApiKeysRequest, options?: Configuration): Promise<Array<AiApiKeyInfoDTO>> {
         return this.api.listAiApiKeys(param.provider,  options).toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param param the request object
-     */
-    public listAiModelInfoWithHttpInfo(param: AIServiceApiListAiModelInfoRequest = {}, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfoWithHttpInfo( options).toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param param the request object
-     */
-    public listAiModelInfo(param: AIServiceApiListAiModelInfoRequest = {}, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo( options).toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param param the request object
-     */
-    public listAiModelInfo1WithHttpInfo(param: AIServiceApiListAiModelInfo1Request, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfo1WithHttpInfo(param.pageSize,  options).toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param param the request object
-     */
-    public listAiModelInfo1(param: AIServiceApiListAiModelInfo1Request, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo1(param.pageSize,  options).toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param param the request object
-     */
-    public listAiModelInfo2WithHttpInfo(param: AIServiceApiListAiModelInfo2Request, options?: Configuration): Promise<HttpInfo<Array<AiModelInfoDTO>>> {
-        return this.api.listAiModelInfo2WithHttpInfo(param.pageSize, param.pageNum,  options).toPromise();
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param param the request object
-     */
-    public listAiModelInfo2(param: AIServiceApiListAiModelInfo2Request, options?: Configuration): Promise<Array<AiModelInfoDTO>> {
-        return this.api.listAiModelInfo2(param.pageSize, param.pageNum,  options).toPromise();
     }
 
 }
@@ -1841,6 +1661,16 @@ export interface CharacterApiDeleteCharacterPictureRequest {
     key: string
 }
 
+export interface CharacterApiDeleteCharacterVideoRequest {
+    /**
+     * Video key
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApideleteCharacterVideo
+     */
+    key: string
+}
+
 export interface CharacterApiDeleteCharacterVoiceRequest {
     /**
      * The characterBackendId
@@ -1976,6 +1806,16 @@ export interface CharacterApiListCharacterVersionsByNameRequest {
      * @memberof CharacterApilistCharacterVersionsByName
      */
     name: string
+}
+
+export interface CharacterApiListCharacterVideosRequest {
+    /**
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApilistCharacterVideos
+     */
+    characterUid: string
 }
 
 export interface CharacterApiListCharacterVoicesRequest {
@@ -2151,6 +1991,23 @@ export interface CharacterApiUploadCharacterPictureRequest {
      * Defaults to: undefined
      * @type HttpFile
      * @memberof CharacterApiuploadCharacterPicture
+     */
+    file: HttpFile
+}
+
+export interface CharacterApiUploadCharacterVideoRequest {
+    /**
+     * Character unique identifier
+     * Defaults to: undefined
+     * @type string
+     * @memberof CharacterApiuploadCharacterVideo
+     */
+    characterUid: string
+    /**
+     * Character video
+     * Defaults to: undefined
+     * @type HttpFile
+     * @memberof CharacterApiuploadCharacterVideo
      */
     file: HttpFile
 }
@@ -2396,6 +2253,24 @@ export class ObjectCharacterApi {
     }
 
     /**
+     * Delete a video of the character by key.
+     * Delete Character Video
+     * @param param the request object
+     */
+    public deleteCharacterVideoWithHttpInfo(param: CharacterApiDeleteCharacterVideoRequest, options?: Configuration): Promise<HttpInfo<boolean>> {
+        return this.api.deleteCharacterVideoWithHttpInfo(param.key,  options).toPromise();
+    }
+
+    /**
+     * Delete a video of the character by key.
+     * Delete Character Video
+     * @param param the request object
+     */
+    public deleteCharacterVideo(param: CharacterApiDeleteCharacterVideoRequest, options?: Configuration): Promise<boolean> {
+        return this.api.deleteCharacterVideo(param.key,  options).toPromise();
+    }
+
+    /**
      * Delete a voice of the character by key.
      * Delete Character Voice
      * @param param the request object
@@ -2627,6 +2502,24 @@ export class ObjectCharacterApi {
      */
     public listCharacterVersionsByName(param: CharacterApiListCharacterVersionsByNameRequest, options?: Configuration): Promise<Array<CharacterItemForNameDTO>> {
         return this.api.listCharacterVersionsByName(param.name,  options).toPromise();
+    }
+
+    /**
+     * List videos of the character.
+     * List Character Videos
+     * @param param the request object
+     */
+    public listCharacterVideosWithHttpInfo(param: CharacterApiListCharacterVideosRequest, options?: Configuration): Promise<HttpInfo<Array<string>>> {
+        return this.api.listCharacterVideosWithHttpInfo(param.characterUid,  options).toPromise();
+    }
+
+    /**
+     * List videos of the character.
+     * List Character Videos
+     * @param param the request object
+     */
+    public listCharacterVideos(param: CharacterApiListCharacterVideosRequest, options?: Configuration): Promise<Array<string>> {
+        return this.api.listCharacterVideos(param.characterUid,  options).toPromise();
     }
 
     /**
@@ -2879,6 +2772,24 @@ export class ObjectCharacterApi {
      */
     public uploadCharacterPicture(param: CharacterApiUploadCharacterPictureRequest, options?: Configuration): Promise<string> {
         return this.api.uploadCharacterPicture(param.characterUid, param.file,  options).toPromise();
+    }
+
+    /**
+     * Upload a video of the character.
+     * Upload Character Video
+     * @param param the request object
+     */
+    public uploadCharacterVideoWithHttpInfo(param: CharacterApiUploadCharacterVideoRequest, options?: Configuration): Promise<HttpInfo<string>> {
+        return this.api.uploadCharacterVideoWithHttpInfo(param.characterUid, param.file,  options).toPromise();
+    }
+
+    /**
+     * Upload a video of the character.
+     * Upload Character Video
+     * @param param the request object
+     */
+    public uploadCharacterVideo(param: CharacterApiUploadCharacterVideoRequest, options?: Configuration): Promise<string> {
+        return this.api.uploadCharacterVideo(param.characterUid, param.file,  options).toPromise();
     }
 
     /**

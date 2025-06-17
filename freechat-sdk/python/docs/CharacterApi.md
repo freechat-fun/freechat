@@ -16,6 +16,7 @@ Method | HTTP request | Description
 [**delete_character_by_uid**](CharacterApi.md#delete_character_by_uid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
 [**delete_character_document**](CharacterApi.md#delete_character_document) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
 [**delete_character_picture**](CharacterApi.md#delete_character_picture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+[**delete_character_video**](CharacterApi.md#delete_character_video) | **DELETE** /api/v2/character/video/{key} | Delete Character Video
 [**delete_character_voice**](CharacterApi.md#delete_character_voice) | **DELETE** /api/v2/character/voice/{characterBackendId}/{key} | Delete Character Voice
 [**exists_character_name**](CharacterApi.md#exists_character_name) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
 [**export_character**](CharacterApi.md#export_character) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
@@ -29,6 +30,7 @@ Method | HTTP request | Description
 [**list_character_documents**](CharacterApi.md#list_character_documents) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
 [**list_character_pictures**](CharacterApi.md#list_character_pictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
 [**list_character_versions_by_name**](CharacterApi.md#list_character_versions_by_name) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+[**list_character_videos**](CharacterApi.md#list_character_videos) | **GET** /api/v2/character/videos/{characterUid} | List Character Videos
 [**list_character_voices**](CharacterApi.md#list_character_voices) | **GET** /api/v2/character/voices/{characterBackendId} | List Character Voices
 [**new_character_name**](CharacterApi.md#new_character_name) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
 [**publish_character**](CharacterApi.md#publish_character) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
@@ -43,6 +45,7 @@ Method | HTTP request | Description
 [**upload_character_avatar**](CharacterApi.md#upload_character_avatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
 [**upload_character_document**](CharacterApi.md#upload_character_document) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
 [**upload_character_picture**](CharacterApi.md#upload_character_picture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
+[**upload_character_video**](CharacterApi.md#upload_character_video) | **POST** /api/v2/character/video/{characterUid} | Upload Character Video
 [**upload_character_voice**](CharacterApi.md#upload_character_voice) | **POST** /api/v2/character/voice/{characterBackendId} | Upload Character Voice
 
 
@@ -958,6 +961,83 @@ with freechat_sdk.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **key** | **str**| Image key | 
+
+### Return type
+
+**bool**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **delete_character_video**
+> bool delete_character_video(key)
+
+Delete Character Video
+
+Delete a video of the character by key.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    key = 'key_example' # str | Video key
+
+    try:
+        # Delete Character Video
+        api_response = api_instance.delete_character_video(key)
+        print("The response of CharacterApi->delete_character_video:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->delete_character_video: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | **str**| Video key | 
 
 ### Return type
 
@@ -1968,6 +2048,83 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List[CharacterItemForNameDTO]**](CharacterItemForNameDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_character_videos**
+> List[str] list_character_videos(character_uid)
+
+List Character Videos
+
+List videos of the character.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_uid = 'character_uid_example' # str | Character unique identifier
+
+    try:
+        # List Character Videos
+        api_response = api_instance.list_character_videos(character_uid)
+        print("The response of CharacterApi->list_character_videos:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->list_character_videos: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_uid** | **str**| Character unique identifier | 
+
+### Return type
+
+**List[str]**
 
 ### Authorization
 
@@ -3062,6 +3219,85 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **character_uid** | **str**| Character unique identifier | 
  **file** | **bytearray**| Character picture | 
+
+### Return type
+
+**str**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: text/plain
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upload_character_video**
+> str upload_character_video(character_uid, file)
+
+Upload Character Video
+
+Upload a video of the character.
+
+### Example
+
+* Bearer Authentication (bearerAuth):
+
+```python
+import freechat_sdk
+from freechat_sdk.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://127.0.0.1:8080
+# See configuration.py for a list of all supported configuration parameters.
+configuration = freechat_sdk.Configuration(
+    host = "http://127.0.0.1:8080"
+)
+
+# The client must configure the authentication and authorization parameters
+# in accordance with the API server security policy.
+# Examples for each auth method are provided below, use the example that
+# satisfies your auth use case.
+
+# Configure Bearer authorization: bearerAuth
+configuration = freechat_sdk.Configuration(
+    access_token = os.environ["BEARER_TOKEN"]
+)
+
+# Enter a context with an instance of the API client
+with freechat_sdk.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = freechat_sdk.CharacterApi(api_client)
+    character_uid = 'character_uid_example' # str | Character unique identifier
+    file = None # bytearray | Character video
+
+    try:
+        # Upload Character Video
+        api_response = api_instance.upload_character_video(character_uid, file)
+        print("The response of CharacterApi->upload_character_video:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling CharacterApi->upload_character_video: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **character_uid** | **str**| Character unique identifier | 
+ **file** | **bytearray**| Character video | 
 
 ### Return type
 

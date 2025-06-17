@@ -13,7 +13,6 @@ import { AgentUpdateDTO } from '../models/AgentUpdateDTO.js';
 import { AiApiKeyCreateDTO } from '../models/AiApiKeyCreateDTO.js';
 import { AiApiKeyInfoDTO } from '../models/AiApiKeyInfoDTO.js';
 import { AiModelInfoDTO } from '../models/AiModelInfoDTO.js';
-import { AiModelInfoUpdateDTO } from '../models/AiModelInfoUpdateDTO.js';
 import { ApiTokenInfoDTO } from '../models/ApiTokenInfoDTO.js';
 import { AppMetaDTO } from '../models/AppMetaDTO.js';
 import { CharacterBackendDTO } from '../models/CharacterBackendDTO.js';
@@ -66,90 +65,6 @@ import { TokenUsageDTO } from '../models/TokenUsageDTO.js';
 import { UserBasicInfoDTO } from '../models/UserBasicInfoDTO.js';
 import { UserDetailsDTO } from '../models/UserDetailsDTO.js';
 import { UserFullDetailsDTO } from '../models/UserFullDetailsDTO.js';
-
-import { AIManagerForBizAdminApiRequestFactory, AIManagerForBizAdminApiResponseProcessor} from "../apis/AIManagerForBizAdminApi.js";
-export class ObservableAIManagerForBizAdminApi {
-    private requestFactory: AIManagerForBizAdminApiRequestFactory;
-    private responseProcessor: AIManagerForBizAdminApiResponseProcessor;
-    private configuration: Configuration;
-
-    public constructor(
-        configuration: Configuration,
-        requestFactory?: AIManagerForBizAdminApiRequestFactory,
-        responseProcessor?: AIManagerForBizAdminApiResponseProcessor
-    ) {
-        this.configuration = configuration;
-        this.requestFactory = requestFactory || new AIManagerForBizAdminApiRequestFactory(configuration);
-        this.responseProcessor = responseProcessor || new AIManagerForBizAdminApiResponseProcessor();
-    }
-
-    /**
-     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
-     * Create or Update Model Information
-     * @param aiModelInfoUpdateDTO Model information
-     */
-    public createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Observable<HttpInfo<string>> {
-        const requestContextPromise = this.requestFactory.createOrUpdateAiModelInfo(aiModelInfoUpdateDTO, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.createOrUpdateAiModelInfoWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Create or update model information. If no modelId is passed or the modelId does not exist in the database, create a new one (keep the same modelId); otherwise update. Return modelId if successful.
-     * Create or Update Model Information
-     * @param aiModelInfoUpdateDTO Model information
-     */
-    public createOrUpdateAiModelInfo(aiModelInfoUpdateDTO: AiModelInfoUpdateDTO, _options?: Configuration): Observable<string> {
-        return this.createOrUpdateAiModelInfoWithHttpInfo(aiModelInfoUpdateDTO, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
-    }
-
-    /**
-     * Delete model information based on modelId.
-     * Delete Model Information
-     * @param modelId Model identifier
-     */
-    public deleteAiModelInfoWithHttpInfo(modelId: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
-        const requestContextPromise = this.requestFactory.deleteAiModelInfo(modelId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteAiModelInfoWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Delete model information based on modelId.
-     * Delete Model Information
-     * @param modelId Model identifier
-     */
-    public deleteAiModelInfo(modelId: string, _options?: Configuration): Observable<boolean> {
-        return this.deleteAiModelInfoWithHttpInfo(modelId, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
-    }
-
-}
 
 import { AIServiceApiRequestFactory, AIServiceApiResponseProcessor} from "../apis/AIServiceApi.js";
 export class ObservableAIServiceApi {
@@ -333,39 +248,6 @@ export class ObservableAIServiceApi {
     }
 
     /**
-     * Return specific model information.
-     * Get Model Information
-     * @param modelId Model identifier
-     */
-    public getAiModelInfoWithHttpInfo(modelId: string, _options?: Configuration): Observable<HttpInfo<AiModelInfoDTO>> {
-        const requestContextPromise = this.requestFactory.getAiModelInfo(modelId, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.getAiModelInfoWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Return specific model information.
-     * Get Model Information
-     * @param modelId Model identifier
-     */
-    public getAiModelInfo(modelId: string, _options?: Configuration): Observable<AiModelInfoDTO> {
-        return this.getAiModelInfoWithHttpInfo(modelId, _options).pipe(map((apiResponse: HttpInfo<AiModelInfoDTO>) => apiResponse.data));
-    }
-
-    /**
      * List all credential information of the model provider.
      * List Credentials of Model Provider
      * @param provider Model provider
@@ -396,105 +278,6 @@ export class ObservableAIServiceApi {
      */
     public listAiApiKeys(provider: string, _options?: Configuration): Observable<Array<AiApiKeyInfoDTO>> {
         return this.listAiApiKeysWithHttpInfo(provider, _options).pipe(map((apiResponse: HttpInfo<Array<AiApiKeyInfoDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     */
-    public listAiModelInfoWithHttpInfo(_options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo(_options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAiModelInfoWithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     */
-    public listAiModelInfo(_options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfoWithHttpInfo(_options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     */
-    public listAiModelInfo1WithHttpInfo(pageSize: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo1(pageSize, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAiModelInfo1WithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     */
-    public listAiModelInfo1(pageSize: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfo1WithHttpInfo(pageSize, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     */
-    public listAiModelInfo2WithHttpInfo(pageSize: number, pageNum: number, _options?: Configuration): Observable<HttpInfo<Array<AiModelInfoDTO>>> {
-        const requestContextPromise = this.requestFactory.listAiModelInfo2(pageSize, pageNum, _options);
-
-        // build promise chain
-        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
-        for (const middleware of this.configuration.middleware) {
-            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
-        }
-
-        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
-            pipe(mergeMap((response: ResponseContext) => {
-                let middlewarePostObservable = of(response);
-                for (const middleware of this.configuration.middleware) {
-                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
-                }
-                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listAiModelInfo2WithHttpInfo(rsp)));
-            }));
-    }
-
-    /**
-     * Return model information by page, return the pageNum page, up to pageSize model information.
-     * List Models
-     * @param pageSize Maximum quantity
-     * @param pageNum Current page number
-     */
-    public listAiModelInfo2(pageSize: number, pageNum: number, _options?: Configuration): Observable<Array<AiModelInfoDTO>> {
-        return this.listAiModelInfo2WithHttpInfo(pageSize, pageNum, _options).pipe(map((apiResponse: HttpInfo<Array<AiModelInfoDTO>>) => apiResponse.data));
     }
 
 }
@@ -2485,6 +2268,39 @@ export class ObservableCharacterApi {
     }
 
     /**
+     * Delete a video of the character by key.
+     * Delete Character Video
+     * @param key Video key
+     */
+    public deleteCharacterVideoWithHttpInfo(key: string, _options?: Configuration): Observable<HttpInfo<boolean>> {
+        const requestContextPromise = this.requestFactory.deleteCharacterVideo(key, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.deleteCharacterVideoWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Delete a video of the character by key.
+     * Delete Character Video
+     * @param key Video key
+     */
+    public deleteCharacterVideo(key: string, _options?: Configuration): Observable<boolean> {
+        return this.deleteCharacterVideoWithHttpInfo(key, _options).pipe(map((apiResponse: HttpInfo<boolean>) => apiResponse.data));
+    }
+
+    /**
      * Delete a voice of the character by key.
      * Delete Character Voice
      * @param characterBackendId The characterBackendId
@@ -2913,6 +2729,39 @@ export class ObservableCharacterApi {
      */
     public listCharacterVersionsByName(name: string, _options?: Configuration): Observable<Array<CharacterItemForNameDTO>> {
         return this.listCharacterVersionsByNameWithHttpInfo(name, _options).pipe(map((apiResponse: HttpInfo<Array<CharacterItemForNameDTO>>) => apiResponse.data));
+    }
+
+    /**
+     * List videos of the character.
+     * List Character Videos
+     * @param characterUid Character unique identifier
+     */
+    public listCharacterVideosWithHttpInfo(characterUid: string, _options?: Configuration): Observable<HttpInfo<Array<string>>> {
+        const requestContextPromise = this.requestFactory.listCharacterVideos(characterUid, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.listCharacterVideosWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * List videos of the character.
+     * List Character Videos
+     * @param characterUid Character unique identifier
+     */
+    public listCharacterVideos(characterUid: string, _options?: Configuration): Observable<Array<string>> {
+        return this.listCharacterVideosWithHttpInfo(characterUid, _options).pipe(map((apiResponse: HttpInfo<Array<string>>) => apiResponse.data));
     }
 
     /**
@@ -3387,6 +3236,41 @@ export class ObservableCharacterApi {
      */
     public uploadCharacterPicture(characterUid: string, file: HttpFile, _options?: Configuration): Observable<string> {
         return this.uploadCharacterPictureWithHttpInfo(characterUid, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
+    }
+
+    /**
+     * Upload a video of the character.
+     * Upload Character Video
+     * @param characterUid Character unique identifier
+     * @param file Character video
+     */
+    public uploadCharacterVideoWithHttpInfo(characterUid: string, file: HttpFile, _options?: Configuration): Observable<HttpInfo<string>> {
+        const requestContextPromise = this.requestFactory.uploadCharacterVideo(characterUid, file, _options);
+
+        // build promise chain
+        let middlewarePreObservable = from<RequestContext>(requestContextPromise);
+        for (const middleware of this.configuration.middleware) {
+            middlewarePreObservable = middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => middleware.pre(ctx)));
+        }
+
+        return middlewarePreObservable.pipe(mergeMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).
+            pipe(mergeMap((response: ResponseContext) => {
+                let middlewarePostObservable = of(response);
+                for (const middleware of this.configuration.middleware) {
+                    middlewarePostObservable = middlewarePostObservable.pipe(mergeMap((rsp: ResponseContext) => middleware.post(rsp)));
+                }
+                return middlewarePostObservable.pipe(map((rsp: ResponseContext) => this.responseProcessor.uploadCharacterVideoWithHttpInfo(rsp)));
+            }));
+    }
+
+    /**
+     * Upload a video of the character.
+     * Upload Character Video
+     * @param characterUid Character unique identifier
+     * @param file Character video
+     */
+    public uploadCharacterVideo(characterUid: string, file: HttpFile, _options?: Configuration): Observable<string> {
+        return this.uploadCharacterVideoWithHttpInfo(characterUid, file, _options).pipe(map((apiResponse: HttpInfo<string>) => apiResponse.data));
     }
 
     /**

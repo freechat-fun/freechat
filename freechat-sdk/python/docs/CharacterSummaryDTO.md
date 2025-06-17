@@ -19,6 +19,7 @@ Name | Type | Description | Notes
 **nickname** | **str** | Character nickname | [optional] 
 **avatar** | **str** | Character avatar url | [optional] 
 **picture** | **str** | Character picture url | [optional] 
+**video** | **str** | Character video url | [optional] 
 **gender** | **str** | Character gender: male | female | other | [optional] 
 **lang** | **str** | Character language: en (default) | zh | ... | [optional] 
 **greeting** | **str** | Character greeting | [optional] 

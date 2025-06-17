@@ -16,6 +16,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**deleteCharacterByUid**](CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid |
 | [**deleteCharacterDocument**](CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document |
 | [**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture |
+| [**deleteCharacterVideo**](CharacterApi.md#deleteCharacterVideo) | **DELETE** /api/v2/character/video/{key} | Delete Character Video |
 | [**deleteCharacterVoice**](CharacterApi.md#deleteCharacterVoice) | **DELETE** /api/v2/character/voice/{characterBackendId}/{key} | Delete Character Voice |
 | [**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists |
 | [**exportCharacter**](CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration |
@@ -29,6 +30,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents |
 | [**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures |
 | [**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name |
+| [**listCharacterVideos**](CharacterApi.md#listCharacterVideos) | **GET** /api/v2/character/videos/{characterUid} | List Character Videos |
 | [**listCharacterVoices**](CharacterApi.md#listCharacterVoices) | **GET** /api/v2/character/voices/{characterBackendId} | List Character Voices |
 | [**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name |
 | [**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character |
@@ -43,6 +45,7 @@ All URIs are relative to *http://127.0.0.1:8080*
 | [**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar |
 | [**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document |
 | [**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture |
+| [**uploadCharacterVideo**](CharacterApi.md#uploadCharacterVideo) | **POST** /api/v2/character/video/{characterUid} | Upload Character Video |
 | [**uploadCharacterVoice**](CharacterApi.md#uploadCharacterVoice) | **POST** /api/v2/character/voice/{characterBackendId} | Upload Character Voice |
 
 
@@ -833,6 +836,73 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **key** | **String**| Image key | |
+
+### Return type
+
+**Boolean**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="deleteCharacterVideo"></a>
+# **deleteCharacterVideo**
+> Boolean deleteCharacterVideo(key)
+
+Delete Character Video
+
+Delete a video of the character by key.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    String key = "key_example"; // String | Video key
+    try {
+      Boolean result = apiInstance.deleteCharacterVideo(key);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#deleteCharacterVideo");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **key** | **String**| Video key | |
 
 ### Return type
 
@@ -1709,6 +1779,73 @@ public class Example {
 ### Return type
 
 [**List&lt;CharacterItemForNameDTO&gt;**](CharacterItemForNameDTO.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="listCharacterVideos"></a>
+# **listCharacterVideos**
+> List&lt;String&gt; listCharacterVideos(characterUid)
+
+List Character Videos
+
+List videos of the character.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    String characterUid = "characterUid_example"; // String | Character unique identifier
+    try {
+      List<String> result = apiInstance.listCharacterVideos(characterUid);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#listCharacterVideos");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **characterUid** | **String**| Character unique identifier | |
+
+### Return type
+
+**List&lt;String&gt;**
 
 ### Authorization
 
@@ -2655,6 +2792,75 @@ public class Example {
 |------------- | ------------- | ------------- | -------------|
 | **characterUid** | **String**| Character unique identifier | |
 | **_file** | **File**| Character picture | |
+
+### Return type
+
+**String**
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: text/plain
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+<a id="uploadCharacterVideo"></a>
+# **uploadCharacterVideo**
+> String uploadCharacterVideo(characterUid, _file)
+
+Upload Character Video
+
+Upload a video of the character.
+
+### Example
+```java
+// Import classes:
+import fun.freechat.client.ApiClient;
+import fun.freechat.client.ApiException;
+import fun.freechat.client.Configuration;
+import fun.freechat.client.auth.*;
+import fun.freechat.client.models.*;
+import fun.freechat.client.api.CharacterApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://127.0.0.1:8080");
+    
+    // Configure HTTP bearer authorization: bearerAuth
+    HttpBearerAuth bearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("bearerAuth");
+    bearerAuth.setBearerToken("BEARER TOKEN");
+
+    CharacterApi apiInstance = new CharacterApi(defaultClient);
+    String characterUid = "characterUid_example"; // String | Character unique identifier
+    File _file = new File("/path/to/file"); // File | Character video
+    try {
+      String result = apiInstance.uploadCharacterVideo(characterUid, _file);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling CharacterApi#uploadCharacterVideo");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **characterUid** | **String**| Character unique identifier | |
+| **_file** | **File**| Character video | |
 
 ### Return type
 
