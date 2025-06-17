@@ -1,7 +1,6 @@
 # flake8: noqa
 
 # import apis into api package
-from freechat_sdk.api.ai_manager_for_biz_admin_api import AIManagerForBizAdminApi
 from freechat_sdk.api.ai_service_api import AIServiceApi
 from freechat_sdk.api.account_api import AccountApi
 from freechat_sdk.api.account_manager_for_admin_api import AccountManagerForAdminApi

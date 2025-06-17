@@ -21,6 +21,7 @@ Character summary content
 |**nickname** | **String** | Character nickname |  [optional] |
 |**avatar** | **String** | Character avatar url |  [optional] |
 |**picture** | **String** | Character picture url |  [optional] |
+|**video** | **String** | Character video url |  [optional] |
 |**gender** | **String** | Character gender: male | female | other |  [optional] |
 |**lang** | **String** | Character language: en (default) | zh | ... |  [optional] |
 |**greeting** | **String** | Character greeting |  [optional] |

@@ -16,6 +16,7 @@ Method | HTTP request | Description
 [**deleteCharacterByUid**](CharacterApi.md#deleteCharacterByUid) | **DELETE** /api/v2/character/uid/{characterUid} | Delete Character by Uid
 [**deleteCharacterDocument**](CharacterApi.md#deleteCharacterDocument) | **DELETE** /api/v2/character/document/{key} | Delete Character Document
 [**deleteCharacterPicture**](CharacterApi.md#deleteCharacterPicture) | **DELETE** /api/v2/character/picture/{key} | Delete Character Picture
+[**deleteCharacterVideo**](CharacterApi.md#deleteCharacterVideo) | **DELETE** /api/v2/character/video/{key} | Delete Character Video
 [**deleteCharacterVoice**](CharacterApi.md#deleteCharacterVoice) | **DELETE** /api/v2/character/voice/{characterBackendId}/{key} | Delete Character Voice
 [**existsCharacterName**](CharacterApi.md#existsCharacterName) | **GET** /api/v2/character/exists/name/{name} | Check If Character Name Exists
 [**exportCharacter**](CharacterApi.md#exportCharacter) | **GET** /api/v2/character/export/{characterId} | Export Character Configuration
@@ -29,6 +30,7 @@ Method | HTTP request | Description
 [**listCharacterDocuments**](CharacterApi.md#listCharacterDocuments) | **GET** /api/v2/character/documents/{characterUid} | List Character Documents
 [**listCharacterPictures**](CharacterApi.md#listCharacterPictures) | **GET** /api/v2/character/pictures/{characterUid} | List Character Pictures
 [**listCharacterVersionsByName**](CharacterApi.md#listCharacterVersionsByName) | **POST** /api/v2/character/versions/{name} | List Versions by Character Name
+[**listCharacterVideos**](CharacterApi.md#listCharacterVideos) | **GET** /api/v2/character/videos/{characterUid} | List Character Videos
 [**listCharacterVoices**](CharacterApi.md#listCharacterVoices) | **GET** /api/v2/character/voices/{characterBackendId} | List Character Voices
 [**newCharacterName**](CharacterApi.md#newCharacterName) | **GET** /api/v2/character/create/name/{desired} | Create New Character Name
 [**publishCharacter**](CharacterApi.md#publishCharacter) | **POST** /api/v2/character/publish/{characterId}/{visibility} | Publish Character
@@ -43,6 +45,7 @@ Method | HTTP request | Description
 [**uploadCharacterAvatar**](CharacterApi.md#uploadCharacterAvatar) | **POST** /api/v2/character/avatar/{characterUid} | Upload Character Avatar
 [**uploadCharacterDocument**](CharacterApi.md#uploadCharacterDocument) | **POST** /api/v2/character/document/{characterUid} | Upload Character Document
 [**uploadCharacterPicture**](CharacterApi.md#uploadCharacterPicture) | **POST** /api/v2/character/picture/{characterUid} | Upload Character Picture
+[**uploadCharacterVideo**](CharacterApi.md#uploadCharacterVideo) | **POST** /api/v2/character/video/{characterUid} | Upload Character Video
 [**uploadCharacterVoice**](CharacterApi.md#uploadCharacterVoice) | **POST** /api/v2/character/voice/{characterBackendId} | Upload Character Voice
 
 
@@ -485,6 +488,7 @@ const request: CharacterApiCreateCharacterRequest = {
     nickname: "nickname_example",
     avatar: "avatar_example",
     picture: "picture_example",
+    video: "video_example",
     gender: "other",
     profile: "profile_example",
     greeting: "greeting_example",
@@ -775,6 +779,59 @@ console.log('API called successfully. Returned data:', data);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **key** | [**string**] | Image key | defaults to undefined
+
+
+### Return type
+
+**boolean**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **deleteCharacterVideo**
+> boolean deleteCharacterVideo()
+
+Delete a video of the character by key.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiDeleteCharacterVideoRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiDeleteCharacterVideoRequest = {
+    // Video key
+  key: "key_example",
+};
+
+const data = await apiInstance.deleteCharacterVideo(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **key** | [**string**] | Video key | defaults to undefined
 
 
 ### Return type
@@ -1490,6 +1547,59 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
 
+# **listCharacterVideos**
+> Array<string> listCharacterVideos()
+
+List videos of the character.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiListCharacterVideosRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiListCharacterVideosRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
+};
+
+const data = await apiInstance.listCharacterVideos(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
+
+
+### Return type
+
+**Array<string>**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
 # **listCharacterVoices**
 > Array<string> listCharacterVoices()
 
@@ -2051,6 +2161,7 @@ const request: CharacterApiUpdateCharacterRequest = {
     nickname: "nickname_example",
     avatar: "avatar_example",
     picture: "picture_example",
+    video: "video_example",
     gender: "other",
     profile: "profile_example",
     greeting: "greeting_example",
@@ -2318,6 +2429,62 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **characterUid** | [**string**] | Character unique identifier | defaults to undefined
  **file** | [**HttpFile**] | Character picture | defaults to undefined
+
+
+### Return type
+
+**string**
+
+### Authorization
+
+[bearerAuth](README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: text/plain
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](README.md#documentation-for-api-endpoints) [[Back to Model list]](README.md#documentation-for-models) [[Back to README]](README.md)
+
+# **uploadCharacterVideo**
+> string uploadCharacterVideo()
+
+Upload a video of the character.
+
+### Example
+
+
+```typescript
+import { createConfiguration, CharacterApi } from '';
+import type { CharacterApiUploadCharacterVideoRequest } from '';
+
+const configuration = createConfiguration();
+const apiInstance = new CharacterApi(configuration);
+
+const request: CharacterApiUploadCharacterVideoRequest = {
+    // Character unique identifier
+  characterUid: "characterUid_example",
+    // Character video
+  file: { data: Buffer.from(fs.readFileSync('/path/to/file', 'utf-8')), name: '/path/to/file' },
+};
+
+const data = await apiInstance.uploadCharacterVideo(request);
+console.log('API called successfully. Returned data:', data);
+```
+
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **characterUid** | [**string**] | Character unique identifier | defaults to undefined
+ **file** | [**HttpFile**] | Character video | defaults to undefined
 
 
 ### Return type
