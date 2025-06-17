@@ -81,6 +81,7 @@ const CharacterRecommendationPoster = forwardRef<
   const { handleError } = useErrorMessageBusContext();
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
   const nickname = getSenderName(record);
 
@@ -130,7 +131,7 @@ const CharacterRecommendationPoster = forwardRef<
         ref={ref}
         sx={{
           display: disabled ? 'none' : 'grid',
-          backgroundImage: !record?.video ? `url(${record?.picture})` : 'none',
+          backgroundImage: (!record?.video || !isVideoLoaded) ? `url(${record?.picture})` : 'none',
           ...sx,
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -144,6 +145,7 @@ const CharacterRecommendationPoster = forwardRef<
             muted
             loop
             playsInline
+            onLoadedData={() => setIsVideoLoaded(true)}
           />
         )}
         <Stack
