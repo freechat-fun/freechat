@@ -51,7 +51,7 @@ const ConfirmModal = forwardRef<HTMLDivElement, ConfirmModalProps>(
     };
 
     return (
-      <Dialog ref={ref} {...dialogProps} onClose={onClose}>
+      <Dialog ref={ref} maxWidth="md" {...dialogProps} onClose={onClose}>
         <DialogTitle
           sx={{
             px: 2,

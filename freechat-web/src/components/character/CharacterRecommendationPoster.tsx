@@ -43,6 +43,16 @@ const StyledGridBox = styled(GridBox)(({ theme }) => ({
   backgroundRepeat: 'no-repeat',
 }));
 
+const StyledVideo = styled('video')({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  zIndex: -1,
+});
+
 const StyledButton = styled(Button)(({ theme }) => ({
   marginTop: 'auto',
   marginLeft: theme.spacing(1),
@@ -120,13 +130,22 @@ const CharacterRecommendationPoster = forwardRef<
         ref={ref}
         sx={{
           display: disabled ? 'none' : 'grid',
-          backgroundImage: `url(${record?.picture})`,
+          backgroundImage: !record?.video ? `url(${record?.picture})` : 'none',
           ...sx,
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         {...others}
       >
+        {record?.video && (
+          <StyledVideo
+            src={record.video}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        )}
         <Stack
           sx={{
             gap: 1,

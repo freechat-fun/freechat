@@ -175,6 +175,7 @@ CREATE TABLE IF NOT EXISTS `character_info` (
   `nickname` varchar(128) DEFAULT NULL,
   `avatar` varchar(512) DEFAULT NULL,
   `picture` varchar(512) DEFAULT NULL,
+  `video` varchar(512) DEFAULT NULL,
   `gender` varchar(16) DEFAULT 'other' COMMENT 'male | female | other',
   `lang` varchar(64) DEFAULT 'en' COMMENT 'en | zh | ...',
   `profile` text DEFAULT NULL,

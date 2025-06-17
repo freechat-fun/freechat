@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 @Mapper
 public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapper, CommonUpdateMapper {
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
-    BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, defaultScene, ext, draft);
+    BasicColumn[] selectList = BasicColumn.columnList(characterId, characterUid, gmtCreate, gmtModified, userId, parentUid, visibility, name, nickname, avatar, picture, video, gender, lang, version, priority, description, profile, greeting, chatStyle, chatExample, defaultScene, ext, draft);
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
@@ -54,6 +54,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
         @Result(column="nickname", property="nickname", jdbcType=JdbcType.VARCHAR),
         @Result(column="avatar", property="avatar", jdbcType=JdbcType.VARCHAR),
         @Result(column="picture", property="picture", jdbcType=JdbcType.VARCHAR),
+        @Result(column="video", property="video", jdbcType=JdbcType.VARCHAR),
         @Result(column="gender", property="gender", jdbcType=JdbcType.VARCHAR),
         @Result(column="lang", property="lang", jdbcType=JdbcType.VARCHAR),
         @Result(column="version", property="version", jdbcType=JdbcType.INTEGER),
@@ -104,6 +105,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(nickname).toProperty("nickname")
             .map(avatar).toProperty("avatar")
             .map(picture).toProperty("picture")
+            .map(video).toProperty("video")
             .map(gender).toProperty("gender")
             .map(lang).toProperty("lang")
             .map(version).toProperty("version")
@@ -132,6 +134,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .map(nickname).toPropertyWhenPresent("nickname", row::getNickname)
             .map(avatar).toPropertyWhenPresent("avatar", row::getAvatar)
             .map(picture).toPropertyWhenPresent("picture", row::getPicture)
+            .map(video).toPropertyWhenPresent("video", row::getVideo)
             .map(gender).toPropertyWhenPresent("gender", row::getGender)
             .map(lang).toPropertyWhenPresent("lang", row::getLang)
             .map(version).toPropertyWhenPresent("version", row::getVersion)
@@ -186,6 +189,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(nickname).equalTo(row::getNickname)
                 .set(avatar).equalTo(row::getAvatar)
                 .set(picture).equalTo(row::getPicture)
+                .set(video).equalTo(row::getVideo)
                 .set(gender).equalTo(row::getGender)
                 .set(lang).equalTo(row::getLang)
                 .set(version).equalTo(row::getVersion)
@@ -212,6 +216,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
                 .set(nickname).equalToWhenPresent(row::getNickname)
                 .set(avatar).equalToWhenPresent(row::getAvatar)
                 .set(picture).equalToWhenPresent(row::getPicture)
+                .set(video).equalToWhenPresent(row::getVideo)
                 .set(gender).equalToWhenPresent(row::getGender)
                 .set(lang).equalToWhenPresent(row::getLang)
                 .set(version).equalToWhenPresent(row::getVersion)
@@ -239,6 +244,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(nickname).equalTo(row::getNickname)
             .set(avatar).equalTo(row::getAvatar)
             .set(picture).equalTo(row::getPicture)
+            .set(video).equalTo(row::getVideo)
             .set(gender).equalTo(row::getGender)
             .set(lang).equalTo(row::getLang)
             .set(version).equalTo(row::getVersion)
@@ -268,6 +274,7 @@ public interface CharacterInfoMapper extends CommonCountMapper, CommonDeleteMapp
             .set(nickname).equalToWhenPresent(row::getNickname)
             .set(avatar).equalToWhenPresent(row::getAvatar)
             .set(picture).equalToWhenPresent(row::getPicture)
+            .set(video).equalToWhenPresent(row::getVideo)
             .set(gender).equalToWhenPresent(row::getGender)
             .set(lang).equalToWhenPresent(row::getLang)
             .set(version).equalToWhenPresent(row::getVersion)

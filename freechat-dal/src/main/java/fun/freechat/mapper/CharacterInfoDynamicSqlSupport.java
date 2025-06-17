@@ -44,6 +44,9 @@ public final class CharacterInfoDynamicSqlSupport {
     public static final SqlColumn<String> picture = characterInfo.picture;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
+    public static final SqlColumn<String> video = characterInfo.video;
+
+    @Generated("org.mybatis.generator.api.MyBatisGenerator")
     public static final SqlColumn<String> gender = characterInfo.gender;
 
     @Generated("org.mybatis.generator.api.MyBatisGenerator")
@@ -102,6 +105,8 @@ public final class CharacterInfoDynamicSqlSupport {
         public final SqlColumn<String> avatar = column("avatar", JDBCType.VARCHAR);
 
         public final SqlColumn<String> picture = column("picture", JDBCType.VARCHAR);
+
+        public final SqlColumn<String> video = column("video", JDBCType.VARCHAR);
 
         public final SqlColumn<String> gender = column("gender", JDBCType.VARCHAR);
 

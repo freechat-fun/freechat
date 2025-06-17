@@ -1036,6 +1036,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
         public static final SqlColumn<String> description = CharacterInfoDynamicSqlSupport.description;
         public static final SqlColumn<String> gender = CharacterInfoDynamicSqlSupport.gender;
         public static final SqlColumn<String> profile = CharacterInfoDynamicSqlSupport.profile;
+        public static final SqlColumn<String> video = CharacterInfoDynamicSqlSupport.video;
         public static final SqlColumn<String> greeting = CharacterInfoDynamicSqlSupport.greeting;
         public static final SqlColumn<String> chatStyle = CharacterInfoDynamicSqlSupport.chatStyle;
         public static final SqlColumn<String> chatExample = CharacterInfoDynamicSqlSupport.chatExample;
@@ -1057,6 +1058,7 @@ select distinct c.user_id, c.character_id, c.visibility... \
                     Info.nickname,
                     Info.avatar,
                     Info.picture,
+                    Info.video,
                     Info.gender,
                     Info.greeting,
                     Info.defaultScene,
