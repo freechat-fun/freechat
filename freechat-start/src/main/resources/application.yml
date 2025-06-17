@@ -35,6 +35,8 @@ auth:
   logout:
     uri: /logout
     successUri: /
+  rememberMe:
+    alwaysRemember: true
   role:
     adminUri: /admin/**,/api/v2/admin/**
     bizAdminUri: /api/v2/biz/admin/**
