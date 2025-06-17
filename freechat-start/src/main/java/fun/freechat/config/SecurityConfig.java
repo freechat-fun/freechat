@@ -17,6 +17,7 @@ import fun.freechat.service.organization.OrgService;
 import fun.freechat.util.AppMetaUtils;
 import fun.freechat.util.AuthorityUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +36,7 @@ import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -82,6 +83,8 @@ public class SecurityConfig {
     private String logoutUri;
     @Value("${auth.logout.successUri}")
     private String logoutSuccessUri;
+    @Value("${auth.rememberMe.alwaysRemember:false}")
+    private Boolean alwaysRemember;
 
     private void configPrivatePath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(privateUri)) {
@@ -123,7 +126,8 @@ public class SecurityConfig {
                                            OAuth2AuthorizedClientService oAuth2ClientService,
                                            UserDetailsManager userDetailsManager,
                                            OrgService orgService,
-                                           ApiTokenAuthenticationProvider apiTokenAuthenticationProvider
+                                           ApiTokenAuthenticationProvider apiTokenAuthenticationProvider,
+                                           RedissonClient redissonClient
                                            ) throws Exception {
         http.authorizeHttpRequests(registry -> {
             configPrivatePath(registry);
@@ -181,7 +185,7 @@ public class SecurityConfig {
         }
 
         http.rememberMe(rememberMe ->
-                rememberMe.rememberMeServices(rememberMeServices(userDetailsManager)));
+                rememberMe.rememberMeServices(rememberMeServices(userDetailsManager, redissonClient)));
 
         return http.build();
     }
@@ -201,7 +205,7 @@ public class SecurityConfig {
 
     private RequestMatcher toRequestMatcher(String[] paths) {
         return new OrRequestMatcher(Arrays.stream(paths)
-                .map(AntPathRequestMatcher::new)
+                .map(path -> PathPatternRequestMatcher.withDefaults().matcher(path))
                 .map(RequestMatcher.class::cast)
                 .toList());
     }
@@ -214,10 +218,11 @@ public class SecurityConfig {
         return handler;
     }
 
-    private RememberMeServices rememberMeServices(UserDetailsService userDetailsService) {
+    private RememberMeServices rememberMeServices(
+            UserDetailsService userDetailsService, RedissonClient redissonClient) {
         OAuth2TokenBasedRememberMeServices rememberMeServices =
-                new OAuth2TokenBasedRememberMeServices(aesKey, userDetailsService);
-        rememberMeServices.setAlwaysRemember(true);
+                new OAuth2TokenBasedRememberMeServices(aesKey, userDetailsService, redissonClient);
+        rememberMeServices.setAlwaysRemember(alwaysRemember);
         return rememberMeServices;
     }
 
