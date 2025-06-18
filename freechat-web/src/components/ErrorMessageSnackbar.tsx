@@ -10,7 +10,7 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { ClearRounded } from '@mui/icons-material';
+import { CloseRounded } from '@mui/icons-material';
 
 export default function ErrorMessageSnackbar() {
   const theme = useTheme();
@@ -34,6 +34,9 @@ export default function ErrorMessageSnackbar() {
           onClose={() => message && removeMessage(message)}
           action={
             <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
               onClick={() => {
                 if (message) {
                   removeMessage(message);
@@ -41,7 +44,7 @@ export default function ErrorMessageSnackbar() {
                 setShowDetails(false);
               }}
             >
-              <ClearRounded />
+              <CloseRounded fontSize="small" />
             </IconButton>
           }
           sx={{

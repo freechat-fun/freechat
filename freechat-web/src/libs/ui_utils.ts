@@ -32,7 +32,7 @@ export function initTransitionSequence(
   setShowItems: Dispatch<SetStateAction<boolean>>,
   setShowItemsFinish?: Dispatch<SetStateAction<boolean>>,
   itemCount: number = 1,
-  delay: number = 200,
+  delay: number = 300,
   interval: number = defaultTransitionInterval
 ): () => void {
   if (typeof window === 'undefined') {

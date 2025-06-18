@@ -335,8 +335,12 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                     prompt.getMessages().forEach(chatMemory::add);
                 }
             } else if (messages.getLast().type() == USER) {
-                ChatResponse response = chatModel.chat(messages);
-                chatMemory.addAiMessage(response.aiMessage(), response.tokenUsage());
+                try {
+                    ChatResponse response = chatModel.chat(messages);
+                    chatMemory.addAiMessage(response.aiMessage(), response.tokenUsage());
+                } catch (Exception e) {
+                    log.error("Failed to call chatModel.chat()", e);
+                }
             }
 
             // knowledge

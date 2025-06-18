@@ -15,7 +15,7 @@ type CharacterRecommendationViewsProps = StackProps & {
 };
 
 export default function CharacterRecommendationViews({
-  interval = 5000,
+  interval = 6000,
   sx,
   ...others
 }: CharacterRecommendationViewsProps) {

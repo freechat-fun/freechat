@@ -31,7 +31,7 @@ const defaultModels = {
 const defaultBaseURLs = {
   open_ai: 'https://api.openai.com/v1',
   azure_open_ai: 'https://{resource}.openai.azure.com/',
-  dash_scope: 'https://dashscope.aliyuncs.com/api/',
+  dash_scope: 'https://dashscope.aliyuncs.com/api/v1',
   ollama: 'https://localhost:11434',
 };
 
