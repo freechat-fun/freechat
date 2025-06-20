@@ -92,7 +92,7 @@ export default function OpenApi() {
           display: loading ? 'none' : 'unset',
         }}
       />
-      <DocumentSkeleton lines={13} loading={loading} sx={{ width: '100%' }} />
+      <DocumentSkeleton lines={20} loading={loading} sx={{ width: '100%' }} />
       <LinePlaceholder spacing={1} />
     </main>
   );
