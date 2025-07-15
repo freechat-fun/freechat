@@ -30,6 +30,8 @@ import { getMessageText } from '../../libs/template_utils';
 type MessagesPaneProps = {
   session?: ChatSessionDTO;
   defaultDebugMode?: boolean;
+  fullscreenMode?: boolean;
+  setFullscreenMode?: (fullscreenMode: boolean) => void;
   onOpen?: () => void;
   onReceivedMessage?: (result: LlmResultDTO) => void;
   sx?: SxProps<Theme>;
@@ -39,6 +41,8 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const {
     session,
     defaultDebugMode = false,
+    fullscreenMode = false,
+    setFullscreenMode,
     onOpen,
     onReceivedMessage,
     sx,
@@ -327,10 +331,12 @@ export default function MessagesPane(props: MessagesPaneProps) {
         session={session}
         onClearHistory={handleClearMemory}
         debugMode={debugMode}
+        fullscreenMode={fullscreenMode}
         disabled={!!messageToSend}
         enableBackground={background ? enableBackground : undefined}
         setEnableBackground={setEnableBackground}
         setDebugMode={setDebugMode}
+        setFullscreenMode={setFullscreenMode}
       />
       <Box
         sx={{

@@ -35,6 +35,7 @@ export default function Chats() {
   const [selectedSession, setSelectedSession] = useState<ChatSessionDTO>();
   const [apiKeyValue, setApiKeyValue] = useState('');
   const [memoryUsage, setMemoryUsage] = useState<MemoryUsageDTO>();
+  const [fullscreenMode, setFullscreenMode] = useState(false);
 
   const openChatsPane = useRef(!id);
 
@@ -209,12 +210,13 @@ export default function Chats() {
         backgroundColor: 'background.default',
         gridTemplateColumns: {
           xs: '1fr',
-          sm: '3fr 11fr 6fr',
+          sm: fullscreenMode ? '1fr' : '3fr 11fr 6fr',
         },
       }}
     >
       <Box
         sx={{
+          display: fullscreenMode ? 'none' : undefined,
           position: { xs: 'fixed', sm: 'sticky' },
           transform: {
             xs: 'translateX(calc(100% * (var(--ChatsPane-slideIn, 0) - 1)))',
@@ -242,12 +244,15 @@ export default function Chats() {
         key={selectedSession?.context?.chatId}
         session={selectedSession}
         defaultDebugMode={defaultDebugMode}
+        fullscreenMode={fullscreenMode}
+        setFullscreenMode={setFullscreenMode}
         onOpen={handleMessagesPaneOpen}
         onReceivedMessage={handleReceivedMessage}
       />
 
       <Box
         sx={{
+          display: fullscreenMode ? 'none' : undefined,
           position: { xs: 'fixed', sm: 'sticky' },
           transform: {
             xs: 'translateX(calc(100% * (var(--ChatInfoPane-slideIn, 0) + 1)))',
