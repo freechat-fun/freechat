@@ -16,6 +16,8 @@ import {
   CheckRounded,
   DeleteForeverRounded,
   FiberManualRecordRounded,
+  FullscreenExitRounded,
+  FullscreenRounded,
   InfoRounded,
   MoreVertRounded,
 } from '@mui/icons-material';
@@ -33,10 +35,12 @@ import { useRef, useState } from 'react';
 type MessagesPaneHeaderProps = {
   session?: ChatSessionDTO;
   debugMode?: boolean;
+  fullscreenMode?: boolean;
   disabled?: boolean;
   enableBackground?: boolean;
   setEnableBackground?: (enabled: boolean) => void;
   setDebugMode?: (debugMode: boolean) => void;
+  setFullscreenMode?: (fullscreenMode: boolean) => void;
   onClearHistory?: (chatId: string) => void;
 };
 
@@ -45,9 +49,11 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
     session,
     debugMode,
     disabled = false,
+    fullscreenMode = false,
     enableBackground,
     setEnableBackground,
     setDebugMode,
+    setFullscreenMode,
     onClearHistory,
   } = props;
   const { t } = useTranslation('chat');
@@ -134,6 +140,16 @@ export default function MessagesPaneHeader(props: MessagesPaneHeaderProps) {
             />
           </FlexBox>
         )}
+        <IconButton
+          sx={{
+            display: { xs: 'none', sm: 'inline-flex' },
+          }}
+          disabled={disabled}
+          color="inherit"
+          onClick={() => setFullscreenMode?.(!fullscreenMode)}
+        >
+          {fullscreenMode? <FullscreenExitRounded /> : <FullscreenRounded />}
+        </IconButton>
         <IconButton
           disabled={disabled}
           color="inherit"
