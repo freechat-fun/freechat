@@ -52,7 +52,7 @@ dependencies:
   - condition: grafana-loki.enabled
     name: grafana-loki
     repository: https://charts.bitnami.com/bitnami
-    version: 5.x
+    version: 6.x
     tags:
       - backend
       - grafana-loki
