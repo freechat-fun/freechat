@@ -1,16 +1,16 @@
 dependencies:
 - name: mysql
   repository: https://charts.bitnami.com/bitnami
-  version: 13.0.4
+  version: 14.0.0
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 21.2.12
 - name: milvus
   repository: https://charts.bitnami.com/bitnami
-  version: 15.0.13
+  version: 15.0.15
 - name: prometheus
   repository: https://charts.bitnami.com/bitnami
-  version: 2.1.15
+  version: 2.1.16
 - name: grafana
   repository: https://charts.bitnami.com/bitnami
   version: 12.1.1
@@ -20,5 +20,5 @@ dependencies:
 - name: kube-state-metrics
   repository: https://charts.bitnami.com/bitnami
   version: 5.0.14
-digest: sha256:3c26da2b3d80fea7d43cd8096f8e104a4810c03964da007fe9dcfd32f97e9191
-generated: "2025-07-18T15:58:30.099689183Z"
+digest: sha256:09c9c80c66672cf75741f89c450e7c686a5f84b3dbb5b511a8182a04ba3b2d4d
+generated: "2025-07-22T20:15:23.818163768Z"
