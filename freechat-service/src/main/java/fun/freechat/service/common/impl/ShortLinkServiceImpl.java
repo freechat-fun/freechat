@@ -58,7 +58,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
     @Override
     @LongPeriodCache
-    public String getFullPath(String token) {
+    public String extract(String token) {
         return shortLinkMapper.selectOne(c -> c.where(ShortLinkDynamicSqlSupport.token, isEqualTo(token))
                 .and(ShortLinkDynamicSqlSupport.expiresAt, isNull(), or(
                         ShortLinkDynamicSqlSupport.expiresAt, isGreaterThan(new Date())

@@ -104,11 +104,11 @@ public class MainController {
     }
 
     @GetMapping("/s/{token}")
-    public String shortPage(@PathVariable("token") @NotBlank String token) {
-        String origPath = shortLinkService.getFullPath(token);
-        if (StringUtils.isBlank(origPath)) {
+    public String redirectByShortLink(@PathVariable("token") @NotBlank String token) {
+        String targetPath = shortLinkService.extract(token);
+        if (StringUtils.isBlank(targetPath)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return "redirect:" + origPath;
+        return "redirect:" + targetPath;
     }
 }

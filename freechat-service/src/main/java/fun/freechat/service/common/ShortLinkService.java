@@ -7,5 +7,5 @@ public interface ShortLinkService {
     default String shorten(String path) {
         return shorten(path, null);
     }
-    String getFullPath(String token);
+    String extract(String token);
 }
