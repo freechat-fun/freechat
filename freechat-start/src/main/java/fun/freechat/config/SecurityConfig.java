@@ -259,7 +259,7 @@ public class SecurityConfig {
 
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedMethods(List.of("*"));
-            configuration.setAllowedOriginPatterns(allowedOriginList);
+            configuration.setAllowedOrigins(allowedOriginList);
             configuration.setAllowCredentials(true);
             configuration.applyPermitDefaultValues();
 
