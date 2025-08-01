@@ -480,7 +480,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 Moderation moderation = moderationFuture.get();
                 if (moderation != null && moderation.flagged()) {
                     throw new ModerationException(
-                            String.format("Text \"%s\" violates content policy", moderation.flaggedText()));
+                            String.format("Text \"%s\" violates content policy", moderation.flaggedText()), moderation);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 throw new IllegalStateException(e);
