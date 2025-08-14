@@ -16,7 +16,7 @@ dependencies:
   - condition: redis.enabled
     name: redis
     repository: https://charts.bitnami.com/bitnami
-    version: 21.x
+    version: 22.x
     tags:
       - backend
       - redis
