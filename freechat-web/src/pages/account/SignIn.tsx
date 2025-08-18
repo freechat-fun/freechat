@@ -6,6 +6,7 @@ import {
   Divider,
   FormControl,
   FormLabel,
+  Link,
   Stack,
   Typography,
 } from '@mui/material';
@@ -291,7 +292,17 @@ export default function SignIn() {
                 >
                   {t("I'm a guest")}
                 </Button>
+                <Typography variant="body2"
+                  sx={{
+                    alignSelf: 'center',
+                    fontSize: '14px',
+                    color: 'gray',
+                  }}
+                >
+                  {t('Your login constitutes acceptance of the ')}<Link href="/w/privacy-policy" target="_blank">{t('Privacy Policy')}</Link>
+                </Typography>
               </form>
+              
             </Stack>
           </Box>
         </Box>
