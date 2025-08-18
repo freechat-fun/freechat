@@ -42,7 +42,7 @@ auth:
     bizAdminUri: /api/v2/biz/admin/**
     apiUri: /api/**
     privateUri: /private/**
-    publicUri: /,/undefined,/error,/w,/s/**,/public/**,/api/v2/public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico,/baidu*.html
+    publicUri: /,/undefined,/error,/w,/w/docs,/w/privacy-policy,/s/**,/public/**,/api/v2/public/**,/assets/**,/css/**,/js/**,/img/**,/logo/**,/favicon.ico,/baidu*.html
   token:
     limits: 5
     prefix: fc-
