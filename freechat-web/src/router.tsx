@@ -15,6 +15,7 @@ import CharacterEdit from './pages/character/CharacterEdit';
 import PromptTaskEdit from './pages/prompt/PromptTaskEdit';
 import PromptTaskInfo from './pages/prompt/PromptTaskInfo';
 import Chats from './pages/chat/Chats';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const sidebarRoutes = [
   {
@@ -88,6 +89,10 @@ const sidebarRoutes = [
 ];
 
 const routes = [
+  {
+    path: '/w/privacy-policy',
+    element: <PrivacyPolicy />,
+  },
   {
     path: '/*',
     element: <SidebarFrame />,
