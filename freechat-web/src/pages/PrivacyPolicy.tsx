@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { MarkdownContent } from "../components";
 
 const PRIVACY_POLICY_CONTENT = `
-<center><h4>Privacy Policy</h4></center>
+<center><h4>FreeChat Privacy Policy</h4></center>
 
 <center><span style="text-align: right; font-size: 14px; color: gray;">Last Updated: August 15, 2025</span></center>
 <br />
