@@ -338,7 +338,7 @@
         <okhttp-version>5.1.0</okhttp-version>
         <gson-version>2.13.1</gson-version>
         <commons-lang3-version>3.18.0</commons-lang3-version>
-        <jackson-databind-nullable-version>0.2.6</jackson-databind-nullable-version>
+        <jackson-databind-nullable-version>0.2.7</jackson-databind-nullable-version>
         <jakarta-annotation-version>3.0.0</jakarta-annotation-version>
         <beanvalidation-version>2.0.2</beanvalidation-version>
         <junit-version>5.13.4</junit-version>
