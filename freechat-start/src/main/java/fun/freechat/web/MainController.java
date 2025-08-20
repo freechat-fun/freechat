@@ -103,6 +103,19 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping("/privacy-policy")
+    public String privacyPolicy(HttpServletRequest request, Model model) {
+        String script = "/assets/index.js";
+        String webVersion = runtimeConfig.get(WEB_VERSION_KEY);
+
+        if (StringUtils.isNotBlank(webVersion)) {
+            script = "/assets/index-" + webVersion + ".js";
+        }
+        model.addAttribute("script", script);
+
+        return "privacy-policy";
+    }
+
     @GetMapping("/s/{token}")
     public String redirectByShortLink(@PathVariable("token") @NotBlank String token) {
         String targetPath = shortLinkService.extract(token);

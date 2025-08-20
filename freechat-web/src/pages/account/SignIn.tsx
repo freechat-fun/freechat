@@ -299,7 +299,7 @@ export default function SignIn() {
                     color: 'gray',
                   }}
                 >
-                  {t('Your login constitutes acceptance of the ')}<Link href="/w/privacy-policy" target="_blank">{t('Privacy Policy')}</Link>
+                  {t('Your login constitutes acceptance of the ')}<Link href="/privacy-policy" target="_blank">{t('Privacy Policy')}</Link>
                 </Typography>
               </form>
               

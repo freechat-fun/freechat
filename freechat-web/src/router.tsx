@@ -90,7 +90,7 @@ const sidebarRoutes = [
 
 const routes = [
   {
-    path: '/w/privacy-policy',
+    path: '/privacy-policy',
     element: <PrivacyPolicy />,
   },
   {

@@ -14,7 +14,7 @@ export default function UnauthorizedDialog() {
   const { pathname } = window.location;
 
   const normalizePathname = pathname.replace(/\/+$/, '');
-  const publicPaths = [null, '', '/w', '/w/login', '/w/docs', '/w/privacy-policy'];
+  const publicPaths = [null, '', '/w', '/w/login', '/w/docs', '/privacy-policy'];
 
   return (
     <Dialog
