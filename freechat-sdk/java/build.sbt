@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).
       "io.swagger" % "swagger-annotations" % "1.6.16",
       "com.squareup.okhttp3" % "okhttp" % "5.1.0",
       "com.squareup.okhttp3" % "logging-interceptor" % "5.1.0",
-      "com.google.code.gson" % "gson" % "2.13.1",
+      "com.google.code.gson" % "gson" % "2.13.2",
       "org.apache.commons" % "commons-lang3" % "3.18.0",
       "jakarta.ws.rs" % "jakarta.ws.rs-api" % "4.0.0",
       "org.openapitools" % "jackson-databind-nullable" % "0.2.7",
