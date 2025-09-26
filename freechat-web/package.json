@@ -29,7 +29,7 @@
     "prismjs": "^1.29.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-i18next": "^15.2.0",
+    "react-i18next": "^16.0.0",
     "react-router-dom": "^7.0.0",
     "react-transition-group": "^4.4.5"
   },
