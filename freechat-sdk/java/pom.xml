@@ -341,8 +341,8 @@
         <jackson-databind-nullable-version>0.2.7</jackson-databind-nullable-version>
         <jakarta-annotation-version>3.0.0</jakarta-annotation-version>
         <beanvalidation-version>2.0.2</beanvalidation-version>
-        <junit-version>5.13.4</junit-version>
-        <junit-platform-runner.version>1.13.4</junit-platform-runner.version>
+        <junit-version>5.14.0</junit-version>
+        <junit-platform-runner.version>1.14.0</junit-platform-runner.version>
         <jakarta.ws.rs-api-version>4.0.0</jakarta.ws.rs-api-version>
         <jsr311-api-version>1.1.1</jsr311-api-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
