@@ -162,12 +162,12 @@ auto-compaction-mode: revision
 auto-compaction-retention: '1000'
 EOF
 
-  docker-compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} up -d --wait ${SERVICE_NAMES}
+  docker compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} up -d --wait ${SERVICE_NAMES}
 elif [[ "${COMMAND}" == "stop" ]]; then
-  docker-compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} down
+  docker compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} down
 elif [[ "${COMMAND}" == "update" ]];then
-  docker-compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} pull ${PROJECT_NAME}
-  docker-compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} up -d --force-recreate --wait ${PROJECT_NAME}
+  docker compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} pull ${PROJECT_NAME}
+  docker compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} up -d --force-recreate --wait ${PROJECT_NAME}
 else
-  docker-compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} top
+  docker compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} top
 fi

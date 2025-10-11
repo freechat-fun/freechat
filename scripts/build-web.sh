@@ -47,9 +47,9 @@ if [[ "${VERBOSE}" == "1" ]];then
 fi
 
 if [[ " ${ARGS[*]} " =~ " --push " ]]; then
-  docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
+  docker compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build --push ${WEB_MODULE}
 else
-  docker-compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build ${WEB_MODULE}
+  docker compose -f ${COMPOSE_CONFIG} -p ${WEB_MODULE} build ${WEB_MODULE}
 fi
 
 rm -rf web

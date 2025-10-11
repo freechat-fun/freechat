@@ -68,9 +68,9 @@ auto-compaction-mode: revision
 auto-compaction-retention: '1000'
 EOF
 
-  docker-compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
+  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
 elif [[ " ${ARGS[*]} " =~ " --stop " ]]; then
-  docker-compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} down
+  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} down
 else
-  docker-compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} top
+  docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} top
 fi

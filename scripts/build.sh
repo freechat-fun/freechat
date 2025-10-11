@@ -79,7 +79,7 @@ EOF
   fi
 
   export DOCKER_BUILDKIT=1
-  docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build \
+  docker compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build \
     --builder multiple-platforms-builder \
     --push \
     ${PROJECT_NAME}
@@ -99,9 +99,9 @@ EOF
   fi
 
   if [[ " ${ARGS[*]} " =~ " --push " ]]; then
-    docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build --push ${PROJECT_NAME}
+    docker compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build --push ${PROJECT_NAME}
   else
-    docker-compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build ${PROJECT_NAME}
+    docker compose -f ${COMPOSE_CONFIG} -p ${PROJECT_NAME} build ${PROJECT_NAME}
   fi
 fi
 
