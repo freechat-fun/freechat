@@ -6,7 +6,7 @@ check_docker
 
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
-SERVICE_NAMES="mysql redis etcd minio milvus"
+SERVICE_NAMES="mysql redis milvus"
 SERVICES_CONFIG=local-deps.yml
 
 export MYSQL_TAG=latest
