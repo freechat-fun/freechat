@@ -18,7 +18,7 @@ OTHER_ARGS=()
 
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
-SERVICE_NAMES="mysql redis milvus ${PROJECT_NAME}"
+SERVICE_NAMES="${PROJECT_NAME}"
 
 while [ $# -gt 0 ]
 do

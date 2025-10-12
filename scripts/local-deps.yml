@@ -41,10 +41,10 @@ services:
       - ETCD_QUOTA_BACKEND_BYTES=4294967296
       - ETCD_SNAPSHOT_COUNT=50000
     ports:
-      - ${MINIO_HOST_PORT}:${MINIO_PORT}
+      - ${ETCD_HOST_PORT}:${ETCD_PORT}
     volumes:
       - ${ETCD_VOLUME}:/etcd
-    command: [ "etcd", "-advertise-client-urls=http://127.0.0.1:2379", "-listen-client-urls=http://0.0.0.0:2379", "--data-dir=/etcd" ]
+    command: [ "etcd", "-advertise-client-urls=http://127.0.0.1:${ETCD_PORT}", "-listen-client-urls=http://0.0.0.0:${ETCD_PORT}", "--data-dir=/etcd" ]
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
       interval: 30s
@@ -78,8 +78,8 @@ services:
     volumes:
       - ${MILVUS_VOLUME}:/var/lib/milvus
     environment:
-      - COMMON_STORAGETYPE=local
-      - ETCD_ENDPOINTS=etcd:2379
+      - ETCD_ENDPOINTS=etcd:${ETCD_PORT}
+      - MINIO_ADDRESS=minio:${MINIO_PORT}
     entrypoint: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
@@ -88,6 +88,9 @@ services:
       interval: 10s
       timeout: 20s
       retries: 6
+    depends_on:
+      - "etcd"
+      - "minio"
 
   tts:
     image: freechatfun/freechat-tts:${TTS_TAG}
