@@ -6,7 +6,7 @@ check_docker
 
 MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
-SERVICE_NAMES="mysql redis milvus"
+SERVICE_NAMES="mysql redis etcd minio milvus"
 SERVICES_CONFIG=local-deps.yml
 
 export MYSQL_TAG=latest
@@ -22,6 +22,20 @@ export REDIS_NAME=${PROJECT_NAME}-redis
 export REDIS_PORT=6379
 export REDIS_HOST_PORT=6379
 export REDIS_VOLUME=${PROJECT_PATH}/local-data/redis
+
+export ETCD_TAG=v3.5.16
+export ETCD_NAME=${PROJECT_NAME}-etcd
+export ETCD_VOLUME=${PROJECT_PATH}/local-data/etcd
+export ETCD_PORT=2379
+export ETCD_HOST_PORT=2379
+
+export MINIO_TAG=latest
+export MINIO_NAME=${PROJECT_NAME}-minio
+export MINIO_VOLUME=${PROJECT_PATH}/local-data/minio
+export MINIO_PORT=9000
+export MINIO_HOST_PORT=9000
+export MINIO_CONTROL_PORT=9001
+export MINIO_CONTROL_HOST_PORT=9001
 
 export MILVUS_TAG=latest
 export MILVUS_USERNAME=root
@@ -57,16 +71,6 @@ EOF
   mkdir -p ${MYSQL_VOLUME}/docker-entrypoint-initdb.d
   cp -f ${RESOURCE_PATH}/sql/schema.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-1.sql
   cp -f ${RESOURCE_PATH}/sql/data-local.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-2.sql
-
-  # config milvus
-  mkdir -p ${MILVUS_VOLUME}/configs
-  cat << EOF > ${MILVUS_VOLUME}/configs/embedEtcd.yaml
-listen-client-urls: http://0.0.0.0:2379
-advertise-client-urls: http://0.0.0.0:2379
-quota-backend-bytes: 4294967296
-auto-compaction-mode: revision
-auto-compaction-retention: '1000'
-EOF
 
   docker compose -f ${SERVICES_CONFIG} -p ${PROJECT_NAME} up --wait ${SERVICE_NAMES}
 elif [[ " ${ARGS[*]} " =~ " --stop " ]]; then
