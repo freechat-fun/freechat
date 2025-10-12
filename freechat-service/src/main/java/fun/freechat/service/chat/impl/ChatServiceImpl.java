@@ -2,12 +2,10 @@ package fun.freechat.service.chat.impl;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.SystemMessage;
-import dev.langchain4j.data.message.ToolExecutionResultMessage;
-import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.data.message.*;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.invocation.InvocationContext;
+import dev.langchain4j.invocation.InvocationParameters;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
@@ -30,13 +28,7 @@ import fun.freechat.model.CharacterInfo;
 import fun.freechat.model.ChatContext;
 import fun.freechat.model.User;
 import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.ChatContextService;
-import fun.freechat.service.chat.ChatMemoryService;
-import fun.freechat.service.chat.ChatMessageRecord;
-import fun.freechat.service.chat.ChatService;
-import fun.freechat.service.chat.ChatSession;
-import fun.freechat.service.chat.ChatSessionService;
-import fun.freechat.service.chat.LongTermChatMemoryStore;
+import fun.freechat.service.chat.*;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.service.prompt.ChatPromptContent;
 import fun.freechat.service.prompt.PromptService;
@@ -52,12 +44,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -65,15 +52,7 @@ import static dev.langchain4j.data.message.ChatMessageType.SYSTEM;
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.data.message.ToolExecutionResultMessage.toolExecutionResultMessage;
 import static fun.freechat.service.chat.ChatService.asMemoryId;
-import static fun.freechat.service.enums.ChatVar.CHARACTER_DESCRIPTION;
-import static fun.freechat.service.enums.ChatVar.CHARACTER_GREETING;
-import static fun.freechat.service.enums.ChatVar.CHARACTER_NICKNAME;
-import static fun.freechat.service.enums.ChatVar.CHAT_CONTEXT;
-import static fun.freechat.service.enums.ChatVar.CURRENT_TIME;
-import static fun.freechat.service.enums.ChatVar.INPUT;
-import static fun.freechat.service.enums.ChatVar.MESSAGE_CONTEXT;
-import static fun.freechat.service.enums.ChatVar.RELEVANT_INFORMATION;
-import static fun.freechat.service.enums.ChatVar.USER_NICKNAME;
+import static fun.freechat.service.enums.ChatVar.*;
 import static fun.freechat.service.util.PromptUtils.toSingleText;
 
 @Service
@@ -271,12 +250,22 @@ public class ChatServiceImpl implements ChatService {
         try {
             Object memoryId = asMemoryId(chatId);
             var messages = handleMessages(message, context, memoryId, session);
+            InvocationContext invocationContext = InvocationContext.builder()
+                    .invocationId(UUID.randomUUID())
+                    .interfaceName("ChatService")
+                    .methodName("streamSend")
+                    .methodArguments(List.of())
+                    .chatMemoryId(memoryId)
+                    .invocationParameters(new InvocationParameters())
+                    .timestampNow()
+                    .build();
+
             return new AiServiceTokenStream(AiServiceTokenStreamParameters.builder()
                     .messages(messages)
                     .toolSpecifications(session.getToolSpecifications())
                     .toolExecutors(session.getToolExecutors())
                     .context(session.getAiServiceContext())
-                    .memoryId(memoryId)
+                    .invocationContext(invocationContext)
                     .build());
         } catch (Exception e) {
             session.release();
@@ -383,12 +372,22 @@ public class ChatServiceImpl implements ChatService {
         Object assistantMemoryId = asMemoryId(assistantChatId);
         var messages = handleMessages(null, null, assistantChatId, assistantSession);
 
+        InvocationContext assistantInvocationContext = InvocationContext.builder()
+                .invocationId(UUID.randomUUID())
+                .interfaceName("ChatService")
+                .methodName("streamSendAssistant")
+                .methodArguments(List.of())
+                .chatMemoryId(assistantMemoryId)
+                .invocationParameters(new InvocationParameters())
+                .timestampNow()
+                .build();
+
         return new AiServiceTokenStream(AiServiceTokenStreamParameters.builder()
                 .messages(messages)
                 .toolSpecifications(assistantSession.getToolSpecifications())
                 .toolExecutors(assistantSession.getToolExecutors())
                 .context(assistantSession.getAiServiceContext())
-                .memoryId(assistantMemoryId)
+                .invocationContext(assistantInvocationContext)
                 .build());
 
     }

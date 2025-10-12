@@ -46,7 +46,7 @@ public class ChatSession {
                        RetrievalAugmentor longTermMemoryRetriever,
                        MemoryUsage memoryUsage,
                        List<Object> objectsWithTools) {
-        aiServiceContext = new AiServiceContext(ChatService.class);
+        aiServiceContext = AiServiceContext.create(ChatService.class);
         aiServiceContext.chatModel = chatModel;
         aiServiceContext.streamingChatModel = streamingChatModel;
         aiServiceContext.moderationModel = moderationModel;
