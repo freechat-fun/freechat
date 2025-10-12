@@ -32,6 +32,43 @@ services:
       timeout: 20s
       retries: 3
 
+  etcd:
+    container_name: ${ETCD_NAME}
+    image: quay.io/coreos/etcd:${ETCD_TAG}
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    ports:
+      - ${MINIO_HOST_PORT}:${MINIO_PORT}
+    volumes:
+      - ${ETCD_VOLUME}:/etcd
+    command: [ "etcd", "-advertise-client-urls=http://127.0.0.1:2379", "-listen-client-urls=http://0.0.0.0:2379", "--data-dir=/etcd" ]
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  minio:
+    container_name: ${MINIO_NAME}
+    image: minio/minio:${MINIO_TAG}
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    ports:
+      - ${MINIO_HOST_PORT}:${MINIO_PORT}
+      - ${MINIO_CONTROL_HOST_PORT}:${MINIO_CONTROL_PORT}
+    volumes:
+      - ${MINIO_VOLUME}:/minio_data
+    command: [ "minio", "server", "/minio_data", "--console-address", ":${MINIO_CONTROL_PORT}" ]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${MINIO_PORT}/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
   milvus:
     image: milvusdb/milvus:${MILVUS_TAG}
     ports:
@@ -42,9 +79,7 @@ services:
       - ${MILVUS_VOLUME}:/var/lib/milvus
     environment:
       - COMMON_STORAGETYPE=local
-      - ETCD_USE_EMBED=true
-      - ETCD_DATA_DIR=/var/lib/milvus/etcd
-      - ETCD_CONFIG_PATH=/var/lib/milvus/configs/embedEtcd.yaml
+      - ETCD_ENDPOINTS=etcd:2379
     entrypoint: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
