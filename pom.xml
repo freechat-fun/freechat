@@ -36,7 +36,7 @@
         <commons-lang3.version>3.19.0</commons-lang3.version>
         <redisson.version>3.52.0</redisson.version>
         <objenesis.version>3.4</objenesis.version>
-        <swagger-parser.version>2.1.34</swagger-parser.version>
+        <swagger-parser.version>2.1.35</swagger-parser.version>
         <langchain4j.version>1.7.1</langchain4j.version>
         <langchain4j-community.version>1.7.1-beta14</langchain4j-community.version>
 
