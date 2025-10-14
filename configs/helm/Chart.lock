@@ -4,7 +4,7 @@ dependencies:
   version: 14.0.3
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 23.1.1
+  version: 23.1.3
 - name: milvus
   repository: https://charts.bitnami.com/bitnami
   version: 16.0.1
@@ -20,5 +20,5 @@ dependencies:
 - name: kube-state-metrics
   repository: https://charts.bitnami.com/bitnami
   version: 5.1.0
-digest: sha256:0e48b598a069ca30e3508aed10bba5cef0aee6c3e600ee7623c0e486cea2b136
-generated: "2025-10-12T03:41:25.085372345Z"
+digest: sha256:21b79746f2d11b2377c6367eb49fb185789e5e1dd8e65fda326e0fd73f5f9f7a
+generated: "2025-10-14T12:12:43.688835056+08:00"

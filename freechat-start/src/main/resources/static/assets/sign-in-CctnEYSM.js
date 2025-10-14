@@ -1,0 +1,1 @@
+const n="或",o="用户",t="密码",e={"Sign up!":"注册！","Sign in":"登录","Don't have an account?":"没有账号？","Continue with Google":"使用 Google 账号","Continue with GitHub":"使用 GitHub 账号","Continue with Aliyun":"使用 Aliyun 账号",or:"或",Username:"用户",Password:"密码","Remember me":"记住我","Forgot your password?":"忘记密码？","I'm a guest":"我是游客"};export{t as Password,o as Username,e as default,n as or};

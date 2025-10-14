@@ -160,14 +160,14 @@ mysql:
     1-schema.sql: ''
     2-data.sql: ''
   metrics:
-    enabled: true
+    enabled: false
 redis:
   enabled: true
   url: redis://freechat-redis-master:6379
   replica:
     replicaCount: 0
   metrics:
-    enabled: true
+    enabled: false
     livenessProbe:
       enabled: false
     readinessProbe:
@@ -177,31 +177,31 @@ milvus:
   url: http://freechat-milvus-proxy:19530
   initJob:
     metrics:
-      enabled: true
+      enabled: false
   waitContainer:
     metrics:
-      enabled: true
+      enabled: false
   dataCoord:
     metrics:
-      enabled: true
+      enabled: false
   rootCoord:
     metrics:
-      enabled: true
+      enabled: false
   queryCoord:
     metrics:
-      enabled: true
+      enabled: false
   indexCoord:
     metrics:
-      enabled: true
+      enabled: false
   dataNode:
     metrics:
-      enabled: true
+      enabled: false
   queryNode:
     metrics:
-      enabled: true
+      enabled: false
   indexNode:
     metrics:
-      enabled: true
+      enabled: false
   milvus:
     auth:
       enabled: true
@@ -221,7 +221,7 @@ milvus:
     service:
       type: ClusterIP
     metrics:
-      enabled: true
+      enabled: false
   attu:
     service:
       type: ClusterIP
