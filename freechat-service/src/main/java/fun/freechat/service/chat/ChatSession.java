@@ -8,6 +8,8 @@ import dev.langchain4j.model.moderation.ModerationModel;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.service.AiServiceContext;
+import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
+import dev.langchain4j.service.tool.ToolExecutionErrorHandler;
 import dev.langchain4j.service.tool.ToolExecutor;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.prompt.ChatPromptContent;
@@ -91,6 +93,14 @@ public class ChatSession {
 
     public Map<String, ToolExecutor> getToolExecutors() {
         return aiServiceContext.toolService.toolExecutors();
+    }
+
+    public ToolArgumentsErrorHandler getToolArgumentsErrorHandler() {
+        return aiServiceContext.toolService.argumentsErrorHandler();
+    }
+
+    public ToolExecutionErrorHandler getToolExecutionErrorHandler() {
+        return aiServiceContext.toolService.executionErrorHandler();
     }
 
     public RetrievalAugmentor getRetriever() {

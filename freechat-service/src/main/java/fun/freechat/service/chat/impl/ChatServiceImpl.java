@@ -264,6 +264,8 @@ public class ChatServiceImpl implements ChatService {
                     .messages(messages)
                     .toolSpecifications(session.getToolSpecifications())
                     .toolExecutors(session.getToolExecutors())
+                    .toolArgumentsErrorHandler(session.getToolArgumentsErrorHandler())
+                    .toolExecutionErrorHandler(session.getToolExecutionErrorHandler())
                     .context(session.getAiServiceContext())
                     .invocationContext(invocationContext)
                     .build());
@@ -386,6 +388,8 @@ public class ChatServiceImpl implements ChatService {
                 .messages(messages)
                 .toolSpecifications(assistantSession.getToolSpecifications())
                 .toolExecutors(assistantSession.getToolExecutors())
+                .toolArgumentsErrorHandler(session.getToolArgumentsErrorHandler())
+                .toolExecutionErrorHandler(session.getToolExecutionErrorHandler())
                 .context(assistantSession.getAiServiceContext())
                 .invocationContext(assistantInvocationContext)
                 .build());
