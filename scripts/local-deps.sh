@@ -9,14 +9,14 @@ RESOURCE_PATH=${MODULE_PATH}/src/main/resources
 SERVICE_NAMES="mysql redis milvus"
 SERVICES_CONFIG=local-deps.yml
 
-export MYSQL_TAG=latest
+export MYSQL_TAG=9.4.0
 export MYSQL_PASSWORD=hello1234
 export MYSQL_NAME=${PROJECT_NAME}-mysql
 export MYSQL_PORT=3306
 export MYSQL_HOST_PORT=3306
 export MYSQL_VOLUME=${PROJECT_PATH}/local-data/mysql
 
-export REDIS_TAG=latest
+export REDIS_TAG=8.2.2
 export REDIS_PASSWORD=hello1234
 export REDIS_NAME=${PROJECT_NAME}-redis
 export REDIS_PORT=6379
@@ -29,7 +29,7 @@ export ETCD_VOLUME=${PROJECT_PATH}/local-data/etcd
 export ETCD_PORT=2379
 export ETCD_HOST_PORT=2379
 
-export MINIO_TAG=latest
+export MINIO_TAG=RELEASE.2025-09-07T16-13-09Z
 export MINIO_NAME=${PROJECT_NAME}-minio
 export MINIO_VOLUME=${PROJECT_PATH}/local-data/minio
 export MINIO_PORT=9000
@@ -37,7 +37,7 @@ export MINIO_HOST_PORT=9000
 export MINIO_CONTROL_PORT=9001
 export MINIO_CONTROL_HOST_PORT=9001
 
-export MILVUS_TAG=latest
+export MILVUS_TAG=v2.5.19
 export MILVUS_USERNAME=root
 export MILVUS_PASSWORD=hello1234
 export MILVUS_NAME=${PROJECT_NAME}-milvus

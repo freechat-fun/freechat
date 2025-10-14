@@ -38,7 +38,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "180000")
 @ActiveProfiles("local")
-@TestPropertySource(properties = "APP_HOME=${TMPDIR}")
+@TestPropertySource(properties = "APP_HOME=../local-data/test")
 @SuppressWarnings("unused")
 public class AbstractIntegrationTest {
     static GenericContainer<?> redis;
@@ -133,15 +133,15 @@ public class AbstractIntegrationTest {
     }
 
     private static DockerImageName redisImageName() {
-        return DockerImageName.parse("redis:latest");
+        return DockerImageName.parse("redis:8.2.2");
     }
 
     private static DockerImageName mysqlImageName() {
-        return DockerImageName.parse("mysql:latest");
+        return DockerImageName.parse("mysql:8.0.36");
     }
 
     private static DockerImageName milvusImageName() {
-        return DockerImageName.parse("milvusdb/milvus:latest");
+        return DockerImageName.parse("milvusdb/milvus:v2.4.20");
     }
 
     private static DockerImageName ttsImageName() {

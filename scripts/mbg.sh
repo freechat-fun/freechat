@@ -8,7 +8,7 @@ MODULE_PATH=${PROJECT_PATH}/${PROJECT_NAME}-dal
 RESOURCE_PATH=${MODULE_PATH}/src/main/resources
 
 MYSQL_DRIVER=com.mysql.cj.jdbc.Driver
-MYSQL_TAG=8.3.0
+MYSQL_TAG=9.4.0
 MYSQL_URL="jdbc:mysql://127.0.0.1:3309?useUnicode=true&characterEncoding=utf-8"
 MYSQL_USERNAME=root
 MYSQL_PASSWORD=passwordformgb
