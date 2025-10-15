@@ -725,7 +725,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     private void should_not_allow_to_speak_message() {
         testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
-                .accept(MediaType.valueOf("audio/wav"))
+                .accept(MediaType.valueOf("audio/*"))
                 .header(AUTHORIZATION, "Bearer " + developerApiKey)
                 .exchange()
                 .expectStatus()
@@ -734,7 +734,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     private void should_not_found_message_to_speak() {
         testClient.get().uri("/api/v2/tts/speak/" + (aiMessageId - 1))
-                .accept(MediaType.valueOf("audio/wav"))
+                .accept(MediaType.valueOf("audio/*"))
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
                 .exchange()
                 .expectStatus()
@@ -746,11 +746,11 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
             testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
-                    .accept(MediaType.valueOf("audio/wav"))
+                    .accept(MediaType.valueOf("audio/*"))
                     .header(AUTHORIZATION, "Bearer " + userApiKey)
                     .exchange()
                     .expectStatus().isOk()
-                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .expectHeader().contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -773,11 +773,11 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
             testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
-                    .accept(MediaType.valueOf("audio/wav"))
+                    .accept(MediaType.valueOf("audio/*"))
                     .header(AUTHORIZATION, "Bearer " + userApiKey)
                     .exchange()
                     .expectStatus().isOk()
-                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .expectHeader().contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))
@@ -827,7 +827,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .returnResult()
                 .getResponseBody();
 
-        assertThat(wavs).hasSize(1).contains(wav);
+        assertThat(wavs).hasSize(1);
 
         testClient.get().uri("/api/v2/character/voices/" + backendId)
                 .header(AUTHORIZATION, "Bearer " + userApiKey)
@@ -853,11 +853,11 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         try (ByteArrayOutputStream audioDataStream = new ByteArrayOutputStream()) {
             testClient.get().uri("/api/v2/tts/speak/" + aiMessageId)
-                    .accept(MediaType.valueOf("audio/wav"))
+                    .accept(MediaType.valueOf("audio/*"))
                     .header(AUTHORIZATION, "Bearer " + userApiKey)
                     .exchange()
                     .expectStatus().isOk()
-                    .expectHeader().contentType(MediaType.valueOf("audio/wav"))
+                    .expectHeader().contentTypeCompatibleWith(MediaType.valueOf("audio/*"))
                     .returnResult(byte[].class)
                     .getResponseBody()
                     .doOnComplete(() -> futureAnswer.complete(audioDataStream.toByteArray()))

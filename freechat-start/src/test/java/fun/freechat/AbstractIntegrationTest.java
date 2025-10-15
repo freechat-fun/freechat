@@ -69,6 +69,8 @@ public class AbstractIntegrationTest {
 
         tts = new GenericContainer<>(ttsImageName())
                 .withExposedPorts(5002)
+                .withEnv("DATA_HOME", "/var/lib/tts")
+                .withEnv("PYTHONPATH", "/root")
                 .waitingFor(Wait.forHttp("/ping"))
                 .withStartupTimeout(Duration.ofMinutes(3));
 
