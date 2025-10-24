@@ -369,7 +369,7 @@ public class ChatApi {
             }
             try {
                 LlmResultDTO result = LlmResultDTO.from(
-                        partialResult, null, null, null);
+                        partialResult, ChatMessageDTO.fromPartialResult(partialResult), null, null);
                 result.setRequestId(null);
                 sseEmitter.send(result);
             } catch (IllegalStateException | NullPointerException | IOException e) {
@@ -435,6 +435,49 @@ public class ChatApi {
                 TraceUtils.getPerfLogger().trace(traceInfo);
             } finally {
                 session.release();
+            }
+        }).onPartialThinking(partialThinking -> {
+            if (!session.isProcessing()) {
+                return;
+            }
+
+            if (!firstPackageReceived.get()) {
+                TraceUtils.putTraceAttribute("traceId", traceId);
+                TraceUtils.putTraceAttribute("username", username);
+                long firstPackageReceivedTime = System.currentTimeMillis();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{characterName, characterUid})
+                        .elapseTime(firstPackageReceivedTime - startTime.get())
+                        .method("ChatApi::firstPackageReceived")
+                        .response(partialThinking.text())
+                        .status(TraceUtils.TraceStatus.SUCCESSFUL)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
+                firstPackageReceived.set(true);
+            }
+            try {
+                LlmResultDTO result = LlmResultDTO.from(
+                        partialThinking.text(), ChatMessageDTO.fromPartialThinking(partialThinking), null, null);
+                result.setRequestId(null);
+                sseEmitter.send(result);
+            } catch (IllegalStateException | NullPointerException | IOException e) {
+                log.warn("Error when sending message.", e);
+                session.release();
+                sseEmitter.completeWithError(e);
+                long lastPackageReceivedTime = System.currentTimeMillis();
+                String traceInfo = new TraceUtils.TraceInfoBuilder()
+                        .args(new String[]{characterName, characterUid})
+                        .elapseTime(lastPackageReceivedTime - startTime.get())
+                        .method("ChatApi::lastPackageReceived")
+                        .response(partialThinking.text())
+                        .throwable(e)
+                        .status(TraceUtils.TraceStatus.BAD_REQUEST)
+                        .traceId(traceId)
+                        .username(username)
+                        .build();
+                TraceUtils.getPerfLogger().trace(traceInfo);
             }
         }).onError(ex -> {
             if (!session.isProcessing()) {

@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
@@ -219,7 +220,7 @@ class OpenAiRagIT extends AbstractIntegrationTest {
         String backend1 = TestCharacterUtils.createCharacterBackend(characterUid, promptTaskId);
         String chatId1 = TestChatUtils.createChat(userId, backend1);
 
-        ChatContentDTO content = ChatContentDTO.fromText(question);
+        ChatContentDTO content = ChatContentDTO.from(TEXT, question);
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")

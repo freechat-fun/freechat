@@ -27,6 +27,8 @@ import {
 import { processBackground } from '../../libs/ui_utils';
 import { getMessageText } from '../../libs/template_utils';
 
+const ENABLE_BACKGROUND_KEY = 'MessagesPane.enableBackground';
+
 type MessagesPaneProps = {
   session?: ChatSessionDTO;
   defaultDebugMode?: boolean;
@@ -59,7 +61,7 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const [debugMode, setDebugMode] = useState(defaultDebugMode);
   const [background, setBackground] = useState('');
-  const [enableBackground, setEnableBackground] = useState(true);
+  const [enableBackground, setEnableBackground] = useState(localStorage.getItem(ENABLE_BACKGROUND_KEY) === '1');
 
   const proactiveChatHandler = useRef<number | null>(null);
 
@@ -68,8 +70,6 @@ export default function MessagesPane(props: MessagesPaneProps) {
   const avatarWithStatus = (
     <AvatarWithStatus status={getSenderStatus(session)} src={sender?.avatar} />
   );
-
-  const ENABLE_BACKGROUND_KEY = 'MessagesPane.enableBackground';
 
   const errorMessageRecord = useCallback(
     (message?: string) => {

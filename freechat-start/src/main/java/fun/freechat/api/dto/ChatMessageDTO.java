@@ -7,6 +7,7 @@ import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.internal.ValidationUtils;
+import dev.langchain4j.model.chat.response.PartialThinking;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
@@ -37,12 +38,14 @@ public class ChatMessageDTO {
     @Schema(description = "Chat role: system | assistant | user | tool_call | tool_result")
     @Pattern(regexp = "system|assistant|user|tool_call|tool_result")
     private String role;
-    @Schema(description = "user: Name of the user role; tool_call: Name of the called tool")
+    @Schema(description = "user: name of the user role; tool_call: name of the called tool")
     private String name;
-    @Schema(description = "default: Dialogue content; tool_result: tool call result, serialized as json")
+    @Schema(description = "default: dialogue content; tool_result: tool call result, serialized as json")
     private List<ChatContentDTO> contents;
     @Schema(description = "Tool calls information during the conversation")
     private List<ChatToolCallDTO> toolCalls;
+    @Schema(description = "Thinking information")
+    private String thinking;
     @Schema(description = "Contextual information in this round of conversation (the external RAG result can be passed in through this parameter)")
     private String context;
     @Schema(description = "Message identifier")
@@ -61,13 +64,16 @@ public class ChatMessageDTO {
         switch (message.type()) {
             case SYSTEM -> {
                 builder.role(SYSTEM.text());
-                builder.contents(List.of(ChatContentDTO.fromText(((SystemMessage) message).text())));
+                builder.contents(List.of(ChatContentDTO.from(TEXT, ((SystemMessage) message).text())));
             }
             case AI -> {
                 AiMessage aiMessage = (AiMessage) message;
                 if (StringUtils.isNotBlank(aiMessage.text())) {
-                    builder.contents(List.of(ChatContentDTO.fromText(aiMessage.text())));
+                    builder.contents(List.of(ChatContentDTO.from(TEXT, aiMessage.text())));
                 }
+
+                builder.thinking(aiMessage.thinking());
+
                 if (!aiMessage.hasToolExecutionRequests()) {
                     builder.role(ASSISTANT.text());
                 } else {
@@ -95,17 +101,25 @@ public class ChatMessageDTO {
                         .build();
                 builder.role(FUNCTION_RESULT.text());
                 builder.name((resultMessage).toolName());
-                builder.contents(List.of(ChatContentDTO.fromText(resultMessage.text())));
+                builder.contents(List.of(ChatContentDTO.from(TEXT, resultMessage.text())));
                 builder.toolCalls(List.of(toolCall));
             }
         }
         return builder.build();
     }
 
+    public static ChatMessageDTO fromPartialResult(String partialResult) {
+        return from(AiMessage.from(partialResult), null);
+    }
+
+    public static ChatMessageDTO fromPartialThinking(PartialThinking partialThinking) {
+        return from(AiMessage.builder().thinking(partialThinking.text()).build(), null);
+    }
+
     public ChatMessage toChatMessage() {
         return switch (PromptRole.of(getRole())) {
             case SYSTEM -> SystemMessage.from(getContentText());
-            case ASSISTANT -> AiMessage.from(getContentText());
+            case ASSISTANT -> AiMessage.builder().text(getContentText()).thinking(getThinking()).build();
             case USER -> {
                 List<Content> messageContents = getContents().stream()
                         .map(ChatContentDTO::toContent)

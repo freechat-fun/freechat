@@ -52,7 +52,7 @@ export default function TemplateContent(props: {
                   message.role ||
                   'user'
                 ).toUpperCase();
-                const content = getMessageText(message) || '';
+                const content = getMessageText(message) ?? '';
 
                 return (
                   <Fragment key={`message-${index}`}>

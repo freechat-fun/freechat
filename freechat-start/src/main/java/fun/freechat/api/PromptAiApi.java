@@ -2,14 +2,10 @@ package fun.freechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.PartialThinking;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.output.FinishReason;
-import fun.freechat.api.dto.AiModelInfoDTO;
-import fun.freechat.api.dto.ChatPromptContentDTO;
-import fun.freechat.api.dto.LlmResultDTO;
-import fun.freechat.api.dto.PromptAiParamDTO;
-import fun.freechat.api.dto.PromptRefDTO;
-import fun.freechat.api.dto.PromptTemplateDTO;
+import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
 import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.User;
@@ -157,7 +153,28 @@ public class PromptAiApi {
                         }
                         try {
                             LlmResultDTO result = LlmResultDTO.from(
-                                    partialResult, null, null, null);
+                                    partialResult,
+                                    ChatMessageDTO.fromPartialResult(partialResult),
+                                    null, null);
+                            result.setRequestId(null);
+                            sseEmitter.send(result);
+                        } catch (NullPointerException | IOException e) {
+                            log.error("Error when sending message.", e);
+                            sseEmitter.completeWithError(e);
+                            abort = true;
+                        }
+                    }
+
+                    @Override
+                    public void onPartialThinking(PartialThinking partialThinking) {
+                        if (abort) {
+                            return;
+                        }
+                        try {
+                            LlmResultDTO result = LlmResultDTO.from(
+                                    partialThinking.text(),
+                                    ChatMessageDTO.fromPartialThinking(partialThinking),
+                                    null, null);
                             result.setRequestId(null);
                             sseEmitter.send(result);
                         } catch (NullPointerException | IOException e) {

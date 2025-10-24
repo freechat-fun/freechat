@@ -110,7 +110,8 @@ export function getSenderName(sender?: CharacterSummaryDTO): string {
 export function getSenderReply(
   message: string,
   debugMode: boolean,
-  noLinks: boolean = false
+  noLinks: boolean = false,
+  thinking: string | undefined = undefined
 ): string {
   const preHandleMessage = (message: string) => {
     if (message.startsWith('<think>') && message.search('</think>') === -1) {
@@ -118,22 +119,27 @@ export function getSenderReply(
       return '';
     }
 
-    const matches = message.match(/<think\b[^>]*>([\s\S]*?)<\/think>/gi);
     let preProcessedMessage = message;
-
-    if (matches) {
-      matches.forEach((match) => {
-        const content = match
-          .replace(/<think\b[^>]*>([\s\S]*?)<\/think>/i, '$1')
-          .trim();
-        const processedContent = debugMode
-          ? `> ${content.replace(/\n\n/g, '\n\n> ')}` + '\n\n'
-          : '';
-        preProcessedMessage = preProcessedMessage.replace(
-          match,
-          processedContent
-        );
-      });
+    if (thinking) {
+      if (debugMode) {
+        preProcessedMessage = `> ${thinking.replace(/\n\n/g, '\n>\n> ')}` + '\n\n' + message;
+      }
+    } else {
+      const matches = message.match(/<think\b[^>]*>([\s\S]*?)<\/think>/gi);
+      if (matches) {
+        matches.forEach((match) => {
+          const content = match
+            .replace(/<think\b[^>]*>([\s\S]*?)<\/think>/i, '$1')
+            .trim();
+          const processedContent = debugMode
+            ? `> ${content.replace(/\n\n/g, '\n>\n> ')}` + '\n\n'
+            : '';
+          preProcessedMessage = preProcessedMessage.replace(
+            match,
+            processedContent
+          );
+        });
+      }
     }
 
     return preProcessedMessage;

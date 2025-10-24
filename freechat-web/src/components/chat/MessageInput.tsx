@@ -99,7 +99,7 @@ export default function MessageInput(props: MessageInputProps) {
           onmessage(event) {
             const result = JSON.parse(event.data) as LlmResultDTO;
             if (result.finishReason) {
-              const fullMessage = getMessageText(result.message);
+              const fullMessage = getMessageText(result.message) ?? '';
               if (fullMessage) {
                 setTextAreaValue(fullMessage);
               }

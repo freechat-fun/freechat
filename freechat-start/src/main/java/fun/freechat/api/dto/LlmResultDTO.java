@@ -9,6 +9,8 @@ import lombok.*;
 
 import java.util.List;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
+
 @Schema(description = "Prompt service result")
 @Data
 @NoArgsConstructor
@@ -49,12 +51,13 @@ public class LlmResultDTO extends TraceableDTO {
         switch (content) {
             case String textMessage -> {
                 text = textMessage;
-                messageBuilder.contents(List.of(ChatContentDTO.fromText(text)));
+                messageBuilder.contents(List.of(ChatContentDTO.from(TEXT, text)));
                 messageBuilder.role(PromptRole.ASSISTANT.text());
             }
             case AiMessage aiMessage -> {
                 text = aiMessage.text();
-                messageBuilder.contents(List.of(ChatContentDTO.fromText(text)));
+                messageBuilder.contents(List.of(ChatContentDTO.from(TEXT, text)));
+                messageBuilder.thinking(aiMessage.thinking());
                 if (aiMessage.hasToolExecutionRequests()) {
                     messageBuilder.toolCalls(aiMessage.toolExecutionRequests().stream()
                             .map(request -> ChatToolCallDTO.builder()
@@ -71,13 +74,12 @@ public class LlmResultDTO extends TraceableDTO {
             }
             default -> {
                 text = content.toString();
-                messageBuilder.contents(List.of(ChatContentDTO.fromText(text)));
+                messageBuilder.contents(List.of(ChatContentDTO.from(TEXT, text)));
                 messageBuilder.role(PromptRole.ASSISTANT.text());
             }
         }
 
-        String finishReason = response.finishReason() != null ?
-                response.finishReason().name().toLowerCase() : null;
+        String finishReason = response.finishReason() != null ? response.finishReason().name().toLowerCase() : null;
 
         return LlmResultDTO.from(
                 text,

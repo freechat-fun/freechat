@@ -270,7 +270,7 @@ export function generateExample(
     );
   const model = modelId as string;
   const parameters = objectToMarkdownTable(modelParameters, 'Parameters');
-  const output = getMessageText(response.message) ?? response.text;
+  const output = getMessageText(response.message) ?? response.text ?? '';
 
   const markdownContext = {
     variables: variables,

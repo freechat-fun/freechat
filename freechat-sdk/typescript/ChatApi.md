@@ -754,7 +754,7 @@ const request: ChatApiSendMessageRequest = {
     name: "name_example",
     contents: [
       {
-        type: "image",
+        type: "video",
         content: "content_example",
       },
     ],
@@ -765,6 +765,7 @@ const request: ChatApiSendMessageRequest = {
         arguments: "arguments_example",
       },
     ],
+    thinking: "thinking_example",
     context: "context_example",
     messageId: 1,
   },
@@ -947,7 +948,7 @@ const request: ChatApiStreamSendMessageRequest = {
     name: "name_example",
     contents: [
       {
-        type: "image",
+        type: "video",
         content: "content_example",
       },
     ],
@@ -958,6 +959,7 @@ const request: ChatApiStreamSendMessageRequest = {
         arguments: "arguments_example",
       },
     ],
+    thinking: "thinking_example",
     context: "context_example",
     messageId: 1,
   },
