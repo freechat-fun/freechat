@@ -60,6 +60,14 @@ export default function DashScopeSettings(props: {
       : defaultModels.dash_scope
   );
 
+  const [enableThinking, setEnableThinking] = useState<boolean>(
+    defaultParameters?.enableThinking ?? false
+  );
+
+  const [enableSearch, setEnableSearch] = useState<boolean>(
+    defaultParameters?.enableSearch ?? false
+  );
+
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
   const [enableTopP, setEnableTopP] = useState(
     containsKey(defaultParameters, 'topP')
@@ -75,10 +83,6 @@ export default function DashScopeSettings(props: {
   );
   const [enableMaxTokens, setEnableMaxTokens] = useState(
     containsKey(defaultParameters, 'maxTokens')
-  );
-
-  const [enableSearch, setEnableSearch] = useState<boolean>(
-    defaultParameters?.enableSearch ?? false
   );
 
   const [seed, setSeed] = useState<number>(defaultParameters?.seed ?? 1234);
@@ -118,6 +122,10 @@ export default function DashScopeSettings(props: {
         : defaultModels.dash_scope
     );
 
+    setEnableThinking(defaultParameters?.enableThinking ?? false);
+
+    setEnableSearch(defaultParameters?.enableSearch ?? false);
+
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));
 
@@ -126,8 +134,6 @@ export default function DashScopeSettings(props: {
 
     setMaxTokens(defaultParameters?.maxTokens ?? 2000);
     setEnableMaxTokens(containsKey(defaultParameters, 'maxTokens'));
-
-    setEnableSearch(defaultParameters?.enableSearch ?? false);
 
     setSeed(defaultParameters?.seed ?? 1234);
     setEnableSeed(containsKey(defaultParameters, 'seed'));
@@ -172,6 +178,10 @@ export default function DashScopeSettings(props: {
       parameters['modelId'] = model;
     }
 
+    parameters['enableThinking'] = enableThinking;
+    
+    parameters['enableSearch'] = enableSearch;
+
     if (enableTopP) {
       parameters['topP'] = topP;
     }
@@ -183,8 +193,6 @@ export default function DashScopeSettings(props: {
     if (enableMaxTokens) {
       parameters['maxTokens'] = maxTokens;
     }
-
-    parameters['enableSearch'] = enableSearch;
 
     if (enableSeed) {
       parameters['seed'] = seed;
@@ -257,6 +265,46 @@ export default function DashScopeSettings(props: {
                 )
               }
             />
+          </DynamicFlexBox>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <DynamicFlexBox>
+            <Typography>enableThinking</Typography>
+            <OptionTooltip
+              title={t('Whether to generate thinking content.')}
+            >
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
+            </OptionTooltip>
+            <Box sx={{ ml: 'auto' }}>
+              <Switch
+                checked={enableThinking}
+                onChange={() => setEnableThinking(!enableThinking)}
+              />
+            </Box>
+          </DynamicFlexBox>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <DynamicFlexBox>
+            <Typography>enableSearch</Typography>
+            <OptionTooltip
+              title={t('Whether to use a search engine for data enhancement.')}
+            >
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
+            </OptionTooltip>
+            <Box sx={{ ml: 'auto' }}>
+              <Switch
+                checked={enableSearch}
+                onChange={() => setEnableSearch(!enableSearch)}
+              />
+            </Box>
           </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />
@@ -383,26 +431,6 @@ export default function DashScopeSettings(props: {
               <Switch
                 checked={enableMaxTokens}
                 onChange={() => setEnableMaxTokens(!enableMaxTokens)}
-              />
-            </Box>
-          </DynamicFlexBox>
-        </OptionCard>
-        <Divider sx={{ mt: 'auto', mx: 2 }} />
-
-        <OptionCard>
-          <DynamicFlexBox>
-            <Typography>enableSearch</Typography>
-            <OptionTooltip
-              title={t('Whether to use a search engine for data enhancement.')}
-            >
-              <IconButton size="small">
-                <HelpIcon />
-              </IconButton>
-            </OptionTooltip>
-            <Box sx={{ ml: 'auto' }}>
-              <Switch
-                checked={enableSearch}
-                onChange={() => setEnableSearch(!enableSearch)}
               />
             </Box>
           </DynamicFlexBox>

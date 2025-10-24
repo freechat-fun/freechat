@@ -59,6 +59,10 @@ export default function OpenAiSettings(props: {
       : defaultModels.open_ai
   );
 
+  const [think, setThink] = useState<boolean>(
+    defaultParameters?.reasoningEffort ?? false
+  );
+
   const [topP, setTopP] = useState<number>(defaultParameters?.topP ?? 0.8);
   const [enableTopP, setEnableTopP] = useState(
     containsKey(defaultParameters, 'topP')
@@ -117,6 +121,8 @@ export default function OpenAiSettings(props: {
         : defaultModels.open_ai
     );
 
+    setThink(defaultParameters?.reasoningEffort ?? false);
+
     setTopP(defaultParameters?.topP ?? 0.8);
     setEnableTopP(containsKey(defaultParameters, 'topP'));
 
@@ -169,6 +175,10 @@ export default function OpenAiSettings(props: {
 
     if (model) {
       parameters['modelId'] = model;
+    }
+
+    if (think) {
+      parameters['reasoningEffort'] = 'minimal';
     }
 
     if (enableTopP) {
@@ -254,6 +264,26 @@ export default function OpenAiSettings(props: {
                 )
               }
             />
+          </DynamicFlexBox>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <DynamicFlexBox>
+            <Typography>think</Typography>
+            <OptionTooltip
+              title={t('Whether to generate thinking content.')}
+            >
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
+            </OptionTooltip>
+            <Box sx={{ ml: 'auto' }}>
+              <Switch
+                checked={think}
+                onChange={() => setThink(!think)}
+              />
+            </Box>
           </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />

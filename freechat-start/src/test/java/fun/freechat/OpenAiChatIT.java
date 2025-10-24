@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
@@ -339,7 +340,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_send_message() throws ExecutionException, InterruptedException, TimeoutException {
-        ChatContentDTO content = ChatContentDTO.fromText("My wife's name is Lily! Did you married? If you had a wife, what's her name?");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "My wife's name is Lily! Did you married? If you had a wife, what's her name?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -412,7 +413,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_failed_to_send_message_by_quota() {
-        ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Sorry, I forgot your name. what's it?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -447,7 +448,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
                 .expectBody(Boolean.class)
                 .isEqualTo(Boolean.TRUE);
 
-        ChatContentDTO content = ChatContentDTO.fromText("Sorry, I forgot your name. what's it?");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Sorry, I forgot your name. what's it?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -473,7 +474,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_send_message_without_long_term_memory() {
-        ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Do you remember my wife's name?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -502,7 +503,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
     }
 
     private void should_send_message_without_long_term_memory_in_streaming_mode() throws ExecutionException, InterruptedException, TimeoutException {
-        ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Do you remember my wife's name?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -543,7 +544,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
     private void should_send_message_with_long_term_memory_in_streaming_mode() throws Exception {
 
-        ChatContentDTO content = ChatContentDTO.fromText("Do you remember my wife's name?");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Do you remember my wife's name?");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -597,7 +598,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
         assertNotNull(url);
         pictureKey = getKeyFromUrl(url);
 
-        ChatContentDTO content = ChatContentDTO.fromText("Please show me your picture.");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture.");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")
@@ -649,7 +650,7 @@ class OpenAiChatIT extends AbstractIntegrationTest {
 
         assertTrue(BooleanUtils.isTrue(success));
 
-        ChatContentDTO content = ChatContentDTO.fromText("Please show me your picture again.");
+        ChatContentDTO content = ChatContentDTO.from(TEXT, "Please show me your picture again.");
 
         ChatMessageDTO dto = ChatMessageDTO.builder()
                 .role("user")

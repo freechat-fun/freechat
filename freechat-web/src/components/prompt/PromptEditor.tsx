@@ -370,7 +370,7 @@ export default function PromptEditor({
       setDefaultVariables(undefined);
     }
 
-    setDefaultOutputText(getMessageText(response?.message) ?? response?.text);
+    setDefaultOutputText(getMessageText(response?.message) ?? ''); 
   }
 
   function handlePlayFailure(

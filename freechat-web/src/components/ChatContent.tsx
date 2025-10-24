@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useErrorMessageBusContext } from '../contexts';
@@ -41,13 +41,16 @@ export default function ChatContent({
   const [usage, setUsage] = useState<TokenUsageDTO>();
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    const hasBody = body !== undefined;
-    const controller = new AbortController();
+  const acRef = useRef<AbortController | null>(null);
 
-    if (disabled || !url) {
+  useEffect(() => {
+    if (disabled || !url || acRef.current) {
       return;
     }
+    const hasBody = body !== undefined;
+    let fullThinking = '';
+    let fullText = '';
+    acRef.current = new AbortController();
 
     const startListening = async () => {
       try {
@@ -57,7 +60,7 @@ export default function ChatContent({
             'Content-Type': hasBody ? 'application/json' : 'text/event-stream',
           },
           body: body,
-          signal: controller.signal,
+          signal: acRef.current?.signal,
           async onopen(response) {
             setUsage(undefined);
             setCopied(false);
@@ -78,20 +81,34 @@ export default function ChatContent({
           },
           onmessage(event) {
             const result = JSON.parse(event.data) as LlmResultDTO;
+              
             if (result.finishReason) {
-              const fullMessage = getMessageText(result.message);
-              if (fullMessage) {
-                setData(fullMessage);
-              }
               setUsage(result.tokenUsage);
               onFinish?.(result);
-            } else if (result.text) {
-              if (onMessage === undefined || onMessage(result)) {
-                setData((currentData) => currentData + result.text);
+            } else {
+              const thinkingChunk = result.message?.thinking;
+              const textChunk = getMessageText(result.message) ?? '';
+
+              if (thinkingChunk) {
+                fullThinking = fullThinking + thinkingChunk;
+              }
+
+              if (textChunk) {
+                fullText = fullText + textChunk;
+              }
+
+              const fullMessage = getSenderReply(fullText, debugMode, false, fullThinking);
+              if (thinkingChunk || textChunk) {
+                if (onMessage === undefined || onMessage(result)) {
+                  setData(fullMessage);
+                }
+              } else if (result.text) {
+                setData(result.text);
               }
             }
           },
           onerror(error) {
+            console.error('The connection has an error...');
             if (onError) {
               onError(error);
             } else {
@@ -104,6 +121,7 @@ export default function ChatContent({
           },
         });
       } catch (error) {
+        console.error('The connection has an error...');
         if (onError) {
           onError(error);
         } else {
@@ -114,14 +132,15 @@ export default function ChatContent({
 
     startListening();
     return () => {
-      controller.abort();
+      acRef.current?.abort();
+      acRef.current = null;
     };
   }, [url, body, onFinish, onMessage, onError, handleError, disabled, t]);
 
   return (
     <Fragment>
       <MarkdownContent sx={sx}>
-        {getSenderReply(data, debugMode)}
+        {data}
       </MarkdownContent>
       {debugMode && usage && (
         <Fragment>

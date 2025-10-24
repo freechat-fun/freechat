@@ -59,6 +59,10 @@ export default function OllamaSettings(props: {
       : defaultModels.ollama
   );
 
+  const [think, setThink] = useState<boolean>(
+    defaultParameters?.think ?? false
+  );
+
   const [temperature, setTemperature] = useState<number>(
     defaultParameters?.temperature ?? 0.8
   );
@@ -122,6 +126,8 @@ export default function OllamaSettings(props: {
         : defaultModels.ollama
     );
 
+    setThink(defaultParameters?.think ?? false);
+
     setTemperature(defaultParameters?.temperature ?? 0.8);
     setEnableTemperature(containsKey(defaultParameters, 'temperature'));
 
@@ -174,6 +180,8 @@ export default function OllamaSettings(props: {
     if (model) {
       parameters['modelId'] = model;
     }
+
+    parameters['think'] = think;
 
     if (enableTemperature) {
       parameters['temperature'] = temperature;
@@ -261,6 +269,26 @@ export default function OllamaSettings(props: {
                 setModel(toModelInfo('ollama', event.target.value, 'text2chat'))
               }
             />
+          </DynamicFlexBox>
+        </OptionCard>
+        <Divider sx={{ mt: 'auto', mx: 2 }} />
+
+        <OptionCard>
+          <DynamicFlexBox>
+            <Typography>think</Typography>
+            <OptionTooltip
+              title={t('Whether to generate thinking content.')}
+            >
+              <IconButton size="small">
+                <HelpIcon />
+              </IconButton>
+            </OptionTooltip>
+            <Box sx={{ ml: 'auto' }}>
+              <Switch
+                checked={think}
+                onChange={() => setThink(!think)}
+              />
+            </Box>
           </DynamicFlexBox>
         </OptionCard>
         <Divider sx={{ mt: 'auto', mx: 2 }} />

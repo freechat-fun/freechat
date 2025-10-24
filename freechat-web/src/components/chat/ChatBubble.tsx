@@ -259,7 +259,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                       : theme.palette.text.primary,
                   })}
                 >
-                  {getSenderReply(content.content, debugMode)}
+                  {getSenderReply(content.content, debugMode, false, message?.thinking)}
                 </MarkdownContent>
               )}
               {!isSent && !apiPath && (
@@ -281,7 +281,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
                           if (content.content) {
                             navigator?.clipboard
                               ?.writeText(
-                                getSenderReply(content.content, debugMode)
+                                getSenderReply(content.content, debugMode, false, message?.thinking)
                               )
                               .then(() => {
                                 setCopied(true);

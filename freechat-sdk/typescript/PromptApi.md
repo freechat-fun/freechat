@@ -116,7 +116,7 @@ const request: PromptApiApplyPromptTemplateRequest = {
         name: "name_example",
         contents: [
           {
-            type: "image",
+            type: "video",
             content: "content_example",
           },
         ],
@@ -127,6 +127,7 @@ const request: PromptApiApplyPromptTemplateRequest = {
             arguments: "arguments_example",
           },
         ],
+        thinking: "thinking_example",
         context: "context_example",
         messageId: 1,
       },
@@ -136,7 +137,7 @@ const request: PromptApiApplyPromptTemplateRequest = {
           name: "name_example",
           contents: [
             {
-              type: "image",
+              type: "video",
               content: "content_example",
             },
           ],
@@ -147,6 +148,7 @@ const request: PromptApiApplyPromptTemplateRequest = {
               arguments: "arguments_example",
             },
           ],
+          thinking: "thinking_example",
           context: "context_example",
           messageId: 1,
         },
@@ -634,7 +636,7 @@ const request: PromptApiCreatePromptRequest = {
         name: "name_example",
         contents: [
           {
-            type: "image",
+            type: "video",
             content: "content_example",
           },
         ],
@@ -645,6 +647,7 @@ const request: PromptApiCreatePromptRequest = {
             arguments: "arguments_example",
           },
         ],
+        thinking: "thinking_example",
         context: "context_example",
         messageId: 1,
       },
@@ -654,7 +657,7 @@ const request: PromptApiCreatePromptRequest = {
           name: "name_example",
           contents: [
             {
-              type: "image",
+              type: "video",
               content: "content_example",
             },
           ],
@@ -665,6 +668,7 @@ const request: PromptApiCreatePromptRequest = {
               arguments: "arguments_example",
             },
           ],
+          thinking: "thinking_example",
           context: "context_example",
           messageId: 1,
         },
@@ -749,7 +753,7 @@ const request: PromptApiCreatePromptsRequest = {
           name: "name_example",
           contents: [
             {
-              type: "image",
+              type: "video",
               content: "content_example",
             },
           ],
@@ -760,6 +764,7 @@ const request: PromptApiCreatePromptsRequest = {
               arguments: "arguments_example",
             },
           ],
+          thinking: "thinking_example",
           context: "context_example",
           messageId: 1,
         },
@@ -769,7 +774,7 @@ const request: PromptApiCreatePromptsRequest = {
             name: "name_example",
             contents: [
               {
-                type: "image",
+                type: "video",
                 content: "content_example",
               },
             ],
@@ -780,6 +785,7 @@ const request: PromptApiCreatePromptsRequest = {
                 arguments: "arguments_example",
               },
             ],
+            thinking: "thinking_example",
             context: "context_example",
             messageId: 1,
           },
@@ -1569,7 +1575,7 @@ const request: PromptApiSendPromptRequest = {
           name: "name_example",
           contents: [
             {
-              type: "image",
+              type: "video",
               content: "content_example",
             },
           ],
@@ -1580,6 +1586,7 @@ const request: PromptApiSendPromptRequest = {
               arguments: "arguments_example",
             },
           ],
+          thinking: "thinking_example",
           context: "context_example",
           messageId: 1,
         },
@@ -1589,7 +1596,7 @@ const request: PromptApiSendPromptRequest = {
             name: "name_example",
             contents: [
               {
-                type: "image",
+                type: "video",
                 content: "content_example",
               },
             ],
@@ -1600,6 +1607,7 @@ const request: PromptApiSendPromptRequest = {
                 arguments: "arguments_example",
               },
             ],
+            thinking: "thinking_example",
             context: "context_example",
             messageId: 1,
           },
@@ -1684,7 +1692,7 @@ const request: PromptApiStreamSendPromptRequest = {
           name: "name_example",
           contents: [
             {
-              type: "image",
+              type: "video",
               content: "content_example",
             },
           ],
@@ -1695,6 +1703,7 @@ const request: PromptApiStreamSendPromptRequest = {
               arguments: "arguments_example",
             },
           ],
+          thinking: "thinking_example",
           context: "context_example",
           messageId: 1,
         },
@@ -1704,7 +1713,7 @@ const request: PromptApiStreamSendPromptRequest = {
             name: "name_example",
             contents: [
               {
-                type: "image",
+                type: "video",
                 content: "content_example",
               },
             ],
@@ -1715,6 +1724,7 @@ const request: PromptApiStreamSendPromptRequest = {
                 arguments: "arguments_example",
               },
             ],
+            thinking: "thinking_example",
             context: "context_example",
             messageId: 1,
           },
@@ -1803,7 +1813,7 @@ const request: PromptApiUpdatePromptRequest = {
         name: "name_example",
         contents: [
           {
-            type: "image",
+            type: "video",
             content: "content_example",
           },
         ],
@@ -1814,6 +1824,7 @@ const request: PromptApiUpdatePromptRequest = {
             arguments: "arguments_example",
           },
         ],
+        thinking: "thinking_example",
         context: "context_example",
         messageId: 1,
       },
@@ -1823,7 +1834,7 @@ const request: PromptApiUpdatePromptRequest = {
           name: "name_example",
           contents: [
             {
-              type: "image",
+              type: "video",
               content: "content_example",
             },
           ],
@@ -1834,6 +1845,7 @@ const request: PromptApiUpdatePromptRequest = {
               arguments: "arguments_example",
             },
           ],
+          thinking: "thinking_example",
           context: "context_example",
           messageId: 1,
         },

@@ -1,27 +1,12 @@
 package fun.freechat.service.ai;
 
-import dev.langchain4j.community.model.dashscope.QwenChatModel;
-import dev.langchain4j.community.model.dashscope.QwenEmbeddingModel;
-import dev.langchain4j.community.model.dashscope.QwenLanguageModel;
-import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
-import dev.langchain4j.community.model.dashscope.QwenStreamingLanguageModel;
-import dev.langchain4j.model.azure.AzureOpenAiChatModel;
-import dev.langchain4j.model.azure.AzureOpenAiEmbeddingModel;
-import dev.langchain4j.model.azure.AzureOpenAiLanguageModel;
-import dev.langchain4j.model.azure.AzureOpenAiStreamingChatModel;
-import dev.langchain4j.model.azure.AzureOpenAiStreamingLanguageModel;
+import dev.langchain4j.community.model.dashscope.*;
+import dev.langchain4j.model.azure.*;
+import dev.langchain4j.model.chat.request.ChatRequestParameters;
+import dev.langchain4j.model.chat.request.DefaultChatRequestParameters;
 import dev.langchain4j.model.chat.request.ResponseFormat;
-import dev.langchain4j.model.ollama.OllamaChatModel;
-import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
-import dev.langchain4j.model.ollama.OllamaLanguageModel;
-import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
-import dev.langchain4j.model.ollama.OllamaStreamingLanguageModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
-import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
-import dev.langchain4j.model.openai.OpenAiLanguageModel;
-import dev.langchain4j.model.openai.OpenAiModerationModel;
-import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import dev.langchain4j.model.openai.OpenAiStreamingLanguageModel;
+import dev.langchain4j.model.ollama.*;
+import dev.langchain4j.model.openai.*;
 
 import java.time.Duration;
 import java.util.List;
@@ -56,37 +41,49 @@ public class LanguageModelFactory {
 
     public static OpenAiChatModel createOpenAiChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
-        return OpenAiChatModel.builder()
-                .apiKey(apiKey)
+        OpenAiChatRequestParameters modelParameters = OpenAiChatRequestParameters.builder()
                 .modelName(modelName)
-                .timeout(DEFAULT_TIMEOUT)
-                .baseUrl(getString(parameters, "baseUrl"))
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
-                .maxTokens(getInteger(parameters, "maxTokens"))
+                .maxOutputTokens(getInteger(parameters, "maxTokens"))
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
-                .stop((List<String>) parameters.get("stop"))
+                .stopSequences((List<String>) parameters.get("stop"))
                 .seed(getInteger(parameters, "seed"))
-                .responseFormat(getString(parameters, "responseFormat"))
+                .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .reasoningEffort(getString(parameters, "reasoningEffort"))
+                .build();
+
+        return OpenAiChatModel.builder()
+                .apiKey(apiKey)
+                .baseUrl((String) parameters.get("baseUrl"))
+                .timeout(DEFAULT_TIMEOUT)
+                .defaultRequestParameters(modelParameters)
                 .build();
     }
 
     public static OpenAiStreamingChatModel createOpenAiStreamingChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
-        return OpenAiStreamingChatModel.builder()
-                .apiKey(apiKey)
+        OpenAiChatRequestParameters modelParameters = OpenAiChatRequestParameters.builder()
                 .modelName(modelName)
-                .timeout(DEFAULT_TIMEOUT)
-                .baseUrl((String) parameters.get("baseUrl"))
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
-                .maxTokens(getInteger(parameters, "maxTokens"))
+                .maxOutputTokens(getInteger(parameters, "maxTokens"))
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
-                .stop((List<String>) parameters.get("stop"))
+                .stopSequences((List<String>) parameters.get("stop"))
                 .seed(getInteger(parameters, "seed"))
-                .responseFormat(getString(parameters, "responseFormat"))
+                .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
+                        ResponseFormat.JSON : ResponseFormat.TEXT)
+                .reasoningEffort(getString(parameters, "reasoningEffort"))
+                .build();
+
+        return OpenAiStreamingChatModel.builder()
+                .apiKey(apiKey)
+                .baseUrl((String) parameters.get("baseUrl"))
+                .timeout(DEFAULT_TIMEOUT)
+                .defaultRequestParameters(modelParameters)
                 .build();
     }
 
@@ -148,40 +145,50 @@ public class LanguageModelFactory {
 
     public static AzureOpenAiChatModel createAzureOpenAiChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
-        return AzureOpenAiChatModel.builder()
-                .apiKey(apiKey)
-                .endpoint(getString(parameters, "baseUrl"))
-                .deploymentName(modelName)
-                .maxTokens(getInteger(parameters, "maxTokens"))
+        ChatRequestParameters modelParameters = DefaultChatRequestParameters.builder()
+                .modelName(modelName)
+                .maxOutputTokens(getInteger(parameters, "maxTokens"))
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
-                .user(getString(parameters, "user"))
-                .stop((List<String>) parameters.get("stop"))
-                .seed(getLong(parameters, "seed"))
+                .stopSequences((List<String>) parameters.get("stop"))
                 .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
                         ResponseFormat.JSON : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
+                .build();
+
+        return AzureOpenAiChatModel.builder()
+                .apiKey(apiKey)
+                .endpoint(getString(parameters, "baseUrl"))
+                .deploymentName(modelName)
+                .user(getString(parameters, "user"))
+                .seed(getLong(parameters, "seed"))
+                .defaultRequestParameters(modelParameters)
                 .timeout(DEFAULT_TIMEOUT)
                 .build();
     }
 
     public static AzureOpenAiStreamingChatModel createAzureOpenAiStreamingChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
-        return AzureOpenAiStreamingChatModel.builder()
-                .apiKey(apiKey)
-                .endpoint(getString(parameters, "baseUrl"))
-                .deploymentName(modelName)
-                .maxTokens(getInteger(parameters, "maxTokens"))
+        ChatRequestParameters modelParameters = DefaultChatRequestParameters.builder()
+                .modelName(modelName)
+                .maxOutputTokens(getInteger(parameters, "maxTokens"))
                 .temperature(getDouble(parameters, "temperature"))
                 .topP(getDouble(parameters, "topP"))
-                .user(getString(parameters, "user"))
-                .stop((List<String>) parameters.get("stop"))
-                .seed(getLong(parameters, "seed"))
+                .stopSequences((List<String>) parameters.get("stop"))
                 .responseFormat("json_object".equals(parameters.get("responseFormat")) ?
                         ResponseFormat.JSON : ResponseFormat.TEXT)
                 .presencePenalty(getDouble(parameters, "presencePenalty"))
                 .frequencyPenalty(getDouble(parameters, "frequencyPenalty"))
+                .build();
+
+        return AzureOpenAiStreamingChatModel.builder()
+                .apiKey(apiKey)
+                .endpoint(getString(parameters, "baseUrl"))
+                .deploymentName(modelName)
+                .user(getString(parameters, "user"))
+                .seed(getLong(parameters, "seed"))
+                .defaultRequestParameters(modelParameters)
                 .timeout(DEFAULT_TIMEOUT)
                 .build();
     }
@@ -233,37 +240,47 @@ public class LanguageModelFactory {
 
     public static OllamaChatModel createOllamaChatModel(
             String modelName, Map<String, Object> parameters) {
-        return OllamaChatModel.builder()
-                .baseUrl(getString(parameters, "baseUrl"))
+        OllamaChatRequestParameters modelParameters = OllamaChatRequestParameters.builder()
                 .modelName(modelName)
                 .temperature(getDouble(parameters, "temperature"))
                 .topK(getInteger(parameters, "topK"))
                 .topP(getDouble(parameters, "topP"))
                 .repeatPenalty(getDouble(parameters, "repeatPenalty"))
                 .seed(getInteger(parameters, "seed"))
-                .numPredict(getInteger(parameters, "numPredict"))
+                .maxOutputTokens(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
-                .stop((List<String>) parameters.get("stop"))
+                .stopSequences((List<String>) parameters.get("stop"))
                 .responseFormat("json".equals(getString(parameters, "format")) ?
                         ResponseFormat.JSON : ResponseFormat.TEXT)
+                .think(getBoolean(parameters, "think"))
+                .build();
+
+        return OllamaChatModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .defaultRequestParameters(modelParameters)
                 .build();
     }
 
     public static OllamaStreamingChatModel createOllamaStreamingChatModel(
             String modelName, Map<String, Object> parameters) {
-        return OllamaStreamingChatModel.builder()
-                .baseUrl(getString(parameters, "baseUrl"))
+        OllamaChatRequestParameters modelParameters = OllamaChatRequestParameters.builder()
                 .modelName(modelName)
                 .temperature(getDouble(parameters, "temperature"))
                 .topK(getInteger(parameters, "topK"))
                 .topP(getDouble(parameters, "topP"))
                 .repeatPenalty(getDouble(parameters, "repeatPenalty"))
                 .seed(getInteger(parameters, "seed"))
-                .numPredict(getInteger(parameters, "numPredict"))
+                .maxOutputTokens(getInteger(parameters, "numPredict"))
                 .numCtx(getInteger(parameters, "numCtx"))
-                .stop((List<String>) parameters.get("stop"))
+                .stopSequences((List<String>) parameters.get("stop"))
                 .responseFormat("json".equals(getString(parameters, "format")) ?
                         ResponseFormat.JSON : ResponseFormat.TEXT)
+                .think(getBoolean(parameters, "think"))
+                .build();
+
+        return OllamaStreamingChatModel.builder()
+                .baseUrl(getString(parameters, "baseUrl"))
+                .defaultRequestParameters(modelParameters)
                 .build();
     }
 
@@ -311,35 +328,45 @@ public class LanguageModelFactory {
 
     public static QwenChatModel createQwenChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
-        return QwenChatModel.builder()
-                .apiKey(apiKey)
-                .baseUrl(getString(parameters, "baseUrl"))
+        QwenChatRequestParameters modelParameters = QwenChatRequestParameters.builder()
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
                 .topK(getInteger(parameters, "topK"))
                 .enableSearch(getBoolean(parameters, "enableSearch"))
                 .seed(getInteger(parameters, "seed"))
+                .temperature(getDouble(parameters, "temperature"))
+                .maxOutputTokens(getInteger(parameters, "maxTokens"))
+                .stopSequences((List<String>) parameters.get("stops"))
+                .enableThinking(getBoolean(parameters, "enableThinking"))
+                .build();
+
+        return QwenChatModel.builder()
+                .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .repetitionPenalty(getFloat(parameters, "repetitionPenalty"))
-                .temperature(getFloat(parameters, "temperature"))
-                .maxTokens(getInteger(parameters, "maxTokens"))
-                .stops((List<String>) parameters.get("stops"))
+                .defaultRequestParameters(modelParameters)
                 .build();
     }
 
     public static QwenStreamingChatModel createQwenStreamingChatModel(
             String apiKey, String modelName, Map<String, Object> parameters) {
-        return QwenStreamingChatModel.builder()
-                .apiKey(apiKey)
-                .baseUrl(getString(parameters, "baseUrl"))
+        QwenChatRequestParameters modelParameters = QwenChatRequestParameters.builder()
                 .modelName(modelName)
                 .topP(getDouble(parameters, "topP"))
                 .topK(getInteger(parameters, "topK"))
                 .enableSearch(getBoolean(parameters, "enableSearch"))
                 .seed(getInteger(parameters, "seed"))
+                .temperature(getDouble(parameters, "temperature"))
+                .maxOutputTokens(getInteger(parameters, "maxTokens"))
+                .stopSequences((List<String>) parameters.get("stops"))
+                .enableThinking(getBoolean(parameters, "enableThinking"))
+                .build();
+
+        return QwenStreamingChatModel.builder()
+                .apiKey(apiKey)
+                .baseUrl(getString(parameters, "baseUrl"))
                 .repetitionPenalty(getFloat(parameters, "repetitionPenalty"))
-                .temperature(getFloat(parameters, "temperature"))
-                .maxTokens(getInteger(parameters, "maxTokens"))
-                .stops((List<String>) parameters.get("stops"))
+                .defaultRequestParameters(modelParameters)
                 .build();
     }
 

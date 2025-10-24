@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
 import static fun.freechat.service.enums.ModelProvider.OPEN_AI;
 import static fun.freechat.util.TestAiApiKeyUtils.apiKeyFor;
 import static fun.freechat.util.TestAiApiKeyUtils.keyNameFor;
@@ -95,14 +96,14 @@ class OpenAiPromptAiIT extends AbstractIntegrationTest {
         return ChatMessageDTO.builder()
                 .role("user")
                 .name("Rose")
-                .contents(List.of(ChatContentDTO.fromText(content)))
+                .contents(List.of(ChatContentDTO.from(TEXT, content)))
                 .build();
     }
 
     private ChatMessageDTO aiMessage(String content) {
         return ChatMessageDTO.builder()
                 .role("assistant")
-                .contents(List.of(ChatContentDTO.fromText(content)))
+                .contents(List.of(ChatContentDTO.from(TEXT, content)))
                 .build();
     }
 

@@ -274,7 +274,7 @@ export default function PromptViewer({
               }
 
               setDefaultOutputText(
-                getMessageText(response?.message) ?? response?.text
+                getMessageText(response?.message) ?? ''
               );
             }}
             onPlayFailure={(request, error) => {
