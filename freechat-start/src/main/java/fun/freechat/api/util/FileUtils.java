@@ -1,13 +1,19 @@
 package fun.freechat.api.util;
 
 import fun.freechat.service.common.FileStore;
+import fun.freechat.service.config.RuntimeConfig;
 import fun.freechat.util.IdUtils;
 import fun.freechat.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,8 +26,16 @@ import java.util.List;
 import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
 import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 
+@Component
 @Slf4j
-public class FileUtils {
+public class FileUtils implements ApplicationContextAware {
+    private static RuntimeConfig runtimeConfig;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        runtimeConfig = applicationContext.getBean(RuntimeConfig.class);
+    }
+
     private static String filenameFor(MultipartFile file) {
         String filteredOriginFilename = null;
         try {
@@ -64,10 +78,15 @@ public class FileUtils {
     }
 
     private static String getDefaultPublicUrl(HttpServletRequest request, String path, String dataType) {
-        return ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath("/public/" + dataType + "/" + getDefaultPublicKey(path))
-                .build()
-                .toString();
+        UriComponentsBuilder builder = ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath("/public/" + dataType + "/" + getDefaultPublicKey(path));
+
+        String accelerationDomain = runtimeConfig.get("app.accelerationDomain");
+        if (StringUtils.isNotBlank(accelerationDomain)) {
+            builder.host(accelerationDomain);
+        }
+
+        return builder.build().toString();
     }
 
     public static String getDefaultPublicKey(String path) {
