@@ -1,5 +1,6 @@
 app:
   homeUrl: http://localhost
+  accelerationDomain: localhost
   logging:
     home: ${APP_HOME}/logs
     level: info

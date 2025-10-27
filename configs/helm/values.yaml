@@ -3,6 +3,8 @@ global:
     password: ''
   defaultStorageClass: 'default'
   storageClass: 'default'
+app:
+  accelerationDomain: storage.freechat.fun
 backend:
   enabled: true
   auth:
@@ -55,11 +57,14 @@ backend:
           - path: /
             pathType: Prefix
       - host: www.freechat.fun
-        redirect: true
         paths:
           - path: /
             pathType: Prefix
       - host: cn.freechat.fun
+        paths:
+          - path: /
+            pathType: Prefix
+      - host: storage.freechat.fun
         paths:
           - path: /
             pathType: Prefix
@@ -122,11 +127,14 @@ frontend:
           - path: /assets
             pathType: Prefix
       - host: www.freechat.fun
-        redirect: true
         paths:
           - path: /assets
             pathType: Prefix
       - host: cn.freechat.fun
+        paths:
+          - path: /assets
+            pathType: Prefix
+      - host: storage.freechat.fun
         paths:
           - path: /assets
             pathType: Prefix
@@ -214,6 +222,15 @@ milvus:
       annotations:
         helm.sh/resource-policy: keep
   etcd:
+    extraEnvVars:
+      - name: ETCD_AUTO_COMPACTION_MODE
+        value: "revision"
+      - name: ETCD_AUTO_COMPACTION_RETENTION
+        value: "1000"
+      - name: ETCD_QUOTA_BACKEND_BYTES
+        value: "8589934592"
+      - name: ETCD_SNAPSHOT_COUNT
+        value: "50000"
     pdb:
       minAvailable: ''
     replicaCount: 1

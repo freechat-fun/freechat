@@ -3,6 +3,7 @@
 app:
   icpCode: {{ .Values.app.icpCode | quote }}
   homeUrl: {{ printf "https://%s" (index .Values.backend.ingress.hosts 0).host | default "http://localhost:8080" }}
+  accelerationDomain: {{ .Values.app.accelerationDomains | quote }}
 {{- end }}
 auth:
   aes:
