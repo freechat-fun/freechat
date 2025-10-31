@@ -335,7 +335,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <gson-fire-version>1.9.0</gson-fire-version>
-        <okhttp-version>5.2.1</okhttp-version>
+        <okhttp-version>5.3.0</okhttp-version>
         <gson-version>2.13.2</gson-version>
         <commons-lang3-version>3.19.0</commons-lang3-version>
         <jackson-databind-nullable-version>0.2.8</jackson-databind-nullable-version>
