@@ -136,7 +136,7 @@ info:
     \ your model, please contact us. We look forward to AI technology helping people\
     \ create their own \"soul mates\" in the future.\n"
   title: FreeChat OpenAPI Definition
-  version: 2.5.0
+  version: 2.6.0
 servers:
 - url: http://127.0.0.1:8080/
 security:
@@ -6814,8 +6814,9 @@ components:
         content: content
       properties:
         type:
-          description: "Chat type: text (default) | image"
-          pattern: text|image
+          description: "Chat type: text (default) | image | video | audio | pdf |\
+            \ ..."
+          pattern: text|image|video|audio|pdf|...
           type: string
         content:
           description: "Chat content(for image, it might be a normal url or data url)"
@@ -6841,17 +6842,18 @@ components:
         - name: name
           arguments: arguments
           id: id
+        thinking: thinking
       properties:
         role:
           description: "Chat role: system | assistant | user | tool_call | tool_result"
           pattern: system|assistant|user|tool_call|tool_result
           type: string
         name:
-          description: "user: Name of the user role; tool_call: Name of the called\
+          description: "user: name of the user role; tool_call: name of the called\
             \ tool"
           type: string
         contents:
-          description: "default: Dialogue content; tool_result: tool call result,\
+          description: "default: dialogue content; tool_result: tool call result,\
             \ serialized as json"
           items:
             $ref: '#/components/schemas/ChatContentDTO'
@@ -6861,6 +6863,9 @@ components:
           items:
             $ref: '#/components/schemas/ChatToolCallDTO'
           type: array
+        thinking:
+          description: Thinking information
+          type: string
         context:
           description: Contextual information in this round of conversation (the external
             RAG result can be passed in through this parameter)
@@ -6890,6 +6895,7 @@ components:
           - name: name
             arguments: arguments
             id: id
+          thinking: thinking
         - role: role
           contents:
           - type: type
@@ -6906,6 +6912,7 @@ components:
           - name: name
             arguments: arguments
             id: id
+          thinking: thinking
         messageToSend:
           role: role
           contents:
@@ -6923,6 +6930,7 @@ components:
           - name: name
             arguments: arguments
             id: id
+          thinking: thinking
       properties:
         system:
           description: Prompt system template
@@ -6986,6 +6994,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           - role: role
             contents:
             - type: type
@@ -7002,6 +7011,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           messageToSend:
             role: role
             contents:
@@ -7019,6 +7029,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
         draft: draft
         name: name
         lang: lang
@@ -8061,6 +8072,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           - role: role
             contents:
             - type: type
@@ -8077,6 +8089,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           messageToSend:
             role: role
             contents:
@@ -8094,6 +8107,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
         draft: draft
         name: name
         lang: lang
@@ -8259,6 +8273,7 @@ components:
               - name: name
                 arguments: arguments
                 id: id
+              thinking: thinking
             - role: role
               contents:
               - type: type
@@ -8275,6 +8290,7 @@ components:
               - name: name
                 arguments: arguments
                 id: id
+              thinking: thinking
             messageToSend:
               role: role
               contents:
@@ -8292,6 +8308,7 @@ components:
               - name: name
                 arguments: arguments
                 id: id
+              thinking: thinking
           format: format
       properties:
         prompt:
@@ -8334,6 +8351,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           - role: role
             contents:
             - type: type
@@ -8350,6 +8368,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           messageToSend:
             role: role
             contents:
@@ -8367,6 +8386,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
         format: format
       properties:
         template:
@@ -8409,6 +8429,7 @@ components:
           - name: name
             arguments: arguments
             id: id
+          thinking: thinking
       properties:
         requestId:
           description: Request identifier
@@ -8501,6 +8522,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           - role: role
             contents:
             - type: type
@@ -8517,6 +8539,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           messageToSend:
             role: role
             contents:
@@ -8534,6 +8557,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
         requestId: requestId
         promptId: 0
         draft: draft
@@ -10454,6 +10478,7 @@ components:
           - name: name
             arguments: arguments
             id: id
+          thinking: thinking
         gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         message:
@@ -10533,6 +10558,7 @@ components:
             - name: name
               arguments: arguments
               id: id
+            thinking: thinking
           gmtCreate: 2000-01-23T04:56:07.000+00:00
       properties:
         context:

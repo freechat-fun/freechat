@@ -7,9 +7,10 @@ Chat message
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **role** | **str** | Chat role: system | assistant | user | tool_call | tool_result | [optional] 
-**name** | **str** | user: Name of the user role; tool_call: Name of the called tool | [optional] 
-**contents** | [**List[ChatContentDTO]**](ChatContentDTO.md) | default: Dialogue content; tool_result: tool call result, serialized as json | [optional] 
+**name** | **str** | user: name of the user role; tool_call: name of the called tool | [optional] 
+**contents** | [**List[ChatContentDTO]**](ChatContentDTO.md) | default: dialogue content; tool_result: tool call result, serialized as json | [optional] 
 **tool_calls** | [**List[ChatToolCallDTO]**](ChatToolCallDTO.md) | Tool calls information during the conversation | [optional] 
+**thinking** | **str** | Thinking information | [optional] 
 **context** | **str** | Contextual information in this round of conversation (the external RAG result can be passed in through this parameter) | [optional] 
 **message_id** | **int** | Message identifier | [optional] 
 

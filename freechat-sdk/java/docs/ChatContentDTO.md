@@ -8,7 +8,7 @@ Chat content
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**type** | **String** | Chat type: text (default) | image |  [optional] |
+|**type** | **String** | Chat type: text (default) | image | video | audio | pdf | ... |  [optional] |
 |**content** | **String** | Chat content(for image, it might be a normal url or data url) |  |
 
 

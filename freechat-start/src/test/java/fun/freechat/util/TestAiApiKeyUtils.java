@@ -68,6 +68,7 @@ public class TestAiApiKeyUtils implements ApplicationContextAware {
         return switch (provider) {
             case OPEN_AI -> System.getenv("OPENAI_BASE_URL");
             case AZURE_OPEN_AI -> System.getenv("AZURE_OPENAI_ENDPOINT");
+            case DASH_SCOPE -> System.getenv("DASHSCOPE_BASE_URL");
             case OLLAMA -> ollama().getEndpoint();
             default -> null;
         };
