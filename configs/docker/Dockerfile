@@ -1,4 +1,4 @@
-FROM openjdk:21-bookworm
+FROM openjdk:25-bookworm
 
 ARG APP_NAME
 ARG UNAME=admin
