@@ -32,7 +32,7 @@
         <mybatis-spring-boot-starter.version>3.0.5</mybatis-spring-boot-starter.version>
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <commons-compress.version>1.28.0</commons-compress.version>
-        <commons-io.version>2.20.0</commons-io.version>
+        <commons-io.version>2.21.0</commons-io.version>
         <commons-lang3.version>3.19.0</commons-lang3.version>
         <redisson.version>3.52.0</redisson.version>
         <objenesis.version>3.4</objenesis.version>
