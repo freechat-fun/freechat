@@ -25,8 +25,6 @@ metadata:
     app.kubernetes.io/name:  ${HELM_name}
     app.kubernetes.io/version: ${HELM_appVersion}
   name: ${HELM_name}-letsencrypt-http01
-  resourceVersion: "120055"
-  uid: 06f1a20b-92cd-444c-afa7-bee7f7b25047
 spec:
   acme:
     email: ${HELM_maintainers_email}
