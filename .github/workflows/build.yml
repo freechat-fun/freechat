@@ -36,7 +36,7 @@ jobs:
             experimental: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Create branch from commit by event name
@@ -79,7 +79,7 @@ jobs:
           - 22
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Create branch from commit by event name
