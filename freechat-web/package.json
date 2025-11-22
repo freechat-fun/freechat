@@ -23,7 +23,7 @@
     "i18next": "^25.0.0",
     "i18next-browser-languagedetector": "^8.0.2",
     "i18next-resources-to-backend": "^1.2.1",
-    "markdown-to-jsx": "^8.0.0",
+    "markdown-to-jsx": "^9.0.0",
     "mustache": "^4.2.0",
     "openapi-explorer": "^2.2.732",
     "prismjs": "^1.29.0",
