@@ -31,7 +31,8 @@
     "react-dom": "^19.0.0",
     "react-i18next": "^16.0.0",
     "react-router-dom": "^7.0.0",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "toposort": "^2.0.2"
   },
   "devDependencies": {
     "@types/mustache": "^4.2.5",
