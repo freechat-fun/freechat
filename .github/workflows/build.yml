@@ -25,13 +25,9 @@ jobs:
     strategy:
       matrix:
         java_version:
-          - 21
-          - 23
+          - 25
         include:
-          - java_version: '21'
-            mvn_opts: ''
-            experimental: true
-          - java_version: '23'
+          - java_version: '25'
             mvn_opts: ''
             experimental: true
     runs-on: ubuntu-latest
