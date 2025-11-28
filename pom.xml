@@ -37,7 +37,7 @@
         <redisson.version>3.52.0</redisson.version>
         <objenesis.version>3.4</objenesis.version>
         <swagger-parser.version>2.1.36</swagger-parser.version>
-        <langchain4j.version>1.9.0</langchain4j.version>
+        <langchain4j.version>1.9.1</langchain4j.version>
         <langchain4j-community.version>1.9.0-beta16</langchain4j-community.version>
 
         <!--plugin versions-->
