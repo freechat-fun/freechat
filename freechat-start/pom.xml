@@ -78,7 +78,7 @@
 
         <dependency>
             <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-data-35</artifactId>
+            <artifactId>redisson-spring-data-40</artifactId>
         </dependency>
 
         <dependency>
@@ -142,25 +142,25 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>mysql</artifactId>
+            <artifactId>testcontainers-mysql</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>milvus</artifactId>
+            <artifactId>testcontainers-milvus</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>ollama</artifactId>
+            <artifactId>testcontainers-ollama</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
