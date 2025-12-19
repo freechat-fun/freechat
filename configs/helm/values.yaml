@@ -213,7 +213,7 @@ milvus:
   milvus:
     auth:
       enabled: true
-      username: freechat
+      username: root
       password: ''
       rootPassword: ''
       token: ''
