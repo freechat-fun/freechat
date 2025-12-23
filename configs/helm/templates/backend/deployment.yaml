@@ -82,14 +82,14 @@ spec:
             httpGet:
               path: /public/actuator/health/liveness
               port: management
-            initialDelaySeconds: 60
-            failureThreshold: 60
+            initialDelaySeconds: 30
+            failureThreshold: 10
           readinessProbe:
             httpGet:
               path: /public/actuator/health/readiness
               port: management
-            initialDelaySeconds: 60
-            failureThreshold: 60
+            initialDelaySeconds: 30
+            failureThreshold: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
