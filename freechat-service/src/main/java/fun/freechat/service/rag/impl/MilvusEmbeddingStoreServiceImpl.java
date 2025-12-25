@@ -60,6 +60,7 @@ public class MilvusEmbeddingStoreServiceImpl implements EmbeddingStoreService<Te
                     .collectionName(type.text())
                     .dimension(dimensionForType(type))
                     .retrieveEmbeddingsOnSearch(retrieveEmbeddingsOnSearch)
+                    .autoFlushOnInsert(true)
                     .build();
 
             DelegatedEmbeddingStore delegatedEmbeddingStore = DelegatedEmbeddingStore.builder()
