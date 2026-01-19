@@ -41,7 +41,7 @@
         <langchain4j-community.version>1.10.0-beta18</langchain4j-community.version>
 
         <!--plugin versions-->
-        <buildnumber-maven-plugin.version>3.2.1</buildnumber-maven-plugin.version>
+        <buildnumber-maven-plugin.version>3.3.0</buildnumber-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
