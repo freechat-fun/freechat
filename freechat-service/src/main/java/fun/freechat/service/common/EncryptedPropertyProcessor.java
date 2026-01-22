@@ -66,12 +66,12 @@ public class EncryptedPropertyProcessor implements BeanPostProcessor {
         }
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            field.setAccessible(true);
             Encrypted encrypted = field.getAnnotation(Encrypted.class);
             if (encrypted == null) {
                 continue;
             }
             try {
+                field.setAccessible(true);
                 Object v = field.get(bean);
                 if (!(v instanceof String)) {
                     continue;
