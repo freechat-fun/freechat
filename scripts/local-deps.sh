@@ -21,17 +21,14 @@ export REDIS_PASSWORD=hello1234
 export REDIS_NAME=${PROJECT_NAME}-redis
 export REDIS_PORT=6379
 export REDIS_HOST_PORT=6379
-export REDIS_VOLUME=${PROJECT_PATH}/local-data/redis
 
 export ETCD_TAG=v3.5.16
 export ETCD_NAME=${PROJECT_NAME}-etcd
-export ETCD_VOLUME=${PROJECT_PATH}/local-data/etcd
 export ETCD_PORT=2379
 export ETCD_HOST_PORT=2379
 
 export MINIO_TAG=RELEASE.2025-09-07T16-13-09Z
 export MINIO_NAME=${PROJECT_NAME}-minio
-export MINIO_VOLUME=${PROJECT_PATH}/local-data/minio
 export MINIO_PORT=9000
 export MINIO_HOST_PORT=9000
 export MINIO_CONTROL_PORT=9001
@@ -45,13 +42,11 @@ export MILVUS_PORT=19530
 export MILVUS_HOST_PORT=19530
 export MILVUS_CONTROL_PORT=9091
 export MILVUS_CONTROL_HOST_PORT=9091
-export MILVUS_VOLUME=${PROJECT_PATH}/local-data/milvus
 
 export TTS_TAG=cpu-latest
 export TTS_NAME=${PROJECT_NAME}-tts
 export TTS_PORT=5002
 export TTS_HOST_PORT=5002
-export TTS_VOLUME=${PROJECT_PATH}/local-data/tts
 
 if [[ " ${ARGS[*]} " =~ " --enable-tts " ]]; then
   SERVICE_NAMES="tts ${SERVICE_NAMES}"

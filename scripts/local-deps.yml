@@ -1,13 +1,15 @@
+version: "3.9"
+
 services:
   mysql:
     image: mysql:${MYSQL_TAG}
-    ports: 
+    ports:
       - ${MYSQL_HOST_PORT}:${MYSQL_PORT}
     container_name: ${MYSQL_NAME}
     volumes:
       - ${MYSQL_VOLUME}/conf.d:/etc/mysql/conf.d
       - ${MYSQL_VOLUME}/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ${MYSQL_VOLUME}/data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     healthcheck:
@@ -23,7 +25,7 @@ services:
       - ${REDIS_HOST_PORT}:${REDIS_PORT}
     container_name: ${REDIS_NAME}
     volumes:
-      - ${REDIS_VOLUME}:/data
+      - redis_data:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     healthcheck:
@@ -43,7 +45,7 @@ services:
     ports:
       - ${ETCD_HOST_PORT}:${ETCD_PORT}
     volumes:
-      - ${ETCD_VOLUME}:/etcd
+      - etcd_data:/etcd
     command: [ "etcd", "-advertise-client-urls=http://127.0.0.1:${ETCD_PORT}", "-listen-client-urls=http://0.0.0.0:${ETCD_PORT}", "--data-dir=/etcd" ]
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
@@ -52,16 +54,16 @@ services:
       retries: 3
 
   minio:
-    container_name: ${MINIO_NAME}
     image: minio/minio:${MINIO_TAG}
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
     ports:
       - ${MINIO_HOST_PORT}:${MINIO_PORT}
       - ${MINIO_CONTROL_HOST_PORT}:${MINIO_CONTROL_PORT}
+    container_name: ${MINIO_NAME}
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
     volumes:
-      - ${MINIO_VOLUME}:/minio_data
+      - minio_data:/minio_data
     command: [ "minio", "server", "/minio_data", "--console-address", ":${MINIO_CONTROL_PORT}" ]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${MINIO_PORT}/minio/health/live"]
@@ -76,7 +78,7 @@ services:
       - ${MILVUS_CONTROL_HOST_PORT}:${MILVUS_CONTROL_PORT}
     container_name: ${MILVUS_NAME}
     volumes:
-      - ${MILVUS_VOLUME}:/var/lib/milvus
+      - milvus_data:/var/lib/milvus
     environment:
       - ETCD_ENDPOINTS=etcd:${ETCD_PORT}
       - MINIO_ADDRESS=minio:${MINIO_PORT}
@@ -99,7 +101,7 @@ services:
       - ${TTS_HOST_PORT}:${TTS_PORT}
     container_name: ${TTS_NAME}
     volumes:
-      - ${TTS_VOLUME}:/var/lib/tts
+      - tts_data:/var/lib/tts
     environment:
       - DATA_HOME=/var/lib/tts
       - PYTHONPATH=/root
@@ -108,3 +110,11 @@ services:
       interval: 10s
       timeout: 20s
       retries: 12
+
+volumes:
+  mysql_data:
+  redis_data:
+  etcd_data:
+  minio_data:
+  milvus_data:
+  tts_data:
