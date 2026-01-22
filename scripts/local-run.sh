@@ -94,21 +94,32 @@ EOF
   esac
 done
 
-export MYSQL_TAG=latest
+export MYSQL_TAG=9.4.0
 export MYSQL_PASSWORD=hello1234
 export MYSQL_NAME=${PROJECT_NAME}-mysql
 export MYSQL_PORT=3306
 export MYSQL_HOST_PORT=3306
 export MYSQL_VOLUME=${PROJECT_PATH}/local-data/mysql
 
-export REDIS_TAG=latest
+export REDIS_TAG=8.2.2
 export REDIS_PASSWORD=hello1234
 export REDIS_NAME=${PROJECT_NAME}-redis
 export REDIS_PORT=6379
 export REDIS_HOST_PORT=6379
-export REDIS_VOLUME=${PROJECT_PATH}/local-data/redis
 
-export MILVUS_TAG=latest
+export ETCD_TAG=v3.5.16
+export ETCD_NAME=${PROJECT_NAME}-etcd
+export ETCD_PORT=2379
+export ETCD_HOST_PORT=2379
+
+export MINIO_TAG=RELEASE.2025-09-07T16-13-09Z
+export MINIO_NAME=${PROJECT_NAME}-minio
+export MINIO_PORT=9000
+export MINIO_HOST_PORT=9000
+export MINIO_CONTROL_PORT=9001
+export MINIO_CONTROL_HOST_PORT=9001
+
+export MILVUS_TAG=v2.5.19
 export MILVUS_USERNAME=root
 export MILVUS_PASSWORD=hello1234
 export MILVUS_NAME=${PROJECT_NAME}-milvus
@@ -116,13 +127,11 @@ export MILVUS_PORT=19530
 export MILVUS_HOST_PORT=19530
 export MILVUS_CONTROL_PORT=9091
 export MILVUS_CONTROL_HOST_PORT=9091
-export MILVUS_VOLUME=${PROJECT_PATH}/local-data/milvus
 
-export TTS_TAG
+export TTS_TAG=cpu-latest
 export TTS_NAME=${PROJECT_NAME}-tts
 export TTS_PORT=5002
 export TTS_HOST_PORT=5002
-export TTS_VOLUME=${PROJECT_PATH}/local-data/tts
 
 export REPOSITORY=freechatfun/freechat
 export APP_VOLUME=${PROJECT_PATH}/local-data/${PROJECT_NAME}
@@ -151,16 +160,6 @@ EOF
   mkdir -p ${MYSQL_VOLUME}/docker-entrypoint-initdb.d
   cp -f ${RESOURCE_PATH}/sql/schema.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-1.sql
   cp -f ${RESOURCE_PATH}/sql/data-local.sql ${MYSQL_VOLUME}/docker-entrypoint-initdb.d/initdb-2.sql
-
-  # config milvus
-  mkdir -p ${MILVUS_VOLUME}/configs
-  cat << EOF > ${MILVUS_VOLUME}/configs/embedEtcd.yaml
-listen-client-urls: http://0.0.0.0:2379
-advertise-client-urls: http://0.0.0.0:2379
-quota-backend-bytes: 4294967296
-auto-compaction-mode: revision
-auto-compaction-retention: '1000'
-EOF
 
   docker compose -f ${DEP_CONFIG} -f ${APP_CONFIG} -p ${PROJECT_NAME} up -d --wait ${SERVICE_NAMES}
 elif [[ "${COMMAND}" == "stop" ]]; then
