@@ -64,10 +64,6 @@ backend:
         paths:
           - path: /
             pathType: Prefix
-      - host: storage.freechat.fun
-        paths:
-          - path: /
-            pathType: Prefix
     tls:
       enabled: true
   persistence:
