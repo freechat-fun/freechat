@@ -7,7 +7,7 @@ check_helm
 
 helm repo add jetstack https://charts.jetstack.io &>/dev/null
 helm repo update
-helm --kubeconfig ${KUBE_CONFIG} install --create-namespace -f ${values_yaml} \
+helm --kubeconfig ${KUBE_CONFIG} install --create-namespace \
   --namespace ${HELM_cert_manager_namespace} \
   --version ${HELM_cert_manager_version} \
   --set installCRDs=true \
@@ -27,14 +27,14 @@ metadata:
   name: ${HELM_name}-letsencrypt-http01
 spec:
   acme:
-    email: ${HELM_maintainers_email}
+    email: ${HELM_maintainers__email}
     privateKeySecretRef:
       name: ${HELM_name}-letsencrypt-http01-key
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
     - http01:
         ingress:
-          class: ${HELM_backend_ingress_className}
+          ingressClassName: ${HELM_backend_ingress_className}
 EOF
 
 if [[ "${VERBOSE}" == "1" ]];then
@@ -42,4 +42,4 @@ if [[ "${VERBOSE}" == "1" ]];then
   cat ${CLUSTER_ISSUER_YAML}
 fi
 
-kubectl --kubeconfig ${KUBE_CONFIG} -f ${CLUSTER_ISSUER_YAML}
+kubectl --kubeconfig ${KUBE_CONFIG} apply -f ${CLUSTER_ISSUER_YAML}
