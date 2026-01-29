@@ -68,7 +68,7 @@ chat:
     maxMaxOverlapSize: 100
     minMaxOverlapSize: 0
     defaultMaxOverlapSize: 30
-    maxResults: 2
+    maxResults: 1
     minScore: 0.3
 embedding:
   milvus:
