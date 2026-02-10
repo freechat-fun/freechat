@@ -38,7 +38,7 @@
         <objenesis.version>3.5</objenesis.version>
         <swagger-parser.version>2.1.37</swagger-parser.version>
         <langchain4j.version>1.11.0</langchain4j.version>
-        <langchain4j-community.version>1.10.0-beta18</langchain4j-community.version>
+        <langchain4j-community.version>1.11.0-beta19</langchain4j-community.version>
 
         <!--plugin versions-->
         <buildnumber-maven-plugin.version>3.3.0</buildnumber-maven-plugin.version>
