@@ -6,7 +6,7 @@ appVersion: 'latest'
 dependencies:
   - condition: mysql.enabled
     name: mysql
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 14.x
     tags:
       - backend
@@ -15,7 +15,7 @@ dependencies:
       - database
   - condition: redis.enabled
     name: redis
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 25.x
     tags:
       - backend
@@ -24,7 +24,7 @@ dependencies:
       - database
   - condition: milvus.enabled
     name: milvus
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 16.x
     tags:
       - backend
@@ -33,7 +33,7 @@ dependencies:
       - database
   - condition: prometheus.enabled
     name: prometheus
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 2.x
     tags:
       - backend
@@ -42,7 +42,7 @@ dependencies:
       - alert
   - condition: grafana.enabled
     name: grafana
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 12.x
     tags:
       - backend
@@ -51,7 +51,7 @@ dependencies:
       - dashboard
   - condition: grafana-loki.enabled
     name: grafana-loki
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 6.x
     tags:
       - backend
@@ -61,7 +61,7 @@ dependencies:
       - alert
   - condition: kube-state-metrics.enabled
     name: kube-state-metrics
-    repository: https://charts.bitnami.com/bitnami
+    repository: oci://registry-1.docker.io/bitnamicharts
     version: 5.x
     tags:
       - backend

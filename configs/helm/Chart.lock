@@ -1,24 +1,24 @@
 dependencies:
 - name: mysql
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 14.0.3
 - name: redis
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 25.2.0
 - name: milvus
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 16.0.1
 - name: prometheus
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 2.1.23
 - name: grafana
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.1.8
 - name: grafana-loki
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 6.0.6
 - name: kube-state-metrics
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 5.1.0
-digest: sha256:d85bd226e5307c7362611cff78afc0b359b6c8c56e728a3129e6471b7938ffcd
-generated: "2026-02-12T20:06:52.077231384Z"
+digest: sha256:3f4b0b5e2b686e3e1aa8a6e1672ed6e937beacb9b43dc1bfb8f4999f827df601
+generated: "2026-02-13T12:10:42.259462516+08:00"
