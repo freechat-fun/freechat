@@ -24,7 +24,7 @@ Cancel a RAG task.
 ### Example
 
 ```bash
-freechat cancelRagTask taskId=value
+freechat-cli cancelRagTask taskId=value
 ```
 
 ### Parameters
@@ -59,7 +59,7 @@ Create a RAG task.
 ### Example
 
 ```bash
-freechat createRagTask characterUid=value
+freechat-cli createRagTask characterUid=value
 ```
 
 ### Parameters
@@ -95,7 +95,7 @@ Delete a RAG task.
 ### Example
 
 ```bash
-freechat deleteRagTask taskId=value
+freechat-cli deleteRagTask taskId=value
 ```
 
 ### Parameters
@@ -130,7 +130,7 @@ Get the RAG task details.
 ### Example
 
 ```bash
-freechat getRagTask taskId=value
+freechat-cli getRagTask taskId=value
 ```
 
 ### Parameters
@@ -165,7 +165,7 @@ Get the RAG task execution status: pending | running | succeeded | failed | canc
 ### Example
 
 ```bash
-freechat getRagTaskStatus taskId=value
+freechat-cli getRagTaskStatus taskId=value
 ```
 
 ### Parameters
@@ -200,7 +200,7 @@ List the RAG tasks by characterId.
 ### Example
 
 ```bash
-freechat listRagTasks characterUid=value
+freechat-cli listRagTasks characterUid=value
 ```
 
 ### Parameters
@@ -235,7 +235,7 @@ Start a RAG task.
 ### Example
 
 ```bash
-freechat startRagTask taskId=value
+freechat-cli startRagTask taskId=value
 ```
 
 ### Parameters
@@ -270,7 +270,7 @@ Update a RAG task.
 ### Example
 
 ```bash
-freechat updateRagTask taskId=value
+freechat-cli updateRagTask taskId=value
 ```
 
 ### Parameters

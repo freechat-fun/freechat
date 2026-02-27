@@ -34,7 +34,7 @@ Clear memory of the chat session.
 ### Example
 
 ```bash
-freechat clearMemory chatId=value
+freechat-cli clearMemory chatId=value
 ```
 
 ### Parameters
@@ -69,7 +69,7 @@ Delete the chat session.
 ### Example
 
 ```bash
-freechat deleteChat chatId=value
+freechat-cli deleteChat chatId=value
 ```
 
 ### Parameters
@@ -104,7 +104,7 @@ Get default chat id of current user and the character.
 ### Example
 
 ```bash
-freechat getDefaultChatId characterUid=value
+freechat-cli getDefaultChatId characterUid=value
 ```
 
 ### Parameters
@@ -139,7 +139,7 @@ Get memory usage of a chat.
 ### Example
 
 ```bash
-freechat getMemoryUsage chatId=value
+freechat-cli getMemoryUsage chatId=value
 ```
 
 ### Parameters
@@ -174,7 +174,7 @@ List chats of current user.
 ### Example
 
 ```bash
-freechat listChats
+freechat-cli listChats
 ```
 
 ### Parameters
@@ -206,7 +206,7 @@ List debug messages of a chat.
 ### Example
 
 ```bash
-freechat listDebugMessages chatId=value limit=value
+freechat-cli listDebugMessages chatId=value limit=value
 ```
 
 ### Parameters
@@ -242,7 +242,7 @@ List debug messages of a chat.
 ### Example
 
 ```bash
-freechat listDebugMessages1 chatId=value limit=value offset=value
+freechat-cli listDebugMessages1 chatId=value limit=value offset=value
 ```
 
 ### Parameters
@@ -279,7 +279,7 @@ List debug messages of a chat.
 ### Example
 
 ```bash
-freechat listDebugMessages2 chatId=value
+freechat-cli listDebugMessages2 chatId=value
 ```
 
 ### Parameters
@@ -314,7 +314,7 @@ List messages of a chat.
 ### Example
 
 ```bash
-freechat listMessages chatId=value limit=value
+freechat-cli listMessages chatId=value limit=value
 ```
 
 ### Parameters
@@ -350,7 +350,7 @@ List messages of a chat.
 ### Example
 
 ```bash
-freechat listMessages1 chatId=value limit=value offset=value
+freechat-cli listMessages1 chatId=value limit=value offset=value
 ```
 
 ### Parameters
@@ -387,7 +387,7 @@ List messages of a chat.
 ### Example
 
 ```bash
-freechat listMessages2 chatId=value
+freechat-cli listMessages2 chatId=value
 ```
 
 ### Parameters
@@ -422,7 +422,7 @@ Rollback messages of a chat.
 ### Example
 
 ```bash
-freechat rollbackMessages chatId=value count=value
+freechat-cli rollbackMessages chatId=value count=value
 ```
 
 ### Parameters
@@ -458,7 +458,7 @@ Send a message to assistant for a new chat message.
 ### Example
 
 ```bash
-freechat sendAssistant chatId=value assistantUid=value
+freechat-cli sendAssistant chatId=value assistantUid=value
 ```
 
 ### Parameters
@@ -494,7 +494,7 @@ Send a chat message to character.
 ### Example
 
 ```bash
-freechat sendMessage chatId=value
+freechat-cli sendMessage chatId=value
 ```
 
 ### Parameters
@@ -530,7 +530,7 @@ Start a chat session.
 ### Example
 
 ```bash
-freechat startChat
+freechat-cli startChat
 ```
 
 ### Parameters
@@ -565,7 +565,7 @@ Refer to /api/v2/chat/send/assistant/{chatId}/{assistantUid}, stream back chunks
 ### Example
 
 ```bash
-freechat streamSendAssistant chatId=value assistantUid=value
+freechat-cli streamSendAssistant chatId=value assistantUid=value
 ```
 
 ### Parameters
@@ -601,7 +601,7 @@ Refer to /api/v2/chat/send/{chatId}, stream back chunks of the response.
 ### Example
 
 ```bash
-freechat streamSendMessage chatId=value
+freechat-cli streamSendMessage chatId=value
 ```
 
 ### Parameters
@@ -637,7 +637,7 @@ Update the chat session.
 ### Example
 
 ```bash
-freechat updateChat chatId=value
+freechat-cli updateChat chatId=value
 ```
 
 ### Parameters

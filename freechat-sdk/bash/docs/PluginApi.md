@@ -29,7 +29,7 @@ Batch call shortcut for /api/v2/plugin/details/search.
 ### Example
 
 ```bash
-freechat batchSearchPluginDetails
+freechat-cli batchSearchPluginDetails
 ```
 
 ### Parameters
@@ -64,7 +64,7 @@ Batch call shortcut for /api/v2/plugin/search.
 ### Example
 
 ```bash
-freechat batchSearchPluginSummary
+freechat-cli batchSearchPluginSummary
 ```
 
 ### Parameters
@@ -99,7 +99,7 @@ Calculate the number of plugins according to the specified query conditions.
 ### Example
 
 ```bash
-freechat countPlugins
+freechat-cli countPlugins
 ```
 
 ### Parameters
@@ -142,7 +142,7 @@ Limitations:
 ### Example
 
 ```bash
-freechat createPlugin
+freechat-cli createPlugin
 ```
 
 ### Parameters
@@ -177,7 +177,7 @@ Batch create multiple plugins. Ensure transactionality, return the pluginId list
 ### Example
 
 ```bash
-freechat createPlugins
+freechat-cli createPlugins
 ```
 
 ### Parameters
@@ -212,7 +212,7 @@ Delete plugin. Returns success or failure.
 ### Example
 
 ```bash
-freechat deletePlugin pluginId=value
+freechat-cli deletePlugin pluginId=value
 ```
 
 ### Parameters
@@ -247,7 +247,7 @@ Delete multiple plugins. Ensure transactionality, return the list of successfull
 ### Example
 
 ```bash
-freechat deletePlugins
+freechat-cli deletePlugins
 ```
 
 ### Parameters
@@ -282,7 +282,7 @@ Get plugin detailed information.
 ### Example
 
 ```bash
-freechat getPluginDetails pluginId=value
+freechat-cli getPluginDetails pluginId=value
 ```
 
 ### Parameters
@@ -317,7 +317,7 @@ Get plugin summary information.
 ### Example
 
 ```bash
-freechat getPluginSummary pluginId=value
+freechat-cli getPluginSummary pluginId=value
 ```
 
 ### Parameters
@@ -352,7 +352,7 @@ For online manifest, api-docs information provided at the time of entry, this in
 ### Example
 
 ```bash
-freechat refreshPluginInfo pluginId=value
+freechat-cli refreshPluginInfo pluginId=value
 ```
 
 ### Parameters
@@ -387,7 +387,7 @@ Same as /api/v2/plugin/search, but returns detailed information of the plugin.
 ### Example
 
 ```bash
-freechat searchPluginDetails
+freechat-cli searchPluginDetails
 ```
 
 ### Parameters
@@ -435,7 +435,7 @@ Search plugins:
 ### Example
 
 ```bash
-freechat searchPluginSummary
+freechat-cli searchPluginSummary
 ```
 
 ### Parameters
@@ -470,7 +470,7 @@ Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns
 ### Example
 
 ```bash
-freechat updatePlugin pluginId=value
+freechat-cli updatePlugin pluginId=value
 ```
 
 ### Parameters

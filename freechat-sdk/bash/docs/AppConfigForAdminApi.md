@@ -17,7 +17,7 @@ Get default configuration information of the application.
 ### Example
 
 ```bash
-freechat getDefaultConfig
+freechat-cli getDefaultConfig
 ```
 
 ### Parameters

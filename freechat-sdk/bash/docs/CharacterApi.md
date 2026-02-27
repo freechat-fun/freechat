@@ -59,7 +59,7 @@ Add a backend configuration for a character.
 ### Example
 
 ```bash
-freechat addCharacterBackend characterUid=value
+freechat-cli addCharacterBackend characterUid=value
 ```
 
 ### Parameters
@@ -95,7 +95,7 @@ Batch call shortcut for /api/v2/character/details/search.
 ### Example
 
 ```bash
-freechat batchSearchCharacterDetails
+freechat-cli batchSearchCharacterDetails
 ```
 
 ### Parameters
@@ -130,7 +130,7 @@ Batch call shortcut for /api/v2/character/search.
 ### Example
 
 ```bash
-freechat batchSearchCharacterSummary
+freechat-cli batchSearchCharacterSummary
 ```
 
 ### Parameters
@@ -172,7 +172,7 @@ Return the new characterId.
 ### Example
 
 ```bash
-freechat cloneCharacter characterId=value
+freechat-cli cloneCharacter characterId=value
 ```
 
 ### Parameters
@@ -207,7 +207,7 @@ Calculate the number of characters according to the specified query conditions.
 ### Example
 
 ```bash
-freechat countCharacters
+freechat-cli countCharacters
 ```
 
 ### Parameters
@@ -242,7 +242,7 @@ Calculate the number of characters according to the specified query conditions.
 ### Example
 
 ```bash
-freechat countPublicCharacters
+freechat-cli countPublicCharacters
 ```
 
 ### Parameters
@@ -277,7 +277,7 @@ Create a character.
 ### Example
 
 ```bash
-freechat createCharacter
+freechat-cli createCharacter
 ```
 
 ### Parameters
@@ -312,7 +312,7 @@ Delete character. Returns success or failure.
 ### Example
 
 ```bash
-freechat deleteCharacter characterId=value
+freechat-cli deleteCharacter characterId=value
 ```
 
 ### Parameters
@@ -347,7 +347,7 @@ Delete character by name. return the list of successfully deleted characterIds.
 ### Example
 
 ```bash
-freechat deleteCharacterByName name=value
+freechat-cli deleteCharacterByName name=value
 ```
 
 ### Parameters
@@ -382,7 +382,7 @@ Delete character by uid. return the list of successfully deleted characterIds.
 ### Example
 
 ```bash
-freechat deleteCharacterByUid characterUid=value
+freechat-cli deleteCharacterByUid characterUid=value
 ```
 
 ### Parameters
@@ -417,7 +417,7 @@ Delete a document of the character by key.
 ### Example
 
 ```bash
-freechat deleteCharacterDocument key=value
+freechat-cli deleteCharacterDocument key=value
 ```
 
 ### Parameters
@@ -452,7 +452,7 @@ Delete a picture of the character by key.
 ### Example
 
 ```bash
-freechat deleteCharacterPicture key=value
+freechat-cli deleteCharacterPicture key=value
 ```
 
 ### Parameters
@@ -487,7 +487,7 @@ Delete a video of the character by key.
 ### Example
 
 ```bash
-freechat deleteCharacterVideo key=value
+freechat-cli deleteCharacterVideo key=value
 ```
 
 ### Parameters
@@ -522,7 +522,7 @@ Delete a voice of the character by key.
 ### Example
 
 ```bash
-freechat deleteCharacterVoice characterBackendId=value key=value
+freechat-cli deleteCharacterVoice characterBackendId=value key=value
 ```
 
 ### Parameters
@@ -558,7 +558,7 @@ Check if the character name already exists.
 ### Example
 
 ```bash
-freechat existsCharacterName name=value
+freechat-cli existsCharacterName name=value
 ```
 
 ### Parameters
@@ -593,7 +593,7 @@ Export character configuration in tar.gz format, including settings, documents a
 ### Example
 
 ```bash
-freechat exportCharacter characterId=value
+freechat-cli exportCharacter characterId=value
 ```
 
 ### Parameters
@@ -628,7 +628,7 @@ Get character detailed information.
 ### Example
 
 ```bash
-freechat getCharacterDetails characterId=value
+freechat-cli getCharacterDetails characterId=value
 ```
 
 ### Parameters
@@ -663,7 +663,7 @@ Get latest characterId by character name.
 ### Example
 
 ```bash
-freechat getCharacterLatestIdByName name=value
+freechat-cli getCharacterLatestIdByName name=value
 ```
 
 ### Parameters
@@ -698,7 +698,7 @@ Get character summary information.
 ### Example
 
 ```bash
-freechat getCharacterSummary characterId=value
+freechat-cli getCharacterSummary characterId=value
 ```
 
 ### Parameters
@@ -733,7 +733,7 @@ Get the default backend configuration.
 ### Example
 
 ```bash
-freechat getDefaultCharacterBackend characterUid=value
+freechat-cli getDefaultCharacterBackend characterUid=value
 ```
 
 ### Parameters
@@ -768,7 +768,7 @@ Import character configuration from a tar.gz file.
 ### Example
 
 ```bash
-freechat importCharacter
+freechat-cli importCharacter
 ```
 
 ### Parameters
@@ -803,7 +803,7 @@ List character backend identifiers.
 ### Example
 
 ```bash
-freechat listCharacterBackendIds characterUid=value
+freechat-cli listCharacterBackendIds characterUid=value
 ```
 
 ### Parameters
@@ -838,7 +838,7 @@ List character backends.
 ### Example
 
 ```bash
-freechat listCharacterBackends characterUid=value
+freechat-cli listCharacterBackends characterUid=value
 ```
 
 ### Parameters
@@ -873,7 +873,7 @@ List documents of the character.
 ### Example
 
 ```bash
-freechat listCharacterDocuments characterUid=value
+freechat-cli listCharacterDocuments characterUid=value
 ```
 
 ### Parameters
@@ -908,7 +908,7 @@ List pictures of the character.
 ### Example
 
 ```bash
-freechat listCharacterPictures characterUid=value
+freechat-cli listCharacterPictures characterUid=value
 ```
 
 ### Parameters
@@ -943,7 +943,7 @@ List the versions and corresponding characterIds by character name.
 ### Example
 
 ```bash
-freechat listCharacterVersionsByName name=value
+freechat-cli listCharacterVersionsByName name=value
 ```
 
 ### Parameters
@@ -978,7 +978,7 @@ List videos of the character.
 ### Example
 
 ```bash
-freechat listCharacterVideos characterUid=value
+freechat-cli listCharacterVideos characterUid=value
 ```
 
 ### Parameters
@@ -1013,7 +1013,7 @@ List voices of the character.
 ### Example
 
 ```bash
-freechat listCharacterVoices characterBackendId=value
+freechat-cli listCharacterVoices characterBackendId=value
 ```
 
 ### Parameters
@@ -1048,7 +1048,7 @@ Create a new character name starting with a desired name.
 ### Example
 
 ```bash
-freechat newCharacterName desired=value
+freechat-cli newCharacterName desired=value
 ```
 
 ### Parameters
@@ -1083,7 +1083,7 @@ Publish character, draft content becomes formal content, version number increase
 ### Example
 
 ```bash
-freechat publishCharacter characterId=value visibility=value
+freechat-cli publishCharacter characterId=value visibility=value
 ```
 
 ### Parameters
@@ -1119,7 +1119,7 @@ Publish character, draft content becomes formal content, version number increase
 ### Example
 
 ```bash
-freechat publishCharacter1 characterId=value
+freechat-cli publishCharacter1 characterId=value
 ```
 
 ### Parameters
@@ -1154,7 +1154,7 @@ Remove a backend configuration.
 ### Example
 
 ```bash
-freechat removeCharacterBackend characterBackendId=value
+freechat-cli removeCharacterBackend characterBackendId=value
 ```
 
 ### Parameters
@@ -1189,7 +1189,7 @@ Same as /api/v2/character/search, but returns detailed information of the charac
 ### Example
 
 ```bash
-freechat searchCharacterDetails
+freechat-cli searchCharacterDetails
 ```
 
 ### Parameters
@@ -1234,7 +1234,7 @@ Search characters:
 ### Example
 
 ```bash
-freechat searchCharacterSummary
+freechat-cli searchCharacterSummary
 ```
 
 ### Parameters
@@ -1279,7 +1279,7 @@ Search characters:
 ### Example
 
 ```bash
-freechat searchPublicCharacterSummary
+freechat-cli searchPublicCharacterSummary
 ```
 
 ### Parameters
@@ -1314,7 +1314,7 @@ Set the default backend configuration.
 ### Example
 
 ```bash
-freechat setDefaultCharacterBackend characterBackendId=value
+freechat-cli setDefaultCharacterBackend characterBackendId=value
 ```
 
 ### Parameters
@@ -1349,7 +1349,7 @@ Update character, refer to /api/v2/character/create, required field: characterId
 ### Example
 
 ```bash
-freechat updateCharacter characterId=value
+freechat-cli updateCharacter characterId=value
 ```
 
 ### Parameters
@@ -1385,7 +1385,7 @@ Update a backend configuration.
 ### Example
 
 ```bash
-freechat updateCharacterBackend characterBackendId=value
+freechat-cli updateCharacterBackend characterBackendId=value
 ```
 
 ### Parameters
@@ -1421,7 +1421,7 @@ Upload an avatar of the character.
 ### Example
 
 ```bash
-freechat uploadCharacterAvatar characterUid=value
+freechat-cli uploadCharacterAvatar characterUid=value
 ```
 
 ### Parameters
@@ -1457,7 +1457,7 @@ Upload a document of the character.
 ### Example
 
 ```bash
-freechat uploadCharacterDocument characterUid=value
+freechat-cli uploadCharacterDocument characterUid=value
 ```
 
 ### Parameters
@@ -1493,7 +1493,7 @@ Upload a picture of the character.
 ### Example
 
 ```bash
-freechat uploadCharacterPicture characterUid=value
+freechat-cli uploadCharacterPicture characterUid=value
 ```
 
 ### Parameters
@@ -1529,7 +1529,7 @@ Upload a video of the character.
 ### Example
 
 ```bash
-freechat uploadCharacterVideo characterUid=value
+freechat-cli uploadCharacterVideo characterUid=value
 ```
 
 ### Parameters
@@ -1565,7 +1565,7 @@ Upload a voice of the character.
 ### Example
 
 ```bash
-freechat uploadCharacterVoice characterBackendId=value
+freechat-cli uploadCharacterVoice characterBackendId=value
 ```
 
 ### Parameters

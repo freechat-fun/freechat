@@ -2,10 +2,10 @@ FROM alpine:3.12.0
 
 RUN apk add --update --no-cache curl ca-certificates bash bash-completion zsh curl git vim ncurses util-linux
 
-ADD freechat /usr/bin/freechat
-ADD _freechat /usr/local/share/zsh/site-functions/_freechat
-ADD freechat.bash-completion /etc/bash-completion.d/freechat
-RUN chmod 755 /usr/bin/freechat
+ADD freechat-cli /usr/bin/freechat-cli
+ADD _freechat-cli /usr/local/share/zsh/site-functions/_freechat-cli
+ADD freechat-cli.bash-completion /etc/bash-completion.d/freechat-cli
+RUN chmod 755 /usr/bin/freechat-cli
 
 #
 # Install oh-my-zsh
@@ -17,7 +17,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh
 #
 RUN echo '\n\
 . /etc/bash_completion\n\
-source /etc/bash-completion.d/freechat\n\
+source /etc/bash-completion.d/freechat-cli\n\
 ' >> ~/.bashrc
 
 #
@@ -41,13 +41,13 @@ $(tput setaf 3)FREECHAT_BASE_URL$(tput sgr0) - server URL, e.g. https://example.
 $(tput setaf 7)Basic usage:$(tput sgr0)\n\
 \n\
 $(tput setaf 3)Print the list of operations available on the service$(tput sgr0)\n\
-$ freechat -h\n\
+$ freechat-cli -h\n\
 \n\
 $(tput setaf 3)Print the service description$(tput sgr0)\n\
-$ freechat --about\n\
+$ freechat-cli --about\n\
 \n\
 $(tput setaf 3)Print detailed information about specific operation$(tput sgr0)\n\
-$ freechat <operationId> -h\n\
+$ freechat-cli <operationId> -h\n\
 \n\
 By default you are logged into Zsh with full autocompletion for your REST API,\n\
 but you can switch to Bash, where basic autocompletion is also supported.\n\

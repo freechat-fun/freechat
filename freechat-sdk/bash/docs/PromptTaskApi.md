@@ -20,7 +20,7 @@ Create a prompt task.
 ### Example
 
 ```bash
-freechat createPromptTask
+freechat-cli createPromptTask
 ```
 
 ### Parameters
@@ -55,7 +55,7 @@ Delete a prompt task.
 ### Example
 
 ```bash
-freechat deletePromptTask promptTaskId=value
+freechat-cli deletePromptTask promptTaskId=value
 ```
 
 ### Parameters
@@ -90,7 +90,7 @@ Get the prompt task details.
 ### Example
 
 ```bash
-freechat getPromptTask promptTaskId=value
+freechat-cli getPromptTask promptTaskId=value
 ```
 
 ### Parameters
@@ -125,7 +125,7 @@ Update a prompt task.
 ### Example
 
 ```bash
-freechat updatePromptTask promptTaskId=value
+freechat-cli updatePromptTask promptTaskId=value
 ```
 
 ### Parameters

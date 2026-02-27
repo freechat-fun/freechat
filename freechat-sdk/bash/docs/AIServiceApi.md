@@ -22,7 +22,7 @@ Add a credential for the model service.
 ### Example
 
 ```bash
-freechat addAiApiKey
+freechat-cli addAiApiKey
 ```
 
 ### Parameters
@@ -57,7 +57,7 @@ Delete the credential information of the model provider.
 ### Example
 
 ```bash
-freechat deleteAiApiKey id=value
+freechat-cli deleteAiApiKey id=value
 ```
 
 ### Parameters
@@ -92,7 +92,7 @@ Disable the credential information of the model provider.
 ### Example
 
 ```bash
-freechat disableAiApiKey id=value
+freechat-cli disableAiApiKey id=value
 ```
 
 ### Parameters
@@ -127,7 +127,7 @@ Enable the credential information of the model provider.
 ### Example
 
 ```bash
-freechat enableAiApiKey id=value
+freechat-cli enableAiApiKey id=value
 ```
 
 ### Parameters
@@ -162,7 +162,7 @@ Get the credential information of the model provider.
 ### Example
 
 ```bash
-freechat getAiApiKey id=value
+freechat-cli getAiApiKey id=value
 ```
 
 ### Parameters
@@ -197,7 +197,7 @@ List all credential information of the model provider.
 ### Example
 
 ```bash
-freechat listAiApiKeys provider=value
+freechat-cli listAiApiKeys provider=value
 ```
 
 ### Parameters

@@ -27,7 +27,7 @@ Get the superior relationships of the current account, including direct and indi
 ### Example
 
 ```bash
-freechat getOwners  all=value
+freechat-cli getOwners  all=value
 ```
 
 ### Parameters
@@ -62,7 +62,7 @@ Same as /api/v2/org/owners, but returns a DOT format view, DOT reference: [graph
 ### Example
 
 ```bash
-freechat getOwnersDot  all=value
+freechat-cli getOwnersDot  all=value
 ```
 
 ### Parameters
@@ -98,7 +98,7 @@ By specifying all=1, virtual reported owners can be returned, in this case, ther
 ### Example
 
 ```bash
-freechat getSubordinateOwners username=value  all=value
+freechat-cli getSubordinateOwners username=value  all=value
 ```
 
 ### Parameters
@@ -134,7 +134,7 @@ Get the subordinate relationship of the subordinate account, including direct an
 ### Example
 
 ```bash
-freechat getSubordinateSubordinates username=value  all=value
+freechat-cli getSubordinateSubordinates username=value  all=value
 ```
 
 ### Parameters
@@ -170,7 +170,7 @@ Get the subordinate relationships of the current account, including direct and i
 ### Example
 
 ```bash
-freechat getSubordinates  all=value
+freechat-cli getSubordinates  all=value
 ```
 
 ### Parameters
@@ -205,7 +205,7 @@ Same as /api/v2/org/subordinates, but returns a DOT format view, DOT reference: 
 ### Example
 
 ```bash
-freechat getSubordinatesDot  all=value
+freechat-cli getSubordinatesDot  all=value
 ```
 
 ### Parameters
@@ -240,7 +240,7 @@ List the permission list of the subordinate account.
 ### Example
 
 ```bash
-freechat listSubordinateAuthorities username=value
+freechat-cli listSubordinateAuthorities username=value
 ```
 
 ### Parameters
@@ -275,7 +275,7 @@ Fully delete the direct subordinate relationship of the subordinate account.
 ### Example
 
 ```bash
-freechat removeSubordinateSubordinatesTree username=value
+freechat-cli removeSubordinateSubordinatesTree username=value
 ```
 
 ### Parameters
@@ -310,7 +310,7 @@ Update the permission list of the subordinate account, the granted permissions c
 ### Example
 
 ```bash
-freechat updateSubordinateAuthorities username=value
+freechat-cli updateSubordinateAuthorities username=value
 ```
 
 ### Parameters
@@ -346,7 +346,7 @@ Fully update the direct superior relationship of the subordinate account (i.e., 
 ### Example
 
 ```bash
-freechat updateSubordinateOwners username=value
+freechat-cli updateSubordinateOwners username=value
 ```
 
 ### Parameters
@@ -382,7 +382,7 @@ Fully update the direct subordinate relationship of the subordinate account (i.e
 ### Example
 
 ```bash
-freechat updateSubordinateSubordinates username=value
+freechat-cli updateSubordinateSubordinates username=value
 ```
 
 ### Parameters

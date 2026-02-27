@@ -242,20 +242,22 @@ function bash_sdk {
   rm -rf ${output}
   mkdir -p ${output}
 
+  artifact_cli=$(sed -n "s#^ *<artifactId>\([a-zA-Z0-9.-]\{1,\}\)</artifactId> *\$#\1#p" ${PROJECT_PATH}/pom.xml | head -1)-cli
+
   java --add-opens java.base/java.lang=ALL-UNNAMED \
     --add-opens java.base/java.util=ALL-UNNAMED \
     -jar ${CLI} generate \
     -i ${DOC} \
     -g bash \
     -o ${output} \
-    --artifact-id ${ARTIFACT_ID} \
+    --artifact-id ${artifact_cli} \
     --artifact-version ${VERSION} \
     --git-host ${GIT_HOST} \
     --git-repo-id ${GIT_REPO_ID} \
     --git-user-id ${GIT_USER_ID} \
     --group-id ${GROUP_ID} \
-    --package-name ${ARTIFACT_ID} \
-    --http-user-agent ${ARTIFACT_ID}/${VERSION}/bash \
+    --package-name ${artifact_cli} \
+    --http-user-agent ${artifact_cli}/${VERSION} \
     --additional-properties \
 apiKeyAuthEnvironmentVariable=FREECHAT_API_KEY,\
 disallowAdditionalPropertiesIfNotPresent=false,\
@@ -264,7 +266,7 @@ generateBashCompletion=true,\
 generateZshCompletion=true,\
 hostEnvironmentVariable=FREECHAT_BASE_URL,\
 legacyDiscriminatorBehavior=false,\
-scriptName=freechat
+scriptName=${artifact_cli}
 
   sdk_output=${SDK_PATH}/bash
 
@@ -272,6 +274,7 @@ scriptName=freechat
   cp -rf ${output} ${SDK_PATH}
   clean_tmp ${sdk_output}
 }
+
 
 if [[ " ${NEW_ARGS[*]} " =~ " --java " ]]; then
   java_sdk

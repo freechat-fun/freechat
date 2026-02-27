@@ -10,25 +10,25 @@ The script uses cURL underneath for making all REST calls.
 
 ```shell
 # Make sure the script has executable rights
-$ chmod u+x freechat
+$ chmod u+x freechat-cli
 
 # Print the list of operations available on the service
-$ ./freechat -h
+$ ./freechat-cli -h
 
 # Print the service description
-$ ./freechat --about
+$ ./freechat-cli --about
 
 # Print detailed information about specific operation
-$ ./freechat <operationId> -h
+$ ./freechat-cli <operationId> -h
 
 # Make GET request
-./freechat --host http://<hostname>:<port> --accept xml <operationId> <queryParam1>=<value1> <header_key1>:<header_value2>
+./freechat-cli --host http://<hostname>:<port> --accept xml <operationId> <queryParam1>=<value1> <header_key1>:<header_value2>
 
 # Make GET request using arbitrary curl options (must be passed before <operationId>) to an SSL service using username:password
-freechat -k -sS --tlsv1.2 --host https://<hostname> -u <user>:<password> --accept xml <operationId> <queryParam1>=<value1> <header_key1>:<header_value2>
+freechat-cli -k -sS --tlsv1.2 --host https://<hostname> -u <user>:<password> --accept xml <operationId> <queryParam1>=<value1> <header_key1>:<header_value2>
 
 # Make POST request
-$ echo '<body_content>' | freechat --host <hostname> --content-type json <operationId> -
+$ echo '<body_content>' | freechat-cli --host <hostname> --content-type json <operationId> -
 
 # Make POST request with simple JSON content, e.g.:
 # {
@@ -36,13 +36,13 @@ $ echo '<body_content>' | freechat --host <hostname> --content-type json <operat
 #   "key2": "value2",
 #   "key3": 23
 # }
-$ echo '<body_content>' | freechat --host <hostname> --content-type json <operationId> key1==value1 key2=value2 key3:=23 -
+$ echo '<body_content>' | freechat-cli --host <hostname> --content-type json <operationId> key1==value1 key2=value2 key3:=23 -
 
 # Make POST request with form data
-$ freechat --host <hostname> <operationId> key1:=value1 key2:=value2 key3:=23
+$ freechat-cli --host <hostname> <operationId> key1:=value1 key2:=value2 key3:=23
 
 # Preview the cURL command without actually executing it
-$ freechat --host http://<hostname>:<port> --dry-run <operationid>
+$ freechat-cli --host http://<hostname>:<port> --dry-run <operationid>
 
 ```
 
@@ -68,13 +68,13 @@ is also available.
 The generated bash-completion script can be either directly loaded to the current Bash session using:
 
 ```shell
-source freechat.bash-completion
+source freechat-cli.bash-completion
 ```
 
 Alternatively, the script can be copied to the `/etc/bash-completion.d` (or on OSX with Homebrew to `/usr/local/etc/bash-completion.d`):
 
 ```shell
-sudo cp freechat.bash-completion /etc/bash-completion.d/freechat
+sudo cp freechat-cli.bash-completion /etc/bash-completion.d/freechat-cli
 ```
 
 #### OS X
@@ -95,7 +95,7 @@ fi
 
 ### Zsh
 
-In Zsh, the generated `_freechat` Zsh completion file must be copied to one of the folders under `$FPATH` variable.
+In Zsh, the generated `_freechat-cli` Zsh completion file must be copied to one of the folders under `$FPATH` variable.
 
 ## Documentation for API Endpoints
 

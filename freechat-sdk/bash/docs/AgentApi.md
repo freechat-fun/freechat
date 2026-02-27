@@ -32,7 +32,7 @@ Batch call shortcut for /api/v2/agent/details/search.
 ### Example
 
 ```bash
-freechat batchSearchAgentDetails
+freechat-cli batchSearchAgentDetails
 ```
 
 ### Parameters
@@ -67,7 +67,7 @@ Batch call shortcut for /api/v2/agent/search.
 ### Example
 
 ```bash
-freechat batchSearchAgentSummary
+freechat-cli batchSearchAgentSummary
 ```
 
 ### Parameters
@@ -109,7 +109,7 @@ Return the new agentId.
 ### Example
 
 ```bash
-freechat cloneAgent agentId=value
+freechat-cli cloneAgent agentId=value
 ```
 
 ### Parameters
@@ -144,7 +144,7 @@ Batch clone multiple agents. Ensure transactionality, return the agentId list af
 ### Example
 
 ```bash
-freechat cloneAgents
+freechat-cli cloneAgents
 ```
 
 ### Parameters
@@ -179,7 +179,7 @@ Calculate the number of agents according to the specified query conditions.
 ### Example
 
 ```bash
-freechat countAgents
+freechat-cli countAgents
 ```
 
 ### Parameters
@@ -223,7 +223,7 @@ Limitations:
 ### Example
 
 ```bash
-freechat createAgent
+freechat-cli createAgent
 ```
 
 ### Parameters
@@ -258,7 +258,7 @@ Batch create multiple agents. Ensure transactionality, return the agentId list a
 ### Example
 
 ```bash
-freechat createAgents
+freechat-cli createAgents
 ```
 
 ### Parameters
@@ -293,7 +293,7 @@ Delete agent. Return success or failure.
 ### Example
 
 ```bash
-freechat deleteAgent agentId=value
+freechat-cli deleteAgent agentId=value
 ```
 
 ### Parameters
@@ -328,7 +328,7 @@ Delete multiple agents. Ensure transactionality, return the list of successfully
 ### Example
 
 ```bash
-freechat deleteAgents
+freechat-cli deleteAgents
 ```
 
 ### Parameters
@@ -363,7 +363,7 @@ Get agent detailed information.
 ### Example
 
 ```bash
-freechat getAgentDetails agentId=value
+freechat-cli getAgentDetails agentId=value
 ```
 
 ### Parameters
@@ -398,7 +398,7 @@ Get agent summary information.
 ### Example
 
 ```bash
-freechat getAgentSummary agentId=value
+freechat-cli getAgentSummary agentId=value
 ```
 
 ### Parameters
@@ -433,7 +433,7 @@ List the versions and corresponding agentIds by agent name.
 ### Example
 
 ```bash
-freechat listAgentVersionsByName name=value
+freechat-cli listAgentVersionsByName name=value
 ```
 
 ### Parameters
@@ -468,7 +468,7 @@ Publish agent, draft content becomes formal content, version number increases by
 ### Example
 
 ```bash
-freechat publishAgent agentId=value visibility=value
+freechat-cli publishAgent agentId=value visibility=value
 ```
 
 ### Parameters
@@ -504,7 +504,7 @@ Same as /api/v2/agent/search, but returns detailed information of the agent.
 ### Example
 
 ```bash
-freechat searchAgentDetails
+freechat-cli searchAgentDetails
 ```
 
 ### Parameters
@@ -550,7 +550,7 @@ Search agents:
 ### Example
 
 ```bash
-freechat searchAgentSummary
+freechat-cli searchAgentSummary
 ```
 
 ### Parameters
@@ -585,7 +585,7 @@ Update agent, refer to /api/v2/agent/create, required field: agentId. Return suc
 ### Example
 
 ```bash
-freechat updateAgent agentId=value
+freechat-cli updateAgent agentId=value
 ```
 
 ### Parameters

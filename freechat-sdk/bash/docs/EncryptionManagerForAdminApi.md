@@ -17,7 +17,7 @@ Encrypt a piece of text with the built-in key.
 ### Example
 
 ```bash
-freechat encryptText text=value
+freechat-cli encryptText text=value
 ```
 
 ### Parameters
