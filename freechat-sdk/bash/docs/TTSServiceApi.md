@@ -19,7 +19,7 @@ Return builtin TTS speakers.
 ### Example
 
 ```bash
-freechat listTtsBuiltinSpeakers
+freechat-cli listTtsBuiltinSpeakers
 ```
 
 ### Parameters
@@ -51,7 +51,7 @@ Play TTS sample audio of the builtin/custom speaker.
 ### Example
 
 ```bash
-freechat playSample speakerType=value speaker=value
+freechat-cli playSample speakerType=value speaker=value
 ```
 
 ### Parameters
@@ -87,7 +87,7 @@ Read out the message.
 ### Example
 
 ```bash
-freechat speakMessage messageId=value
+freechat-cli speakMessage messageId=value
 ```
 
 ### Parameters

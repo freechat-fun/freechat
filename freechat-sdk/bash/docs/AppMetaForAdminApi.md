@@ -17,7 +17,7 @@ Get application information to accurately locate the corresponding project versi
 ### Example
 
 ```bash
-freechat getAppMeta
+freechat-cli getAppMeta
 ```
 
 ### Parameters

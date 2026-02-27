@@ -34,7 +34,7 @@ Add the statistics of the corresponding metrics of the corresponding resources. 
 ### Example
 
 ```bash
-freechat addStatistic infoType=value infoId=value statsType=value delta=value
+freechat-cli addStatistic infoType=value infoId=value statsType=value delta=value
 ```
 
 ### Parameters
@@ -72,7 +72,7 @@ Get the current user's score for the corresponding resource.
 ### Example
 
 ```bash
-freechat getScore infoType=value infoId=value
+freechat-cli getScore infoType=value infoId=value
 ```
 
 ### Parameters
@@ -108,7 +108,7 @@ Get the statistics of the corresponding metrics of the corresponding resources.
 ### Example
 
 ```bash
-freechat getStatistic infoType=value infoId=value statsType=value
+freechat-cli getStatistic infoType=value infoId=value statsType=value
 ```
 
 ### Parameters
@@ -145,7 +145,7 @@ Get all statistics of the corresponding resources.
 ### Example
 
 ```bash
-freechat getStatistics infoType=value infoId=value
+freechat-cli getStatistics infoType=value infoId=value
 ```
 
 ### Parameters
@@ -181,7 +181,7 @@ Increase the statistics of the corresponding metrics of the corresponding resour
 ### Example
 
 ```bash
-freechat increaseStatistic infoType=value infoId=value statsType=value
+freechat-cli increaseStatistic infoType=value infoId=value statsType=value
 ```
 
 ### Parameters
@@ -218,7 +218,7 @@ List agents based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listAgentsByStatistic statsType=value pageSize=value  asc=value
+freechat-cli listAgentsByStatistic statsType=value pageSize=value  asc=value
 ```
 
 ### Parameters
@@ -255,7 +255,7 @@ List agents based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listAgentsByStatistic1 statsType=value pageSize=value pageNum=value  asc=value
+freechat-cli listAgentsByStatistic1 statsType=value pageSize=value pageNum=value  asc=value
 ```
 
 ### Parameters
@@ -293,7 +293,7 @@ List agents based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listAgentsByStatistic2 statsType=value  asc=value
+freechat-cli listAgentsByStatistic2 statsType=value  asc=value
 ```
 
 ### Parameters
@@ -329,7 +329,7 @@ List characters based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listCharactersByStatistic statsType=value  asc=value
+freechat-cli listCharactersByStatistic statsType=value  asc=value
 ```
 
 ### Parameters
@@ -365,7 +365,7 @@ List characters based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listCharactersByStatistic1 statsType=value pageSize=value  asc=value
+freechat-cli listCharactersByStatistic1 statsType=value pageSize=value  asc=value
 ```
 
 ### Parameters
@@ -402,7 +402,7 @@ List characters based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listCharactersByStatistic2 statsType=value pageSize=value pageNum=value  asc=value
+freechat-cli listCharactersByStatistic2 statsType=value pageSize=value pageNum=value  asc=value
 ```
 
 ### Parameters
@@ -440,7 +440,7 @@ Get popular tags for a specified info type.
 ### Example
 
 ```bash
-freechat listHotTags infoType=value pageSize=value  text=value
+freechat-cli listHotTags infoType=value pageSize=value  text=value
 ```
 
 ### Parameters
@@ -477,7 +477,7 @@ List plugins based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listPluginsByStatistic statsType=value pageSize=value pageNum=value  asc=value
+freechat-cli listPluginsByStatistic statsType=value pageSize=value pageNum=value  asc=value
 ```
 
 ### Parameters
@@ -515,7 +515,7 @@ List plugins based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listPluginsByStatistic1 statsType=value  asc=value
+freechat-cli listPluginsByStatistic1 statsType=value  asc=value
 ```
 
 ### Parameters
@@ -551,7 +551,7 @@ List plugins based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listPluginsByStatistic2 statsType=value pageSize=value  asc=value
+freechat-cli listPluginsByStatistic2 statsType=value pageSize=value  asc=value
 ```
 
 ### Parameters
@@ -588,7 +588,7 @@ List prompts based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listPromptsByStatistic statsType=value  asc=value
+freechat-cli listPromptsByStatistic statsType=value  asc=value
 ```
 
 ### Parameters
@@ -624,7 +624,7 @@ List prompts based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listPromptsByStatistic1 statsType=value pageSize=value  asc=value
+freechat-cli listPromptsByStatistic1 statsType=value pageSize=value  asc=value
 ```
 
 ### Parameters
@@ -661,7 +661,7 @@ List prompts based on statistics, including interactive statistical data.
 ### Example
 
 ```bash
-freechat listPromptsByStatistic2 statsType=value pageSize=value pageNum=value  asc=value
+freechat-cli listPromptsByStatistic2 statsType=value pageSize=value pageNum=value  asc=value
 ```
 
 ### Parameters

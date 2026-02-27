@@ -18,7 +18,7 @@ Create a tag, tags created by the administrator cannot be deleted by ordinary us
 ### Example
 
 ```bash
-freechat createTag referType=value referId=value tag=value
+freechat-cli createTag referType=value referId=value tag=value
 ```
 
 ### Parameters
@@ -55,7 +55,7 @@ Delete a tag, any tag created by anyone can be deleted.
 ### Example
 
 ```bash
-freechat deleteTag referType=value referId=value tag=value
+freechat-cli deleteTag referType=value referId=value tag=value
 ```
 
 ### Parameters

@@ -41,7 +41,7 @@ Apply parameters to prompt record.
 ### Example
 
 ```bash
-freechat applyPromptRef
+freechat-cli applyPromptRef
 ```
 
 ### Parameters
@@ -76,7 +76,7 @@ Apply parameters to prompt template.
 ### Example
 
 ```bash
-freechat applyPromptTemplate
+freechat-cli applyPromptTemplate
 ```
 
 ### Parameters
@@ -111,7 +111,7 @@ Batch call shortcut for /api/v2/prompt/details/search.
 ### Example
 
 ```bash
-freechat batchSearchPromptDetails
+freechat-cli batchSearchPromptDetails
 ```
 
 ### Parameters
@@ -146,7 +146,7 @@ Batch call shortcut for /api/v2/prompt/search.
 ### Example
 
 ```bash
-freechat batchSearchPromptSummary
+freechat-cli batchSearchPromptSummary
 ```
 
 ### Parameters
@@ -188,7 +188,7 @@ Return the new promptId.
 ### Example
 
 ```bash
-freechat clonePrompt promptId=value
+freechat-cli clonePrompt promptId=value
 ```
 
 ### Parameters
@@ -223,7 +223,7 @@ Batch clone multiple prompts. Ensure transactionality, return the promptId list 
 ### Example
 
 ```bash
-freechat clonePrompts
+freechat-cli clonePrompts
 ```
 
 ### Parameters
@@ -258,7 +258,7 @@ Calculate the number of prompts according to the specified query conditions.
 ### Example
 
 ```bash
-freechat countPrompts
+freechat-cli countPrompts
 ```
 
 ### Parameters
@@ -293,7 +293,7 @@ Calculate the number of prompts according to the specified query conditions.
 ### Example
 
 ```bash
-freechat countPublicPrompts
+freechat-cli countPublicPrompts
 ```
 
 ### Parameters
@@ -338,7 +338,7 @@ Limitations:
 ### Example
 
 ```bash
-freechat createPrompt
+freechat-cli createPrompt
 ```
 
 ### Parameters
@@ -373,7 +373,7 @@ Batch create multiple prompts. Ensure transactionality, return the promptId list
 ### Example
 
 ```bash
-freechat createPrompts
+freechat-cli createPrompts
 ```
 
 ### Parameters
@@ -408,7 +408,7 @@ Delete prompt. Returns success or failure.
 ### Example
 
 ```bash
-freechat deletePrompt promptId=value
+freechat-cli deletePrompt promptId=value
 ```
 
 ### Parameters
@@ -443,7 +443,7 @@ Delete prompt by name. return the list of successfully deleted promptIds.
 ### Example
 
 ```bash
-freechat deletePromptByName name=value
+freechat-cli deletePromptByName name=value
 ```
 
 ### Parameters
@@ -478,7 +478,7 @@ Delete multiple prompts. Ensure transactionality, return the list of successfull
 ### Example
 
 ```bash
-freechat deletePrompts
+freechat-cli deletePrompts
 ```
 
 ### Parameters
@@ -513,7 +513,7 @@ Check if the prompt name already exists.
 ### Example
 
 ```bash
-freechat existsPromptName name=value
+freechat-cli existsPromptName name=value
 ```
 
 ### Parameters
@@ -548,7 +548,7 @@ Get prompt detailed information.
 ### Example
 
 ```bash
-freechat getPromptDetails promptId=value
+freechat-cli getPromptDetails promptId=value
 ```
 
 ### Parameters
@@ -583,7 +583,7 @@ Get prompt summary information.
 ### Example
 
 ```bash
-freechat getPromptSummary promptId=value
+freechat-cli getPromptSummary promptId=value
 ```
 
 ### Parameters
@@ -618,7 +618,7 @@ List the versions and corresponding promptIds by prompt name.
 ### Example
 
 ```bash
-freechat listPromptVersionsByName name=value
+freechat-cli listPromptVersionsByName name=value
 ```
 
 ### Parameters
@@ -653,7 +653,7 @@ Create a new prompt name starting with a desired name.
 ### Example
 
 ```bash
-freechat newPromptName desired=value
+freechat-cli newPromptName desired=value
 ```
 
 ### Parameters
@@ -688,7 +688,7 @@ Publish prompt, draft content becomes formal content, version number increases b
 ### Example
 
 ```bash
-freechat publishPrompt promptId=value visibility=value
+freechat-cli publishPrompt promptId=value visibility=value
 ```
 
 ### Parameters
@@ -724,7 +724,7 @@ Same as /api/v2/prompt/search, but returns detailed information of the prompt.
 ### Example
 
 ```bash
-freechat searchPromptDetails
+freechat-cli searchPromptDetails
 ```
 
 ### Parameters
@@ -771,7 +771,7 @@ Search prompts:
 ### Example
 
 ```bash
-freechat searchPromptSummary
+freechat-cli searchPromptSummary
 ```
 
 ### Parameters
@@ -818,7 +818,7 @@ Search prompts:
 ### Example
 
 ```bash
-freechat searchPublicPromptSummary
+freechat-cli searchPublicPromptSummary
 ```
 
 ### Parameters
@@ -853,7 +853,7 @@ Send the prompt to the AI service. Note that if the embedding model is called, t
 ### Example
 
 ```bash
-freechat sendPrompt
+freechat-cli sendPrompt
 ```
 
 ### Parameters
@@ -888,7 +888,7 @@ Refer to /api/v2/prompt/send, stream back chunks of the response.
 ### Example
 
 ```bash
-freechat streamSendPrompt
+freechat-cli streamSendPrompt
 ```
 
 ### Parameters
@@ -923,7 +923,7 @@ Update prompt, refer to /api/v2/prompt/create, required field: promptId. Returns
 ### Example
 
 ```bash
-freechat updatePrompt promptId=value
+freechat-cli updatePrompt promptId=value
 ```
 
 ### Parameters

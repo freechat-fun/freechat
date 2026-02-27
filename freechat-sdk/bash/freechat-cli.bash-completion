@@ -1,4 +1,4 @@
-# freechat completion                               -*- shell-script -*-
+# freechat-cli completion                               -*- shell-script -*-
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # !
@@ -13,12 +13,12 @@
 # !
 # ! System wide installation:
 # !
-# ! $ sudo cp freechat.bash-completion /etc/bash-completion.d/freechat
+# ! $ sudo cp freechat-cli.bash-completion /etc/bash-completion.d/freechat-cli
 # !
 # !
 # ! User home installation (add this line to .bash_profile):
 # !
-# ! [ -r ~/freechat.bash-completion ] && source ~/freechat.bash-completion
+# ! [ -r ~/freechat-cli.bash-completion ] && source ~/freechat-cli.bash-completion
 # !
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -56,7 +56,7 @@ if [[ `uname` =~ "Darwin" ]]; then
     }
 fi
 
-_freechat()
+_freechat-cli()
 {
     local cur
     local prev
@@ -604,7 +604,7 @@ _freechat()
     fi
 
     #
-    # Complete the freechat and cURL's arguments
+    # Complete the freechat-cli and cURL's arguments
     #
     if [[ $cur == -* ]]; then
         COMPREPLY=( $( compgen -W '$(_parse_help curl) $(_parse_help $1)' -- "$cur" ) )
@@ -630,6 +630,6 @@ _freechat()
     fi
 
 } &&
-complete -F _freechat freechat
+complete -F _freechat-cli freechat-cli
 
 # ex: ts=4 sw=4 et filetype=sh

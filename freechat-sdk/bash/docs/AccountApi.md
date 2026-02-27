@@ -29,7 +29,7 @@ Create a timed API Token, valid for {duration} seconds.
 ### Example
 
 ```bash
-freechat createToken duration=value
+freechat-cli createToken duration=value
 ```
 
 ### Parameters
@@ -64,7 +64,7 @@ Create a timed API Token, valid for {duration} seconds.
 ### Example
 
 ```bash
-freechat createToken1
+freechat-cli createToken1
 ```
 
 ### Parameters
@@ -96,7 +96,7 @@ Delete an API Token.
 ### Example
 
 ```bash
-freechat deleteToken token=value
+freechat-cli deleteToken token=value
 ```
 
 ### Parameters
@@ -131,7 +131,7 @@ Delete the API token by id.
 ### Example
 
 ```bash
-freechat deleteTokenById id=value
+freechat-cli deleteTokenById id=value
 ```
 
 ### Parameters
@@ -166,7 +166,7 @@ Disable an API Token, the token is not deleted.
 ### Example
 
 ```bash
-freechat disableToken token=value
+freechat-cli disableToken token=value
 ```
 
 ### Parameters
@@ -201,7 +201,7 @@ Disable the API token by id.
 ### Example
 
 ```bash
-freechat disableTokenById id=value
+freechat-cli disableTokenById id=value
 ```
 
 ### Parameters
@@ -236,7 +236,7 @@ Get the API token by id.
 ### Example
 
 ```bash
-freechat getTokenById id=value
+freechat-cli getTokenById id=value
 ```
 
 ### Parameters
@@ -271,7 +271,7 @@ Return user basic information, including: username, nickname, avatar link.
 ### Example
 
 ```bash
-freechat getUserBasic username=value
+freechat-cli getUserBasic username=value
 ```
 
 ### Parameters
@@ -306,7 +306,7 @@ Return user basic information, including: username, nickname, avatar link.
 ### Example
 
 ```bash
-freechat getUserBasic1
+freechat-cli getUserBasic1
 ```
 
 ### Parameters
@@ -338,7 +338,7 @@ Return the detailed user information of the current account, the fields refer to
 ### Example
 
 ```bash
-freechat getUserDetails
+freechat-cli getUserDetails
 ```
 
 ### Parameters
@@ -370,7 +370,7 @@ List currently valid tokens.
 ### Example
 
 ```bash
-freechat listTokens
+freechat-cli listTokens
 ```
 
 ### Parameters
@@ -402,7 +402,7 @@ Update the detailed user information of the current account.
 ### Example
 
 ```bash
-freechat updateUserInfo
+freechat-cli updateUserInfo
 ```
 
 ### Parameters
@@ -437,7 +437,7 @@ Upload a picture of the user.
 ### Example
 
 ```bash
-freechat uploadUserPicture
+freechat-cli uploadUserPicture
 ```
 
 ### Parameters

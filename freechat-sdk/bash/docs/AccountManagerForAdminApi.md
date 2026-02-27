@@ -30,7 +30,7 @@ Create an API Token for a specified user, valid for duration seconds.
 ### Example
 
 ```bash
-freechat createTokenForUser username=value duration=value
+freechat-cli createTokenForUser username=value duration=value
 ```
 
 ### Parameters
@@ -66,7 +66,7 @@ Create user.
 ### Example
 
 ```bash
-freechat createUser
+freechat-cli createUser
 ```
 
 ### Parameters
@@ -101,7 +101,7 @@ Delete the specified API Token.
 ### Example
 
 ```bash
-freechat deleteTokenForUser token=value
+freechat-cli deleteTokenForUser token=value
 ```
 
 ### Parameters
@@ -136,7 +136,7 @@ Delete user by username.
 ### Example
 
 ```bash
-freechat deleteUser username=value
+freechat-cli deleteUser username=value
 ```
 
 ### Parameters
@@ -171,7 +171,7 @@ Disable the specified API Token.
 ### Example
 
 ```bash
-freechat disableTokenForUser token=value
+freechat-cli disableTokenForUser token=value
 ```
 
 ### Parameters
@@ -206,7 +206,7 @@ Return detailed user information.
 ### Example
 
 ```bash
-freechat getDetailsOfUser username=value
+freechat-cli getDetailsOfUser username=value
 ```
 
 ### Parameters
@@ -241,7 +241,7 @@ Get the detailed user information corresponding to the API Token.
 ### Example
 
 ```bash
-freechat getUserByToken token=value
+freechat-cli getUserByToken token=value
 ```
 
 ### Parameters
@@ -276,7 +276,7 @@ List the user's permissions.
 ### Example
 
 ```bash
-freechat listAuthoritiesOfUser username=value
+freechat-cli listAuthoritiesOfUser username=value
 ```
 
 ### Parameters
@@ -311,7 +311,7 @@ Get the list of API Tokens of the user.
 ### Example
 
 ```bash
-freechat listTokensOfUser username=value
+freechat-cli listTokensOfUser username=value
 ```
 
 ### Parameters
@@ -346,7 +346,7 @@ Return user information by page, return the pageNum page, up to pageSize user in
 ### Example
 
 ```bash
-freechat listUsers pageSize=value pageNum=value
+freechat-cli listUsers pageSize=value pageNum=value
 ```
 
 ### Parameters
@@ -382,7 +382,7 @@ Return user information by page, return the pageNum page, up to pageSize user in
 ### Example
 
 ```bash
-freechat listUsers1
+freechat-cli listUsers1
 ```
 
 ### Parameters
@@ -414,7 +414,7 @@ Return user information by page, return the pageNum page, up to pageSize user in
 ### Example
 
 ```bash
-freechat listUsers2 pageSize=value
+freechat-cli listUsers2 pageSize=value
 ```
 
 ### Parameters
@@ -449,7 +449,7 @@ Update the user's permission list.
 ### Example
 
 ```bash
-freechat updateAuthoritiesOfUser username=value
+freechat-cli updateAuthoritiesOfUser username=value
 ```
 
 ### Parameters
@@ -485,7 +485,7 @@ Update user information.
 ### Example
 
 ```bash
-freechat updateUser
+freechat-cli updateUser
 ```
 
 ### Parameters
