@@ -211,10 +211,10 @@ disallowAdditionalPropertiesIfNotPresent=false,\
 enumUnknownDefaultCase=true,\
 fileContentDataType=Blob,\
 importFileExtension=".js",\
-npmName=${ARTIFACT_ID},\
-platform=browser,\
 licenseName="${LICENSE_NAME}",\
-licenseUrl=${LICENSE_URL}
+licenseUrl=${LICENSE_URL},\
+npmName=${ARTIFACT_ID},\
+platform=browser
 
   sdk_output=${SDK_PATH}/typescript
 
@@ -237,14 +237,53 @@ licenseUrl=${LICENSE_URL}
   clean_tmp ${sdk_output}
 }
 
+function bash_sdk {
+  local output=${OUTPUT}/bash
+  rm -rf ${output}
+  mkdir -p ${output}
+
+  java --add-opens java.base/java.lang=ALL-UNNAMED \
+    --add-opens java.base/java.util=ALL-UNNAMED \
+    -jar ${CLI} generate \
+    -i ${DOC} \
+    -g bash \
+    -o ${output} \
+    --artifact-id ${ARTIFACT_ID} \
+    --artifact-version ${VERSION} \
+    --git-host ${GIT_HOST} \
+    --git-repo-id ${GIT_REPO_ID} \
+    --git-user-id ${GIT_USER_ID} \
+    --group-id ${GROUP_ID} \
+    --package-name ${ARTIFACT_ID} \
+    --http-user-agent ${ARTIFACT_ID}/${VERSION}/bash \
+    --additional-properties \
+apiKeyAuthEnvironmentVariable=FREECHAT_API_KEY,\
+disallowAdditionalPropertiesIfNotPresent=false,\
+enumUnknownDefaultCase=true,\
+generateBashCompletion=true,\
+generateZshCompletion=true,\
+hostEnvironmentVariable=FREECHAT_BASE_URL,\
+legacyDiscriminatorBehavior=false,\
+scriptName=freechat
+
+  sdk_output=${SDK_PATH}/bash
+
+  rm -rf ${sdk_output}
+  cp -rf ${output} ${SDK_PATH}
+  clean_tmp ${sdk_output}
+}
+
 if [[ " ${NEW_ARGS[*]} " =~ " --java " ]]; then
   java_sdk
 elif [[ " ${NEW_ARGS[*]} " =~ " --python " ]]; then
   python_sdk
 elif [[ " ${NEW_ARGS[*]} " =~ " --typescript " ]]; then
   typescript_sdk
+elif [[ " ${NEW_ARGS[*]} " =~ " --bash " ]]; then
+  bash_sdk
 else
   java_sdk
   python_sdk
   typescript_sdk
+  bash_sdk
 fi
