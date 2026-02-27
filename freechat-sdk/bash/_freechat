@@ -1,0 +1,1872 @@
+#compdef freechat
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !
+# ! Note:
+# !
+# ! THIS SCRIPT HAS BEEN AUTOMATICALLY GENERATED USING
+# ! openapi-generator (https://openapi-generator.tech)
+# ! FROM OPENAPI SPECIFICATION IN JSON.
+# !
+# ! Based on: https://github.com/Valodim/zsh-curl-completion/blob/master/_curl
+# !
+# ! Generator version: 7.20.0
+# !
+# !
+# ! Installation:
+# !
+# ! Copy the _freechat file to any directory under FPATH
+# ! environment variable (echo $FPATH)
+# !
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+local curcontext="$curcontext" state line ret=1
+typeset -A opt_args
+
+typeset -A mime_type_abbreviations
+# text/*
+mime_type_abbreviations[text]="text/plain"
+mime_type_abbreviations[html]="text/html"
+mime_type_abbreviations[md]="text/x-markdown"
+mime_type_abbreviations[csv]="text/csv"
+mime_type_abbreviations[css]="text/css"
+mime_type_abbreviations[rtf]="text/rtf"
+# application/*
+mime_type_abbreviations[json]="application/json"
+mime_type_abbreviations[xml]="application/xml"
+mime_type_abbreviations[yaml]="application/yaml"
+mime_type_abbreviations[js]="application/javascript"
+mime_type_abbreviations[bin]="application/octet-stream"
+mime_type_abbreviations[rdf]="application/rdf+xml"
+# image/*
+mime_type_abbreviations[jpg]="image/jpeg"
+mime_type_abbreviations[png]="image/png"
+mime_type_abbreviations[gif]="image/gif"
+mime_type_abbreviations[bmp]="image/bmp"
+mime_type_abbreviations[tiff]="image/tiff"
+
+#
+# Generate zsh completion string list for abbreviated mime types
+#
+get_mime_type_completions() {
+    typeset -a result
+    result=()
+    for k in "${(@k)mime_type_abbreviations}"; do
+        value=$mime_type_abbreviations[${k}]
+        #echo $value
+        result+=( "${k}[${value}]" )
+        #echo $result
+    done
+    echo "$result"
+}
+
+#
+# cURL crypto engines completion function
+#
+_curl_crypto_engine() {
+    local vals
+    vals=( ${${(f)"$(curl --engine list)":gs/ /}[2,$]} )
+    _describe -t outputs 'engines' vals && return 0
+}
+
+#
+# cURL post data completion functions=
+#
+_curl_post_data() {
+
+    # don't do anything further if this is raw content
+    compset -P '=' && _message 'raw content' && return 0
+
+    # complete filename or stdin for @ syntax
+    compset -P '*@' && {
+        local expl
+        _description files expl stdin
+        compadd "$expl[@]" - "-"
+        _files
+        return 0
+    }
+
+    # got a name already? expecting data.
+    compset -P '*=' && _message 'data value' && return 0
+
+    # otherwise, name (or @ or =) should be specified
+    _message 'data name' && return 0
+
+}
+
+
+local arg_http arg_ftp arg_other arg_proxy arg_crypto arg_connection arg_auth arg_input arg_output
+
+# HTTP Arguments
+arg_http=(''\
+  {-0,--http1.0}'[force use of use http 1.0 instead of 1.1]' \
+  {-b,--cookie}'[pass data to http server as cookie]:data or file' \
+  {-c,--cookie-jar}'[specify cookie file]:file name:_files' \
+  {-d,--data}'[send specified data as HTTP POST data]:data:{_curl_post_data}' \
+  '--data-binary[post HTTP POST data without any processing]:data:{_curl_post_data}' \
+  '--data-urlencode[post HTTP POST data, with url encoding]:data:{_curl_post_data}' \
+  {-f,--fail}'[enable failfast behavior for server errors]' \
+  '*'{-F,--form}'[add POST form data]:name=content' \
+  {-G,--get}'[use HTTP GET even with data (-d, --data, --data-binary)]' \
+  '*'{-H,--header}'[specify an extra header]:header' \
+  '--ignore-content-length[ignore Content-Length header]' \
+  {-i,--include}'[include HTTP header in the output]' \
+  {-j,--junk-session-cookies}'[discard all session cookies]' \
+  {-e,--referer}'[send url as referer]:referer url:_urls' \
+  {-L,--location}'[follow Location headers on http 3XX response]' \
+  '--location-trusted[like --location, but allows sending of auth data to redirected hosts]' \
+  '--max-redirs[set maximum number of redirection followings allowed]:number' \
+  {-J,--remote-header-name}'[use Content-Disposition for output file name]' \
+  {-O,--remote-name}'[write to filename parsed from url instead of stdout]' \
+  '--post301[do not convert POST to GET after following 301 Location response (follow RFC 2616/10.3.2)]' \
+  '--post302[do not convert POST to GET after following 302 Location response (follow RFC 2616/10.3.2)]' \
+  )
+
+# FTP arguments
+arg_ftp=(\
+  {-a,--append}'[append to target file instead of overwriting (FTP/SFTP)]' \
+  '--crlf[convert LF to CRLF in upload]' \
+  '--disable-eprt[disable use of EPRT and LPRT for active FTP transfers]' \
+  '--disable-epsv[disable use of EPSV for passive FTP transfers]' \
+  '--ftp-account[account data (FTP)]:data' \
+  '--ftp-alternative-to-user[command to send when USER and PASS commands fail (FTP)]:command' \
+  '--ftp-create-dirs[create paths remotely if it does not exist]' \
+  '--ftp-method[ftp method to use to reach a file (FTP)]:method:(multicwd ocwd singlecwd)' \
+  '--ftp-pasv[use passive mode for the data connection (FTP)]' \
+  '--ftp-skip-pasv-ip[do not use the ip the server suggests for PASV]' \
+  '--form-string[like --form, but do not parse content]:name=string' \
+  '--ftp-pret[send PRET before PASV]' \
+  '--ftp-ssl-ccc[use clear command channel (CCC) after authentication (FTP)]' \
+  '--ftp-ssl-ccc-mode[sets the CCC mode (FTP)]:mode:(active passive)' \
+  '--ftp-ssl-control[require SSL/TLS for FTP login, clear for transfer]' \
+  {-l,--list-only}'[list names only when listing directories (FTP)]' \
+  {-P,--ftp-port}'[use active mode, tell server to connect to specified address or interface (FTP]:address' \
+  '*'{-Q,--quote}'[send arbitrary command to the remote server before transfer (FTP/SFTP)]:command' \
+  )
+
+# Other Protocol arguments
+arg_other=(\
+  '--mail-from[specify From: address]:address' \
+  '--mail-rcpt[specify email recipient for SMTP, may be given multiple times]:address' \
+  {-t,--telnet-option}'[pass options to telnet protocol]:opt=val' \
+  '--tftp-blksize[set tftp BLKSIZE option]:value' \
+  )
+
+# Proxy arguments
+arg_proxy=(\
+  '--noproxy[list of hosts to connect directly to instead of through proxy]:no-proxy-list' \
+  {-p,--proxytunnel}'[tunnel non-http protocols through http proxy]' \
+  {-U,--proxy-user}'[specify the user name and password to use for proxy authentication]:user:password' \
+  '--proxy-anyauth[use any authentication method for proxy, default to most secure]' \
+  '--proxy-basic[use HTTP Basic authentication for proxy]' \
+  '--proxy-digest[use http digest authentication for proxy]' \
+  '--proxy-negotiate[enable GSS-Negotiate authentication for proxy]' \
+  '--proxy-ntlm[enable ntlm authentication for proxy]' \
+  '--proxy1.0[use http 1.0 proxy]:proxy url' \
+  {-x,--proxy}'[use specified proxy]:proxy url' \
+  '--socks5-gssapi-service[change service name for socks server]:servicename' \
+  '--socks5-gssapi-nec[allow unprotected exchange of protection mode negotiation]' \
+  )
+
+# Crypto arguments
+arg_crypto=(\
+  {-1,--tlsv1}'[Forces curl to use TLS version 1 when negotiating with a remote TLS server.]' \
+  {-2,--sslv2}'[Forces curl to use SSL version 2 when negotiating with a remote SSL server.]' \
+  {-3,--sslv3}'[Forces curl to use SSL version 3 when negotiating with a remote SSL server.]' \
+  '--ciphers[specifies which cipher to use for the ssl connection]:list of ciphers' \
+  '--crlfile[specify file with revoked certificates]:file' \
+  '--delegation[set delegation policy to use with GSS/kerberos]:delegation policy:(none policy always)' \
+  {-E,--cert}'[use specified client certificate]:certificate file:_files' \
+  '--engine[use selected OpenSSL crypto engine]:ssl crypto engine:{_curl_crypto_engine}' \
+  '--egd-file[set ssl entropy gathering daemon socket]:entropy socket:_files' \
+  '--cert-type[specify certificate type (PEM, DER, ENG)]:certificate type:(PEM DER ENG)' \
+  '--cacert[specify certificate file to verify the peer with]:CA certificate:_files' \
+  '--capath[specify a search path for certificate files]:CA certificate directory:_directories' \
+  '--hostpubmd5[check remote hosts public key]:md5 hash' \
+  {-k,--insecure}'[allow ssl to perform insecure ssl connections (ie, ignore certificate)]' \
+  '--key[ssl/ssh private key file name]:key file:_files' \
+  '--key-type[ssl/ssh private key file type]:file type:(PEM DER ENG)' \
+  '--pubkey[ssh public key file]:pubkey file:_files' \
+  '--random-file[set source of random data for ssl]:random source:_files' \
+  '--no-sessionid[disable caching of ssl session ids]' \
+  '--pass:phrase[passphrase for ssl/ssh private key]' \
+  '--ssl[try to use ssl/tls for connection, if available]' \
+  '--ssl-reqd[try to use ssl/tls for connection, fail if unavailable]' \
+  '--tlsauthtype[set TLS authentication type (only SRP supported!)]:authtype' \
+  '--tlsuser[set username for TLS authentication]:user' \
+  '--tlspassword[set password for TLS authentication]:password' \
+  )
+
+# Connection arguments
+arg_connection=(\
+  {-4,--ipv4}'[prefer ipv4]' \
+  {-6,--ipv6}'[prefer ipv6, if available]' \
+  {-B,--use-ascii}'[use ascii mode]' \
+  '--compressed[request a compressed transfer]' \
+  '--connect-timeout[timeout for connection phase]:seconds' \
+  {-I,--head}'[fetch http HEAD only (HTTP/FTP/FILE]' \
+  '--interface[work on a specific interface]:name' \
+  '--keepalive-time[set time to wait before sending keepalive probes]:seconds' \
+  '--limit-rate[specify maximum transfer rate]:speed' \
+  '--local-port[set preferred number or range of local ports to use]:num' \
+  {-N,--no-buffer}'[disable buffering of the output stream]' \
+  '--no-keepalive[disable use of keepalive messages in TCP connections]' \
+  '--raw[disable all http decoding and pass raw data]' \
+  '--resolve[provide a custom address for a specific host and port pair]:host\:port\:address' \
+  '--retry[specify maximum number of retries for transient errors]:num' \
+  '--retry-delay[specify delay between retries]:seconds' \
+  '--retry-max-time[maximum time to spend on retries]:seconds' \
+  '--tcp-nodelay[turn on TCP_NODELAY option]' \
+  {-y,--speed-time}'[specify time to abort after if download is slower than speed-limit]:time' \
+  {-Y,--speed-limit}'[specify minimum speed for --speed-time]:speed' \
+  )
+
+# Authentication arguments
+arg_auth=(\
+  '--anyauth[use any authentication method, default to most secure]' \
+  '--basic[use HTTP Basic authentication]' \
+  '--ntlm[enable ntlm authentication]' \
+  '--digest[use http digest authentication]' \
+  '--krb[use kerberos authentication]:auth:(clear safe confidential private)' \
+  '--negotiate[enable GSS-Negotiate authentication]' \
+  {-n,--netrc}'[scan ~/.netrc for login data]' \
+  '--netrc-optional[like --netrc, but does not make .netrc usage mandatory]' \
+  '--netrc-file[like --netrc, but specify file to use]:netrc file:_files' \
+  '--tr-encoding[request compressed transfer-encoding]' \
+  {-u,--user}'[specify user name and password for server authentication]:user\:password' \
+  )
+
+# Input arguments
+arg_input=(\
+  {-C,--continue-at}'[resume at offset ]:offset' \
+  {-g,--globoff}'[do not glob {}\[\] letters]' \
+  '--max-filesize[maximum filesize to download, fail for bigger files]:bytes' \
+  '--proto[specify allowed protocols for transfer]:protocols' \
+  '--proto-redir[specify allowed protocols for transfer after a redirect]:protocols' \
+  {-r,--range}'[set range of bytes to request (HTTP/FTP/SFTP/FILE)]:range' \
+  {-R,--remote-time}'[use timestamp of remote file for local file]' \
+  {-T,--upload-file}'[transfer file to remote url (using PUT for HTTP)]:file to upload:_files' \
+  '--url[specify a URL to fetch (multi)]:url:_urls' \
+  {-z,--time-cond}'[request downloaded file to be newer than date or given reference file]:date expression' \
+  )
+
+# Output arguments
+arg_output=(\
+  '--create-dirs[create local directory hierarchy as needed]' \
+  {-D,--dump-header}'[write protocol headers to file]:dump file:_files' \
+  {-o,--output}'[write to specified file instead of stdout]:output file:_files' \
+  {--progress-bar,-\#}'[display progress as a simple progress bar]' \
+  {-\#,--progress-bar}'[Make curl display progress as a simple progress bar instead of the standard, more informational, meter.]' \
+  {-R,--remote-time}'[use timestamp of remote file for local file]' \
+  '--raw[disable all http decoding and pass raw data]' \
+  {-s,--silent}'[silent mode, do not show progress meter or error messages]' \
+  {-S,--show-error}'[show errors in silent mode]' \
+  '--stderr[redirect stderr to specified file]:output file:_files' \
+  '--trace[enable full trace dump of all incoming and outgoing data]:trace file:_files' \
+  '--trace-ascii[enable full trace dump of all incoming and outgoing data, without hex data]:trace file:_files' \
+  '--trace-time[prepends a time stamp to each trace or verbose line that curl displays]' \
+  {-v,--verbose}'[output debug info]' \
+  {-w,--write-out}'[specify message to output on successful operation]:format string' \
+  '--xattr[store some file metadata in extended file attributes]' \
+  {-X,--request}'[specifies request method for HTTP server]:method:(GET POST PUT DELETE HEAD OPTIONS TRACE CONNECT PATCH LINK UNLINK)' \
+  )
+
+_arguments -C -s $arg_http $arg_ftp $arg_other $arg_crypto $arg_connection $arg_auth $arg_input $arg_output \
+  {-M,--manual}'[Print manual]' \
+  '*'{-K,--config}'[Use other config file to read arguments from]:config file:_files' \
+  '--libcurl[output libcurl code for the operation to file]:output file:_files' \
+  {-m,--max-time}'[Limit total time of operation]:seconds' \
+  {-s,--silent}'[Silent mode, do not show progress meter or error messages]' \
+  {-S,--show-error}'[Show errors in silent mode]' \
+  '--stderr[Redirect stderr to specified file]:output file:_files' \
+  '-q[Do not read settings from .curlrc (must be first option)]' \
+  {-h,--help}'[Print help and list of operations]' \
+  {-V,--version}'[Print service API version]' \
+  '--about[Print the information about service]' \
+  '--host[Specify the host URL]':URL:_urls \
+  '--dry-run[Print out the cURL command without executing it]' \
+  {-ac,--accept}'[Set the Accept header in the request]: :{_values "Accept mime type" $(get_mime_type_completions)}' \
+  {-ct,--content-type}'[Set the Content-type header in request]: :{_values "Content mime type" $(get_mime_type_completions)}' \
+  '1: :->ops' \
+  '*:: :->args' \
+  && ret=0
+
+
+case $state in
+  ops)
+    # Operations
+    _values "Operations" \
+            "addAiApiKey[Add Model Provider Credential]" \
+            "deleteAiApiKey[Delete Credential of Model Provider]" \
+            "disableAiApiKey[Disable Model Provider Credential]" \
+            "enableAiApiKey[Enable Model Provider Credential]" \
+            "getAiApiKey[Get credential of Model Provider]" \
+            "listAiApiKeys[List Credentials of Model Provider]"             "createToken[Create API Token]" \
+            "createToken1[Create API Token]" \
+            "deleteToken[Delete API Token]" \
+            "deleteTokenById[Delete API Token by Id]" \
+            "disableToken[Disable API Token]" \
+            "disableTokenById[Disable API Token by Id]" \
+            "getTokenById[Get API Token by Id]" \
+            "getUserBasic[Get User Basic Information]" \
+            "getUserBasic1[Get User Basic Information]" \
+            "getUserDetails[Get User Details]" \
+            "listTokens[List API Tokens]" \
+            "updateUserInfo[Update User Details]" \
+            "uploadUserPicture[Upload User Picture]"             "createTokenForUser[Create API Token for User.]" \
+            "createUser[Create User]" \
+            "deleteTokenForUser[Delete API Token]" \
+            "deleteUser[Delete User]" \
+            "disableTokenForUser[Disable API Token]" \
+            "getDetailsOfUser[Get User Details]" \
+            "getUserByToken[Get User by API Token]" \
+            "listAuthoritiesOfUser[List User Permissions]" \
+            "listTokensOfUser[Get API Token of User]" \
+            "listUsers[List User Information]" \
+            "listUsers1[List User Information]" \
+            "listUsers2[List User Information]" \
+            "updateAuthoritiesOfUser[Update User Permissions]" \
+            "updateUser[Update User]"             "batchSearchAgentDetails[Batch Search Agent Details]" \
+            "batchSearchAgentSummary[Batch Search Agent Summaries]" \
+            "cloneAgent[Clone Agent]" \
+            "cloneAgents[Batch Clone Agents]" \
+            "countAgents[Calculate Number of Agents]" \
+            "createAgent[Create Agent]" \
+            "createAgents[Batch Create Agents]" \
+            "deleteAgent[Delete Agent]" \
+            "deleteAgents[Batch Delete Agents]" \
+            "getAgentDetails[Get Agent Details]" \
+            "getAgentSummary[Get Agent Summary]" \
+            "listAgentVersionsByName[List Versions by Agent Name]" \
+            "publishAgent[Publish Agent]" \
+            "searchAgentDetails[Search Agent Details]" \
+            "searchAgentSummary[Search Agent Summary]" \
+            "updateAgent[Update Agent]"             "getDefaultConfig[Get Default Config]"             "getAppMeta[Get Application Information]"             "addCharacterBackend[Add Character Backend]" \
+            "batchSearchCharacterDetails[Batch Search Character Details]" \
+            "batchSearchCharacterSummary[Batch Search Character Summaries]" \
+            "cloneCharacter[Clone Character]" \
+            "countCharacters[Calculate Number of Characters]" \
+            "countPublicCharacters[Calculate Number of Public Characters]" \
+            "createCharacter[Create Character]" \
+            "deleteCharacter[Delete Character]" \
+            "deleteCharacterByName[Delete Character by Name]" \
+            "deleteCharacterByUid[Delete Character by Uid]" \
+            "deleteCharacterDocument[Delete Character Document]" \
+            "deleteCharacterPicture[Delete Character Picture]" \
+            "deleteCharacterVideo[Delete Character Video]" \
+            "deleteCharacterVoice[Delete Character Voice]" \
+            "existsCharacterName[Check If Character Name Exists]" \
+            "exportCharacter[Export Character Configuration]" \
+            "getCharacterDetails[Get Character Details]" \
+            "getCharacterLatestIdByName[Get Latest Character Id by Name]" \
+            "getCharacterSummary[Get Character Summary]" \
+            "getDefaultCharacterBackend[Get Default Character Backend]" \
+            "importCharacter[Import Character Configuration]" \
+            "listCharacterBackendIds[List Character Backend ids]" \
+            "listCharacterBackends[List Character Backends]" \
+            "listCharacterDocuments[List Character Documents]" \
+            "listCharacterPictures[List Character Pictures]" \
+            "listCharacterVersionsByName[List Versions by Character Name]" \
+            "listCharacterVideos[List Character Videos]" \
+            "listCharacterVoices[List Character Voices]" \
+            "newCharacterName[Create New Character Name]" \
+            "publishCharacter[Publish Character]" \
+            "publishCharacter1[Publish Character]" \
+            "removeCharacterBackend[Remove Character Backend]" \
+            "searchCharacterDetails[Search Character Details]" \
+            "searchCharacterSummary[Search Character Summary]" \
+            "searchPublicCharacterSummary[Search Public Character Summary]" \
+            "setDefaultCharacterBackend[Set Default Character Backend]" \
+            "updateCharacter[Update Character]" \
+            "updateCharacterBackend[Update Character Backend]" \
+            "uploadCharacterAvatar[Upload Character Avatar]" \
+            "uploadCharacterDocument[Upload Character Document]" \
+            "uploadCharacterPicture[Upload Character Picture]" \
+            "uploadCharacterVideo[Upload Character Video]" \
+            "uploadCharacterVoice[Upload Character Voice]"             "clearMemory[Clear Memory]" \
+            "deleteChat[Delete Chat Session]" \
+            "getDefaultChatId[Get Default Chat]" \
+            "getMemoryUsage[Get Memory Usage]" \
+            "listChats[List Chats]" \
+            "listDebugMessages[List Chat Debug Messages]" \
+            "listDebugMessages1[List Chat Debug Messages]" \
+            "listDebugMessages2[List Chat Debug Messages]" \
+            "listMessages[List Chat Messages]" \
+            "listMessages1[List Chat Messages]" \
+            "listMessages2[List Chat Messages]" \
+            "rollbackMessages[Rollback Chat Messages]" \
+            "sendAssistant[Send Assistant for Chat Message]" \
+            "sendMessage[Send Chat Message]" \
+            "startChat[Start Chat Session]" \
+            "streamSendAssistant[Send Assistant for Chat Message by Streaming Back]" \
+            "streamSendMessage[Send Chat Message by Streaming Back]" \
+            "updateChat[Update Chat Session]"             "encryptText[Encrypt Text]"             "addStatistic[Add Statistics]" \
+            "getScore[Get Score for Resource]" \
+            "getStatistic[Get Statistics]" \
+            "getStatistics[Get All Statistics]" \
+            "increaseStatistic[Increase Statistics]" \
+            "listAgentsByStatistic[List Agents by Statistics]" \
+            "listAgentsByStatistic1[List Agents by Statistics]" \
+            "listAgentsByStatistic2[List Agents by Statistics]" \
+            "listCharactersByStatistic[List Characters by Statistics]" \
+            "listCharactersByStatistic1[List Characters by Statistics]" \
+            "listCharactersByStatistic2[List Characters by Statistics]" \
+            "listHotTags[Hot Tags]" \
+            "listPluginsByStatistic[List Plugins by Statistics]" \
+            "listPluginsByStatistic1[List Plugins by Statistics]" \
+            "listPluginsByStatistic2[List Plugins by Statistics]" \
+            "listPromptsByStatistic[List Prompts by Statistics]" \
+            "listPromptsByStatistic1[List Prompts by Statistics]" \
+            "listPromptsByStatistic2[List Prompts by Statistics]"             "getOwners[Get My Superior Relationship]" \
+            "getOwnersDot[Get DOT of Superior Relationship]" \
+            "getSubordinateOwners[Get Superior Relationship]" \
+            "getSubordinateSubordinates[Get Subordinate Relationship]" \
+            "getSubordinates[Get My Subordinate Relationship]" \
+            "getSubordinatesDot[Get DOT of Subordinate Relationship]" \
+            "listSubordinateAuthorities[List Subordinate Permissions]" \
+            "removeSubordinateSubordinatesTree[Clear Subordinate Relationship]" \
+            "updateSubordinateAuthorities[Update Subordinate Permissions]" \
+            "updateSubordinateOwners[Update Superior Relationship]" \
+            "updateSubordinateSubordinates[Update Subordinate Relationship]"             "batchSearchPluginDetails[Batch Search Plugin Details]" \
+            "batchSearchPluginSummary[Batch Search Plugin Summaries]" \
+            "countPlugins[Calculate Number of Plugins]" \
+            "createPlugin[Create Plugin]" \
+            "createPlugins[Batch Create Plugins]" \
+            "deletePlugin[Delete Plugin]" \
+            "deletePlugins[Batch Delete Plugins]" \
+            "getPluginDetails[Get Plugin Details]" \
+            "getPluginSummary[Get Plugin Summary]" \
+            "refreshPluginInfo[Refresh Plugin Information]" \
+            "searchPluginDetails[Search Plugin Details]" \
+            "searchPluginSummary[Search Plugin Summary]" \
+            "updatePlugin[Update Plugin]"             "applyPromptRef[Apply Parameters to Prompt Record]" \
+            "applyPromptTemplate[Apply Parameters to Prompt Template]" \
+            "batchSearchPromptDetails[Batch Search Prompt Details]" \
+            "batchSearchPromptSummary[Batch Search Prompt Summaries]" \
+            "clonePrompt[Clone Prompt]" \
+            "clonePrompts[Batch Clone Prompts]" \
+            "countPrompts[Calculate Number of Prompts]" \
+            "countPublicPrompts[Calculate Number of Public Prompts]" \
+            "createPrompt[Create Prompt]" \
+            "createPrompts[Batch Create Prompts]" \
+            "deletePrompt[Delete Prompt]" \
+            "deletePromptByName[Delete Prompt by Name]" \
+            "deletePrompts[Batch Delete Prompts]" \
+            "existsPromptName[Check If Prompt Name Exists]" \
+            "getPromptDetails[Get Prompt Details]" \
+            "getPromptSummary[Get Prompt Summary]" \
+            "listPromptVersionsByName[List Versions by Prompt Name]" \
+            "newPromptName[Create New Prompt Name]" \
+            "publishPrompt[Publish Prompt]" \
+            "searchPromptDetails[Search Prompt Details]" \
+            "searchPromptSummary[Search Prompt Summary]" \
+            "searchPublicPromptSummary[Search Public Prompt Summary]" \
+            "sendPrompt[Send Prompt]" \
+            "streamSendPrompt[Send Prompt by Streaming Back]" \
+            "updatePrompt[Update Prompt]"             "createPromptTask[Create Prompt Task]" \
+            "deletePromptTask[Delete Prompt Task]" \
+            "getPromptTask[Get Prompt Task]" \
+            "updatePromptTask[Update Prompt Task]"             "cancelRagTask[Cancel RAG Task]" \
+            "createRagTask[Create RAG Task]" \
+            "deleteRagTask[Delete RAG Task]" \
+            "getRagTask[Get RAG Task]" \
+            "getRagTaskStatus[Get RAG Task Status]" \
+            "listRagTasks[List RAG Tasks]" \
+            "startRagTask[Start RAG Task]" \
+            "updateRagTask[Update RAG Task]"             "listTtsBuiltinSpeakers[List Builtin Speakers]" \
+            "playSample[Play Sample Audio]" \
+            "speakMessage[Speak Message]"             "createTag[Create Tag]" \
+            "deleteTag[Delete Tag]" \
+
+    _arguments "(--help)--help[Print information about operation]"
+
+    ret=0
+    ;;
+  args)
+    case $line[1] in
+      addAiApiKey)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteAiApiKey)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Credential identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      disableAiApiKey)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Credential identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      enableAiApiKey)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Credential identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getAiApiKey)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Credential identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listAiApiKeys)
+        local -a _op_arguments
+        _op_arguments=(
+          "provider=:[PATH] Model provider"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createToken)
+        local -a _op_arguments
+        _op_arguments=(
+          "duration=:[PATH] Token validity duration (seconds)"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createToken1)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteToken)
+        local -a _op_arguments
+        _op_arguments=(
+          "token=:[PATH] Token content"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteTokenById)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Token id"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      disableToken)
+        local -a _op_arguments
+        _op_arguments=(
+          "token=:[PATH] Token content"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      disableTokenById)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Token id"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getTokenById)
+        local -a _op_arguments
+        _op_arguments=(
+          "id=:[PATH] Token id"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getUserBasic)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getUserBasic1)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getUserDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listTokens)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateUserInfo)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      uploadUserPicture)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createTokenForUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+"duration=:[PATH] Validity period (seconds)"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createUser)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteTokenForUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "token=:[PATH] API Token"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      disableTokenForUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "token=:[PATH] API Token"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getDetailsOfUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getUserByToken)
+        local -a _op_arguments
+        _op_arguments=(
+          "token=:[PATH] API Token"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listAuthoritiesOfUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listTokensOfUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listUsers)
+        local -a _op_arguments
+        _op_arguments=(
+          "pageSize=:[PATH] Maximum quantity"
+"pageNum=:[PATH] Current page number"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listUsers1)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listUsers2)
+        local -a _op_arguments
+        _op_arguments=(
+          "pageSize=:[PATH] Maximum quantity"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateAuthoritiesOfUser)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateUser)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchAgentDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchAgentSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      cloneAgent)
+        local -a _op_arguments
+        _op_arguments=(
+          "agentId=:[PATH] The referenced agentId"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      cloneAgents)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      countAgents)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createAgent)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createAgents)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteAgent)
+        local -a _op_arguments
+        _op_arguments=(
+          "agentId=:[PATH] AgentId to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteAgents)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getAgentDetails)
+        local -a _op_arguments
+        _op_arguments=(
+          "agentId=:[PATH] AgentId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getAgentSummary)
+        local -a _op_arguments
+        _op_arguments=(
+          "agentId=:[PATH] agentId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listAgentVersionsByName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] Agent name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      publishAgent)
+        local -a _op_arguments
+        _op_arguments=(
+          "agentId=:[PATH] The agentId to be published"
+"visibility=:[PATH] Visibility: public | private | ..."
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchAgentDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchAgentSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateAgent)
+        local -a _op_arguments
+        _op_arguments=(
+          "agentId=:[PATH] AgentId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getDefaultConfig)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getAppMeta)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      addCharacterBackend)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The characterUid to be added a backend"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchCharacterDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchCharacterSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      cloneCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] The referenced characterId"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      countCharacters)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      countPublicCharacters)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] The characterId to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacterByName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] The character name to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacterByUid)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The character uid to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacterDocument)
+        local -a _op_arguments
+        _op_arguments=(
+          "key=:[PATH] Document key"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacterPicture)
+        local -a _op_arguments
+        _op_arguments=(
+          "key=:[PATH] Image key"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacterVideo)
+        local -a _op_arguments
+        _op_arguments=(
+          "key=:[PATH] Video key"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteCharacterVoice)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterBackendId=:[PATH] The characterBackendId"
+"key=:[PATH] Voice key"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      existsCharacterName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] Name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      exportCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] Character identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getCharacterDetails)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] CharacterId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getCharacterLatestIdByName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] Character name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getCharacterSummary)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] CharacterId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getDefaultCharacterBackend)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The characterUid to be queried"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      importCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterBackendIds)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The characterUid to be queried"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterBackends)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The characterUid to be queried"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterDocuments)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterPictures)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterVersionsByName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] Character name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterVideos)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharacterVoices)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterBackendId=:[PATH] The characterBackendId"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      newCharacterName)
+        local -a _op_arguments
+        _op_arguments=(
+          "desired=:[PATH] Desired name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      publishCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] The characterId to be published"
+"visibility=:[PATH] Visibility: public | private | ..."
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      publishCharacter1)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] The characterId to be published"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      removeCharacterBackend)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterBackendId=:[PATH] The characterBackendId to be removed"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchCharacterDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchCharacterSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchPublicCharacterSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      setDefaultCharacterBackend)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterBackendId=:[PATH] The characterBackendId to be set to default"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateCharacter)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterId=:[PATH] The characterId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateCharacterBackend)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterBackendId=:[PATH] The characterBackendId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      uploadCharacterAvatar)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      uploadCharacterDocument)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      uploadCharacterPicture)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      uploadCharacterVideo)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character unique identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      uploadCharacterVoice)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterBackendId=:[PATH] The characterBackendId"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      clearMemory)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteChat)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getDefaultChatId)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] Character uid"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getMemoryUsage)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listChats)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listDebugMessages)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"limit=:[PATH] Messages limit"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listDebugMessages1)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"limit=:[PATH] Messages limit"
+"offset=:[PATH] Messages offset (from new to old)"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listDebugMessages2)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listMessages)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"limit=:[PATH] Messages limit"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listMessages1)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"limit=:[PATH] Messages limit"
+"offset=:[PATH] Messages offset (from new to old)"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listMessages2)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      rollbackMessages)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"count=:[PATH] Message count to be rolled back"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      sendAssistant)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"assistantUid=:[PATH] Assistant uid"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      sendMessage)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      startChat)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      streamSendAssistant)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+"assistantUid=:[PATH] Assistant uid"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      streamSendMessage)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateChat)
+        local -a _op_arguments
+        _op_arguments=(
+          "chatId=:[PATH] Chat session identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      encryptText)
+        local -a _op_arguments
+        _op_arguments=(
+          "text=:[PATH] Text to be encrypted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      addStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "infoType=:[PATH] Info type: prompt | agent | plugin | character"
+"infoId=:[PATH] Unique resource identifier"
+"statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"delta=:[PATH] Delta in statistical value"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getScore)
+        local -a _op_arguments
+        _op_arguments=(
+          "infoType=:[PATH] Info type: prompt | agent | plugin | character"
+"infoId=:[PATH] Unique resource identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "infoType=:[PATH] Info type: prompt | agent | plugin | character"
+"infoId=:[PATH] Unique resource identifier"
+"statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getStatistics)
+        local -a _op_arguments
+        _op_arguments=(
+          "infoType=:[PATH] Info type: prompt | agent | plugin | character"
+"infoId=:[PATH] Unique resource identifier"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      increaseStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "infoType=:[PATH] Info type: prompt | agent | plugin | character"
+"infoId=:[PATH] Unique resource identifier"
+"statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listAgentsByStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listAgentsByStatistic1)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+"pageNum=:[PATH] Current page number"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listAgentsByStatistic2)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharactersByStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharactersByStatistic1)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listCharactersByStatistic2)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+"pageNum=:[PATH] Current page number"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listHotTags)
+        local -a _op_arguments
+        _op_arguments=(
+          "infoType=:[PATH] Info type: prompt | agent | plugin | character"
+"pageSize=:[PATH] Maximum quantity"
+          "text=:[QUERY] Key word"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPluginsByStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+"pageNum=:[PATH] Current page number"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPluginsByStatistic1)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPluginsByStatistic2)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPromptsByStatistic)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPromptsByStatistic1)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPromptsByStatistic2)
+        local -a _op_arguments
+        _op_arguments=(
+          "statsType=:[PATH] Statistics type: view_count | refer_count | recommend_count | score"
+"pageSize=:[PATH] Maximum quantity"
+"pageNum=:[PATH] Current page number"
+          "asc=:[QUERY] Default is descending order, set asc&#x3D;1 for ascending order"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getOwners)
+        local -a _op_arguments
+        _op_arguments=(
+                    "all=:[QUERY] Whether to return virtual reported owners"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getOwnersDot)
+        local -a _op_arguments
+        _op_arguments=(
+                    "all=:[QUERY] Whether to return virtual reported owners"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getSubordinateOwners)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] The account being queried, must be a subordinate account of the current account"
+          "all=:[QUERY] Whether to return virtual reported owners"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getSubordinateSubordinates)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] The account being queried, must be a subordinate account of the current account"
+          "all=:[QUERY] Whether to return virtual managed subordinates"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getSubordinates)
+        local -a _op_arguments
+        _op_arguments=(
+                    "all=:[QUERY] Whether to return virtual managed subordinates"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getSubordinatesDot)
+        local -a _op_arguments
+        _op_arguments=(
+                    "all=:[QUERY] Whether to return virtual managed subordinates"
+          )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listSubordinateAuthorities)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      removeSubordinateSubordinatesTree)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] The account being operated, must be a subordinate account of the current account"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateSubordinateAuthorities)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] Username"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateSubordinateOwners)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] The account being operated, must be a subordinate account of the current account"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateSubordinateSubordinates)
+        local -a _op_arguments
+        _op_arguments=(
+          "username=:[PATH] The account being operated, must be a subordinate account of the current account"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchPluginDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchPluginSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      countPlugins)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createPlugin)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createPlugins)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deletePlugin)
+        local -a _op_arguments
+        _op_arguments=(
+          "pluginId=:[PATH] The pluginId to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deletePlugins)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getPluginDetails)
+        local -a _op_arguments
+        _op_arguments=(
+          "pluginId=:[PATH] PluginId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getPluginSummary)
+        local -a _op_arguments
+        _op_arguments=(
+          "pluginId=:[PATH] PluginId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      refreshPluginInfo)
+        local -a _op_arguments
+        _op_arguments=(
+          "pluginId=:[PATH] The pluginId to be fetched"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchPluginDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchPluginSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updatePlugin)
+        local -a _op_arguments
+        _op_arguments=(
+          "pluginId=:[PATH] The pluginId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      applyPromptRef)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      applyPromptTemplate)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchPromptDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      batchSearchPromptSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      clonePrompt)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptId=:[PATH] The referenced promptId"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      clonePrompts)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      countPrompts)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      countPublicPrompts)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createPrompt)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createPrompts)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deletePrompt)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptId=:[PATH] The promptId to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deletePromptByName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] The prompt name to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deletePrompts)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      existsPromptName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] Name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getPromptDetails)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptId=:[PATH] PromptId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getPromptSummary)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptId=:[PATH] PromptId to be obtained"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listPromptVersionsByName)
+        local -a _op_arguments
+        _op_arguments=(
+          "name=:[PATH] Prompt name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      newPromptName)
+        local -a _op_arguments
+        _op_arguments=(
+          "desired=:[PATH] Desired name"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      publishPrompt)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptId=:[PATH] The promptId to be published"
+"visibility=:[PATH] Visibility: public | private | ..."
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchPromptDetails)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchPromptSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      searchPublicPromptSummary)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      sendPrompt)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      streamSendPrompt)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updatePrompt)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptId=:[PATH] The promptId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createPromptTask)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deletePromptTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptTaskId=:[PATH] The promptTaskId to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getPromptTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptTaskId=:[PATH] The promptTaskId to be queried"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updatePromptTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "promptTaskId=:[PATH] The promptTaskId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      cancelRagTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "taskId=:[PATH] The taskId to be canceled"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createRagTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The characterUid to be added a RAG task"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteRagTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "taskId=:[PATH] The taskId to be deleted"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getRagTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "taskId=:[PATH] The taskId to be queried"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      getRagTaskStatus)
+        local -a _op_arguments
+        _op_arguments=(
+          "taskId=:[PATH] The taskId to be queried status"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listRagTasks)
+        local -a _op_arguments
+        _op_arguments=(
+          "characterUid=:[PATH] The characterUid to be queried"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      startRagTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "taskId=:[PATH] The taskId to be started"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      updateRagTask)
+        local -a _op_arguments
+        _op_arguments=(
+          "taskId=:[PATH] The taskId to be updated"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      listTtsBuiltinSpeakers)
+        local -a _op_arguments
+        _op_arguments=(
+                              )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      playSample)
+        local -a _op_arguments
+        _op_arguments=(
+          "speakerType=:[PATH] The speaker type"
+"speaker=:[PATH] The speaker"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      speakMessage)
+        local -a _op_arguments
+        _op_arguments=(
+          "messageId=:[PATH] The message id"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      createTag)
+        local -a _op_arguments
+        _op_arguments=(
+          "referType=:[PATH] Tag type (prompt, agent, plugin...)"
+"referId=:[PATH] Resource identifier of the tag"
+"tag=:[PATH] Tag content"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+      deleteTag)
+        local -a _op_arguments
+        _op_arguments=(
+          "referType=:[PATH] Tag type (prompt, agent, plugin...)"
+"referId=:[PATH] Resource identifier of the tag"
+"tag=:[PATH] Tag content"
+                    )
+        _describe -t actions 'operations' _op_arguments -S '' && ret=0
+        ;;
+    esac
+    ;;
+
+esac
+
+return ret

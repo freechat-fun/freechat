@@ -1,0 +1,635 @@
+# freechat completion                               -*- shell-script -*-
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !
+# ! Note:
+# !
+# ! THIS SCRIPT HAS BEEN AUTOMATICALLY GENERATED USING
+# ! openapi-generator (https://openapi-generator.tech)
+# ! FROM OPENAPI SPECIFICATION IN JSON.
+# !
+# ! Generator version: 7.20.0
+# !
+# !
+# ! System wide installation:
+# !
+# ! $ sudo cp freechat.bash-completion /etc/bash-completion.d/freechat
+# !
+# !
+# ! User home installation (add this line to .bash_profile):
+# !
+# ! [ -r ~/freechat.bash-completion ] && source ~/freechat.bash-completion
+# !
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+declare -A mime_type_abbreviations
+# text/*
+mime_type_abbreviations["text"]="text/plain"
+mime_type_abbreviations["html"]="text/html"
+mime_type_abbreviations["md"]="text/x-markdown"
+mime_type_abbreviations["csv"]="text/csv"
+mime_type_abbreviations["css"]="text/css"
+mime_type_abbreviations["rtf"]="text/rtf"
+# application/*
+mime_type_abbreviations["json"]="application/json"
+mime_type_abbreviations["xml"]="application/xml"
+mime_type_abbreviations["yaml"]="application/yaml"
+mime_type_abbreviations["js"]="application/javascript"
+mime_type_abbreviations["bin"]="application/octet-stream"
+mime_type_abbreviations["rdf"]="application/rdf+xml"
+# image/*
+mime_type_abbreviations["jpg"]="image/jpeg"
+mime_type_abbreviations["png"]="image/png"
+mime_type_abbreviations["gif"]="image/gif"
+mime_type_abbreviations["bmp"]="image/bmp"
+mime_type_abbreviations["tiff"]="image/tiff"
+
+
+#
+# Check if this is OSX, if so defined custom init_completion
+#
+if [[ `uname` =~ "Darwin" ]]; then
+    __osx_init_completion()
+    {
+        COMPREPLY=()
+        _get_comp_words_by_ref cur prev words cword
+    }
+fi
+
+_freechat()
+{
+    local cur
+    local prev
+    local words
+    local cword
+
+    # The reference of currently selected REST operation
+    local operation=""
+
+    # The list of available operation in the REST service
+    # It's modelled as an associative array for efficient key lookup
+    declare -A operations
+    operations["addAiApiKey"]=1
+    operations["deleteAiApiKey"]=1
+    operations["disableAiApiKey"]=1
+    operations["enableAiApiKey"]=1
+    operations["getAiApiKey"]=1
+    operations["listAiApiKeys"]=1
+    operations["createToken"]=1
+    operations["createToken1"]=1
+    operations["deleteToken"]=1
+    operations["deleteTokenById"]=1
+    operations["disableToken"]=1
+    operations["disableTokenById"]=1
+    operations["getTokenById"]=1
+    operations["getUserBasic"]=1
+    operations["getUserBasic1"]=1
+    operations["getUserDetails"]=1
+    operations["listTokens"]=1
+    operations["updateUserInfo"]=1
+    operations["uploadUserPicture"]=1
+    operations["createTokenForUser"]=1
+    operations["createUser"]=1
+    operations["deleteTokenForUser"]=1
+    operations["deleteUser"]=1
+    operations["disableTokenForUser"]=1
+    operations["getDetailsOfUser"]=1
+    operations["getUserByToken"]=1
+    operations["listAuthoritiesOfUser"]=1
+    operations["listTokensOfUser"]=1
+    operations["listUsers"]=1
+    operations["listUsers1"]=1
+    operations["listUsers2"]=1
+    operations["updateAuthoritiesOfUser"]=1
+    operations["updateUser"]=1
+    operations["batchSearchAgentDetails"]=1
+    operations["batchSearchAgentSummary"]=1
+    operations["cloneAgent"]=1
+    operations["cloneAgents"]=1
+    operations["countAgents"]=1
+    operations["createAgent"]=1
+    operations["createAgents"]=1
+    operations["deleteAgent"]=1
+    operations["deleteAgents"]=1
+    operations["getAgentDetails"]=1
+    operations["getAgentSummary"]=1
+    operations["listAgentVersionsByName"]=1
+    operations["publishAgent"]=1
+    operations["searchAgentDetails"]=1
+    operations["searchAgentSummary"]=1
+    operations["updateAgent"]=1
+    operations["getDefaultConfig"]=1
+    operations["getAppMeta"]=1
+    operations["addCharacterBackend"]=1
+    operations["batchSearchCharacterDetails"]=1
+    operations["batchSearchCharacterSummary"]=1
+    operations["cloneCharacter"]=1
+    operations["countCharacters"]=1
+    operations["countPublicCharacters"]=1
+    operations["createCharacter"]=1
+    operations["deleteCharacter"]=1
+    operations["deleteCharacterByName"]=1
+    operations["deleteCharacterByUid"]=1
+    operations["deleteCharacterDocument"]=1
+    operations["deleteCharacterPicture"]=1
+    operations["deleteCharacterVideo"]=1
+    operations["deleteCharacterVoice"]=1
+    operations["existsCharacterName"]=1
+    operations["exportCharacter"]=1
+    operations["getCharacterDetails"]=1
+    operations["getCharacterLatestIdByName"]=1
+    operations["getCharacterSummary"]=1
+    operations["getDefaultCharacterBackend"]=1
+    operations["importCharacter"]=1
+    operations["listCharacterBackendIds"]=1
+    operations["listCharacterBackends"]=1
+    operations["listCharacterDocuments"]=1
+    operations["listCharacterPictures"]=1
+    operations["listCharacterVersionsByName"]=1
+    operations["listCharacterVideos"]=1
+    operations["listCharacterVoices"]=1
+    operations["newCharacterName"]=1
+    operations["publishCharacter"]=1
+    operations["publishCharacter1"]=1
+    operations["removeCharacterBackend"]=1
+    operations["searchCharacterDetails"]=1
+    operations["searchCharacterSummary"]=1
+    operations["searchPublicCharacterSummary"]=1
+    operations["setDefaultCharacterBackend"]=1
+    operations["updateCharacter"]=1
+    operations["updateCharacterBackend"]=1
+    operations["uploadCharacterAvatar"]=1
+    operations["uploadCharacterDocument"]=1
+    operations["uploadCharacterPicture"]=1
+    operations["uploadCharacterVideo"]=1
+    operations["uploadCharacterVoice"]=1
+    operations["clearMemory"]=1
+    operations["deleteChat"]=1
+    operations["getDefaultChatId"]=1
+    operations["getMemoryUsage"]=1
+    operations["listChats"]=1
+    operations["listDebugMessages"]=1
+    operations["listDebugMessages1"]=1
+    operations["listDebugMessages2"]=1
+    operations["listMessages"]=1
+    operations["listMessages1"]=1
+    operations["listMessages2"]=1
+    operations["rollbackMessages"]=1
+    operations["sendAssistant"]=1
+    operations["sendMessage"]=1
+    operations["startChat"]=1
+    operations["streamSendAssistant"]=1
+    operations["streamSendMessage"]=1
+    operations["updateChat"]=1
+    operations["encryptText"]=1
+    operations["addStatistic"]=1
+    operations["getScore"]=1
+    operations["getStatistic"]=1
+    operations["getStatistics"]=1
+    operations["increaseStatistic"]=1
+    operations["listAgentsByStatistic"]=1
+    operations["listAgentsByStatistic1"]=1
+    operations["listAgentsByStatistic2"]=1
+    operations["listCharactersByStatistic"]=1
+    operations["listCharactersByStatistic1"]=1
+    operations["listCharactersByStatistic2"]=1
+    operations["listHotTags"]=1
+    operations["listPluginsByStatistic"]=1
+    operations["listPluginsByStatistic1"]=1
+    operations["listPluginsByStatistic2"]=1
+    operations["listPromptsByStatistic"]=1
+    operations["listPromptsByStatistic1"]=1
+    operations["listPromptsByStatistic2"]=1
+    operations["getOwners"]=1
+    operations["getOwnersDot"]=1
+    operations["getSubordinateOwners"]=1
+    operations["getSubordinateSubordinates"]=1
+    operations["getSubordinates"]=1
+    operations["getSubordinatesDot"]=1
+    operations["listSubordinateAuthorities"]=1
+    operations["removeSubordinateSubordinatesTree"]=1
+    operations["updateSubordinateAuthorities"]=1
+    operations["updateSubordinateOwners"]=1
+    operations["updateSubordinateSubordinates"]=1
+    operations["batchSearchPluginDetails"]=1
+    operations["batchSearchPluginSummary"]=1
+    operations["countPlugins"]=1
+    operations["createPlugin"]=1
+    operations["createPlugins"]=1
+    operations["deletePlugin"]=1
+    operations["deletePlugins"]=1
+    operations["getPluginDetails"]=1
+    operations["getPluginSummary"]=1
+    operations["refreshPluginInfo"]=1
+    operations["searchPluginDetails"]=1
+    operations["searchPluginSummary"]=1
+    operations["updatePlugin"]=1
+    operations["applyPromptRef"]=1
+    operations["applyPromptTemplate"]=1
+    operations["batchSearchPromptDetails"]=1
+    operations["batchSearchPromptSummary"]=1
+    operations["clonePrompt"]=1
+    operations["clonePrompts"]=1
+    operations["countPrompts"]=1
+    operations["countPublicPrompts"]=1
+    operations["createPrompt"]=1
+    operations["createPrompts"]=1
+    operations["deletePrompt"]=1
+    operations["deletePromptByName"]=1
+    operations["deletePrompts"]=1
+    operations["existsPromptName"]=1
+    operations["getPromptDetails"]=1
+    operations["getPromptSummary"]=1
+    operations["listPromptVersionsByName"]=1
+    operations["newPromptName"]=1
+    operations["publishPrompt"]=1
+    operations["searchPromptDetails"]=1
+    operations["searchPromptSummary"]=1
+    operations["searchPublicPromptSummary"]=1
+    operations["sendPrompt"]=1
+    operations["streamSendPrompt"]=1
+    operations["updatePrompt"]=1
+    operations["createPromptTask"]=1
+    operations["deletePromptTask"]=1
+    operations["getPromptTask"]=1
+    operations["updatePromptTask"]=1
+    operations["cancelRagTask"]=1
+    operations["createRagTask"]=1
+    operations["deleteRagTask"]=1
+    operations["getRagTask"]=1
+    operations["getRagTaskStatus"]=1
+    operations["listRagTasks"]=1
+    operations["startRagTask"]=1
+    operations["updateRagTask"]=1
+    operations["listTtsBuiltinSpeakers"]=1
+    operations["playSample"]=1
+    operations["speakMessage"]=1
+    operations["createTag"]=1
+    operations["deleteTag"]=1
+
+    # An associative array of operations to their parameters
+    # Only include path, query and header parameters
+    declare -A operation_parameters
+    operation_parameters["addAiApiKey"]=""
+    operation_parameters["deleteAiApiKey"]="id= "
+    operation_parameters["disableAiApiKey"]="id= "
+    operation_parameters["enableAiApiKey"]="id= "
+    operation_parameters["getAiApiKey"]="id= "
+    operation_parameters["listAiApiKeys"]="provider= "
+    operation_parameters["createToken"]="duration= "
+    operation_parameters["createToken1"]=""
+    operation_parameters["deleteToken"]="token= "
+    operation_parameters["deleteTokenById"]="id= "
+    operation_parameters["disableToken"]="token= "
+    operation_parameters["disableTokenById"]="id= "
+    operation_parameters["getTokenById"]="id= "
+    operation_parameters["getUserBasic"]="username= "
+    operation_parameters["getUserBasic1"]=""
+    operation_parameters["getUserDetails"]=""
+    operation_parameters["listTokens"]=""
+    operation_parameters["updateUserInfo"]=""
+    operation_parameters["uploadUserPicture"]=""
+    operation_parameters["createTokenForUser"]="username= duration= "
+    operation_parameters["createUser"]=""
+    operation_parameters["deleteTokenForUser"]="token= "
+    operation_parameters["deleteUser"]="username= "
+    operation_parameters["disableTokenForUser"]="token= "
+    operation_parameters["getDetailsOfUser"]="username= "
+    operation_parameters["getUserByToken"]="token= "
+    operation_parameters["listAuthoritiesOfUser"]="username= "
+    operation_parameters["listTokensOfUser"]="username= "
+    operation_parameters["listUsers"]="pageSize= pageNum= "
+    operation_parameters["listUsers1"]=""
+    operation_parameters["listUsers2"]="pageSize= "
+    operation_parameters["updateAuthoritiesOfUser"]="username= "
+    operation_parameters["updateUser"]=""
+    operation_parameters["batchSearchAgentDetails"]=""
+    operation_parameters["batchSearchAgentSummary"]=""
+    operation_parameters["cloneAgent"]="agentId= "
+    operation_parameters["cloneAgents"]=""
+    operation_parameters["countAgents"]=""
+    operation_parameters["createAgent"]=""
+    operation_parameters["createAgents"]=""
+    operation_parameters["deleteAgent"]="agentId= "
+    operation_parameters["deleteAgents"]=""
+    operation_parameters["getAgentDetails"]="agentId= "
+    operation_parameters["getAgentSummary"]="agentId= "
+    operation_parameters["listAgentVersionsByName"]="name= "
+    operation_parameters["publishAgent"]="agentId= visibility= "
+    operation_parameters["searchAgentDetails"]=""
+    operation_parameters["searchAgentSummary"]=""
+    operation_parameters["updateAgent"]="agentId= "
+    operation_parameters["getDefaultConfig"]=""
+    operation_parameters["getAppMeta"]=""
+    operation_parameters["addCharacterBackend"]="characterUid= "
+    operation_parameters["batchSearchCharacterDetails"]=""
+    operation_parameters["batchSearchCharacterSummary"]=""
+    operation_parameters["cloneCharacter"]="characterId= "
+    operation_parameters["countCharacters"]=""
+    operation_parameters["countPublicCharacters"]=""
+    operation_parameters["createCharacter"]=""
+    operation_parameters["deleteCharacter"]="characterId= "
+    operation_parameters["deleteCharacterByName"]="name= "
+    operation_parameters["deleteCharacterByUid"]="characterUid= "
+    operation_parameters["deleteCharacterDocument"]="key= "
+    operation_parameters["deleteCharacterPicture"]="key= "
+    operation_parameters["deleteCharacterVideo"]="key= "
+    operation_parameters["deleteCharacterVoice"]="characterBackendId= key= "
+    operation_parameters["existsCharacterName"]="name= "
+    operation_parameters["exportCharacter"]="characterId= "
+    operation_parameters["getCharacterDetails"]="characterId= "
+    operation_parameters["getCharacterLatestIdByName"]="name= "
+    operation_parameters["getCharacterSummary"]="characterId= "
+    operation_parameters["getDefaultCharacterBackend"]="characterUid= "
+    operation_parameters["importCharacter"]=""
+    operation_parameters["listCharacterBackendIds"]="characterUid= "
+    operation_parameters["listCharacterBackends"]="characterUid= "
+    operation_parameters["listCharacterDocuments"]="characterUid= "
+    operation_parameters["listCharacterPictures"]="characterUid= "
+    operation_parameters["listCharacterVersionsByName"]="name= "
+    operation_parameters["listCharacterVideos"]="characterUid= "
+    operation_parameters["listCharacterVoices"]="characterBackendId= "
+    operation_parameters["newCharacterName"]="desired= "
+    operation_parameters["publishCharacter"]="characterId= visibility= "
+    operation_parameters["publishCharacter1"]="characterId= "
+    operation_parameters["removeCharacterBackend"]="characterBackendId= "
+    operation_parameters["searchCharacterDetails"]=""
+    operation_parameters["searchCharacterSummary"]=""
+    operation_parameters["searchPublicCharacterSummary"]=""
+    operation_parameters["setDefaultCharacterBackend"]="characterBackendId= "
+    operation_parameters["updateCharacter"]="characterId= "
+    operation_parameters["updateCharacterBackend"]="characterBackendId= "
+    operation_parameters["uploadCharacterAvatar"]="characterUid= "
+    operation_parameters["uploadCharacterDocument"]="characterUid= "
+    operation_parameters["uploadCharacterPicture"]="characterUid= "
+    operation_parameters["uploadCharacterVideo"]="characterUid= "
+    operation_parameters["uploadCharacterVoice"]="characterBackendId= "
+    operation_parameters["clearMemory"]="chatId= "
+    operation_parameters["deleteChat"]="chatId= "
+    operation_parameters["getDefaultChatId"]="characterUid= "
+    operation_parameters["getMemoryUsage"]="chatId= "
+    operation_parameters["listChats"]=""
+    operation_parameters["listDebugMessages"]="chatId= limit= "
+    operation_parameters["listDebugMessages1"]="chatId= limit= offset= "
+    operation_parameters["listDebugMessages2"]="chatId= "
+    operation_parameters["listMessages"]="chatId= limit= "
+    operation_parameters["listMessages1"]="chatId= limit= offset= "
+    operation_parameters["listMessages2"]="chatId= "
+    operation_parameters["rollbackMessages"]="chatId= count= "
+    operation_parameters["sendAssistant"]="chatId= assistantUid= "
+    operation_parameters["sendMessage"]="chatId= "
+    operation_parameters["startChat"]=""
+    operation_parameters["streamSendAssistant"]="chatId= assistantUid= "
+    operation_parameters["streamSendMessage"]="chatId= "
+    operation_parameters["updateChat"]="chatId= "
+    operation_parameters["encryptText"]="text= "
+    operation_parameters["addStatistic"]="infoType= infoId= statsType= delta= "
+    operation_parameters["getScore"]="infoType= infoId= "
+    operation_parameters["getStatistic"]="infoType= infoId= statsType= "
+    operation_parameters["getStatistics"]="infoType= infoId= "
+    operation_parameters["increaseStatistic"]="infoType= infoId= statsType= "
+    operation_parameters["listAgentsByStatistic"]="statsType= pageSize= asc= "
+    operation_parameters["listAgentsByStatistic1"]="statsType= pageSize= pageNum= asc= "
+    operation_parameters["listAgentsByStatistic2"]="statsType= asc= "
+    operation_parameters["listCharactersByStatistic"]="statsType= asc= "
+    operation_parameters["listCharactersByStatistic1"]="statsType= pageSize= asc= "
+    operation_parameters["listCharactersByStatistic2"]="statsType= pageSize= pageNum= asc= "
+    operation_parameters["listHotTags"]="infoType= pageSize= text= "
+    operation_parameters["listPluginsByStatistic"]="statsType= pageSize= pageNum= asc= "
+    operation_parameters["listPluginsByStatistic1"]="statsType= asc= "
+    operation_parameters["listPluginsByStatistic2"]="statsType= pageSize= asc= "
+    operation_parameters["listPromptsByStatistic"]="statsType= asc= "
+    operation_parameters["listPromptsByStatistic1"]="statsType= pageSize= asc= "
+    operation_parameters["listPromptsByStatistic2"]="statsType= pageSize= pageNum= asc= "
+    operation_parameters["getOwners"]="all= "
+    operation_parameters["getOwnersDot"]="all= "
+    operation_parameters["getSubordinateOwners"]="username= all= "
+    operation_parameters["getSubordinateSubordinates"]="username= all= "
+    operation_parameters["getSubordinates"]="all= "
+    operation_parameters["getSubordinatesDot"]="all= "
+    operation_parameters["listSubordinateAuthorities"]="username= "
+    operation_parameters["removeSubordinateSubordinatesTree"]="username= "
+    operation_parameters["updateSubordinateAuthorities"]="username= "
+    operation_parameters["updateSubordinateOwners"]="username= "
+    operation_parameters["updateSubordinateSubordinates"]="username= "
+    operation_parameters["batchSearchPluginDetails"]=""
+    operation_parameters["batchSearchPluginSummary"]=""
+    operation_parameters["countPlugins"]=""
+    operation_parameters["createPlugin"]=""
+    operation_parameters["createPlugins"]=""
+    operation_parameters["deletePlugin"]="pluginId= "
+    operation_parameters["deletePlugins"]=""
+    operation_parameters["getPluginDetails"]="pluginId= "
+    operation_parameters["getPluginSummary"]="pluginId= "
+    operation_parameters["refreshPluginInfo"]="pluginId= "
+    operation_parameters["searchPluginDetails"]=""
+    operation_parameters["searchPluginSummary"]=""
+    operation_parameters["updatePlugin"]="pluginId= "
+    operation_parameters["applyPromptRef"]=""
+    operation_parameters["applyPromptTemplate"]=""
+    operation_parameters["batchSearchPromptDetails"]=""
+    operation_parameters["batchSearchPromptSummary"]=""
+    operation_parameters["clonePrompt"]="promptId= "
+    operation_parameters["clonePrompts"]=""
+    operation_parameters["countPrompts"]=""
+    operation_parameters["countPublicPrompts"]=""
+    operation_parameters["createPrompt"]=""
+    operation_parameters["createPrompts"]=""
+    operation_parameters["deletePrompt"]="promptId= "
+    operation_parameters["deletePromptByName"]="name= "
+    operation_parameters["deletePrompts"]=""
+    operation_parameters["existsPromptName"]="name= "
+    operation_parameters["getPromptDetails"]="promptId= "
+    operation_parameters["getPromptSummary"]="promptId= "
+    operation_parameters["listPromptVersionsByName"]="name= "
+    operation_parameters["newPromptName"]="desired= "
+    operation_parameters["publishPrompt"]="promptId= visibility= "
+    operation_parameters["searchPromptDetails"]=""
+    operation_parameters["searchPromptSummary"]=""
+    operation_parameters["searchPublicPromptSummary"]=""
+    operation_parameters["sendPrompt"]=""
+    operation_parameters["streamSendPrompt"]=""
+    operation_parameters["updatePrompt"]="promptId= "
+    operation_parameters["createPromptTask"]=""
+    operation_parameters["deletePromptTask"]="promptTaskId= "
+    operation_parameters["getPromptTask"]="promptTaskId= "
+    operation_parameters["updatePromptTask"]="promptTaskId= "
+    operation_parameters["cancelRagTask"]="taskId= "
+    operation_parameters["createRagTask"]="characterUid= "
+    operation_parameters["deleteRagTask"]="taskId= "
+    operation_parameters["getRagTask"]="taskId= "
+    operation_parameters["getRagTaskStatus"]="taskId= "
+    operation_parameters["listRagTasks"]="characterUid= "
+    operation_parameters["startRagTask"]="taskId= "
+    operation_parameters["updateRagTask"]="taskId= "
+    operation_parameters["listTtsBuiltinSpeakers"]=""
+    operation_parameters["playSample"]="speakerType= speaker= "
+    operation_parameters["speakMessage"]="messageId= "
+    operation_parameters["createTag"]="referType= referId= tag= "
+    operation_parameters["deleteTag"]="referType= referId= tag= "
+
+    # An associative array of possible values for enum parameters
+    declare -A operation_parameters_enum_values
+
+    #
+    # Check if this is OSX and use special __osx_init_completion function
+    #
+    if [[ `uname` =~ "Darwin" ]]; then
+        __osx_init_completion || return
+    else
+        _init_completion -s || return
+    fi
+
+
+    # Check if operation is already in the command line provided
+    for word in "${words[@]}"; do
+        if [[ -n $word && ${operations[$word]} ]]; then
+            operation="${word}"
+        fi
+    done
+
+    if [[ -z $operation ]]; then
+        case $prev in
+            --ciphers|--connect-timeout|-C|--continue-at|-F|--form|--form-string|\
+            --ftp-account|--ftp-alternative-to-user|-P|--ftp-port|-H|--header|-h|\
+            --help|--hostpubmd5|--keepalive-time|--krb|--limit-rate|--local-port|\
+            --mail-from|--mail-rcpt|--max-filesize|--max-redirs|-m|--max-time|\
+            --pass|--proto|--proto-redir|--proxy-user|--proxy1.0|-Q|--quote|-r|\
+            --range|-X|--request|--retry|--retry-delay|--retry-max-time|\
+            --socks5-gssapi-service|-t|--telnet-option|--tftp-blksize|-z|\
+            --time-cond|--url|-u|--user|-A|--user-agent|-V|--version|-w|\
+            --write-out|--resolve|--tlsuser|--tlspassword|--about)
+                return
+                ;;
+            -K|--config|-b|--cookie|-c|--cookie-jar|-D|--dump-header|--egd-file|\
+            --key|--libcurl|-o|--output|--random-file|-T|--upload-file|--trace|\
+            --trace-ascii|--netrc-file)
+                _filedir
+                return
+                ;;
+            --cacert|-E|--cert)
+                _filedir '@(c?(e)rt|cer|pem|der)'
+                return
+                ;;
+            --capath)
+                _filedir -d
+                return
+                ;;
+            --cert-type|--key-type)
+                COMPREPLY=( $( compgen -W 'DER PEM ENG' -- "$cur" ) )
+                return
+                ;;
+            --crlfile)
+                _filedir crl
+                return
+                ;;
+            -d|--data|--data-ascii|--data-binary|--data-urlencode)
+                if [[ $cur == \@* ]]; then
+                    cur=${cur:1}
+                    _filedir
+                    COMPREPLY=( "${COMPREPLY[@]/#/@}" )
+                fi
+                return
+                ;;
+            --delegation)
+                COMPREPLY=( $( compgen -W 'none policy always' -- "$cur" ) )
+                return
+                ;;
+            --engine)
+                COMPREPLY=( $( compgen -W 'list' -- "$cur" ) )
+                return
+                ;;
+            --ftp-method)
+                COMPREPLY=( $( compgen -W 'multicwd nocwd singlecwd' -- "$cur" ) )
+                return
+                ;;
+            --ftp-ssl-ccc-mode)
+                COMPREPLY=( $( compgen -W 'active passive' -- "$cur" ) )
+                return
+                ;;
+            --interface)
+                _available_interfaces -a
+                return
+                ;;
+            -x|--proxy|--socks4|--socks4a|--socks5|--socks5-hostname)
+                _known_hosts_real
+                return
+                ;;
+            --pubkey)
+                _filedir pub
+                return
+                ;;
+            --stderr)
+                COMPREPLY=( $( compgen -W '-' -- "$cur" ) )
+                _filedir
+                return
+                ;;
+            --tlsauthtype)
+                COMPREPLY=( $( compgen -W 'SRP' -- "$cur" ) )
+                return
+                ;;
+            --host)
+                COMPREPLY=( $( compgen -W 'http:// https://' -- "$cur" ) )
+                return
+                ;;
+            -ct|--content-type|-ac|--accept)
+                COMPREPLY=( $( compgen -W '${!mime_type_abbreviations[*]}' -- "$cur" ) )
+                return
+                ;;
+        esac
+    fi
+
+    #
+    # Complete the server address based on ~/.ssh/known_hosts
+    # and ~/.ssh/config
+    #
+    local prefix=${COMP_WORDS[COMP_CWORD-2]}
+    local colon=${COMP_WORDS[COMP_CWORD-1]}
+    if [[ "$colon" == ":" && ( $prefix == "https" || $prefix == "http" ) ]]; then
+        COMPREPLY=()
+        local comp_ssh_hosts=`[[ -f ~/.ssh/known_hosts ]] && \
+                              ( cat ~/.ssh/known_hosts | \
+                              grep '^[a-zA-Z0-9]' | \
+                              cut -f 1 -d ' ' | \
+                              sed -e s/,.*//g | \
+                              grep -v ^# | \
+                              uniq | \
+                              grep -v "\[" ) ;
+                              [[ -f ~/.ssh/config ]] && \
+                              ( cat ~/.ssh/config | \
+                              grep "^Host " | \
+                              awk '{print $2}' )`
+        COMPREPLY=( $( compgen -P '//' -W '${comp_ssh_hosts}' -- "${cur:2}") )
+        return
+    fi
+
+    #
+    # Complete the freechat and cURL's arguments
+    #
+    if [[ $cur == -* ]]; then
+        COMPREPLY=( $( compgen -W '$(_parse_help curl) $(_parse_help $1)' -- "$cur" ) )
+        return
+    fi
+
+    #
+    # If the argument starts with a letter this could be either an operation
+    # or an operation parameter
+    # When $cur is empty, suggest the list of operations by default
+    #
+    if [[ $cur =~ ^[A-Za-z_0-9]* ]]; then
+        # If operation has not been yet selected, suggest the list of operations
+        # otherwise suggest arguments of this operation as declared in the
+        # OpenAPI specification
+        if [[ -z $operation ]]; then
+            COMPREPLY=( $(compgen -W '${!operations[*]}' -- ${cur}) )
+        else
+            COMPREPLY=( $(compgen -W '${operation_parameters[$operation]}' -- ${cur}) )
+            compopt -o nospace
+        fi
+        return
+    fi
+
+} &&
+complete -F _freechat freechat
+
+# ex: ts=4 sw=4 et filetype=sh
