@@ -48,6 +48,7 @@
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <mybatis-generator-maven-plugin.version>1.4.2</mybatis-generator-maven-plugin.version>
         <spotless-maven-plugin.version>3.4.0</spotless-maven-plugin.version>
+        <palantir-java-format.version>2.89.0</palantir-java-format.version>
     </properties>
 
     <dependencyManagement>
@@ -299,20 +300,60 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless-maven-plugin.version}</version>
-                <configuration>
-                    <pom>
-                        <sortPom>
-                            <nrOfIndentSpace>4</nrOfIndentSpace>
-                        </sortPom>
-                    </pom>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <!-- limit format enforcement to just the files changed by this feature branch -->
+            <id>spotless</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <version>${spotless-maven-plugin.version}</version>
+                        <configuration>
+                            <ratchetFrom>origin/main</ratchetFrom>
+                            <java>
+                                <palantirJavaFormat>
+                                    <version>${palantir-java-format.version}</version>
+                                </palantirJavaFormat>
+                            </java>
+                            <pom>
+                                <sortPom>
+                                    <nrOfIndentSpace>4</nrOfIndentSpace>
+                                </sortPom>
+                            </pom>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- enforce format on all files regardless of git changes -->
+            <id>spotless-all</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <version>${spotless-maven-plugin.version}</version>
+                        <configuration>
+                            <java>
+                                <palantirJavaFormat>
+                                    <version>${palantir-java-format.version}</version>
+                                </palantirJavaFormat>
+                            </java>
+                            <pom>
+                                <sortPom>
+                                    <nrOfIndentSpace>4</nrOfIndentSpace>
+                                </sortPom>
+                            </pom>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
