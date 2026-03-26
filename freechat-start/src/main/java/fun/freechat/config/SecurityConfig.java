@@ -16,6 +16,8 @@ import fun.freechat.service.common.EncryptionService;
 import fun.freechat.service.organization.OrgService;
 import fun.freechat.util.AppMetaUtils;
 import fun.freechat.util.AuthorityUtils;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,75 +45,97 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Configuration
 @SuppressWarnings("unused")
 public class SecurityConfig {
     @Value("${auth.aes.key}")
     private String aesKey;
+
     @Value("${auth.role.adminUri:#{null}}")
     private String[] adminUri;
+
     @Value("${auth.role.bizAdminUri:#{null}}")
     private String[] bizAdminUri;
+
     @Value("${auth.role.apiUri:#{null}}")
     private String[] apiUri;
+
     @Value("${auth.role.privateUri:#{null}}")
     private String[] privateUri;
+
     @Value("${auth.role.publicUri:#{null}}")
     private String[] publicUri;
+
     @Value("${auth.login.uri}")
     private String loginUri;
+
     @Value("${auth.login.processingUri}")
     private String loginProcessingUri;
+
     @Value("${auth.login.oauth2.successUri}")
     private String oauth2LoginSuccessUri;
+
     @Value("${auth.login.oauth2.failureUri}")
     private String oauth2LoginFailureUri;
+
     @Value("${auth.login.portal.successUri}")
     private String portalLoginSuccessUri;
+
     @Value("${auth.login.portal.failureUri}")
     private String portalLoginFailureUri;
-    @Value("${auth.login.oauth2.baseUri:#{T(org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter).DEFAULT_AUTHORIZATION_REQUEST_BASE_URI}}")
+
+    @Value(
+            "${auth.login.oauth2.baseUri:#{T(org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter).DEFAULT_AUTHORIZATION_REQUEST_BASE_URI}}")
     private String authorizationRequestBaseUri;
+
     @Value("${auth.impersonate.headerName}")
     private String impersonateHeaderName;
+
     @Value("${auth.impersonate.autoRegister}")
     private Boolean impersonateAutoRegister;
+
     @Value("${auth.logout.uri}")
     private String logoutUri;
+
     @Value("${auth.logout.successUri}")
     private String logoutSuccessUri;
+
     @Value("${auth.rememberMe.alwaysRemember:false}")
     private Boolean alwaysRemember;
 
-    private void configPrivatePath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+    private void configPrivatePath(
+            AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(privateUri)) {
             registry.requestMatchers(privateUri).denyAll();
         }
     }
 
-    private void configPublicPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+    private void configPublicPath(
+            AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(publicUri)) {
-            registry.requestMatchers(publicUri).permitAll().requestMatchers(oauth2LoginFailureUri).permitAll();
+            registry.requestMatchers(publicUri)
+                    .permitAll()
+                    .requestMatchers(oauth2LoginFailureUri)
+                    .permitAll();
         }
     }
 
-    private void configAdminPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+    private void configAdminPath(
+            AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(adminUri)) {
             registry.requestMatchers(adminUri).hasRole(AuthorityUtils.adminRole());
         }
     }
 
-    private void configBizAdminPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+    private void configBizAdminPath(
+            AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         if (ArrayUtils.isNotEmpty(bizAdminUri)) {
-            registry.requestMatchers(bizAdminUri).hasAnyRole(
-                    AuthorityUtils.adminRole(), AuthorityUtils.bizRole());
+            registry.requestMatchers(bizAdminUri).hasAnyRole(AuthorityUtils.adminRole(), AuthorityUtils.bizRole());
         }
     }
 
-    private void configApiPath(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+    private void configApiPath(
+            AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         /*
         if (ArrayUtils.isNotEmpty(apiUri)) {
             registry.antMatchers(apiUri).hasRole(AuthorityUtils.clientRole());
@@ -120,15 +144,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-                                           ClientRegistrationRepository clientRegistrationRepository,
-                                           OAuth2AuthorizationRequestCustomizer oAuth2AuthorizationRequestCustomizer,
-                                           OAuth2AuthorizedClientService oAuth2ClientService,
-                                           UserDetailsManager userDetailsManager,
-                                           OrgService orgService,
-                                           ApiTokenAuthenticationProvider apiTokenAuthenticationProvider,
-                                           RedissonClient redissonClient
-                                           ) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizationRequestCustomizer oAuth2AuthorizationRequestCustomizer,
+            OAuth2AuthorizedClientService oAuth2ClientService,
+            UserDetailsManager userDetailsManager,
+            OrgService orgService,
+            ApiTokenAuthenticationProvider apiTokenAuthenticationProvider,
+            RedissonClient redissonClient)
+            throws Exception {
         http.authorizeHttpRequests(registry -> {
             configPrivatePath(registry);
             configPublicPath(registry);
@@ -140,22 +165,17 @@ public class SecurityConfig {
         http.userDetailsService(userDetailsManager);
 
         http.logout(logout ->
-                logout.logoutUrl(logoutUri)
-                        .logoutSuccessUrl(logoutSuccessUri)
-                        .permitAll()
-        );
+                logout.logoutUrl(logoutUri).logoutSuccessUrl(logoutSuccessUri).permitAll());
 
-        http.formLogin(portal ->
-                portal.loginPage(loginUri)
-                        .loginProcessingUrl(loginProcessingUri)
-                        .defaultSuccessUrl(portalLoginSuccessUri)
-                        .failureUrl(portalLoginFailureUri)
-                        .permitAll()
-        );
+        http.formLogin(portal -> portal.loginPage(loginUri)
+                .loginProcessingUrl(loginProcessingUri)
+                .defaultSuccessUrl(portalLoginSuccessUri)
+                .failureUrl(portalLoginFailureUri)
+                .permitAll());
 
         SysUserDetailsManager sysUserDetailsManager = (SysUserDetailsManager) userDetailsManager;
 
-        DefaultOAuth2AuthorizationRequestResolver oAuth2RequestResolver =  new DefaultOAuth2AuthorizationRequestResolver(
+        DefaultOAuth2AuthorizationRequestResolver oAuth2RequestResolver = new DefaultOAuth2AuthorizationRequestResolver(
                 clientRegistrationRepository, authorizationRequestBaseUri);
         oAuth2RequestResolver.setAuthorizationRequestCustomizer(oAuth2AuthorizationRequestCustomizer);
 
@@ -163,29 +183,27 @@ public class SecurityConfig {
                 oAuth2ClientService, sysUserDetailsManager, oAuth2AuthorizationRequestCustomizer);
         oAuth2SuccessHandler.setDefaultTargetUrl(oauth2LoginSuccessUri);
 
-        OAuth2AuthenticationFailureHandler oAuth2FailureHandler = new OAuth2AuthenticationFailureHandler(
-                oAuth2AuthorizationRequestCustomizer);
+        OAuth2AuthenticationFailureHandler oAuth2FailureHandler =
+                new OAuth2AuthenticationFailureHandler(oAuth2AuthorizationRequestCustomizer);
         oAuth2FailureHandler.setDefaultFailureUrl(oauth2LoginFailureUri);
 
-        http.oauth2Login(oauth2 ->
-                oauth2.loginPage(loginUri)
-                        .authorizationEndpoint(endpoint ->
-                                endpoint.authorizationRequestResolver(oAuth2RequestResolver))
-                        .successHandler(oAuth2SuccessHandler)
-                        .failureHandler(oAuth2FailureHandler)
-                        .permitAll()
-        );
+        http.oauth2Login(oauth2 -> oauth2.loginPage(loginUri)
+                .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(oAuth2RequestResolver))
+                .successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuth2FailureHandler)
+                .permitAll());
 
         if (ArrayUtils.isNotEmpty(apiUri)) {
             http.addFilterAfter(
-                    apiAuthenticationFilter(apiTokenAuthenticationProvider), UsernamePasswordAuthenticationFilter.class);
+                    apiAuthenticationFilter(apiTokenAuthenticationProvider),
+                    UsernamePasswordAuthenticationFilter.class);
             http.addFilter(apiSwitchUserFilter(sysUserDetailsManager, orgService));
             http.cors(corsConf -> corsConf.configurationSource(corsConfigurationSource()));
             http.csrf(csrfConf -> csrfConf.ignoringRequestMatchers(apiUri));
         }
 
-        http.rememberMe(rememberMe ->
-                rememberMe.rememberMeServices(rememberMeServices(userDetailsManager, redissonClient)));
+        http.rememberMe(
+                rememberMe -> rememberMe.rememberMeServices(rememberMeServices(userDetailsManager, redissonClient)));
 
         return http.build();
     }
@@ -196,10 +214,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsManager users(SysUserService userService,
-                                    SysBindService bindService,
-                                    SysAuthorityService authorityService,
-                                    PasswordEncoder passwordEncoder) {
+    public UserDetailsManager users(
+            SysUserService userService,
+            SysBindService bindService,
+            SysAuthorityService authorityService,
+            PasswordEncoder passwordEncoder) {
         return new SysUserDetailsManager(userService, bindService, authorityService, passwordEncoder);
     }
 
@@ -233,8 +252,7 @@ public class SecurityConfig {
         return filter;
     }
 
-    private SwitchUserFilter apiSwitchUserFilter(SysUserDetailsManager sysUserDetailsManager,
-                                                 OrgService orgService) {
+    private SwitchUserFilter apiSwitchUserFilter(SysUserDetailsManager sysUserDetailsManager, OrgService orgService) {
         ApiSwitchUserFilter filter = new ApiSwitchUserFilter();
         filter.setHeaderName(impersonateHeaderName);
         filter.setAutoRegister(impersonateAutoRegister);
@@ -251,11 +269,7 @@ public class SecurityConfig {
 
         if (AppMetaUtils.isTestEnv()) {
             List<String> allowedOriginList = List.of(
-                    "http://127.0.0.1",
-                    "http://127.0.0.1:3000",
-                    "http://127.0.0.1:4173",
-                    "http://127.0.0.1:8080"
-            );
+                    "http://127.0.0.1", "http://127.0.0.1:3000", "http://127.0.0.1:4173", "http://127.0.0.1:8080");
 
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedMethods(List.of("*"));

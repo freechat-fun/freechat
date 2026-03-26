@@ -1,5 +1,12 @@
 package fun.freechat.service.chat.impl;
 
+import static dev.langchain4j.data.message.ChatMessageType.AI;
+import static dev.langchain4j.data.message.ChatMessageType.USER;
+import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.*;
+import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
+import static fun.freechat.service.util.PromptUtils.toSingleText;
+
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.*;
@@ -19,24 +26,16 @@ import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.chat.LongTermChatMemoryStore;
 import fun.freechat.service.rag.EmbeddingModelService;
 import fun.freechat.service.rag.EmbeddingStoreService;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import static dev.langchain4j.data.message.ChatMessageType.AI;
-import static dev.langchain4j.data.message.ChatMessageType.USER;
-import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
-import static fun.freechat.service.enums.EmbeddingRecordMeta.*;
-import static fun.freechat.service.enums.EmbeddingStoreType.longTermMemoryTypeForLang;
-import static fun.freechat.service.util.PromptUtils.toSingleText;
 
 @Service
 @Slf4j
@@ -46,20 +45,21 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
 
     @Autowired
     private RedissonClient redisson;
+
     @Autowired
     private ChatMemoryService chatMemoryService;
+
     @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
+
     @Autowired
     private EmbeddingModelService embeddingModelService;
 
     @Override
-    public List<ChatMessage> getMessages(Object memoryId,
-                                         UserMessage userMessage,
-                                         List<ChatMessage> chatMemory,
-                                         RetrievalAugmentor retriever) {
-        dev.langchain4j.rag.query.Metadata metadata = dev.langchain4j.rag.query.Metadata.from(
-                userMessage, memoryId, chatMemory);
+    public List<ChatMessage> getMessages(
+            Object memoryId, UserMessage userMessage, List<ChatMessage> chatMemory, RetrievalAugmentor retriever) {
+        dev.langchain4j.rag.query.Metadata metadata =
+                dev.langchain4j.rag.query.Metadata.from(userMessage, memoryId, chatMemory);
 
         return Optional.ofNullable(retriever.augment(new AugmentationRequest(userMessage, metadata)))
                 .map(AugmentationResult::contents)
@@ -68,9 +68,9 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                 .map(Content::textSegment)
                 .map(TextSegment::text)
                 .map(ChatMessageDeserializer::messagesFromJson)
-                .filter(messages -> messages.size() == 2 &&
-                        messages.getFirst().type() == USER &&
-                        messages.getLast().type() == AI)
+                .filter(messages -> messages.size() == 2
+                        && messages.getFirst().type() == USER
+                        && messages.getLast().type() == AI)
                 .flatMap(List::stream)
                 .toList();
     }
@@ -88,7 +88,7 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                     embeddingStoreService.of(memoryId, longTermMemoryTypeForLang(lang));
 
             ChatMessageRecord userRecord = null;
-            for (ChatMessageRecord record: messages) {
+            for (ChatMessageRecord record : messages) {
                 ChatMessage message = record.getMessage();
                 if (message.type() == USER) {
                     userRecord = record;
@@ -106,7 +106,8 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
                     TextSegment segment = TextSegment.from(text, metadata);
 
                     Embedding embedding = embed(embeddingModel, userMessage, aiMessage);
-                    Filter filter = metadataKey(USER_MESSAGE_ID.text()).isEqualTo(userRecord.getId())
+                    Filter filter = metadataKey(USER_MESSAGE_ID.text())
+                            .isEqualTo(userRecord.getId())
                             .and(metadataKey(AI_MESSAGE_ID.text()).isEqualTo(record.getId()))
                             .and(metadataKey(MEMORY_ID.text()).isEqualTo(memoryId.toString()));
 
@@ -156,8 +157,8 @@ public class LongTermChatMemoryStoreImpl implements LongTermChatMemoryStore {
     }
 
     private static Embedding embed(EmbeddingModel embeddingModel, UserMessage userMessage, AiMessage aiMessage) {
-        return embeddingModel.embed(
-                String.format("%s\n\n%s", toSingleText(userMessage), toSingleText(aiMessage))
-        ).content();
+        return embeddingModel
+                .embed(String.format("%s\n\n%s", toSingleText(userMessage), toSingleText(aiMessage)))
+                .content();
     }
 }

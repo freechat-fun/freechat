@@ -1,13 +1,12 @@
 package fun.freechat.service.ai;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +20,7 @@ public class AiModelInfo implements Serializable {
     private String description;
     private String provider;
     private String type;
+
     @Serial
     private static final long serialVersionUID = 1L;
 }

@@ -1,16 +1,15 @@
 package fun.freechat.util;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.util.MultiValueMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.util.MultiValueMap;
 
 public class TestResourceUtils {
     public static byte[] resourceData(String path) {

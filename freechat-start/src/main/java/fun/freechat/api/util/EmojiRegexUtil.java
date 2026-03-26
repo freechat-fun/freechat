@@ -20,7 +20,8 @@ public class EmojiRegexUtil {
 
     private static final String RegionalIndicatorSymbol = "[\\uD83C\\uDDE6-\\uD83C\\uDDFF]{1,2}";
 
-    private static final String EnclosedAlphanumericSupplement = "[\\uD83C\\uDD70\\uD83C\\uDD71\\uD83C\\uDD7E\\uD83C\\uDD7F\\uD83C\\uDD8E\\uD83C\\uDD91-\\uD83C\\uDD9A]\\uFE0F?";
+    private static final String EnclosedAlphanumericSupplement =
+            "[\\uD83C\\uDD70\\uD83C\\uDD71\\uD83C\\uDD7E\\uD83C\\uDD7F\\uD83C\\uDD8E\\uD83C\\uDD91-\\uD83C\\uDD9A]\\uFE0F?";
 
     private static final String BasicLatin = "[\\u0023\\u002A\\u0030-\\u0039]\\uFE0F?\\u20E3";
 
@@ -34,7 +35,8 @@ public class EmojiRegexUtil {
 
     private static final String EnclosedCJKLettersAndMonths = "[\\u3297\\u3299]\\uFE0F?";
 
-    private static final String EnclosedIdeographicSupplement = "[\\uD83C\\uDE01\\uD83C\\uDE02\\uD83C\\uDE1A\\uD83C\\uDE2F\\uD83C\\uDE32-\\uD83C\\uDE3A\\uD83C\\uDE50\\uD83C\\uDE51]\\uFE0F?";
+    private static final String EnclosedIdeographicSupplement =
+            "[\\uD83C\\uDE01\\uD83C\\uDE02\\uD83C\\uDE1A\\uD83C\\uDE2F\\uD83C\\uDE32-\\uD83C\\uDE3A\\uD83C\\uDE50\\uD83C\\uDE51]\\uFE0F?";
 
     private static final String GeneralPunctuation = "[\\u203C\\u2049]\\uFE0F?";
 
@@ -48,7 +50,8 @@ public class EmojiRegexUtil {
 
     private static final String PlayingCards = "\\uD83C\\uDCCF\\uFE0F?";
 
-    private static final String MiscellaneousTechnical = "[\\u231A\\u231B\\u2328\\u23CF\\u23E9-\\u23F3\\u23F8-\\u23FA]\\uFE0F?";
+    private static final String MiscellaneousTechnical =
+            "[\\u231A\\u231B\\u2328\\u23CF\\u23E9-\\u23F3\\u23F8-\\u23FA]\\uFE0F?";
 
     public static String getFullEmojiRegex() {
         return "(?:"
@@ -78,7 +81,7 @@ public class EmojiRegexUtil {
     }
 
     private static final Pattern EMOJI_PATTERN = Pattern.compile(getFullEmojiRegex());
-    
+
     public static String removeEmojis(String text) {
         return EMOJI_PATTERN.matcher(text).replaceAll("");
     }

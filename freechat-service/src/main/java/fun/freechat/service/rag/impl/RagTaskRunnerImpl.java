@@ -1,5 +1,9 @@
 package fun.freechat.service.rag.impl;
 
+import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
+import static fun.freechat.service.enums.EmbeddingRecordMeta.TASK_ID;
+import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
+
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentLoader;
 import dev.langchain4j.data.document.DocumentParser;
@@ -29,6 +33,10 @@ import fun.freechat.service.rag.RagTaskStartedEvent;
 import fun.freechat.service.rag.RagTaskSucceededEvent;
 import fun.freechat.service.util.StoreUtils;
 import fun.freechat.util.HttpUtils;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.tika.Tika;
@@ -40,15 +48,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import static fun.freechat.service.enums.EmbeddingRecordMeta.MEMORY_ID;
-import static fun.freechat.service.enums.EmbeddingRecordMeta.TASK_ID;
-import static fun.freechat.service.enums.EmbeddingStoreType.documentTypeForLang;
-
 @Service
 @Slf4j
 @SuppressWarnings("unused")
@@ -57,18 +56,25 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
 
     @Value("${chat.rag.defaultMaxSegmentSize}")
     private Integer defaultMaxSegmentSize;
+
     @Value("${chat.rag.defaultMaxOverlapSize}")
     private Integer defaultMaxOverlapSize;
+
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
     @Autowired
     private CharacterService characterService;
+
     @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
+
     @Autowired
     private EmbeddingModelService embeddingModelService;
+
     @Autowired
     private RedissonClient redisson;
+
     @Autowired
     private Tika tika;
 
@@ -90,16 +96,18 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
                     .orElseThrow(() -> new IllegalArgumentException("Can't find character by uid[" + memoryId + "]"));
 
             SourceType sourceType = SourceType.of(task.getSourceType());
-            DocumentSource source = switch (sourceType) {
-                case FILE -> FileSystemSource.from(StoreUtils.defaultFileStore().toPath(task.getSource()));
-                case URL -> {
-                    if (!HttpUtils.isSafeUrl(task.getSource())) {
-                        throw new IllegalArgumentException("Illegal url: " + task.getSource());
-                    }
-                    yield UrlSource.from(task.getSource());
-                }
-                default -> throw new NotImplementedException("Not implemented.");
-            };
+            DocumentSource source =
+                    switch (sourceType) {
+                        case FILE ->
+                            FileSystemSource.from(StoreUtils.defaultFileStore().toPath(task.getSource()));
+                        case URL -> {
+                            if (!HttpUtils.isSafeUrl(task.getSource())) {
+                                throw new IllegalArgumentException("Illegal url: " + task.getSource());
+                            }
+                            yield UrlSource.from(task.getSource());
+                        }
+                        default -> throw new NotImplementedException("Not implemented.");
+                    };
             Integer maxSegmentSize = Utils.getOrDefault(task.getMaxSegmentSize(), defaultMaxSegmentSize);
             Integer maxOverlapSize = Utils.getOrDefault(task.getMaxOverlapSize(), defaultMaxOverlapSize);
 
@@ -108,13 +116,12 @@ public class RagTaskRunnerImpl implements RagTaskRunner {
             document.metadata().put(MEMORY_ID.text(), memoryId);
             document.metadata().put(TASK_ID.text(), task.getId());
 
-
             EmbeddingModel embeddingModel = embeddingModelService.modelForLang(lang);
             TokenCountEstimator tokenCountEstimator = embeddingModelService.tokenCountEstimatorForLang(lang);
-            EmbeddingStore<TextSegment> embeddingStore =
-                    embeddingStoreService.of(memoryId, documentTypeForLang(lang));
+            EmbeddingStore<TextSegment> embeddingStore = embeddingStoreService.of(memoryId, documentTypeForLang(lang));
             DocumentTransformer documentTransformer = isHtml(document) ? new HtmlToTextDocumentTransformer() : null;
-            DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenCountEstimator);
+            DocumentSplitter documentSplitter =
+                    DocumentSplitters.recursive(maxSegmentSize, maxOverlapSize, tokenCountEstimator);
 
             EmbeddingStoreIngestor.builder()
                     .embeddingModel(embeddingModel)

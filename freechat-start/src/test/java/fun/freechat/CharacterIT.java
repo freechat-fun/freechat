@@ -1,9 +1,16 @@
 package fun.freechat;
 
+import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
+import static fun.freechat.util.TestResourceUtils.bodyFrom;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestCharacterUtils;
 import fun.freechat.util.TestCommonUtils;
 import io.micrometer.common.util.StringUtils;
+import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.AfterEach;
@@ -11,14 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-
-import java.util.List;
-
-import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
-import static fun.freechat.util.TestResourceUtils.bodyFrom;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 class CharacterIT extends AbstractIntegrationTest {
     private String ownerId;
@@ -29,13 +28,11 @@ class CharacterIT extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> ownerAndToken = TestAccountUtils.createUserAndToken(
-                CharacterIT.class.getName() + "-1");
+        Pair<String, String> ownerAndToken = TestAccountUtils.createUserAndToken(CharacterIT.class.getName() + "-1");
         ownerId = ownerAndToken.getLeft();
         ownerToken = ownerAndToken.getRight();
 
-        Pair<String, String> otherAndToken = TestAccountUtils.createUserAndToken(
-                CharacterIT.class.getName() + "-2");
+        Pair<String, String> otherAndToken = TestAccountUtils.createUserAndToken(CharacterIT.class.getName() + "-2");
         otherId = otherAndToken.getLeft();
         otherToken = otherAndToken.getRight();
 
@@ -53,82 +50,106 @@ class CharacterIT extends AbstractIntegrationTest {
 
     @Test
     void should_upload_and_delete_pictures() {
-        String url1 = testClient.post().uri("/api/v2/character/picture/" + characterUid)
+        String url1 = testClient
+                .post()
+                .uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/freechat_light.png"))
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(StringUtils.isNotBlank(url1));
 
-        String url2 = testClient.post().uri("/api/v2/character/picture/" + characterUid)
+        String url2 = testClient
+                .post()
+                .uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/freechat_dark.png"))
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(StringUtils.isNotBlank(url2));
 
-        testClient.post().uri("/api/v2/character/picture/" + characterUid)
+        testClient
+                .post()
+                .uri("/api/v2/character/picture/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/freechat_light.png"))
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
-        List<String> urls = testClient.get().uri("/api/v2/character/pictures/" + characterUid)
+        List<String> urls = testClient
+                .get()
+                .uri("/api/v2/character/pictures/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(new ParameterizedTypeReference<List<String>>() {})
                 .returnResult()
                 .getResponseBody();
 
         assertThat(urls).hasSize(2).contains(url1, url2);
 
-        testClient.get().uri("/api/v2/character/pictures/" + characterUid)
+        testClient
+                .get()
+                .uri("/api/v2/character/pictures/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
         String key1 = getKeyFromUrl(url1);
         String key2 = getKeyFromUrl(url2);
 
-        testClient.delete().uri("/api/v2/character/picture/" + key1)
+        testClient
+                .delete()
+                .uri("/api/v2/character/picture/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
-        Boolean success = testClient.delete().uri("/api/v2/character/picture/" + key1)
+        Boolean success = testClient
+                .delete()
+                .uri("/api/v2/character/picture/" + key1)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(BooleanUtils.isTrue(success));
 
-        success = testClient.delete().uri("/api/v2/character/picture/" + key2)
+        success = testClient
+                .delete()
+                .uri("/api/v2/character/picture/" + key2)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
@@ -138,82 +159,106 @@ class CharacterIT extends AbstractIntegrationTest {
 
     @Test
     void should_upload_and_delete_documents() {
-        String url1 = testClient.post().uri("/api/v2/character/document/" + characterUid)
+        String url1 = testClient
+                .post()
+                .uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/miles-of-smiles-terms-of-use.txt"))
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(StringUtils.isNotBlank(url1));
 
-        String url2 = testClient.post().uri("/api/v2/character/document/" + characterUid)
+        String url2 = testClient
+                .post()
+                .uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/story-about-happy-carrot.txt"))
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(String.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(StringUtils.isNotBlank(url2));
 
-        testClient.post().uri("/api/v2/character/document/" + characterUid)
+        testClient
+                .post()
+                .uri("/api/v2/character/document/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .accept(MediaType.TEXT_PLAIN)
                 .bodyValue(bodyFrom("/miles-of-smiles-terms-of-use.txt"))
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
-        List<String> urls = testClient.get().uri("/api/v2/character/documents/" + characterUid)
+        List<String> urls = testClient
+                .get()
+                .uri("/api/v2/character/documents/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(new ParameterizedTypeReference<List<String>>() {})
                 .returnResult()
                 .getResponseBody();
 
         assertThat(urls).hasSize(2).contains(url1, url2);
 
-        testClient.get().uri("/api/v2/character/documents/" + characterUid)
+        testClient
+                .get()
+                .uri("/api/v2/character/documents/" + characterUid)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
         String key1 = getKeyFromUrl(url1);
         String key2 = getKeyFromUrl(url2);
 
-        testClient.delete().uri("/api/v2/character/document/" + key1)
+        testClient
+                .delete()
+                .uri("/api/v2/character/document/" + key1)
                 .header(AUTHORIZATION, "Bearer " + otherToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus()
+                .isForbidden();
 
-        Boolean success = testClient.delete().uri("/api/v2/character/document/" + key1)
+        Boolean success = testClient
+                .delete()
+                .uri("/api/v2/character/document/" + key1)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();
 
         assertTrue(BooleanUtils.isTrue(success));
 
-        success = testClient.delete().uri("/api/v2/character/document/" + key2)
+        success = testClient
+                .delete()
+                .uri("/api/v2/character/document/" + key2)
                 .header(AUTHORIZATION, "Bearer " + ownerToken)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Boolean.class)
                 .returnResult()
                 .getResponseBody();

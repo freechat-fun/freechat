@@ -10,6 +10,7 @@ public enum ModelType {
     EMBEDDING,
     MODERATION,
     UNKNOWN;
+
     public static ModelType of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

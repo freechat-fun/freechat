@@ -6,6 +6,9 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.ClientAbortException;
@@ -18,10 +21,6 @@ import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 public class TraceInterceptor implements HandlerInterceptor {
     private final List<Class<? extends Exception>> badRequestExceptions = List.of(
@@ -30,8 +29,7 @@ public class TraceInterceptor implements HandlerInterceptor {
             RequestRejectedException.class,
             AuthenticationException.class,
             ConstraintViolationException.class,
-            ClientAbortException.class
-    );
+            ClientAbortException.class);
 
     private boolean isBadRequest(int status, Exception ex) {
         if (ex != null && badRequestExceptions.contains(ex.getClass())) {
@@ -42,23 +40,23 @@ public class TraceInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request,
-                             @NonNull HttpServletResponse response,
-                             @Nullable Object handler) {
+    public boolean preHandle(
+            @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @Nullable Object handler) {
         TraceUtils.startTrace();
         TraceUtils.putTraceAttribute("traceId", TraceUtils.getTraceId());
         Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .map(Principal::getName)
-                .ifPresent(username ->  TraceUtils.putTraceAttribute("username", username));
+                .ifPresent(username -> TraceUtils.putTraceAttribute("username", username));
         return true;
     }
 
     @Override
-    public void afterCompletion(@NonNull HttpServletRequest request,
-                                @NonNull HttpServletResponse response,
-                                @Nullable Object handler,
-                                @Nullable Exception ex) {
+    public void afterCompletion(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @Nullable Object handler,
+            @Nullable Exception ex) {
         if (!TraceUtils.isTracing()) {
             return;
         }
@@ -71,7 +69,7 @@ public class TraceInterceptor implements HandlerInterceptor {
         String service = request.getServletPath();
         String method = request.getMethod();
         String query = request.getQueryString();
-        String[] args = query != null ? new String[]{ query } : null;
+        String[] args = query != null ? new String[] {query} : null;
         int responseCode;
         if (ex instanceof AuthenticationException) {
             responseCode = HttpStatus.UNAUTHORIZED.value();
@@ -82,9 +80,8 @@ public class TraceInterceptor implements HandlerInterceptor {
         }
         TraceUtils.TraceStatus status = TraceUtils.TraceStatus.SUCCESSFUL;
         if (ex != null || responseCode >= 400) {
-            status = isBadRequest(responseCode, ex) ?
-                    TraceUtils.TraceStatus.BAD_REQUEST :
-                    TraceUtils.TraceStatus.FAILED;
+            status =
+                    isBadRequest(responseCode, ex) ? TraceUtils.TraceStatus.BAD_REQUEST : TraceUtils.TraceStatus.FAILED;
         }
         long elapseTime = TraceUtils.stopTrace();
 

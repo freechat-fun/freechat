@@ -7,15 +7,14 @@ import fun.freechat.service.chat.ChatMessageRecord;
 import fun.freechat.service.enums.InfoType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
+import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-
-import java.util.List;
-import java.util.Objects;
 
 @Schema(description = "Chat session")
 @Data
@@ -25,22 +24,30 @@ import java.util.Objects;
 public class ChatSessionDTO {
     @Schema(description = "Chat context")
     private ChatContextDTO context;
+
     @Schema(description = "Character summary info")
     private CharacterSummaryDTO character;
+
     @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown")
     @Pattern(regexp = "hugging_face|open_ai|azure_open_ai|dash_scope|ollama|unknown")
     private String provider;
+
     @Schema(description = "Latest message record")
     private ChatMessageRecordDTO latestMessageRecord;
+
     @Schema(description = "Minutes to wait for a proactive chat")
     private Integer proactiveChatWaitingTime;
+
     @Schema(description = "Sender status: online | offline | invisible")
     @Pattern(regexp = "online|offline|invisible")
     private String senderStatus;
+
     @Schema(description = "Is it possible to debug")
     private Boolean isDebugEnabled;
+
     @Schema(description = "Is it possible to customize api-key")
     private Boolean isCustomizedApiKeyEnabled;
+
     @Schema(description = "Enable character tts feature or not")
     private Boolean isTtsEnabled;
 

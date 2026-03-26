@@ -7,8 +7,8 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.output.FinishReason;
 import fun.freechat.api.dto.*;
 import fun.freechat.api.util.AccountUtils;
-import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.model.User;
+import fun.freechat.service.ai.AiModelInfo;
 import fun.freechat.service.enums.PromptFormat;
 import fun.freechat.service.enums.PromptType;
 import fun.freechat.service.prompt.ChatPromptContent;
@@ -21,6 +21,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +41,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-
 @RestController
 @Tag(name = "Prompt")
 @RequestMapping("/api/v2/prompt")
@@ -51,6 +50,7 @@ import java.util.Objects;
 public class PromptAiApi {
     @Autowired
     private PromptService promptService;
+
     @Autowired
     private PromptAiService promptAiService;
 
@@ -65,15 +65,14 @@ public class PromptAiApi {
     @Operation(
             operationId = "sendPrompt",
             summary = "Send Prompt",
-            description = "Send the prompt to the AI service. Note that if the embedding model is called, the return is an embedding array, placed in the details field of the result; the original text is in the text field of the result."
-    )
+            description =
+                    "Send the prompt to the AI service. Note that if the embedding model is called, the return is an embedding array, placed in the details field of the result; the original text is in the text field of the result.")
     @PostMapping("/send")
     @PreAuthorize("hasPermission(#p0, 'aiForPromptOp')")
     public LlmResultDTO send(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Call parameters",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Call parameters",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                             "prompt": "say 'hello'",
                                             "params": {
@@ -81,13 +80,10 @@ public class PromptAiApi {
                                                     "modelId": "[open_ai]gpt-3.5-turbo"
                                             }
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptAiParamDTO aiRequest) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptAiParamDTO aiRequest) {
         PromptAiParam promptAiParam = toPromptAiParam(aiRequest);
 
         String prompt = promptAiParam.getPrompt();
@@ -97,8 +93,7 @@ public class PromptAiApi {
         AiModelInfo modelInfo = promptAiParam.getModelInfo();
         Map<String, Object> parameters = promptAiParam.getParameters();
 
-        ChatResponse response =
-                promptAiService.send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
+        ChatResponse response = promptAiService.send(prompt, promptType, user, apiKeyInfo, modelInfo, parameters);
         if (response == null) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, prompt);
         }
@@ -108,15 +103,13 @@ public class PromptAiApi {
     @Operation(
             operationId = "streamSendPrompt",
             summary = "Send Prompt by Streaming Back",
-            description = "Refer to /api/v2/prompt/send, stream back chunks of the response."
-    )
+            description = "Refer to /api/v2/prompt/send, stream back chunks of the response.")
     @PostMapping(value = "/send/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @PreAuthorize("hasPermission(#p0, 'aiForPromptOp')")
     public SseEmitter streamSend(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Call parameters",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Call parameters",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                             "prompt": "say 'hello'",
                                             "params": {
@@ -124,13 +117,10 @@ public class PromptAiApi {
                                                     "modelId": "[open_ai]gpt-3.5-turbo"
                                             }
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PromptAiParamDTO aiRequest,
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PromptAiParamDTO aiRequest,
             HttpServletResponse servletResponse) {
         PromptAiParam promptAiParam = toPromptAiParam(aiRequest);
 
@@ -142,8 +132,8 @@ public class PromptAiApi {
         Map<String, Object> parameters = promptAiParam.getParameters();
 
         SseEmitter sseEmitter = new SseEmitter();
-        promptAiService.streamSend(prompt, promptType, user, apiKeyInfo, modelInfo, parameters,
-                new StreamingChatResponseHandler() {
+        promptAiService.streamSend(
+                prompt, promptType, user, apiKeyInfo, modelInfo, parameters, new StreamingChatResponseHandler() {
                     private boolean abort = false;
 
                     @Override
@@ -153,9 +143,7 @@ public class PromptAiApi {
                         }
                         try {
                             LlmResultDTO result = LlmResultDTO.from(
-                                    partialResult,
-                                    ChatMessageDTO.fromPartialResult(partialResult),
-                                    null, null);
+                                    partialResult, ChatMessageDTO.fromPartialResult(partialResult), null, null);
                             result.setRequestId(null);
                             sseEmitter.send(result);
                         } catch (NullPointerException | IOException e) {
@@ -174,7 +162,8 @@ public class PromptAiApi {
                             LlmResultDTO result = LlmResultDTO.from(
                                     partialThinking.text(),
                                     ChatMessageDTO.fromPartialThinking(partialThinking),
-                                    null, null);
+                                    null,
+                                    null);
                             result.setRequestId(null);
                             sseEmitter.send(result);
                         } catch (NullPointerException | IOException e) {
@@ -209,8 +198,7 @@ public class PromptAiApi {
                         }
                         log.error("SSE exception", throwable);
                         try {
-                            LlmResultDTO result = LlmResultDTO.from(
-                                    throwable.getMessage(), null, null, null);
+                            LlmResultDTO result = LlmResultDTO.from(throwable.getMessage(), null, null, null);
                             result.setFinishReason(FinishReason.OTHER.name().toLowerCase());
                             result.setRequestId(null);
                             sseEmitter.send(result);
@@ -233,7 +221,8 @@ public class PromptAiApi {
         if (StringUtils.isBlank(modelId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "modelId must be defined.");
         }
-        AiModelInfo modelInfo = AiModelInfoDTO.from(getString(parameters, "modelId")).toAiModelInfo();
+        AiModelInfo modelInfo =
+                AiModelInfoDTO.from(getString(parameters, "modelId")).toAiModelInfo();
         User user;
         String apiKeyInfo;
         String apiKey = getString(parameters, "apiKey");
@@ -247,14 +236,15 @@ public class PromptAiApi {
         }
 
         String prompt = null;
-        PromptType promptType  = null;
+        PromptType promptType = null;
         if (StringUtils.isNotBlank(aiRequest.getPrompt())) {
             prompt = aiRequest.getPrompt();
             promptType = PromptType.STRING;
         } else if (aiRequest.getPromptTemplate() != null) {
             PromptTemplateDTO promptTemplate = aiRequest.getPromptTemplate();
             if (StringUtils.isNotBlank(promptTemplate.getTemplate())) {
-                prompt = promptService.apply(promptTemplate.getTemplate(),
+                prompt = promptService.apply(
+                        promptTemplate.getTemplate(),
                         promptTemplate.getVariables(),
                         PromptFormat.of(promptTemplate.getFormat()));
                 promptType = PromptType.STRING;
@@ -264,18 +254,18 @@ public class PromptAiApi {
                 PromptFormat format = PromptFormat.of(promptTemplate.getFormat());
 
                 try {
-                    ChatPromptContent promptContent = promptService.apply(
-                            chatTemplate.toChatPromptContent(), variables, format);
+                    ChatPromptContent promptContent =
+                            promptService.apply(chatTemplate.toChatPromptContent(), variables, format);
                     prompt = InfoUtils.defaultMapper().writeValueAsString(promptContent);
                     promptType = PromptType.CHAT;
                 } catch (JsonProcessingException e) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage(), e);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
                 }
             }
-        } else if(aiRequest.getPromptRef() != null) {
+        } else if (aiRequest.getPromptRef() != null) {
             PromptRefDTO promptRef = aiRequest.getPromptRef();
-            Pair<String, PromptType> applied = promptService.apply(promptRef.getPromptId(),
-                    promptRef.getVariables(), promptRef.getDraft());
+            Pair<String, PromptType> applied =
+                    promptService.apply(promptRef.getPromptId(), promptRef.getVariables(), promptRef.getDraft());
             prompt = applied.getLeft();
             promptType = applied.getRight();
         }

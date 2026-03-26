@@ -1,10 +1,9 @@
 package fun.freechat.service.ai.tool;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
 
 @Data
 public class ToolParameters {

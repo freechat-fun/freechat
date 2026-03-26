@@ -1,5 +1,7 @@
 package fun.freechat.service.plugin.impl;
 
+import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+
 import fun.freechat.model.PluginInfo;
 import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.service.plugin.PluginFetchService;
@@ -8,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-
-import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 
 @Service
 @SuppressWarnings("unused")
@@ -35,9 +35,10 @@ public class PluginFetchServiceImpl implements PluginFetchService {
     }
 
     @Override
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = MANIFEST_CACHE_KEY),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = API_DOCS_CACHE_KEY)
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = MANIFEST_CACHE_KEY),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = API_DOCS_CACHE_KEY)
+            })
     public void clearCaches(PluginInfo pluginInfo) {}
 }

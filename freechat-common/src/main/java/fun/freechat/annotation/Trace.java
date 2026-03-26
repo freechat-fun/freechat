@@ -10,7 +10,9 @@ import java.lang.annotation.Target;
 @SuppressWarnings("unused")
 public @interface Trace {
     String value() default "";
+
     boolean ignoreArgs() default false;
+
     boolean ignoreReturn() default false;
 
     /**

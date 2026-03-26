@@ -1,11 +1,10 @@
 package fun.freechat.api.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Objects;
 
 @Slf4j
 public class CommonUtils {
@@ -18,7 +17,10 @@ public class CommonUtils {
             T response = clazz.getDeclaredConstructor().newInstance();
             BeanUtils.copyProperties(source, response);
             return response;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException e) {
             log.error("Failed to construct instance of {}", clazz.getSimpleName(), e);
             throw new IllegalStateException(e);
         }

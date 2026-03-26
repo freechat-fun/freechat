@@ -1,8 +1,20 @@
 package fun.freechat;
 
+import static fun.freechat.service.enums.ModelProvider.OLLAMA;
+import static fun.freechat.util.TestCommonUtils.defaultEmbeddingModelFor;
+import static fun.freechat.util.TestCommonUtils.defaultModelFor;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Image;
 import fun.freechat.util.TestOllamaContainer;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,19 +32,6 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.milvus.MilvusContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
-
-import static fun.freechat.service.enums.ModelProvider.OLLAMA;
-import static fun.freechat.util.TestCommonUtils.defaultEmbeddingModelFor;
-import static fun.freechat.util.TestCommonUtils.defaultModelFor;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -65,7 +64,7 @@ public class AbstractIntegrationTest {
                 .withEnv("MYSQL_ROOT_PASSWORD", "hello1234")
                 .waitingFor(Wait.forHealthcheck());
 
-        milvus =  new MilvusContainer(milvusImageName());
+        milvus = new MilvusContainer(milvusImageName());
 
         tts = new GenericContainer<>(ttsImageName())
                 .withExposedPorts(5002)
@@ -105,12 +104,10 @@ public class AbstractIntegrationTest {
         milvus.start();
         tts.start();
 
-        registry.add("redis.datasource.url",
-                () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
+        registry.add("redis.datasource.url", () -> "redis://" + redis.getHost() + ":" + redis.getFirstMappedPort());
         registry.add("spring.datasource.url", mysql::getJdbcUrl);
         registry.add("embedding.milvus.url", milvus::getEndpoint);
-        registry.add("tts.baseUrl",
-                () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
+        registry.add("tts.baseUrl", () -> "http://" + tts.getHost() + ":" + tts.getFirstMappedPort());
         registry.add("disk.workdir", dataPath::toString);
     }
 
@@ -154,14 +151,12 @@ public class AbstractIntegrationTest {
         DockerImageName dockerImageName = DockerImageName.parse("ollama/ollama:latest");
         String localImageName = localOllamaImageName();
         DockerClient dockerClient = DockerClientFactory.instance().client();
-        List<Image> images = dockerClient.listImagesCmd()
-                .withReferenceFilter(localImageName)
-                .exec();
+        List<Image> images =
+                dockerClient.listImagesCmd().withReferenceFilter(localImageName).exec();
         if (images.isEmpty()) {
             return dockerImageName;
         }
-        return DockerImageName.parse(localImageName)
-                .asCompatibleSubstituteFor("ollama/ollama:latest");
+        return DockerImageName.parse(localImageName).asCompatibleSubstituteFor("ollama/ollama:latest");
     }
 
     private static String localOllamaImageName() {

@@ -1,11 +1,6 @@
 package fun.freechat.util;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.lang3.tuple.Triple;
+import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_GNU;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,15 +8,20 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import static org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.LONGFILE_GNU;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.lang3.tuple.Triple;
 
 public class TarUtils {
     private static final int BUFFER_SIZE = 4096;
 
-    public static void compressGzip(List<Triple<String, InputStream, Long>> entries, OutputStream out) throws IOException {
+    public static void compressGzip(List<Triple<String, InputStream, Long>> entries, OutputStream out)
+            throws IOException {
         try (GzipCompressorOutputStream gzipOut = new GzipCompressorOutputStream(out);
-             TarArchiveOutputStream tarOut = new TarArchiveOutputStream(gzipOut)) {
+                TarArchiveOutputStream tarOut = new TarArchiveOutputStream(gzipOut)) {
             tarOut.setLongFileMode(LONGFILE_GNU);
 
             for (Triple<String, InputStream, Long> entry : entries) {
@@ -53,7 +53,7 @@ public class TarUtils {
 
     public static void extractGzip(InputStream inputStream, Path dstDir) throws IOException {
         try (GzipCompressorInputStream gzipIn = new GzipCompressorInputStream(inputStream);
-             TarArchiveInputStream tarIn = new TarArchiveInputStream(gzipIn)) {
+                TarArchiveInputStream tarIn = new TarArchiveInputStream(gzipIn)) {
             TarArchiveEntry entry;
             while ((entry = tarIn.getNextEntry()) != null) {
                 if (entry.isDirectory()) {

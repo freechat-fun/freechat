@@ -3,14 +3,13 @@ package fun.freechat.api.util;
 import fun.freechat.model.PromptInfo;
 import fun.freechat.service.enums.Visibility;
 import fun.freechat.service.prompt.PromptService;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class PromptUtils implements ApplicationContextAware {
@@ -47,10 +46,11 @@ public class PromptUtils implements ApplicationContextAware {
 
     public static String newUniqueName(String desired) {
         int index = 0;
-        String name =desired;
+        String name = desired;
         while (promptService.existsName(name, AccountUtils.currentUser())) {
             index++;
             name = desired + "-" + index;
         }
         return name;
-    }}
+    }
+}

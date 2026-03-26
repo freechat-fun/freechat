@@ -6,7 +6,9 @@ import java.util.Properties;
 
 public interface RuntimeConfig {
     String getContent();
+
     Properties getProperties();
+
     default Map<String, Object> getMap() {
         Properties properties = getProperties();
         Map<String, Object> map = HashMap.newHashMap(properties.size());
@@ -21,15 +23,19 @@ public interface RuntimeConfig {
         }
         return map;
     }
+
     default <T> T getObject() {
         throw new UnsupportedOperationException("Not implemented");
     }
+
     default String get(String key) {
         return getProperties().getProperty(key);
     }
+
     default long getLong(String key) {
         return Long.parseLong(get(key));
     }
+
     default int getInt(String key) {
         return Integer.parseInt(get(key));
     }

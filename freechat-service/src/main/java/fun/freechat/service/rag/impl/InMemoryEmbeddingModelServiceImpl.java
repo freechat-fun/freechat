@@ -8,9 +8,6 @@ import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15Quantize
 import dev.langchain4j.model.embedding.onnx.bgesmallzhv15q.BgeSmallZhV15QuantizedEmbeddingModel;
 import fun.freechat.service.rag.EmbeddingModelService;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -18,6 +15,8 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service("enZhEmbeddingModelService")
 @SuppressWarnings("unused")
@@ -40,9 +39,7 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
 
     private TokenCountEstimator tokenCountEstimatorFromResource(String resourceName, EmbeddingModel model) {
         Class<? extends EmbeddingModel> clazz = model.getClass();
-        Map<String, String> options = Map.of(
-                "padding", "false",
-                "modelMaxLength", String.valueOf(model.dimension()));
+        Map<String, String> options = Map.of("padding", "false", "modelMaxLength", String.valueOf(model.dimension()));
 
         try {
             URI uri = Objects.requireNonNull(clazz.getResource(resourceName)).toURI();
@@ -68,17 +65,14 @@ public class InMemoryEmbeddingModelServiceImpl implements EmbeddingModelService 
         zhEmbeddingModel = new BgeSmallZhV15QuantizedEmbeddingModel();
         defaultEmbeddingModel = new AllMiniLmL6V2QuantizedEmbeddingModel();
 
-        enTokenCountEstimator = tokenCountEstimatorFromResource(
-                "/bge-small-en-v1.5-q-tokenizer.json",
-                enEmbeddingModel);
+        enTokenCountEstimator =
+                tokenCountEstimatorFromResource("/bge-small-en-v1.5-q-tokenizer.json", enEmbeddingModel);
 
-        zhTokenCountEstimator = tokenCountEstimatorFromResource(
-                "/bge-small-zh-v1.5-q-tokenizer.json",
-                zhEmbeddingModel);
+        zhTokenCountEstimator =
+                tokenCountEstimatorFromResource("/bge-small-zh-v1.5-q-tokenizer.json", zhEmbeddingModel);
 
-        defaultTokenCountEstimator = tokenCountEstimatorFromResource(
-                "/all-minilm-l6-v2-q-tokenizer.json",
-                defaultEmbeddingModel);
+        defaultTokenCountEstimator =
+                tokenCountEstimatorFromResource("/all-minilm-l6-v2-q-tokenizer.json", defaultEmbeddingModel);
     }
 
     @Override

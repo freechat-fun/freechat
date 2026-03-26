@@ -1,5 +1,13 @@
 package fun.freechat.api.dto;
 
+import static dev.langchain4j.data.message.ContentType.TEXT;
+import static fun.freechat.api.util.ChatUtils.contentTypeOf;
+import static fun.freechat.service.enums.PromptRole.ASSISTANT;
+import static fun.freechat.service.enums.PromptRole.FUNCTION_CALL;
+import static fun.freechat.service.enums.PromptRole.FUNCTION_RESULT;
+import static fun.freechat.service.enums.PromptRole.SYSTEM;
+import static fun.freechat.service.enums.PromptRole.USER;
+
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.Content;
@@ -11,23 +19,14 @@ import dev.langchain4j.model.chat.response.PartialThinking;
 import fun.freechat.service.enums.PromptRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static dev.langchain4j.data.message.ContentType.TEXT;
-import static fun.freechat.api.util.ChatUtils.contentTypeOf;
-import static fun.freechat.service.enums.PromptRole.ASSISTANT;
-import static fun.freechat.service.enums.PromptRole.FUNCTION_CALL;
-import static fun.freechat.service.enums.PromptRole.FUNCTION_RESULT;
-import static fun.freechat.service.enums.PromptRole.SYSTEM;
-import static fun.freechat.service.enums.PromptRole.USER;
 
 @Schema(description = "Chat message")
 @Data
@@ -38,22 +37,29 @@ public class ChatMessageDTO {
     @Schema(description = "Chat role: system | assistant | user | tool_call | tool_result")
     @Pattern(regexp = "system|assistant|user|tool_call|tool_result")
     private String role;
+
     @Schema(description = "user: name of the user role; tool_call: name of the called tool")
     private String name;
+
     @Schema(description = "default: dialogue content; tool_result: tool call result, serialized as json")
     private List<ChatContentDTO> contents;
+
     @Schema(description = "Tool calls information during the conversation")
     private List<ChatToolCallDTO> toolCalls;
+
     @Schema(description = "Thinking information")
     private String thinking;
-    @Schema(description = "Contextual information in this round of conversation (the external RAG result can be passed in through this parameter)")
+
+    @Schema(
+            description =
+                    "Contextual information in this round of conversation (the external RAG result can be passed in through this parameter)")
     private String context;
+
     @Schema(description = "Message identifier")
     private Long messageId;
 
     private String getContentText() {
-        return ValidationUtils.ensureNotEmpty(contents, "contents")
-                .stream()
+        return ValidationUtils.ensureNotEmpty(contents, "contents").stream()
                 .filter(content -> contentTypeOf(content.getType()) == TEXT)
                 .map(ChatContentDTO::getContent)
                 .collect(Collectors.joining("\n"));
@@ -78,11 +84,9 @@ public class ChatMessageDTO {
                     builder.role(ASSISTANT.text());
                 } else {
                     builder.role(FUNCTION_CALL.text());
-                    builder.toolCalls(aiMessage.toolExecutionRequests()
-                            .stream()
+                    builder.toolCalls(aiMessage.toolExecutionRequests().stream()
                             .map(ChatToolCallDTO::from)
-                            .toList()
-                    );
+                            .toList());
                 }
             }
             case USER -> {
@@ -119,23 +123,26 @@ public class ChatMessageDTO {
     public ChatMessage toChatMessage() {
         return switch (PromptRole.of(getRole())) {
             case SYSTEM -> SystemMessage.from(getContentText());
-            case ASSISTANT -> AiMessage.builder().text(getContentText()).thinking(getThinking()).build();
+            case ASSISTANT ->
+                AiMessage.builder()
+                        .text(getContentText())
+                        .thinking(getThinking())
+                        .build();
             case USER -> {
-                List<Content> messageContents = getContents().stream()
-                        .map(ChatContentDTO::toContent)
-                        .toList();
-                yield StringUtils.isBlank(getName()) ?
-                        UserMessage.from(messageContents) :
-                        UserMessage.from(getName(), messageContents);
-
+                List<Content> messageContents =
+                        getContents().stream().map(ChatContentDTO::toContent).toList();
+                yield StringUtils.isBlank(getName())
+                        ? UserMessage.from(messageContents)
+                        : UserMessage.from(getName(), messageContents);
             }
-            case FUNCTION_CALL -> AiMessage.from(getToolCalls().stream()
-                    .map(ChatToolCallDTO::toToolExecutionRequest)
-                    .toList());
+            case FUNCTION_CALL ->
+                AiMessage.from(getToolCalls().stream()
+                        .map(ChatToolCallDTO::toToolExecutionRequest)
+                        .toList());
             case FUNCTION_RESULT -> {
                 String toolId = null;
-                String toolName =getName();
-                String result =getContentText();
+                String toolName = getName();
+                String result = getContentText();
                 List<ChatToolCallDTO> messageToolCalls = getToolCalls();
                 if (CollectionUtils.isNotEmpty(messageToolCalls)) {
                     ChatToolCallDTO toolCall = messageToolCalls.getFirst();

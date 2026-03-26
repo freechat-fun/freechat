@@ -4,12 +4,11 @@ import fun.freechat.model.AgentInfo;
 import fun.freechat.model.InteractiveStats;
 import fun.freechat.model.User;
 import fun.freechat.service.enums.Visibility;
+import java.util.Collection;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Triple;
-
-import java.util.Collection;
-import java.util.List;
 
 public interface AgentService {
     @Builder(toBuilder = true)
@@ -42,24 +41,44 @@ public interface AgentService {
     static Query.QueryBuilder queryBuilder() {
         return Query.builder();
     }
+
     List<Triple<AgentInfo, List<String>, List<String>>> search(Query query, User user);
+
     List<Triple<AgentInfo, List<String>, List<String>>> searchDetails(Query query, User user);
+
     long count(Query query, User user);
+
     boolean create(Triple<AgentInfo, List<String>, List<String>> AgentInfoTriple);
+
     List<Long> create(List<Triple<AgentInfo, List<String>, List<String>>> AgentInfoList);
+
     boolean update(Triple<AgentInfo, List<String>, List<String>> AgentInfoTriple);
+
     boolean hide(Long agentId, User user);
+
     boolean delete(Long agentId, User user);
+
     List<Long> delete(List<Long> agentIds, User user);
+
     Triple<AgentInfo, List<String>, List<String>> summary(Long agentId, User user);
+
     List<Triple<AgentInfo, List<String>, List<String>>> summary(Collection<Long> agentIds, User user);
+
     Triple<AgentInfo, List<String>, List<String>> details(Long agentId, User user);
+
     List<Triple<AgentInfo, List<String>, List<String>>> details(Collection<Long> agentIds, User user);
+
     List<Triple<Long, Integer, InteractiveStats>> listVersionsByName(String name, User user);
+
     Long getLatestIdByName(String name, User user);
+
     Long getLatestIdByUid(String agentUid, User user);
+
     Long publish(Long agentId, Visibility visibility, User user);
+
     String getOwner(Long agentId);
+
     String getOwnerByUid(String agentUid);
+
     String getUid(Long agentId);
 }

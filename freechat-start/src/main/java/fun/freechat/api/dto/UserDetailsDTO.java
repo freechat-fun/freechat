@@ -4,11 +4,10 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.Date;
 
 @Schema(description = "Account detailed information")
 @Data
@@ -42,16 +41,16 @@ public class UserDetailsDTO extends TraceableDTO {
             return null;
         }
         UserDetailsDTO dto = CommonUtils.convert(user, UserDetailsDTO.class);
-        dto.setLocked(user.getLocked() != (byte)0);
-        dto.setEnabled(user.getEnabled() != (byte)0);
+        dto.setLocked(user.getLocked() != (byte) 0);
+        dto.setEnabled(user.getEnabled() != (byte) 0);
         return dto;
     }
 
     public User toUser() {
         User user = CommonUtils.convert(this, User.class);
         user.setUserId(AccountUtils.userNameToId(getUsername()));
-        user.setLocked(BooleanUtils.isTrue(getLocked()) ? (byte)1 : (byte)0);
-        user.setEnabled(BooleanUtils.isNotFalse(getEnabled()) ? (byte)1 : (byte)0);
+        user.setLocked(BooleanUtils.isTrue(getLocked()) ? (byte) 1 : (byte) 0);
+        user.setEnabled(BooleanUtils.isNotFalse(getEnabled()) ? (byte) 1 : (byte) 0);
         return user;
     }
 }

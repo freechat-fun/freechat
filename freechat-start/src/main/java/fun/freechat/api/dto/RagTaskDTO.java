@@ -7,6 +7,7 @@ import fun.freechat.model.RagTask;
 import fun.freechat.service.enums.SourceType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
+import java.nio.file.AccessDeniedException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.nio.file.AccessDeniedException;
 
 @Schema(description = "RAG task information")
 @Slf4j
@@ -28,10 +27,13 @@ public class RagTaskDTO {
     @Schema(description = "Source type: file (default) | url")
     @Pattern(regexp = "file|url")
     private String sourceType;
+
     @Schema(description = "Source information, url, or a key for file")
     private String source;
+
     @Schema(description = "The maximum size of a segment in tokens.")
     private Integer maxSegmentSize;
+
     @Schema(description = "The maximum size of the overlap between segments in tokens.")
     private Integer maxOverlapSize;
 

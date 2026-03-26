@@ -1,3 +1,3 @@
 package fun.freechat.service.character;
 
-public record CharacterBackendEvent(String userId, String backendId){ }
+public record CharacterBackendEvent(String userId, String backendId) {}

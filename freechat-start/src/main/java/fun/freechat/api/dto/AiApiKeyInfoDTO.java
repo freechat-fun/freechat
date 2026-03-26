@@ -4,10 +4,9 @@ import fun.freechat.api.util.AccountUtils;
 import fun.freechat.api.util.CommonUtils;
 import fun.freechat.service.ai.MaskedAiApiKey;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Date;
 
 @Schema(description = "Model credential information")
 @Data
@@ -15,20 +14,28 @@ import java.util.Date;
 public class AiApiKeyInfoDTO extends TraceableDTO {
     @Schema(description = "Credential identifier")
     private Long id;
+
     @Schema(description = "Creation time")
     private Date gmtCreate;
+
     @Schema(description = "Modification time")
     private Date gmtModified;
+
     @Schema(description = "Last use time")
     private Date gmtUsed;
+
     @Schema(description = "Credential name")
     private String name;
+
     @Schema(description = "Model provider: hugging_face | open_ai | azure_open_ai | dash_scope | ollama | unknown")
     private String provider;
+
     @Schema(description = "Credential content")
     private String token;
+
     @Schema(description = "Whether to enable")
     private Boolean enabled;
+
     @Schema(description = "Credential owner")
     private String username;
 
@@ -37,7 +44,7 @@ public class AiApiKeyInfoDTO extends TraceableDTO {
             return null;
         }
         AiApiKeyInfoDTO dto = CommonUtils.convert(apiKey, AiApiKeyInfoDTO.class);
-        dto.setEnabled(apiKey.getEnabled() != (byte)0);
+        dto.setEnabled(apiKey.getEnabled() != (byte) 0);
         dto.setUsername(AccountUtils.userIdToName(apiKey.getUserId()));
         return dto;
     }

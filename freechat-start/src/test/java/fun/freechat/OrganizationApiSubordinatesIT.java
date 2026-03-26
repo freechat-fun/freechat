@@ -1,5 +1,7 @@
 package fun.freechat;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import fun.freechat.util.TestAccountUtils;
 import fun.freechat.util.TestCommonUtils;
 import fun.freechat.util.TestOrgUtils;
@@ -10,8 +12,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @Disabled
 class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
     private String userId;
@@ -19,7 +19,8 @@ class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        Pair<String, String> userAndToken = TestAccountUtils.createUserAndToken(OrganizationApiSubordinatesIT.class.getName());
+        Pair<String, String> userAndToken =
+                TestAccountUtils.createUserAndToken(OrganizationApiSubordinatesIT.class.getName());
         userId = userAndToken.getLeft();
         apiToken = userAndToken.getRight();
         TestOrgUtils.addSubordinates(userId);
@@ -34,68 +35,95 @@ class OrganizationApiSubordinatesIT extends AbstractIntegrationTest {
 
     @Test
     void should_get_solid_subordinates() {
-        testClient.get().uri("/api/v2/org/subordinates")
+        testClient
+                .get()
+                .uri("/api/v2/org/subordinates")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(3);
+                .jsonPath("$.length()")
+                .isEqualTo(3);
     }
 
     @Test
     void should_get_all_subordinates() {
-        testClient.get().uri("/api/v2/org/subordinates?all=1")
+        testClient
+                .get()
+                .uri("/api/v2/org/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(5);
+                .jsonPath("$.length()")
+                .isEqualTo(5);
     }
 
     @Test
     void should_get_subordinate_all_subordinates() {
-        testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(5);
+                .jsonPath("$.length()")
+                .isEqualTo(5);
     }
 
     @Test
     void should_update_subordinate_subordinates() {
-        testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(5);
+                .jsonPath("$.length()")
+                .isEqualTo(5);
 
-        testClient.put().uri("/api/v2/org/manage/41/subordinates")
+        testClient
+                .put()
+                .uri("/api/v2/org/manage/41/subordinates")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .bodyValue("[\"40\"]")
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(Void.class);
 
-        testClient.get().uri("/api/v2/org/manage/41/subordinates?all=1")
+        testClient
+                .get()
+                .uri("/api/v2/org/manage/41/subordinates?all=1")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + apiToken)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                    .jsonPath("$.length()").isEqualTo(2);
-
+                .jsonPath("$.length()")
+                .isEqualTo(2);
     }
 }

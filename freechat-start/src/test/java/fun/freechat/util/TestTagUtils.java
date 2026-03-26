@@ -1,5 +1,7 @@
 package fun.freechat.util;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import fun.freechat.model.Tag;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
@@ -10,8 +12,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Component
 public class TestTagUtils implements ApplicationContextAware {

@@ -1,5 +1,8 @@
 package fun.freechat.service.account.impl;
 
+import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.mapper.ApiTokenDynamicSqlSupport;
 import fun.freechat.mapper.ApiTokenMapper;
 import fun.freechat.mapper.UserDynamicSqlSupport;
@@ -14,9 +17,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
-import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-
 @Component
 @SuppressWarnings("unused")
 public class SysApiTokenRepo {
@@ -26,44 +26,48 @@ public class SysApiTokenRepo {
 
     @Autowired
     private ApiTokenMapper apiTokenMapper;
+
     @Autowired
     private UserMapper userMapper;
 
     @LongPeriodCache(keyBy = TOKEN_CACHE_KEY)
     public ApiToken getApiToken(String token) {
-        return apiTokenMapper.selectOne(c -> c.where(ApiTokenDynamicSqlSupport.token, isEqualTo(token)))
+        return apiTokenMapper
+                .selectOne(c -> c.where(ApiTokenDynamicSqlSupport.token, isEqualTo(token)))
                 .orElse(null);
     }
 
     @LongPeriodCache(keyBy = USER_CACHE_KEY)
     public User getUser(String token) {
-        String userId = apiTokenMapper.selectOne(c ->
-                        c.where(ApiTokenDynamicSqlSupport.token, isEqualTo(token)))
+        String userId = apiTokenMapper
+                .selectOne(c -> c.where(ApiTokenDynamicSqlSupport.token, isEqualTo(token)))
                 .map(ApiToken::getUserId)
                 .orElse(null);
         if (StringUtils.isBlank(userId)) {
             return null;
         }
-        return userMapper.selectOne(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId)))
+        return userMapper
+                .selectOne(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId)))
                 .orElse(null);
     }
 
     @LongPeriodCache(keyBy = TOKEN_BY_ID_CACHE_KEY)
     public ApiToken getApiTokenById(Long id) {
-        return apiTokenMapper.selectByPrimaryKey(id)
-                .orElse(null);
+        return apiTokenMapper.selectByPrimaryKey(id).orElse(null);
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = TOKEN_CACHE_KEY),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = USER_CACHE_KEY)
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = TOKEN_CACHE_KEY),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = USER_CACHE_KEY)
+            })
     public void onDelete(String token) {}
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = TOKEN_CACHE_KEY),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = USER_CACHE_KEY)
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = TOKEN_CACHE_KEY),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = USER_CACHE_KEY)
+            })
     public void onDisable(String token) {}
 
     @LongPeriodCacheEvict(keyBy = TOKEN_BY_ID_CACHE_KEY)

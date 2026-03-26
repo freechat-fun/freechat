@@ -1,8 +1,10 @@
 package fun.freechat.util.graph;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.function.Function;
+
 /**
  * This interface represents a "graph" data structure, which can be directed or undirected, cyclic or acyclic.
  * <p>

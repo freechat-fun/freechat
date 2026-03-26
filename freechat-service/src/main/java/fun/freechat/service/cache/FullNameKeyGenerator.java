@@ -1,6 +1,12 @@
 package fun.freechat.service.cache;
 
+import static fun.freechat.service.util.CacheUtils.*;
+
 import fun.freechat.util.SpELUtils;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Map;
+import javax.annotation.Nullable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,20 +21,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Map;
-
-import static fun.freechat.service.util.CacheUtils.*;
-
 @Component(KEY_GENERATOR)
 @Slf4j
 @SuppressWarnings("unused")
 public class FullNameKeyGenerator implements KeyGenerator {
-    private static final String[] SHORT_PERIOD_CACHE_NAMES = new String[]{SHORT_PERIOD_CACHE_NAME};
-    private static final String[] MIDDLE_PERIOD_CACHE_NAMES = new String[]{MIDDLE_PERIOD_CACHE_NAME};
-    private static final String[] LONG_PERIOD_CACHE_NAMES = new String[]{LONG_PERIOD_CACHE_NAME};
+    private static final String[] SHORT_PERIOD_CACHE_NAMES = new String[] {SHORT_PERIOD_CACHE_NAME};
+    private static final String[] MIDDLE_PERIOD_CACHE_NAMES = new String[] {MIDDLE_PERIOD_CACHE_NAME};
+    private static final String[] LONG_PERIOD_CACHE_NAMES = new String[] {LONG_PERIOD_CACHE_NAME};
 
     @Override
     public @NonNull Object generate(@NonNull Object target, @NonNull Method method, @Nullable Object... params) {
@@ -46,7 +45,7 @@ public class FullNameKeyGenerator implements KeyGenerator {
     private Pair<String[], String> getCachesKeyExpr(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (annotation instanceof ShortPeriodCache shortCache) {
-                return Pair.of(SHORT_PERIOD_CACHE_NAMES,shortCache.keyBy());
+                return Pair.of(SHORT_PERIOD_CACHE_NAMES, shortCache.keyBy());
             } else if (annotation instanceof MiddlePeriodCache middleCache) {
                 return Pair.of(MIDDLE_PERIOD_CACHE_NAMES, middleCache.keyBy());
             } else if (annotation instanceof LongPeriodCache longCache) {
@@ -61,7 +60,8 @@ public class FullNameKeyGenerator implements KeyGenerator {
 
     private Pair<String[], String> getCachesKeyExpr(Method method) {
         Pair<String[], String> cachesKeyExpr = getCachesKeyExpr(method.getAnnotations());
-        return cachesKeyExpr != null ? cachesKeyExpr
+        return cachesKeyExpr != null
+                ? cachesKeyExpr
                 : getCachesKeyExpr(method.getDeclaringClass().getAnnotations());
     }
 
@@ -73,10 +73,11 @@ public class FullNameKeyGenerator implements KeyGenerator {
         return key;
     }
 
-    private String generateSpELKey(Object target, Method method, Object[] params,
-                                   Pair<String[], String> cachesKeyExpr) {
+    private String generateSpELKey(
+            Object target, Method method, Object[] params, Pair<String[], String> cachesKeyExpr) {
         SpelExpressionParser parser = new SpelExpressionParser();
-        SimpleEvaluationContext context = SimpleEvaluationContext.forReadOnlyDataBinding().build();
+        SimpleEvaluationContext context =
+                SimpleEvaluationContext.forReadOnlyDataBinding().build();
         Map<String, Object> contextInfo = SpELUtils.extractInfo(target, method, params);
         contextInfo.forEach(context::setVariable);
         context.setVariable("caches", cachesKeyExpr.getLeft());
@@ -107,7 +108,7 @@ public class FullNameKeyGenerator implements KeyGenerator {
         String bob = "bob";
 
         FullNameKeyGenerator gen = new FullNameKeyGenerator();
-        Object[] params = new Object[]{bob};
+        Object[] params = new Object[] {bob};
         System.out.println(gen.generateSpELKey(ada, hello, params, testPair("#methodName")));
         System.out.println(gen.generateSpELKey(ada, hello, params, testPair("#method.name")));
         System.out.println(gen.generateSpELKey(ada, hello, params, testPair("#args")));

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum Visibility {
     HIDDEN,
     PRIVATE,
-    PUBLIC_ORG,  // public in an organization
+    PUBLIC_ORG, // public in an organization
     PUBLIC;
 
     public static Visibility of(String text) {

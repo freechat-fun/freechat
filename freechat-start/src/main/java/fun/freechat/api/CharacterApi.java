@@ -1,5 +1,11 @@
 package fun.freechat.api;
 
+import static fun.freechat.api.util.ConfigUtils.*;
+import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
+import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+import static org.yaml.snakeyaml.nodes.Tag.MAP;
+
 import fun.freechat.api.dto.*;
 import fun.freechat.api.dto.conf.CharacterBackendConfigurationDTO;
 import fun.freechat.api.dto.conf.CharacterConfigurationDTO;
@@ -30,6 +36,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Stream;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -49,23 +65,6 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static fun.freechat.api.util.ConfigUtils.*;
-import static fun.freechat.api.util.FileUtils.getKeyFromUrl;
-import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
-import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
-import static org.yaml.snakeyaml.nodes.Tag.MAP;
-
 @RestController
 @Tag(name = "Character")
 @RequestMapping("/api/v2/character")
@@ -75,38 +74,52 @@ import static org.yaml.snakeyaml.nodes.Tag.MAP;
 public class CharacterApi {
     @Value("${chat.memory.minMessageWindowSize:10}")
     private Integer minMessageWindowSize;
+
     @Value("${chat.memory.maxMessageWindowSize:500}")
     private Integer maxMessageWindowSize;
+
     @Value("${chat.memory.defaultMessageWindowSize:50}")
     private Integer defaultMessageWindowSize;
+
     @Value("${chat.memory.minLongTermMemoryWindowSize:0}")
     private Integer minLongTermMemoryWindowSize;
+
     @Value("${chat.memory.maxLongTermMemoryWindowSize:30}")
     private Integer maxLongTermMemoryWindowSize;
+
     @Value("${chat.memory.defaultLongTermMemoryWindowSize:5}")
     private Integer defaultLongTermMemoryWindowSize;
+
     @Value("${chat.rag.defaultMaxSegmentSize}")
     private Integer defaultMaxSegmentSize;
+
     @Value("${chat.rag.defaultMaxOverlapSize}")
     private Integer defaultMaxOverlapSize;
+
     @Autowired
     private CharacterService characterService;
+
     @Autowired
     private InteractiveStatsService interactiveStatsService;
+
     @Autowired
     private RuntimeConfig runtimeConfig;
+
     @Autowired
     private PromptService promptService;
+
     @Autowired
     private PromptTaskService promptTaskService;
+
     @Autowired
     private RagTaskService ragTaskService;
+
     @Autowired
     private TtsService ttsService;
 
     private void increaseReferCount(String characterUid) {
-        interactiveStatsService.add(AccountUtils.currentUser().getUserId(),
-                InfoType.CHARACTER, characterUid, StatsType.REFER_COUNT, 1L);
+        interactiveStatsService.add(
+                AccountUtils.currentUser().getUserId(), InfoType.CHARACTER, characterUid, StatsType.REFER_COUNT, 1L);
     }
 
     private String getCharacterUidFromPath(String path) {
@@ -117,10 +130,7 @@ public class CharacterApi {
         return parts[parts.length - 2];
     }
 
-    @Operation(
-            operationId = "searchCharacterSummary",
-            summary = "Search Character Summary",
-            description = """
+    @Operation(operationId = "searchCharacterSummary", summary = "Search Character Summary", description = """
                     Search characters:
                     - Specifiable query fields, and relationship:
                       - Scope: private, public_org or public. Private can only search this account.
@@ -132,14 +142,12 @@ public class CharacterApi {
                     - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
                     - The search result is the character summary content.
                     - Support pagination.
-                    """
-    )
+                    """)
     @PostMapping("/search")
     public List<CharacterSummaryDTO> search(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -152,15 +160,11 @@ public class CharacterApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            CharacterQueryDTO query) {
-        return characterService.search(query.toCharacterInfoQuery(), AccountUtils.currentUser())
-                .stream()
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    CharacterQueryDTO query) {
+        return characterService.search(query.toCharacterInfoQuery(), AccountUtils.currentUser()).stream()
                 .map(CharacterSummaryDTO::from)
                 .toList();
     }
@@ -168,14 +172,12 @@ public class CharacterApi {
     @Operation(
             operationId = "searchCharacterDetails",
             summary = "Search Character Details",
-            description = "Same as /api/v2/character/search, but returns detailed information of the character."
-    )
+            description = "Same as /api/v2/character/search, but returns detailed information of the character.")
     @PostMapping("/details/search")
     public List<CharacterDetailsDTO> detailsSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -188,15 +190,11 @@ public class CharacterApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            CharacterQueryDTO query) {
-        return characterService.searchDetails(query.toCharacterInfoQuery(), AccountUtils.currentUser())
-                .stream()
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    CharacterQueryDTO query) {
+        return characterService.searchDetails(query.toCharacterInfoQuery(), AccountUtils.currentUser()).stream()
                 .map(CharacterDetailsDTO::from)
                 .toList();
     }
@@ -204,14 +202,12 @@ public class CharacterApi {
     @Operation(
             operationId = "batchSearchCharacterSummary",
             summary = "Batch Search Character Summaries",
-            description = "Batch call shortcut for /api/v2/character/search."
-    )
+            description = "Batch call shortcut for /api/v2/character/search.")
     @PostMapping("/batch/search")
     public List<List<CharacterSummaryDTO>> batchSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "where": {
                                         "visibility": "public",
@@ -246,13 +242,10 @@ public class CharacterApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            List<CharacterQueryDTO> queries) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    List<CharacterQueryDTO> queries) {
         List<List<CharacterSummaryDTO>> results = new ArrayList<>(queries.size());
         for (CharacterQueryDTO query : queries) {
             results.add(search(query));
@@ -263,14 +256,12 @@ public class CharacterApi {
     @Operation(
             operationId = "batchSearchCharacterDetails",
             summary = "Batch Search Character Details",
-            description = "Batch call shortcut for /api/v2/character/details/search."
-    )
+            description = "Batch call shortcut for /api/v2/character/details/search.")
     @PostMapping("/batch/details/search")
     public List<List<CharacterDetailsDTO>> batchDetailsSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "where": {
                                         "visibility": "public",
@@ -305,13 +296,10 @@ public class CharacterApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            List<CharacterQueryDTO> queries) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    List<CharacterQueryDTO> queries) {
         List<List<CharacterDetailsDTO>> results = new ArrayList<>(queries.size());
         for (CharacterQueryDTO query : queries) {
             results.add(detailsSearch(query));
@@ -319,18 +307,13 @@ public class CharacterApi {
         return results;
     }
 
-    @Operation(
-            operationId = "createCharacter",
-            summary = "Create Character",
-            description = "Create a character."
-    )
+    @Operation(operationId = "createCharacter", summary = "Create Character", description = "Create a character.")
     @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'characterCreateOp')")
     public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Information of the character to be created",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Information of the character to be created",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "name": "A Test Character",
                                       "description": "A character description",
@@ -339,13 +322,10 @@ public class CharacterApi {
                                         "test", "demo"
                                       ]
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            CharacterCreateDTO character) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    CharacterCreateDTO character) {
         var characterInfo = character.toCharacterInfo();
         if (!characterService.create(characterInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create character.");
@@ -356,17 +336,16 @@ public class CharacterApi {
     @Operation(
             operationId = "updateCharacter",
             summary = "Update Character",
-            description = "Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure."
-    )
+            description =
+                    "Update character, refer to /api/v2/character/create, required field: characterId. Returns success or failure.")
     @PutMapping("/{characterId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'characterUpdateOp')")
     public Boolean update(
             @Parameter(description = "The characterId to be updated") @PathVariable("characterId") @Positive
-            Long characterId,
+                    Long characterId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "The character information to be updated",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "The character information to be updated",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "version": 2,
                                       "name": "Second Test Character (New)",
@@ -377,36 +356,29 @@ public class CharacterApi {
                                         "test2", "demo2", "robot"
                                       ]
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            CharacterUpdateDTO character) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    CharacterUpdateDTO character) {
         var characterInfo = character.toCharacterInfo(characterId);
         characterInfo.getLeft().setCharacterUid(characterService.getUid(characterId));
         return characterService.update(characterInfo);
     }
 
-    @Operation(
-            operationId = "cloneCharacter",
-            summary = "Clone Character",
-            description = """
+    @Operation(operationId = "cloneCharacter", summary = "Clone Character", description = """
                     Enter the characterId, generate a new record, the content is basically the same as the original character, but the following fields are different:
                     - Version number is 1
                     - Visibility is private
                     - The parent character is the source characterId
                     - The creation time is the current moment.
                     - All statistical indicators are zeroed.
-                                 
+
                     Return the new characterId.
-                    """
-    )
+                    """)
     @PostMapping("/clone/{characterId}")
     public Long clone(
             @Parameter(description = "The referenced characterId") @PathVariable("characterId") @Positive
-            Long characterId) {
+                    Long characterId) {
         var characterDetails = characterService.details(characterId, AccountUtils.currentUser());
         if (characterDetails == null) {
             return null;
@@ -425,49 +397,44 @@ public class CharacterApi {
     @Operation(
             operationId = "deleteCharacter",
             summary = "Delete Character",
-            description = "Delete character. Returns success or failure."
-    )
+            description = "Delete character. Returns success or failure.")
     @DeleteMapping("/{characterId}")
     @PreAuthorize("hasPermission(#p0, 'characterDeleteOp')")
     public Boolean delete(
             @Parameter(description = "The characterId to be deleted") @PathVariable("characterId") @Positive
-            Long characterId) {
+                    Long characterId) {
         return characterService.delete(characterId, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "deleteCharacterByName",
             summary = "Delete Character by Name",
-            description = "Delete character by name. return the list of successfully deleted characterIds."
-    )
+            description = "Delete character by name. return the list of successfully deleted characterIds.")
     @DeleteMapping("/name/{name}")
     public List<Long> deleteByName(
-            @Parameter(description = "The character name to be deleted") @PathVariable("name") @NotBlank
-            String name) {
+            @Parameter(description = "The character name to be deleted") @PathVariable("name") @NotBlank String name) {
         return characterService.deleteByName(name, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "deleteCharacterByUid",
             summary = "Delete Character by Uid",
-            description = "Delete character by uid. return the list of successfully deleted characterIds."
-    )
+            description = "Delete character by uid. return the list of successfully deleted characterIds.")
     @DeleteMapping("/uid/{characterUid}")
     public List<Long> deleteByUid(
             @Parameter(description = "The character uid to be deleted") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         return characterService.deleteByUid(characterUid, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "getCharacterSummary",
             summary = "Get Character Summary",
-            description = "Get character summary information."
-    )
+            description = "Get character summary information.")
     @GetMapping("/summary/{characterId}")
     public CharacterSummaryDTO summary(
             @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @Positive
-            Long characterId) {
+                    Long characterId) {
         var characterInfo = characterService.summary(characterId, AccountUtils.currentUser());
         return CharacterSummaryDTO.from(characterInfo);
     }
@@ -475,12 +442,11 @@ public class CharacterApi {
     @Operation(
             operationId = "getCharacterDetails",
             summary = "Get Character Details",
-            description = "Get character detailed information."
-    )
+            description = "Get character detailed information.")
     @GetMapping("/details/{characterId}")
     public CharacterDetailsDTO details(
             @Parameter(description = "CharacterId to be obtained") @PathVariable("characterId") @Positive
-            Long characterId) {
+                    Long characterId) {
         var characterInfo = characterService.details(characterId, AccountUtils.currentUser());
         return CharacterDetailsDTO.from(characterInfo);
     }
@@ -488,14 +454,13 @@ public class CharacterApi {
     @Operation(
             operationId = "countCharacters",
             summary = "Calculate Number of Characters",
-            description = "Calculate the number of characters according to the specified query conditions."
-    )
+            description = "Calculate the number of characters according to the specified query conditions.")
     @PostMapping("/count")
     public Long count(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
-            @RequestBody
-            @NotNull
-            CharacterQueryDTO query) {
+                    @RequestBody
+                    @NotNull
+                    CharacterQueryDTO query) {
         CharacterService.Query infoQuery = query.toCharacterInfoQuery();
         infoQuery.setOffset(null);
         infoQuery.setLimit(null);
@@ -506,14 +471,11 @@ public class CharacterApi {
     @Operation(
             operationId = "listCharacterVersionsByName",
             summary = "List Versions by Character Name",
-            description = "List the versions and corresponding characterIds by character name."
-    )
+            description = "List the versions and corresponding characterIds by character name.")
     @PostMapping("/versions/{name}")
     public List<CharacterItemForNameDTO> versions(
-            @Parameter(description = "Character name") @PathVariable("name") @NotBlank
-            String name) {
-        return characterService.listVersionsByName(name, AccountUtils.currentUser())
-                .stream()
+            @Parameter(description = "Character name") @PathVariable("name") @NotBlank String name) {
+        return characterService.listVersionsByName(name, AccountUtils.currentUser()).stream()
                 .map(CharacterItemForNameDTO::from)
                 .toList();
     }
@@ -521,27 +483,25 @@ public class CharacterApi {
     @Operation(
             operationId = "getCharacterLatestIdByName",
             summary = "Get Latest Character Id by Name",
-            description = "Get latest characterId by character name."
-    )
+            description = "Get latest characterId by character name.")
     @PostMapping("/latest/{name}")
     public Long getLatestIdByName(
-            @Parameter(description = "Character name") @PathVariable("name") @NotBlank
-            String name) {
+            @Parameter(description = "Character name") @PathVariable("name") @NotBlank String name) {
         return characterService.getLatestIdByName(name, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "publishCharacter",
             summary = "Publish Character",
-            description = "Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication."
-    )
+            description =
+                    "Publish character, draft content becomes formal content, version number increases by 1. After successful publication, a new characterId will be generated and returned. You need to specify the visibility for publication.")
     @PostMapping(value = {"/publish/{characterId}/{visibility}", "/publish/{characterId}"})
     @PreAuthorize("hasPermission(#p0 + '|' + #p1, 'characterUpdateOp')")
     public Long publish(
             @Parameter(description = "The characterId to be published") @PathVariable("characterId") @Positive
-            Long characterId,
+                    Long characterId,
             @Parameter(description = "Visibility: public | private | ...") @PathVariable("visibility")
-            Optional<String> visibility){
+                    Optional<String> visibility) {
         Visibility publishVisibility = visibility.map(Visibility::of).orElse(Visibility.PUBLIC);
         return characterService.publish(characterId, publishVisibility, AccountUtils.currentUser());
     }
@@ -549,15 +509,16 @@ public class CharacterApi {
     @Operation(
             operationId = "addCharacterBackend",
             summary = "Add Character Backend",
-            description = "Add a backend configuration for a character."
-    )
+            description = "Add a backend configuration for a character.")
     @PostMapping(value = "/backend/{characterUid}", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.chatPromptTaskId, 'characterBackendCreateOp')")
     public String addBackend(
             @Parameter(description = "The characterUid to be added a backend") @PathVariable("characterUid") @NotBlank
-            String characterUid,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The character backend to be added") @RequestBody @NotNull
-            CharacterBackendDTO backend) {
+                    String characterUid,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The character backend to be added")
+                    @RequestBody
+                    @NotNull
+                    CharacterBackendDTO backend) {
         CharacterBackend characterBackend = backend.toCharacterBackend(characterUid);
         if (characterBackend == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
@@ -566,17 +527,19 @@ public class CharacterApi {
         if (messageWindowSize == null) {
             characterBackend.setMessageWindowSize(defaultMessageWindowSize);
         } else if (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
                     "Message window size should be between " + minMessageWindowSize + " and " + maxMessageWindowSize);
         }
         Integer longTermMemoryWindowSize = characterBackend.getLongTermMemoryWindowSize();
         if (longTermMemoryWindowSize == null) {
             characterBackend.setLongTermMemoryWindowSize(defaultLongTermMemoryWindowSize);
-        } else if (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
-                longTermMemoryWindowSize > maxLongTermMemoryWindowSize) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Long term memory window size should be between " + minLongTermMemoryWindowSize +
-                            " and " + maxLongTermMemoryWindowSize);
+        } else if (longTermMemoryWindowSize < minLongTermMemoryWindowSize
+                || longTermMemoryWindowSize > maxLongTermMemoryWindowSize) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Long term memory window size should be between " + minLongTermMemoryWindowSize + " and "
+                            + maxLongTermMemoryWindowSize);
         }
         return characterService.addBackend(characterBackend);
     }
@@ -584,37 +547,44 @@ public class CharacterApi {
     @Operation(
             operationId = "updateCharacterBackend",
             summary = "Update Character Backend",
-            description = "Update a backend configuration."
-    )
+            description = "Update a backend configuration.")
     @PutMapping("/backend/{characterBackendId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.chatPromptTaskId, 'characterBackendUpdateOp')")
     public Boolean updateBackend(
-            @Parameter(description = "The characterBackendId to be updated") @PathVariable("characterBackendId") @NotBlank
-            String characterBackendId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The character backend configuration to be updated") @RequestBody @NotNull
-            CharacterBackendDTO backend) {
+            @Parameter(description = "The characterBackendId to be updated")
+                    @PathVariable("characterBackendId")
+                    @NotBlank
+                    String characterBackendId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                            description = "The character backend configuration to be updated")
+                    @RequestBody
+                    @NotNull
+                    CharacterBackendDTO backend) {
         CharacterBackend characterBackend = characterService.getBackend(characterBackendId);
         if (characterBackend == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find character backend: " + characterBackendId);
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Failed to find character backend: " + characterBackendId);
         }
 
         CharacterBackend updatedBackend = backend.toCharacterBackend(characterBackend.getCharacterUid());
         updatedBackend.setBackendId(characterBackend.getBackendId());
 
         Integer messageWindowSize = updatedBackend.getMessageWindowSize();
-        if (messageWindowSize != null &&
-                (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+        if (messageWindowSize != null
+                && (messageWindowSize < minMessageWindowSize || messageWindowSize > maxMessageWindowSize)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
                     "Message window size should be between " + minMessageWindowSize + " and " + maxMessageWindowSize);
         }
 
         Integer longTermMemoryWindowSize = updatedBackend.getLongTermMemoryWindowSize();
-        if (longTermMemoryWindowSize != null &&
-                (longTermMemoryWindowSize < minLongTermMemoryWindowSize ||
-                        longTermMemoryWindowSize > maxLongTermMemoryWindowSize)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Long term memory window size should be between " + minLongTermMemoryWindowSize +
-                            " and " + maxLongTermMemoryWindowSize);
+        if (longTermMemoryWindowSize != null
+                && (longTermMemoryWindowSize < minLongTermMemoryWindowSize
+                        || longTermMemoryWindowSize > maxLongTermMemoryWindowSize)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Long term memory window size should be between " + minLongTermMemoryWindowSize + " and "
+                            + maxLongTermMemoryWindowSize);
         }
 
         return characterService.updateBackend(updatedBackend);
@@ -623,13 +593,14 @@ public class CharacterApi {
     @Operation(
             operationId = "removeCharacterBackend",
             summary = "Remove Character Backend",
-            description = "Remove a backend configuration."
-    )
+            description = "Remove a backend configuration.")
     @DeleteMapping("/backend/{characterBackendId}")
     @PreAuthorize("hasPermission(#p0, 'characterBackendDefaultOp')")
     public Boolean removeBackend(
-            @Parameter(description = "The characterBackendId to be removed") @PathVariable("characterBackendId") @NotBlank
-            String characterBackendId) {
+            @Parameter(description = "The characterBackendId to be removed")
+                    @PathVariable("characterBackendId")
+                    @NotBlank
+                    String characterBackendId) {
         String characterUid = characterService.getBackendCharacterUid(characterBackendId);
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
@@ -640,41 +611,37 @@ public class CharacterApi {
     @Operation(
             operationId = "getDefaultCharacterBackend",
             summary = "Get Default Character Backend",
-            description = "Get the default backend configuration."
-    )
+            description = "Get the default backend configuration.")
     @GetMapping("/backend/default/{characterUid}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public CharacterBackendDetailsDTO getDefaultBackend(
             @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         return CharacterBackendDetailsDTO.from(characterService.getDefaultBackend(characterUid));
     }
 
     @Operation(
             operationId = "listCharacterBackendIds",
             summary = "List Character Backend ids",
-            description = "List character backend identifiers."
-    )
+            description = "List character backend identifiers.")
     @GetMapping("/backend/ids/{characterUid}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public List<String> listBackendIds(
             @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         return characterService.listBackendIds(characterUid);
     }
 
     @Operation(
             operationId = "listCharacterBackends",
             summary = "List Character Backends",
-            description = "List character backends."
-    )
+            description = "List character backends.")
     @GetMapping("/backends/{characterUid}")
     @PreAuthorize("hasPermission(#p0, 'characterDefaultOpByUid')")
     public List<CharacterBackendDetailsDTO> listBackends(
             @Parameter(description = "The characterUid to be queried") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
-        return characterService.listBackends(characterUid)
-                .stream()
+                    String characterUid) {
+        return characterService.listBackends(characterUid).stream()
                 .map(CharacterBackendDetailsDTO::from)
                 .toList();
     }
@@ -682,13 +649,14 @@ public class CharacterApi {
     @Operation(
             operationId = "setDefaultCharacterBackend",
             summary = "Set Default Character Backend",
-            description = "Set the default backend configuration."
-    )
+            description = "Set the default backend configuration.")
     @PutMapping("/backend/default/{characterBackendId}")
     @PreAuthorize("hasPermission(#p0, 'characterBackendDefaultOp')")
     public Boolean setDefaultBackend(
-            @Parameter(description = "The characterBackendId to be set to default") @PathVariable("characterBackendId") @NotBlank
-            String characterBackendId) {
+            @Parameter(description = "The characterBackendId to be set to default")
+                    @PathVariable("characterBackendId")
+                    @NotBlank
+                    String characterBackendId) {
         String characterUid = characterService.getBackendCharacterUid(characterBackendId);
         if (StringUtils.isBlank(characterUid)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid character backend");
@@ -699,16 +667,17 @@ public class CharacterApi {
     @Operation(
             operationId = "uploadCharacterPicture",
             summary = "Upload Character Picture",
-            description = "Upload a picture of the character."
-    )
-    @PostMapping(value = "/picture/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            description = "Upload a picture of the character.")
+    @PostMapping(
+            value = "/picture/{characterUid}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadPicture(
             HttpServletRequest request,
-            @Parameter(description = "Character picture") @RequestParam("file") @NotNull
-            MultipartFile file,
+            @Parameter(description = "Character picture") @RequestParam("file") @NotNull MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         long maxSize = runtimeConfig.getLong(PICTURE_MAX_SIZE_KEY);
         int maxCount = runtimeConfig.getInt(PICTURE_MAX_COUNT_KEY);
 
@@ -737,12 +706,9 @@ public class CharacterApi {
     @Operation(
             operationId = "deleteCharacterPicture",
             summary = "Delete Character Picture",
-            description = "Delete a picture of the character by key."
-    )
+            description = "Delete a picture of the character by key.")
     @DeleteMapping("/picture/{key}")
-    public Boolean deletePicture(
-            @Parameter(description = "Image key") @PathVariable("key") @NotBlank
-            String key) {
+    public Boolean deletePicture(@Parameter(description = "Image key") @PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String path = FileUtils.getDefaultPublicPath(key);
@@ -765,19 +731,17 @@ public class CharacterApi {
     @Operation(
             operationId = "listCharacterPictures",
             summary = "List Character Pictures",
-            description = "List pictures of the character."
-    )
+            description = "List pictures of the character.")
     @GetMapping("/pictures/{characterUid}")
     @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
     public List<String> listPictures(
             HttpServletRequest request,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/picture/" + characterUid;
-            return fileStore.list(dstDir, null, false)
-                    .stream()
+            return fileStore.list(dstDir, null, false).stream()
                     .map(path -> {
                         String shareUrl = fileStore.getShareUrl(path, Integer.MAX_VALUE);
                         if (StringUtils.isBlank(shareUrl)) {
@@ -794,16 +758,17 @@ public class CharacterApi {
     @Operation(
             operationId = "uploadCharacterVideo",
             summary = "Upload Character Video",
-            description = "Upload a video of the character."
-    )
-    @PostMapping(value = "/video/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            description = "Upload a video of the character.")
+    @PostMapping(
+            value = "/video/{characterUid}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadVideo(
             HttpServletRequest request,
-            @Parameter(description = "Character video") @RequestParam("file") @NotNull
-            MultipartFile file,
+            @Parameter(description = "Character video") @RequestParam("file") @NotNull MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         long maxSize = runtimeConfig.getLong(VIDEO_MAX_SIZE_KEY);
         int maxCount = runtimeConfig.getInt(VIDEO_MAX_COUNT_KEY);
 
@@ -832,12 +797,9 @@ public class CharacterApi {
     @Operation(
             operationId = "deleteCharacterVideo",
             summary = "Delete Character Video",
-            description = "Delete a video of the character by key."
-    )
+            description = "Delete a video of the character by key.")
     @DeleteMapping("/video/{key}")
-    public Boolean deleteVideo(
-            @Parameter(description = "Video key") @PathVariable("key") @NotBlank
-            String key) {
+    public Boolean deleteVideo(@Parameter(description = "Video key") @PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String path = FileUtils.getDefaultPublicPath(key);
@@ -860,19 +822,17 @@ public class CharacterApi {
     @Operation(
             operationId = "listCharacterVideos",
             summary = "List Character Videos",
-            description = "List videos of the character."
-    )
+            description = "List videos of the character.")
     @GetMapping("/videos/{characterUid}")
     @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
     public List<String> listVideos(
             HttpServletRequest request,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
             String dstDir = PUBLIC_DIR + AccountUtils.currentUser().getUserId() + "/character/video/" + characterUid;
-            return fileStore.list(dstDir, null, false)
-                    .stream()
+            return fileStore.list(dstDir, null, false).stream()
                     .map(path -> {
                         String shareUrl = fileStore.getShareUrl(path, Integer.MAX_VALUE);
                         if (StringUtils.isBlank(shareUrl)) {
@@ -889,16 +849,17 @@ public class CharacterApi {
     @Operation(
             operationId = "uploadCharacterAvatar",
             summary = "Upload Character Avatar",
-            description = "Upload an avatar of the character."
-    )
-    @PostMapping(value = "/avatar/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            description = "Upload an avatar of the character.")
+    @PostMapping(
+            value = "/avatar/{characterUid}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadAvatar(
             HttpServletRequest request,
-            @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
-            MultipartFile file,
+            @Parameter(description = "Character avatar") @RequestParam("file") @NotNull MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         long maxSize = runtimeConfig.getLong(AVATAR_MAX_SIZE_KEY);
         int maxCount = runtimeConfig.getInt(AVATAR_MAX_COUNT_KEY);
 
@@ -927,16 +888,17 @@ public class CharacterApi {
     @Operation(
             operationId = "uploadCharacterDocument",
             summary = "Upload Character Document",
-            description = "Upload a document of the character."
-    )
-    @PostMapping(value = "/document/{characterUid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            description = "Upload a document of the character.")
+    @PostMapping(
+            value = "/document/{characterUid}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p2, 'characterDefaultOpByUid')")
     public String uploadDocument(
             HttpServletRequest request,
-            @Parameter(description = "Character document") @RequestParam("file") @NotNull
-            MultipartFile file,
+            @Parameter(description = "Character document") @RequestParam("file") @NotNull MultipartFile file,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         long maxSize = runtimeConfig.getLong(DOCUMENT_MAX_SIZE_KEY);
         int maxCount = runtimeConfig.getInt(DOCUMENT_MAX_COUNT_KEY);
 
@@ -962,12 +924,9 @@ public class CharacterApi {
     @Operation(
             operationId = "deleteCharacterDocument",
             summary = "Delete Character Document",
-            description = "Delete a document of the character by key."
-    )
+            description = "Delete a document of the character by key.")
     @DeleteMapping("/document/{key}")
-    public Boolean deleteDocument(
-            @Parameter(description = "Document key") @PathVariable("key") @NotBlank
-            String key) {
+    public Boolean deleteDocument(@Parameter(description = "Document key") @PathVariable("key") @NotBlank String key) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         try {
@@ -991,20 +950,18 @@ public class CharacterApi {
     @Operation(
             operationId = "listCharacterDocuments",
             summary = "List Character Documents",
-            description = "List documents of the character."
-    )
+            description = "List documents of the character.")
     @GetMapping("/documents/{characterUid}")
     @PreAuthorize("hasPermission(#p1, 'characterDefaultOpByUid')")
     public List<String> listDocuments(
             HttpServletRequest request,
             @Parameter(description = "Character unique identifier") @PathVariable("characterUid") @NotBlank
-            String characterUid) {
+                    String characterUid) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         try {
             String dstDir = PRIVATE_DIR + userId + "/character/document/" + characterUid;
-            return fileStore.list(dstDir, null, false)
-                    .stream()
+            return fileStore.list(dstDir, null, false).stream()
                     .map(path -> FileUtils.getDefaultPrivateUrlForDocument(request, path, userId))
                     .toList();
         } catch (IOException e) {
@@ -1015,15 +972,16 @@ public class CharacterApi {
     @Operation(
             operationId = "uploadCharacterVoice",
             summary = "Upload Character Voice",
-            description = "Upload a voice of the character."
-    )
-    @PostMapping(value = "/voice/{characterBackendId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+            description = "Upload a voice of the character.")
+    @PostMapping(
+            value = "/voice/{characterBackendId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p1, 'characterBackendDefaultOp')")
     public String uploadVoice(
-            @Parameter(description = "Character voice") @RequestParam("file") @NotNull
-            MultipartFile file,
+            @Parameter(description = "Character voice") @RequestParam("file") @NotNull MultipartFile file,
             @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
-            String characterBackendId) {
+                    String characterBackendId) {
         long maxSize = runtimeConfig.getLong(VOICE_MAX_SIZE_KEY);
         int maxCount = runtimeConfig.getInt(VOICE_MAX_COUNT_KEY);
 
@@ -1054,15 +1012,13 @@ public class CharacterApi {
     @Operation(
             operationId = "deleteCharacterVoice",
             summary = "Delete Character Voice",
-            description = "Delete a voice of the character by key."
-    )
+            description = "Delete a voice of the character by key.")
     @DeleteMapping("/voice/{characterBackendId}/{key}")
     @PreAuthorize("hasPermission(#p0, 'characterBackendDefaultOp')")
     public Boolean deleteVoice(
             @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
-            String characterBackendId,
-            @Parameter(description = "Voice key") @PathVariable("key") @NotBlank
-            String key) {
+                    String characterBackendId,
+            @Parameter(description = "Voice key") @PathVariable("key") @NotBlank String key) {
         if (!ttsService.isEnabled()) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "TTS service is unavailable");
         }
@@ -1075,7 +1031,8 @@ public class CharacterApi {
             if (!userId.equals(ownerId)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Document doesn't belong to you");
             }
-            String dstPath = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId + "/" + key;
+            String dstPath =
+                    PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId + "/" + key;
             fileStore.delete(dstPath);
             ttsService.deleteVoice(dstPath);
             return true;
@@ -1093,20 +1050,18 @@ public class CharacterApi {
     @Operation(
             operationId = "listCharacterVoices",
             summary = "List Character Voices",
-            description = "List voices of the character."
-    )
+            description = "List voices of the character.")
     @GetMapping("/voices/{characterBackendId}")
     @PreAuthorize("hasPermission(#p0, 'characterBackendDefaultOp')")
     public List<String> listVoices(
             @Parameter(description = "The characterBackendId") @PathVariable("characterBackendId") @NotBlank
-            String characterBackendId) {
+                    String characterBackendId) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
         String characterUid = characterService.getBackendCharacterUid(characterBackendId);
         try {
             String dstDir = PRIVATE_DIR + userId + "/character/voices/" + characterUid + "/" + characterBackendId;
-            return fileStore.list(dstDir, null, false)
-                    .stream()
+            return fileStore.list(dstDir, null, false).stream()
                     .map(FileUtils::getKeyFromUrl)
                     .toList();
         } catch (IOException e) {
@@ -1117,19 +1072,16 @@ public class CharacterApi {
     @Operation(
             operationId = "existsCharacterName",
             summary = "Check If Character Name Exists",
-            description = "Check if the character name already exists."
-    )
+            description = "Check if the character name already exists.")
     @GetMapping("/exists/name/{name}")
-    public Boolean existsName(
-            @Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
+    public Boolean existsName(@Parameter(description = "Name") @PathVariable("name") @NotBlank String name) {
         return characterService.existsName(name, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "newCharacterName",
             summary = "Create New Character Name",
-            description = "Create a new character name starting with a desired name."
-    )
+            description = "Create a new character name starting with a desired name.")
     @GetMapping(value = "/create/name/{desired}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String createName(
             @Parameter(description = "Desired name") @PathVariable("desired") @NotBlank String desired) {
@@ -1139,27 +1091,27 @@ public class CharacterApi {
     @Operation(
             operationId = "exportCharacter",
             summary = "Export Character Configuration",
-            description = "Export character configuration in tar.gz format, including settings, documents and pictures."
-    )
+            description =
+                    "Export character configuration in tar.gz format, including settings, documents and pictures.")
     @GetMapping(value = "/export/{characterId}", produces = "application/gzip")
     public void exportCharacter(
-            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive
-            Long characterId,
+            @Parameter(description = "Character identifier") @PathVariable("characterId") @Positive Long characterId,
             HttpServletResponse response) {
         User currentUser = AccountUtils.currentUser();
         String currentUserId = currentUser.getUserId();
         var characterTriple = characterService.details(characterId, currentUser);
-        CharacterCreateDTO characterCreateDTO = CharacterCreateDTO.from(
-                Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
+        CharacterCreateDTO characterCreateDTO =
+                CharacterCreateDTO.from(Pair.of(characterTriple.getLeft(), characterTriple.getMiddle()));
 
-        List<CharacterBackend> backends = characterTriple.getRight() != null ?
-                characterTriple.getRight() : Collections.emptyList();
+        List<CharacterBackend> backends =
+                characterTriple.getRight() != null ? characterTriple.getRight() : Collections.emptyList();
         List<CharacterBackendConfigurationDTO> characterBackendConfList = backends.stream()
                 .map(backend -> {
                     CharacterBackendDTO backendDTO = CharacterBackendDTO.from(backend);
 
-                    PromptTask chatPromptTask = backend.getChatPromptTaskId() != null ?
-                            promptTaskService.get(backend.getChatPromptTaskId()) : null;
+                    PromptTask chatPromptTask = backend.getChatPromptTaskId() != null
+                            ? promptTaskService.get(backend.getChatPromptTaskId())
+                            : null;
 
                     PromptCreateDTO chatPromptCreateDTO = Optional.ofNullable(chatPromptTask)
                             .map(PromptTask::getPromptUid)
@@ -1168,11 +1120,12 @@ public class CharacterApi {
                             .map(PromptCreateDTO::from)
                             .orElse(null);
 
-                    PromptTaskDTO chatPromptTaskDTO = chatPromptTask != null ?
-                            PromptTaskDTO.from(chatPromptTask.withPromptUid(null)) : null;
+                    PromptTaskDTO chatPromptTaskDTO =
+                            chatPromptTask != null ? PromptTaskDTO.from(chatPromptTask.withPromptUid(null)) : null;
 
-                    PromptTask greetingPromptTask = backend.getGreetingPromptTaskId() != null ?
-                            promptTaskService.get(backend.getGreetingPromptTaskId()) : null;
+                    PromptTask greetingPromptTask = backend.getGreetingPromptTaskId() != null
+                            ? promptTaskService.get(backend.getGreetingPromptTaskId())
+                            : null;
 
                     PromptCreateDTO greetingPromptCreateDTO = Optional.ofNullable(greetingPromptTask)
                             .map(PromptTask::getPromptUid)
@@ -1181,8 +1134,9 @@ public class CharacterApi {
                             .map(PromptCreateDTO::from)
                             .orElse(null);
 
-                    PromptTaskDTO greetingPromptTaskDTO = greetingPromptTask != null ?
-                            PromptTaskDTO.from(greetingPromptTask.withPromptUid(null)) : null;
+                    PromptTaskDTO greetingPromptTaskDTO = greetingPromptTask != null
+                            ? PromptTaskDTO.from(greetingPromptTask.withPromptUid(null))
+                            : null;
 
                     return CharacterBackendConfigurationDTO.builder()
                             .backend(backendDTO)
@@ -1204,17 +1158,15 @@ public class CharacterApi {
         // manifest.yml
         String manifestFilename = "manifest.yml";
         byte[] manifestContent = new ManifestInfo().toYaml().getBytes(StandardCharsets.UTF_8);
-        entries.add(Triple.of(manifestFilename,
-                new ByteArrayInputStream(manifestContent),
-                (long) manifestContent.length));
+        entries.add(
+                Triple.of(manifestFilename, new ByteArrayInputStream(manifestContent), (long) manifestContent.length));
 
         // character.json
         String characterFilename = "character.json";
         String characterJson = characterConf.toJson();
         byte[] characterContent = characterJson.getBytes(StandardCharsets.UTF_8);
-        entries.add(Triple.of(characterFilename,
-                new ByteArrayInputStream(characterContent),
-                (long) characterContent.length));
+        entries.add(Triple.of(
+                characterFilename, new ByteArrayInputStream(characterContent), (long) characterContent.length));
 
         String characterUid = characterService.getUid(characterId);
         if (StringUtils.isNotBlank(characterUid)) {
@@ -1237,16 +1189,18 @@ public class CharacterApi {
                     .ifPresent(entries::add);
         }
 
-        String encodedFilename = URLEncoder.encode(
-                characterConf.getCharacter().getName() + ".tar.gz", StandardCharsets.UTF_8);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+        String encodedFilename =
+                URLEncoder.encode(characterConf.getCharacter().getName() + ".tar.gz", StandardCharsets.UTF_8);
+        response.setHeader(
+                HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + encodedFilename + "\"; filename*=UTF-8''" + encodedFilename);
         response.setContentType("application/gzip");
 
         try {
             TarUtils.compressGzip(entries, response.getOutputStream());
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to compress character configuration", e);
         }
     }
 
@@ -1300,8 +1254,7 @@ public class CharacterApi {
     private static List<Triple<String, InputStream, Long>> listFileStreams(String prefix, String dir) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         try {
-            return fileStore.list(dir, null, false)
-                    .stream()
+            return fileStore.list(dir, null, false).stream()
                     .map(path -> {
                         try {
                             String filePath = prefix + path.substring(dir.length());
@@ -1322,13 +1275,11 @@ public class CharacterApi {
     @Operation(
             operationId = "importCharacter",
             summary = "Import Character Configuration",
-            description = "Import character configuration from a tar.gz file."
-    )
+            description = "Import character configuration from a tar.gz file.")
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Long importCharacter(
             HttpServletRequest request,
-            @Parameter(description = "Character avatar") @RequestParam("file") @NotNull
-            MultipartFile file) {
+            @Parameter(description = "Character avatar") @RequestParam("file") @NotNull MultipartFile file) {
         FileStore fileStore = StoreUtils.defaultFileStore();
         String userId = AccountUtils.currentUser().getUserId();
 
@@ -1349,7 +1300,8 @@ public class CharacterApi {
             cleanUpTempDirectory(tempDir);
             return characterInfo.getCharacterId();
         } catch (IOException | NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to import character configuration", e);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Failed to import character configuration", e);
         }
     }
 
@@ -1380,7 +1332,8 @@ public class CharacterApi {
         String characterUid = characterInfo.getCharacterUid();
 
         // create backends
-        List<CharacterBackend> backends = new ArrayList<>(characterConf.getBackends().size());
+        List<CharacterBackend> backends =
+                new ArrayList<>(characterConf.getBackends().size());
         for (CharacterBackendConfigurationDTO backendConf : characterConf.getBackends()) {
             CharacterBackendDTO backendDTO = backendConf.getBackend();
             if (backendDTO == null) {
@@ -1388,10 +1341,9 @@ public class CharacterApi {
             }
 
             // create prompt tasks
-            String chatPromptTaskId = createPromptTask(
-                    backendConf.getChatPrompt(), backendConf.getChatPromptTask());
-            String greetingPromptTaskId = createPromptTask(
-                    backendConf.getGreetingPrompt(), backendConf.getGreetingPromptTask());
+            String chatPromptTaskId = createPromptTask(backendConf.getChatPrompt(), backendConf.getChatPromptTask());
+            String greetingPromptTaskId =
+                    createPromptTask(backendConf.getGreetingPrompt(), backendConf.getGreetingPromptTask());
 
             // add backend
             backendDTO.setChatPromptTaskId(chatPromptTaskId);
@@ -1405,10 +1357,8 @@ public class CharacterApi {
         return Pair.of(characterInfo, backends);
     }
 
-    private void handleAvatar(HttpServletRequest request,
-                              String userId,
-                              CharacterInfo characterInfo,
-                              Path confPath) throws IOException {
+    private void handleAvatar(HttpServletRequest request, String userId, CharacterInfo characterInfo, Path confPath)
+            throws IOException {
         Path srcPath = confPath.resolve("avatar");
         String dir = PUBLIC_DIR + userId + "/character/avatar/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
@@ -1440,9 +1390,7 @@ public class CharacterApi {
         }
     }
 
-    private void handlePictures(String userId,
-                                CharacterInfo characterInfo,
-                                Path confPath) throws IOException {
+    private void handlePictures(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
         Path srcPath = confPath.resolve("pictures");
         String dir = PUBLIC_DIR + userId + "/character/picture/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
@@ -1457,9 +1405,7 @@ public class CharacterApi {
         }
     }
 
-    private void handleVideos(String userId,
-                              CharacterInfo characterInfo,
-                              Path confPath) throws IOException {
+    private void handleVideos(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
         Path srcPath = confPath.resolve("videos");
         String dir = PUBLIC_DIR + userId + "/character/videos/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
@@ -1474,9 +1420,7 @@ public class CharacterApi {
         }
     }
 
-    private void handleDocuments(String userId,
-                                 CharacterInfo characterInfo,
-                                 Path confPath) throws IOException {
+    private void handleDocuments(String userId, CharacterInfo characterInfo, Path confPath) throws IOException {
         Path srcPath = confPath.resolve("documents");
         String dir = PRIVATE_DIR + userId + "/character/document/" + characterInfo.getCharacterUid();
         FileStore fileStore = StoreUtils.defaultFileStore();
@@ -1503,28 +1447,28 @@ public class CharacterApi {
         }
     }
 
-    private void handleVoices(String userId,
-                              CharacterInfo characterInfo,
-                              List<CharacterBackend> backends,
-                              Path confPath) throws IOException {
+    private void handleVoices(
+            String userId, CharacterInfo characterInfo, List<CharacterBackend> backends, Path confPath)
+            throws IOException {
         Path srcPath = confPath.resolve("voices");
         FileStore fileStore = StoreUtils.defaultFileStore();
         try (Stream<Path> stream = Files.list(srcPath)) {
             stream.filter(Files::isRegularFile).forEach(voicePath -> {
-                    String voiceKey = getKeyFromUrl(voicePath.toString());
-                    backends.stream()
-                            .filter(backend -> voiceKey.equals(backend.getTtsSpeakerWav()))
-                            .forEach(backend -> {
-                                String dir = PRIVATE_DIR + userId + "/character/voices/" + characterInfo.getCharacterUid() + "/" + backend.getBackendId();
-                                try {
-                                    String dstPath = FileUtils.move(voicePath, fileStore, dir);
-                                    ttsService.uploadVoice(dstPath);
-                                } catch (IOException e) {
-                                    log.warn("Failed to move file from {} to {}", voicePath, dir, e);
-                                } catch (IllegalStateException e) {
-                                    log.warn("Failed to upload voice file {}", voicePath, e);
-                                }
-                            });
+                String voiceKey = getKeyFromUrl(voicePath.toString());
+                backends.stream()
+                        .filter(backend -> voiceKey.equals(backend.getTtsSpeakerWav()))
+                        .forEach(backend -> {
+                            String dir = PRIVATE_DIR + userId + "/character/voices/" + characterInfo.getCharacterUid()
+                                    + "/" + backend.getBackendId();
+                            try {
+                                String dstPath = FileUtils.move(voicePath, fileStore, dir);
+                                ttsService.uploadVoice(dstPath);
+                            } catch (IOException e) {
+                                log.warn("Failed to move file from {} to {}", voicePath, dir, e);
+                            } catch (IllegalStateException e) {
+                                log.warn("Failed to upload voice file {}", voicePath, e);
+                            }
+                        });
             });
         }
     }

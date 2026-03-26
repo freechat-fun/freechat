@@ -1,11 +1,10 @@
 package fun.freechat.service.cache;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.core.annotation.AliasFor;
+import static fun.freechat.service.util.CacheUtils.SHORT_PERIOD_CACHE_NAME;
 
 import java.lang.annotation.*;
-
-import static fun.freechat.service.util.CacheUtils.SHORT_PERIOD_CACHE_NAME;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.core.annotation.AliasFor;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

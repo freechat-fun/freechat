@@ -22,6 +22,7 @@ public enum ChatVar {
     INPUT,
     ATTACHMENT,
     UNKNOWN;
+
     public static ChatVar of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;
@@ -42,5 +43,4 @@ public enum ChatVar {
     public String toString() {
         return text();
     }
-
 }

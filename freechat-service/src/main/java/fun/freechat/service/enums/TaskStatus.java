@@ -10,6 +10,7 @@ public enum TaskStatus {
     FAILED,
     CANCELED,
     UNKNOWN;
+
     public static TaskStatus of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

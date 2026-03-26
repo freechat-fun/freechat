@@ -1,88 +1,5 @@
 package fun.freechat.service.chat.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.SystemMessage;
-import dev.langchain4j.data.message.ToolExecutionResultMessage;
-import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.chat.StreamingChatModel;
-import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.input.PromptTemplate;
-import dev.langchain4j.model.moderation.Moderation;
-import dev.langchain4j.model.moderation.ModerationModel;
-import dev.langchain4j.rag.DefaultRetrievalAugmentor;
-import dev.langchain4j.rag.RetrievalAugmentor;
-import dev.langchain4j.rag.content.injector.ContentInjector;
-import dev.langchain4j.rag.content.injector.DefaultContentInjector;
-import dev.langchain4j.rag.content.retriever.ContentRetriever;
-import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
-import dev.langchain4j.rag.query.Query;
-import dev.langchain4j.rag.query.transformer.QueryTransformer;
-import dev.langchain4j.service.ModerationException;
-import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.memory.chat.ChatMemoryStore;
-import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
-import fun.freechat.langchain4j.rag.query.transformer.DelegatedQueryTransformer;
-import fun.freechat.langchain4j.rag.query.transformer.NamedCompressingQueryTransformer;
-import fun.freechat.service.ai.AiModelInfo;
-import fun.freechat.model.CharacterBackend;
-import fun.freechat.model.CharacterInfo;
-import fun.freechat.model.ChatContext;
-import fun.freechat.model.PromptInfo;
-import fun.freechat.model.PromptTask;
-import fun.freechat.model.User;
-import fun.freechat.service.account.SysUserService;
-import fun.freechat.service.ai.AiApiKeyService;
-import fun.freechat.service.ai.CloseableAiApiKey;
-import fun.freechat.service.character.CharacterService;
-import fun.freechat.service.chat.ChatContextService;
-import fun.freechat.service.chat.ChatMemoryService;
-import fun.freechat.service.chat.ChatSession;
-import fun.freechat.service.chat.ChatSessionService;
-import fun.freechat.service.chat.MemoryUsage;
-import fun.freechat.service.common.ShortLinkService;
-import fun.freechat.service.enums.ChatVar;
-import fun.freechat.service.enums.ModelProvider;
-import fun.freechat.service.enums.PromptFormat;
-import fun.freechat.service.prompt.ChatPromptContent;
-import fun.freechat.service.prompt.PromptService;
-import fun.freechat.service.prompt.PromptTaskService;
-import fun.freechat.service.rag.EmbeddingModelService;
-import fun.freechat.service.rag.EmbeddingStoreService;
-import fun.freechat.service.util.CacheUtils;
-import fun.freechat.service.util.InfoUtils;
-import fun.freechat.service.util.PromptUtils;
-import fun.freechat.util.LangUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.Cache;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static dev.langchain4j.data.message.ChatMessageType.USER;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 import static fun.freechat.service.ai.LanguageModelFactory.createAzureOpenAiChatModel;
@@ -112,6 +29,88 @@ import static fun.freechat.service.util.CacheUtils.IN_PROCESS_LONG_CACHE_MANAGER
 import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
 import static fun.freechat.util.ByteUtils.isTrue;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.input.PromptTemplate;
+import dev.langchain4j.model.moderation.Moderation;
+import dev.langchain4j.model.moderation.ModerationModel;
+import dev.langchain4j.rag.DefaultRetrievalAugmentor;
+import dev.langchain4j.rag.RetrievalAugmentor;
+import dev.langchain4j.rag.content.injector.ContentInjector;
+import dev.langchain4j.rag.content.injector.DefaultContentInjector;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
+import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
+import dev.langchain4j.rag.query.Query;
+import dev.langchain4j.rag.query.transformer.QueryTransformer;
+import dev.langchain4j.service.ModerationException;
+import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.store.memory.chat.ChatMemoryStore;
+import fun.freechat.langchain4j.memory.chat.SystemAlwaysOnTopMessageWindowChatMemory;
+import fun.freechat.langchain4j.rag.query.transformer.DelegatedQueryTransformer;
+import fun.freechat.langchain4j.rag.query.transformer.NamedCompressingQueryTransformer;
+import fun.freechat.model.CharacterBackend;
+import fun.freechat.model.CharacterInfo;
+import fun.freechat.model.ChatContext;
+import fun.freechat.model.PromptInfo;
+import fun.freechat.model.PromptTask;
+import fun.freechat.model.User;
+import fun.freechat.service.account.SysUserService;
+import fun.freechat.service.ai.AiApiKeyService;
+import fun.freechat.service.ai.AiModelInfo;
+import fun.freechat.service.ai.CloseableAiApiKey;
+import fun.freechat.service.character.CharacterService;
+import fun.freechat.service.chat.ChatContextService;
+import fun.freechat.service.chat.ChatMemoryService;
+import fun.freechat.service.chat.ChatSession;
+import fun.freechat.service.chat.ChatSessionService;
+import fun.freechat.service.chat.MemoryUsage;
+import fun.freechat.service.common.ShortLinkService;
+import fun.freechat.service.enums.ChatVar;
+import fun.freechat.service.enums.ModelProvider;
+import fun.freechat.service.enums.PromptFormat;
+import fun.freechat.service.prompt.ChatPromptContent;
+import fun.freechat.service.prompt.PromptService;
+import fun.freechat.service.prompt.PromptTaskService;
+import fun.freechat.service.rag.EmbeddingModelService;
+import fun.freechat.service.rag.EmbeddingStoreService;
+import fun.freechat.service.util.CacheUtils;
+import fun.freechat.service.util.InfoUtils;
+import fun.freechat.service.util.PromptUtils;
+import fun.freechat.util.LangUtils;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
+
 @Service
 @Slf4j
 @SuppressWarnings("unused")
@@ -121,30 +120,43 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
     @Value("${app.homeUrl}")
     private String homeUrl;
+
     @Value("${chat.rag.maxResults}")
     private Integer maxResults;
+
     @Value("${chat.rag.minScore}")
     private Double minScore;
+
     @Autowired
     private CharacterService characterService;
+
     @Autowired
     private ChatContextService chatContextService;
+
     @Autowired
     private PromptService promptService;
+
     @Autowired
     private PromptTaskService promptTaskService;
+
     @Autowired
     private AiApiKeyService aiApiKeyService;
+
     @Autowired
     private SysUserService userService;
+
     @Autowired
     private ChatMemoryService chatMemoryService;
+
     @Autowired
     private EmbeddingStoreService<TextSegment> embeddingStoreService;
+
     @Autowired
     private EmbeddingModelService embeddingModelService;
+
     @Autowired
     private ShortLinkService shortLinkService;
+
     @Autowired
     @Qualifier("taskExecutor")
     private ThreadPoolTaskExecutor executor;
@@ -166,17 +178,18 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             apiKeyValue = promptTask.getApiKeyValue();
         }
 
-        return StringUtils.isBlank(apiKeyName) ?
-                aiApiKeyService.use(apiKeyValue) :
-                aiApiKeyService.use(apiKeyOwner, apiKeyName);
+        return StringUtils.isBlank(apiKeyName)
+                ? aiApiKeyService.use(apiKeyValue)
+                : aiApiKeyService.use(apiKeyOwner, apiKeyName);
     }
 
     @Override
     // ChatSession cannot be serialized. Use the in-process cache.
-    @Cacheable(cacheNames = LONG_PERIOD_CACHE_NAME,
+    @Cacheable(
+            cacheNames = LONG_PERIOD_CACHE_NAME,
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = CACHE_KEY_SPEL_PREFIX + "#p0",
-            unless="#result == null")
+            unless = "#result == null")
     public ChatSession get(String chatId) {
         ChatContext context = chatContextService.get(chatId);
         if (context == null) {
@@ -206,13 +219,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             String ownerId = characterService.getOwnerByUid(characterUid);
             User owner = userService.loadByUserId(ownerId);
             Long characterId = characterService.getLatestIdByUid(characterUid, owner);
-            CharacterInfo characterInfo = characterService.details(characterId, owner).getLeft();
+            CharacterInfo characterInfo =
+                    characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
             AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
             ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
-            Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams()) ?
-                    InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {}) :
-                    Collections.emptyMap();
+            Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams())
+                    ? InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {})
+                    : Collections.emptyMap();
 
             ChatModel chatModel;
             StreamingChatModel streamingChatModel;
@@ -220,15 +234,18 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 switch (provider) {
                     case OPEN_AI -> {
                         chatModel = createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        streamingChatModel = createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel =
+                                createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
                     case AZURE_OPEN_AI -> {
                         chatModel = createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        streamingChatModel = createAzureOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel = createAzureOpenAiStreamingChatModel(
+                                apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
                     case DASH_SCOPE -> {
                         chatModel = createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        streamingChatModel = createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel =
+                                createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
                     case OLLAMA -> {
                         chatModel = createOllamaChatModel(modelInfo.getName(), parameters);
@@ -244,12 +261,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             if (StringUtils.isNotBlank(moderationModelId) && StringUtils.isNotBlank(moderationApiKeyName)) {
                 modelInfo = InfoUtils.toAiModelInfo(moderationModelId);
                 provider = ModelProvider.of(modelInfo.getProvider());
-                parameters = StringUtils.isNotBlank(backend.getModerationParams()) ?
-                        InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {}) :
-                        Collections.emptyMap();
+                parameters = StringUtils.isNotBlank(backend.getModerationParams())
+                        ? InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {})
+                        : Collections.emptyMap();
                 try (var apiKeyClient = aiApiKeyService.use(ownerId, moderationApiKeyName)) {
                     switch (provider) {
-                        case OPEN_AI -> moderationModel = createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        case OPEN_AI ->
+                            moderationModel =
+                                    createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         default -> throw new NotImplementedException("Not implemented.");
                     }
                 }
@@ -257,9 +276,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
             PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
-            String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft()) ?
-                    PromptUtils.getDraftTemplate(promptInfo.getDraft()) :
-                    promptInfo.getTemplate();
+            String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft())
+                    ? PromptUtils.getDraftTemplate(promptInfo.getDraft())
+                    : promptInfo.getTemplate();
             ChatPromptContent prompt = InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
 
             String characterNickname = context.getCharacterNickname();
@@ -287,12 +306,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             Map<String, Object> variables = HashMap.newHashMap(ChatVar.values().length);
 
             if (StringUtils.isNotBlank(promptInfo.getInputs())) {
-                Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
-                        promptInfo.getInputs(), new TypeReference<>() {});
+                Map<String, Object> inputs =
+                        InfoUtils.defaultMapper().readValue(promptInfo.getInputs(), new TypeReference<>() {});
                 for (Map.Entry<String, Object> input : inputs.entrySet()) {
                     Object value = input.getValue();
-                    if  (value == null ||
-                            (value instanceof String strValue && StringUtils.isBlank(strValue))) {
+                    if (value == null || (value instanceof String strValue && StringUtils.isBlank(strValue))) {
                         continue;
                     }
                     variables.put(input.getKey(), value);
@@ -300,8 +318,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             }
 
             if (StringUtils.isNotBlank(promptTask.getVariables())) {
-                Map<String, Object> predefinedVariables = InfoUtils.defaultMapper().readValue(
-                        promptTask.getVariables(), new TypeReference<>() {});
+                Map<String, Object> predefinedVariables =
+                        InfoUtils.defaultMapper().readValue(promptTask.getVariables(), new TypeReference<>() {});
                 variables.putAll(predefinedVariables);
             }
 
@@ -328,8 +346,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             PromptFormat promptFormat = PromptFormat.of(promptInfo.getFormat());
             List<ChatMessage> messages = chatMemory.messages();
             if (CollectionUtils.isEmpty(messages)) {
-                chatMemory.add(SystemMessage.from(promptService.apply(
-                        prompt.getSystem(), variables, promptFormat)));
+                chatMemory.add(SystemMessage.from(promptService.apply(prompt.getSystem(), variables, promptFormat)));
 
                 if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
                     prompt.getMessages().forEach(chatMemory::add);
@@ -351,9 +368,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             QueryTransformer origQueryTransformer = NamedCompressingQueryTransformer.extraBuilder()
                     .aiName(characterNickname)
                     .chatModel(chatModel)
-                    .promptTemplate("zh".equalsIgnoreCase(lang) ?
-                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH :
-                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
+                    .promptTemplate(
+                            "zh".equalsIgnoreCase(lang)
+                                    ? NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH
+                                    : NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
                     .build();
 
             QueryTransformer delegatedQueryTransformer = DelegatedQueryTransformer.builder()
@@ -411,20 +429,20 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             // tools
             List<Object> tools = new LinkedList<>();
             if (isTrue(backend.getEnableAlbumTool())) {
-                tools.add("zh".equalsIgnoreCase(lang) ?
-                        ZhAlbumTool.builder()
-                                .homeUrl(homeUrl)
-                                .characterService(characterService)
-                                .chatContextService(chatContextService)
-                                .shortLinkService(shortLinkService)
-                                .build() :
-                        EnAlbumTool.builder()
-                                .homeUrl(homeUrl)
-                                .characterService(characterService)
-                                .chatContextService(chatContextService)
-                                .shortLinkService(shortLinkService)
-                                .build()
-                );
+                tools.add(
+                        "zh".equalsIgnoreCase(lang)
+                                ? ZhAlbumTool.builder()
+                                        .homeUrl(homeUrl)
+                                        .characterService(characterService)
+                                        .chatContextService(chatContextService)
+                                        .shortLinkService(shortLinkService)
+                                        .build()
+                                : EnAlbumTool.builder()
+                                        .homeUrl(homeUrl)
+                                        .characterService(characterService)
+                                        .chatContextService(chatContextService)
+                                        .shortLinkService(shortLinkService)
+                                        .build());
             }
 
             return ChatSession.builder()
@@ -453,7 +471,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     }
 
     @Override
-    @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME,
+    @CacheEvict(
+            cacheNames = LONG_PERIOD_CACHE_NAME,
             cacheManager = IN_PROCESS_LONG_CACHE_MANAGER,
             key = CACHE_KEY_SPEL_PREFIX + "#p0")
     public void reset(String chatId) {
@@ -463,14 +482,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Override
     @Async
     public CompletableFuture<Moderation> triggerModerationIfNeeded(
-            ChatSession session,
-            List<dev.langchain4j.data.message.ChatMessage> messages) {
+            ChatSession session, List<dev.langchain4j.data.message.ChatMessage> messages) {
         ModerationModel moderationModel = session.getModerationModel();
         if (moderationModel == null) {
             return null;
         }
         List<ChatMessage> messagesToModerate = removeToolMessages(messages);
-        return CompletableFuture.completedFuture(moderationModel.moderate(messagesToModerate).content());
+        return CompletableFuture.completedFuture(
+                moderationModel.moderate(messagesToModerate).content());
     }
 
     @Override
@@ -497,13 +516,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             String ownerId = characterService.getOwnerByUid(characterUid);
             User owner = userService.loadByUserId(ownerId);
             Long characterId = characterService.getLatestIdByUid(characterUid, owner);
-            CharacterInfo characterInfo = characterService.details(characterId, owner).getLeft();
+            CharacterInfo characterInfo =
+                    characterService.details(characterId, owner).getLeft();
             PromptTask promptTask = promptTaskService.get(backend.getChatPromptTaskId());
             AiModelInfo modelInfo = InfoUtils.toAiModelInfo(promptTask.getModelId());
             ModelProvider provider = ModelProvider.of(modelInfo.getProvider());
-            Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams()) ?
-                    InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {}) :
-                    Collections.emptyMap();
+            Map<String, Object> parameters = StringUtils.isNotBlank(promptTask.getParams())
+                    ? InfoUtils.defaultMapper().readValue(promptTask.getParams(), new TypeReference<>() {})
+                    : Collections.emptyMap();
 
             ChatModel chatModel;
             StreamingChatModel streamingChatModel;
@@ -511,15 +531,18 @@ public class ChatSessionServiceImpl implements ChatSessionService {
                 switch (provider) {
                     case OPEN_AI -> {
                         chatModel = createOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        streamingChatModel = createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel =
+                                createOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
                     case AZURE_OPEN_AI -> {
                         chatModel = createAzureOpenAiChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        streamingChatModel = createAzureOpenAiStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel = createAzureOpenAiStreamingChatModel(
+                                apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
                     case DASH_SCOPE -> {
                         chatModel = createQwenChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
-                        streamingChatModel = createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        streamingChatModel =
+                                createQwenStreamingChatModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                     }
                     case OLLAMA -> {
                         chatModel = createOllamaChatModel(modelInfo.getName(), parameters);
@@ -535,12 +558,14 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             if (StringUtils.isNotBlank(moderationModelId) && StringUtils.isNotBlank(moderationApiKeyName)) {
                 modelInfo = InfoUtils.toAiModelInfo(moderationModelId);
                 provider = ModelProvider.of(modelInfo.getProvider());
-                parameters = StringUtils.isNotBlank(backend.getModerationParams()) ?
-                        InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {}) :
-                        Collections.emptyMap();
+                parameters = StringUtils.isNotBlank(backend.getModerationParams())
+                        ? InfoUtils.defaultMapper().readValue(backend.getModerationParams(), new TypeReference<>() {})
+                        : Collections.emptyMap();
                 try (var apiKeyClient = aiApiKeyService.use(ownerId, moderationApiKeyName)) {
                     switch (provider) {
-                        case OPEN_AI -> moderationModel = createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
+                        case OPEN_AI ->
+                            moderationModel =
+                                    createOpenAiModerationModel(apiKeyClient.token(), modelInfo.getName(), parameters);
                         default -> throw new NotImplementedException("Not implemented.");
                     }
                 }
@@ -548,9 +573,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
             Long promptId = promptService.getLatestIdByUid(promptTask.getPromptUid(), owner);
             PromptInfo promptInfo = promptService.details(promptId, owner).getLeft();
-            String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft()) ?
-                    PromptUtils.getDraftTemplate(promptInfo.getDraft()) :
-                    promptInfo.getTemplate();
+            String promptTemplate = isTrue(promptTask.getDraft()) && StringUtils.isNotBlank(promptInfo.getDraft())
+                    ? PromptUtils.getDraftTemplate(promptInfo.getDraft())
+                    : promptInfo.getTemplate();
             ChatPromptContent prompt = InfoUtils.defaultMapper().readValue(promptTemplate, ChatPromptContent.class);
 
             String characterNickname = context.getCharacterNickname();
@@ -564,12 +589,11 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             Map<String, Object> variables = HashMap.newHashMap(ChatVar.values().length);
 
             if (StringUtils.isNotBlank(promptInfo.getInputs())) {
-                Map<String, Object> inputs = InfoUtils.defaultMapper().readValue(
-                        promptInfo.getInputs(), new TypeReference<>() {});
+                Map<String, Object> inputs =
+                        InfoUtils.defaultMapper().readValue(promptInfo.getInputs(), new TypeReference<>() {});
                 for (Map.Entry<String, Object> input : inputs.entrySet()) {
                     Object value = input.getValue();
-                    if  (value == null ||
-                            (value instanceof String strValue && StringUtils.isBlank(strValue))) {
+                    if (value == null || (value instanceof String strValue && StringUtils.isBlank(strValue))) {
                         continue;
                     }
                     variables.put(input.getKey(), value);
@@ -577,8 +601,8 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             }
 
             if (StringUtils.isNotBlank(promptTask.getVariables())) {
-                Map<String, Object> predefinedVariables = InfoUtils.defaultMapper().readValue(
-                        promptTask.getVariables(), new TypeReference<>() {});
+                Map<String, Object> predefinedVariables =
+                        InfoUtils.defaultMapper().readValue(promptTask.getVariables(), new TypeReference<>() {});
                 variables.putAll(predefinedVariables);
             }
 
@@ -605,8 +629,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             PromptFormat promptFormat = PromptFormat.of(promptInfo.getFormat());
             List<ChatMessage> messages = chatMemory.messages();
             if (CollectionUtils.isEmpty(messages)) {
-                chatMemory.add(SystemMessage.from(promptService.apply(
-                        prompt.getSystem(), variables, promptFormat)));
+                chatMemory.add(SystemMessage.from(promptService.apply(prompt.getSystem(), variables, promptFormat)));
 
                 if (CollectionUtils.isNotEmpty(prompt.getMessages())) {
                     prompt.getMessages().forEach(chatMemory::add);
@@ -621,9 +644,10 @@ public class ChatSessionServiceImpl implements ChatSessionService {
             QueryTransformer origQueryTransformer = NamedCompressingQueryTransformer.extraBuilder()
                     .aiName(characterNickname)
                     .chatModel(chatModel)
-                    .promptTemplate("zh".equalsIgnoreCase(lang) ?
-                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH :
-                            NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
+                    .promptTemplate(
+                            "zh".equalsIgnoreCase(lang)
+                                    ? NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_ZH
+                                    : NamedCompressingQueryTransformer.DEFAULT_PROMPT_TEMPLATE_EN)
                     .build();
 
             QueryTransformer delegatedQueryTransformer = DelegatedQueryTransformer.builder()

@@ -2,14 +2,13 @@ package fun.freechat.access.auth;
 
 import fun.freechat.access.user.SysUserDetails;
 import fun.freechat.util.AuthorityUtils;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Transient;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 @Transient
 public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
@@ -25,8 +24,7 @@ public class ApiTokenAuthenticationToken extends AbstractAuthenticationToken {
         return authorities;
     }
 
-    public ApiTokenAuthenticationToken(
-            SysUserDetails sysUser, Set<String> tokens, boolean authenticated) {
+    public ApiTokenAuthenticationToken(SysUserDetails sysUser, Set<String> tokens, boolean authenticated) {
         super(getAuthorities(sysUser));
         this.sysUser = sysUser;
         this.tokens = tokens;

@@ -26,16 +26,14 @@ public class PromptTaskApi {
     @Autowired
     private PromptTaskService promptTaskService;
 
-    @Operation(
-            operationId = "createPromptTask",
-            summary = "Create Prompt Task",
-            description = "Create a prompt task."
-    )
+    @Operation(operationId = "createPromptTask", summary = "Create Prompt Task", description = "Create a prompt task.")
     @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasPermission(#p0.promptRef.promptId, 'promptDefaultOp')")
     public String create(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The prompt task to be added") @RequestBody @NotNull
-            PromptTaskDTO task) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The prompt task to be added")
+                    @RequestBody
+                    @NotNull
+                    PromptTaskDTO task) {
         PromptTask promptTask = task.toPromptTask();
         if (!promptTaskService.create(promptTask)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create prompt task.");
@@ -43,46 +41,36 @@ public class PromptTaskApi {
         return promptTask.getTaskId();
     }
 
-    @Operation(
-            operationId = "updatePromptTask",
-            summary = "Update Prompt Task",
-            description = "Update a prompt task."
-    )
+    @Operation(operationId = "updatePromptTask", summary = "Update Prompt Task", description = "Update a prompt task.")
     @PutMapping("/{promptTaskId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.promptRef?.promptId, 'promptTaskUpdateOp')")
     public Boolean update(
             @Parameter(description = "The promptTaskId to be updated") @PathVariable("promptTaskId") @NotBlank
-            String promptTaskId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The prompt task info to be updated") @RequestBody @NotNull
-            PromptTaskDTO task) {
+                    String promptTaskId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "The prompt task info to be updated")
+                    @RequestBody
+                    @NotNull
+                    PromptTaskDTO task) {
         PromptTask promptTask = task.toPromptTask();
         promptTask.setTaskId(promptTaskId);
         return promptTaskService.update(promptTask);
     }
 
-    @Operation(
-            operationId = "deletePromptTask",
-            summary = "Delete Prompt Task",
-            description = "Delete a prompt task."
-    )
+    @Operation(operationId = "deletePromptTask", summary = "Delete Prompt Task", description = "Delete a prompt task.")
     @DeleteMapping("/{promptTaskId}")
     @PreAuthorize("hasPermission(#p0, 'promptTaskDefaultOp')")
     public Boolean delete(
             @Parameter(description = "The promptTaskId to be deleted") @PathVariable("promptTaskId") @NotBlank
-            String promptTaskId) {
+                    String promptTaskId) {
         return promptTaskService.delete(promptTaskId);
     }
 
-    @Operation(
-            operationId = "getPromptTask",
-            summary = "Get Prompt Task",
-            description = "Get the prompt task details."
-    )
+    @Operation(operationId = "getPromptTask", summary = "Get Prompt Task", description = "Get the prompt task details.")
     @GetMapping("/{promptTaskId}")
     @PreAuthorize("hasPermission(#p0, 'promptTaskDefaultOp')")
     public PromptTaskDetailsDTO get(
             @Parameter(description = "The promptTaskId to be queried") @PathVariable("promptTaskId") @NotBlank
-            String promptTaskId) {
+                    String promptTaskId) {
         return PromptTaskDetailsDTO.from(promptTaskService.get(promptTaskId));
     }
 }

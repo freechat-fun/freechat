@@ -1,10 +1,9 @@
 package fun.freechat.api.util;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Collection;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 public class ValidationUtils {
     public static <T> T ensureNotNull(T object, String name) {

@@ -9,6 +9,7 @@ public enum PromptRole {
     USER,
     FUNCTION_CALL,
     FUNCTION_RESULT;
+
     public static PromptRole of(String text) {
         if (StringUtils.isBlank(text)) {
             return USER;

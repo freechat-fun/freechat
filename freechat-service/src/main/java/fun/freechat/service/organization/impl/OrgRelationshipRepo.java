@@ -1,5 +1,9 @@
 package fun.freechat.service.organization.impl;
 
+import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
+
 import fun.freechat.mapper.OrgRelationshipDynamicSqlSupport;
 import fun.freechat.mapper.OrgRelationshipMapper;
 import fun.freechat.model.OrgRelationship;
@@ -7,19 +11,14 @@ import fun.freechat.service.cache.LongPeriodCache;
 import fun.freechat.util.graph.DaGraph;
 import fun.freechat.util.graph.DiGraph;
 import fun.freechat.util.graph.Graph;
+import java.util.LinkedList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
-
-import java.util.LinkedList;
-import java.util.List;
-
-import static fun.freechat.service.util.CacheUtils.LONG_PERIOD_CACHE_NAME;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.selectDistinct;
 
 @Component
 @Slf4j
@@ -36,13 +35,12 @@ public class OrgRelationshipRepo {
         var fields = selectDistinct(OrgRelationshipDynamicSqlSupport.ownerId)
                 .from(OrgRelationshipDynamicSqlSupport.orgRelationship);
         var conditions = fields.where(OrgRelationshipDynamicSqlSupport.userId, isEqualTo(userId))
-                .and(OrgRelationshipDynamicSqlSupport.enabled, isEqualTo((byte)1));
+                .and(OrgRelationshipDynamicSqlSupport.enabled, isEqualTo((byte) 1));
         if (!includeVirtual) {
-            conditions.and(OrgRelationshipDynamicSqlSupport.isVirtual, isEqualTo((byte)0));
+            conditions.and(OrgRelationshipDynamicSqlSupport.isVirtual, isEqualTo((byte) 0));
         }
         var statement = conditions.build().render(RenderingStrategies.MYBATIS3);
-        return orgRelationshipMapper.selectMany(statement)
-                .stream()
+        return orgRelationshipMapper.selectMany(statement).stream()
                 .map(OrgRelationship::getOwnerId)
                 .toList();
     }
@@ -79,13 +77,12 @@ public class OrgRelationshipRepo {
         var fields = selectDistinct(OrgRelationshipDynamicSqlSupport.userId)
                 .from(OrgRelationshipDynamicSqlSupport.orgRelationship);
         var conditions = fields.where(OrgRelationshipDynamicSqlSupport.ownerId, isEqualTo(userId))
-                .and(OrgRelationshipDynamicSqlSupport.enabled, isEqualTo((byte)1));
+                .and(OrgRelationshipDynamicSqlSupport.enabled, isEqualTo((byte) 1));
         if (!includeVirtual) {
-            conditions.and(OrgRelationshipDynamicSqlSupport.isVirtual, isEqualTo((byte)0));
+            conditions.and(OrgRelationshipDynamicSqlSupport.isVirtual, isEqualTo((byte) 0));
         }
         var statement = conditions.build().render(RenderingStrategies.MYBATIS3);
-        return orgRelationshipMapper.selectMany(statement)
-                .stream()
+        return orgRelationshipMapper.selectMany(statement).stream()
                 .map(OrgRelationship::getUserId)
                 .toList();
     }
@@ -118,11 +115,16 @@ public class OrgRelationshipRepo {
         return graph;
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = OWNERS_CACHE_KEY_SPEL_PREFIX + "#p0 + '_true'"),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = OWNERS_CACHE_KEY_SPEL_PREFIX + "#p0 + '_false'"),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = SUBORDINATES_CACHE_KEY_SPEL_PREFIX + "#p0 + '_true'"),
-            @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = SUBORDINATES_CACHE_KEY_SPEL_PREFIX + "#p0 + '_false'")
-    })
+    @Caching(
+            evict = {
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = OWNERS_CACHE_KEY_SPEL_PREFIX + "#p0 + '_true'"),
+                @CacheEvict(cacheNames = LONG_PERIOD_CACHE_NAME, key = OWNERS_CACHE_KEY_SPEL_PREFIX + "#p0 + '_false'"),
+                @CacheEvict(
+                        cacheNames = LONG_PERIOD_CACHE_NAME,
+                        key = SUBORDINATES_CACHE_KEY_SPEL_PREFIX + "#p0 + '_true'"),
+                @CacheEvict(
+                        cacheNames = LONG_PERIOD_CACHE_NAME,
+                        key = SUBORDINATES_CACHE_KEY_SPEL_PREFIX + "#p0 + '_false'")
+            })
     public void clearCaches(String userId) {}
 }

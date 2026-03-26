@@ -2,12 +2,11 @@ package fun.freechat.service.plugin;
 
 import fun.freechat.model.PluginInfo;
 import fun.freechat.model.User;
+import java.util.Collection;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Triple;
-
-import java.util.Collection;
-import java.util.List;
 
 public interface PluginService {
     @Builder(toBuilder = true)
@@ -42,21 +41,38 @@ public interface PluginService {
     static Query.QueryBuilder queryBuilder() {
         return Query.builder();
     }
+
     List<Triple<PluginInfo, List<String>, List<String>>> search(Query query, User user);
+
     List<Triple<PluginInfo, List<String>, List<String>>> searchDetails(Query query, User user);
+
     long count(Query query, User user);
+
     boolean create(Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple);
+
     List<Long> create(List<Triple<PluginInfo, List<String>, List<String>>> pluginInfoList);
+
     boolean update(Triple<PluginInfo, List<String>, List<String>> pluginInfoTriple);
+
     boolean hide(Long pluginId, User user);
+
     boolean delete(Long pluginId, User user);
+
     List<Long> delete(List<Long> pluginIds, User user);
+
     Triple<PluginInfo, List<String>, List<String>> summary(Long pluginId, User user);
+
     List<Triple<PluginInfo, List<String>, List<String>>> summary(Collection<Long> pluginIds, User user);
+
     Triple<PluginInfo, List<String>, List<String>> details(Long pluginId, User user);
+
     List<Triple<PluginInfo, List<String>, List<String>>> details(Collection<Long> pluginIds, User user);
+
     Long getIdByUid(String pluginUid, User user);
+
     String getOwner(Long pluginId);
+
     String getOwnerByUid(String pluginUid);
+
     String getUid(Long pluginId);
 }

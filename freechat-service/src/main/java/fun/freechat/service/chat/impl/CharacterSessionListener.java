@@ -5,6 +5,7 @@ import fun.freechat.service.character.CharacterService;
 import fun.freechat.service.chat.ChatContextService;
 import fun.freechat.service.chat.ChatSessionService;
 import fun.freechat.service.rag.RagTaskSucceededEvent;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,16 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
 @SuppressWarnings("unused")
 public class CharacterSessionListener {
     @Autowired
     private ChatContextService chatContextService;
+
     @Autowired
     private ChatSessionService chatSessionService;
+
     @Autowired
     private CharacterService characterService;
 
@@ -31,7 +32,7 @@ public class CharacterSessionListener {
         String userId = backendEvent.userId();
         if (StringUtils.isBlank(userId)) {
             List<String> chatIds = chatContextService.listIdsByBackend(backendEvent.backendId());
-            for (String chatId: chatIds) {
+            for (String chatId : chatIds) {
                 if (StringUtils.isNotBlank(chatId)) {
                     chatSessionService.reset(chatId);
                 }
@@ -52,8 +53,7 @@ public class CharacterSessionListener {
             return;
         }
 
-        characterService.listBackendIds(characterUid)
-                .stream()
+        characterService.listBackendIds(characterUid).stream()
                 .flatMap(backendId -> chatContextService.listIdsByBackend(backendId).stream())
                 .forEach(chatSessionService::reset);
     }

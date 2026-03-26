@@ -4,7 +4,6 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-
 import java.util.*;
 
 public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
@@ -35,7 +34,8 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
     @Override
     public Object copy(Kryo kryo, Object original) {
         try {
-            final UnmodifiableCollection unmodifiableCollection = UnmodifiableCollection.valueOfType(original.getClass());
+            final UnmodifiableCollection unmodifiableCollection =
+                    UnmodifiableCollection.valueOfType(original.getClass());
             Object sourceCollectionCopy = kryo.copy(unmodifiableCollection.transfer(original));
             return unmodifiableCollection.create(sourceCollectionCopy);
         } catch (final RuntimeException e) {
@@ -47,7 +47,7 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
     }
 
     private enum UnmodifiableCollection {
-        COLLECTION(Collections.unmodifiableCollection(Arrays.asList("")).getClass()){
+        COLLECTION(Collections.unmodifiableCollection(Arrays.asList("")).getClass()) {
             @Override
             public Object create(final Object sourceCollection) {
                 return Collections.unmodifiableCollection((Collection<?>) sourceCollection);
@@ -58,7 +58,7 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
                 return Arrays.asList(((Collection<?>) unmodifiableCollection).toArray());
             }
         },
-        RANDOM_ACCESS_LIST(Collections.unmodifiableList(new ArrayList<Void>()).getClass()){
+        RANDOM_ACCESS_LIST(Collections.unmodifiableList(new ArrayList<Void>()).getClass()) {
             @Override
             public Object create(final Object sourceCollection) {
                 return Collections.unmodifiableList((List<?>) sourceCollection);
@@ -69,7 +69,7 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
                 return new ArrayList<>((List<?>) unmodifiableCollection);
             }
         },
-        LIST(Collections.unmodifiableList(new LinkedList<Void>()).getClass()){
+        LIST(Collections.unmodifiableList(new LinkedList<Void>()).getClass()) {
             @Override
             public Object create(final Object sourceCollection) {
                 return Collections.unmodifiableList((List<?>) sourceCollection);
@@ -80,7 +80,7 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
                 return new LinkedList<>((List<?>) unmodifiableCollection);
             }
         },
-        SET(Collections.unmodifiableSet(new HashSet<Void>()).getClass()){
+        SET(Collections.unmodifiableSet(new HashSet<Void>()).getClass()) {
             @Override
             public Object create(final Object sourceCollection) {
                 return Collections.unmodifiableSet((Set<?>) sourceCollection);
@@ -91,7 +91,7 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
                 return new HashSet<>((Set<?>) unmodifiableCollection);
             }
         },
-        SORTED_SET(Collections.unmodifiableSortedSet(new TreeSet<>()).getClass()){
+        SORTED_SET(Collections.unmodifiableSortedSet(new TreeSet<>()).getClass()) {
             @Override
             public Object create(final Object sourceCollection) {
                 return Collections.unmodifiableSortedSet((SortedSet<?>) sourceCollection);
@@ -113,7 +113,6 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
             public Object transfer(Object unmodifiableCollection) {
                 return new HashMap<>((Map<?, ?>) unmodifiableCollection);
             }
-
         },
         SORTED_MAP(Collections.unmodifiableSortedMap(new TreeMap<>()).getClass()) {
             @Override
@@ -134,17 +133,17 @@ public class UnmodifiableCollectionsSerializer extends Serializer<Object> {
         }
 
         public abstract Object create(Object sourceCollection);
+
         public abstract Object transfer(Object unmodifiableCollection);
 
         static UnmodifiableCollection valueOfType(final Class<?> type) {
-            for(final UnmodifiableCollection item : values()) {
+            for (final UnmodifiableCollection item : values()) {
                 if (item.type.equals(type)) {
                     return item;
                 }
             }
             throw new IllegalArgumentException("The type " + type + " is not supported.");
         }
-
     }
 
     /**

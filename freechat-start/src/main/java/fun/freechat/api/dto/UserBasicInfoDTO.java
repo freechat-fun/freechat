@@ -9,11 +9,13 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "User summary information")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserBasicInfoDTO extends TraceableDTO{
+public class UserBasicInfoDTO extends TraceableDTO {
     @Schema(description = "Username")
     private String username;
+
     @Schema(description = "Nickname")
     private String nickname;
+
     @Schema(description = "Avatar")
     private String picture;
 

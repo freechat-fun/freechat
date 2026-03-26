@@ -3,6 +3,12 @@ package fun.freechat.service.common;
 import fun.freechat.annotation.Encrypted;
 import fun.freechat.service.util.EncryptionUtils;
 import jakarta.annotation.PostConstruct;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import javax.crypto.NoSuchPaddingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,33 +18,27 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.NoSuchPaddingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-
 @Component
 @Slf4j
 @SuppressWarnings("unused")
 public class EncryptedPropertyProcessor implements BeanPostProcessor {
     private static final List<Pair<String, String>> INNER_SECRET_CONFIG_LIST = List.of(
             // Pair.of("org.springframework.boot.autoconfigure.jdbc.DataSourceProperties", "password")
-    );
+            );
 
     @Value("${auth.aes.key}")
     private String aesKey;
+
     private EncryptionUtils encryptionUtils;
 
     @PostConstruct
-    public void init()
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void init() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         encryptionUtils = new EncryptionUtils(aesKey);
     }
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName)
+            throws BeansException {
         if (bean == this) {
             return bean;
         }
@@ -76,7 +76,7 @@ public class EncryptedPropertyProcessor implements BeanPostProcessor {
                 if (!(v instanceof String)) {
                     continue;
                 }
-                String plainText = encryptionUtils.decrypt((String)v);
+                String plainText = encryptionUtils.decrypt((String) v);
                 if (StringUtils.isNotBlank(plainText)) {
                     field.set(bean, plainText);
                     log.info("Decrypted {}.{} ", clazz.getSimpleName(), field.getName());

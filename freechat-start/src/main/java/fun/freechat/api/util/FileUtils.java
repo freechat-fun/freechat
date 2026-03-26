@@ -1,10 +1,20 @@
 package fun.freechat.api.util;
 
+import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
+import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
+
 import fun.freechat.service.common.FileStore;
 import fun.freechat.service.config.RuntimeConfig;
 import fun.freechat.util.IdUtils;
 import fun.freechat.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -14,17 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.List;
-
-import static fun.freechat.service.util.StoreUtils.PRIVATE_DIR;
-import static fun.freechat.service.util.StoreUtils.PUBLIC_DIR;
 
 @Component
 @Slf4j
@@ -44,11 +43,11 @@ public class FileUtils implements ApplicationContextAware {
             // ignored
         }
 
-        return StringUtils.isBlank(filteredOriginFilename) ?
-                IdUtils.newId() :
-                IdUtils.newId() + "-" + filteredOriginFilename.replaceAll("/", "-");
+        return StringUtils.isBlank(filteredOriginFilename)
+                ? IdUtils.newId()
+                : IdUtils.newId() + "-" + filteredOriginFilename.replaceAll("/", "-");
     }
-    
+
     public static String transfer(MultipartFile file, FileStore fileStore, String dstDir, int maxCount)
             throws IOException {
         if (fileStore.exists(dstDir)) {
@@ -111,7 +110,8 @@ public class FileUtils implements ApplicationContextAware {
         return PUBLIC_DIR + SecurityUtils.filterPath(subPath);
     }
 
-    private static String getDefaultPrivateUrl(HttpServletRequest request, String path, String userId, String dataType) {
+    private static String getDefaultPrivateUrl(
+            HttpServletRequest request, String path, String userId, String dataType) {
         return ServletUriComponentsBuilder.fromRequestUri(request)
                 .replacePath("/my/" + dataType + "/" + getDefaultPrivateKey(path, userId))
                 .build()

@@ -1,17 +1,16 @@
 package fun.freechat.access.user;
 
+import static fun.freechat.util.ByteUtils.isNotFalse;
+import static fun.freechat.util.ByteUtils.isNotTrue;
+
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysAuthorityService;
+import java.util.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.*;
-
-import static fun.freechat.util.ByteUtils.isNotFalse;
-import static fun.freechat.util.ByteUtils.isNotTrue;
 
 public class SysUserDetails extends User implements UserDetails {
     private List<? extends GrantedAuthority> authorities;
@@ -94,8 +93,7 @@ public class SysUserDetails extends User implements UserDetails {
             }
 
             if (authorityService != null) {
-                sysUser.authorities = authorityService.list(user)
-                        .stream()
+                sysUser.authorities = authorityService.list(user).stream()
                         .map(SimpleGrantedAuthority::new)
                         .toList();
             }

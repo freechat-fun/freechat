@@ -1,21 +1,20 @@
 package fun.freechat.service.account.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.mapper.AuthorityDynamicSqlSupport;
 import fun.freechat.mapper.AuthorityMapper;
 import fun.freechat.model.Authority;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysAuthorityService;
 import fun.freechat.util.AuthorityUtils;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 @Service
 @SuppressWarnings("unused")
@@ -27,8 +26,7 @@ public class SysAuthorityServiceImpl implements SysAuthorityService {
     public Set<String> list(@NonNull User user) {
         Set<String> authorities = new HashSet<>();
         authorities.add(AuthorityUtils.USER);
-        authorityMapper.select(c -> c.where(AuthorityDynamicSqlSupport.userId, isEqualTo(user.getUserId())))
-                .stream()
+        authorityMapper.select(c -> c.where(AuthorityDynamicSqlSupport.userId, isEqualTo(user.getUserId()))).stream()
                 .map(Authority::getScope)
                 .forEach(authorities::add);
 
@@ -49,7 +47,7 @@ public class SysAuthorityServiceImpl implements SysAuthorityService {
                     .withGmtCreate(now)
                     .withGmtModified(now)
                     .withScope(authority);
-             authorityMapper.insertSelective(row);
+            authorityMapper.insertSelective(row);
         }
         return true;
     }

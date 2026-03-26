@@ -14,9 +14,7 @@ public class TomcatConfig {
     @Bean
     public TomcatServletWebServerFactory tomcatServletWebServerFactory() {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.addConnectorCustomizers(
-                connector -> connector.setAsyncTimeout(asyncRequestTimeout)
-        );
+        factory.addConnectorCustomizers(connector -> connector.setAsyncTimeout(asyncRequestTimeout));
         return factory;
     }
 }

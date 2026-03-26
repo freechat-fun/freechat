@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +21,6 @@ import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @Tag(name = "Plugin")
@@ -31,13 +30,11 @@ import java.util.List;
 public class PluginApi {
     @Autowired
     private PluginService pluginService;
+
     @Autowired
     private PluginFetchService pluginFetchService;
 
-    @Operation(
-            operationId = "searchPluginSummary",
-            summary = "Search Plugin Summary",
-            description = """
+    @Operation(operationId = "searchPluginSummary", summary = "Search Plugin Summary", description = """
                     Search plugins:
                     - Specifiable query fields, and relationship:
                       - Scope: private, public_org or public. Private can only search this account.
@@ -52,14 +49,12 @@ public class PluginApi {
                     - A certain sorting rule can be specified, such as view count, reference count, rating, time, descending or ascending.
                     - The search result is the plugin summary content.
                     - Support pagination.
-                    """
-    )
+                    """)
     @PostMapping("/search")
     public List<PluginSummaryDTO> search(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -73,15 +68,11 @@ public class PluginApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PluginQueryDTO query) {
-        return pluginService.search(query.toPluginInfoQuery(), AccountUtils.currentUser())
-                .stream()
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PluginQueryDTO query) {
+        return pluginService.search(query.toPluginInfoQuery(), AccountUtils.currentUser()).stream()
                 .map(PluginSummaryDTO::from)
                 .toList();
     }
@@ -89,14 +80,12 @@ public class PluginApi {
     @Operation(
             operationId = "searchPluginDetails",
             summary = "Search Plugin Details",
-            description = "Same as /api/v2/plugin/search, but returns detailed information of the plugin."
-    )
+            description = "Same as /api/v2/plugin/search, but returns detailed information of the plugin.")
     @PostMapping("/details/search")
     public List<PluginDetailsDTO> detailsSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "where": {
                                         "visibility": "public",
@@ -109,15 +98,11 @@ public class PluginApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PluginQueryDTO query) {
-        return pluginService.searchDetails(query.toPluginInfoQuery(), AccountUtils.currentUser())
-                .stream()
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PluginQueryDTO query) {
+        return pluginService.searchDetails(query.toPluginInfoQuery(), AccountUtils.currentUser()).stream()
                 .map(PluginDetailsDTO::from)
                 .toList();
     }
@@ -125,14 +110,12 @@ public class PluginApi {
     @Operation(
             operationId = "batchSearchPluginSummary",
             summary = "Batch Search Plugin Summaries",
-            description = "Batch call shortcut for /api/v2/plugin/search."
-    )
+            description = "Batch call shortcut for /api/v2/plugin/search.")
     @PostMapping("/batch/search")
     public List<List<PluginSummaryDTO>> batchSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "where": {
                                         "visibility": "public",
@@ -171,13 +154,10 @@ public class PluginApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            List<PluginQueryDTO> queries) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    List<PluginQueryDTO> queries) {
         List<List<PluginSummaryDTO>> results = new ArrayList<>(queries.size());
         for (PluginQueryDTO query : queries) {
             results.add(search(query));
@@ -188,14 +168,12 @@ public class PluginApi {
     @Operation(
             operationId = "batchSearchPluginDetails",
             summary = "Batch Search Plugin Details",
-            description = "Batch call shortcut for /api/v2/plugin/details/search."
-    )
+            description = "Batch call shortcut for /api/v2/plugin/details/search.")
     @PostMapping("/batch/details/search")
     public List<List<PluginDetailsDTO>> batchDetailsSearch(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Query conditions",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Query conditions",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "where": {
                                         "visibility": "public",
@@ -234,13 +212,10 @@ public class PluginApi {
                                       "pageNum": 0,
                                       "pageSize": 1
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            List<PluginQueryDTO> queries) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    List<PluginQueryDTO> queries) {
         List<List<PluginDetailsDTO>> results = new ArrayList<>(queries.size());
         for (PluginQueryDTO query : queries) {
             results.add(detailsSearch(query));
@@ -248,28 +223,23 @@ public class PluginApi {
         return results;
     }
 
-    @Operation(
-            operationId = "createPlugin",
-            summary = "Create Plugin",
-            description = """
+    @Operation(operationId = "createPlugin", summary = "Create Plugin", description = """
                     Create a plugin, required fields:
                     - Plugin name
                     - Plugin manifestInfo (URL or JSON)
                     - Plugin apiInfo (URL or JSON)
-                   
+
                     Limitations:
                     - Name: 100 characters
                     - Example: 2000 characters
                     - Tags: 5
-                    """
-    )
+                    """)
     @PostMapping("")
     @PreAuthorize("hasPermission(#p0.visibility, 'pluginCreateOp')")
     public Long create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Information of the plugin to be created",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "Information of the plugin to be created",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "name": "Test plugin",
                                       "provider": "freechat.fun NLP Lab",
@@ -279,13 +249,10 @@ public class PluginApi {
                                         "test", "demo"
                                       ]
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PluginCreateDTO plugin) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PluginCreateDTO plugin) {
         var pluginInfo = plugin.toPluginInfo();
         if (!pluginService.create(pluginInfo)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create plugin.");
@@ -296,15 +263,14 @@ public class PluginApi {
     @Operation(
             operationId = "createPlugins",
             summary = "Batch Create Plugins",
-            description = "Batch create multiple plugins. Ensure transactionality, return the pluginId list after success."
-    )
+            description =
+                    "Batch create multiple plugins. Ensure transactionality, return the pluginId list after success.")
     @PostMapping("/batch")
     @PreFilter("hasPermission(filterObject.visibility, 'pluginCreateOp')")
     public List<Long> batchCreate(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "List of plugin information to be created",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "List of plugin information to be created",
+                            content = @Content(examples = @ExampleObject("""
                                     [{
                                       "name": "First Test Plugin",
                                       "provider": "freechat.fun NLP Lab",
@@ -326,33 +292,26 @@ public class PluginApi {
                                         "123", "456"
                                       ]
                                     }]
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotEmpty
-            List<PluginCreateDTO> plugins) {
-        var pluginInfoList = plugins.stream()
-                .map(PluginCreateDTO::toPluginInfo)
-                .toList();
+                                    """)))
+                    @RequestBody
+                    @NotEmpty
+                    List<PluginCreateDTO> plugins) {
+        var pluginInfoList = plugins.stream().map(PluginCreateDTO::toPluginInfo).toList();
         return pluginService.create(pluginInfoList);
     }
 
     @Operation(
             operationId = "updatePlugin",
             summary = "Update Plugin",
-            description = "Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure."
-    )
+            description =
+                    "Update plugin, refer to /api/v2/plugin/create, required field: pluginId. Returns success or failure.")
     @PutMapping("/{pluginId}")
     @PreAuthorize("hasPermission(#p0 + '|' + #p1.visibility, 'pluginUpdateOp')")
     public Boolean update(
-            @Parameter(description = "The pluginId to be updated") @PathVariable("pluginId") @Positive
-            Long pluginId,
+            @Parameter(description = "The pluginId to be updated") @PathVariable("pluginId") @Positive Long pluginId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "The plugin information to be updated",
-                    content = @Content(
-                            examples = @ExampleObject("""
+                            description = "The plugin information to be updated",
+                            content = @Content(examples = @ExampleObject("""
                                     {
                                       "name": "Second Test Plugin (New)",
                                       "visibility": "public",
@@ -360,53 +319,46 @@ public class PluginApi {
                                         "test2", "demo2", "business"
                                       ]
                                     }
-                                    """
-                            )
-                    )
-            )
-            @RequestBody
-            @NotNull
-            PluginUpdateDTO plugin) {
+                                    """)))
+                    @RequestBody
+                    @NotNull
+                    PluginUpdateDTO plugin) {
         return pluginService.update(plugin.toPluginInfo(pluginId));
     }
 
     @Operation(
             operationId = "deletePlugin",
             summary = "Delete Plugin",
-            description = "Delete plugin. Returns success or failure."
-    )
+            description = "Delete plugin. Returns success or failure.")
     @DeleteMapping("/{pluginId}")
     @PreAuthorize("hasPermission(#p0, 'pluginDeleteOp')")
     public Boolean delete(
-            @Parameter(description = "The pluginId to be deleted") @PathVariable("pluginId") @Positive
-            Long pluginId) {
+            @Parameter(description = "The pluginId to be deleted") @PathVariable("pluginId") @Positive Long pluginId) {
         return pluginService.delete(pluginId, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "deletePlugins",
             summary = "Batch Delete Plugins",
-            description = "Delete multiple plugins. Ensure transactionality, return the list of successfully deleted pluginIds."
-    )
+            description =
+                    "Delete multiple plugins. Ensure transactionality, return the list of successfully deleted pluginIds.")
     @DeleteMapping("/batch")
     @PreFilter("hasPermission(filterObject, 'pluginDeleteOp')")
     public List<Long> batchDelete(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "List of pluginIds to be deleted")
-            @RequestBody
-            @NotEmpty
-            List<Long> pluginIds) {
+                    @RequestBody
+                    @NotEmpty
+                    List<Long> pluginIds) {
         return pluginService.delete(pluginIds, AccountUtils.currentUser());
     }
 
     @Operation(
             operationId = "getPluginSummary",
             summary = "Get Plugin Summary",
-            description = "Get plugin summary information."
-    )
+            description = "Get plugin summary information.")
     @GetMapping("/summary/{pluginId}")
     public PluginSummaryDTO summary(
-            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @Positive
-            Long pluginId) {
+            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @Positive Long pluginId) {
         var pluginInfo = pluginService.summary(pluginId, AccountUtils.currentUser());
         return PluginSummaryDTO.from(pluginInfo);
     }
@@ -414,12 +366,10 @@ public class PluginApi {
     @Operation(
             operationId = "getPluginDetails",
             summary = "Get Plugin Details",
-            description = "Get plugin detailed information."
-    )
+            description = "Get plugin detailed information.")
     @GetMapping("/details/{pluginId}")
     public PluginDetailsDTO details(
-            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @Positive
-            Long pluginId) {
+            @Parameter(description = "PluginId to be obtained") @PathVariable("pluginId") @Positive Long pluginId) {
         var pluginInfo = pluginService.details(pluginId, AccountUtils.currentUser());
         return PluginDetailsDTO.from(pluginInfo);
     }
@@ -427,12 +377,13 @@ public class PluginApi {
     @Operation(
             operationId = "countPlugins",
             summary = "Calculate Number of Plugins",
-            description = "Calculate the number of plugins according to the specified query conditions."
-    )
+            description = "Calculate the number of plugins according to the specified query conditions.")
     @PostMapping("/count")
     public Long count(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions") @RequestBody @NotNull
-            PluginQueryDTO query) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Query conditions")
+                    @RequestBody
+                    @NotNull
+                    PluginQueryDTO query) {
         PluginService.Query infoQuery = query.toPluginInfoQuery();
         infoQuery.setOffset(null);
         infoQuery.setLimit(null);
@@ -443,12 +394,11 @@ public class PluginApi {
     @Operation(
             operationId = "refreshPluginInfo",
             summary = "Refresh Plugin Information",
-            description = "For online manifest, api-docs information provided at the time of entry, this interface can immediately refresh the information in the system cache (default cache time is 1 hour). Generally, there is no need to call, unless you know that the corresponding plugin platform has just updated the interface, and the business side wants to get the latest information immediately, then call this interface to delete the system cache."
-    )
+            description =
+                    "For online manifest, api-docs information provided at the time of entry, this interface can immediately refresh the information in the system cache (default cache time is 1 hour). Generally, there is no need to call, unless you know that the corresponding plugin platform has just updated the interface, and the business side wants to get the latest information immediately, then call this interface to delete the system cache.")
     @PutMapping("/refresh/{pluginId}")
     public void refresh(
-            @Parameter(description = "The pluginId to be fetched") @PathVariable("pluginId") @Positive
-            Long pluginId) {
+            @Parameter(description = "The pluginId to be fetched") @PathVariable("pluginId") @Positive Long pluginId) {
         var pluginInfo = pluginService.summary(pluginId, AccountUtils.currentUser());
         pluginFetchService.clearCaches(pluginInfo.getLeft());
     }

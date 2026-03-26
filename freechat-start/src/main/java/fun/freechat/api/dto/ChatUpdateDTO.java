@@ -2,12 +2,11 @@ package fun.freechat.api.dto;
 
 import fun.freechat.model.ChatContext;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.Date;
 
 @Schema(description = "Request data for updating a chat session")
 @Data

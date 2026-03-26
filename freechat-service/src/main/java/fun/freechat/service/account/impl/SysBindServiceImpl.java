@@ -1,19 +1,18 @@
 package fun.freechat.service.account.impl;
 
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+
 import fun.freechat.mapper.BindingDynamicSqlSupport;
 import fun.freechat.mapper.BindingMapper;
 import fun.freechat.model.Binding;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysBindService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
-
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @SuppressWarnings("unused")
@@ -27,9 +26,17 @@ public class SysBindServiceImpl implements SysBindService {
         }
         return String.join(",", arr);
     }
+
     @Override
-    public boolean bind(User user, String platform, String sub, URL iss, Collection<String> aud,
-                        String refreshToken, Date issuedAt, Date expiresAt) {
+    public boolean bind(
+            User user,
+            String platform,
+            String sub,
+            URL iss,
+            Collection<String> aud,
+            String refreshToken,
+            Date issuedAt,
+            Date expiresAt) {
         Date now = new Date();
         Binding binding = new Binding()
                 .withGmtCreate(now)
@@ -43,9 +50,9 @@ public class SysBindServiceImpl implements SysBindService {
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt);
 
-        Binding oldBinding = bindingMapper.selectOne(c ->
-                        c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
-                                .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
+        Binding oldBinding = bindingMapper
+                .selectOne(c -> c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
+                        .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
                 .orElse(null);
 
         int rows;
@@ -69,7 +76,8 @@ public class SysBindServiceImpl implements SysBindService {
 
     @Override
     public boolean isBound(User user, String platform) {
-        return bindingMapper.selectOne(c -> c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
+        return bindingMapper
+                .selectOne(c -> c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
                         .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
                 .filter(binding -> {
                     Date expiresAt = binding.getExpiresAt();
@@ -80,7 +88,8 @@ public class SysBindServiceImpl implements SysBindService {
 
     @Override
     public String getRefreshToken(User user, String platform) {
-        return bindingMapper.selectOne(c -> c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
+        return bindingMapper
+                .selectOne(c -> c.where(BindingDynamicSqlSupport.userId, isEqualTo(user.getUserId()))
                         .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
                 .map(Binding::getRefreshToken)
                 .orElse(null);
@@ -88,7 +97,8 @@ public class SysBindServiceImpl implements SysBindService {
 
     @Override
     public String getUserIdByPlatformAndSub(String platform, String sub) {
-        return bindingMapper.selectOne(c -> c.where(BindingDynamicSqlSupport.sub, isEqualTo(sub))
+        return bindingMapper
+                .selectOne(c -> c.where(BindingDynamicSqlSupport.sub, isEqualTo(sub))
                         .and(BindingDynamicSqlSupport.platform, isEqualTo(platform)))
                 .map(Binding::getUserId)
                 .orElse(null);

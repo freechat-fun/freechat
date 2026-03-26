@@ -31,6 +31,7 @@ public enum ApiTokenType {
     public String text() {
         return type;
     }
+
     @Override
     public String toString() {
         return text();

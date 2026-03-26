@@ -9,6 +9,7 @@ public enum EmbeddingRecordMeta {
     USER_MESSAGE_ID,
     AI_MESSAGE_ID,
     UNKNOWN;
+
     public static EmbeddingRecordMeta of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

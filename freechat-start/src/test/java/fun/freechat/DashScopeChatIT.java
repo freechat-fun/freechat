@@ -1,9 +1,9 @@
 package fun.freechat;
 
+import static fun.freechat.service.enums.ModelProvider.DASH_SCOPE;
+
 import fun.freechat.service.enums.ModelProvider;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-
-import static fun.freechat.service.enums.ModelProvider.DASH_SCOPE;
 
 @EnabledIfEnvironmentVariable(named = "DASHSCOPE_API_KEY", matches = ".+")
 class DashScopeChatIT extends OpenAiChatIT {

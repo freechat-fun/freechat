@@ -3,6 +3,13 @@ package fun.freechat.service.config.impl;
 import fun.freechat.service.config.RuntimeConfig;
 import fun.freechat.util.YamlUtils;
 import jakarta.annotation.PostConstruct;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.lang3.StringUtils;
@@ -11,14 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This configuration is in YAML format and can be used to override spring properties.
@@ -32,14 +31,14 @@ public class ConfigMapApplicationConfig implements RuntimeConfig {
 
     @Value("${configmap.workdir}")
     private String workdir;
+
     @Autowired
     private Environment environment;
+
     private final AtomicLong configModifiedTime = new AtomicLong(0L);
     private final AtomicReference<String> configText = new AtomicReference<>("");
-    private final AtomicReference<Properties> configProperties =
-            new AtomicReference<>(new Properties());
-    private final AtomicReference<Map<String, Object>> configMap =
-            new AtomicReference<>(new LinkedMap<>());
+    private final AtomicReference<Properties> configProperties = new AtomicReference<>(new Properties());
+    private final AtomicReference<Map<String, Object>> configMap = new AtomicReference<>(new LinkedMap<>());
 
     @PostConstruct
     public void init() {

@@ -1,12 +1,11 @@
 package fun.freechat.util;
 
-import fun.freechat.service.enums.ModelProvider;
+import static fun.freechat.util.TestAiApiKeyUtils.baseUrlFor;
 
+import fun.freechat.service.enums.ModelProvider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-import static fun.freechat.util.TestAiApiKeyUtils.baseUrlFor;
 
 public class TestCommonUtils {
     public static void waitAWhile() {

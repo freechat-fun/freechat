@@ -7,6 +7,7 @@ public enum SourceType {
     FILE,
     URL,
     UNKNOWN;
+
     public static SourceType of(String text) {
         if (StringUtils.isBlank(text)) {
             return UNKNOWN;

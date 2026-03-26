@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "Account detailed information (with password)")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserFullDetailsDTO extends UserDetailsDTO{
+public class UserFullDetailsDTO extends UserDetailsDTO {
     private String password;
 
     public static UserFullDetailsDTO from(User user) {
@@ -17,8 +17,8 @@ public class UserFullDetailsDTO extends UserDetailsDTO{
             return null;
         }
         UserFullDetailsDTO dto = CommonUtils.convert(user, UserFullDetailsDTO.class);
-        dto.setLocked(user.getLocked() != (byte)0);
-        dto.setEnabled(user.getEnabled() != (byte)0);
+        dto.setLocked(user.getLocked() != (byte) 0);
+        dto.setEnabled(user.getEnabled() != (byte) 0);
         return dto;
     }
 }

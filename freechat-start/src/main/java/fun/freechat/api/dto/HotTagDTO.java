@@ -10,6 +10,7 @@ import lombok.Data;
 public class HotTagDTO {
     @Schema(description = "Tag content")
     private String content;
+
     @Schema(description = "Tag count")
     private Long count;
 

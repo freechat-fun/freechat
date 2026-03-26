@@ -6,6 +6,8 @@ import fun.freechat.access.user.SysUserDetailsManager;
 import fun.freechat.model.User;
 import fun.freechat.service.account.SysUserService;
 import fun.freechat.util.AuthorityUtils;
+import java.util.Optional;
+import java.util.Set;
 import lombok.NonNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -18,9 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
-import java.util.Set;
 
 @Component
 public class AccountUtils implements ApplicationContextAware {
@@ -62,8 +61,8 @@ public class AccountUtils implements ApplicationContextAware {
 
     public static void updateCurrentUser() {
         User currentUser = currentUser();
-        SysUserDetails sysUser = ((SysUserDetailsManager) userDetailsManager).loadUserByUsernameAndPlatform(
-                currentUser.getUsername(), currentUser.getPlatform());
+        SysUserDetails sysUser = ((SysUserDetailsManager) userDetailsManager)
+                .loadUserByUsernameAndPlatform(currentUser.getUsername(), currentUser.getPlatform());
         Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
         Authentication newAuthenticated = authenticated;
 
@@ -71,8 +70,8 @@ public class AccountUtils implements ApplicationContextAware {
             newAuthenticated = UsernamePasswordAuthenticationToken.authenticated(
                     sysUser, authenticated.getCredentials(), authenticated.getAuthorities());
         } else if (authenticated instanceof ApiTokenAuthenticationToken) {
-            newAuthenticated = new ApiTokenAuthenticationToken(
-                    sysUser, (Set<String>)authenticated.getCredentials(), true);
+            newAuthenticated =
+                    new ApiTokenAuthenticationToken(sysUser, (Set<String>) authenticated.getCredentials(), true);
         }
 
         SecurityContextHolder.getContext().setAuthentication(newAuthenticated);

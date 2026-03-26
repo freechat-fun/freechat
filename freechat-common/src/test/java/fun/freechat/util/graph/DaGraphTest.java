@@ -1,12 +1,11 @@
 package fun.freechat.util.graph;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.junit.jupiter.api.Test;
 
 /**
  * 测试图形：
@@ -186,32 +185,25 @@ public class DaGraphTest {
     @Test
     public void testDegree() {
         fill();
-        assertFalse(Arrays.stream(Vertex.values())
-                .anyMatch(v -> !correctDegree(v, graph.degree(v)))
-        );
+        assertFalse(Arrays.stream(Vertex.values()).anyMatch(v -> !correctDegree(v, graph.degree(v))));
     }
 
     @Test
     public void testGetSuccessors() {
         fill();
-        assertFalse(Arrays.stream(Vertex.values())
-                .anyMatch(v -> !correctSuccessors(v, graph.getSuccessors(v)))
-        );
+        assertFalse(Arrays.stream(Vertex.values()).anyMatch(v -> !correctSuccessors(v, graph.getSuccessors(v))));
     }
 
     @Test
     public void testGetPredecessors() {
         fill();
-        assertFalse(Arrays.stream(Vertex.values())
-                .anyMatch(v -> !correctPredecessors(v, graph.getPredecessors(v)))
-        );
+        assertFalse(Arrays.stream(Vertex.values()).anyMatch(v -> !correctPredecessors(v, graph.getPredecessors(v))));
     }
 
     @Test
     public void testGetRoots() {
         fill();
-        assertTrue(sameVertexes(graph.getRoots(),
-                Vertex.A0, Vertex.B0, Vertex.C00, Vertex.C01));
+        assertTrue(sameVertexes(graph.getRoots(), Vertex.A0, Vertex.B0, Vertex.C00, Vertex.C01));
     }
 
     @Test
@@ -232,8 +224,7 @@ public class DaGraphTest {
         assertEquals(1, graph.degree(Vertex.C03));
         assertEquals(2, graph.degree(Vertex.C20));
         assertEquals(3, graph.degree(Vertex.C30));
-        assertTrue(sameVertexes(graph.getRoots(),
-                Vertex.A0, Vertex.B0, Vertex.C00, Vertex.C01, Vertex.C20));
+        assertTrue(sameVertexes(graph.getRoots(), Vertex.A0, Vertex.B0, Vertex.C00, Vertex.C01, Vertex.C20));
         assertFalse(graph.remove(Vertex.C10));
     }
 
@@ -267,8 +258,7 @@ public class DaGraphTest {
     @Test
     public void testFirst() {
         fill();
-        assertTrue(List.of(Vertex.A0, Vertex.B0, Vertex.C00, Vertex.C01)
-                .contains(graph.first()));
+        assertTrue(List.of(Vertex.A0, Vertex.B0, Vertex.C00, Vertex.C01).contains(graph.first()));
     }
 
     @Test
@@ -297,7 +287,7 @@ public class DaGraphTest {
     @Test
     public void testForEach() {
         fill();
-        for(Vertex v : graph) {
+        for (Vertex v : graph) {
             assertTrue(correctOrder(v));
             passedVertexes.add(v);
         }
@@ -311,7 +301,8 @@ public class DaGraphTest {
                     assertTrue(correctOrder(v));
                     passedVertexes.add(v);
                     return v == Vertex.A0 || v == Vertex.C20 || v == Vertex.C30;
-                }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
         assertTrue(sameVertexes(filteredVertexes, Vertex.A0, Vertex.C20, Vertex.C30));
     }
 }

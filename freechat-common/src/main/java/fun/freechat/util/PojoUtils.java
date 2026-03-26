@@ -1,11 +1,5 @@
 package fun.freechat.util;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,6 +9,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"rawtypes", "unused"})
 public class PojoUtils {
@@ -82,7 +81,7 @@ public class PojoUtils {
         } else if (value instanceof Number || value instanceof Boolean) {
             return value.toString();
         } else if (value instanceof Character) {
-            return "\"" + value +"\"";
+            return "\"" + value + "\"";
         } else if (value instanceof String) {
             return "\"" + escape((String) value) + "\"";
         } else if (value instanceof Map) {
@@ -140,13 +139,12 @@ public class PojoUtils {
     }
 
     private static String objSimpleInfo(Object o) {
-        return "\"" + o.getClass().getSimpleName() + "@" + Integer.toHexString(o.hashCode()) +"\"";
+        return "\"" + o.getClass().getSimpleName() + "@" + Integer.toHexString(o.hashCode()) + "\"";
     }
 
-    private static String objToString(Object o)
-    {
+    private static String objToString(Object o) {
         try {
-            if(Object.class != o.getClass().getMethod("toString").getDeclaringClass()) {
+            if (Object.class != o.getClass().getMethod("toString").getDeclaringClass()) {
                 return "\"" + o + "\"";
             }
         } catch (NoSuchMethodException ignored) {
@@ -205,7 +203,7 @@ public class PojoUtils {
         for (Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String key = (String) entry.getKey();
-            if (key == null)  {
+            if (key == null) {
                 continue;
             }
             builder.append('\"');
@@ -325,12 +323,13 @@ public class PojoUtils {
 
     public static <S, T> void mapWhenExists(Supplier<S> from, Consumer<T> to, Function<S, T> converter) {
         S value = from.get();
-        boolean isValid = switch (value) {
-            case CharSequence charSequence -> StringUtils.isNotBlank((String) value);
-            case Collection<?> objects -> CollectionUtils.isNotEmpty(objects);
-            case Map<?, ?> map -> MapUtils.isNotEmpty(map);
-            case null, default -> value != null;
-        };
+        boolean isValid =
+                switch (value) {
+                    case CharSequence charSequence -> StringUtils.isNotBlank((String) value);
+                    case Collection<?> objects -> CollectionUtils.isNotEmpty(objects);
+                    case Map<?, ?> map -> MapUtils.isNotEmpty(map);
+                    case null, default -> value != null;
+                };
 
         if (isValid) {
             if (converter == null) {

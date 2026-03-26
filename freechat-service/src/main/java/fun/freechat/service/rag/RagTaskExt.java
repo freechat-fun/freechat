@@ -1,17 +1,16 @@
 package fun.freechat.service.rag;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.freechat.service.util.InfoUtils;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Slf4j
 public record RagTaskExt(String message, Throwable ex) {
